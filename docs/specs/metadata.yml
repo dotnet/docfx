@@ -119,7 +119,7 @@ inputs:
   sccm/mdm/understand/hybrid-mobile-device-management.md:
 outputs:
   sccm/mdm/understand/hybrid-mobile-device-management.json: |
-    { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+    { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
   build.log: |
     ["info","redirection-out-of-scope","Redirection file 'sccm/mdm/index.md' will not be built because it is not included in docfx.yml","docfx.yml"]
 ---
