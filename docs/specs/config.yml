@@ -323,7 +323,19 @@ inputs:
       b.md: /absolute/path2
 outputs:
   build.log: |
-    ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in docfx.yml"]
+    ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in docfx.yml","docfx.yml"]
+---
+# Out of scope file with conflicted id
+inputs:
+  docfx.yml: |
+    exclude: '*'
+    redirections:
+      a.md: /absolute/path1
+      b.md: /absolute/path1
+outputs:
+  build.log: |
+    ["info","redirection-out-of-scope","Redirection file 'a.md' will not be built because it is not included in docfx.yml","docfx.yml"]
+    ["info","redirection-out-of-scope","Redirection file 'b.md' will not be built because it is not included in docfx.yml","docfx.yml"]
 ---
 # Multiple errors
 inputs:
