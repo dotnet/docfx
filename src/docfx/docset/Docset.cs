@@ -264,9 +264,7 @@ namespace Microsoft.Docs.Build
                         }
                     });
 
-                var result = new HashSet<Document>(files);
-                result.UnionWith(redirections);
-                return result;
+                return new HashSet<Document>(files.Concat(redirections));
             }
         }
 
