@@ -1,0 +1,31 @@
+﻿{
+  "projects": [
+    {
+      "name": "api",
+      "files": [
+        "**/BackEnd/**/*.csproj"
+      ],
+      "cwd": "..",
+      "exclude": [ "**/xdocoutput/**.csproj", "**/*Test*", "**/bin/**", "**/obj/**" ]
+    }
+  ],
+  "conceptuals": [
+    {
+      "files": [
+        "**/*.md",
+        "**/toc.yml"
+      ],
+      "exclude": [ "xdocoutput/**", "**/bin/**", "**/obj/**" ]
+    },
+    {
+      "files": [
+        "README.md"
+      ],
+      "cwd":  ".."
+    }
+  ],
+  "externalReferences": [],
+  "title": "Doc-as-code documentation",
+  "templateType": "IIS",
+  "output": "xdocoutput"
+}
