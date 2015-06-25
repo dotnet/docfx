@@ -1,8 +1,0 @@
-﻿- name: General Metadata Specification
-  href: metadata_format_spec.md
-- name: .NET Metadata Specification
-  href: metadata_dotnet_spec.md
-- name: .map File Design Specification
-  href: mapfile_format_spec.md
-- name: DocFx Incremental Build Design Specification
-  href: docfx_incremental.md
