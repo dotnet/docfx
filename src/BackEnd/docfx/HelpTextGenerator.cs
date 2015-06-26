@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Reflection;
 
-    static class HelpTextGeneratorS
+    static class HelpTextGenerator
     {
         private static readonly HelpText HelpText = new HelpText
         {

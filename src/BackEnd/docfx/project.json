@@ -1,9 +1,9 @@
 {
     "version":  "0.3.279.0",
     "dependencies":  {
-                         "DnxWorkspace":  "",
-                         "EntityModel":  "",
-                         "Utility":  ""
+                         "Microsoft.CodeAnalysis.Workspaces.Dnx":  "",
+                         "Microsoft.DocAsCode.EntityModel":  "",
+                         "Microsoft.DocAsCode.Utility":  ""
                      },
     "frameworks":  {
                        "dnx451":  {
@@ -27,5 +27,5 @@
     "commands":  {
                      "docfx":  "docfx"
                  },
-    "resources":  "Template/**"
+    "resource":  "Template/**"
 }

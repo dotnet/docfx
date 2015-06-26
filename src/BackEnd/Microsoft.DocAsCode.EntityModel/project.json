@@ -1,8 +1,8 @@
 {
     "version":  "0.3.279.0",
     "dependencies":  {
-                         "DnxWorkspace":  "",
-                         "Utility":  ""
+                         "Microsoft.CodeAnalysis.Workspaces.Dnx":  "",
+                         "Microsoft.DocAsCode.Utility":  ""
                      },
     "frameworks":  {
                        "dnx451":  {
