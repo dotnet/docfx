@@ -3,12 +3,37 @@
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
 
-    <!-- Cautious: trailing forward slash and backward slash must be eliminated -->
-    <BRANCH_ROOT Condition=" '$(BRANCH_ROOT)' == '' ">$([System.IO.Directory]::GetParent($(MSBuildThisFileDirectory)).Parent.FullName)</BRANCH_ROOT>
-    <VersionCSPath>$(BRANCH_ROOT)\TEMP\</VersionCSPath>
+    <VersionCSPath>TEMP\</VersionCSPath>
     <CurrentVersion>1.0.0.0</CurrentVersion>
+    <!-- Note: by convention assembly should be named after the root namespace -->
+    <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <RootNamespace Condition=" '$(RootNamespace)' == '' ">$(AssemblyName)</RootNamespace>
+    <DebugSymbols>true</DebugSymbols>
+    <ErrorReport>prompt</ErrorReport>
+
+    <!-- Note: unless explicitly specified, we will generate DLL -->
+    <OutputType Condition=" '$(OutputType)' == '' ">Library</OutputType>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+
+    <!-- Note: get rid of vshost.exe since we don't gain much benefits -->
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <WarningLevel>4</WarningLevel>
+    <OutputPath Condition="'$(OutputPath)'==''">bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
 
   <UsingTask TaskName="GenerateVersionCSFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
@@ -32,8 +57,8 @@ string strOutputFileContent = string.Format(
 "using System.Reflection;\n\n" +
 "[assembly: AssemblyVersion(\"{0}\")]\n" +
 "[assembly: AssemblyFileVersion(\"{1}\")]\n\n" +
-"[assembly: AssemblyCompanyAttribute(\"CAPS\")]\n" +
-"[assembly: AssemblyDescriptionAttribute(\"CAPS Package\")]",
+"[assembly: AssemblyCompanyAttribute(\"Microsoft DocAsCode\")]\n" +
+"[assembly: AssemblyDescriptionAttribute(\"Microsoft DocAsCode Package\")]",
 updatedVersion, updatedVersion);
 if(System.IO.File.Exists(strOutputFilePath))
 {
@@ -67,6 +92,6 @@ try {
     <GenerateVersionCSFile Condition="$(ExecExitCode) != '0'" GitVersion="'$(CurrentVersion)'" VersionCSPath="$(VersionCSPath)"/>
   </Target>
   <ItemGroup>
-    <Compile Include="$(BRANCH_ROOT)\TEMP\version.cs" />
+    <Compile Include="$(VersionCSPath)version.cs" />
   </ItemGroup>
 </Project>
