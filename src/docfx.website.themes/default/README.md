@@ -1,0 +1,1 @@
+This folder will contain the source code for the default website theme used by docfx.exe
