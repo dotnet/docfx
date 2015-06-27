@@ -33,14 +33,4 @@ log.txt
 debugSettings.json
 launchSettings.json
 project.lock.json
-nuget.exe
 *.sublime-workspace
-
-
-############################
-#  wix intermediate files  #
-############################
-Installer/obj/
-Installer/*.wixpdb
-Installer/*.wixobj
-Installer/*.msi

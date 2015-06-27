@@ -1,12 +1,12 @@
-﻿using Microsoft.DocAsCode.EntityModel;
-using Microsoft.DocAsCode.Utility;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace docfx
+﻿namespace Microsoft.DocAsCode
 {
+    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Utility;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
     internal class GlobUtility
     {
         /// <summary>

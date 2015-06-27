@@ -5,6 +5,7 @@
     <ProjectGuid>{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Microsoft.DocAsCode</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">

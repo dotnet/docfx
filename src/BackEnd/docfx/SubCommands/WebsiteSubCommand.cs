@@ -1,4 +1,4 @@
-﻿namespace docfx
+﻿namespace Microsoft.DocAsCode
 {
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.MarkdownIndexer;

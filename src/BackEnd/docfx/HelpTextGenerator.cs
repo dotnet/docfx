@@ -1,4 +1,4 @@
-﻿namespace docfx
+﻿namespace Microsoft.DocAsCode
 {
     using CommandLine;
     using CommandLine.Text;
