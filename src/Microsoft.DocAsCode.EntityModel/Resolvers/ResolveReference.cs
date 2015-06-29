@@ -12,6 +12,8 @@
                 (current, parent) =>
                 {
                     MetadataItem page;
+                    var addingReferences = new List<ReferenceItem>();
+                    var documentReferences = current.References;
                     if (current.Type.IsPageLevel())
                     {
                         page = current;
@@ -21,7 +23,13 @@
                     {
                         page = parent;
                     }
-                    var addingReferences = new List<ReferenceItem>();
+                    if (documentReferences != null && documentReferences.Count > 0)
+                    {
+                        foreach (var key in documentReferences.Keys)
+                        {
+                            TryAddReference(context, page, addingReferences, key);
+                        }
+                    }
                     foreach (var key in GetReferenceKeys(current))
                     {
                         TryAddReference(context, page, addingReferences, key);
