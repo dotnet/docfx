@@ -1,0 +1,15 @@
+{
+    "version":  "0.3.279.0",
+    "frameworks":  {
+                       "dnx451":  {
+                                      "dependencies":  {
+                                                           "Microsoft.CodeAnalysis.CSharp.Workspaces":  "1.0.0-rc3-20150605-02",
+                                                           "Microsoft.Framework.Runtime":  "1.0.0-beta6-12005",
+                                                           "Microsoft.Framework.Runtime.Roslyn.Common":  "1.0.0-beta6-12005"
+                                                       },
+                                      "frameworkAssemblies":  {
+                                                                  "System.Runtime":  ""
+                                                              }
+                                  }
+                   }
+}

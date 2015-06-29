@@ -1,0 +1,36 @@
+###############
+#    folder   #
+###############
+/**/DROP/
+/**/TEMP/
+/**/packages/
+/**/bin/
+/**/csx/
+/**/obj/
+/**/xdocoutput/
+/**/node_modules/
+/**/*.sln.ide/
+/TestResults/
+/.vs/
+
+###############
+#  temp file  #
+###############
+*.nupkg
+*.log
+*.tmp
+*.vsprops
+*.suo
+*.user
+*.userprefs
+*.suo
+*.sln.ide
+*.cache
+*.sln.metaproj
+.gitattributes
+.settings
+log.txt
+debugSettings.json
+launchSettings.json
+project.lock.json
+*.sublime-workspace
