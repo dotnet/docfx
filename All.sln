@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22919.0
+VisualStudioVersion = 14.0.22921.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{004952
 		src\Shared\xproj.base.props = src\Shared\xproj.base.props
 		src\Shared\XprojUpdateVersion.ps1 = src\Shared\XprojUpdateVersion.ps1
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.BackEndUnitTest", "test\Microsoft.DocAsCode.BackEndUnitTest\Microsoft.DocAsCode.BackEndUnitTest.csproj", "{EFAA7A53-D047-422E-A3FB-ECC834944CE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,10 @@ Global
 		{AAA7BF52-90BE-44DD-8996-17A16311B6C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAA7BF52-90BE-44DD-8996-17A16311B6C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAA7BF52-90BE-44DD-8996-17A16311B6C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFAA7A53-D047-422E-A3FB-ECC834944CE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFAA7A53-D047-422E-A3FB-ECC834944CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFAA7A53-D047-422E-A3FB-ECC834944CE6}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFAA7A53-D047-422E-A3FB-ECC834944CE6}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,5 +96,6 @@ Global
 		{AD097A5F-F82C-4EB9-869B-10AB61E5301F} = {38490932-E9E7-4C31-81DD-B4B06BACD1BB}
 		{AAA7BF52-90BE-44DD-8996-17A16311B6C1} = {38490932-E9E7-4C31-81DD-B4B06BACD1BB}
 		{004952AD-61B7-4FF7-955C-758ACD99893D} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
+		{EFAA7A53-D047-422E-A3FB-ECC834944CE6} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
 	EndGlobalSection
 EndGlobal
