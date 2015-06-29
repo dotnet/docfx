@@ -58,7 +58,7 @@
                 var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);
                 item.NamespaceName = string.IsNullOrEmpty(namespaceName) ? null : namespaceName;
             }
-            VisitorHelper.FeedComments(item);
+            VisitorHelper.FeedComments(item, GetAddReferenceDelegate(item));
             if (item.Exceptions != null)
             {
                 foreach (var exceptions in item.Exceptions)
@@ -143,7 +143,7 @@
 
                 foreach (var p in symbol.TypeParameters)
                 {
-                    var param = VisitorHelper.GetTypeParameterDescription(p, item);
+                    var param = VisitorHelper.GetTypeParameterDescription(p, item, GetAddReferenceDelegate(item));
                     item.Syntax.TypeParameters.Add(param);
                 }
             }
@@ -191,7 +191,7 @@
 
                 foreach (var p in symbol.TypeParameters)
                 {
-                    var param = VisitorHelper.GetTypeParameterDescription(p, result);
+                    var param = VisitorHelper.GetTypeParameterDescription(p, result, GetAddReferenceDelegate(result));
                     result.Syntax.TypeParameters.Add(param);
                 }
             }
@@ -294,7 +294,7 @@
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
             var id = AddSpecReference(symbol.Type, typeGenericParameters);
-            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true);
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetAddReferenceDelegate(result));
             Debug.Assert(result.Syntax.Return.Type != null);
 
             if (symbol.IsOverride && symbol.OverriddenProperty != null)
@@ -538,7 +538,7 @@
             if (!symbol.ReturnsVoid)
             {
                 var id = AddSpecReference(symbol.ReturnType, typeGenericParameters, methodGenericParameters);
-                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true);
+                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetAddReferenceDelegate(result));
             }
 
             if (symbol.Parameters.Length > 0)
@@ -551,11 +551,24 @@
                 foreach (var p in symbol.Parameters)
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters, methodGenericParameters);
-                    var param = VisitorHelper.GetParameterDescription(p, result, id, false);
+                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetAddReferenceDelegate(result));
                     Debug.Assert(param.Type != null);
                     result.Syntax.Parameters.Add(param);
                 }
             }
+        }
+
+        private Action<string> GetAddReferenceDelegate(MetadataItem item)
+        {
+            return id =>
+            {
+                AddReference(id);
+                if (item.References == null)
+                {
+                    item.References = new Dictionary<string, ReferenceItem>();
+                }
+                item.References.Add(id, null);
+            };
         }
 
         #endregion

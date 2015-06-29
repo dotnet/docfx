@@ -167,12 +167,14 @@
             return false;
         }
 
-        public static void FeedComments(MetadataItem item)
+        public static void FeedComments(MetadataItem item, Action<string> addReference)
         {
-            if (string.IsNullOrEmpty(item.RawComment)) return;
-            item.Summary = TripleSlashCommentParser.GetSummary(item.RawComment, true);
-            item.Remarks = TripleSlashCommentParser.GetRemarks(item.RawComment, true);
-            item.Exceptions = TripleSlashCommentParser.GetExceptions(item.RawComment, true);
+            if (!string.IsNullOrEmpty(item.RawComment))
+            {
+                item.Summary = TripleSlashCommentParser.GetSummary(item.RawComment, true, addReference);
+                item.Remarks = TripleSlashCommentParser.GetRemarks(item.RawComment, true, addReference);
+                item.Exceptions = TripleSlashCommentParser.GetExceptions(item.RawComment, true, addReference);
+            }
         }
 
         public static string GetId(ISymbol symbol)
@@ -197,13 +199,13 @@
             return str.ToString().Substring(2);
         }
 
-        public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn)
+        public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, Action<string> addReference)
         {
             string raw = item.RawComment;
 
             string comment = isReturn ?
-                TripleSlashCommentParser.GetReturns(raw, true) :
-                TripleSlashCommentParser.GetParam(raw, symbol.Name, true);
+                TripleSlashCommentParser.GetReturns(raw, true, addReference) :
+                TripleSlashCommentParser.GetParam(raw, symbol.Name, true, addReference);
 
             return new ApiParameter
             {
@@ -213,9 +215,9 @@
             };
         }
 
-        public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item)
+        public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, Action<string> addReference)
         {
-            string comment = TripleSlashCommentParser.GetTypeParameter(item.RawComment, symbol.Name, true) ;
+            string comment = TripleSlashCommentParser.GetTypeParameter(item.RawComment, symbol.Name, true, addReference);
             return new ApiParameter
             {
                 Name = symbol.Name,
