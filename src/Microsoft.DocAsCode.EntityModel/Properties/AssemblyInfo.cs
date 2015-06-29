@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Docascode.UnitTest")]
+[assembly: InternalsVisibleTo("Microsoft.DocAsCode.BackEndUnitTest")]
