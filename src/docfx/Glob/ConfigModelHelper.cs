@@ -93,7 +93,7 @@
                 // If template folder has been set in command line, override the one defined in configModel
                 var template = websiteOption.TemplateFolder;
                 if (template != null) configModel.TemplateFolder = template;
-                configModel.TemplateType = websiteOption.WebsiteType > configModel.TemplateType ? websiteOption.WebsiteType : configModel.TemplateType;
+                if (!string.IsNullOrEmpty(websiteOption.WebsiteTheme)) configModel.TemplateTheme = websiteOption.WebsiteTheme;
             }
 
             // If OutputFolder is Empty, it is set to current folder

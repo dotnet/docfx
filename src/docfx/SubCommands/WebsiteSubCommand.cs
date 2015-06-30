@@ -7,6 +7,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Text;
 
     class WebsiteSubCommand : ISubCommand
@@ -73,7 +74,12 @@
 
             // 3. Copy website template files
             var toc = TemplateManager.GenerateDefaultToc(inputModel.Items.Where(s => s.Value != null && s.Value.Any()).Select(s => s.Key), mdFiles?.Items.Where(s => s.Files != null && s.Files.Any()).Select(s => s.Name), outputFolder);
-            TemplateManager.CopyToOutput(configModel.BaseDirectory, "Template", typeof(Program).Assembly, templateFolder, outputFolder, toc, configModel.TemplateType);
+
+            // typeof(Program).Assembly is not available in DNX Core 5.0
+            var assembly = typeof(Program).GetTypeInfo().Assembly;
+
+            // TODO: Pass in theme name
+            TemplateManager.CopyToOutput(configModel.BaseDirectory, "Template", assembly, templateFolder, outputFolder, toc, configModel.TemplateTheme);
 
             return ParseResult.SuccessResult;
         }

@@ -99,11 +99,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Template\Github\.nojekyll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <EmbeddedResource Include="Template\default.zip">
+      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
+      <LogicalName>$(AssemblyName).Template.default.zip</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Template\IIS\web.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <EmbeddedResource Include="Template\Github.zip">
+      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
+      <LogicalName>$(AssemblyName).Template.Github.zip</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\IIS.zip">
+      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
+      <LogicalName>$(AssemblyName).Template.IIS.zip</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -115,22 +121,6 @@
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Template\Base\favicon.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Template\Base\index.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Template\Base\logo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Template\Base\styles~docascode.css" />
-    <EmbeddedResource Include="Template\Base\styles~docascode.js" />
-    <EmbeddedResource Include="Template\Base\template~container.html" />
-    <EmbeddedResource Include="Template\Base\template~navbar.html" />
-    <EmbeddedResource Include="Template\Base\template~yamlContent.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

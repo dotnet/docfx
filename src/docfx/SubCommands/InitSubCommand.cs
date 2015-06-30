@@ -63,11 +63,11 @@
                  }
             },
             new SingleChoiceQuestion(
-                "Where will you host your website?", (s, m) => { TemplateType type; if( Enum.TryParse(s, true, out type))  m.TemplateType = type; },
-                TemplateType.Base.ToString(), TemplateType.Github.ToString(), TemplateType.IIS.ToString()) {
+                "Which website theme to use?", (s, m) => m.TemplateTheme = s,
+                "Github.default", "IIS.default", "default") {
                  Descriptions = new string[]
                  {
-                     "Xdoc provides additional files required for different host",
+                     "You can choose different themes incase you want to host in different platforms.",
                      Hints.Tab,
                      Hints.Empty,
                  }

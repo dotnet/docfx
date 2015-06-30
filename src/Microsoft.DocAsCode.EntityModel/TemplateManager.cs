@@ -4,22 +4,11 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Microsoft.DocAsCode.Utility;
+    using Utility;
     using System.Reflection;
     using System.Text;
-
-
-    /// <summary>
-    /// Template folder name matches template type
-    /// </summary>
-    [Flags]
-    public enum TemplateType
-    {
-        Base = 0x0000,
-        Github = 0x0010,
-        IIS = 0x0100,
-    }
-
+    using System.IO.Compression;
+    
     public class TemplateManager
     {
         private const string TemplateEntry = "index.html";
@@ -33,34 +22,8 @@ namespace Microsoft.DocAsCode.EntityModel
 - name: {0}
   href: {0}
 ";
-        private static readonly TemplateType[] SupportedTemplateTypes = new TemplateType[] { TemplateType.Base, TemplateType.Github, TemplateType.IIS };
 
-        /// <summary>
-        /// Split manifest file with the predefined splitter, as manifest file naming has folder structure info lost
-        /// </summary>
-        private const char FolderSplitter = '~';
-        
         public const string DefaultTocEntry = "toc.yml";
-
-
-        /// <summary>
-        /// TODO: follow grunt:copy
-        /// Order matters as the latter Item could overwrite the former one
-        /// </summary>
-        public class ToCopyItem
-        {
-            public string[] Files { get; set; }
-            public string CWD { get; set; }
-            public string TargetFolder { get; set; }
-        }
-
-        public static void CopyItems(List<ToCopyItem> items, bool overwrite)
-        {
-            foreach(var item in items)
-            {
-                item.Files.CopyFilesToFolder(item.CWD, item.TargetFolder, overwrite, s => ParseResult.WriteToConsole(ResultLevel.Info, s), s => { ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to copy file: {0}, ignored.", s); return true; });
-            }
-        }
 
         public static string GenerateDefaultToc(IEnumerable<string> apiFolder, IEnumerable<string> conceptualFolder, string outputFolder)
         {
@@ -84,66 +47,101 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <summary>
         /// TODO: use GLOB
         /// </summary>
-        public static void CopyToOutput(string workingDirectory, string rootNamespace, Assembly assembly, string customTemplateRootFolder, string outputFolderPath, string toc, TemplateType templateType = TemplateType.Base)
+        public static void CopyToOutput(string workingDirectory, string rootNamespace, Assembly assembly, string customTemplateRootFolder, string outputFolderPath, string toc, string themeName)
         {
+            if (string.IsNullOrEmpty(themeName)) themeName = "default";
             if (string.IsNullOrEmpty(workingDirectory)) workingDirectory = Environment.CurrentDirectory;
             if (string.IsNullOrEmpty(outputFolderPath)) outputFolderPath = workingDirectory;
 
-            List<ToCopyItem> toCopyItems = new List<ToCopyItem>();
-
             IEnumerable<string> defaultTemplates = Enumerable.Empty<string>();
 
-            // When no customized template specified:
-            if (string.IsNullOrEmpty(customTemplateRootFolder))
-            {
-                CopyResources(assembly, rootNamespace, outputFolderPath, true, templateType);
-            }
-            else if (FilePathComparer.OSPlatformSensitiveComparer.Equals(customTemplateRootFolder, outputFolderPath))
+            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(customTemplateRootFolder, outputFolderPath))
             {
                 ParseResult.WriteToConsole(ResultLevel.Warning, "Template folder {0} is the same as output folder {1}, templates will not be overwritten to the default one.", customTemplateRootFolder, outputFolderPath);
-                CopyResources(assembly, rootNamespace, outputFolderPath, false, templateType);
+                CopyResources(assembly, rootNamespace, outputFolderPath, null, false, themeName);
             }
             else
             {
-                toCopyItems.Add(new ToCopyItem { Files = Directory.GetFiles(customTemplateRootFolder), CWD = customTemplateRootFolder, TargetFolder = outputFolderPath });
-                CopyItems(toCopyItems, true);
+                CopyResources(assembly, rootNamespace, outputFolderPath, customTemplateRootFolder, true, themeName);
             }
 
             GenerateTocFile(toc, Path.Combine(outputFolderPath, DefaultTocEntry), false);
         }
 
-        private static void CopyResources(Assembly assembly, string rootNamespace, string targetFolder, bool overwrite, TemplateType currentType)
+        private static void CopyResources(Assembly assembly, string rootNamespace, string targetFolder, string customTemplateRootFolder, bool overwrite, string themeName)
         {
-            List<string> baseNamespaces = new List<string>();
-            var assemblyName = assembly.GetName().Name;
-            string baseNamespaceFormatter = assemblyName;
-            if (!string.IsNullOrEmpty(rootNamespace)) baseNamespaceFormatter += "." + rootNamespace;
-            baseNamespaceFormatter += ".{0}.";
-            foreach (var type in SupportedTemplateTypes)
+            var embeddedThemes = assembly.GetManifestResourceNames();
+            IEnumerable<string> providedThemes = embeddedThemes;
+            if (!string.IsNullOrEmpty(customTemplateRootFolder) && Directory.Exists(customTemplateRootFolder))
             {
-                if (currentType.HasFlag(type))
-                {
-                    baseNamespaces.Add(string.Format(baseNamespaceFormatter, type));
-                }
+                providedThemes = providedThemes.Union(Directory.GetFiles(customTemplateRootFolder, "*.zip", SearchOption.AllDirectories));
             }
 
-            foreach (var resource in assembly.GetManifestResourceNames())
+            List<string> themeResources = new List<string>();
+
+            // NOTE: order matters
+            foreach(var resourceName in GetResourceNamesFromTheme(assembly, rootNamespace, themeName))
             {
-                CopyResource(assembly, resource, baseNamespaces, targetFolder, overwrite);
+                // Fetch embedded resource name as embedded resources are case sensitive.
+                var name = embeddedThemes.FirstOrDefault(s => s.Equals(resourceName, StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrEmpty(name)) themeResources.Add(name);
+            }
+
+            if (themeResources.Count == 0)
+            {
+                ParseResult.WriteToConsole(ResultLevel.Error, "Unable to find {0} theme package.", themeName);
+            }
+            else
+            {
+                foreach(var resource in themeResources)
+                {
+                    ParseResult.WriteToConsole(ResultLevel.Info, "{0} theme package found, start unzipping template into target folder {1}.", resource, targetFolder);
+                    using (var stream = assembly.GetManifestResourceStream(resource))
+                    {
+                        UnzipTemplate(stream, targetFolder, overwrite);
+                    }
+                }
             }
         }
 
-        private static void CopyResource(Assembly assembly, string resource, IEnumerable<string> baseNamespaces, string targetFolder, bool overwrite)
+        private static IEnumerable<string> GetResourceNamesFromTheme(Assembly assembly, string rootNamespace, string themeName)
         {
-            string baseNamespace = baseNamespaces.FirstOrDefault(s => resource.StartsWith(s));
+            var assemblyName = assembly.GetName().Name;
+            return GetThemeNames(themeName).Select(s => string.Format("{0}.{1}.{2}.zip", assemblyName, rootNamespace, s));
+        }
 
-            if (baseNamespace == null) return;
+        /// <summary>
+        /// Theme names are combined by `.`: [theme 1].[theme 2].[theme 3] combines theme 1, 2, 3 inorder and the latter one will override the former one if name collapses
+        /// Order matters
+        /// </summary>
+        /// <returns></returns>
+        private static IEnumerable<string> GetThemeNames(string themeName)
+        {
+            return themeName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+        }
 
-            var rawFileName = resource.Substring(baseNamespace.Length);
+        private static void UnzipTemplate(Stream zippedStream, string targetFolder, bool overwrite)
+        {
+            List<string> rootSubFolder = new List<string>();
+            using (ZipArchive zip = new ZipArchive(zippedStream))
+            {
+                foreach (ZipArchiveEntry entry in zip.Entries)
+                {
+                    // When Name is empty, entry is folder, ignore
+                    if (!string.IsNullOrEmpty(entry.Name))
+                    {
+                        string targetPath = Path.Combine(targetFolder, entry.FullName);
+                        using(var entryStream = entry.Open())
+                        {
+                            CopyResource(entryStream, targetPath, overwrite);
+                        }
+                    }
+                }
+            }
+        }
 
-            // Get subfolder if the file name is splitted by '~'
-            var fileName = rawFileName.Replace(FolderSplitter, '/');
-            var filePath = Path.Combine(targetFolder, fileName);
+        private static void CopyResource(Stream stream, string filePath, bool overwrite)
+        {
             bool fileExists = File.Exists(filePath);
 
             if (!overwrite && fileExists)
@@ -158,48 +156,26 @@ namespace Microsoft.DocAsCode.EntityModel
                 Directory.CreateDirectory(subfolder);
             }
 
-            using (var stream = assembly.GetManifestResourceStream(resource))
+            if (overwrite)
             {
-                if (overwrite)
+                using (var streamWriter = new FileStream(filePath, FileMode.Create))
                 {
-                    using (var streamWriter = new FileStream(filePath, FileMode.Create))
+                    stream.CopyTo(streamWriter);
+                }
+            }
+            else
+            {
+                try
+                {
+                    using (var streamWriter = new FileStream(filePath, FileMode.CreateNew))
                     {
                         stream.CopyTo(streamWriter);
                     }
-                }
-                else
-                {
-                    try
-                    {
-                        using (var streamWriter = new FileStream(filePath, FileMode.CreateNew))
-                        {
-                            stream.CopyTo(streamWriter);
-                        }
 
-                    }
-                    catch (IOException e)
-                    {
-                        ParseResult.WriteToConsole(ResultLevel.Info, "File {0}: {1}, skipped", filePath, e.Message);
-                    }
                 }
-            }
-        }
-
-        private static void AddToCopyItems(List<ToCopyItem> item, string rootFolder, string outputFolder, TemplateType currentType, params TemplateType[] types)
-        {
-            foreach (var type in types)
-            {
-                if (currentType.HasFlag(type))
+                catch (IOException e)
                 {
-                    string baseFolder = Path.Combine(rootFolder, type.ToString());
-                    try
-                    {
-                        item.Add(new ToCopyItem { Files = Directory.GetFiles(baseFolder, "*", SearchOption.AllDirectories), CWD = baseFolder, TargetFolder = outputFolder });
-                    }
-                    catch (Exception e)
-                    {
-                        ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to get files from {0}, ignored: {1}", baseFolder, e.Message);
-                    }
+                    ParseResult.WriteToConsole(ResultLevel.Info, "File {0}: {1}, skipped", filePath, e.Message);
                 }
             }
         }
@@ -230,37 +206,6 @@ namespace Microsoft.DocAsCode.EntityModel
                     // If the file already exists, skip
                 }
             }
-        }
-        private static void CopyTemplate(string templateFolder, string destination, string excludedFolder, StringComparison stringComparison)
-        {
-            IList<string> files = Directory.GetFiles(templateFolder, "*", SearchOption.AllDirectories);
-            if (!string.IsNullOrEmpty(excludedFolder))
-            {
-                var normalizedTemplateFolder = templateFolder.ToNormalizedFullPath();
-                var normalizedExcluedFolder = excludedFolder.ToNormalizedFullPath();
-
-                // If template folder is the folder to be excluded, do nothing
-                if (normalizedTemplateFolder.Equals(normalizedExcluedFolder, stringComparison)) return;
-
-                // If template folder contains excludedFolder, should exclude every file inside excludedFolder
-                if (normalizedExcluedFolder.StartsWith(normalizedTemplateFolder + "/", stringComparison))
-                {
-                    if (Directory.Exists(excludedFolder))
-                    {
-                        try
-                        {
-                            files = files.Except(Directory.GetFiles(excludedFolder, "*", SearchOption.AllDirectories), FilePathComparer.OSPlatformSensitiveComparer).Select(s => s.ToNormalizedFullPath()).ToList();
-                        }
-                        catch (DirectoryNotFoundException)
-                        {
-                            // Ignore the excluded folder if it does not exists
-                        }
-                    }
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "Copying template from {0} to {1}, excluding {2}", normalizedTemplateFolder, destination, normalizedExcluedFolder);
-                }
-            }
-
-            files.CopyFilesToFolder(templateFolder, destination, true, s => ParseResult.WriteToConsole(ResultLevel.Info, s), s => { ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to copy file: {0}, ignored.", s); return true; });
         }
     }
 }

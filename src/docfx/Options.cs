@@ -31,7 +31,7 @@
                 Projects = Projects,
                 ForceRebuild = ForceRebuild,
                 TemplateFolder = TemplateFolder,
-                WebsiteType = WebsiteType,
+                WebsiteTheme = WebsiteTheme,
             };
         }
     }
@@ -61,14 +61,14 @@
         [Option('t', "template")]
         public string TemplateFolder { get; set; }
 
-        [Option("type", HelpText = "Specifies which default template type to use. 'Github' and 'IIS' are offered", DefaultValue = TemplateType.Base)]
-        public TemplateType WebsiteType { get; set; }
+        [Option("theme", HelpText = "Specifies which theme to use. By default 'Github.default' and 'IIS.default' are offered")]
+        public string WebsiteTheme { get; set; }
 
         public WebsiteSubOptions(WebsiteSubOptions options) : base(options)
         {
             this.ForceRebuild = options.ForceRebuild;
             this.TemplateFolder = options.TemplateFolder;
-            this.WebsiteType = options.WebsiteType;
+            this.WebsiteTheme = options.WebsiteTheme;
         }
 
         public WebsiteSubOptions(MetadataSubOptions options) : base(options)

@@ -26,8 +26,8 @@
         [JsonProperty("template")]
         public string TemplateFolder { get; set; }
 
-        [JsonProperty("templateType")]
-        public TemplateType TemplateType { get; set; }
+        [JsonProperty("theme")]
+        public string TemplateTheme { get; set; }
 
         [JsonProperty("output")]
         public string OutputFolder { get; set; }
