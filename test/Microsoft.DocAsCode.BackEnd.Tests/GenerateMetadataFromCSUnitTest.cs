@@ -21,7 +21,7 @@
         private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();
 
         [Fact]
-        public void TestGenereateMetadataAsync_CSharp_FuncVoidReturn()
+        public void TestGenereateMetadataAsync_FuncVoidReturn()
         {
             string code = @"
 namespace Test1
@@ -50,7 +50,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadataAsync_CSharp_Namespace()
+        public void TestGenereateMetadataAsync_Namespace()
         {
             string code = @"
 namespace Test1.Test2
@@ -70,7 +70,7 @@ namespace Test1.Test2
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_GenericClass()
+        public void TestGenereateMetadata_GenericClass()
         {
             string code = @"
 using System.Collections.Generic
@@ -218,7 +218,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_CSharp_Interface()
+        public void TestGenereateMetadata_Interface()
         {
             string code = @"
 namespace Test1
@@ -272,7 +272,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_CSharp_Interface_Inherits()
+        public void TestGenereateMetadata_Interface_Inherits()
         {
             string code = @"
 namespace Test1
@@ -306,7 +306,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Class_Inherits()
+        public void TestGenereateMetadata_Class_Inherits()
         {
             string code = @"
 namespace Test1
@@ -442,7 +442,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_CSharp_Enum()
+        public void TestGenereateMetadata_Enum()
         {
             string code = @"
 namespace Test1
@@ -481,7 +481,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_CSharp_Struct()
+        public void TestGenereateMetadata_Struct()
         {
             string code = @"
 using System.Collections
@@ -536,7 +536,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Delegate()
+        public void TestGenereateMetadata_Delegate()
         {
             string code = @"
 using System.Collections.Generic
@@ -596,7 +596,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Method()
+        public void TestGenereateMetadata_Method()
         {
             string code = @"
 using System.Threading.Tasks
@@ -715,7 +715,7 @@ namespace Test1
         [Trait("Related", "Generic")]
         [Trait("Related", "EII")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Eii()
+        public void TestGenereateMetadata_Eii()
         {
             string code = @"
 using System.Collections.Generic
@@ -836,7 +836,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_CSharp_Operator()
+        public void TestGenereateMetadata_Operator()
         {
             string code = @"
 using System.Collections.Generic
@@ -1095,7 +1095,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Constructor()
+        public void TestGenereateMetadata_Constructor()
         {
             string code = @"
 namespace Test1
@@ -1160,7 +1160,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Field()
+        public void TestGenereateMetadata_Field()
         {
             string code = @"
 namespace Test1
@@ -1357,7 +1357,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Property()
+        public void TestGenereateMetadata_Property()
         {
             string code = @"
 namespace Test1
@@ -1530,7 +1530,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Indexer()
+        public void TestGenereateMetadata_Indexer()
         {
             string code = @"
 using System;
@@ -1706,7 +1706,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_CSharp_Method_DefaultValue()
+        public void TestGenereateMetadata_Method_DefaultValue()
         {
             string code = @"
 namespace Test1
@@ -1782,6 +1782,140 @@ namespace Test1
             Assert.Null(output.Items[0].NamespaceName);
             Assert.Equal("test.dll", output.Items[0].Items[0].AssemblyNameList.First());
             Assert.Equal("Test2", output.Items[0].Items[0].NamespaceName);
+        }
+
+        [Fact]
+        [Trait("Related", "Multilanguage")]
+        [Trait("Related", "Generic")]
+        public void TestGenereateMetadataAsync_Multilanguage()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo<T>
+    {
+        public void Bar<K>(int i)
+        {
+        }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var type = output.Items[0].Items[0];
+            Assert.NotNull(type);
+            Assert.Equal("Foo<T>", type.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Foo(Of T)", type.DisplayNames[SyntaxLanguage.VB]);
+            Assert.Equal("Test1.Foo<T>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.Foo(Of T)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
+            Assert.Equal("Test1.Foo`1", type.Name);
+
+            var method = output.Items[0].Items[0].Items[0];
+            Assert.NotNull(method);
+            Assert.Equal("Bar<K>(Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Bar(Of K)(Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+            Assert.Equal("Test1.Foo<T>.Bar<K>(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.Foo(Of T).Bar(Of K)(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+            Assert.Equal("Test1.Foo`1.Bar``1(System.Int32)", method.Name);
+            Assert.Equal(1, output.Items.Count);
+            var parameter = method.Syntax.Parameters[0];
+            Assert.Equal("i", parameter.Name);
+            Assert.Equal("System.Int32", parameter.Type);
+            var returnValue = method.Syntax.Return;
+            Assert.Null(returnValue);
+        }
+
+        [Fact]
+        [Trait("Related", "Generic")]
+        public void TestGenereateMetadataAsync_GenericInheritance()
+        {
+            string code = @"
+using System.Collections.Generic;
+namespace Test1
+{
+    public class Foo<T>
+        : Dictionary<string, T>
+    {
+    }
+    public class Foo<T1, T2, T3>
+        : List<T3>
+    {
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            {
+                var type = output.Items[0].Items[0];
+                Assert.NotNull(type);
+                Assert.Equal("Foo<T>", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo(Of T)", type.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo<T>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo(Of T)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo`1", type.Name);
+                Assert.Equal(2, type.Inheritance.Count);
+                Assert.Equal("System.Collections.Generic.Dictionary{System.String,{T}}", type.Inheritance[1]);
+            }
+            {
+                var type = output.Items[0].Items[1];
+                Assert.NotNull(type);
+                Assert.Equal("Foo<T1, T2, T3>", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo(Of T1, T2, T3)", type.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo<T1, T2, T3>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo(Of T1, T2, T3)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo`3", type.Name);
+                Assert.Equal(2, type.Inheritance.Count);
+                Assert.Equal("System.Collections.Generic.List{{T3}}", type.Inheritance[1]);
+            }
+        }
+
+        [Fact]
+        [Trait("Related", "Generic")]
+        public void TestGenereateMetadataAsync_NestedGeneric()
+        {
+            string code = @"
+using System.Collections.Generic;
+namespace Test1
+{
+    public class Foo<T1, T2>
+    {
+        public class Bar<T3> { }
+        public class FooBar { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            {
+                var type = output.Items[0].Items[0];
+                Assert.NotNull(type);
+                Assert.Equal("Foo<T1, T2>", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo(Of T1, T2)", type.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo<T1, T2>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo(Of T1, T2)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo`2", type.Name);
+                Assert.Equal(1, type.Inheritance.Count);
+                Assert.Equal("System.Object", type.Inheritance[0]);
+            }
+            {
+                var type = output.Items[0].Items[1];
+                Assert.NotNull(type);
+                Assert.Equal("Foo<T1, T2>.Bar<T3>", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo(Of T1, T2).Bar(Of T3)", type.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo<T1, T2>.Bar<T3>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo(Of T1, T2).Bar(Of T3)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo`2.Bar`1", type.Name);
+                Assert.Equal(1, type.Inheritance.Count);
+                Assert.Equal("System.Object", type.Inheritance[0]);
+            }
+            {
+                var type = output.Items[0].Items[2];
+                Assert.NotNull(type);
+                Assert.Equal("Foo<T1, T2>.FooBar", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo(Of T1, T2).FooBar", type.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo<T1, T2>.FooBar", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo(Of T1, T2).FooBar", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo`2.FooBar", type.Name);
+                Assert.Equal(1, type.Inheritance.Count);
+                Assert.Equal("System.Object", type.Inheritance[0]);
+            }
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
