@@ -69,6 +69,8 @@ namespace Test1.Test2
         }
 
         [Trait("Related", "Generic")]
+        [Trait("Related", "Reference")]
+        [Trait("Related", "DeveloperComment")]
         [Fact]
         public void TestGenereateMetadata_GenericClass()
         {
@@ -305,6 +307,8 @@ namespace Test1
         }
 
         [Trait("Related", "Generic")]
+        [Trait("Related", "Inheritance")]
+        [Trait("Related", "Reference")]
         [Fact]
         public void TestGenereateMetadata_Class_Inherits()
         {
@@ -480,6 +484,7 @@ namespace Test1
             }
         }
 
+        [Trait("Related", "Inheritance")]
         [Fact]
         public void TestGenereateMetadata_Struct()
         {
@@ -1826,6 +1831,7 @@ namespace Test1
 
         [Fact]
         [Trait("Related", "Generic")]
+        [Trait("Related", "Inheritance")]
         public void TestGenereateMetadataAsync_GenericInheritance()
         {
             string code = @"
