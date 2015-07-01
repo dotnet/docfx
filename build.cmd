@@ -19,7 +19,7 @@ SET DnuExe=dnu
 SET BuildProj=%~dp0All.sln
 
 :: Check if DNU exists globally
-WHERE %DnuExe%
+WHERE "%DnuExe%"
 
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO ERROR: build.cmd requires dnu installed gloablly. 
@@ -66,20 +66,20 @@ GOTO :Exit
 :: Restore inside each subfolder
 FOR /D %%x IN ("src","docs","test") DO (
 PUSHD %%x
-CMD /C %DnuExe% restore --parallel
+CMD /C "%DnuExe%" restore --parallel
 POPD
 )
 
 SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
-IF EXIST %CachedNuget% GOTO RESTORE
+IF EXIST "%CachedNuget%" GOTO :Restore
 ECHO Downloading latest version of NuGet.exe...
-IF NOT EXIST %LocalAppData%\NuGet MD %LocalAppData%\NuGet
+IF NOT EXIST "%LocalAppData%\NuGet" MD "%LocalAppData%\NuGet"
 @powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://www.nuget.org/nuget.exe' -OutFile '%CachedNuget%'"
 
-:RESTORE
+:Restore
 :: Currently has corpnet dependency
-%CachedNuget% restore "%BuildProj%"
+"%CachedNuget%" restore "%BuildProj%"
 
 :Exit
 POPD
