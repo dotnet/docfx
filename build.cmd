@@ -60,6 +60,8 @@ GOTO :Exit
 :Build
 %BuildPrefix% msbuild "%BuildProj%" /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %* %BuildPostfix%
 
+GOTO :Exit
+
 :RestorePackage
 :: Restore inside each subfolder
 FOR /D %%x IN ("src","docs","test") DO (
@@ -70,19 +72,14 @@ POPD
 
 SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
-IF EXIST %CachedNuget% GOTO COPYNUGET
+IF EXIST %CachedNuget% GOTO RESTORE
 ECHO Downloading latest version of NuGet.exe...
 IF NOT EXIST %LocalAppData%\NuGet MD %LocalAppData%\NuGet
 @powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://www.nuget.org/nuget.exe' -OutFile '%CachedNuget%'"
 
-:COPYNUGET
-IF EXIST .NuGet\NuGet.exe GOTO RESTORE
-MD .NuGet
-COPY %CachedNuget% .NuGet\NuGet.exe
-
 :RESTORE
 :: Currently has corpnet dependency
-.NuGet\NuGet.exe restore "%BuildProj%"
+%CachedNuget% restore "%BuildProj%"
 
 :Exit
 POPD
