@@ -22,6 +22,7 @@
                     else
                     {
                         page = parent;
+                        current.References = null;
                     }
                     if (documentReferences != null && documentReferences.Count > 0)
                     {
