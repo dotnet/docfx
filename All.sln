@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22921.0
+VisualStudioVersion = 14.0.22919.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -37,6 +37,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{004952
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.EntityModel.Tests", "test\Microsoft.DocAsCode.EntityModel.Tests\Microsoft.DocAsCode.EntityModel.Tests.csproj", "{EFAA7A53-D047-422E-A3FB-ECC834944CE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}"
+	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47192798-670B-4F7C-A48B-CF8A695E6C45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

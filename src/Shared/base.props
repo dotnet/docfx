@@ -21,7 +21,9 @@
     <!-- Note: get rid of vshost.exe since we don't gain much benefits -->
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <WarningLevel>4</WarningLevel>
-    <OutputPath Condition="'$(OutputPath)'==''">bin\$(Configuration)\</OutputPath>
+    <OutputPath Condition="'$(OutputPath)'==''">$(MSBuildThisFileDirectory)..\..\target\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+    <TaskToolPath>$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll</TaskToolPath>
+    <TaskToolPath Condition="'$(MSBuildToolsVersion)' == '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</TaskToolPath>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -35,7 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
-  <UsingTask TaskName="GenerateVersionCSFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+  <UsingTask TaskName="GenerateVersionCSFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(TaskToolPath)">
     <ParameterGroup>
       <GitVersion ParameterType="System.String" Required="true" />
       <VersionCSPath ParameterType="System.String" Required="true" />
