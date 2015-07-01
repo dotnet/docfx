@@ -75,7 +75,7 @@ SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 IF EXIST "%CachedNuget%" GOTO :Restore
 ECHO Downloading latest version of NuGet.exe...
 IF NOT EXIST "%LocalAppData%\NuGet" MD "%LocalAppData%\NuGet"
-@powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://www.nuget.org/nuget.exe' -OutFile '%CachedNuget%'"
+powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://www.nuget.org/nuget.exe' -OutFile '%CachedNuget%'"
 
 :Restore
 :: Currently has corpnet dependency
