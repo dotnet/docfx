@@ -1,5 +1,5 @@
 @ECHO OFF
-CD %~dp0
+PUSHD %~dp0
 
 SETLOCAL
 
@@ -15,11 +15,11 @@ IF NOT DEFINED VisualStudioVersion (
 )
 
 :EnvSet
-SET DNU_EXE=dnu
-SET _buildproj=%~dp0All.sln
+SET DnuExe=dnu
+SET BuildProj=%~dp0All.sln
 
 :: Check if DNU exists globally
-WHERE %DNU_EXE%
+WHERE %DnuExe%
 
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO ERROR: build.cmd requires dnu installed gloablly. 
@@ -31,14 +31,14 @@ IF NOT '%ERRORLEVEL%'=='0' (
 CALL :RestorePackage
 
 :: Log build command line
-SET _buildlog=%~dp0msbuild.log
-SET _buildprefix=echo
-SET _buildpostfix=^> "%_buildlog%"
+SET BuildLog=%~dp0msbuild.log
+SET BuildPrefix=echo
+SET BuildPostfix=^> "%BuildLog%"
 CALL :Build %*
 
 :: Build
-SET _buildprefix=
-SET _buildpostfix=
+SET BuildPrefix=
+SET BuildPostfix=
 CALL :Build %*
 
 GOTO :AfterBuild
@@ -48,43 +48,44 @@ GOTO :AfterBuild
 :: Pull the build summary from the log file
 ECHO.
 ECHO === BUILD RESULT === 
-findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%_buildlog%"
+findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%"
 
 :: Pull xunit test result from the log file
 ECHO.
 ECHO === TEST EXECUTION SUMMARY === 
-findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%_buildlog%"
+findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%"
 
 GOTO :Exit
 
 :Build
-%_buildprefix% msbuild "%_buildproj%" /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%_buildlog%";Append %* %_buildpostfix%
+%BuildPrefix% msbuild "%BuildProj%" /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %* %BuildPostfix%
 
 :RestorePackage
 :: Restore inside each subfolder
 FOR /D %%x IN ("src","docs","test") DO (
 PUSHD %%x
-CMD /C %DNU_EXE% restore --parallel
+CMD /C %DnuExe% restore --parallel
 POPD
 )
 
-SET CACHED_NUGET=%LocalAppData%\NuGet\NuGet.exe
+SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
-IF EXIST %CACHED_NUGET% GOTO COPYNUGET
+IF EXIST %CachedNuget% GOTO COPYNUGET
 ECHO Downloading latest version of NuGet.exe...
 IF NOT EXIST %LocalAppData%\NuGet MD %LocalAppData%\NuGet
-@powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://www.nuget.org/nuget.exe' -OutFile '%CACHED_NUGET%'"
+@powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://www.nuget.org/nuget.exe' -OutFile '%CachedNuget%'"
 
 :COPYNUGET
 IF EXIST .NuGet\NuGet.exe GOTO RESTORE
 MD .NuGet
-COPY %CACHED_NUGET% .NuGet\NuGet.exe
+COPY %CachedNuget% .NuGet\NuGet.exe
 
 :RESTORE
 :: Currently has corpnet dependency
-.NuGet\NuGet.exe restore "%_buildproj%"
+.NuGet\NuGet.exe restore "%BuildProj%"
 
 :Exit
+POPD
 ECHO.
 ECHO Exit Code = %ERRORLEVEL%
 EXIT /B %ERRORLEVEL%
