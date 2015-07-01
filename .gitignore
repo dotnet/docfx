@@ -12,6 +12,9 @@
 /**/*.sln.ide/
 /TestResults/
 /.vs/
+.NuGet/
+artifacts/
+target/
 
 ###############
 #  temp file  #
