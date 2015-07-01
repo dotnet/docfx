@@ -249,6 +249,7 @@ End Namespace
         }
 
         [Trait("Related", "Generic")]
+        [Trait("Related", "Inheritance")]
         [Fact]
         public void TestGenereateMetadata_Method()
         {
@@ -381,8 +382,8 @@ End Namespace
                         "System.Object.GetType",
                         "System.Object.Finalize",
                         "System.Object.MemberwiseClone",
-                    },
-                    inheritedMembers);
+                    }.OrderBy(s => s),
+                    inheritedMembers.OrderBy(s => s));
             }
             // inheritance of Bar
             {
