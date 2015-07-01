@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Microsoft.DocAsCode.BackEnd.Tests")]
+[assembly: InternalsVisibleTo("Microsoft.DocAsCode.EntityModel.Tests")]

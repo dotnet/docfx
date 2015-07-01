@@ -36,7 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{004952
 		src\Shared\XprojUpdateVersion.ps1 = src\Shared\XprojUpdateVersion.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.BackEnd.Tests", "test\Microsoft.DocAsCode.BackEnd.Tests\Microsoft.DocAsCode.BackEnd.Tests.csproj", "{EFAA7A53-D047-422E-A3FB-ECC834944CE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.EntityModel.Tests", "test\Microsoft.DocAsCode.EntityModel.Tests\Microsoft.DocAsCode.EntityModel.Tests.csproj", "{EFAA7A53-D047-422E-A3FB-ECC834944CE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
