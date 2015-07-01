@@ -1,1 +1,3 @@
-ECHO TO BE ADDED
+ECHO Start Building Solution
+
+ECHO Start Publishing Documentation
