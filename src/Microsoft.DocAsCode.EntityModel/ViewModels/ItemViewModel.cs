@@ -86,7 +86,6 @@
             var result = new ItemViewModel
             {
                 Uid = model.Name,
-                //Id = model.Name,
                 Parent = model.Parent?.Name,
                 Children = model.Items?.ConvertAll(x => x.Name),
                 Href = model.Href,
@@ -104,6 +103,8 @@
                 Implements = model.Implements,
                 InheritedMembers = model.InheritedMembers,
             };
+
+            result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
 
             result.Name = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default);
             result.NameForCSharp = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.CSharp);
