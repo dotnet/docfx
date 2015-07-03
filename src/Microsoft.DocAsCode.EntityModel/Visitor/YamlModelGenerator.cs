@@ -49,7 +49,7 @@
 
             if (reference.Parts == null)
             {
-                reference.Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>();
+                reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
                 GenerateReferenceInternal(symbol, reference, adapter);
             }
 
@@ -87,7 +87,7 @@
 
             if (reference.Parts == null)
             {
-                reference.Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>();
+                reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
                 GenerateReferenceInternal(symbol, reference, adapter);
             }
 

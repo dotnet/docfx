@@ -6,7 +6,7 @@
     public class SyntaxDetail
     {
         [YamlMember(Alias = "content")]
-        public Dictionary<SyntaxLanguage, string> Content { get; set; }
+        public SortedList<SyntaxLanguage, string> Content { get; set; }
 
         [YamlMember(Alias = "parameters")]
         public List<ApiParameter> Parameters { get; set; }

@@ -7,7 +7,7 @@
     public class ReferenceItem
     {
         [YamlMember(Alias = "name")]
-        public Dictionary<SyntaxLanguage, List<LinkItem>> Parts { get; set; }
+        public SortedList<SyntaxLanguage, List<LinkItem>> Parts { get; set; }
 
         [YamlMember(Alias = "type")]
         public MemberType? Type { get; set; }
@@ -29,7 +29,7 @@
             var result = (ReferenceItem)MemberwiseClone();
             if (Parts != null)
             {
-                var dict = new Dictionary<SyntaxLanguage, List<LinkItem>>(Parts.Count);
+                var dict = new SortedList<SyntaxLanguage, List<LinkItem>>(Parts.Count);
                 foreach (var item in Parts)
                 {
                     dict.Add(item.Key, (from x in item.Value select x.Clone()).ToList());

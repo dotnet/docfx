@@ -71,9 +71,6 @@
         [YamlMember(Alias = "inheritedMembers")]
         public List<string> InheritedMembers { get; set; }
 
-        [YamlMember(Alias = "itemTypes")]
-        public List<ItemType> ItemTypes { get; set; }
-
         [YamlMember(Alias = "items")]
         public List<MetadataItem> Items { get; set; }
 
