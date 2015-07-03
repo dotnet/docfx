@@ -559,7 +559,7 @@
                 outputFiles.Add(Path.Combine(apiFolder, memberModel.Href));
                 string itemFilepath = Path.Combine(folder, apiFolder, memberModel.Href);
                 Directory.CreateDirectory(Path.GetDirectoryName(itemFilepath));
-                var memberViewModel = OnePageViewModel.Convert(memberModel);
+                var memberViewModel = ViewModels.PageViewModel.FromModel(memberModel);
                 YamlUtility.Serialize(itemFilepath, memberViewModel);
                 ParseResult.WriteToConsole(ResultLevel.Success, "Metadata file for {0} is saved to {1}", memberModel.Name, itemFilepath);
             }

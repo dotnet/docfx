@@ -36,7 +36,7 @@
             {
                 foreach (var item in model.Items)
                 {
-                    result.Items.Add(ItemViewModel.FromModel(model));
+                    result.Items.Add(ItemViewModel.FromModel(item));
                     AddChildren(item, result);
                 }
             }

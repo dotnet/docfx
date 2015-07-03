@@ -107,12 +107,28 @@
             result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
 
             result.Name = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default);
-            result.NameForCSharp = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.CSharp);
-            result.NameForVB = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.VB);
+            var nameForCSharp = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.CSharp);
+            if (result.Name != nameForCSharp)
+            {
+                result.NameForCSharp = nameForCSharp;
+            }
+            var nameForVB = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.VB);
+            if (result.Name != nameForVB)
+            {
+                result.NameForVB = nameForVB;
+            }
 
             result.Fullname = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.Default);
-            result.FullnameForCSharp = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.CSharp);
-            result.FullnameForVB = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.VB);
+            var fullnameForCSharp = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.CSharp);
+            if (result.Fullname != fullnameForCSharp)
+            {
+                result.FullnameForCSharp = fullnameForCSharp;
+            }
+            var fullnameForVB = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.VB);
+            if (result.Fullname != fullnameForVB)
+            {
+                result.FullnameForVB = fullnameForVB;
+            }
 
             return result;
         }
