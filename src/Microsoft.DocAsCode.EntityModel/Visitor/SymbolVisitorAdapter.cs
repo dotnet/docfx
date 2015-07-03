@@ -126,11 +126,11 @@
             item.Type = VisitorHelper.GetMemberTypeFromTypeKind(symbol.TypeKind);
             if (item.Syntax == null)
             {
-                item.Syntax = new SyntaxDetail { Content = new Dictionary<SyntaxLanguage, string>() };
+                item.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
             }
             if (item.Syntax.Content == null)
             {
-                item.Syntax.Content = new Dictionary<SyntaxLanguage, string>();
+                item.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
             _generator.GenerateSyntax(item.Type, symbol, item.Syntax, this);
 
@@ -179,7 +179,7 @@
             }
             if (result.Syntax == null)
             {
-                result.Syntax = new SyntaxDetail { Content = new Dictionary<SyntaxLanguage, string>() };
+                result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
             }
 
             if (symbol.TypeParameters.Length > 0)
@@ -204,7 +204,7 @@
 
             if (result.Syntax.Content == null)
             {
-                result.Syntax.Content = new Dictionary<SyntaxLanguage, string>();
+                result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
             _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
 
@@ -226,11 +226,11 @@
             }
             if (result.Syntax == null)
             {
-                result.Syntax = new SyntaxDetail { Content = new Dictionary<SyntaxLanguage, string>() };
+                result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
             }
             if (result.Syntax.Content == null)
             {
-                result.Syntax.Content = new Dictionary<SyntaxLanguage, string>();
+                result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
             _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
             _generator.GenerateField(symbol, result, this);
@@ -250,11 +250,11 @@
             }
             if (result.Syntax == null)
             {
-                result.Syntax = new SyntaxDetail { Content = new Dictionary<SyntaxLanguage, string>() };
+                result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
             }
             if (result.Syntax.Content == null)
             {
-                result.Syntax.Content = new Dictionary<SyntaxLanguage, string>();
+                result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
             _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
             _generator.GenerateEvent(symbol, result, this);
@@ -280,7 +280,7 @@
             }
             if (result.Syntax == null)
             {
-                result.Syntax = new SyntaxDetail { Content = new Dictionary<SyntaxLanguage, string>() };
+                result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
             }
             if (result.Syntax.Parameters == null)
             {
@@ -288,7 +288,7 @@
             }
             if (result.Syntax.Content == null)
             {
-                result.Syntax.Content = new Dictionary<SyntaxLanguage, string>();
+                result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
             _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
 

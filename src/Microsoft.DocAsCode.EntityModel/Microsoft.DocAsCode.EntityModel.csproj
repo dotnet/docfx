@@ -70,6 +70,12 @@
     <Compile Include="Resolvers\ResolveReference.cs" />
     <Compile Include="Resolvers\SetParent.cs" />
     <Compile Include="TemplateManager.cs" />
+    <Compile Include="ViewModels\ItemViewModel.cs" />
+    <Compile Include="ViewModels\PageViewModel.cs" />
+    <Compile Include="ViewModels\ReferenceViewModel.cs" />
+    <Compile Include="ViewModels\SpecViewModel.cs" />
+    <Compile Include="ViewModels\SyntaxDetailViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelUtility.cs" />
     <Compile Include="ViewModel\MapFileItemViewModel.cs" />
     <Compile Include="Model\SyntaxLanguage.cs" />
     <Compile Include="Model\MemberType.cs" />
@@ -107,7 +113,6 @@
     <Compile Include="Model\ApiParameter.cs" />
     <Compile Include="Model\SourceDetail.cs" />
     <Compile Include="Model\SyntaxDetail.cs" />
-    <Compile Include="Model\ItemType.cs" />
     <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="Model\MetadataModel.cs" />
   </ItemGroup>

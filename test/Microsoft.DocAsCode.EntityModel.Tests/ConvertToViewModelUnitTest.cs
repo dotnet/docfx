@@ -41,7 +41,7 @@
                                 Type = MemberType.Class,
                                 Parent = "N1",
                                 Summary = "Summary!",
-                                Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>
+                                Parts = new SortedList<SyntaxLanguage, List<LinkItem>>
                                 {
                                     {
                                         SyntaxLanguage.CSharp,
@@ -114,7 +114,7 @@
                                     new ReferenceItem
                                     {
                                         IsDefinition = true,
-                                        Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>
+                                        Parts = new SortedList<SyntaxLanguage, List<LinkItem>>
                                         {
                                             {
                                                 SyntaxLanguage.CSharp,
@@ -150,7 +150,7 @@
                                     new ReferenceItem
                                     {
                                         IsDefinition = true,
-                                        Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>
+                                        Parts = new SortedList<SyntaxLanguage, List<LinkItem>>
                                         {
                                             {
                                                 SyntaxLanguage.CSharp,
@@ -187,7 +187,7 @@
                                     {
                                         IsDefinition = true,
                                         Parent = "System",
-                                        Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>
+                                        Parts = new SortedList<SyntaxLanguage, List<LinkItem>>
                                         {
                                             {
                                                 SyntaxLanguage.CSharp,
@@ -224,7 +224,7 @@
                                     {
                                         IsDefinition = true,
                                         Parent = "System.Object",
-                                        Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>
+                                        Parts = new SortedList<SyntaxLanguage, List<LinkItem>>
                                         {
                                             {
                                                 SyntaxLanguage.CSharp,
@@ -261,7 +261,7 @@
                                     {
                                         IsDefinition = true,
                                         Parent = "System.Collections.Generic",
-                                        Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>
+                                        Parts = new SortedList<SyntaxLanguage, List<LinkItem>>
                                         {
                                             {
                                                 SyntaxLanguage.CSharp,
@@ -299,7 +299,7 @@
                                         IsDefinition = false,
                                         Definition = "System.Collections.Generic.List`1",
                                         Parent = "System.Collections.Generic",
-                                        Parts = new Dictionary<SyntaxLanguage, List<LinkItem>>
+                                        Parts = new SortedList<SyntaxLanguage, List<LinkItem>>
                                         {
                                             {
                                                 SyntaxLanguage.CSharp,
@@ -497,6 +497,153 @@
             Assert.False(reference.ContainsKey("href"));
 
             Assert.True(vm.References.Any(x => x["uid"] as string == "System.Collections.Generic.List`1"));
+        }
+
+        [Trait("Related", "Reference")]
+        [Fact]
+        public void TestConvertNamespace2()
+        {
+            var vm = EntityModel.ViewModels.PageViewModel.FromModel(model.Items[0]);
+            Assert.NotNull(vm);
+            Assert.NotNull(vm.Items);
+            Assert.Equal(1, vm.Items.Count);
+            Assert.NotNull(vm.Items[0].Children);
+            Assert.Equal(1, vm.Items[0].Children.Count);
+            Assert.Equal("N1.C1", vm.Items[0].Children[0]);
+
+            Assert.NotNull(vm.References);
+            Assert.Equal(1, vm.References.Count);
+
+            var reference = vm.References.Find(x => x.Uid == "N1.C1");
+            Assert.NotNull(reference);
+            Assert.Equal(MemberType.Class, reference.Type);
+            Assert.Equal("Summary!", reference.Summary);
+            Assert.Equal("C1", reference.Name);
+            Assert.Equal("C1", reference.NameForCSharp);
+            Assert.Equal("C1", reference.NameForVB);
+            Assert.Equal("N1.C1", reference.Fullname);
+            Assert.Equal("N1.C1", reference.FullnameForCSharp);
+            Assert.Equal("N1.C1", reference.FullnameForVB);
+            Assert.False(reference.IsExternal);
+            Assert.Equal("href!", reference.Href);
+        }
+
+        [Trait("Related", "Generic")]
+        [Trait("Related", "Reference")]
+        [Fact]
+        public void TestConvertType2()
+        {
+            var vm = EntityModel.ViewModels.PageViewModel.FromModel(model.Items[0].Items[0]);
+            Assert.NotNull(vm);
+            Assert.Null(vm.Items[0].Children);
+            var inheritance = vm.Items[0].Inheritance;
+            Assert.NotNull(inheritance);
+            Assert.Equal(2, inheritance.Count);
+            Assert.Equal(new[] { "System.Object", "System.Collections.Generic.List{System.Object}" }, inheritance.ToList());
+
+            var implements = vm.Items[0].Implements;
+            Assert.NotNull(implements);
+            Assert.Equal(
+                new[]
+                {
+                        "System.Collections.Generic.IList{System.Object}",
+                        "System.Collections.Generic.ICollection{System.Object}",
+                        "System.Collections.Generic.IEnumerable{System.Object}",
+                        "System.Collections.IEnumerable",
+                }.OrderBy(s => s),
+                implements.OrderBy(s => s));
+
+            var inheritedMembers = vm.Items[0].InheritedMembers;
+            Assert.NotNull(inheritedMembers);
+            Assert.Equal(1, inheritedMembers.Count);
+            Assert.Equal(new[] { "System.Object.GetHashCode" }, inheritedMembers.ToList());
+
+            Assert.NotNull(vm.References);
+            Console.WriteLine(string.Join(";", from r in vm.References select r.Uid));
+            Assert.Equal(
+                new[]
+                {
+                        "System",
+                        "System.Collections.Generic",
+                        "System.Object",
+                        "System.Object.GetHashCode",
+                        "System.Collections.Generic.List`1",
+                        "System.Collections.Generic.List{System.Object}"
+                },
+                (from r in vm.References select r.Uid).ToList());
+
+            var reference = vm.References.Find(x => x.Uid == "System.Object");
+            Assert.NotNull(reference);
+            Assert.Equal("Object", reference.Name);
+            Assert.Equal("Object", reference.NameForCSharp);
+            Assert.Equal("Object", reference.NameForVB);
+            Assert.Equal("System.Object", reference.Fullname);
+            Assert.Equal("System.Object", reference.FullnameForCSharp);
+            Assert.Equal("System.Object", reference.FullnameForVB);
+            Assert.True(reference.IsExternal);
+            Assert.Equal("System", reference.Parent);
+            Assert.Null(reference.Href);
+
+            reference = vm.References.Find(x => x.Uid == "System.Object.GetHashCode");
+            Assert.NotNull(reference);
+            Assert.Equal("GetHashCode()", reference.Name);
+            Assert.Equal("GetHashCode()", reference.NameForCSharp);
+            Assert.Equal("GetHashCode()", reference.NameForVB);
+            Assert.Equal("System.Object.GetHashCode()", reference.Fullname);
+            Assert.Equal("System.Object.GetHashCode()", reference.FullnameForCSharp);
+            Assert.Equal("System.Object.GetHashCode()", reference.FullnameForVB);
+            Assert.True(reference.IsExternal);
+            Assert.Equal("System.Object", reference.Parent);
+            Assert.Null(reference.Href);
+
+            reference = vm.References.Find(x => x.Uid == "System.Collections.Generic.List{System.Object}");
+            Assert.NotNull(reference);
+            {
+                Assert.Equal("List<Object>", reference.NameForCSharp);
+                Assert.Equal("System.Collections.Generic.List<System.Object>", reference.FullnameForCSharp);
+                var list = reference.SpecForCSharp;
+                Assert.NotNull(list);
+                Assert.Equal(new[] { "List", "<", "Object", ">" }, (from x in list select x.Name).ToList());
+                Assert.Equal(new[] { "System.Collections.Generic.List", "<", "System.Object", ">" }, (from x in list select x.Fullname).ToList());
+                Assert.Equal("System.Collections.Generic.List`1", list[0].Uid);
+                Assert.Null(list[1].Uid);
+                Assert.Equal("System.Object", list[2].Uid);
+                Assert.Null(list[3].Uid);
+                Assert.True(list[0].IsExternal);
+                Assert.False(list[1].IsExternal);
+                Assert.True(list[2].IsExternal);
+                Assert.False(list[3].IsExternal);
+                Assert.Null(list[0].Href);
+                Assert.Null(list[1].Href);
+                Assert.Null(list[2].Href);
+                Assert.Null(list[3].Href);
+            }
+            {
+                Assert.Equal("List(Of Object)", reference.NameForVB);
+                Assert.Equal("System.Collections.Generic.List(Of System.Object)", reference.FullnameForVB);
+                var list = reference.SpecForVB;
+                Assert.NotNull(list);
+                Assert.Equal(new[] { "List", "(Of ", "Object", ")" }, (from x in list select x.Name).ToList());
+                Assert.Equal(new[] { "System.Collections.Generic.List", "(Of ", "System.Object", ")" }, (from x in list select x.Fullname).ToList());
+                Assert.Equal("System.Collections.Generic.List`1", list[0].Uid);
+                Assert.Null(list[1].Uid);
+                Assert.Equal("System.Object", list[2].Uid);
+                Assert.Null(list[3].Uid);
+                Assert.True(list[0].IsExternal);
+                Assert.False(list[1].IsExternal);
+                Assert.True(list[2].IsExternal);
+                Assert.False(list[3].IsExternal);
+                Assert.Null(list[0].Href);
+                Assert.Null(list[1].Href);
+                Assert.Null(list[2].Href);
+                Assert.Null(list[3].Href);
+            }
+            Assert.Equal("System.Collections.Generic.List`1", reference.Definition);
+            Assert.Equal("System.Collections.Generic", reference.Parent);
+            Assert.Null(reference.IsExternal);
+            Assert.Null(reference.Href);
+
+            Assert.True(vm.References.Any(x => x.Uid == "System.Collections.Generic.List`1"));
         }
 
     }
