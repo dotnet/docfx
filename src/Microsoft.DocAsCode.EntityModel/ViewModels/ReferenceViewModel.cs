@@ -66,11 +66,29 @@
             if (model.Value.Parts != null && model.Value.Parts.Count > 0)
             {
                 result.Name = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayName);
-                result.NameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayName);
-                result.NameForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayName);
+                var nameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayName);
+                if (result.Name != nameForCSharp)
+                {
+                    result.NameForCSharp = nameForCSharp;
+                }
+                var nameForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayName);
+                if (result.Name != nameForVB)
+                {
+                    result.NameForVB = nameForVB;
+                }
+
                 result.Fullname = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayQualifiedNames);
-                result.FullnameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayQualifiedNames);
-                result.FullnameForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayQualifiedNames);
+                var fullnameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayQualifiedNames);
+                if (result.Fullname != fullnameForCSharp)
+                {
+                    result.FullnameForCSharp = fullnameForCSharp;
+                }
+                var fullnameForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayQualifiedNames);
+                if (result.Fullname != fullnameForVB)
+                {
+                    result.FullnameForVB = fullnameForVB;
+                }
+
                 result.SpecForCSharp = GetSpec(model.Value, SyntaxLanguage.CSharp);
                 result.SpecForVB = GetSpec(model.Value, SyntaxLanguage.VB);
                 result.IsExternal = GetIsExternal(model.Value);

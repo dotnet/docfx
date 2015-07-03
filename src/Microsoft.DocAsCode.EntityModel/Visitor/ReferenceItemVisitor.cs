@@ -351,7 +351,7 @@
                         DisplayQualifiedNames = ", ",
                     });
                 }
-                symbol.Parameters[i].Accept(this);
+                symbol.Parameters[i].Type.Accept(this);
             }
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
@@ -387,7 +387,7 @@
                             DisplayQualifiedNames = ", ",
                         });
                     }
-                    symbol.Parameters[i].Accept(this);
+                    symbol.Parameters[i].Type.Accept(this);
                 }
                 ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                 {

@@ -38,8 +38,16 @@
             if (model.Content != null && model.Content.Count > 0)
             {
                 result.Content = model.Content.GetLanguageProperty(SyntaxLanguage.Default);
-                result.ContentForCSharp = model.Content.GetLanguageProperty(SyntaxLanguage.CSharp);
-                result.ContentForVB = model.Content.GetLanguageProperty(SyntaxLanguage.VB);
+                var contentForCSharp = model.Content.GetLanguageProperty(SyntaxLanguage.CSharp);
+                if (result.Content != contentForCSharp)
+                {
+                    result.ContentForCSharp = contentForCSharp;
+                }
+                var contentForVB = model.Content.GetLanguageProperty(SyntaxLanguage.VB);
+                if (result.Content != contentForVB)
+                {
+                    result.ContentForVB = contentForVB;
+                }
             }
             return result;
         }

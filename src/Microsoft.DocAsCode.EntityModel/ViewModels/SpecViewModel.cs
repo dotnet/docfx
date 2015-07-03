@@ -4,7 +4,7 @@
 
     public class SpecViewModel
     {
-        [YamlMember(Alias = "Uid")]
+        [YamlMember(Alias = "uid")]
         public string Uid { get; set; }
 
         [YamlMember(Alias = "name")]
