@@ -13,5 +13,6 @@
         Help,
         Metadata,
         Website,
+        External,
     }
 }

@@ -23,6 +23,9 @@
         [VerbOption("website", HelpText = "Generate website as documenation")]
         public WebsiteSubOptions WebsiteVerb { get; set; } = new WebsiteSubOptions();
 
+        [VerbOption("external", HelpText = "Generate API YAML for external reference")]
+        public ExternalSubOptions ExternalVerb { get; set; } = new ExternalSubOptions();
+
         public WebsiteSubOptions GetTopLevelOptions()
         {
             return new WebsiteSubOptions
@@ -98,6 +101,22 @@
 
         [Option('o', "output", HelpText = "Specify the output folder of the config file. If not specified, the config file will be saved to current folder")]
         public string OutputFolder { get; set; }
+    }
+
+    class ExternalSubOptions : TopLevelOptions
+    {
+        [Option('b', "baseurl", HelpText = "The base url of yaml file.")]
+        public string BaseUrl { get; set; }
+
+        [Option('n', "name", HelpText = "The name of package.")]
+        public string Name { get; set; }
+
+        public ExternalSubOptions(ExternalSubOptions options) : base(options)
+        {
+            BaseUrl = options.BaseUrl;
+            Name = options.Name;
+        }
+        public ExternalSubOptions() : base() { }
     }
 
     class HelpSubOptions

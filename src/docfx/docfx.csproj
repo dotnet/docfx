@@ -91,6 +91,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SubCommands\HelpSubCommand.cs" />
+    <Compile Include="SubCommands\BuildExternalReferenceSubCommand.cs" />
     <Compile Include="SubCommands\MetadataSubCommand.cs" />
     <Compile Include="SubCommands\WebsiteSubCommand.cs" />
     <Compile Include="SubCommands\InitSubCommand.cs" />
