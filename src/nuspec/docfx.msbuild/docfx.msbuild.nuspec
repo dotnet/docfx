@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>docfx.msbuild</id>
+    <version>$version$</version>
+    <title>docfx</title>
+    <authors>Microsoft DocAsCode</authors>
+    <owners>Microsoft DocAsCode</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This is a tool to generate API documentation for .NET projects.</description>
+    <releaseNotes>Support generating both CSHARP and VB projects.</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Documentation API Metadata docascode docfx</tags>
+  </metadata>
+  <files>
+    <file src="build/**" target=""/>
+    <file src="content/**" target=""/>
+    <file src="lib/**" target=""/>
+    <file src="tools/**" target=""/>
+    <file src="readme.txt" target="" />
+  </files>
+</package>

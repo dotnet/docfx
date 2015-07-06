@@ -15,14 +15,27 @@ IF NOT DEFINED VisualStudioVersion (
 )
 
 :EnvSet
-SET DnuExe=dnu
 SET BuildProj=%~dp0All.sln
+SET Configuration=Debug
+SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
+
+:: node.js nuget wrapper requires nuget.exe path in %PATH%
+SET PATH=%PATH%;%LocalAppData%\NuGet
 
 :: Check if DNU exists globally
-WHERE "%DnuExe%"
+:: TODO: change dnu to optional
+WHERE dnu
 
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO ERROR: build.cmd requires dnu installed gloablly. 
+    GOTO :Exit
+)
+
+:: Check if node exists globally
+WHERE node
+
+IF NOT '%ERRORLEVEL%'=='0' (
+    ECHO ERROR: build.cmd requires node installed gloablly. 
     GOTO :Exit
 )
 
@@ -34,6 +47,7 @@ CALL :RestorePackage
 SET BuildLog=%~dp0msbuild.log
 SET BuildPrefix=echo
 SET BuildPostfix=^> "%BuildLog%"
+
 CALL :Build %*
 
 :: Build
@@ -41,24 +55,33 @@ SET BuildPrefix=
 SET BuildPostfix=
 CALL :Build %*
 
-GOTO :AfterBuild
+:GenerateNuget
+:: Generate Version
+
+PUSHD tools
+:: Install npm packages
+CALL npm install
+
+:: GRUNT to generate nuget packages
+CALL node node_modules/grunt-cli/bin/grunt
+POPD
 
 :AfterBuild
 
 :: Pull the build summary from the log file
 ECHO.
 ECHO === BUILD RESULT === 
-findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%"
+findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%" & cd
 
 :: Pull xunit test result from the log file
 ECHO.
 ECHO === TEST EXECUTION SUMMARY === 
-findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%"
+findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%" & cd
 
 GOTO :Exit
 
 :Build
-%BuildPrefix% msbuild "%BuildProj%" /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %* %BuildPostfix%
+%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %* %BuildPostfix%
 
 GOTO :Exit
 
@@ -66,11 +89,10 @@ GOTO :Exit
 :: Restore inside each subfolder
 FOR /D %%x IN ("src","docs","test") DO (
 PUSHD %%x
-CMD /C "%DnuExe%" restore --parallel
+CMD /C dnu restore --parallel
 POPD
 )
 
-SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
 IF EXIST "%CachedNuget%" GOTO :Restore
 ECHO Downloading latest version of NuGet.exe...
@@ -79,7 +101,7 @@ powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreferenc
 
 :Restore
 :: Currently has corpnet dependency
-"%CachedNuget%" restore "%BuildProj%"
+nuget restore "%BuildProj%"
 
 :Exit
 POPD

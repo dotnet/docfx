@@ -1,0 +1,25 @@
+﻿{
+  "projects": [
+    {
+      "name": "api",
+      "files": [
+        "*.sln"
+      ],
+      "cwd": "..",
+      "exclude": [ "_site/**", "**/bin/**", "**/obj/**" ]
+    }
+  ],
+  "conceptuals": [
+    {
+      "files": [
+        "**/*.md",
+        "**/toc.yml"
+      ],
+      "exclude": [ "_site/**", "**/bin/**", "**/obj/**" ]
+    }
+  ],
+  "externalReferences": [],
+  "title": "Doc-as-code documentation",
+  "templateType": "IIS",
+  "output": "_site"
+}
