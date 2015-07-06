@@ -2,6 +2,7 @@
 PUSHD %~dp0
 
 SETLOCAL
+SETLOCAL ENABLEDELAYEDEXPANSION
 
 IF NOT DEFINED VisualStudioVersion (
     IF DEFINED VS140COMNTOOLS (
@@ -20,9 +21,9 @@ SET BuildProj=%~dp0All.sln
 
 :: Check if DNU exists globally
 :: DNU is OPTIONAL
+SET BuildDnxProjects=1
 WHERE dnu
 
-SET BuildDnxProjects=1
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO WARNING: DNU is not installed globally, DNX related projects will not be built!
     SET BuildDnxProjects=0
@@ -77,9 +78,8 @@ CMD /C "%DnuExe%" restore --parallel
 POPD
 )
 
-SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
-
 :RestoreNormalPackage
+SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 IF EXIST "%CachedNuget%" GOTO :Restore
 ECHO Downloading latest version of NuGet.exe...
 IF NOT EXIST "%LocalAppData%\NuGet" MD "%LocalAppData%\NuGet"
