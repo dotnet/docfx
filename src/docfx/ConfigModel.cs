@@ -33,6 +33,12 @@
         public string OutputFolder { get; set; }
 
         /// <summary>
+        /// DO NOT add --raw option to xdoc.json config
+        /// </summary>
+        [JsonIgnore]
+        public bool PreserveRawInlineComments { get; set; }
+
+        /// <summary>
         /// The directory of the xdoc.json to do glob search, if there is no xdoc.json file, use current folder
         /// </summary>
         [JsonIgnore]

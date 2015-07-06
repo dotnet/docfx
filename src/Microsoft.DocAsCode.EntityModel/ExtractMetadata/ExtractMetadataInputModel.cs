@@ -14,6 +14,8 @@
 
         public string IndexFileName { get; set; } = "index.yml";
 
+        public bool PreserveRawInlineComments { get; set; }
+
         public override string ToString()
         {
             using(StringWriter writer = new StringWriter())
@@ -25,13 +27,9 @@
 
         public ExtractMetadataInputModel Clone()
         {
-            return new ExtractMetadataInputModel
-            {
-                ApiFolderName = ApiFolderName,
-                TocFileName = TocFileName,
-                IndexFileName = IndexFileName,
-                Items = new Dictionary<string, List<string>>(Items)
-            };
+            var cloned = (ExtractMetadataInputModel)this.MemberwiseClone();
+            cloned.Items = new Dictionary<string, List<string>>(Items);
+            return cloned;
         }
     }
 }

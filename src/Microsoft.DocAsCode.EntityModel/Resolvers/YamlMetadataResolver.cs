@@ -30,7 +30,8 @@
         public static MetadataModel ResolveMetadata(
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,
-            string apiFolder)
+            string apiFolder,
+            bool preserveRawInlineComments)
         {
             MetadataModel viewModel = new MetadataModel();
             viewModel.Indexer = new ApiReferenceModel();
@@ -44,6 +45,7 @@
             {
                 ApiFolder = apiFolder,
                 References = allReferences,
+                PreserveRawInlineComments = preserveRawInlineComments
             };
             var result = ExecutePipeline(viewModel, context);
 

@@ -17,13 +17,16 @@
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-        public static string GetSummary(string xml, bool normalize, Action<string> addReference = null)
+        public static string GetSummary(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/summary";
-            xml = ResolveSeeCref(xml, selector, addReference);
-            xml = ResolveSeeAlsoCref(xml, selector, addReference);
+
+            if (!preserveRawInlineComments)
+            {
+                xml = ResolveInternalTags(xml, selector, addReference);
+            }
 
             // Trim each line as a temp workaround
             var summary = GetSingleNode(xml, selector, normalize, (e) => null);
@@ -39,12 +42,14 @@
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-        public static string GetRemarks(string xml, bool normalize, Action<string> addReference = null)
+        public static string GetRemarks(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
         {
             string selector = "/member/remarks";
 
-            xml = ResolveSeeCref(xml, selector, addReference);
-            xml = ResolveSeeAlsoCref(xml, selector, addReference);
+            if (!preserveRawInlineComments)
+            {
+                xml = ResolveInternalTags(xml, selector, addReference);
+            }
 
             // Trim each line as a temp workaround
             var remarks = GetSingleNode(xml, selector, normalize, (e) => null);
@@ -58,7 +63,7 @@
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-        public static List<ExceptionDetail> GetExceptions(string xml, bool normalize, Action<string> addReference = null)
+        public static List<ExceptionDetail> GetExceptions(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
         {
             string selector = "/member/exception";
             var iterator = SelectNodes(xml, selector);
@@ -76,6 +81,12 @@
                     if (LinkParser.CommentIdRegex.IsMatch(exceptionType))
                     {
                         exceptionType = exceptionType.Substring(2);
+
+                        if (!preserveRawInlineComments)
+                        {
+                            description = ResolveInternalTags(description, selector, addReference);
+                        }
+
                         details.Add(new ExceptionDetail { Description = description, Type = exceptionType });
                     }
                 }
@@ -85,18 +96,21 @@
             return null;
         }
 
-        public static string GetReturns(string xml, bool normalize, Action<string> addReference = null)
+        public static string GetReturns(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/returns";
-            xml = ResolveSeeCref(xml, selector, addReference);
-            xml = ResolveSeeAlsoCref(xml, selector, addReference);
+
+            if (!preserveRawInlineComments)
+            {
+                xml = ResolveInternalTags(xml, selector, addReference);
+            }
 
             return GetSingleNode(xml, selector, normalize, (e) => null);
         }
 
-        public static string GetParam(string xml, string param, bool normalize, Action<string> addReference = null)
+        public static string GetParam(string xml, string param, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
         {
             if (string.IsNullOrEmpty(xml)) return null;
             Debug.Assert(!string.IsNullOrEmpty(param));
@@ -108,13 +122,16 @@
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/param[@name='" + param + "']";
-            xml = ResolveSeeCref(xml, selector, addReference);
-            xml = ResolveSeeAlsoCref(xml, selector, addReference);
+
+            if (!preserveRawInlineComments)
+            {
+                xml = ResolveInternalTags(xml, selector, addReference);
+            }
 
             return GetSingleNode(xml, selector, normalize, (e) => null);
         }
 
-        public static string GetTypeParameter(string xml, string name, bool normalize, Action<string> addReference = null)
+        public static string GetTypeParameter(string xml, string name, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
         {
             if (string.IsNullOrEmpty(xml)) return null;
             Debug.Assert(!string.IsNullOrEmpty(name));
@@ -126,10 +143,21 @@
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/typeparam[@name='" + name + "']";
-            xml = ResolveSeeCref(xml, selector, addReference);
-            xml = ResolveSeeAlsoCref(xml, selector, addReference);
+
+            if (!preserveRawInlineComments)
+            {
+                xml = ResolveInternalTags(xml, selector, addReference);
+            }
 
             return GetSingleNode(xml, selector, normalize, (e) => null);
+        }
+
+        private static string ResolveInternalTags(string xml, string selector, Action<string> addReference)
+        {
+            if (string.IsNullOrEmpty(xml)) return xml;
+            xml = ResolveSeeCref(xml, selector, addReference);
+            xml = ResolveSeeAlsoCref(xml, selector, addReference);
+            return xml;
         }
 
         /// <summary>
@@ -137,19 +165,19 @@
         /// <param name="xml"></param>
         /// <param name="nodeSelector"></param>
         /// <returns></returns>
-        public static string ResolveSeeAlsoCref(string xml, string nodeSelector, Action<string> addReference)
+        private static string ResolveSeeAlsoCref(string xml, string nodeSelector, Action<string> addReference)
         {
             // Resolve <see cref> to @ syntax
             return ResolveCrefLink(xml, nodeSelector + "/seealso", addReference);
         }
 
-        public static string ResolveSeeCref(string xml, string nodeSelector, Action<string> addReference)
+        private static string ResolveSeeCref(string xml, string nodeSelector, Action<string> addReference)
         {
             // Resolve <see cref> to @ syntax
             return ResolveCrefLink(xml, nodeSelector + "/see", addReference);
         }
 
-        public static string ResolveCrefLink(string xml, string nodeSelector, Action<string> addReference)
+        private static string ResolveCrefLink(string xml, string nodeSelector, Action<string> addReference)
         {
             if (string.IsNullOrEmpty(xml) || string.IsNullOrEmpty(nodeSelector)) return xml;
 
