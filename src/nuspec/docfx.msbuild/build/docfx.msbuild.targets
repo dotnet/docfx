@@ -1,0 +1,39 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <BuildDocToolPath>$(MSBuildThisFileDirectory)..\tools\docfx.exe</BuildDocToolPath>
+    <PreviewPort Condition=" '$(PreviewPort)' == '' ">8002</PreviewPort>
+    <!-- Website project's output directory is current folder, disable it as a temp workaround until a better way is found-->
+    <CopyToOutput>False</CopyToOutput>
+    <RebuildXDoc>False</RebuildXDoc>
+  </PropertyGroup>
+  <Target Name="XdocBuild" AfterTargets="Build">
+    <CallTarget Targets="XdocValidation"/>
+    <CallTarget Targets="XdocGenerateMetadata"/>
+  </Target>
+  <Target Name="XdocValidation">
+    <Error Condition="!Exists($(BuildDocToolPath))" Text="docfx.exe is not found! Please check docfx.exe exists in tools folder of the package!"/>
+  </Target>
+  <Target Name="XdocClean" DependsOnTargets="XdocSetRebuildXDocParameter" AfterTargets="Clean">
+  </Target>
+  <Target Name="XdocSetRebuildXDocParameter">
+    <PropertyGroup>
+      <RebuildXDoc>True</RebuildXDoc>
+    </PropertyGroup>
+  </Target>
+
+  <!-- ************************************************************************* -->
+  <!-- *************************** GenerateMetadata Phase ********************** -->
+  <!-- ************************************************************************* -->
+  <Target Name="XdocGenerateMetadata" >
+    <Exec Condition="$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; -f &quot;$(MSBuildProjectDirectory)/xdoc.json&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
+      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
+      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
+    </Exec>
+    <Exec Condition="!$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(MSBuildProjectDirectory)/xdoc.json&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
+      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
+      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
+    </Exec>
+    <Warning Condition="$(ExecExitCode) == '2'" Text="$(OutputConsoleValue)"/>
+    <Error Condition="$(ExecExitCode) == '1'" Text="$(OutputConsoleValue)"/>
+  </Target>
+</Project>
