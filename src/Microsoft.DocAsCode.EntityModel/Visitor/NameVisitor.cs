@@ -626,7 +626,7 @@
                 symbol.ContainingType.Accept(this);
                 Append(".");
             }
-            Append(symbol.Name);
+            Append(symbol.MetadataName);
             if ((Options & NameOptions.WithParameter) == NameOptions.WithParameter)
             {
                 if (symbol.Parameters.Length > 0)
