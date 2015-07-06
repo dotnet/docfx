@@ -6,7 +6,7 @@
 
     public class ExternalReferenceConverter
     {
-        public static IEnumerable<ReferenceViewModel> ToExternalReferenceViewModel(PageViewModel page, Uri baseUrl)
+        public static IEnumerable<ReferenceViewModel> ToExternalReferenceViewModel(PageViewModel page, Uri baseUri)
         {
             foreach (var item in page.Items)
             {
@@ -20,7 +20,7 @@
                     FullnameForCSharp = item.FullnameForCSharp,
                     FullnameForVB = item.FullnameForVB,
                     Type = item.Type,
-                    Href = new Uri(new Uri(baseUrl, "api/"), item.Href).ToString(),
+                    Href = new Uri(baseUri, item.Href).ToString(),
                 };
             }
         }

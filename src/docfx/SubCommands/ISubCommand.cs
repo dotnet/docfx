@@ -13,6 +13,6 @@
         Help,
         Metadata,
         Website,
-        External,
+        Export,
     }
 }

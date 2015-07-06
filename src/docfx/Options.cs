@@ -23,8 +23,8 @@
         [VerbOption("website", HelpText = "Generate website as documenation")]
         public WebsiteSubOptions WebsiteVerb { get; set; } = new WebsiteSubOptions();
 
-        [VerbOption("external", HelpText = "Generate API YAML for external reference")]
-        public ExternalSubOptions ExternalVerb { get; set; } = new ExternalSubOptions();
+        [VerbOption("export", HelpText = "Generate API YAML for external reference")]
+        public ExportSubOptions ExportVerb { get; set; } = new ExportSubOptions();
 
         public WebsiteSubOptions GetTopLevelOptions()
         {
@@ -103,7 +103,7 @@
         public string OutputFolder { get; set; }
     }
 
-    class ExternalSubOptions : TopLevelOptions
+    class ExportSubOptions : TopLevelOptions
     {
         [Option('b', "baseurl", HelpText = "The base url of yaml file.", Required = true)]
         public string BaseUrl { get; set; }
@@ -111,12 +111,12 @@
         [Option('n', "name", HelpText = "The name of package.")]
         public string Name { get; set; }
 
-        public ExternalSubOptions(ExternalSubOptions options) : base(options)
+        public ExportSubOptions(ExportSubOptions options) : base(options)
         {
             BaseUrl = options.BaseUrl;
             Name = options.Name;
         }
-        public ExternalSubOptions() : base() { }
+        public ExportSubOptions() : base() { }
     }
 
     class HelpSubOptions

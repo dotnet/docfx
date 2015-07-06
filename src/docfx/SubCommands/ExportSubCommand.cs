@@ -5,12 +5,12 @@
     using System.IO;
     using System.Linq;
 
-    class BuildExternalReferenceSubCommand : ISubCommand
+    class ExportSubCommand : ISubCommand
     {
         public ParseResult Exec(Options options)
         {
             // 1. build metadata
-            var result = ConfigModelHelper.GetConfigModel(options.ExternalVerb);
+            var result = ConfigModelHelper.GetConfigModel(options.ExportVerb);
             var configModel = result.Item2;
             if (configModel == null)
             {
@@ -29,20 +29,26 @@
             }
 
             // 2. convert.
-            var outputFile = Path.Combine(options.ExternalVerb.OutputFolder ?? Environment.CurrentDirectory, options.ExternalVerb.Name ?? "externalreference.rpk");
-            if (string.IsNullOrWhiteSpace(options.ExternalVerb.BaseUrl))
+            if (inputModel.Items == null)
+            {
+                return new ParseResult(ResultLevel.Error, "Cannot find project.");
+            }
+            var outputFile = Path.Combine(options.ExportVerb.OutputFolder ?? Environment.CurrentDirectory, options.ExportVerb.Name ?? "externalreference.rpk");
+            if (string.IsNullOrWhiteSpace(options.ExportVerb.BaseUrl))
             {
                 return new ParseResult(ResultLevel.Error, "BaseUrl cannot be empty.");
             }
             try
             {
-                var baseUri = new Uri(options.ExternalVerb.BaseUrl);
+                var baseUri = new Uri(options.ExportVerb.BaseUrl);
                 if (!baseUri.IsAbsoluteUri)
                 {
                     return new ParseResult(ResultLevel.Error, "BaseUrl should be absolute url.");
                 }
-                var package = new ExternalReferencePackage(outputFile, baseUri);
-                package.CreatePackage(inputModel.Items.Keys.ToList());
+                using (var package = ExternalReferencePackage.Create(outputFile, baseUri))
+                {
+                    package.AddProjects(inputModel.Items.Keys.ToList());
+                }
                 return ParseResult.SuccessResult;
             }
             catch (Exception ex)

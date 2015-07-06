@@ -7,46 +7,70 @@
     using System.IO;
     using System.IO.Compression;
 
-    public class ExternalReferencePackage
+    public class ExternalReferencePackage : IDisposable
     {
         private readonly string _packageFile;
         private readonly Uri _baseUri;
+        private readonly ZipArchive _zip;
 
-        public ExternalReferencePackage(string packageFile, Uri baseUri)
+        private ExternalReferencePackage(string packageFile, Uri baseUri)
         {
             _packageFile = packageFile;
             _baseUri = baseUri;
+            _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Create, FileAccess.ReadWrite), ZipArchiveMode.Create);
         }
 
-        public void CreatePackage(IReadOnlyList<string> apiPaths)
+        public static ExternalReferencePackage Create(string packageFile, Uri baseUri)
         {
-            if (apiPaths == null)
+            return new ExternalReferencePackage(packageFile, baseUri);
+        }
+
+        public void AddProjects(IReadOnlyList<string> projectPaths)
+        {
+            if (projectPaths == null)
+            {
+                throw new ArgumentNullException("projectPaths");
+            }
+            if (projectPaths.Count == 0)
+            {
+                throw new ArgumentException("Empty collection is not allowed.", "projectPaths");
+            }
+            for (int i = 0; i < projectPaths.Count; i++)
+            {
+                var name = Path.GetFileName(projectPaths[i]);
+                AddFiles(
+                    string.Format("{0}.yml", name),
+                    name + "/api/",
+                    Directory.GetFiles(Path.Combine(projectPaths[i], "api"), "*.yml", SearchOption.TopDirectoryOnly));
+            }
+        }
+
+        public void AddFiles(string entryName, string relatedPath, IReadOnlyList<string> docPaths)
+        {
+            if (docPaths == null)
             {
                 throw new ArgumentNullException("apiPaths");
             }
-            if (apiPaths.Count == 0)
+            if (docPaths.Count == 0)
             {
                 throw new ArgumentException("Empty collection is not allowed.", "apiPaths");
             }
-            using (var fileStream = new FileStream(_packageFile, FileMode.Create, FileAccess.ReadWrite))
-            using (var zip = new ZipArchive(fileStream, ZipArchiveMode.Create))
+            var vms = from doc in docPaths
+                      select YamlUtility.Deserialize<PageViewModel>(doc);
+            var extRefs = from vm in vms
+                          from extRef in ExternalReferenceConverter.ToExternalReferenceViewModel(vm, new Uri(_baseUri, relatedPath))
+                          select extRef;
+            var entry = _zip.CreateEntry(entryName);
+            using (var stream = entry.Open())
+            using (var sw = new StreamWriter(stream))
             {
-                for (int i = 0; i < apiPaths.Count; i++)
-                {
-                    var vms = from file in Directory.GetFiles(Path.Combine(apiPaths[i], "api"), "*.yml", SearchOption.TopDirectoryOnly)
-                              select YamlUtility.Deserialize<PageViewModel>(file);
-                    var name = Path.GetFileName(apiPaths[i]);
-                    var extRefs = from vm in vms
-                                  from extRef in ExternalReferenceConverter.ToExternalReferenceViewModel(vm, new Uri(_baseUri, name + "/"))
-                                  select extRef;
-                    var entry = zip.CreateEntry(string.Format("{0}.yml", name));
-                    using (var stream = entry.Open())
-                    using (var sw = new StreamWriter(stream))
-                    {
-                        YamlUtility.Serialize(sw, extRefs);
-                    }
-                }
+                YamlUtility.Serialize(sw, extRefs);
             }
+        }
+
+        public void Dispose()
+        {
+            _zip.Dispose();
         }
     }
 }
