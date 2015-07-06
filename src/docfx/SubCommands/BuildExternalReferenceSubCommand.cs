@@ -30,9 +30,18 @@
 
             // 2. convert.
             var outputFile = Path.Combine(options.ExternalVerb.OutputFolder ?? Environment.CurrentDirectory, options.ExternalVerb.Name ?? "externalreference.rpk");
-            var package = new ExternalReferencePackage(outputFile, new Uri(options.ExternalVerb.BaseUrl));
+            if (string.IsNullOrWhiteSpace(options.ExternalVerb.BaseUrl))
+            {
+                return new ParseResult(ResultLevel.Error, "BaseUrl cannot be empty.");
+            }
             try
             {
+                var baseUri = new Uri(options.ExternalVerb.BaseUrl);
+                if (!baseUri.IsAbsoluteUri)
+                {
+                    return new ParseResult(ResultLevel.Error, "BaseUrl should be absolute url.");
+                }
+                var package = new ExternalReferencePackage(outputFile, baseUri);
                 package.CreatePackage(inputModel.Items.Keys.ToList());
                 return ParseResult.SuccessResult;
             }

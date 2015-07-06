@@ -36,11 +36,10 @@
                     var vms = from file in Directory.GetFiles(Path.Combine(apiPaths[i], "api"), "*.yml", SearchOption.TopDirectoryOnly)
                               select YamlUtility.Deserialize<PageViewModel>(file);
                     var name = Path.GetFileName(apiPaths[i]);
-                    var extRefs = (from vm in vms
-                                   from extRef in ExternalReferenceConverter.ToExternalReferenceViewModel(vm, new Uri(_baseUri, name + "/"))
-                                   select extRef);
+                    var extRefs = from vm in vms
+                                  from extRef in ExternalReferenceConverter.ToExternalReferenceViewModel(vm, new Uri(_baseUri, name + "/"))
+                                  select extRef;
                     var entry = zip.CreateEntry(string.Format("{0}.yml", name));
-                    //var entry = zip.CreateEntry(string.Format("{0}.yml", i.ToString()));
                     using (var stream = entry.Open())
                     using (var sw = new StreamWriter(stream))
                     {

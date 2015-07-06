@@ -43,7 +43,7 @@
     {
         [Option('o', "output")]
         public string OutputFolder { get; set; }
-        
+
         [ValueList(typeof(List<string>))]
         public List<string> Projects { get; set; }
 
@@ -105,7 +105,7 @@
 
     class ExternalSubOptions : TopLevelOptions
     {
-        [Option('b', "baseurl", HelpText = "The base url of yaml file.")]
+        [Option('b', "baseurl", HelpText = "The base url of yaml file.", Required = true)]
         public string BaseUrl { get; set; }
 
         [Option('n', "name", HelpText = "The name of package.")]

@@ -19,9 +19,7 @@
                     Fullname = item.Fullname,
                     FullnameForCSharp = item.FullnameForCSharp,
                     FullnameForVB = item.FullnameForVB,
-                    Summary = item.Summary,
                     Type = item.Type,
-                    IsExternal = true,
                     Href = new Uri(new Uri(baseUrl, "api/"), item.Href).ToString(),
                 };
             }
