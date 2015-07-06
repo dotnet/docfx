@@ -19,11 +19,14 @@ SET DnuExe=dnu
 SET BuildProj=%~dp0All.sln
 
 :: Check if DNU exists globally
-WHERE "%DnuExe%"
+:: DNU is OPTIONAL
+WHERE dnu
 
+SET BuildDnxProjects=1
 IF NOT '%ERRORLEVEL%'=='0' (
-    ECHO ERROR: build.cmd requires dnu installed gloablly. 
-    GOTO :Exit
+    ECHO WARNING: DNU is not installed globally, DNX related projects will not be built!
+    SET BuildDnxProjects=0
+    SET BuildProj=%~dp0NonDnx.sln
 )
 
 :: Restore packages for .csproj projects
@@ -64,6 +67,10 @@ GOTO :Exit
 
 :RestorePackage
 :: Restore inside each subfolder
+IF '%BuildDnxProjects%'=='0' (
+GOTO :RestoreNormalPackage
+)
+
 FOR /D %%x IN ("src","docs","test") DO (
 PUSHD %%x
 CMD /C "%DnuExe%" restore --parallel
@@ -72,6 +79,7 @@ POPD
 
 SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
+:RestoreNormalPackage
 IF EXIST "%CachedNuget%" GOTO :Restore
 ECHO Downloading latest version of NuGet.exe...
 IF NOT EXIST "%LocalAppData%\NuGet" MD "%LocalAppData%\NuGet"
