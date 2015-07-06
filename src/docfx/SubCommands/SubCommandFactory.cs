@@ -16,6 +16,8 @@
                     return new MetadataSubCommand();
                 case SubCommandType.Website:
                     return new WebsiteSubCommand();
+                case SubCommandType.Export:
+                    return new ExportSubCommand();
                 default:
                     throw new NotSupportedException("SubCommandType: " + type.ToString(), null);
             }
