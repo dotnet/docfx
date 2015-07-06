@@ -228,7 +228,7 @@
                         syntaxStr = SyntaxFactory.PropertyStatement(
                             new SyntaxList<AttributeListSyntax>(),
                             SyntaxFactory.TokenList(GetMemberModifiers(propertySymbol)),
-                            SyntaxFactory.Identifier(propertySymbol.Name),
+                            SyntaxFactory.Identifier(propertySymbol.MetadataName),
                             GetParamerterList(propertySymbol),
                             SyntaxFactory.SimpleAsClause(
                                 GetTypeSyntax(propertySymbol.Type)),

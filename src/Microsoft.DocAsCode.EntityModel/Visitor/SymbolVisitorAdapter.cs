@@ -293,9 +293,22 @@
             _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
-            var id = AddSpecReference(symbol.Type, typeGenericParameters);
-            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetAddReferenceDelegate(result));
-            Debug.Assert(result.Syntax.Return.Type != null);
+
+            if (symbol.Parameters.Length > 0)
+            {
+                foreach (var p in symbol.Parameters)
+                {
+                    var id = AddSpecReference(p.Type, typeGenericParameters);
+                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetAddReferenceDelegate(result));
+                    Debug.Assert(param.Type != null);
+                    result.Syntax.Parameters.Add(param);
+                }
+            }
+            {
+                var id = AddSpecReference(symbol.Type, typeGenericParameters);
+                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetAddReferenceDelegate(result));
+                Debug.Assert(result.Syntax.Return.Type != null);
+            }
 
             if (symbol.IsOverride && symbol.OverriddenProperty != null)
             {

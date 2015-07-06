@@ -1802,6 +1802,10 @@ namespace Test1
         public void Bar<K>(int i)
         {
         }
+        public int this[int index]
+        {
+            get { return index; }
+        }
     }
 }
 ";
@@ -1814,19 +1818,38 @@ namespace Test1
             Assert.Equal("Test1.Foo(Of T)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
             Assert.Equal("Test1.Foo`1", type.Name);
 
-            var method = output.Items[0].Items[0].Items[0];
-            Assert.NotNull(method);
-            Assert.Equal("Bar<K>(Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-            Assert.Equal("Bar(Of K)(Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-            Assert.Equal("Test1.Foo<T>.Bar<K>(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-            Assert.Equal("Test1.Foo(Of T).Bar(Of K)(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
-            Assert.Equal("Test1.Foo`1.Bar``1(System.Int32)", method.Name);
-            Assert.Equal(1, output.Items.Count);
-            var parameter = method.Syntax.Parameters[0];
-            Assert.Equal("i", parameter.Name);
-            Assert.Equal("System.Int32", parameter.Type);
-            var returnValue = method.Syntax.Return;
-            Assert.Null(returnValue);
+            {
+                var method = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(method);
+                Assert.Equal("Bar<K>(Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Bar(Of K)(Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo<T>.Bar<K>(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo(Of T).Bar(Of K)(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo`1.Bar``1(System.Int32)", method.Name);
+                Assert.Equal(1, method.Syntax.Parameters.Count);
+                var parameter = method.Syntax.Parameters[0];
+                Assert.Equal("i", parameter.Name);
+                Assert.Equal("System.Int32", parameter.Type);
+                var returnValue = method.Syntax.Return;
+                Assert.Null(returnValue);
+            }
+
+            {
+                var indexer = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(indexer);
+                Assert.Equal("Item[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Item(Int32)", indexer.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo<T>.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo(Of T).Item(System.Int32)", indexer.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo`1.Item(System.Int32)", indexer.Name);
+                Assert.Equal(1, indexer.Syntax.Parameters.Count);
+                var parameter = indexer.Syntax.Parameters[0];
+                Assert.Equal("index", parameter.Name);
+                Assert.Equal("System.Int32", parameter.Type);
+                var returnValue = indexer.Syntax.Return;
+                Assert.NotNull(returnValue);
+                Assert.Equal("System.Int32", returnValue.Type);
+            }
         }
 
         [Fact]
