@@ -111,6 +111,9 @@
         [Option('n', "name", HelpText = "The name of package.")]
         public string Name { get; set; }
 
+        [Option('a', "append", HelpText = "Append the package.")]
+        public bool AppendMode { get; set; }
+
         public ExportSubOptions(ExportSubOptions options) : base(options)
         {
             BaseUrl = options.BaseUrl;

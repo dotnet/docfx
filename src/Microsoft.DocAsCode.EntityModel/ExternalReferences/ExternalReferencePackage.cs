@@ -13,16 +13,28 @@
         private readonly Uri _baseUri;
         private readonly ZipArchive _zip;
 
-        private ExternalReferencePackage(string packageFile, Uri baseUri)
+        private ExternalReferencePackage(string packageFile, Uri baseUri, bool append)
         {
             _packageFile = packageFile;
             _baseUri = baseUri;
-            _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Create, FileAccess.ReadWrite), ZipArchiveMode.Create);
+            if (append && File.Exists(packageFile))
+            {
+                _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Open, FileAccess.ReadWrite), ZipArchiveMode.Update);
+            }
+            else
+            {
+                _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Create, FileAccess.ReadWrite), ZipArchiveMode.Create);
+            }
         }
 
         public static ExternalReferencePackage Create(string packageFile, Uri baseUri)
         {
-            return new ExternalReferencePackage(packageFile, baseUri);
+            return new ExternalReferencePackage(packageFile, baseUri, false);
+        }
+
+        public static ExternalReferencePackage Append(string packageFile, Uri baseUri)
+        {
+            return new ExternalReferencePackage(packageFile, baseUri, true);
         }
 
         public void AddProjects(IReadOnlyList<string> projectPaths)
@@ -55,12 +67,25 @@
             {
                 throw new ArgumentException("Empty collection is not allowed.", "apiPaths");
             }
+            var uri = string.IsNullOrEmpty(relatedPath) ? _baseUri : new Uri(_baseUri, relatedPath);
             var vms = from doc in docPaths
                       select YamlUtility.Deserialize<PageViewModel>(doc);
             var extRefs = from vm in vms
-                          from extRef in ExternalReferenceConverter.ToExternalReferenceViewModel(vm, new Uri(_baseUri, relatedPath))
+                          from extRef in ExternalReferenceConverter.ToExternalReferenceViewModel(vm, uri)
                           select extRef;
-            var entry = _zip.CreateEntry(entryName);
+            ZipArchiveEntry entry = null;
+            if (_zip.Mode == ZipArchiveMode.Read)
+            {
+                throw new InvalidOperationException("Cannot add files in read mode.");
+            }
+            if (_zip.Mode == ZipArchiveMode.Update)
+            {
+                entry = _zip.GetEntry(entryName);
+            }
+            if (_zip.Mode != ZipArchiveMode.Read)
+            {
+                entry = entry ?? _zip.CreateEntry(entryName);
+            }
             using (var stream = entry.Open())
             using (var sw = new StreamWriter(stream))
             {
