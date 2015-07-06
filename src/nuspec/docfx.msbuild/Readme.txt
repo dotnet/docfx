@@ -1,17 +1,5 @@
-﻿Doc-As-Code
-===========
-Easily build and publish your API documentation. We currently support C# and VB projects.
+﻿DocFx is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphnix. It has the ability to extract triple slash comments out from your source code. What's more, it has syntax to link additional files to API to add additional remarks. DocFx will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. The website is currently written in AngularJS, but DocFx provides the flexibility for you to customize the website through specifying templates.
 
-Code Walkthrough Quick Start
----------------
-### BackEnd projects under `BackEnd` folder
-BackEnd code is using Roslyn to compiler and analysis code, exporting API metadata to YAML format, as described in [DotNet Metadata Specification](http://vicancy.github.io/docascode/#/specs!metadata_format_spec.md).
+To quickly get started, after installing current nuget package, build current project, the output will by default be generated into '_site' folder, which is defined in 'xdoc.json' file. If current project is a WEBSITE project, you can navigate to <host>/_site/ to view the generated website! 
 
-### FrontEnd projects under `FrontEnd` folder
-FrontEnd code is written in AngularJs, and using Grunt to manage code, karma to run tests.
-
-Under FrontEnd folder, run `grunt server` to playaround with a sample website.
-
-Start Using DocFx
----------------
-Refer to [Getting Started with DocFx](http://vicancy.github.io/docascode/#/README.md) to play around DocFx.
+For more details on how to customize 'xdoc.json' file, please refer to http://aspnet.github.io/docfx/#/tutorial/docfx.exe_user_manual.md. 

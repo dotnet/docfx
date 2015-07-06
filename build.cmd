@@ -65,7 +65,7 @@ PUSHD tools
 CALL npm install
 
 :: GRUNT to generate nuget packages
-CALL node node_modules/grunt-cli/bin/grunt
+CALL node node_modules/grunt-cli/bin/grunt --Configuration=%Configuration%
 POPD
 
 :AfterBuild
