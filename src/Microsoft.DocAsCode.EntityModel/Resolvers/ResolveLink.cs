@@ -7,6 +7,8 @@
     {
         public ParseResult Run(MetadataModel yaml, ResolverContext context)
         {
+            if (context.PreserveRawInlineComments) return new ParseResult(ResultLevel.Success);
+
             var index = yaml.Indexer;
 
             TreeIterator.Preorder(yaml.TocYamlViewModel, null,
@@ -21,6 +23,14 @@
                         {
                             s.Description = ResolveText(index, s.Description, member);
                         });
+
+                    if (member.Exceptions != null)
+                    {
+                        member.Exceptions.ForEach(s => {
+                            s.Description = ResolveText(index, s.Description, member);
+                        });
+                    }
+
                     if (member.Syntax != null && member.Syntax.Return != null)
                         member.Syntax.Return.Description = ResolveText(index, member.Syntax.Return.Description, member);
 

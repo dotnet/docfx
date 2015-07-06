@@ -44,6 +44,9 @@
         [Option('o', "output")]
         public string OutputFolder { get; set; }
 
+        [Option("raw", HelpText = "Preserve the existing xml comment tags inside 'summary' triple slash comments")]
+        public bool PreserveRawInlineComments { get; set; }
+        
         [ValueList(typeof(List<string>))]
         public List<string> Projects { get; set; }
 

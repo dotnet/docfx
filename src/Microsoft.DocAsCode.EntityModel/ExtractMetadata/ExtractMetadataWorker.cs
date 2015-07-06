@@ -27,6 +27,7 @@
         private readonly ExtractMetadataInputModel _validInput;
         private readonly ExtractMetadataInputModel _rawInput;
         private readonly bool _rebuild;
+        private readonly bool _preserveRawInlineComments;
 
         static ExtractMetadataWorker()
         {
@@ -40,6 +41,7 @@
             _rawInput = input;
             _validInput = ValidateInput(input);
             _rebuild = rebuild;
+            _preserveRawInlineComments = input.PreserveRawInlineComments;
         }
 
         public async Task<ParseResult> ExtractMetadataAsync()
@@ -70,7 +72,7 @@
         }
 
         #region Internal For UT
-        internal static MetadataItem GenerateYamlMetadata(Compilation compilation)
+        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false)
         {
             if (compilation == null)
             {
@@ -81,11 +83,11 @@
             SymbolVisitorAdapter visitor;
             if (compilation.Language == "Visual Basic")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, preserveRawInlineComments);
             }
             else if (compilation.Language == "C#")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, preserveRawInlineComments);
             }
             else
             {
@@ -381,7 +383,7 @@
 
             foreach (var project in projectCache)
             {
-                var projectMetadata = await GetProjectMetadataFromCacheAsync(project.Value, outputFolder, documentCache, forceRebuild);
+                var projectMetadata = await GetProjectMetadataFromCacheAsync(project.Value, outputFolder, documentCache, forceRebuild, _preserveRawInlineComments);
                 if (projectMetadata != null) projectMetadataList.Add(projectMetadata);
             }
 
@@ -392,7 +394,7 @@
                 var csCompilation = CreateCompilationFromCsharpCode(csContent);
                 if (csCompilation != null)
                 {
-                    var csMetadata = await GetFileMetadataFromCacheAsync(csFiles, csCompilation, outputFolder, forceRebuild);
+                    var csMetadata = await GetFileMetadataFromCacheAsync(csFiles, csCompilation, outputFolder, forceRebuild, _preserveRawInlineComments);
                     if (csMetadata != null) projectMetadataList.Add(csMetadata);
                 }
             }
@@ -404,7 +406,7 @@
                 var vbCompilation = CreateCompilationFromVBCode(vbContent);
                 if (vbCompilation != null)
                 {
-                    var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild);
+                    var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild, _preserveRawInlineComments);
                     if (vbMetadata != null) projectMetadataList.Add(vbMetadata);
                 }
             }
@@ -421,7 +423,7 @@
             {
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
-                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName);
+                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments);
                 applicationCache.SaveToCache(inputs, documentCache.Cache, triggeredTime, outputFolder, outputFiles);
             }
         }
@@ -440,7 +442,7 @@
             relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => ParseResult.WriteToConsole(ResultLevel.Info, s), null);
         }
         
-        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild)
+        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments)
         {
             var projectFilePath = project.FilePath;
             var k = documentCache.GetDocuments(projectFilePath);
@@ -453,10 +455,11 @@
                 {
                     return new Dictionary<string, List<string>> { { s.FilePath.ToNormalizedFullPath(), k.ToList() } };
                 },
-                outputFolder);
+                outputFolder,
+                preserveRawInlineComments);
         }
 
-        private static Task <MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild)
+        private static Task <MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments)
         {
             if (files == null || !files.Any()) return null;
             return GetMetadataFromProjectLevelCacheAsync(
@@ -464,7 +467,8 @@
                 files, s => Task.FromResult(forceRebuild || s.AreFilesModified(files)),
                 s => Task.FromResult(compilation),
                 s => null,
-                outputFolder);
+                outputFolder,
+                preserveRawInlineComments);
         }
 
         private static async Task<MetadataItem> GetMetadataFromProjectLevelCacheAsync<T>(
@@ -473,7 +477,8 @@
             Func<IncrementalCheck, Task<bool>> rebuildChecker,
             Func<T, Task<Compilation>> compilationProvider,
             Func<T, IDictionary<string, List<string>>> containedFilesProvider,
-            string outputFolder)
+            string outputFolder,
+            bool preserveRawInlineComments)
         {
             DateTime triggeredTime = DateTime.UtcNow;
             var projectLevelCache = ProjectLevelCache.Get(inputKey);
@@ -505,7 +510,7 @@
 
             var compilation = await compilationProvider(input);
 
-            projectMetadata = GenerateYamlMetadata(compilation);
+            projectMetadata = GenerateYamlMetadata(compilation, preserveRawInlineComments);
             var file = Path.GetRandomFileName();
             var cacheOutputFolder = projectLevelCache.OutputFolder;
             var path = Path.Combine(cacheOutputFolder, file);
@@ -531,10 +536,11 @@
             string folder,
             string indexFileName,
             string tocFileName,
-            string apiFolder)
+            string apiFolder,
+            bool preserveRawInlineComments)
         {
             var outputFiles = new List<string>();
-            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, apiFolder);
+            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, apiFolder, preserveRawInlineComments);
             
             // 1. generate toc.yml
             outputFiles.Add(tocFileName);

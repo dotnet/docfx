@@ -29,7 +29,7 @@
         {
             var projects = configModel.Projects;
             var outputFolder = configModel.OutputFolder;
-            var inputModel = new ExtractMetadataInputModel();
+            var inputModel = new ExtractMetadataInputModel() { PreserveRawInlineComments = configModel.PreserveRawInlineComments };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(configModel.BaseDirectory, configModel.Projects, s =>
             {
