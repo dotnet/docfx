@@ -57,7 +57,7 @@
             }
         }
 
-        public void AddFiles(string entryName, string relatedPath, IReadOnlyList<string> docPaths)
+        public void AddFiles(string entryName, string relativePath, IReadOnlyList<string> docPaths)
         {
             if (docPaths == null)
             {
@@ -67,7 +67,7 @@
             {
                 throw new ArgumentException("Empty collection is not allowed.", "apiPaths");
             }
-            var uri = string.IsNullOrEmpty(relatedPath) ? _baseUri : new Uri(_baseUri, relatedPath);
+            var uri = string.IsNullOrEmpty(relativePath) ? _baseUri : new Uri(_baseUri, relativePath);
             var vms = from doc in docPaths
                       select YamlUtility.Deserialize<PageViewModel>(doc);
             var extRefs = from vm in vms
