@@ -79,12 +79,12 @@ findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%" &
 ECHO.
 ECHO === TEST EXECUTION SUMMARY === 
 findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%" & cd
-
+ECHO Exit Code: %BuildErrorLevel%
 GOTO :Exit
 
 :Build
 %BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %* %BuildPostfix%
-
+SET BuildErrorLevel=%ERRORLEVEL%
 GOTO :Exit
 
 :RestorePackage
@@ -113,5 +113,4 @@ nuget restore "%BuildProj%"
 :Exit
 POPD
 ECHO.
-ECHO Exit Code = %ERRORLEVEL%
 EXIT /B %ERRORLEVEL%
