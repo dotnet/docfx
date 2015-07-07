@@ -47,6 +47,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspec", "nuspec", "{BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{4D3D5520-B535-4FBD-9452-5B97D34BD23E}"
+	ProjectSection(SolutionItems) = preProject
+		test\Shared\test.base.props = test\Shared\test.base.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,5 +112,6 @@ Global
 		{004952AD-61B7-4FF7-955C-758ACD99893D} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{EFAA7A53-D047-422E-A3FB-ECC834944CE6} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
 		{BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
+		{4D3D5520-B535-4FBD-9452-5B97D34BD23E} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
 	EndGlobalSection
 EndGlobal

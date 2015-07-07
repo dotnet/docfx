@@ -96,6 +96,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), true);
             Assert.Equal(1, output.Items.Count);
             {
                 var type = output.Items[0].Items[0];
@@ -205,7 +206,7 @@ namespace Test1
                 Assert.Equal(MemberType.Class, refenence.Type);
                 Assert.Equal("Test1", refenence.Parent);
                 Assert.Equal("class1 @'System.Collections.Generic.Dictionary`2'", refenence.Summary);
-
+                Assert.Equal(@"class1 <see cref=""T:System.Collections.Generic.Dictionary`2"" />", output_preserveRaw.References["Test1.Class1`1"].Summary);
                 Assert.True(output.References.ContainsKey("Test1"));
                 refenence = output.References["Test1"];
                 Assert.Equal(true, refenence.IsDefinition);

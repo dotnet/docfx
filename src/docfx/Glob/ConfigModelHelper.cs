@@ -86,6 +86,11 @@
                 configModel.OutputFolder = outputFolder;
             }
 
+            if (option.PreserveRawInlineComments)
+            {
+                configModel.PreserveRawInlineComments = option.PreserveRawInlineComments;
+            }
+
             // Check specific options
             var websiteOption = option as WebsiteSubOptions;
             if (websiteOption != null)
@@ -107,6 +112,7 @@
             {
                 configModel.BaseDirectory = Environment.CurrentDirectory;
             }
+
             return Tuple.Create(ParseResult.SuccessResult, configModel);
         }
     }
