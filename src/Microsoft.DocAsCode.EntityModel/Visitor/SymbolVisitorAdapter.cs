@@ -6,7 +6,7 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Text.RegularExpressions;
-
+    
     public class SymbolVisitorAdapter
         : SymbolVisitor<MetadataItem>
     {
@@ -61,7 +61,7 @@
                 var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);
                 item.NamespaceName = string.IsNullOrEmpty(namespaceName) ? null : namespaceName;
             }
-            VisitorHelper.FeedComments(item, GetAddReferenceDelegate(item), _preserveRawInlineComments);
+            VisitorHelper.FeedComments(item, GetTripleSlashCommentParserContext(item, _preserveRawInlineComments));
             if (item.Exceptions != null)
             {
                 foreach (var exceptions in item.Exceptions)
@@ -146,7 +146,7 @@
 
                 foreach (var p in symbol.TypeParameters)
                 {
-                    var param = VisitorHelper.GetTypeParameterDescription(p, item, GetAddReferenceDelegate(item), _preserveRawInlineComments);
+                    var param = VisitorHelper.GetTypeParameterDescription(p, item, GetTripleSlashCommentParserContext(item, _preserveRawInlineComments));
                     item.Syntax.TypeParameters.Add(param);
                 }
             }
@@ -194,7 +194,7 @@
 
                 foreach (var p in symbol.TypeParameters)
                 {
-                    var param = VisitorHelper.GetTypeParameterDescription(p, result, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+                    var param = VisitorHelper.GetTypeParameterDescription(p, result, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
                     result.Syntax.TypeParameters.Add(param);
                 }
             }
@@ -302,14 +302,14 @@
                 foreach (var p in symbol.Parameters)
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters);
-                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
                     Debug.Assert(param.Type != null);
                     result.Syntax.Parameters.Add(param);
                 }
             }
             {
                 var id = AddSpecReference(symbol.Type, typeGenericParameters);
-                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
                 Debug.Assert(result.Syntax.Return.Type != null);
             }
 
@@ -554,7 +554,7 @@
             if (!symbol.ReturnsVoid)
             {
                 var id = AddSpecReference(symbol.ReturnType, typeGenericParameters, methodGenericParameters);
-                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
             }
 
             if (symbol.Parameters.Length > 0)
@@ -567,11 +567,21 @@
                 foreach (var p in symbol.Parameters)
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters, methodGenericParameters);
-                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
                     Debug.Assert(param.Type != null);
                     result.Syntax.Parameters.Add(param);
                 }
             }
+        }
+
+        private ITripleSlashCommentParserContext GetTripleSlashCommentParserContext(MetadataItem item, bool preserve)
+        {
+            return new TripleSlashCommentParserContext
+            {
+                AddReference = GetAddReferenceDelegate(item),
+                Normalize = true,
+                PreserveRawInlineComments = preserve
+            };
         }
 
         private Action<string> GetAddReferenceDelegate(MetadataItem item)

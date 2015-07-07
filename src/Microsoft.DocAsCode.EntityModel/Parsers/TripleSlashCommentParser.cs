@@ -9,6 +9,23 @@
     using System.Xml;
     using System.Xml.XPath;
 
+    public interface ITripleSlashCommentParserContext
+    {
+        bool Normalize { get; set; }
+        bool PreserveRawInlineComments { get; set; }
+        Action<string> AddReference { get; set; }
+    }
+
+    public class TripleSlashCommentParserContext : ITripleSlashCommentParserContext
+    {
+        public bool Normalize { get; set; } = true;
+
+        public bool PreserveRawInlineComments { get; set; }
+
+        public Action<string> AddReference { get; set; }
+
+    }
+
     public static class TripleSlashCommentParser
     {
         /// <summary>
@@ -17,19 +34,14 @@
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-        public static string GetSummary(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
+        public static string GetSummary(string xml, ITripleSlashCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/summary";
 
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
-
             // Trim each line as a temp workaround
-            var summary = GetSingleNode(xml, selector, normalize, (e) => null);
+            var summary = GetSingleNode(xml, selector, context, (e) => null);
             return summary;
         }
 
@@ -42,17 +54,12 @@
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-        public static string GetRemarks(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
+        public static string GetRemarks(string xml, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/remarks";
 
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
-
             // Trim each line as a temp workaround
-            var remarks = GetSingleNode(xml, selector, normalize, (e) => null);
+            var remarks = GetSingleNode(xml, selector, context, (e) => null);
             return remarks;
         }
 
@@ -63,7 +70,7 @@
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-        public static List<ExceptionDetail> GetExceptions(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
+        public static List<ExceptionDetail> GetExceptions(string xml, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/exception";
             var iterator = SelectNodes(xml, selector);
@@ -72,7 +79,7 @@
             foreach (XPathNavigator nav in iterator)
             {
                 string description = nav.Value;
-                if (normalize) description = NormalizeContentFromTripleSlashComment(description);
+                if (context?.Normalize ?? true) description = NormalizeContentFromTripleSlashComment(description);
 
                 string exceptionType = nav.GetAttribute("cref", string.Empty);
                 if (!string.IsNullOrEmpty(exceptionType))
@@ -81,11 +88,7 @@
                     if (LinkParser.CommentIdRegex.IsMatch(exceptionType))
                     {
                         exceptionType = exceptionType.Substring(2);
-
-                        if (!preserveRawInlineComments)
-                        {
-                            description = ResolveInternalTags(description, selector, addReference);
-                        }
+                        description = ResolveInternalTags(description, selector, context);
 
                         details.Add(new ExceptionDetail { Description = description, Type = exceptionType });
                     }
@@ -96,21 +99,15 @@
             return null;
         }
 
-        public static string GetReturns(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
+        public static string GetReturns(string xml, ITripleSlashCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/returns";
-
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
-
-            return GetSingleNode(xml, selector, normalize, (e) => null);
+            return GetSingleNode(xml, selector, context, (e) => null);
         }
 
-        public static string GetParam(string xml, string param, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
+        public static string GetParam(string xml, string param, ITripleSlashCommentParserContext context)
         {
             if (string.IsNullOrEmpty(xml)) return null;
             Debug.Assert(!string.IsNullOrEmpty(param));
@@ -123,15 +120,10 @@
             // Also support <seealso cref>
             string selector = "/member/param[@name='" + param + "']";
 
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
-
-            return GetSingleNode(xml, selector, normalize, (e) => null);
+            return GetSingleNode(xml, selector, context, (e) => null);
         }
 
-        public static string GetTypeParameter(string xml, string name, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
+        public static string GetTypeParameter(string xml, string name, ITripleSlashCommentParserContext context)
         {
             if (string.IsNullOrEmpty(xml)) return null;
             Debug.Assert(!string.IsNullOrEmpty(name));
@@ -143,20 +135,14 @@
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/typeparam[@name='" + name + "']";
-
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
-
-            return GetSingleNode(xml, selector, normalize, (e) => null);
+            return GetSingleNode(xml, selector, context, (e) => null);
         }
 
-        private static string ResolveInternalTags(string xml, string selector, Action<string> addReference)
+        private static string ResolveInternalTags(string xml, string selector, ITripleSlashCommentParserContext context)
         {
-            if (string.IsNullOrEmpty(xml)) return xml;
-            xml = ResolveSeeCref(xml, selector, addReference);
-            xml = ResolveSeeAlsoCref(xml, selector, addReference);
+            if (string.IsNullOrEmpty(xml) || context == null || context.PreserveRawInlineComments) return xml;
+            xml = ResolveSeeCref(xml, selector, context.AddReference);
+            xml = ResolveSeeAlsoCref(xml, selector, context.AddReference);
             return xml;
         }
 
@@ -250,8 +236,9 @@
             }
         }
 
-        private static string GetSingleNode(string xml, string selector, bool normalize, Func<Exception, string> errorHandler)
+        private static string GetSingleNode(string xml, string selector, ITripleSlashCommentParserContext context, Func<Exception, string> errorHandler)
         {
+            xml = ResolveInternalTags(xml, selector, context);
             if (string.IsNullOrEmpty(xml) || string.IsNullOrEmpty(selector)) return xml;
             try
             {
@@ -271,7 +258,7 @@
                         // e.g.
                         // <remarks><para>Value</para></remarks>
                         var output = node.InnerXml;
-                        if (normalize) output = NormalizeContentFromTripleSlashComment(output);
+                        if (context?.Normalize ?? false) output = NormalizeContentFromTripleSlashComment(output);
                         return output;
                     }
                 }
