@@ -1,6 +1,7 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Collections.Generic;
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     public class MatchDetailCollection : Dictionary<string, MatchDetail>
     {

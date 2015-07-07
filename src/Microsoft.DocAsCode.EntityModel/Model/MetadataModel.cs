@@ -11,13 +11,6 @@
         public List<MetadataItem> Members { get; set; }
     }
 
-    public class YamlViewModel1
-    {
-        public List<ItemViewModel> TocYamlListViewModel { get; set; }
-        public ItemViewModel TocYamlViewModel { get; set; }
-        public List<ItemViewModel> MemberYamlViewModelList { get; set; }
-    }
-
     public class MetadataModelUtility
     {
         public static string ResolveApiHrefRelativeToCurrent(Dictionary<string, MetadataItem> index, string name, string currentHref)

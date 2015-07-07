@@ -2,7 +2,7 @@
 {
     using System.IO;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     public class Save : IIndexerPipeline
     {

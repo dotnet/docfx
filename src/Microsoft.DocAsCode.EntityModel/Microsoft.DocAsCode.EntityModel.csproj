@@ -77,8 +77,10 @@
     <Compile Include="ViewModels\ReferenceViewModel.cs" />
     <Compile Include="ViewModels\SpecViewModel.cs" />
     <Compile Include="ViewModels\SyntaxDetailViewModel.cs" />
+    <Compile Include="ViewModels\TocItemViewModel.cs" />
+    <Compile Include="ViewModels\TocViewModel.cs" />
     <Compile Include="ViewModels\ViewModelUtility.cs" />
-    <Compile Include="ViewModel\MapFileItemViewModel.cs" />
+    <Compile Include="ViewModels\MapFileItemViewModel.cs" />
     <Compile Include="Model\SyntaxLanguage.cs" />
     <Compile Include="Model\MemberType.cs" />
     <Compile Include="Model\ParseResult.cs" />
@@ -95,8 +97,6 @@
     <Compile Include="Resolvers\ResolverContext.cs" />
     <Compile Include="Resolvers\IResolverPipeline.cs" />
     <Compile Include="Resolvers\BuildToc.cs" />
-    <Compile Include="ViewModel\OnePageViewModel.cs" />
-    <Compile Include="ViewModel\YamlViewModel.cs" />
     <Compile Include="Visitor\CompositeYamlModelGenerator.cs" />
     <Compile Include="Visitor\SpecIdCoreVisitor.cs" />
     <Compile Include="Visitor\SpecIdHelper.cs" />
@@ -115,7 +115,6 @@
     <Compile Include="Model\ApiParameter.cs" />
     <Compile Include="Model\SourceDetail.cs" />
     <Compile Include="Model\SyntaxDetail.cs" />
-    <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="Model\MetadataModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +129,9 @@
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModel\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

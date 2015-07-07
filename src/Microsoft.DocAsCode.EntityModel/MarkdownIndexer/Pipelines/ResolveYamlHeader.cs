@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
 
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Utility;
 
     public class ResolveYamlHeader : IIndexerPipeline

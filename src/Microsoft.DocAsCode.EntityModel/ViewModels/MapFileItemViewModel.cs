@@ -1,4 +1,4 @@
-﻿namespace Microsoft.DocAsCode.EntityModel
+﻿namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
     using Newtonsoft.Json;
     using System;

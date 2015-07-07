@@ -2,9 +2,10 @@
 {
     using System;
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Utility;
-    using System.Linq;
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     public class LoadMarkdownFile : IIndexerPipeline
     {
