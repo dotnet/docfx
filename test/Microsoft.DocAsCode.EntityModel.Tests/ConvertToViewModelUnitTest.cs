@@ -546,10 +546,10 @@
             Assert.Equal(
                 new[]
                 {
-                        "System.Collections.Generic.IList{System.Object}",
-                        "System.Collections.Generic.ICollection{System.Object}",
-                        "System.Collections.Generic.IEnumerable{System.Object}",
-                        "System.Collections.IEnumerable",
+                    "System.Collections.Generic.IList{System.Object}",
+                    "System.Collections.Generic.ICollection{System.Object}",
+                    "System.Collections.Generic.IEnumerable{System.Object}",
+                    "System.Collections.IEnumerable",
                 }.OrderBy(s => s),
                 implements.OrderBy(s => s));
 
@@ -569,8 +569,8 @@
                         "System.Object.GetHashCode",
                         "System.Collections.Generic.List`1",
                         "System.Collections.Generic.List{System.Object}"
-                },
-                (from r in vm.References select r.Uid).ToList());
+                }.OrderBy(s => s),
+                from r in vm.References orderby r.Uid select r.Uid);
 
             var reference = vm.References.Find(x => x.Uid == "System.Object");
             Assert.NotNull(reference);
@@ -587,20 +587,24 @@
             reference = vm.References.Find(x => x.Uid == "System.Object.GetHashCode");
             Assert.NotNull(reference);
             Assert.Equal("GetHashCode()", reference.Name);
-            Assert.Equal("GetHashCode()", reference.NameForCSharp);
-            Assert.Equal("GetHashCode()", reference.NameForVB);
+            Assert.Null(reference.NameForCSharp);
+            Assert.Null(reference.NameForVB);
             Assert.Equal("System.Object.GetHashCode()", reference.Fullname);
-            Assert.Equal("System.Object.GetHashCode()", reference.FullnameForCSharp);
-            Assert.Equal("System.Object.GetHashCode()", reference.FullnameForVB);
+            Assert.Null(reference.FullnameForCSharp);
+            Assert.Null(reference.FullnameForVB);
             Assert.True(reference.IsExternal);
             Assert.Equal("System.Object", reference.Parent);
             Assert.Null(reference.Href);
 
             reference = vm.References.Find(x => x.Uid == "System.Collections.Generic.List{System.Object}");
             Assert.NotNull(reference);
+            Assert.Equal("List<Object>", reference.Name);
+            Assert.Null(reference.NameForCSharp);
+            Assert.Equal("List(Of Object)", reference.NameForVB);
+            Assert.Equal("System.Collections.Generic.List<System.Object>", reference.Fullname);
+            Assert.Null(reference.FullnameForCSharp);
+            Assert.Equal("System.Collections.Generic.List(Of System.Object)", reference.FullnameForVB);
             {
-                Assert.Equal("List<Object>", reference.NameForCSharp);
-                Assert.Equal("System.Collections.Generic.List<System.Object>", reference.FullnameForCSharp);
                 var list = reference.SpecForCSharp;
                 Assert.NotNull(list);
                 Assert.Equal(new[] { "List", "<", "Object", ">" }, (from x in list select x.Name).ToList());
@@ -619,8 +623,6 @@
                 Assert.Null(list[3].Href);
             }
             {
-                Assert.Equal("List(Of Object)", reference.NameForVB);
-                Assert.Equal("System.Collections.Generic.List(Of System.Object)", reference.FullnameForVB);
                 var list = reference.SpecForVB;
                 Assert.NotNull(list);
                 Assert.Equal(new[] { "List", "(Of ", "Object", ")" }, (from x in list select x.Name).ToList());
