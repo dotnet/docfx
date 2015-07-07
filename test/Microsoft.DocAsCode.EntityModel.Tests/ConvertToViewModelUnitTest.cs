@@ -519,11 +519,11 @@
             Assert.Equal(MemberType.Class, reference.Type);
             Assert.Equal("Summary!", reference.Summary);
             Assert.Equal("C1", reference.Name);
-            Assert.Equal("C1", reference.NameForCSharp);
-            Assert.Equal("C1", reference.NameForVB);
+            Assert.Null(reference.NameForCSharp);
+            Assert.Null(reference.NameForVB);
             Assert.Equal("N1.C1", reference.Fullname);
-            Assert.Equal("N1.C1", reference.FullnameForCSharp);
-            Assert.Equal("N1.C1", reference.FullnameForVB);
+            Assert.Null(reference.FullnameForCSharp);
+            Assert.Null(reference.FullnameForVB);
             Assert.False(reference.IsExternal);
             Assert.Equal("href!", reference.Href);
         }
@@ -575,11 +575,11 @@
             var reference = vm.References.Find(x => x.Uid == "System.Object");
             Assert.NotNull(reference);
             Assert.Equal("Object", reference.Name);
-            Assert.Equal("Object", reference.NameForCSharp);
-            Assert.Equal("Object", reference.NameForVB);
+            Assert.Null(reference.NameForCSharp);
+            Assert.Null(reference.NameForVB);
             Assert.Equal("System.Object", reference.Fullname);
-            Assert.Equal("System.Object", reference.FullnameForCSharp);
-            Assert.Equal("System.Object", reference.FullnameForVB);
+            Assert.Null(reference.FullnameForCSharp);
+            Assert.Null(reference.FullnameForVB);
             Assert.True(reference.IsExternal);
             Assert.Equal("System", reference.Parent);
             Assert.Null(reference.Href);
