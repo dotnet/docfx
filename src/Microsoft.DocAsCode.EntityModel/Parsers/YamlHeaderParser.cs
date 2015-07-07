@@ -2,11 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
+
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     /// <summary>
     /// Match yaml header from markdown files.

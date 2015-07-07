@@ -3,6 +3,7 @@
     using System;
     using System.IO;
 
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Utility;
 
     public class ResolveCodeSnippet : IIndexerPipeline

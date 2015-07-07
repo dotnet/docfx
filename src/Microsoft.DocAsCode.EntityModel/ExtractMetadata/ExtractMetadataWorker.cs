@@ -548,7 +548,7 @@
             model.TocYamlViewModel.Type = MemberType.Toc;
 
             // TOC do not change
-            var tocViewModel = TocViewModel.Convert(model.TocYamlViewModel);
+            var tocViewModel = ViewModels.TocViewModel.FromModel(model.TocYamlViewModel);
             string tocFilePath = Path.Combine(folder, tocFileName);
 
             YamlUtility.Serialize(tocFilePath, tocViewModel);

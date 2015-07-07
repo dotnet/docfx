@@ -1,11 +1,9 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
 
-    using Microsoft.DocAsCode.Utility;
-    using System.Linq;
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     /// <summary>
     /// TODO: looks like it is duplicate work for each markdown file to load index file every time

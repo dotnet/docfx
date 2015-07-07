@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
+
     public static class MarkdownIndexer
     {
         // Order matters

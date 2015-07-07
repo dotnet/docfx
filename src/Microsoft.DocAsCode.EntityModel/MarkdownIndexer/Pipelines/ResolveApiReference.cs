@@ -1,9 +1,8 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
 {
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Utility;
 
     public class ResolveApiReference : IIndexerPipeline
