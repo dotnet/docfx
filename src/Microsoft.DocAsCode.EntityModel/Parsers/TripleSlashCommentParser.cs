@@ -34,23 +34,11 @@
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-<<<<<<< HEAD
         public static string GetSummary(string xml, ITripleSlashCommentParserContext context)
-=======
-        public static string GetSummary(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/summary";
-<<<<<<< HEAD
-=======
-
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
 
             // Trim each line as a temp workaround
             var summary = GetSingleNode(xml, selector, context, (e) => null);
@@ -66,22 +54,9 @@
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-<<<<<<< HEAD
         public static string GetRemarks(string xml, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/remarks";
-
-=======
-        public static string GetRemarks(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
-        {
-            string selector = "/member/remarks";
-
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
-
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
             // Trim each line as a temp workaround
             var remarks = GetSingleNode(xml, selector, context, (e) => null);
             return remarks;
@@ -94,11 +69,7 @@
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-<<<<<<< HEAD
         public static List<ExceptionDetail> GetExceptions(string xml, ITripleSlashCommentParserContext context)
-=======
-        public static List<ExceptionDetail> GetExceptions(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
         {
             string selector = "/member/exception";
             var iterator = SelectNodes(xml, selector);
@@ -116,15 +87,7 @@
                     if (LinkParser.CommentIdRegex.IsMatch(exceptionType))
                     {
                         exceptionType = exceptionType.Substring(2);
-<<<<<<< HEAD
                         description = ResolveInternalTags(description, selector, context);
-=======
-
-                        if (!preserveRawInlineComments)
-                        {
-                            description = ResolveInternalTags(description, selector, addReference);
-                        }
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
 
                         details.Add(new ExceptionDetail { Description = description, Type = exceptionType });
                     }
@@ -135,32 +98,15 @@
             return null;
         }
 
-<<<<<<< HEAD
         public static string GetReturns(string xml, ITripleSlashCommentParserContext context)
-=======
-        public static string GetReturns(string xml, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/returns";
-<<<<<<< HEAD
             return GetSingleNode(xml, selector, context, (e) => null);
         }
 
         public static string GetParam(string xml, string param, ITripleSlashCommentParserContext context)
-=======
-
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
-
-            return GetSingleNode(xml, selector, normalize, (e) => null);
-        }
-
-        public static string GetParam(string xml, string param, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
         {
             if (string.IsNullOrEmpty(xml)) return null;
             Debug.Assert(!string.IsNullOrEmpty(param));
@@ -172,23 +118,12 @@
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/param[@name='" + param + "']";
-<<<<<<< HEAD
-=======
-
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
 
             return GetSingleNode(xml, selector, context, (e) => null);
         }
 
-<<<<<<< HEAD
         public static string GetTypeParameter(string xml, string name, ITripleSlashCommentParserContext context)
-=======
-        public static string GetTypeParameter(string xml, string name, bool normalize, Action<string> addReference, bool preserveRawInlineComments)
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
+
         {
             if (string.IsNullOrEmpty(xml)) return null;
             Debug.Assert(!string.IsNullOrEmpty(name));
@@ -200,16 +135,8 @@
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/typeparam[@name='" + name + "']";
-<<<<<<< HEAD
             return GetSingleNode(xml, selector, context, (e) => null);
         }
-=======
-
-            if (!preserveRawInlineComments)
-            {
-                xml = ResolveInternalTags(xml, selector, addReference);
-            }
->>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
 
         private static string ResolveInternalTags(string xml, string selector, ITripleSlashCommentParserContext context)
         {
