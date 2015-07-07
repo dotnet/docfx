@@ -61,7 +61,11 @@
                 var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);
                 item.NamespaceName = string.IsNullOrEmpty(namespaceName) ? null : namespaceName;
             }
+<<<<<<< HEAD
             VisitorHelper.FeedComments(item, GetTripleSlashCommentParserContext(item, _preserveRawInlineComments));
+=======
+            VisitorHelper.FeedComments(item, GetAddReferenceDelegate(item), _preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
             if (item.Exceptions != null)
             {
                 foreach (var exceptions in item.Exceptions)
@@ -146,7 +150,11 @@
 
                 foreach (var p in symbol.TypeParameters)
                 {
+<<<<<<< HEAD
                     var param = VisitorHelper.GetTypeParameterDescription(p, item, GetTripleSlashCommentParserContext(item, _preserveRawInlineComments));
+=======
+                    var param = VisitorHelper.GetTypeParameterDescription(p, item, GetAddReferenceDelegate(item), _preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
                     item.Syntax.TypeParameters.Add(param);
                 }
             }
@@ -194,7 +202,11 @@
 
                 foreach (var p in symbol.TypeParameters)
                 {
+<<<<<<< HEAD
                     var param = VisitorHelper.GetTypeParameterDescription(p, result, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+=======
+                    var param = VisitorHelper.GetTypeParameterDescription(p, result, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
                     result.Syntax.TypeParameters.Add(param);
                 }
             }
@@ -302,14 +314,22 @@
                 foreach (var p in symbol.Parameters)
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters);
+<<<<<<< HEAD
                     var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+=======
+                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
                     Debug.Assert(param.Type != null);
                     result.Syntax.Parameters.Add(param);
                 }
             }
             {
                 var id = AddSpecReference(symbol.Type, typeGenericParameters);
+<<<<<<< HEAD
                 result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+=======
+                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
                 Debug.Assert(result.Syntax.Return.Type != null);
             }
 
@@ -554,7 +574,11 @@
             if (!symbol.ReturnsVoid)
             {
                 var id = AddSpecReference(symbol.ReturnType, typeGenericParameters, methodGenericParameters);
+<<<<<<< HEAD
                 result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+=======
+                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
             }
 
             if (symbol.Parameters.Length > 0)
@@ -567,7 +591,11 @@
                 foreach (var p in symbol.Parameters)
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters, methodGenericParameters);
+<<<<<<< HEAD
                     var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+=======
+                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetAddReferenceDelegate(result), _preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
                     Debug.Assert(param.Type != null);
                     result.Syntax.Parameters.Add(param);
                 }

@@ -167,6 +167,7 @@
             return false;
         }
 
+<<<<<<< HEAD
         public static void FeedComments(MetadataItem item, ITripleSlashCommentParserContext context)
         {
             if (!string.IsNullOrEmpty(item.RawComment))
@@ -174,6 +175,15 @@
                 item.Summary = TripleSlashCommentParser.GetSummary(item.RawComment, context);
                 item.Remarks = TripleSlashCommentParser.GetRemarks(item.RawComment, context);
                 item.Exceptions = TripleSlashCommentParser.GetExceptions(item.RawComment, context);
+=======
+        public static void FeedComments(MetadataItem item, Action<string> addReference, bool preserveRawInlineComments = false)
+        {
+            if (!string.IsNullOrEmpty(item.RawComment))
+            {
+                item.Summary = TripleSlashCommentParser.GetSummary(item.RawComment, true, addReference, preserveRawInlineComments);
+                item.Remarks = TripleSlashCommentParser.GetRemarks(item.RawComment, true, addReference, preserveRawInlineComments);
+                item.Exceptions = TripleSlashCommentParser.GetExceptions(item.RawComment, true, addReference, preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
             }
         }
 
@@ -199,13 +209,22 @@
             return str.ToString().Substring(2);
         }
 
+<<<<<<< HEAD
         public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, ITripleSlashCommentParserContext context)
+=======
+        public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, Action<string> addReference, bool preserveRawInlineComments)
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
         {
             string raw = item.RawComment;
 
             string comment = isReturn ?
+<<<<<<< HEAD
                 TripleSlashCommentParser.GetReturns(raw, context) :
                 TripleSlashCommentParser.GetParam(raw, symbol.Name, context);
+=======
+                TripleSlashCommentParser.GetReturns(raw, true, addReference, preserveRawInlineComments) :
+                TripleSlashCommentParser.GetParam(raw, symbol.Name, true, addReference, preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
 
             return new ApiParameter
             {
@@ -215,9 +234,15 @@
             };
         }
 
+<<<<<<< HEAD
         public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, ITripleSlashCommentParserContext context)
         {
             string comment = TripleSlashCommentParser.GetTypeParameter(item.RawComment, symbol.Name, context);
+=======
+        public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, Action<string> addReference, bool preserveRawInlineComments)
+        {
+            string comment = TripleSlashCommentParser.GetTypeParameter(item.RawComment, symbol.Name, true, addReference, preserveRawInlineComments);
+>>>>>>> 48e2ac46e372545cb6e76cdf3488ebfcb2106f9d
             return new ApiParameter
             {
                 Name = symbol.Name,
