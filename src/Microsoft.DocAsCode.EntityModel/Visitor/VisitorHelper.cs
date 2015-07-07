@@ -174,6 +174,9 @@
                 item.Summary = TripleSlashCommentParser.GetSummary(item.RawComment, context);
                 item.Remarks = TripleSlashCommentParser.GetRemarks(item.RawComment, context);
                 item.Exceptions = TripleSlashCommentParser.GetExceptions(item.RawComment, context);
+                item.Sees = TripleSlashCommentParser.GetSees(item.RawComment, context);
+                item.SeeAlsos = TripleSlashCommentParser.GetSeeAlsos(item.RawComment, context);
+                item.Example = TripleSlashCommentParser.GetExample(item.RawComment, context);
             }
         }
 

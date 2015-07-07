@@ -268,7 +268,8 @@ namespace Microsoft.DocAsCode.Utility
                 }
             }
 
-            return targetFiles.DefaultIfEmpty();
+            if (targetFiles.Count == 0) return null;
+            return targetFiles;
         }
 
         public static string GetFullPath(string folder, string href)

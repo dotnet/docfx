@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel
 {
-    public class ExceptionDetail
+    public class CrefInfo
     {
         [YamlDotNet.Serialization.YamlMember(Alias = "type")]
         public string Type { get; set; }

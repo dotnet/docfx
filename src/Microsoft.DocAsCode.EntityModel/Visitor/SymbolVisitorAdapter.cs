@@ -70,6 +70,23 @@
                     AddReference(exceptions.Type);
                 }
             }
+
+            if (item.Sees != null)
+            {
+                foreach (var i in item.Sees)
+                {
+                    AddReference(i.Type);
+                }
+            }
+
+            if (item.SeeAlsos != null)
+            {
+                foreach (var i in item.SeeAlsos)
+                {
+                    AddReference(i.Type);
+                }
+            }
+
             _generator.DefaultVisit(symbol, item, this);
             return item;
         }
@@ -579,7 +596,7 @@
         {
             return new TripleSlashCommentParserContext
             {
-                AddReference = GetAddReferenceDelegate(item),
+                AddReferenceDelegate = GetAddReferenceDelegate(item),
                 Normalize = true,
                 PreserveRawInlineComments = preserve
             };
