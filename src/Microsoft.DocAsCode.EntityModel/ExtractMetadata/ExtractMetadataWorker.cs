@@ -17,6 +17,7 @@
     public class ExtractMetadataWorker
     {
         private static readonly Lazy<MSBuildWorkspace> Workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
+        private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
         private static string[] SupportedSolutionExtensions = { ".sln" };
         private static string[] SupportedProjectName = { "project.json" };
         private static string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
@@ -709,7 +710,7 @@
                     "cs.temp.dll",
                     options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: new[] { MetadataReference.CreateFromAssembly(typeof(object).Assembly) });
+                    references: new[] { MscorlibMetadataReference.Value });
                 return compilation;
             }
             catch (Exception e)
@@ -728,7 +729,7 @@
                     "vb.temp.dll",
                     options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: new[] { MetadataReference.CreateFromAssembly(typeof(object).Assembly) });
+                    references: new[] { MscorlibMetadataReference.Value });
                 return compilation;
             }
             catch (Exception e)

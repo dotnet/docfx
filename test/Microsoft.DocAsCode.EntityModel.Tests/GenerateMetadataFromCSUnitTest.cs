@@ -1779,7 +1779,7 @@ namespace Test1
 }
 ";
             var referencedAssembly = CreateAssemblyFromCSharpCode(referenceCode, "reference.dll");
-            var compilation = CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromAssembly(referencedAssembly));
+            var compilation = CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromFile(referencedAssembly.Location));
             Assert.Equal("test.dll", compilation.AssemblyName);
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
             Assert.Null(output.AssemblyNameList);
@@ -1956,7 +1956,7 @@ namespace Test1
         private static Compilation CreateCompilationFromCSharpCode(string code, string assemblyName, params MetadataReference[] references)
         {
             var tree = SyntaxFactory.ParseSyntaxTree(code);
-            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromAssembly(typeof(object).Assembly) };
+            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) };
             if (references != null)
             {
                 defaultReferences.AddRange(references);
