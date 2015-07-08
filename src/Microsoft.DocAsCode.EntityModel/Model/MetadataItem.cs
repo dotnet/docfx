@@ -53,6 +53,9 @@
         [YamlMember(Alias = "remarks")]
         public string Remarks { get; set; }
 
+        [YamlMember(Alias = "example")]
+        public string Example { get; set; }
+
         [YamlMember(Alias = "syntax")]
         public SyntaxDetail Syntax { get; set; }
 
@@ -60,7 +63,13 @@
         public string Overridden { get; set; }
 
         [YamlMember(Alias = "exceptions")]
-        public List<ExceptionDetail> Exceptions { get; set; }
+        public List<CrefInfo> Exceptions { get; set; }
+
+        [YamlMember(Alias = "see")]
+        public List<CrefInfo> Sees { get; set; }
+
+        [YamlMember(Alias = "seealso")]
+        public List<CrefInfo> SeeAlsos { get; set; }
 
         [YamlMember(Alias = "inheritance")]
         public List<string> Inheritance { get; set; }

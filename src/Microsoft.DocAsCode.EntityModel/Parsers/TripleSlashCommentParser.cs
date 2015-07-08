@@ -13,7 +13,7 @@
     {
         bool Normalize { get; set; }
         bool PreserveRawInlineComments { get; set; }
-        Action<string> AddReference { get; set; }
+        Action<string> AddReferenceDelegate { get; set; }
     }
 
     public class TripleSlashCommentParserContext : ITripleSlashCommentParserContext
@@ -22,7 +22,7 @@
 
         public bool PreserveRawInlineComments { get; set; }
 
-        public Action<string> AddReference { get; set; }
+        public Action<string> AddReferenceDelegate { get; set; }
 
     }
 
@@ -69,33 +69,67 @@
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-        public static List<ExceptionDetail> GetExceptions(string xml, ITripleSlashCommentParserContext context)
+        public static List<CrefInfo> GetExceptions(string xml, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/exception";
-            var iterator = SelectNodes(xml, selector);
-            if (iterator == null) return null;
-            var details = new List<ExceptionDetail>();
-            foreach (XPathNavigator nav in iterator)
-            {
-                string description = nav.Value;
-                if (context?.Normalize ?? true) description = NormalizeContentFromTripleSlashComment(description);
+            var result = GetMulitpleCrefInfo(xml, selector, context).ToList();
+            if (result.Count == 0) return null;
+            return result;
+        }
 
-                string exceptionType = nav.GetAttribute("cref", string.Empty);
-                if (!string.IsNullOrEmpty(exceptionType))
-                {
-                    // Check if exception type is valid and trim prefix
-                    if (LinkParser.CommentIdRegex.IsMatch(exceptionType))
-                    {
-                        exceptionType = exceptionType.Substring(2);
-                        description = ResolveInternalTags(description, selector, context);
+        /// <summary>
+        /// To get `see` tags out
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <see cref="SpecIdHelper"/>
+        /// <see cref="SourceSwitch"/>
+        public static List<CrefInfo> GetSees(string xml, ITripleSlashCommentParserContext context)
+        {
+            var result = GetMulitpleCrefInfo(xml, "/member/see", context).ToList();
+            if (result.Count == 0) return null;
+            return result;
+        }
 
-                        details.Add(new ExceptionDetail { Description = description, Type = exceptionType });
-                    }
-                }
-            }
+        /// <summary>
+        /// To get `seealso` tags out
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <seealso cref="WaitForChangedResult"/>
+        /// <seealso cref="http://google.com">ABCS</seealso>
+        public static List<CrefInfo> GetSeeAlsos(string xml, ITripleSlashCommentParserContext context)
+        {
+            var result = GetMulitpleCrefInfo(xml, "/member/seealso", context).ToList();
+            if (result.Count == 0) return null;
+            return result;
+        }
 
-            if (details.Count > 0) return details;
-            return null;
+        /// <summary>
+        /// To get `example` tags out
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <example> 
+        /// This sample shows how to call the <see cref="GetExceptions(string, ITripleSlashCommentParserContext)"/> method.
+        /// <code>
+        /// class TestClass  
+        /// { 
+        ///     static int Main()  
+        ///     { 
+        ///         return GetExceptions(null, null).Count(); 
+        ///     } 
+        /// } 
+        /// </code> 
+        /// </example>
+        public static string GetExample(string xml, ITripleSlashCommentParserContext context)
+        {
+            // Resolve <see cref> to @ syntax
+            // Also support <seealso cref>
+            return GetSingleNode(xml, "/member/example", context, (e) => null);
         }
 
         public static string GetReturns(string xml, ITripleSlashCommentParserContext context)
@@ -141,8 +175,8 @@
         private static string ResolveInternalTags(string xml, string selector, ITripleSlashCommentParserContext context)
         {
             if (string.IsNullOrEmpty(xml) || context == null || context.PreserveRawInlineComments) return xml;
-            xml = ResolveSeeCref(xml, selector, context.AddReference);
-            xml = ResolveSeeAlsoCref(xml, selector, context.AddReference);
+            xml = ResolveSeeCref(xml, selector, context.AddReferenceDelegate);
+            xml = ResolveSeeAlsoCref(xml, selector, context.AddReferenceDelegate);
             return xml;
         }
 
@@ -225,6 +259,32 @@
             }
 
             return xml;
+        }
+
+        private static IEnumerable<CrefInfo> GetMulitpleCrefInfo(string xml, string selector, ITripleSlashCommentParserContext context)
+        {
+            if (string.IsNullOrEmpty(xml) || string.IsNullOrEmpty(selector) || context == null) yield break;
+
+            var iterator = SelectNodes(xml, selector);
+            if (iterator == null) yield break;
+            foreach (XPathNavigator nav in iterator)
+            {
+                string description = nav.Value;
+                if (context?.Normalize ?? true) description = NormalizeContentFromTripleSlashComment(description);
+
+                string exceptionType = nav.GetAttribute("cref", string.Empty);
+                if (!string.IsNullOrEmpty(exceptionType))
+                {
+                    // Check if exception type is valid and trim prefix
+                    if (LinkParser.CommentIdRegex.IsMatch(exceptionType))
+                    {
+                        exceptionType = exceptionType.Substring(2);
+                        description = ResolveInternalTags(description, selector, context);
+                        if (string.IsNullOrEmpty(description)) description = null;
+                        yield return new CrefInfo { Description = description, Type = exceptionType };
+                    }
+                }
+            }
         }
 
         private static XPathNodeIterator SelectNodes(string xml, string selector)

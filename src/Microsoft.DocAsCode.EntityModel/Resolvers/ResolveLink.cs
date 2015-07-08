@@ -18,6 +18,7 @@
                     // get all the possible places where link is possible
                     member.Remarks = ResolveText(index, member.Remarks, member);
                     member.Summary = ResolveText(index, member.Summary, member);
+                    member.Example = ResolveText(index, member.Example, member);
                     if (member.Syntax != null && member.Syntax.Parameters != null)
                         member.Syntax.Parameters.ForEach(s =>
                         {
@@ -31,6 +32,20 @@
                         });
                     }
 
+                    if (member.Sees != null)
+                    {
+                        member.Sees.ForEach(s => {
+                            s.Description = ResolveText(index, s.Description, member);
+                        });
+                    }
+
+                    if (member.SeeAlsos != null)
+                    {
+                        member.SeeAlsos.ForEach(s => {
+                            s.Description = ResolveText(index, s.Description, member);
+                        });
+                    }
+
                     if (member.Syntax != null && member.Syntax.Return != null)
                         member.Syntax.Return.Description = ResolveText(index, member.Syntax.Return.Description, member);
 
@@ -40,7 +55,7 @@
 
             return new ParseResult(ResultLevel.Success);
         }
-
+        
         private static string ResolveText(ApiReferenceModel dict, string input, MetadataItem currentMember)
         {
             if (string.IsNullOrEmpty(input) || dict == null) return input;

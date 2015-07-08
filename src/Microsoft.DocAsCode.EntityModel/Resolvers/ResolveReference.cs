@@ -119,6 +119,22 @@
                 }
             }
 
+            if (current.Sees != null && current.Sees.Count > 0)
+            {
+                foreach (var item in current.Sees)
+                {
+                    yield return item.Type;
+                }
+            }
+
+            if (current.SeeAlsos != null && current.SeeAlsos.Count > 0)
+            {
+                foreach (var item in current.SeeAlsos)
+                {
+                    yield return item.Type;
+                }
+            }
+
             if (current.Syntax != null)
             {
                 if (current.Syntax.Parameters != null)
