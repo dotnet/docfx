@@ -52,6 +52,41 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{4D3D55
 		test\Shared\test.base.props = test\Shared\test.base.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "doc", "doc\doc.csproj", "{03FA881A-7B27-469A-A086-FFBA385EBACA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docfx.msbuild", "docfx.msbuild", "{8CFE8DE6-598F-4951-899D-8D09325FB618}"
+	ProjectSection(SolutionItems) = preProject
+		src\nuspec\docfx.msbuild\docfx.msbuild.nuspec = src\nuspec\docfx.msbuild\docfx.msbuild.nuspec
+		src\nuspec\docfx.msbuild\Readme.txt = src\nuspec\docfx.msbuild\Readme.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "msdn.yml", "msdn.yml", "{7056DE24-9537-4504-95CF-7A63FBE74772}"
+	ProjectSection(SolutionItems) = preProject
+		src\nuspec\msdn.yml\msdn.yml.nuspec = src\nuspec\msdn.yml\msdn.yml.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{FE35AC88-7137-4B5F-8CA2-D31B0BC6CD83}"
+	ProjectSection(SolutionItems) = preProject
+		src\nuspec\docfx.msbuild\content\toc.yml = src\nuspec\docfx.msbuild\content\toc.yml
+		src\nuspec\docfx.msbuild\content\xdoc.json = src\nuspec\docfx.msbuild\content\xdoc.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{BB721096-D78C-4CF4-9D60-E66A26A3CB49}"
+	ProjectSection(SolutionItems) = preProject
+		src\nuspec\msdn.yml\content\msdn.yml = src\nuspec\msdn.yml\content\msdn.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{8BFFE355-4712-4187-8252-F69AA515525A}"
+	ProjectSection(SolutionItems) = preProject
+		src\nuspec\docfx.msbuild\build\docfx.msbuild.targets = src\nuspec\docfx.msbuild\build\docfx.msbuild.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{04B2D6B6-82DC-48CA-AC0E-9B4A32DD71C5}"
+	ProjectSection(SolutionItems) = preProject
+		src\nuspec\msdn.yml\tools\install.ps1 = src\nuspec\msdn.yml\tools\install.ps1
+		src\nuspec\msdn.yml\tools\uninstall.ps1 = src\nuspec\msdn.yml\tools\uninstall.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +129,10 @@ Global
 		{EFAA7A53-D047-422E-A3FB-ECC834944CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFAA7A53-D047-422E-A3FB-ECC834944CE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFAA7A53-D047-422E-A3FB-ECC834944CE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,5 +152,12 @@ Global
 		{EFAA7A53-D047-422E-A3FB-ECC834944CE6} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
 		{BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{4D3D5520-B535-4FBD-9452-5B97D34BD23E} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
+		{03FA881A-7B27-469A-A086-FFBA385EBACA} = {3E93DD37-948B-41CF-8C91-892B36B07E58}
+		{8CFE8DE6-598F-4951-899D-8D09325FB618} = {BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}
+		{7056DE24-9537-4504-95CF-7A63FBE74772} = {BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}
+		{FE35AC88-7137-4B5F-8CA2-D31B0BC6CD83} = {8CFE8DE6-598F-4951-899D-8D09325FB618}
+		{BB721096-D78C-4CF4-9D60-E66A26A3CB49} = {7056DE24-9537-4504-95CF-7A63FBE74772}
+		{8BFFE355-4712-4187-8252-F69AA515525A} = {8CFE8DE6-598F-4951-899D-8D09325FB618}
+		{04B2D6B6-82DC-48CA-AC0E-9B4A32DD71C5} = {7056DE24-9537-4504-95CF-7A63FBE74772}
 	EndGlobalSection
 EndGlobal

@@ -15,6 +15,7 @@
 .NuGet/
 artifacts/
 target/
+/**/_site/
 
 ###############
 #  temp file  #
