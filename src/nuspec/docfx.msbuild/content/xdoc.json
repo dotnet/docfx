@@ -20,6 +20,6 @@
   ],
   "externalReferences": [],
   "title": "Doc-as-code documentation",
-  "templateType": "IIS",
+  "theme": "IIS.default",
   "output": "_site"
 }
