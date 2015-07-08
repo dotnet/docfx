@@ -18,6 +18,8 @@
                     return new WebsiteSubCommand();
                 case SubCommandType.Export:
                     return new ExportSubCommand();
+                case SubCommandType.Pack:
+                    return new PackSubCommand();
                 default:
                     throw new NotSupportedException("SubCommandType: " + type.ToString(), null);
             }

@@ -21,7 +21,6 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("ab97bedf-d207-42e9-a56f-c9dd395bfcdd")]
 
-[assembly: InternalsVisibleTo("Microsoft.DocAscode.UnitTest")]
 [assembly: AssemblyLicense(
     "This is open-source software under MIT License.")]
 [assembly: AssemblyUsage(
@@ -33,6 +32,7 @@ using System.Runtime.InteropServices;
     "   init        : Generate an initial xdoc.json following the instructions",
     "   metadata    : Generate YAML files for the APIs",
     "   website     : Generate client-only website combining API in YAML files and conceptual files",
+    "   export      : Export APIs in project for external reference",
     "",
     "See 'docfx help <command> to read about a specific subcommand guide"
     )]

@@ -51,13 +51,12 @@
             {
                 var name = Path.GetFileName(projectPaths[i]);
                 AddFiles(
-                    string.Format("{0}.yml", name),
                     name + "/api/",
                     Directory.GetFiles(Path.Combine(projectPaths[i], "api"), "*.yml", SearchOption.TopDirectoryOnly));
             }
         }
 
-        public void AddFiles(string entryName, string relativePath, IReadOnlyList<string> docPaths)
+        public void AddFiles(string relativePath, IReadOnlyList<string> docPaths)
         {
             if (docPaths == null)
             {
@@ -68,28 +67,42 @@
                 throw new ArgumentException("Empty collection is not allowed.", "apiPaths");
             }
             var uri = string.IsNullOrEmpty(relativePath) ? _baseUri : new Uri(_baseUri, relativePath);
-            var vms = from doc in docPaths
-                      select YamlUtility.Deserialize<PageViewModel>(doc);
-            var extRefs = from vm in vms
-                          from extRef in ExternalReferenceConverter.ToExternalReferenceViewModel(vm, uri)
-                          select extRef;
-            ZipArchiveEntry entry = null;
-            if (_zip.Mode == ZipArchiveMode.Read)
+            foreach (var item in from doc in docPaths
+                                 let vm = LoadViewModelNoThrow(doc)
+                                 where vm != null
+                                 let extRef = ExternalReferenceConverter.ToExternalReferenceViewModel(vm.Item2, uri).ToList()
+                                 select new { EntryName = vm.Item1, Refs = extRef })
             {
-                throw new InvalidOperationException("Cannot add files in read mode.");
+                ZipArchiveEntry entry = null;
+                if (_zip.Mode == ZipArchiveMode.Read)
+                {
+                    throw new InvalidOperationException("Cannot add files in read mode.");
+                }
+                if (_zip.Mode == ZipArchiveMode.Update)
+                {
+                    entry = _zip.GetEntry(item.EntryName);
+                }
+                if (_zip.Mode != ZipArchiveMode.Read)
+                {
+                    entry = entry ?? _zip.CreateEntry(item.EntryName);
+                }
+                using (var stream = entry.Open())
+                using (var sw = new StreamWriter(stream))
+                {
+                    YamlUtility.Serialize(sw, item.Refs);
+                }
             }
-            if (_zip.Mode == ZipArchiveMode.Update)
+        }
+
+        private static Tuple<string, PageViewModel> LoadViewModelNoThrow(string filePath)
+        {
+            try
             {
-                entry = _zip.GetEntry(entryName);
+                return Tuple.Create(Path.GetFileName(filePath), YamlUtility.Deserialize<PageViewModel>(filePath));
             }
-            if (_zip.Mode != ZipArchiveMode.Read)
+            catch (Exception)
             {
-                entry = entry ?? _zip.CreateEntry(entryName);
-            }
-            using (var stream = entry.Open())
-            using (var sw = new StreamWriter(stream))
-            {
-                YamlUtility.Serialize(sw, extRefs);
+                return null;
             }
         }
 
