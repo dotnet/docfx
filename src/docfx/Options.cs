@@ -23,8 +23,11 @@
         [VerbOption("website", HelpText = "Generate website as documenation")]
         public WebsiteSubOptions WebsiteVerb { get; set; } = new WebsiteSubOptions();
 
-        [VerbOption("export", HelpText = "Generate API YAML for external reference")]
+        [VerbOption("export", HelpText = "Generate API yaml from project for external reference")]
         public ExportSubOptions ExportVerb { get; set; } = new ExportSubOptions();
+
+        [VerbOption("pack", HelpText = "Pack existing API YAML for external reference")]
+        public PackSubOptions PackVerb { get; set; } = new PackSubOptions();
 
         public WebsiteSubOptions GetTopLevelOptions()
         {
@@ -108,7 +111,7 @@
 
     class ExportSubOptions : TopLevelOptions
     {
-        [Option('b', "baseurl", HelpText = "The base url of yaml file.", Required = true)]
+        [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]
         public string BaseUrl { get; set; }
 
         [Option('n', "name", HelpText = "The name of package.")]
@@ -116,13 +119,27 @@
 
         [Option('a', "append", HelpText = "Append the package.")]
         public bool AppendMode { get; set; }
+    }
 
-        public ExportSubOptions(ExportSubOptions options) : base(options)
-        {
-            BaseUrl = options.BaseUrl;
-            Name = options.Name;
-        }
-        public ExportSubOptions() : base() { }
+    class PackSubOptions : TopLevelOptions
+    {
+        [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]
+        public string BaseUrl { get; set; }
+
+        [Option('s', "source", HelpText = "The base folder for yaml files.", Required = true)]
+        public string Source { get; set; }
+
+        [Option('g', "glob", HelpText = "The glob partten for yaml files.", Required = true)]
+        public string Glob { get; set; }
+
+        [Option('n', "name", HelpText = "The name of package.")]
+        public string Name { get; set; }
+
+        [Option('a', "append", HelpText = "Append the package.")]
+        public bool AppendMode { get; set; }
+
+        [Option('f', "flat", HelpText = "Flat href path.")]
+        public bool FlatMode { get; set; }
     }
 
     class HelpSubOptions
