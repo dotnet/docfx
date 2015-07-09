@@ -25,7 +25,7 @@
                     var files = GlobPathHelper.GetFiles(source, options.PackVerb.Glob).ToList();
                     if (options.PackVerb.FlatMode)
                     {
-                        package.AddFiles("", files);
+                        package.AddFiles(string.Empty, files);
                     }
                     else
                     {

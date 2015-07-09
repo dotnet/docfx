@@ -135,9 +135,6 @@
         [Option('n', "name", HelpText = "The name of package.")]
         public string Name { get; set; }
 
-        [Option('e', "entryname", HelpText = "The entry name in package.")]
-        public string EntryName { get; set; }
-
         [Option('a', "append", HelpText = "Append the package.")]
         public bool AppendMode { get; set; }
 

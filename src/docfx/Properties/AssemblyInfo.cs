@@ -33,6 +33,7 @@ using System.Runtime.InteropServices;
     "   metadata    : Generate YAML files for the APIs",
     "   website     : Generate client-only website combining API in YAML files and conceptual files",
     "   export      : Export APIs in project for external reference",
+    "   pack        : Pack existed APIs for external reference",
     "",
     "See 'docfx help <command> to read about a specific subcommand guide"
     )]

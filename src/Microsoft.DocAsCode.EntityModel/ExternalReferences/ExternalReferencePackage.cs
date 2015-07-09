@@ -66,6 +66,10 @@
             {
                 throw new ArgumentException("Empty collection is not allowed.", "apiPaths");
             }
+            if (_zip.Mode == ZipArchiveMode.Read)
+            {
+                throw new InvalidOperationException("Cannot add files in read mode.");
+            }
             var uri = string.IsNullOrEmpty(relativePath) ? _baseUri : new Uri(_baseUri, relativePath);
             foreach (var item in from doc in docPaths
                                  let vm = LoadViewModelNoThrow(doc)
@@ -74,18 +78,11 @@
                                  select new { EntryName = vm.Item1, Refs = extRef })
             {
                 ZipArchiveEntry entry = null;
-                if (_zip.Mode == ZipArchiveMode.Read)
-                {
-                    throw new InvalidOperationException("Cannot add files in read mode.");
-                }
                 if (_zip.Mode == ZipArchiveMode.Update)
                 {
                     entry = _zip.GetEntry(item.EntryName);
                 }
-                if (_zip.Mode != ZipArchiveMode.Read)
-                {
-                    entry = entry ?? _zip.CreateEntry(item.EntryName);
-                }
+                entry = entry ?? _zip.CreateEntry(item.EntryName);
                 using (var stream = entry.Open())
                 using (var sw = new StreamWriter(stream))
                 {
