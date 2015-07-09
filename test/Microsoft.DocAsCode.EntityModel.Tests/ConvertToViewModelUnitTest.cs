@@ -359,7 +359,7 @@
 
         [Trait("Related", "Reference")]
         [Fact]
-        public void TestConvertNamespace2()
+        public void TestConvertNamespace()
         {
             var vm = EntityModel.ViewModels.PageViewModel.FromModel(model.Items[0]);
             Assert.NotNull(vm);
@@ -389,7 +389,7 @@
         [Trait("Related", "Generic")]
         [Trait("Related", "Reference")]
         [Fact]
-        public void TestConvertType2()
+        public void TestConvertType()
         {
             var vm = EntityModel.ViewModels.PageViewModel.FromModel(model.Items[0].Items[0]);
             Assert.NotNull(vm);

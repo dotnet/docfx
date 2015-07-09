@@ -31,7 +31,8 @@
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,
             string apiFolder,
-            bool preserveRawInlineComments)
+            bool preserveRawInlineComments,
+            IEnumerable<string> externalReferencePackages)
         {
             MetadataModel viewModel = new MetadataModel();
             viewModel.Indexer = new ApiReferenceModel();
@@ -45,7 +46,8 @@
             {
                 ApiFolder = apiFolder,
                 References = allReferences,
-                PreserveRawInlineComments = preserveRawInlineComments
+                PreserveRawInlineComments = preserveRawInlineComments,
+                ExternalReferences = (from package in externalReferencePackages select new ExternalReferencePackageReader(package)).ToList(),
             };
             var result = ExecutePipeline(viewModel, context);
 

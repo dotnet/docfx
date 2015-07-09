@@ -16,6 +16,8 @@
 
         public bool PreserveRawInlineComments { get; set; }
 
+        public List<string> ExternalReferences { get; set; }
+
         public override string ToString()
         {
             using(StringWriter writer = new StringWriter())

@@ -29,7 +29,10 @@
         {
             var projects = configModel.Projects;
             var outputFolder = configModel.OutputFolder;
-            var inputModel = new ExtractMetadataInputModel() { PreserveRawInlineComments = configModel.PreserveRawInlineComments };
+            var inputModel = new ExtractMetadataInputModel
+            {
+                PreserveRawInlineComments = configModel.PreserveRawInlineComments,
+            };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(configModel.BaseDirectory, configModel.Projects, s =>
             {
@@ -50,6 +53,19 @@
                     inputModel.Items.Add(item.Name, item.Files);
                 }
             }
+
+            System.Diagnostics.Debug.Fail("aa");
+            inputModel.ExternalReferences =
+                (from item in
+                     GlobUtility.ExpandFileMapping(
+                         configModel.BaseDirectory,
+                         configModel.ExternalReferences,
+                         s => s)
+                         .Items
+                 from file in item.Files
+                 select file)
+                 .Distinct()
+                 .ToList();
 
             return inputModel;
         }

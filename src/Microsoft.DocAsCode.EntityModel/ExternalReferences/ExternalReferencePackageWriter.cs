@@ -1,19 +1,20 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel
 {
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.IO;
     using System.IO.Compression;
 
-    public class ExternalReferencePackage : IDisposable
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
+
+    public class ExternalReferencePackageWriter : IDisposable
     {
         private readonly string _packageFile;
         private readonly Uri _baseUri;
         private readonly ZipArchive _zip;
 
-        private ExternalReferencePackage(string packageFile, Uri baseUri, bool append)
+        private ExternalReferencePackageWriter(string packageFile, Uri baseUri, bool append)
         {
             _packageFile = packageFile;
             _baseUri = baseUri;
@@ -27,14 +28,14 @@
             }
         }
 
-        public static ExternalReferencePackage Create(string packageFile, Uri baseUri)
+        public static ExternalReferencePackageWriter Create(string packageFile, Uri baseUri)
         {
-            return new ExternalReferencePackage(packageFile, baseUri, false);
+            return new ExternalReferencePackageWriter(packageFile, baseUri, false);
         }
 
-        public static ExternalReferencePackage Append(string packageFile, Uri baseUri)
+        public static ExternalReferencePackageWriter Append(string packageFile, Uri baseUri)
         {
-            return new ExternalReferencePackage(packageFile, baseUri, true);
+            return new ExternalReferencePackageWriter(packageFile, baseUri, true);
         }
 
         public void AddProjects(IReadOnlyList<string> projectPaths)
@@ -65,10 +66,6 @@
             if (docPaths.Count == 0)
             {
                 throw new ArgumentException("Empty collection is not allowed.", "apiPaths");
-            }
-            if (_zip.Mode == ZipArchiveMode.Read)
-            {
-                throw new InvalidOperationException("Cannot add files in read mode.");
             }
             var uri = string.IsNullOrEmpty(relativePath) ? _baseUri : new Uri(_baseUri, relativePath);
             foreach (var item in from doc in docPaths

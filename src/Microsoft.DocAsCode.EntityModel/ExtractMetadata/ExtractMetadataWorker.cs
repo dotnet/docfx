@@ -13,6 +13,7 @@
     using System.Threading.Tasks;
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
+    using ViewModels;
 
     public class ExtractMetadataWorker
     {
@@ -424,7 +425,7 @@
             {
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
-                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments);
+                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments, _rawInput.ExternalReferences);
                 applicationCache.SaveToCache(inputs, documentCache.Cache, triggeredTime, outputFolder, outputFiles);
             }
         }
@@ -538,10 +539,11 @@
             string indexFileName,
             string tocFileName,
             string apiFolder,
-            bool preserveRawInlineComments)
+            bool preserveRawInlineComments,
+            IEnumerable<string> externalReferencePackages)
         {
             var outputFiles = new List<string>();
-            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, apiFolder, preserveRawInlineComments);
+            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, apiFolder, preserveRawInlineComments, externalReferencePackages);
             
             // 1. generate toc.yml
             outputFiles.Add(tocFileName);
@@ -549,7 +551,7 @@
             model.TocYamlViewModel.Type = MemberType.Toc;
 
             // TOC do not change
-            var tocViewModel = ViewModels.TocViewModel.FromModel(model.TocYamlViewModel);
+            var tocViewModel = TocViewModel.FromModel(model.TocYamlViewModel);
             string tocFilePath = Path.Combine(folder, tocFileName);
 
             YamlUtility.Serialize(tocFilePath, tocViewModel);
@@ -566,7 +568,7 @@
                 outputFiles.Add(Path.Combine(apiFolder, memberModel.Href));
                 string itemFilepath = Path.Combine(folder, apiFolder, memberModel.Href);
                 Directory.CreateDirectory(Path.GetDirectoryName(itemFilepath));
-                var memberViewModel = ViewModels.PageViewModel.FromModel(memberModel);
+                var memberViewModel = PageViewModel.FromModel(memberModel);
                 YamlUtility.Serialize(itemFilepath, memberViewModel);
                 ParseResult.WriteToConsole(ResultLevel.Success, "Metadata file for {0} is saved to {1}", memberModel.Name, itemFilepath);
             }
