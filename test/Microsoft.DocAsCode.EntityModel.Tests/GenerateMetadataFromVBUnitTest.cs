@@ -1254,7 +1254,7 @@ End Namespace
         private static Compilation CreateCompilationFromVBCode(string code, string assemblyName, params MetadataReference[] references)
         {
             var tree = SyntaxFactory.ParseSyntaxTree(code);
-            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromAssembly(typeof(object).Assembly) };
+            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) };
             if (references != null)
             {
                 defaultReferences.AddRange(references);
