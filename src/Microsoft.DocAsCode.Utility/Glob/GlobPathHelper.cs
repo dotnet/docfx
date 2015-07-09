@@ -7,7 +7,7 @@
     public class GlobPathHelper
     {
         /// <summary>
-        /// '\' is considered as ESCAPE character, make sure to transform '\' in file path to '/' before globbing
+        /// NOTE: '\' is considered as ESCAPE character, make sure to transform '\' in file path to '/' before globbing
         /// </summary>
         /// <param name="baseDirectory"></param>
         /// <param name="globPattern"></param>
