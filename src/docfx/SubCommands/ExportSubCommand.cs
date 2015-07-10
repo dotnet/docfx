@@ -45,7 +45,7 @@
                 {
                     return new ParseResult(ResultLevel.Error, "BaseUrl should be absolute url.");
                 }
-                using (var package = options.ExportVerb.AppendMode ? ExternalReferencePackage.Append(outputFile, baseUri) : ExternalReferencePackage.Create(outputFile, baseUri))
+                using (var package = options.ExportVerb.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
                 {
                     package.AddProjects(inputModel.Items.Keys.ToList());
                 }

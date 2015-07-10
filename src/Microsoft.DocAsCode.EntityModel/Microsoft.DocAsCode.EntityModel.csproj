@@ -47,7 +47,8 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="ExternalReferences\ExternalReferencePackage.cs" />
+    <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
+    <Compile Include="ExternalReferences\ExternalReferencePackageWriter.cs" />
     <Compile Include="ExternalReferences\ExternalReferenceConverter.cs" />
     <Compile Include="ExtractMetadata\ExtractMetadataWorker.cs" />
     <Compile Include="Incremental\IncrementalCache.cs" />

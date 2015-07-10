@@ -1,11 +1,6 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     public class ResolvePath : IResolverPipeline
     {
@@ -25,7 +20,7 @@
                                 {
                                     foreach (var item in links)
                                     {
-                                        SetHref(item, yaml.Indexer, current.Name);
+                                        SetHref(item, yaml.Indexer, current.Name, context);
                                     }
                                 }
                             }
@@ -37,7 +32,7 @@
             return new ParseResult(ResultLevel.Success);
         }
 
-        private static void SetHref(LinkItem s, ApiReferenceModel index, string currentName)
+        private static void SetHref(LinkItem s, ApiReferenceModel index, string currentName, ResolverContext context)
         {
             if (s == null) return;
             if (!s.IsExternalPath)
@@ -46,14 +41,29 @@
             }
             else
             {
-                // Set ExternalPath to null;
-                s.Href = null;
+                s.Href = ResolveExternalLink(s.Name, context);
             }
         }
 
         private static string ResolveInternalLink(ApiReferenceModel index, string name, string currentName)
         {
             return MetadataModelUtility.ResolveApiHrefRelativeToCurrentApi(index, name, currentName);
+        }
+
+        private static string ResolveExternalLink(string name, ResolverContext context)
+        {
+            if (context.ExternalReferences != null)
+            {
+                foreach (var reader in context.ExternalReferences)
+                {
+                    ReferenceViewModel vm;
+                    if (reader.TryGetReference(name, out vm))
+                    {
+                        return vm.Href;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

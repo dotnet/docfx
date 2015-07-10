@@ -20,7 +20,7 @@
                     return new ParseResult(ResultLevel.Error, "BaseUrl should be absolute url.");
                 }
                 var source = options.PackVerb.Source.TrimEnd('/', '\\');
-                using (var package = options.PackVerb.AppendMode ? ExternalReferencePackage.Append(outputFile, baseUri) : ExternalReferencePackage.Create(outputFile, baseUri))
+                using (var package = options.PackVerb.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
                 {
                     var files = GlobPathHelper.GetFiles(source, options.PackVerb.Glob).ToList();
                     if (options.PackVerb.FlatMode)

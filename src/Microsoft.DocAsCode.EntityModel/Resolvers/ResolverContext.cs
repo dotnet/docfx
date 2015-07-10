@@ -9,5 +9,7 @@
         public bool PreserveRawInlineComments { get; set; }
 
         public Dictionary<string, ReferenceItem> References { get; set; }
+
+        public List<ExternalReferencePackageReader> ExternalReferences { get; set; }
     }
 }

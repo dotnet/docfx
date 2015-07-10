@@ -31,7 +31,8 @@
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,
             string apiFolder,
-            bool preserveRawInlineComments)
+            bool preserveRawInlineComments,
+            IEnumerable<string> externalReferencePackages)
         {
             MetadataModel viewModel = new MetadataModel();
             viewModel.Indexer = new ApiReferenceModel();
@@ -45,7 +46,12 @@
             {
                 ApiFolder = apiFolder,
                 References = allReferences,
-                PreserveRawInlineComments = preserveRawInlineComments
+                PreserveRawInlineComments = preserveRawInlineComments,
+                ExternalReferences = (from reader in
+                                          from package in externalReferencePackages
+                                          select ExternalReferencePackageReader.CreateNoThrow(package)
+                                      where reader != null
+                                      select reader).ToList(),
             };
             var result = ExecutePipeline(viewModel, context);
 
@@ -56,7 +62,7 @@
         public static ParseResult ExecutePipeline(MetadataModel yaml, ResolverContext context)
         {
             ParseResult result = new ParseResult(ResultLevel.Success);
-            foreach(var pipeline in pipelines)
+            foreach (var pipeline in pipelines)
             {
                 result = pipeline.Run(yaml, context);
                 if (result.ResultLevel == ResultLevel.Error)
