@@ -47,7 +47,11 @@
                 ApiFolder = apiFolder,
                 References = allReferences,
                 PreserveRawInlineComments = preserveRawInlineComments,
-                ExternalReferences = (from package in externalReferencePackages select new ExternalReferencePackageReader(package)).ToList(),
+                ExternalReferences = (from reader in
+                                          from package in externalReferencePackages
+                                          select ExternalReferencePackageReader.CreateNoThrow(package)
+                                      where reader != null
+                                      select reader).ToList(),
             };
             var result = ExecutePipeline(viewModel, context);
 
@@ -58,7 +62,7 @@
         public static ParseResult ExecutePipeline(MetadataModel yaml, ResolverContext context)
         {
             ParseResult result = new ParseResult(ResultLevel.Success);
-            foreach(var pipeline in pipelines)
+            foreach (var pipeline in pipelines)
             {
                 result = pipeline.Run(yaml, context);
                 if (result.ResultLevel == ResultLevel.Error)

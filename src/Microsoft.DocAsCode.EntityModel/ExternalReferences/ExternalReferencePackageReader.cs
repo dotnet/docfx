@@ -7,12 +7,13 @@
     using System.IO.Compression;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using YamlDotNet.Core;
 
     public class ExternalReferencePackageReader
     {
         private readonly string _packageFile;
         private readonly List<string> _uids;
-        private readonly Dictionary<string, string> _uidEntryMap;
+        private readonly Dictionary<string, List<string>> _uidEntryMap;
 
         public ExternalReferencePackageReader(string packageFile)
         {
@@ -20,46 +21,114 @@
             {
                 throw new ArgumentException("package can't be null or empty", nameof(packageFile));
             }
-            _packageFile = packageFile;
-            using (var stream = new FileStream(_packageFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
+            if (!File.Exists(packageFile))
             {
-                _uidEntryMap = (from entry in zip.Entries select entry.FullName).ToDictionary(entry => Path.GetFileNameWithoutExtension(entry));
-                _uids = _uidEntryMap.Keys.OrderBy(s => s).ToList();
+                throw new FileNotFoundException("Package not found.", packageFile);
+            }
+            _packageFile = packageFile;
+            _uidEntryMap = GetUidEntryMap(packageFile);
+            _uids = _uidEntryMap.Keys.OrderBy(s => s).ToList();
+        }
+
+        public static ExternalReferencePackageReader CreateNoThrow(string packageFile)
+        {
+            try
+            {
+                return new ExternalReferencePackageReader(packageFile);
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
         public bool TryGetReference(string uid, out ReferenceViewModel vm)
         {
             vm = null;
-            var index = _uids.BinarySearch(uid);
+            int index = SeekUidIndex(uid);
             if (index < 0)
             {
-                index = ~index;
-                if (index == 0)
-                {
-                    return false;
-                }
-                index--;
-                var entryUid = _uids[index];
-                if (!uid.StartsWith(entryUid))
-                {
-                    return false;
-                }
+                return false;
             }
-            var vms = GetReferenceViewModels(index);
-            vm = vms.Find(item => item.Uid == uid);
+            vm = (from vms in GetReferenceViewModels(index)
+                  from item in vms
+                  where item.Uid == uid
+                  select item).FirstOrDefault();
             return vm != null;
         }
 
-        private List<ReferenceViewModel> GetReferenceViewModels(int index)
+        private static Dictionary<string, List<string>> GetUidEntryMap(string packageFile)
+        {
+            using (var stream = new FileStream(packageFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
+            {
+                var uidEntryMap = new Dictionary<string, List<string>>();
+                var entries = from entry in zip.Entries
+                              where !string.IsNullOrEmpty(entry.Name) && entry.Length > 0
+                              select new
+                              {
+                                  Uid = Path.GetFileNameWithoutExtension(entry.Name),
+                                  FullName = entry.FullName,
+                              };
+                foreach (var entry in entries)
+                {
+                    List<string> list;
+                    if (!uidEntryMap.TryGetValue(entry.Uid, out list))
+                    {
+                        list = new List<string>();
+                        uidEntryMap[entry.Uid] = list;
+                    }
+                    list.Add(entry.FullName);
+                }
+                return uidEntryMap;
+            }
+        }
+
+        private int SeekUidIndex(string uid)
+        {
+            var searchUid = uid;
+            while (true)
+            {
+                int index = _uids.BinarySearch(searchUid);
+                if (index >= 0)
+                {
+                    return index;
+                }
+                var indexOfDot = searchUid.LastIndexOf('.');
+                if (indexOfDot == -1)
+                {
+                    return index;
+                }
+                searchUid = searchUid.Remove(indexOfDot);
+            }
+        }
+
+        private IEnumerable<List<ReferenceViewModel>> GetReferenceViewModels(int index)
         {
             using (var stream = new FileStream(_packageFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
-            using (var entryStream = zip.GetEntry(_uidEntryMap[_uids[index]]).Open())
-            using (var reader = new StreamReader(entryStream))
             {
-                return YamlUtility.Deserialize<List<ReferenceViewModel>>(reader);
+                var entries = _uidEntryMap[_uids[index]];
+                foreach (var entry in entries)
+                {
+                    List<ReferenceViewModel> vms = null;
+                    using (var entryStream = zip.GetEntry(entry).Open())
+                    using (var reader = new StreamReader(entryStream))
+                    {
+                        try
+                        {
+                            vms = YamlUtility.Deserialize<List<ReferenceViewModel>>(reader);
+                        }
+                        catch (YamlException)
+                        {
+                            // Ignore non-yaml entries
+                        }
+                    }
+                    if (vms != null)
+                    {
+                        yield return vms;
+                    }
+                }
             }
         }
     }

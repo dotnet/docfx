@@ -54,18 +54,24 @@
                 }
             }
 
-            System.Diagnostics.Debug.Fail("aa");
-            inputModel.ExternalReferences =
-                (from item in
-                     GlobUtility.ExpandFileMapping(
-                         configModel.BaseDirectory,
-                         configModel.ExternalReferences,
-                         s => s)
-                         .Items
-                 from file in item.Files
-                 select file)
-                 .Distinct()
-                 .ToList();
+            if (configModel.ExternalReferences != null)
+            {
+                inputModel.ExternalReferences =
+                    (from item in
+                         GlobUtility.ExpandFileMapping(
+                             configModel.BaseDirectory,
+                             configModel.ExternalReferences,
+                             s => s)
+                             .Items
+                     from file in item.Files
+                     select file)
+                     .Distinct()
+                     .ToList();
+            }
+            else
+            {
+                inputModel.ExternalReferences = new List<string>();
+            }
 
             return inputModel;
         }
