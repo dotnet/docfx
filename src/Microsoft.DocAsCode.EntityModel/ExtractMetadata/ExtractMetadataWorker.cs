@@ -11,9 +11,11 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
+
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
-    using ViewModels;
 
     public class ExtractMetadataWorker
     {

@@ -12,7 +12,7 @@
     {
         private readonly string _packageFile;
         private readonly List<string> _uids;
-        private readonly Dictionary<string, string> _uidEntryMap = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _uidEntryMap;
 
         public ExternalReferencePackageReader(string packageFile)
         {
@@ -21,7 +21,8 @@
                 throw new ArgumentException("package can't be null or empty", nameof(packageFile));
             }
             _packageFile = packageFile;
-            using (var zip = new ZipArchive(new FileStream(_packageFile, FileMode.Open, FileAccess.Read, FileShare.Read), ZipArchiveMode.Read))
+            using (var stream = new FileStream(_packageFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
             {
                 _uidEntryMap = (from entry in zip.Entries select entry.FullName).ToDictionary(entry => Path.GetFileNameWithoutExtension(entry));
                 _uids = _uidEntryMap.Keys.OrderBy(s => s).ToList();
@@ -40,12 +41,8 @@
                     return false;
                 }
                 index--;
-                var likeEntry = _uids[index];
-                if (likeEntry.Length > uid.Length)
-                {
-                    return false;
-                }
-                if (!likeEntry.Zip(uid, (x, y) => x == y).All(z => z))
+                var entryUid = _uids[index];
+                if (!uid.StartsWith(entryUid))
                 {
                     return false;
                 }
@@ -57,9 +54,10 @@
 
         private List<ReferenceViewModel> GetReferenceViewModels(int index)
         {
-            using (var zip = new ZipArchive(new FileStream(_packageFile, FileMode.Open, FileAccess.Read, FileShare.Read), ZipArchiveMode.Read))
-            using (var stream = zip.GetEntry(_uidEntryMap[_uids[index]]).Open())
-            using (var reader = new StreamReader(stream))
+            using (var stream = new FileStream(_packageFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
+            using (var entryStream = zip.GetEntry(_uidEntryMap[_uids[index]]).Open())
+            using (var reader = new StreamReader(entryStream))
             {
                 return YamlUtility.Deserialize<List<ReferenceViewModel>>(reader);
             }
