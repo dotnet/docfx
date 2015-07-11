@@ -1,0 +1,505 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.ResolverContext
+  id: ResolverContext
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.ResolverContext.ApiFolder
+  - Microsoft.DocAsCode.EntityModel.ResolverContext.PreserveRawInlineComments
+  - Microsoft.DocAsCode.EntityModel.ResolverContext.References
+  - Microsoft.DocAsCode.EntityModel.ResolverContext.ExternalReferences
+  href: Microsoft.DocAsCode.EntityModel.ResolverContext.yml
+  name: ResolverContext
+  fullname: Microsoft.DocAsCode.EntityModel.ResolverContext
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Resolvers/ResolverContext.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/Resolvers/ResolverContext.cs
+    startLine: 4
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class ResolverContext
+    content.vb: Public Class ResolverContext
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.ResolverContext.ApiFolder
+  id: ApiFolder
+  parent: Microsoft.DocAsCode.EntityModel.ResolverContext
+  href: Microsoft.DocAsCode.EntityModel.ResolverContext.yml
+  name: ApiFolder
+  fullname: Microsoft.DocAsCode.EntityModel.ResolverContext.ApiFolder
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Resolvers/ResolverContext.cs
+    startLine: 6
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public string ApiFolder { get; set; }
+    content.vb: Public Property ApiFolder As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ResolverContext.PreserveRawInlineComments
+  id: PreserveRawInlineComments
+  parent: Microsoft.DocAsCode.EntityModel.ResolverContext
+  href: Microsoft.DocAsCode.EntityModel.ResolverContext.yml
+  name: PreserveRawInlineComments
+  fullname: Microsoft.DocAsCode.EntityModel.ResolverContext.PreserveRawInlineComments
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Resolvers/ResolverContext.cs
+    startLine: 8
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public bool PreserveRawInlineComments { get; set; }
+    content.vb: Public Property PreserveRawInlineComments As Boolean
+    parameters: []
+    return:
+      type: System.Boolean
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ResolverContext.References
+  id: References
+  parent: Microsoft.DocAsCode.EntityModel.ResolverContext
+  href: Microsoft.DocAsCode.EntityModel.ResolverContext.yml
+  name: References
+  fullname: Microsoft.DocAsCode.EntityModel.ResolverContext.References
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Resolvers/ResolverContext.cs
+    startLine: 10
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public Dictionary<string, ReferenceItem> References { get; set; }
+    content.vb: Public Property References As Dictionary(Of String, ReferenceItem)
+    parameters: []
+    return:
+      type: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.ReferenceItem}
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ResolverContext.ExternalReferences
+  id: ExternalReferences
+  parent: Microsoft.DocAsCode.EntityModel.ResolverContext
+  href: Microsoft.DocAsCode.EntityModel.ResolverContext.yml
+  name: ExternalReferences
+  fullname: Microsoft.DocAsCode.EntityModel.ResolverContext.ExternalReferences
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Resolvers/ResolverContext.cs
+    startLine: 12
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public List<ExternalReferencePackageReader> ExternalReferences { get; set; }
+    content.vb: Public Property ExternalReferences As List(Of ExternalReferencePackageReader)
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader}
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean
+- uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.ReferenceItem}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.Dictionary`2
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: Dictionary<String, ReferenceItem>
+  name.vb: Dictionary(Of String, ReferenceItem)
+  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.ReferenceItem>
+  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.ReferenceItem)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    fullname: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: Microsoft.DocAsCode.EntityModel.ReferenceItem
+    name: ReferenceItem
+    fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem
+    href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    fullname: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: Microsoft.DocAsCode.EntityModel.ReferenceItem
+    name: ReferenceItem
+    fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem
+    href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic.Dictionary`2
+  parent: System.Collections.Generic
+  isExternal: true
+  name: Dictionary<TKey, TValue>
+  name.vb: Dictionary(Of TKey, TValue)
+  fullname: System.Collections.Generic.Dictionary<TKey, TValue>
+  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    fullname: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: TKey
+    fullname: TKey
+  - name: ', '
+    fullname: ', '
+  - name: TValue
+    fullname: TValue
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    fullname: System.Collections.Generic.Dictionary
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: TKey
+    fullname: TKey
+  - name: ', '
+    fullname: ', '
+  - name: TValue
+    fullname: TValue
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  fullname: System.Collections.Generic
+- uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
+  name: List<ExternalReferencePackageReader>
+  name.vb: List(Of ExternalReferencePackageReader)
+  fullname: System.Collections.Generic.List<Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader>
+  fullname.vb: System.Collections.Generic.List(Of Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+    name: ExternalReferencePackageReader
+    fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+    href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+    name: ExternalReferencePackageReader
+    fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+    href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic.List`1
+  parent: System.Collections.Generic
+  isExternal: true
+  name: List<T>
+  name.vb: List(Of T)
+  fullname: System.Collections.Generic.List<T>
+  fullname.vb: System.Collections.Generic.List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )

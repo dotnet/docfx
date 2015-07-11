@@ -1,0 +1,359 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+  id: ExternalReferencePackageReader
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.#ctor(System.String)
+  - Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.CreateNoThrow(System.String)
+  - Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.TryGetReference(System.String,Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel@)
+  href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
+  name: ExternalReferencePackageReader
+  fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/ExternalReferences/ExternalReferencePackageReader.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/ExternalReferences/ExternalReferencePackageReader.cs
+    startLine: 11
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class ExternalReferencePackageReader
+    content.vb: Public Class ExternalReferencePackageReader
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.#ctor(System.String)
+  id: '#ctor(System.String)'
+  parent: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+  href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
+  name: ExternalReferencePackageReader(String)
+  fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.ExternalReferencePackageReader(System.String)
+  type: Constructor
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ExternalReferences/ExternalReferencePackageReader.cs
+    startLine: 17
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public ExternalReferencePackageReader(string packageFile)
+    content.vb: Public Sub New(packageFile As String)
+    parameters:
+    - id: packageFile
+      type: System.String
+- uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.CreateNoThrow(System.String)
+  id: CreateNoThrow(System.String)
+  parent: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+  href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
+  name: CreateNoThrow(String)
+  fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.CreateNoThrow(System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ExternalReferences/ExternalReferencePackageReader.cs
+    startLine: 32
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static ExternalReferencePackageReader CreateNoThrow(string packageFile)
+    content.vb: Public Shared Function CreateNoThrow(packageFile As String) As ExternalReferencePackageReader
+    parameters:
+    - id: packageFile
+      type: System.String
+    return:
+      type: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.TryGetReference(System.String,Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel@)
+  id: TryGetReference(System.String,Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel@)
+  parent: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+  href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
+  name: TryGetReference(String, out ReferenceViewModel)
+  name.vb: TryGetReference(String, ByRef ReferenceViewModel)
+  fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.TryGetReference(System.String, out Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel)
+  fullname.vb: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.TryGetReference(System.String, ByRef Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ExternalReferences/ExternalReferencePackageReader.cs
+    startLine: 44
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public bool TryGetReference(string uid, out ReferenceViewModel vm)
+    content.vb: Public Function TryGetReference(uid As String, ByRef vm As ReferenceViewModel) As Boolean
+    parameters:
+    - id: uid
+      type: System.String
+    - id: vm
+      type: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel
+    return:
+      type: System.Boolean
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
+  name: ExternalReferencePackageReader
+  fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+  type: Class
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
+  name: ReferenceViewModel
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel
+  type: Class
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel.ViewModels
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels
+  type: Namespace

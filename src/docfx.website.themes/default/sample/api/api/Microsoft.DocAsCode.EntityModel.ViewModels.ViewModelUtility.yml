@@ -1,0 +1,388 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility
+  id: ViewModelUtility
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels
+  children:
+  - Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility.GetLanguageProperty``1(System.Collections.Generic.SortedList{Microsoft.DocAsCode.EntityModel.SyntaxLanguage,``0},Microsoft.DocAsCode.EntityModel.SyntaxLanguage,``0)
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility.yml
+  name: ViewModelUtility
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/ViewModels/ViewModelUtility.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/ViewModelUtility.cs
+    startLine: 4
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public class ViewModelUtility
+    content.vb: Public Class ViewModelUtility
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility.GetLanguageProperty``1(System.Collections.Generic.SortedList{Microsoft.DocAsCode.EntityModel.SyntaxLanguage,``0},Microsoft.DocAsCode.EntityModel.SyntaxLanguage,``0)
+  id: GetLanguageProperty``1(System.Collections.Generic.SortedList{Microsoft.DocAsCode.EntityModel.SyntaxLanguage,``0},Microsoft.DocAsCode.EntityModel.SyntaxLanguage,``0)
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility.yml
+  name: GetLanguageProperty<TValue>(SortedList<SyntaxLanguage, TValue>, SyntaxLanguage, TValue)
+  name.vb: GetLanguageProperty(Of TValue)(SortedList(Of SyntaxLanguage, TValue), SyntaxLanguage, TValue)
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility.GetLanguageProperty<TValue>(System.Collections.Generic.SortedList<Microsoft.DocAsCode.EntityModel.SyntaxLanguage, TValue>, Microsoft.DocAsCode.EntityModel.SyntaxLanguage, TValue)
+  fullname.vb: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility.GetLanguageProperty(Of TValue)(System.Collections.Generic.SortedList(Of Microsoft.DocAsCode.EntityModel.SyntaxLanguage, TValue), Microsoft.DocAsCode.EntityModel.SyntaxLanguage, TValue)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/ViewModelUtility.cs
+    startLine: 6
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: 'public static TValue GetLanguageProperty<TValue>(SortedList<SyntaxLanguage, TValue> dict, SyntaxLanguage language, TValue defaultValue = null)where TValue : class'
+    content.vb: Public Shared Function GetLanguageProperty(Of TValue As Class)(dict As SortedList(Of SyntaxLanguage, TValue), language As SyntaxLanguage, defaultValue As TValue = Nothing) As TValue
+    parameters:
+    - id: dict
+      type: System.Collections.Generic.SortedList{Microsoft.DocAsCode.EntityModel.SyntaxLanguage,{TValue}}
+    - id: language
+      type: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    - id: defaultValue
+      type: '{TValue}'
+    typeParameters:
+    - id: TValue
+    return:
+      type: '{TValue}'
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel.ViewModels
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.Collections.Generic.SortedList{Microsoft.DocAsCode.EntityModel.SyntaxLanguage,{TValue}}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.SortedList`2
+  href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
+  name: SortedList<SyntaxLanguage, TValue>
+  name.vb: SortedList(Of SyntaxLanguage, TValue)
+  fullname: System.Collections.Generic.SortedList<Microsoft.DocAsCode.EntityModel.SyntaxLanguage, TValue>
+  fullname.vb: System.Collections.Generic.SortedList(Of Microsoft.DocAsCode.EntityModel.SyntaxLanguage, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.SortedList`2
+    name: SortedList
+    fullname: System.Collections.Generic.SortedList
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    name: SyntaxLanguage
+    fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
+  - name: ', '
+    fullname: ', '
+  - name: TValue
+    fullname: TValue
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.SortedList`2
+    name: SortedList
+    fullname: System.Collections.Generic.SortedList
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    name: SyntaxLanguage
+    fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
+  - name: ', '
+    fullname: ', '
+  - name: TValue
+    fullname: TValue
+  - name: )
+    fullname: )
+- uid: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
+  name: SyntaxLanguage
+  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+  type: Enum
+- uid: '{TValue}'
+  isExternal: false
+  name: TValue
+  fullname: TValue
+- uid: System.Collections.Generic.SortedList`2
+  parent: System.Collections.Generic
+  isExternal: true
+  name: SortedList<TKey, TValue>
+  name.vb: SortedList(Of TKey, TValue)
+  fullname: System.Collections.Generic.SortedList<TKey, TValue>
+  fullname.vb: System.Collections.Generic.SortedList(Of TKey, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.SortedList`2
+    name: SortedList
+    fullname: System.Collections.Generic.SortedList
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: TKey
+    fullname: TKey
+  - name: ', '
+    fullname: ', '
+  - name: TValue
+    fullname: TValue
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.SortedList`2
+    name: SortedList
+    fullname: System.Collections.Generic.SortedList
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: TKey
+    fullname: TKey
+  - name: ', '
+    fullname: ', '
+  - name: TValue
+    fullname: TValue
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  fullname: System.Collections.Generic
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace

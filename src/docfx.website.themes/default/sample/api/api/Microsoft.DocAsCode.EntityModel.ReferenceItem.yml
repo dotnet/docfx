@@ -1,0 +1,621 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  id: ReferenceItem
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.ReferenceItem.Parts
+  - Microsoft.DocAsCode.EntityModel.ReferenceItem.Type
+  - Microsoft.DocAsCode.EntityModel.ReferenceItem.Summary
+  - Microsoft.DocAsCode.EntityModel.ReferenceItem.IsDefinition
+  - Microsoft.DocAsCode.EntityModel.ReferenceItem.Definition
+  - Microsoft.DocAsCode.EntityModel.ReferenceItem.Parent
+  - Microsoft.DocAsCode.EntityModel.ReferenceItem.Clone
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: ReferenceItem
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+    startLine: 6
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class ReferenceItem
+    content.vb: Public Class ReferenceItem
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem.Parts
+  id: Parts
+  parent: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: Parts
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem.Parts
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+    startLine: 8
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public SortedList<SyntaxLanguage, List<LinkItem>> Parts { get; set; }
+    content.vb: Public Property Parts As SortedList(Of SyntaxLanguage, List(Of LinkItem))
+    parameters: []
+    return:
+      type: System.Collections.Generic.SortedList{Microsoft.DocAsCode.EntityModel.SyntaxLanguage,System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.LinkItem}}
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem.Type
+  id: Type
+  parent: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: Type
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem.Type
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+    startLine: 11
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public MemberType? Type { get; set; }
+    content.vb: Public Property Type As MemberType?
+    parameters: []
+    return:
+      type: System.Nullable{Microsoft.DocAsCode.EntityModel.MemberType}
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem.Summary
+  id: Summary
+  parent: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: Summary
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem.Summary
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+    startLine: 14
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public string Summary { get; set; }
+    content.vb: Public Property Summary As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem.IsDefinition
+  id: IsDefinition
+  parent: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: IsDefinition
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem.IsDefinition
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+    startLine: 17
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public bool ? IsDefinition { get; set; }
+    content.vb: Public Property IsDefinition As Boolean?
+    parameters: []
+    return:
+      type: System.Nullable{System.Boolean}
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem.Definition
+  id: Definition
+  parent: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: Definition
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem.Definition
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+    startLine: 20
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public string Definition { get; set; }
+    content.vb: Public Property Definition As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem.Parent
+  id: Parent
+  parent: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: Parent
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem.Parent
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+    startLine: 23
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public string Parent { get; set; }
+    content.vb: Public Property Parent As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem.Clone
+  id: Clone
+  parent: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: Clone()
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem.Clone()
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/ReferenceItem.cs
+    startLine: 26
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public ReferenceItem Clone()
+    content.vb: Public Function Clone As ReferenceItem
+    return:
+      type: Microsoft.DocAsCode.EntityModel.ReferenceItem
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.Collections.Generic.SortedList{Microsoft.DocAsCode.EntityModel.SyntaxLanguage,System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.LinkItem}}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.SortedList`2
+  href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
+  name: SortedList<SyntaxLanguage, List<LinkItem>>
+  name.vb: SortedList(Of SyntaxLanguage, List(Of LinkItem))
+  fullname: System.Collections.Generic.SortedList<Microsoft.DocAsCode.EntityModel.SyntaxLanguage, System.Collections.Generic.List<Microsoft.DocAsCode.EntityModel.LinkItem>>
+  fullname.vb: System.Collections.Generic.SortedList(Of Microsoft.DocAsCode.EntityModel.SyntaxLanguage, System.Collections.Generic.List(Of Microsoft.DocAsCode.EntityModel.LinkItem))
+  spec.csharp:
+  - uid: System.Collections.Generic.SortedList`2
+    name: SortedList
+    fullname: System.Collections.Generic.SortedList
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    name: SyntaxLanguage
+    fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
+  - name: ', '
+    fullname: ', '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: Microsoft.DocAsCode.EntityModel.LinkItem
+    name: LinkItem
+    fullname: Microsoft.DocAsCode.EntityModel.LinkItem
+    href: Microsoft.DocAsCode.EntityModel.LinkItem.yml
+  - name: '>'
+    fullname: '>'
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.SortedList`2
+    name: SortedList
+    fullname: System.Collections.Generic.SortedList
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    name: SyntaxLanguage
+    fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+    href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
+  - name: ', '
+    fullname: ', '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: Microsoft.DocAsCode.EntityModel.LinkItem
+    name: LinkItem
+    fullname: Microsoft.DocAsCode.EntityModel.LinkItem
+    href: Microsoft.DocAsCode.EntityModel.LinkItem.yml
+  - name: )
+    fullname: )
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic.SortedList`2
+  parent: System.Collections.Generic
+  isExternal: true
+  name: SortedList<TKey, TValue>
+  name.vb: SortedList(Of TKey, TValue)
+  fullname: System.Collections.Generic.SortedList<TKey, TValue>
+  fullname.vb: System.Collections.Generic.SortedList(Of TKey, TValue)
+  spec.csharp:
+  - uid: System.Collections.Generic.SortedList`2
+    name: SortedList
+    fullname: System.Collections.Generic.SortedList
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: TKey
+    fullname: TKey
+  - name: ', '
+    fullname: ', '
+  - name: TValue
+    fullname: TValue
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.SortedList`2
+    name: SortedList
+    fullname: System.Collections.Generic.SortedList
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: TKey
+    fullname: TKey
+  - name: ', '
+    fullname: ', '
+  - name: TValue
+    fullname: TValue
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  fullname: System.Collections.Generic
+- uid: System.Nullable{Microsoft.DocAsCode.EntityModel.MemberType}
+  parent: System
+  definition: System.Nullable`1
+  href: Microsoft.DocAsCode.EntityModel.MemberType.yml
+  name: Nullable<MemberType>
+  name.vb: Nullable(Of MemberType)
+  fullname: System.Nullable<Microsoft.DocAsCode.EntityModel.MemberType>
+  fullname.vb: System.Nullable(Of Microsoft.DocAsCode.EntityModel.MemberType)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    fullname: System.Nullable
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: Microsoft.DocAsCode.EntityModel.MemberType
+    name: MemberType
+    fullname: Microsoft.DocAsCode.EntityModel.MemberType
+    href: Microsoft.DocAsCode.EntityModel.MemberType.yml
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    fullname: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: Microsoft.DocAsCode.EntityModel.MemberType
+    name: MemberType
+    fullname: Microsoft.DocAsCode.EntityModel.MemberType
+    href: Microsoft.DocAsCode.EntityModel.MemberType.yml
+  - name: )
+    fullname: )
+- uid: System.Nullable`1
+  parent: System
+  isExternal: true
+  name: Nullable<T>
+  name.vb: Nullable(Of T)
+  fullname: System.Nullable<T>
+  fullname.vb: System.Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    fullname: System.Nullable
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    fullname: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: System.Nullable{System.Boolean}
+  parent: System
+  definition: System.Nullable`1
+  name: Nullable<Boolean>
+  name.vb: Nullable(Of Boolean)
+  fullname: System.Nullable<System.Boolean>
+  fullname.vb: System.Nullable(Of System.Boolean)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    fullname: System.Nullable
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.Boolean
+    name: Boolean
+    fullname: System.Boolean
+    isExternal: true
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    fullname: System.Nullable
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.Boolean
+    name: Boolean
+    fullname: System.Boolean
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
+  name: ReferenceItem
+  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  type: Class

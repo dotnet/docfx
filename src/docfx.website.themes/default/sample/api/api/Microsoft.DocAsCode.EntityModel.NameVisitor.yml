@@ -1,0 +1,919 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitor
+  id: NameVisitor
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.NameVisitor.#ctor
+  - Microsoft.DocAsCode.EntityModel.NameVisitor.Append(System.String)
+  href: Microsoft.DocAsCode.EntityModel.NameVisitor.yml
+  name: NameVisitor
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitor
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
+    startLine: 50
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: 'public abstract class NameVisitor : SymbolVisitor'
+    content.vb: Public MustInherit Class NameVisitor Inherits SymbolVisitor
+  inheritance:
+  - System.Object
+  - Microsoft.CodeAnalysis.SymbolVisitor
+  inheritedMembers:
+  - Microsoft.CodeAnalysis.SymbolVisitor.Visit(Microsoft.CodeAnalysis.ISymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.DefaultVisit(Microsoft.CodeAnalysis.ISymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitAlias(Microsoft.CodeAnalysis.IAliasSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitArrayType(Microsoft.CodeAnalysis.IArrayTypeSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitAssembly(Microsoft.CodeAnalysis.IAssemblySymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitDynamicType(Microsoft.CodeAnalysis.IDynamicTypeSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitEvent(Microsoft.CodeAnalysis.IEventSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitField(Microsoft.CodeAnalysis.IFieldSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitLabel(Microsoft.CodeAnalysis.ILabelSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitLocal(Microsoft.CodeAnalysis.ILocalSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitMethod(Microsoft.CodeAnalysis.IMethodSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitModule(Microsoft.CodeAnalysis.IModuleSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitParameter(Microsoft.CodeAnalysis.IParameterSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitPointerType(Microsoft.CodeAnalysis.IPointerTypeSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitProperty(Microsoft.CodeAnalysis.IPropertySymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitRangeVariable(Microsoft.CodeAnalysis.IRangeVariableSymbol)
+  - Microsoft.CodeAnalysis.SymbolVisitor.VisitTypeParameter(Microsoft.CodeAnalysis.ITypeParameterSymbol)
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitor.#ctor
+  id: '#ctor'
+  parent: Microsoft.DocAsCode.EntityModel.NameVisitor
+  href: Microsoft.DocAsCode.EntityModel.NameVisitor.yml
+  name: NameVisitor()
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitor.NameVisitor()
+  type: Constructor
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
+    startLine: 54
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: protected NameVisitor()
+    content.vb: Protected Sub New
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitor.Append(System.String)
+  id: Append(System.String)
+  parent: Microsoft.DocAsCode.EntityModel.NameVisitor
+  href: Microsoft.DocAsCode.EntityModel.NameVisitor.yml
+  name: Append(String)
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitor.Append(System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
+    startLine: 59
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: protected void Append(string text)
+    content.vb: Protected Sub Append(text As String)
+    parameters:
+    - id: text
+      type: System.String
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: Microsoft.CodeAnalysis.SymbolVisitor
+  parent: Microsoft.CodeAnalysis
+  isExternal: true
+  name: SymbolVisitor
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.Visit(Microsoft.CodeAnalysis.ISymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: Visit(ISymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.Visit(Microsoft.CodeAnalysis.ISymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.Visit(Microsoft.CodeAnalysis.ISymbol)
+    name: Visit
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.Visit
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ISymbol
+    name: ISymbol
+    fullname: Microsoft.CodeAnalysis.ISymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.Visit(Microsoft.CodeAnalysis.ISymbol)
+    name: Visit
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.Visit
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ISymbol
+    name: ISymbol
+    fullname: Microsoft.CodeAnalysis.ISymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.DefaultVisit(Microsoft.CodeAnalysis.ISymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: DefaultVisit(ISymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.DefaultVisit(Microsoft.CodeAnalysis.ISymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.DefaultVisit(Microsoft.CodeAnalysis.ISymbol)
+    name: DefaultVisit
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.DefaultVisit
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ISymbol
+    name: ISymbol
+    fullname: Microsoft.CodeAnalysis.ISymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.DefaultVisit(Microsoft.CodeAnalysis.ISymbol)
+    name: DefaultVisit
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.DefaultVisit
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ISymbol
+    name: ISymbol
+    fullname: Microsoft.CodeAnalysis.ISymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitAlias(Microsoft.CodeAnalysis.IAliasSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitAlias(IAliasSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitAlias(Microsoft.CodeAnalysis.IAliasSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitAlias(Microsoft.CodeAnalysis.IAliasSymbol)
+    name: VisitAlias
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitAlias
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IAliasSymbol
+    name: IAliasSymbol
+    fullname: Microsoft.CodeAnalysis.IAliasSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitAlias(Microsoft.CodeAnalysis.IAliasSymbol)
+    name: VisitAlias
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitAlias
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IAliasSymbol
+    name: IAliasSymbol
+    fullname: Microsoft.CodeAnalysis.IAliasSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitArrayType(Microsoft.CodeAnalysis.IArrayTypeSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitArrayType(IArrayTypeSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitArrayType(Microsoft.CodeAnalysis.IArrayTypeSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitArrayType(Microsoft.CodeAnalysis.IArrayTypeSymbol)
+    name: VisitArrayType
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitArrayType
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IArrayTypeSymbol
+    name: IArrayTypeSymbol
+    fullname: Microsoft.CodeAnalysis.IArrayTypeSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitArrayType(Microsoft.CodeAnalysis.IArrayTypeSymbol)
+    name: VisitArrayType
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitArrayType
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IArrayTypeSymbol
+    name: IArrayTypeSymbol
+    fullname: Microsoft.CodeAnalysis.IArrayTypeSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitAssembly(Microsoft.CodeAnalysis.IAssemblySymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitAssembly(IAssemblySymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitAssembly(Microsoft.CodeAnalysis.IAssemblySymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitAssembly(Microsoft.CodeAnalysis.IAssemblySymbol)
+    name: VisitAssembly
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitAssembly
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IAssemblySymbol
+    name: IAssemblySymbol
+    fullname: Microsoft.CodeAnalysis.IAssemblySymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitAssembly(Microsoft.CodeAnalysis.IAssemblySymbol)
+    name: VisitAssembly
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitAssembly
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IAssemblySymbol
+    name: IAssemblySymbol
+    fullname: Microsoft.CodeAnalysis.IAssemblySymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitDynamicType(Microsoft.CodeAnalysis.IDynamicTypeSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitDynamicType(IDynamicTypeSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitDynamicType(Microsoft.CodeAnalysis.IDynamicTypeSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitDynamicType(Microsoft.CodeAnalysis.IDynamicTypeSymbol)
+    name: VisitDynamicType
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitDynamicType
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IDynamicTypeSymbol
+    name: IDynamicTypeSymbol
+    fullname: Microsoft.CodeAnalysis.IDynamicTypeSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitDynamicType(Microsoft.CodeAnalysis.IDynamicTypeSymbol)
+    name: VisitDynamicType
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitDynamicType
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IDynamicTypeSymbol
+    name: IDynamicTypeSymbol
+    fullname: Microsoft.CodeAnalysis.IDynamicTypeSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitEvent(Microsoft.CodeAnalysis.IEventSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitEvent(IEventSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitEvent(Microsoft.CodeAnalysis.IEventSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitEvent(Microsoft.CodeAnalysis.IEventSymbol)
+    name: VisitEvent
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitEvent
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IEventSymbol
+    name: IEventSymbol
+    fullname: Microsoft.CodeAnalysis.IEventSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitEvent(Microsoft.CodeAnalysis.IEventSymbol)
+    name: VisitEvent
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitEvent
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IEventSymbol
+    name: IEventSymbol
+    fullname: Microsoft.CodeAnalysis.IEventSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitField(Microsoft.CodeAnalysis.IFieldSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitField(IFieldSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitField(Microsoft.CodeAnalysis.IFieldSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitField(Microsoft.CodeAnalysis.IFieldSymbol)
+    name: VisitField
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitField
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IFieldSymbol
+    name: IFieldSymbol
+    fullname: Microsoft.CodeAnalysis.IFieldSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitField(Microsoft.CodeAnalysis.IFieldSymbol)
+    name: VisitField
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitField
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IFieldSymbol
+    name: IFieldSymbol
+    fullname: Microsoft.CodeAnalysis.IFieldSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitLabel(Microsoft.CodeAnalysis.ILabelSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitLabel(ILabelSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitLabel(Microsoft.CodeAnalysis.ILabelSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitLabel(Microsoft.CodeAnalysis.ILabelSymbol)
+    name: VisitLabel
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitLabel
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ILabelSymbol
+    name: ILabelSymbol
+    fullname: Microsoft.CodeAnalysis.ILabelSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitLabel(Microsoft.CodeAnalysis.ILabelSymbol)
+    name: VisitLabel
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitLabel
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ILabelSymbol
+    name: ILabelSymbol
+    fullname: Microsoft.CodeAnalysis.ILabelSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitLocal(Microsoft.CodeAnalysis.ILocalSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitLocal(ILocalSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitLocal(Microsoft.CodeAnalysis.ILocalSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitLocal(Microsoft.CodeAnalysis.ILocalSymbol)
+    name: VisitLocal
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitLocal
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ILocalSymbol
+    name: ILocalSymbol
+    fullname: Microsoft.CodeAnalysis.ILocalSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitLocal(Microsoft.CodeAnalysis.ILocalSymbol)
+    name: VisitLocal
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitLocal
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ILocalSymbol
+    name: ILocalSymbol
+    fullname: Microsoft.CodeAnalysis.ILocalSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitMethod(Microsoft.CodeAnalysis.IMethodSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitMethod(IMethodSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitMethod(Microsoft.CodeAnalysis.IMethodSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitMethod(Microsoft.CodeAnalysis.IMethodSymbol)
+    name: VisitMethod
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitMethod
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IMethodSymbol
+    name: IMethodSymbol
+    fullname: Microsoft.CodeAnalysis.IMethodSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitMethod(Microsoft.CodeAnalysis.IMethodSymbol)
+    name: VisitMethod
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitMethod
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IMethodSymbol
+    name: IMethodSymbol
+    fullname: Microsoft.CodeAnalysis.IMethodSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitModule(Microsoft.CodeAnalysis.IModuleSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitModule(IModuleSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitModule(Microsoft.CodeAnalysis.IModuleSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitModule(Microsoft.CodeAnalysis.IModuleSymbol)
+    name: VisitModule
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitModule
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IModuleSymbol
+    name: IModuleSymbol
+    fullname: Microsoft.CodeAnalysis.IModuleSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitModule(Microsoft.CodeAnalysis.IModuleSymbol)
+    name: VisitModule
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitModule
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IModuleSymbol
+    name: IModuleSymbol
+    fullname: Microsoft.CodeAnalysis.IModuleSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitNamedType(INamedTypeSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol)
+    name: VisitNamedType
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamedType
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.INamedTypeSymbol
+    name: INamedTypeSymbol
+    fullname: Microsoft.CodeAnalysis.INamedTypeSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol)
+    name: VisitNamedType
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamedType
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.INamedTypeSymbol
+    name: INamedTypeSymbol
+    fullname: Microsoft.CodeAnalysis.INamedTypeSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitNamespace(INamespaceSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)
+    name: VisitNamespace
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamespace
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.INamespaceSymbol
+    name: INamespaceSymbol
+    fullname: Microsoft.CodeAnalysis.INamespaceSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)
+    name: VisitNamespace
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamespace
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.INamespaceSymbol
+    name: INamespaceSymbol
+    fullname: Microsoft.CodeAnalysis.INamespaceSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitParameter(Microsoft.CodeAnalysis.IParameterSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitParameter(IParameterSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitParameter(Microsoft.CodeAnalysis.IParameterSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitParameter(Microsoft.CodeAnalysis.IParameterSymbol)
+    name: VisitParameter
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitParameter
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IParameterSymbol
+    name: IParameterSymbol
+    fullname: Microsoft.CodeAnalysis.IParameterSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitParameter(Microsoft.CodeAnalysis.IParameterSymbol)
+    name: VisitParameter
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitParameter
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IParameterSymbol
+    name: IParameterSymbol
+    fullname: Microsoft.CodeAnalysis.IParameterSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitPointerType(Microsoft.CodeAnalysis.IPointerTypeSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitPointerType(IPointerTypeSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitPointerType(Microsoft.CodeAnalysis.IPointerTypeSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitPointerType(Microsoft.CodeAnalysis.IPointerTypeSymbol)
+    name: VisitPointerType
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitPointerType
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IPointerTypeSymbol
+    name: IPointerTypeSymbol
+    fullname: Microsoft.CodeAnalysis.IPointerTypeSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitPointerType(Microsoft.CodeAnalysis.IPointerTypeSymbol)
+    name: VisitPointerType
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitPointerType
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IPointerTypeSymbol
+    name: IPointerTypeSymbol
+    fullname: Microsoft.CodeAnalysis.IPointerTypeSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitProperty(Microsoft.CodeAnalysis.IPropertySymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitProperty(IPropertySymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitProperty(Microsoft.CodeAnalysis.IPropertySymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitProperty(Microsoft.CodeAnalysis.IPropertySymbol)
+    name: VisitProperty
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitProperty
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IPropertySymbol
+    name: IPropertySymbol
+    fullname: Microsoft.CodeAnalysis.IPropertySymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitProperty(Microsoft.CodeAnalysis.IPropertySymbol)
+    name: VisitProperty
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitProperty
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IPropertySymbol
+    name: IPropertySymbol
+    fullname: Microsoft.CodeAnalysis.IPropertySymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitRangeVariable(Microsoft.CodeAnalysis.IRangeVariableSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitRangeVariable(IRangeVariableSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitRangeVariable(Microsoft.CodeAnalysis.IRangeVariableSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitRangeVariable(Microsoft.CodeAnalysis.IRangeVariableSymbol)
+    name: VisitRangeVariable
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitRangeVariable
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IRangeVariableSymbol
+    name: IRangeVariableSymbol
+    fullname: Microsoft.CodeAnalysis.IRangeVariableSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitRangeVariable(Microsoft.CodeAnalysis.IRangeVariableSymbol)
+    name: VisitRangeVariable
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitRangeVariable
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.IRangeVariableSymbol
+    name: IRangeVariableSymbol
+    fullname: Microsoft.CodeAnalysis.IRangeVariableSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitTypeParameter(Microsoft.CodeAnalysis.ITypeParameterSymbol)
+  parent: Microsoft.CodeAnalysis.SymbolVisitor
+  isExternal: true
+  name: VisitTypeParameter(ITypeParameterSymbol)
+  fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitTypeParameter(Microsoft.CodeAnalysis.ITypeParameterSymbol)
+  spec.csharp:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitTypeParameter(Microsoft.CodeAnalysis.ITypeParameterSymbol)
+    name: VisitTypeParameter
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitTypeParameter
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ITypeParameterSymbol
+    name: ITypeParameterSymbol
+    fullname: Microsoft.CodeAnalysis.ITypeParameterSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitTypeParameter(Microsoft.CodeAnalysis.ITypeParameterSymbol)
+    name: VisitTypeParameter
+    fullname: Microsoft.CodeAnalysis.SymbolVisitor.VisitTypeParameter
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ITypeParameterSymbol
+    name: ITypeParameterSymbol
+    fullname: Microsoft.CodeAnalysis.ITypeParameterSymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: Microsoft.CodeAnalysis
+  isExternal: false
+  name: Microsoft.CodeAnalysis
+  fullname: Microsoft.CodeAnalysis
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String

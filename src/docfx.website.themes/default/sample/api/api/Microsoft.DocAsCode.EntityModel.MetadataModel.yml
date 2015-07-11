@@ -1,0 +1,403 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.MetadataModel
+  id: MetadataModel
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.MetadataModel.Indexer
+  - Microsoft.DocAsCode.EntityModel.MetadataModel.TocYamlViewModel
+  - Microsoft.DocAsCode.EntityModel.MetadataModel.Members
+  href: Microsoft.DocAsCode.EntityModel.MetadataModel.yml
+  name: MetadataModel
+  fullname: Microsoft.DocAsCode.EntityModel.MetadataModel
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataModel.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataModel.cs
+    startLine: 6
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class MetadataModel
+    content.vb: Public Class MetadataModel
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.MetadataModel.Indexer
+  id: Indexer
+  parent: Microsoft.DocAsCode.EntityModel.MetadataModel
+  href: Microsoft.DocAsCode.EntityModel.MetadataModel.yml
+  name: Indexer
+  fullname: Microsoft.DocAsCode.EntityModel.MetadataModel.Indexer
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataModel.cs
+    startLine: 8
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public ApiReferenceModel Indexer { get; set; }
+    content.vb: Public Property Indexer As ApiReferenceModel
+    parameters: []
+    return:
+      type: Microsoft.DocAsCode.EntityModel.ApiReferenceModel
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.MetadataModel.TocYamlViewModel
+  id: TocYamlViewModel
+  parent: Microsoft.DocAsCode.EntityModel.MetadataModel
+  href: Microsoft.DocAsCode.EntityModel.MetadataModel.yml
+  name: TocYamlViewModel
+  fullname: Microsoft.DocAsCode.EntityModel.MetadataModel.TocYamlViewModel
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataModel.cs
+    startLine: 9
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public MetadataItem TocYamlViewModel { get; set; }
+    content.vb: Public Property TocYamlViewModel As MetadataItem
+    parameters: []
+    return:
+      type: Microsoft.DocAsCode.EntityModel.MetadataItem
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.MetadataModel.Members
+  id: Members
+  parent: Microsoft.DocAsCode.EntityModel.MetadataModel
+  href: Microsoft.DocAsCode.EntityModel.MetadataModel.yml
+  name: Members
+  fullname: Microsoft.DocAsCode.EntityModel.MetadataModel.Members
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataModel.cs
+    startLine: 10
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public List<MetadataItem> Members { get; set; }
+    content.vb: Public Property Members As List(Of MetadataItem)
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.MetadataItem}
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: Microsoft.DocAsCode.EntityModel.ApiReferenceModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ApiReferenceModel.yml
+  name: ApiReferenceModel
+  fullname: Microsoft.DocAsCode.EntityModel.ApiReferenceModel
+  type: Class
+- uid: Microsoft.DocAsCode.EntityModel.MetadataItem
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
+  name: MetadataItem
+  fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+  type: Class
+- uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.MetadataItem}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
+  name: List<MetadataItem>
+  name.vb: List(Of MetadataItem)
+  fullname: System.Collections.Generic.List<Microsoft.DocAsCode.EntityModel.MetadataItem>
+  fullname.vb: System.Collections.Generic.List(Of Microsoft.DocAsCode.EntityModel.MetadataItem)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
+    name: MetadataItem
+    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
+    name: MetadataItem
+    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic.List`1
+  parent: System.Collections.Generic
+  isExternal: true
+  name: List<T>
+  name.vb: List(Of T)
+  fullname: System.Collections.Generic.List<T>
+  fullname.vb: System.Collections.Generic.List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  fullname: System.Collections.Generic

@@ -1,0 +1,419 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.TemplateManager
+  id: TemplateManager
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.TemplateManager.DefaultTocEntry
+  - Microsoft.DocAsCode.EntityModel.TemplateManager.GenerateDefaultToc(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.String)
+  - Microsoft.DocAsCode.EntityModel.TemplateManager.CopyToOutput(System.String,System.String,System.Reflection.Assembly,System.String,System.String,System.String,System.String)
+  href: Microsoft.DocAsCode.EntityModel.TemplateManager.yml
+  name: TemplateManager
+  fullname: Microsoft.DocAsCode.EntityModel.TemplateManager
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/TemplateManager.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager.cs
+    startLine: 11
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class TemplateManager
+    content.vb: Public Class TemplateManager
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.TemplateManager.DefaultTocEntry
+  id: DefaultTocEntry
+  parent: Microsoft.DocAsCode.EntityModel.TemplateManager
+  href: Microsoft.DocAsCode.EntityModel.TemplateManager.yml
+  name: DefaultTocEntry
+  fullname: Microsoft.DocAsCode.EntityModel.TemplateManager.DefaultTocEntry
+  type: Field
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager.cs
+    startLine: 25
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public const string DefaultTocEntry
+    content.vb: Public Const DefaultTocEntry As String = "toc.yml"
+- uid: Microsoft.DocAsCode.EntityModel.TemplateManager.GenerateDefaultToc(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.String)
+  id: GenerateDefaultToc(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.String)
+  parent: Microsoft.DocAsCode.EntityModel.TemplateManager
+  href: Microsoft.DocAsCode.EntityModel.TemplateManager.yml
+  name: GenerateDefaultToc(IEnumerable<String>, IEnumerable<String>, String)
+  name.vb: GenerateDefaultToc(IEnumerable(Of String), IEnumerable(Of String), String)
+  fullname: Microsoft.DocAsCode.EntityModel.TemplateManager.GenerateDefaultToc(System.Collections.Generic.IEnumerable<System.String>, System.Collections.Generic.IEnumerable<System.String>, System.String)
+  fullname.vb: Microsoft.DocAsCode.EntityModel.TemplateManager.GenerateDefaultToc(System.Collections.Generic.IEnumerable(Of System.String), System.Collections.Generic.IEnumerable(Of System.String), System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager.cs
+    startLine: 27
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static string GenerateDefaultToc(IEnumerable<string> apiFolder, IEnumerable<string> conceptualFolder, string outputFolder)
+    content.vb: Public Shared Function GenerateDefaultToc(apiFolder As IEnumerable(Of String), conceptualFolder As IEnumerable(Of String), outputFolder As String) As String
+    parameters:
+    - id: apiFolder
+      type: System.Collections.Generic.IEnumerable{System.String}
+    - id: conceptualFolder
+      type: System.Collections.Generic.IEnumerable{System.String}
+    - id: outputFolder
+      type: System.String
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.TemplateManager.CopyToOutput(System.String,System.String,System.Reflection.Assembly,System.String,System.String,System.String,System.String)
+  id: CopyToOutput(System.String,System.String,System.Reflection.Assembly,System.String,System.String,System.String,System.String)
+  parent: Microsoft.DocAsCode.EntityModel.TemplateManager
+  href: Microsoft.DocAsCode.EntityModel.TemplateManager.yml
+  name: CopyToOutput(String, String, Assembly, String, String, String, String)
+  fullname: Microsoft.DocAsCode.EntityModel.TemplateManager.CopyToOutput(System.String, System.String, System.Reflection.Assembly, System.String, System.String, System.String, System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager.cs
+    startLine: 49
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  summary: 'TODO: use GLOB'
+  syntax:
+    content: public static void CopyToOutput(string workingDirectory, string rootNamespace, Assembly assembly, string customTemplateRootFolder, string outputFolderPath, string toc, string themeName)
+    content.vb: Public Shared Sub CopyToOutput(workingDirectory As String, rootNamespace As String, assembly As Assembly, customTemplateRootFolder As String, outputFolderPath As String, toc As String, themeName As String)
+    parameters:
+    - id: workingDirectory
+      type: System.String
+    - id: rootNamespace
+      type: System.String
+    - id: assembly
+      type: System.Reflection.Assembly
+    - id: customTemplateRootFolder
+      type: System.String
+    - id: outputFolderPath
+      type: System.String
+    - id: toc
+      type: System.String
+    - id: themeName
+      type: System.String
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.Collections.Generic.IEnumerable{System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<String>
+  name.vb: IEnumerable(Of String)
+  fullname: System.Collections.Generic.IEnumerable<System.String>
+  fullname.vb: System.Collections.Generic.IEnumerable(Of System.String)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullname: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullname: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: System.Collections.Generic.IEnumerable`1
+  parent: System.Collections.Generic
+  isExternal: true
+  name: IEnumerable<T>
+  name.vb: IEnumerable(Of T)
+  fullname: System.Collections.Generic.IEnumerable<T>
+  fullname.vb: System.Collections.Generic.IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullname: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullname: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  fullname: System.Collections.Generic
+- uid: System.Reflection.Assembly
+  parent: System.Reflection
+  isExternal: true
+  name: Assembly
+  fullname: System.Reflection.Assembly
+- uid: System.Reflection
+  isExternal: false
+  name: System.Reflection
+  fullname: System.Reflection

@@ -1,0 +1,814 @@
+items:
+- uid: Microsoft.DocAsCode.Utility.FileExtensions
+  id: FileExtensions
+  parent: Microsoft.DocAsCode.Utility
+  children:
+  - Microsoft.DocAsCode.Utility.FileExtensions.ToValidFilePath(System.String)
+  - Microsoft.DocAsCode.Utility.FileExtensions.SaveFileListToFile(System.Collections.Generic.List{System.String},System.String)
+  - Microsoft.DocAsCode.Utility.FileExtensions.ListFileExtension
+  - Microsoft.DocAsCode.Utility.FileExtensions.GetFileListFromFile(System.String)
+  - Microsoft.DocAsCode.Utility.FileExtensions.IsVaildFilePath(System.String)
+  - Microsoft.DocAsCode.Utility.FileExtensions.MakeRelativePath(System.String,System.String)
+  - Microsoft.DocAsCode.Utility.FileExtensions.CopyFilesToFolder(System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.Boolean,System.Action{System.String},System.Func{System.String,System.Boolean})
+  - Microsoft.DocAsCode.Utility.FileExtensions.GetFullPath(System.String,System.String)
+  - Microsoft.DocAsCode.Utility.FileExtensions.CopyFile(System.String,System.String)
+  - Microsoft.DocAsCode.Utility.FileExtensions.FormatPath(System.String,System.UriKind,System.String)
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: FileExtensions
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 109
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  summary: 
+  syntax:
+    content: public class FileExtensions
+    content.vb: Public Class FileExtensions
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.ToValidFilePath(System.String)
+  id: ToValidFilePath(System.String)
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: ToValidFilePath(String)
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.ToValidFilePath(System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 112
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public static string ToValidFilePath(string input)
+    content.vb: Public Shared Function ToValidFilePath(input As String) As String
+    parameters:
+    - id: input
+      type: System.String
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.SaveFileListToFile(System.Collections.Generic.List{System.String},System.String)
+  id: SaveFileListToFile(System.Collections.Generic.List{System.String},System.String)
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: SaveFileListToFile(List<String>, String)
+  name.vb: SaveFileListToFile(List(Of String), String)
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.SaveFileListToFile(System.Collections.Generic.List<System.String>, System.String)
+  fullname.vb: Microsoft.DocAsCode.Utility.FileExtensions.SaveFileListToFile(System.Collections.Generic.List(Of System.String), System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 124
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public static void SaveFileListToFile(List<string> fileList, string filePath)
+    content.vb: Public Shared Sub SaveFileListToFile(fileList As List(Of String), filePath As String)
+    parameters:
+    - id: fileList
+      type: System.Collections.Generic.List{System.String}
+    - id: filePath
+      type: System.String
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.ListFileExtension
+  id: ListFileExtension
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: ListFileExtension
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.ListFileExtension
+  type: Field
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 137
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public const string ListFileExtension
+    content.vb: Public Const ListFileExtension As String = ".list"
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.GetFileListFromFile(System.String)
+  id: GetFileListFromFile(System.String)
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: GetFileListFromFile(String)
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.GetFileListFromFile(System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 139
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public static List<string> GetFileListFromFile(string filePath)
+    content.vb: Public Shared Function GetFileListFromFile(filePath As String) As List(Of String)
+    parameters:
+    - id: filePath
+      type: System.String
+    return:
+      type: System.Collections.Generic.List{System.String}
+      description: 
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.IsVaildFilePath(System.String)
+  id: IsVaildFilePath(System.String)
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: IsVaildFilePath(String)
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.IsVaildFilePath(System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 167
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  summary: http://stackoverflow.com/questions/422090/in-c-sharp-check-that-filename-is-possibly-valid-not-that-it-exists
+  syntax:
+    content: public static bool IsVaildFilePath(string path)
+    content.vb: Public Shared Function IsVaildFilePath(path As String) As Boolean
+    parameters:
+    - id: path
+      type: System.String
+      description: 
+    return:
+      type: System.Boolean
+      description: 
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.MakeRelativePath(System.String,System.String)
+  id: MakeRelativePath(System.String,System.String)
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: MakeRelativePath(String, String)
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.MakeRelativePath(System.String, System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 189
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  summary: Creates a relative path from one file or folder to another.
+  syntax:
+    content: public static string MakeRelativePath(string basePath, string absolutePath)
+    content.vb: Public Shared Function MakeRelativePath(basePath As String, absolutePath As String) As String
+    parameters:
+    - id: basePath
+      type: System.String
+      description: Contains the directory that defines the start of the relative path.
+    - id: absolutePath
+      type: System.String
+      description: Contains the path that defines the endpoint of the relative path.
+    return:
+      type: System.String
+      description: The relative path from the start directory to the end path.
+  exceptions:
+  - type: System.ArgumentNullException
+  - type: System.UriFormatException
+  - type: System.InvalidOperationException
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.CopyFilesToFolder(System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.Boolean,System.Action{System.String},System.Func{System.String,System.Boolean})
+  id: CopyFilesToFolder(System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.Boolean,System.Action{System.String},System.Func{System.String,System.Boolean})
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: CopyFilesToFolder(IEnumerable<String>, String, String, Boolean, Action<String>, Func<String, Boolean>)
+  name.vb: CopyFilesToFolder(IEnumerable(Of String), String, String, Boolean, Action(Of String), Func(Of String, Boolean))
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.CopyFilesToFolder(System.Collections.Generic.IEnumerable<System.String>, System.String, System.String, System.Boolean, System.Action<System.String>, System.Func<System.String, System.Boolean>)
+  fullname.vb: Microsoft.DocAsCode.Utility.FileExtensions.CopyFilesToFolder(System.Collections.Generic.IEnumerable(Of System.String), System.String, System.String, System.Boolean, System.Action(Of System.String), System.Func(Of System.String, System.Boolean))
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 216
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public static IEnumerable<string> CopyFilesToFolder(IEnumerable<string> files, string sourceFolder, string destinationFolder, bool overwrite, Action<string> messageHandler, Func<string, bool> errorHandler)
+    content.vb: Public Shared Function CopyFilesToFolder(files As IEnumerable(Of String), sourceFolder As String, destinationFolder As String, overwrite As Boolean, messageHandler As Action(Of String), errorHandler As Func(Of String, Boolean)) As IEnumerable(Of String)
+    parameters:
+    - id: files
+      type: System.Collections.Generic.IEnumerable{System.String}
+    - id: sourceFolder
+      type: System.String
+    - id: destinationFolder
+      type: System.String
+    - id: overwrite
+      type: System.Boolean
+    - id: messageHandler
+      type: System.Action{System.String}
+    - id: errorHandler
+      type: System.Func{System.String,System.Boolean}
+    return:
+      type: System.Collections.Generic.IEnumerable{System.String}
+      description: 
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.GetFullPath(System.String,System.String)
+  id: GetFullPath(System.String,System.String)
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: GetFullPath(String, String)
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.GetFullPath(System.String, System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 274
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public static string GetFullPath(string folder, string href)
+    content.vb: Public Shared Function GetFullPath(folder As String, href As String) As String
+    parameters:
+    - id: folder
+      type: System.String
+    - id: href
+      type: System.String
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.CopyFile(System.String,System.String)
+  id: CopyFile(System.String,System.String)
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: CopyFile(String, String)
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.CopyFile(System.String, System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 281
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public static void CopyFile(string path, string targetPath)
+    content.vb: Public Shared Sub CopyFile(path As String, targetPath As String)
+    parameters:
+    - id: path
+      type: System.String
+    - id: targetPath
+      type: System.String
+- uid: Microsoft.DocAsCode.Utility.FileExtensions.FormatPath(System.String,System.UriKind,System.String)
+  id: FormatPath(System.String,System.UriKind,System.String)
+  parent: Microsoft.DocAsCode.Utility.FileExtensions
+  href: Microsoft.DocAsCode.Utility.FileExtensions.yml
+  name: FormatPath(String, UriKind, String)
+  fullname: Microsoft.DocAsCode.Utility.FileExtensions.FormatPath(System.String, System.UriKind, System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/Extensions.cs
+    startLine: 313
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  summary: Also change backslash to forward slash
+  syntax:
+    content: public static string FormatPath(string path, UriKind kind, string basePath = null)
+    content.vb: Public Shared Function FormatPath(path As String, kind As UriKind, basePath As String = Nothing) As String
+    parameters:
+    - id: path
+      type: System.String
+      description: 
+    - id: kind
+      type: System.UriKind
+      description: 
+    - id: basePath
+      type: System.String
+      description: 
+    return:
+      type: System.String
+      description: 
+references:
+- uid: Microsoft.DocAsCode.Utility
+  isExternal: false
+  name: Microsoft.DocAsCode.Utility
+  fullname: Microsoft.DocAsCode.Utility
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: System.Collections.Generic.List{System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<String>
+  name.vb: List(Of String)
+  fullname: System.Collections.Generic.List<System.String>
+  fullname.vb: System.Collections.Generic.List(Of System.String)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic.List`1
+  parent: System.Collections.Generic
+  isExternal: true
+  name: List<T>
+  name.vb: List(Of T)
+  fullname: System.Collections.Generic.List<T>
+  fullname.vb: System.Collections.Generic.List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  fullname: System.Collections.Generic
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean
+- uid: System.ArgumentNullException
+- uid: System.UriFormatException
+- uid: System.InvalidOperationException
+- uid: System.Collections.Generic.IEnumerable{System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<String>
+  name.vb: IEnumerable(Of String)
+  fullname: System.Collections.Generic.IEnumerable<System.String>
+  fullname.vb: System.Collections.Generic.IEnumerable(Of System.String)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullname: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullname: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Action{System.String}
+  parent: System
+  definition: System.Action`1
+  name: Action<String>
+  name.vb: Action(Of String)
+  fullname: System.Action<System.String>
+  fullname.vb: System.Action(Of System.String)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Func{System.String,System.Boolean}
+  parent: System
+  definition: System.Func`2
+  name: Func<String, Boolean>
+  name.vb: Func(Of String, Boolean)
+  fullname: System.Func<System.String, System.Boolean>
+  fullname.vb: System.Func(Of System.String, System.Boolean)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    fullname: System.Func
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Boolean
+    name: Boolean
+    fullname: System.Boolean
+    isExternal: true
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    fullname: System.Func
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Boolean
+    name: Boolean
+    fullname: System.Boolean
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic.IEnumerable`1
+  parent: System.Collections.Generic
+  isExternal: true
+  name: IEnumerable<T>
+  name.vb: IEnumerable(Of T)
+  fullname: System.Collections.Generic.IEnumerable<T>
+  fullname.vb: System.Collections.Generic.IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullname: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullname: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )
+- uid: System.Action`1
+  parent: System
+  isExternal: true
+  name: Action<T>
+  name.vb: Action(Of T)
+  fullname: System.Action<T>
+  fullname.vb: System.Action(Of T)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )
+- uid: System.Func`2
+  parent: System
+  isExternal: true
+  name: Func<T, TResult>
+  name.vb: Func(Of T, TResult)
+  fullname: System.Func<T, TResult>
+  fullname.vb: System.Func(Of T, TResult)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    fullname: System.Func
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: ', '
+    fullname: ', '
+  - name: TResult
+    fullname: TResult
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    fullname: System.Func
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: ', '
+    fullname: ', '
+  - name: TResult
+    fullname: TResult
+  - name: )
+    fullname: )
+- uid: System.UriKind
+  parent: System
+  isExternal: true
+  name: UriKind
+  fullname: System.UriKind

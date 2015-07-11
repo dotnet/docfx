@@ -1,0 +1,382 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.YamlUtility
+  id: YamlUtility
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.YamlUtility.Serialize(System.IO.TextWriter,System.Object)
+  - Microsoft.DocAsCode.EntityModel.YamlUtility.Serialize(System.String,System.Object)
+  - Microsoft.DocAsCode.EntityModel.YamlUtility.Deserialize``1(System.IO.TextReader)
+  - Microsoft.DocAsCode.EntityModel.YamlUtility.Deserialize``1(System.String)
+  href: Microsoft.DocAsCode.EntityModel.YamlUtility.yml
+  name: YamlUtility
+  fullname: Microsoft.DocAsCode.EntityModel.YamlUtility
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Extensions.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/Extensions.cs
+    startLine: 60
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class YamlUtility
+    content.vb: Public Class YamlUtility
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.YamlUtility.Serialize(System.IO.TextWriter,System.Object)
+  id: Serialize(System.IO.TextWriter,System.Object)
+  parent: Microsoft.DocAsCode.EntityModel.YamlUtility
+  href: Microsoft.DocAsCode.EntityModel.YamlUtility.yml
+  name: Serialize(TextWriter, Object)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlUtility.Serialize(System.IO.TextWriter, System.Object)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Extensions.cs
+    startLine: 65
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static void Serialize(TextWriter writer, object graph)
+    content.vb: Public Shared Sub Serialize(writer As TextWriter, graph As Object)
+    parameters:
+    - id: writer
+      type: System.IO.TextWriter
+    - id: graph
+      type: System.Object
+- uid: Microsoft.DocAsCode.EntityModel.YamlUtility.Serialize(System.String,System.Object)
+  id: Serialize(System.String,System.Object)
+  parent: Microsoft.DocAsCode.EntityModel.YamlUtility
+  href: Microsoft.DocAsCode.EntityModel.YamlUtility.yml
+  name: Serialize(String, Object)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlUtility.Serialize(System.String, System.Object)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Extensions.cs
+    startLine: 70
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static void Serialize(string path, object graph)
+    content.vb: Public Shared Sub Serialize(path As String, graph As Object)
+    parameters:
+    - id: path
+      type: System.String
+    - id: graph
+      type: System.Object
+- uid: Microsoft.DocAsCode.EntityModel.YamlUtility.Deserialize``1(System.IO.TextReader)
+  id: Deserialize``1(System.IO.TextReader)
+  parent: Microsoft.DocAsCode.EntityModel.YamlUtility
+  href: Microsoft.DocAsCode.EntityModel.YamlUtility.yml
+  name: Deserialize<T>(TextReader)
+  name.vb: Deserialize(Of T)(TextReader)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlUtility.Deserialize<T>(System.IO.TextReader)
+  fullname.vb: Microsoft.DocAsCode.EntityModel.YamlUtility.Deserialize(Of T)(System.IO.TextReader)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Extensions.cs
+    startLine: 84
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static T Deserialize<T>(TextReader reader)
+    content.vb: Public Shared Function Deserialize(Of T)(reader As TextReader) As T
+    parameters:
+    - id: reader
+      type: System.IO.TextReader
+    typeParameters:
+    - id: T
+    return:
+      type: '{T}'
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.YamlUtility.Deserialize``1(System.String)
+  id: Deserialize``1(System.String)
+  parent: Microsoft.DocAsCode.EntityModel.YamlUtility
+  href: Microsoft.DocAsCode.EntityModel.YamlUtility.yml
+  name: Deserialize<T>(String)
+  name.vb: Deserialize(Of T)(String)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlUtility.Deserialize<T>(System.String)
+  fullname.vb: Microsoft.DocAsCode.EntityModel.YamlUtility.Deserialize(Of T)(System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Extensions.cs
+    startLine: 89
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static T Deserialize<T>(string path)
+    content.vb: Public Shared Function Deserialize(Of T)(path As String) As T
+    parameters:
+    - id: path
+      type: System.String
+    typeParameters:
+    - id: T
+    return:
+      type: '{T}'
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.IO.TextWriter
+  parent: System.IO
+  isExternal: true
+  name: TextWriter
+  fullname: System.IO.TextWriter
+- uid: System.IO
+  isExternal: false
+  name: System.IO
+  fullname: System.IO
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: System.IO.TextReader
+  parent: System.IO
+  isExternal: true
+  name: TextReader
+  fullname: System.IO.TextReader
+- uid: '{T}'
+  isExternal: false
+  name: T
+  fullname: T

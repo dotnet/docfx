@@ -1,0 +1,400 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
+  id: YamlViewModelExtension
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.IsPageLevel(Microsoft.DocAsCode.EntityModel.MemberType)
+  - Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.AllowMultipleItems(Microsoft.DocAsCode.EntityModel.MemberType)
+  - Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.Shrink(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  - Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.ShrinkToSimpleToc(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  - Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.ShrinkToSimpleTocWithNamespaceNotEmpty(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  href: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.yml
+  name: YamlViewModelExtension
+  fullname: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
+    startLine: 63
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class YamlViewModelExtension
+    content.vb: Public Class YamlViewModelExtension
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.IsPageLevel(Microsoft.DocAsCode.EntityModel.MemberType)
+  id: IsPageLevel(Microsoft.DocAsCode.EntityModel.MemberType)
+  parent: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
+  href: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.yml
+  name: IsPageLevel(MemberType)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.IsPageLevel(Microsoft.DocAsCode.EntityModel.MemberType)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
+    startLine: 65
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static bool IsPageLevel(MemberType type)
+    content.vb: Public Shared Function IsPageLevel(type As MemberType) As Boolean
+    parameters:
+    - id: type
+      type: Microsoft.DocAsCode.EntityModel.MemberType
+    return:
+      type: System.Boolean
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.AllowMultipleItems(Microsoft.DocAsCode.EntityModel.MemberType)
+  id: AllowMultipleItems(Microsoft.DocAsCode.EntityModel.MemberType)
+  parent: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
+  href: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.yml
+  name: AllowMultipleItems(MemberType)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.AllowMultipleItems(Microsoft.DocAsCode.EntityModel.MemberType)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
+    startLine: 75
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  summary: Allow multiple items in one yml file
+  syntax:
+    content: public static bool AllowMultipleItems(MemberType type)
+    content.vb: Public Shared Function AllowMultipleItems(type As MemberType) As Boolean
+    parameters:
+    - id: type
+      type: Microsoft.DocAsCode.EntityModel.MemberType
+      description: 
+    return:
+      type: System.Boolean
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.Shrink(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  id: Shrink(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  parent: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
+  href: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.yml
+  name: Shrink(MetadataItem)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.Shrink(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
+    startLine: 80
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static MetadataItem Shrink(MetadataItem item)
+    content.vb: Public Shared Function Shrink(item As MetadataItem) As MetadataItem
+    parameters:
+    - id: item
+      type: Microsoft.DocAsCode.EntityModel.MetadataItem
+    return:
+      type: Microsoft.DocAsCode.EntityModel.MetadataItem
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.ShrinkToSimpleToc(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  id: ShrinkToSimpleToc(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  parent: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
+  href: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.yml
+  name: ShrinkToSimpleToc(MetadataItem)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.ShrinkToSimpleToc(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
+    startLine: 90
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public static MetadataItem ShrinkToSimpleToc(MetadataItem item)
+    content.vb: Public Shared Function ShrinkToSimpleToc(item As MetadataItem) As MetadataItem
+    parameters:
+    - id: item
+      type: Microsoft.DocAsCode.EntityModel.MetadataItem
+    return:
+      type: Microsoft.DocAsCode.EntityModel.MetadataItem
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.ShrinkToSimpleTocWithNamespaceNotEmpty(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  id: ShrinkToSimpleTocWithNamespaceNotEmpty(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  parent: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
+  href: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.yml
+  name: ShrinkToSimpleTocWithNamespaceNotEmpty(MetadataItem)
+  fullname: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.ShrinkToSimpleTocWithNamespaceNotEmpty(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
+    startLine: 128
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  summary: Only when Namespace is not empty, return it
+  syntax:
+    content: public static MetadataItem ShrinkToSimpleTocWithNamespaceNotEmpty(MetadataItem item)
+    content.vb: Public Shared Function ShrinkToSimpleTocWithNamespaceNotEmpty(item As MetadataItem) As MetadataItem
+    parameters:
+    - id: item
+      type: Microsoft.DocAsCode.EntityModel.MetadataItem
+      description: 
+    return:
+      type: Microsoft.DocAsCode.EntityModel.MetadataItem
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: Microsoft.DocAsCode.EntityModel.MemberType
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.MemberType.yml
+  name: MemberType
+  fullname: Microsoft.DocAsCode.EntityModel.MemberType
+  type: Enum
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean
+- uid: Microsoft.DocAsCode.EntityModel.MetadataItem
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
+  name: MetadataItem
+  fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+  type: Class

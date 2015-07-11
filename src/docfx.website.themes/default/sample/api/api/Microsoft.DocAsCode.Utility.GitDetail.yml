@@ -1,0 +1,447 @@
+items:
+- uid: Microsoft.DocAsCode.Utility.GitDetail
+  id: GitDetail
+  parent: Microsoft.DocAsCode.Utility
+  children:
+  - Microsoft.DocAsCode.Utility.GitDetail.RelativePath
+  - Microsoft.DocAsCode.Utility.GitDetail.RemoteBranch
+  - Microsoft.DocAsCode.Utility.GitDetail.RemoteRepositoryUrl
+  - Microsoft.DocAsCode.Utility.GitDetail.LocalWorkingDirectory
+  - Microsoft.DocAsCode.Utility.GitDetail.Description
+  - Microsoft.DocAsCode.Utility.GitDetail.Equals(System.Object)
+  - Microsoft.DocAsCode.Utility.GitDetail.GetHashCode
+  - Microsoft.DocAsCode.Utility.GitDetail.ToString
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: GitDetail
+  fullname: Microsoft.DocAsCode.Utility.GitDetail
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+      branch: DefaultTheme
+      repo: https://github.com/aspnet/docfx.git
+      key: 121f5b59
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 11
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public class GitDetail
+    content.vb: Public Class GitDetail
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.Utility.GitDetail.RelativePath
+  id: RelativePath
+  parent: Microsoft.DocAsCode.Utility.GitDetail
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: RelativePath
+  fullname: Microsoft.DocAsCode.Utility.GitDetail.RelativePath
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 16
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  summary: Relative path of current file to the Git Root Directory
+  syntax:
+    content: public string RelativePath { get; set; }
+    content.vb: Public Property RelativePath As String
+    parameters: []
+    return:
+      type: System.String
+- uid: Microsoft.DocAsCode.Utility.GitDetail.RemoteBranch
+  id: RemoteBranch
+  parent: Microsoft.DocAsCode.Utility.GitDetail
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: RemoteBranch
+  fullname: Microsoft.DocAsCode.Utility.GitDetail.RemoteBranch
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 20
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public string RemoteBranch { get; set; }
+    content.vb: Public Property RemoteBranch As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.Utility.GitDetail.RemoteRepositoryUrl
+  id: RemoteRepositoryUrl
+  parent: Microsoft.DocAsCode.Utility.GitDetail
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: RemoteRepositoryUrl
+  fullname: Microsoft.DocAsCode.Utility.GitDetail.RemoteRepositoryUrl
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 24
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public string RemoteRepositoryUrl { get; set; }
+    content.vb: Public Property RemoteRepositoryUrl As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.Utility.GitDetail.LocalWorkingDirectory
+  id: LocalWorkingDirectory
+  parent: Microsoft.DocAsCode.Utility.GitDetail
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: LocalWorkingDirectory
+  fullname: Microsoft.DocAsCode.Utility.GitDetail.LocalWorkingDirectory
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 28
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public string LocalWorkingDirectory { get; set; }
+    content.vb: Public Property LocalWorkingDirectory As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.Utility.GitDetail.Description
+  id: Description
+  parent: Microsoft.DocAsCode.Utility.GitDetail
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: Description
+  fullname: Microsoft.DocAsCode.Utility.GitDetail.Description
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 33
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public string Description { get; set; }
+    content.vb: Public Property Description As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.Utility.GitDetail.Equals(System.Object)
+  id: Equals(System.Object)
+  parent: Microsoft.DocAsCode.Utility.GitDetail
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: Equals(Object)
+  fullname: Microsoft.DocAsCode.Utility.GitDetail.Equals(System.Object)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 37
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public override bool Equals(object obj)
+    content.vb: Public Overrides Function Equals(obj As Object) As Boolean
+    parameters:
+    - id: obj
+      type: System.Object
+    return:
+      type: System.Boolean
+      description: 
+  overridden: System.Object.Equals(System.Object)
+- uid: Microsoft.DocAsCode.Utility.GitDetail.GetHashCode
+  id: GetHashCode
+  parent: Microsoft.DocAsCode.Utility.GitDetail
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: GetHashCode()
+  fullname: Microsoft.DocAsCode.Utility.GitDetail.GetHashCode()
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 46
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public override int GetHashCode()
+    content.vb: Public Overrides Function GetHashCode As Integer
+    return:
+      type: System.Int32
+      description: 
+  overridden: System.Object.GetHashCode
+- uid: Microsoft.DocAsCode.Utility.GitDetail.ToString
+  id: ToString
+  parent: Microsoft.DocAsCode.Utility.GitDetail
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: ToString()
+  fullname: Microsoft.DocAsCode.Utility.GitDetail.ToString()
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.Utility/GitUtility.cs
+    startLine: 51
+  assemblies:
+  - Microsoft.DocAsCode.Utility
+  namespace: Microsoft.DocAsCode.Utility
+  syntax:
+    content: public override string ToString()
+    content.vb: Public Overrides Function ToString As String
+    return:
+      type: System.String
+      description: 
+  overridden: System.Object.ToString
+references:
+- uid: Microsoft.DocAsCode.Utility
+  isExternal: false
+  name: Microsoft.DocAsCode.Utility
+  fullname: Microsoft.DocAsCode.Utility
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  fullname: System.Int32
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
