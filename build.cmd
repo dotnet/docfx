@@ -56,8 +56,8 @@ CALL :Build %*
 SET BuildPrefix=
 SET BuildPostfix=
 CALL :Build %*
-IF NOT '%BuildErrorLevel%'=='0' (
-    ECHO Exit Code: %BuildErrorLevel%
+IF NOT '%ErrorLevel%'=='0' (
+    ECHO Exit Code: %ErrorLevel%
     GOTO :AfterBuild
 )
 
