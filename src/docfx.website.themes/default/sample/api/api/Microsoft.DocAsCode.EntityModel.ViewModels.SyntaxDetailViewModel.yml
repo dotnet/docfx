@@ -1,0 +1,511 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  id: SyntaxDetailViewModel
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels
+  children:
+  - Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Content
+  - Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.ContentForCSharp
+  - Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.ContentForVB
+  - Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Parameters
+  - Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.TypeParameters
+  - Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Return
+  - Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.FromModel(Microsoft.DocAsCode.EntityModel.SyntaxDetail)
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: SyntaxDetailViewModel
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+      branch: FixBuildCmd
+      repo: https://github.com/aspnet/docfx.git
+      key: 4f0d42e4
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+    startLine: 5
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public class SyntaxDetailViewModel
+    content.vb: Public Class SyntaxDetailViewModel
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Content
+  id: Content
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: Content
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Content
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+    startLine: 7
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public string Content { get; set; }
+    content.vb: Public Property Content As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.ContentForCSharp
+  id: ContentForCSharp
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: ContentForCSharp
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.ContentForCSharp
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+    startLine: 10
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public string ContentForCSharp { get; set; }
+    content.vb: Public Property ContentForCSharp As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.ContentForVB
+  id: ContentForVB
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: ContentForVB
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.ContentForVB
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+    startLine: 13
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public string ContentForVB { get; set; }
+    content.vb: Public Property ContentForVB As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Parameters
+  id: Parameters
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: Parameters
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Parameters
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+    startLine: 16
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public List<ApiParameter> Parameters { get; set; }
+    content.vb: Public Property Parameters As List(Of ApiParameter)
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.ApiParameter}
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.TypeParameters
+  id: TypeParameters
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: TypeParameters
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.TypeParameters
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+    startLine: 19
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public List<ApiParameter> TypeParameters { get; set; }
+    content.vb: Public Property TypeParameters As List(Of ApiParameter)
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.ApiParameter}
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Return
+  id: Return
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: Return
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.Return
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+    startLine: 22
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public ApiParameter Return { get; set; }
+    content.vb: Public Property Return As ApiParameter
+    parameters: []
+    return:
+      type: Microsoft.DocAsCode.EntityModel.ApiParameter
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.FromModel(Microsoft.DocAsCode.EntityModel.SyntaxDetail)
+  id: FromModel(Microsoft.DocAsCode.EntityModel.SyntaxDetail)
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: FromModel(SyntaxDetail)
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.FromModel(Microsoft.DocAsCode.EntityModel.SyntaxDetail)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SyntaxDetailViewModel.cs
+    startLine: 25
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.ViewModels
+  syntax:
+    content: public static SyntaxDetailViewModel FromModel(SyntaxDetail model)
+    content.vb: Public Shared Function FromModel(model As SyntaxDetail) As SyntaxDetailViewModel
+    parameters:
+    - id: model
+      type: Microsoft.DocAsCode.EntityModel.SyntaxDetail
+    return:
+      type: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel.ViewModels
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels
+  Type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.ApiParameter}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  href: Microsoft.DocAsCode.EntityModel.ApiParameter.yml
+  name: List<ApiParameter>
+  name.vb: List(Of ApiParameter)
+  fullname: System.Collections.Generic.List<Microsoft.DocAsCode.EntityModel.ApiParameter>
+  fullname.vb: System.Collections.Generic.List(Of Microsoft.DocAsCode.EntityModel.ApiParameter)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: Microsoft.DocAsCode.EntityModel.ApiParameter
+    name: ApiParameter
+    fullname: Microsoft.DocAsCode.EntityModel.ApiParameter
+    href: Microsoft.DocAsCode.EntityModel.ApiParameter.yml
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: Microsoft.DocAsCode.EntityModel.ApiParameter
+    name: ApiParameter
+    fullname: Microsoft.DocAsCode.EntityModel.ApiParameter
+    href: Microsoft.DocAsCode.EntityModel.ApiParameter.yml
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic.List`1
+  parent: System.Collections.Generic
+  isExternal: true
+  name: List<T>
+  name.vb: List(Of T)
+  fullname: System.Collections.Generic.List<T>
+  fullname.vb: System.Collections.Generic.List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    fullname: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )
+- uid: System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  fullname: System.Collections.Generic
+- uid: Microsoft.DocAsCode.EntityModel.ApiParameter
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ApiParameter.yml
+  name: ApiParameter
+  fullname: Microsoft.DocAsCode.EntityModel.ApiParameter
+  Type: Class
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  Type: Namespace
+- uid: Microsoft.DocAsCode.EntityModel.SyntaxDetail
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.SyntaxDetail.yml
+  name: SyntaxDetail
+  fullname: Microsoft.DocAsCode.EntityModel.SyntaxDetail
+  Type: Class
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
+  name: SyntaxDetailViewModel
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  Type: Class

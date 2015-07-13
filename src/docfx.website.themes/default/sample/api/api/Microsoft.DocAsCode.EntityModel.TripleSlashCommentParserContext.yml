@@ -1,0 +1,392 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext
+  id: TripleSlashCommentParserContext
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.Normalize
+  - Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.PreserveRawInlineComments
+  - Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.AddReferenceDelegate
+  href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.yml
+  name: TripleSlashCommentParserContext
+  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+      branch: FixBuildCmd
+      repo: https://github.com/aspnet/docfx.git
+      key: 4f0d42e4
+    path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+    startLine: 18
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: 'public class TripleSlashCommentParserContext : ITripleSlashCommentParserContext'
+    content.vb: Public Class TripleSlashCommentParserContext Implements ITripleSlashCommentParserContext
+  inheritance:
+  - System.Object
+  implements:
+  - Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.Normalize
+  id: Normalize
+  parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext
+  href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.yml
+  name: Normalize
+  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.Normalize
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+    startLine: 20
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public bool Normalize { get; set; }
+    content.vb: Public Property Normalize As Boolean
+    parameters: []
+    return:
+      type: System.Boolean
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.PreserveRawInlineComments
+  id: PreserveRawInlineComments
+  parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext
+  href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.yml
+  name: PreserveRawInlineComments
+  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.PreserveRawInlineComments
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+    startLine: 22
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public bool PreserveRawInlineComments { get; set; }
+    content.vb: Public Property PreserveRawInlineComments As Boolean
+    parameters: []
+    return:
+      type: System.Boolean
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.AddReferenceDelegate
+  id: AddReferenceDelegate
+  parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext
+  href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.yml
+  name: AddReferenceDelegate
+  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.AddReferenceDelegate
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+    startLine: 24
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public Action<string> AddReferenceDelegate { get; set; }
+    content.vb: Public Property AddReferenceDelegate As Action(Of String)
+    parameters: []
+    return:
+      type: System.Action{System.String}
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  Type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean
+- uid: System.Action{System.String}
+  parent: System
+  definition: System.Action`1
+  name: Action<String>
+  name.vb: Action(Of String)
+  fullname: System.Action<System.String>
+  fullname.vb: System.Action(Of System.String)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Action`1
+  parent: System
+  isExternal: true
+  name: Action<T>
+  name.vb: Action(Of T)
+  fullname: System.Action<T>
+  fullname.vb: System.Action(Of T)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )

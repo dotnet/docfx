@@ -1,0 +1,480 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail
+  id: SourceDetail
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.Remote
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.BasePath
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.Name
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.Href
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.Path
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.StartLine
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.EndLine
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.Content
+  - Microsoft.DocAsCode.EntityModel.SourceDetail.IsExternalPath
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: SourceDetail
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+      branch: FixBuildCmd
+      repo: https://github.com/aspnet/docfx.git
+      key: 4f0d42e4
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 4
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class SourceDetail
+    content.vb: Public Class SourceDetail
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.Remote
+  id: Remote
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: Remote
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.Remote
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 6
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public GitDetail Remote { get; set; }
+    content.vb: Public Property Remote As GitDetail
+    parameters: []
+    return:
+      type: Microsoft.DocAsCode.Utility.GitDetail
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.BasePath
+  id: BasePath
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: BasePath
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.BasePath
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 9
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public string BasePath { get; set; }
+    content.vb: Public Property BasePath As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.Name
+  id: Name
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: Name
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.Name
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 12
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public string Name { get; set; }
+    content.vb: Public Property Name As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.Href
+  id: Href
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: Href
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.Href
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 18
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  summary: The url path for current source, should be resolved at some late stage
+  syntax:
+    content: public string Href { get; set; }
+    content.vb: Public Property Href As String
+    parameters: []
+    return:
+      type: System.String
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.Path
+  id: Path
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: Path
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.Path
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 24
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  summary: The local path for current source, should be resolved to be relative path at some late stage
+  syntax:
+    content: public string Path { get; set; }
+    content.vb: Public Property Path As String
+    parameters: []
+    return:
+      type: System.String
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.StartLine
+  id: StartLine
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: StartLine
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.StartLine
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 27
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public int StartLine { get; set; }
+    content.vb: Public Property StartLine As Integer
+    parameters: []
+    return:
+      type: System.Int32
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.EndLine
+  id: EndLine
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: EndLine
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.EndLine
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 30
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public int EndLine { get; set; }
+    content.vb: Public Property EndLine As Integer
+    parameters: []
+    return:
+      type: System.Int32
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.Content
+  id: Content
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: Content
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.Content
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 33
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public string Content { get; set; }
+    content.vb: Public Property Content As String
+    parameters: []
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.SourceDetail.IsExternalPath
+  id: IsExternalPath
+  parent: Microsoft.DocAsCode.EntityModel.SourceDetail
+  href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
+  name: IsExternalPath
+  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail.IsExternalPath
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Model/SourceDetail.cs
+    startLine: 39
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  summary: The external path for current source if it is not locally available
+  syntax:
+    content: public bool IsExternalPath { get; set; }
+    content.vb: Public Property IsExternalPath As Boolean
+    parameters: []
+    return:
+      type: System.Boolean
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  Type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: Microsoft.DocAsCode.Utility.GitDetail
+  parent: Microsoft.DocAsCode.Utility
+  isExternal: false
+  href: Microsoft.DocAsCode.Utility.GitDetail.yml
+  name: GitDetail
+  fullname: Microsoft.DocAsCode.Utility.GitDetail
+- uid: Microsoft.DocAsCode.Utility
+  isExternal: false
+  name: Microsoft.DocAsCode.Utility
+  fullname: Microsoft.DocAsCode.Utility
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullname: System.String
+- uid: System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  fullname: System.Int32
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean

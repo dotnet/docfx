@@ -1,0 +1,166 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
+  id: ITripleSlashCommentParserContext
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.Normalize
+  - Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.PreserveRawInlineComments
+  - Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.AddReferenceDelegate
+  href: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.yml
+  name: ITripleSlashCommentParserContext
+  fullname: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
+  type: Interface
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+      branch: FixBuildCmd
+      repo: https://github.com/aspnet/docfx.git
+      key: 4f0d42e4
+    path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+    startLine: 11
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public interface ITripleSlashCommentParserContext
+    content.vb: Public Interface ITripleSlashCommentParserContext
+- uid: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.Normalize
+  id: Normalize
+  parent: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
+  href: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.yml
+  name: Normalize
+  fullname: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.Normalize
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+    startLine: 13
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: bool Normalize { get; set; }
+    content.vb: Property Normalize As Boolean
+    parameters: []
+    return:
+      type: System.Boolean
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.PreserveRawInlineComments
+  id: PreserveRawInlineComments
+  parent: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
+  href: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.yml
+  name: PreserveRawInlineComments
+  fullname: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.PreserveRawInlineComments
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+    startLine: 14
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: bool PreserveRawInlineComments { get; set; }
+    content.vb: Property PreserveRawInlineComments As Boolean
+    parameters: []
+    return:
+      type: System.Boolean
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.AddReferenceDelegate
+  id: AddReferenceDelegate
+  parent: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
+  href: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.yml
+  name: AddReferenceDelegate
+  fullname: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.AddReferenceDelegate
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
+    startLine: 15
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: Action<string> AddReferenceDelegate { get; set; }
+    content.vb: Property AddReferenceDelegate As Action(Of String)
+    parameters: []
+    return:
+      type: System.Action{System.String}
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  Type: Namespace
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: System.Action{System.String}
+  parent: System
+  definition: System.Action`1
+  name: Action<String>
+  name.vb: Action(Of String)
+  fullname: System.Action<System.String>
+  fullname.vb: System.Action(Of System.String)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: System.String
+    name: String
+    fullname: System.String
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Action`1
+  parent: System
+  isExternal: true
+  name: Action<T>
+  name.vb: Action(Of T)
+  fullname: System.Action<T>
+  fullname.vb: System.Action(Of T)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: T
+    fullname: T
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    fullname: System.Action
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: T
+    fullname: T
+  - name: )
+    fullname: )

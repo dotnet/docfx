@@ -1,0 +1,445 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator
+  id: VBNameVisitorCreator
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.#ctor(Microsoft.DocAsCode.EntityModel.NameOptions)
+  - Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.Create
+  href: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.yml
+  name: VBNameVisitorCreator
+  fullname: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
+      branch: FixBuildCmd
+      repo: https://github.com/aspnet/docfx.git
+      key: 4f0d42e4
+    path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
+    startLine: 444
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: 'public class VBNameVisitorCreator : NameVisitorCreator'
+    content.vb: Public Class VBNameVisitorCreator Inherits NameVisitorCreator
+  inheritance:
+  - System.Object
+  - Microsoft.DocAsCode.EntityModel.NameVisitorCreator
+  inheritedMembers:
+  - Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetName(Microsoft.CodeAnalysis.ISymbol)
+  - Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetCSharp(Microsoft.DocAsCode.EntityModel.NameOptions)
+  - Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetVB(Microsoft.DocAsCode.EntityModel.NameOptions)
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.#ctor(Microsoft.DocAsCode.EntityModel.NameOptions)
+  id: '#ctor(Microsoft.DocAsCode.EntityModel.NameOptions)'
+  parent: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator
+  href: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.yml
+  name: VBNameVisitorCreator(NameOptions)
+  fullname: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.VBNameVisitorCreator(Microsoft.DocAsCode.EntityModel.NameOptions)
+  type: Constructor
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
+    startLine: 448
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public VBNameVisitorCreator(NameOptions options)
+    content.vb: Public Sub New(options As NameOptions)
+    parameters:
+    - id: options
+      type: Microsoft.DocAsCode.EntityModel.NameOptions
+- uid: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.Create
+  id: Create
+  parent: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator
+  href: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.yml
+  name: Create()
+  fullname: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.Create()
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
+    startLine: 453
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: protected override NameVisitor Create()
+    content.vb: Protected Overrides Function Create As NameVisitor
+    return:
+      type: Microsoft.DocAsCode.EntityModel.NameVisitor
+      description: 
+  overridden: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.Create
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  Type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  name: NameVisitorCreator
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
+  Type: Class
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetName(Microsoft.CodeAnalysis.ISymbol)
+  parent: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
+  isExternal: true
+  href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  name: GetName(ISymbol)
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetName(Microsoft.CodeAnalysis.ISymbol)
+  spec.csharp:
+  - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetName(Microsoft.CodeAnalysis.ISymbol)
+    name: GetName
+    fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetName
+    href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ISymbol
+    name: ISymbol
+    fullname: Microsoft.CodeAnalysis.ISymbol
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetName(Microsoft.CodeAnalysis.ISymbol)
+    name: GetName
+    fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetName
+    href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  - name: (
+    fullname: (
+  - uid: Microsoft.CodeAnalysis.ISymbol
+    name: ISymbol
+    fullname: Microsoft.CodeAnalysis.ISymbol
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetCSharp(Microsoft.DocAsCode.EntityModel.NameOptions)
+  parent: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  name: GetCSharp(NameOptions)
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetCSharp(Microsoft.DocAsCode.EntityModel.NameOptions)
+  spec.csharp:
+  - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetCSharp(Microsoft.DocAsCode.EntityModel.NameOptions)
+    name: GetCSharp
+    fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetCSharp
+    href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  - name: (
+    fullname: (
+  - uid: Microsoft.DocAsCode.EntityModel.NameOptions
+    name: NameOptions
+    fullname: Microsoft.DocAsCode.EntityModel.NameOptions
+    href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetCSharp(Microsoft.DocAsCode.EntityModel.NameOptions)
+    name: GetCSharp
+    fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetCSharp
+    href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  - name: (
+    fullname: (
+  - uid: Microsoft.DocAsCode.EntityModel.NameOptions
+    name: NameOptions
+    fullname: Microsoft.DocAsCode.EntityModel.NameOptions
+    href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
+  - name: )
+    fullname: )
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetVB(Microsoft.DocAsCode.EntityModel.NameOptions)
+  parent: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  name: GetVB(NameOptions)
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetVB(Microsoft.DocAsCode.EntityModel.NameOptions)
+  spec.csharp:
+  - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetVB(Microsoft.DocAsCode.EntityModel.NameOptions)
+    name: GetVB
+    fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetVB
+    href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  - name: (
+    fullname: (
+  - uid: Microsoft.DocAsCode.EntityModel.NameOptions
+    name: NameOptions
+    fullname: Microsoft.DocAsCode.EntityModel.NameOptions
+    href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetVB(Microsoft.DocAsCode.EntityModel.NameOptions)
+    name: GetVB
+    fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.GetVB
+    href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  - name: (
+    fullname: (
+  - uid: Microsoft.DocAsCode.EntityModel.NameOptions
+    name: NameOptions
+    fullname: Microsoft.DocAsCode.EntityModel.NameOptions
+    href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
+  - name: )
+    fullname: )
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: Microsoft.DocAsCode.EntityModel.NameOptions
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
+  name: NameOptions
+  fullname: Microsoft.DocAsCode.EntityModel.NameOptions
+  Type: Enum
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.Create
+  parent: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  name: Create()
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.Create()
+  spec.csharp:
+  - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.Create
+    name: Create
+    fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.Create
+    href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.Create
+    name: Create
+    fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.Create
+    href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: Microsoft.DocAsCode.EntityModel.NameVisitor
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.NameVisitor.yml
+  name: NameVisitor
+  fullname: Microsoft.DocAsCode.EntityModel.NameVisitor
+  Type: Class

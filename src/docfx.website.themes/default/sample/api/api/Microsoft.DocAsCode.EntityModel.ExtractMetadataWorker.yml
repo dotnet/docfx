@@ -1,0 +1,380 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
+  id: ExtractMetadataWorker
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.#ctor(Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel,System.Boolean)
+  - Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataAsync
+  href: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.yml
+  name: ExtractMetadataWorker
+  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/ExtractMetadata/ExtractMetadataWorker.cs
+      branch: FixBuildCmd
+      repo: https://github.com/aspnet/docfx.git
+      key: 4f0d42e4
+    path: src/Microsoft.DocAsCode.EntityModel/ExtractMetadata/ExtractMetadataWorker.cs
+    startLine: 19
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public class ExtractMetadataWorker
+    content.vb: Public Class ExtractMetadataWorker
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.#ctor(Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel,System.Boolean)
+  id: '#ctor(Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel,System.Boolean)'
+  parent: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
+  href: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.yml
+  name: ExtractMetadataWorker(ExtractMetadataInputModel, Boolean)
+  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataWorker(Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel, System.Boolean)
+  type: Constructor
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ExtractMetadata/ExtractMetadataWorker.cs
+    startLine: 42
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public ExtractMetadataWorker(ExtractMetadataInputModel input, bool rebuild)
+    content.vb: Public Sub New(input As ExtractMetadataInputModel, rebuild As Boolean)
+    parameters:
+    - id: input
+      type: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
+    - id: rebuild
+      type: System.Boolean
+- uid: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataAsync
+  id: ExtractMetadataAsync
+  parent: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
+  href: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.yml
+  name: ExtractMetadataAsync()
+  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataAsync()
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/ExtractMetadata/ExtractMetadataWorker.cs
+    startLine: 50
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public Task<ParseResult> ExtractMetadataAsync()
+    content.vb: Public Function ExtractMetadataAsync As Task(Of ParseResult)
+    return:
+      type: System.Threading.Tasks.Task{Microsoft.DocAsCode.EntityModel.ParseResult}
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  Type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullname: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullname: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullname: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullname: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullname: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullname: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullname: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullname: (
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: ', '
+    fullname: ', '
+  - uid: System.Object
+    name: Object
+    fullname: System.Object
+    isExternal: true
+  - name: )
+    fullname: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullname: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullname: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullname: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullname: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullname: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullname: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullname: (
+  - name: )
+    fullname: )
+- uid: System
+  isExternal: false
+  name: System
+  fullname: System
+- uid: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel.yml
+  name: ExtractMetadataInputModel
+  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
+  Type: Class
+- uid: System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  fullname: System.Boolean
+- uid: System.Threading.Tasks.Task{Microsoft.DocAsCode.EntityModel.ParseResult}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
+  name: Task<ParseResult>
+  name.vb: Task(Of ParseResult)
+  fullname: System.Threading.Tasks.Task<Microsoft.DocAsCode.EntityModel.ParseResult>
+  fullname.vb: System.Threading.Tasks.Task(Of Microsoft.DocAsCode.EntityModel.ParseResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    fullname: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    fullname: <
+  - uid: Microsoft.DocAsCode.EntityModel.ParseResult
+    name: ParseResult
+    fullname: Microsoft.DocAsCode.EntityModel.ParseResult
+    href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    fullname: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - uid: Microsoft.DocAsCode.EntityModel.ParseResult
+    name: ParseResult
+    fullname: Microsoft.DocAsCode.EntityModel.ParseResult
+    href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
+  - name: )
+    fullname: )
+- uid: System.Threading.Tasks.Task`1
+  parent: System.Threading.Tasks
+  isExternal: true
+  name: Task<TResult>
+  name.vb: Task(Of TResult)
+  fullname: System.Threading.Tasks.Task<TResult>
+  fullname.vb: System.Threading.Tasks.Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    fullname: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    fullname: <
+  - name: TResult
+    fullname: TResult
+  - name: '>'
+    fullname: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    fullname: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    fullname: '(Of '
+  - name: TResult
+    fullname: TResult
+  - name: )
+    fullname: )
+- uid: System.Threading.Tasks
+  isExternal: false
+  name: System.Threading.Tasks
+  fullname: System.Threading.Tasks

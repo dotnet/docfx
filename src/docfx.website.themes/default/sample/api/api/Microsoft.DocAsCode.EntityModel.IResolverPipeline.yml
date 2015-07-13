@@ -1,0 +1,76 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.IResolverPipeline
+  id: IResolverPipeline
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.IResolverPipeline.Run(Microsoft.DocAsCode.EntityModel.MetadataModel,Microsoft.DocAsCode.EntityModel.ResolverContext)
+  href: Microsoft.DocAsCode.EntityModel.IResolverPipeline.yml
+  name: IResolverPipeline
+  fullname: Microsoft.DocAsCode.EntityModel.IResolverPipeline
+  type: Interface
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/Resolvers/IResolverPipeline.cs
+      branch: FixBuildCmd
+      repo: https://github.com/aspnet/docfx.git
+      key: 4f0d42e4
+    path: src/Microsoft.DocAsCode.EntityModel/Resolvers/IResolverPipeline.cs
+    startLine: 2
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public interface IResolverPipeline
+    content.vb: Public Interface IResolverPipeline
+- uid: Microsoft.DocAsCode.EntityModel.IResolverPipeline.Run(Microsoft.DocAsCode.EntityModel.MetadataModel,Microsoft.DocAsCode.EntityModel.ResolverContext)
+  id: Run(Microsoft.DocAsCode.EntityModel.MetadataModel,Microsoft.DocAsCode.EntityModel.ResolverContext)
+  parent: Microsoft.DocAsCode.EntityModel.IResolverPipeline
+  href: Microsoft.DocAsCode.EntityModel.IResolverPipeline.yml
+  name: Run(MetadataModel, ResolverContext)
+  fullname: Microsoft.DocAsCode.EntityModel.IResolverPipeline.Run(Microsoft.DocAsCode.EntityModel.MetadataModel, Microsoft.DocAsCode.EntityModel.ResolverContext)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/Resolvers/IResolverPipeline.cs
+    startLine: 4
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: ParseResult Run(MetadataModel yaml, ResolverContext context)
+    content.vb: Function Run(yaml As MetadataModel, context As ResolverContext) As ParseResult
+    parameters:
+    - id: yaml
+      type: Microsoft.DocAsCode.EntityModel.MetadataModel
+    - id: context
+      type: Microsoft.DocAsCode.EntityModel.ResolverContext
+    return:
+      type: Microsoft.DocAsCode.EntityModel.ParseResult
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  Type: Namespace
+- uid: Microsoft.DocAsCode.EntityModel.MetadataModel
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.MetadataModel.yml
+  name: MetadataModel
+  fullname: Microsoft.DocAsCode.EntityModel.MetadataModel
+  Type: Class
+- uid: Microsoft.DocAsCode.EntityModel.ResolverContext
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ResolverContext.yml
+  name: ResolverContext
+  fullname: Microsoft.DocAsCode.EntityModel.ResolverContext
+  Type: Class
+- uid: Microsoft.DocAsCode.EntityModel.ParseResult
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
+  name: ParseResult
+  fullname: Microsoft.DocAsCode.EntityModel.ParseResult
+  Type: Class

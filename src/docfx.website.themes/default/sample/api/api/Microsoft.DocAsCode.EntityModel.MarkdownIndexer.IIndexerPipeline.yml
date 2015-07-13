@@ -1,0 +1,86 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline
+  id: IIndexerPipeline
+  parent: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
+  children:
+  - Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline.Run(Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel,Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext)
+  href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline.yml
+  name: IIndexerPipeline
+  fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline
+  type: Interface
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/IIndexerPipeline.cs
+      branch: FixBuildCmd
+      repo: https://github.com/aspnet/docfx.git
+      key: 4f0d42e4
+    path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/IIndexerPipeline.cs
+    startLine: 4
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
+  syntax:
+    content: public interface IIndexerPipeline
+    content.vb: Public Interface IIndexerPipeline
+- uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline.Run(Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel,Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext)
+  id: Run(Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel,Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext)
+  parent: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline
+  href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline.yml
+  name: Run(MapFileItemViewModel, IndexerContext)
+  fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline.Run(Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel, Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/IIndexerPipeline.cs
+    startLine: 6
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
+  syntax:
+    content: ParseResult Run(MapFileItemViewModel item, IndexerContext context)
+    content.vb: Function Run(item As MapFileItemViewModel, context As IndexerContext) As ParseResult
+    parameters:
+    - id: item
+      type: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel
+    - id: context
+      type: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext
+    return:
+      type: Microsoft.DocAsCode.EntityModel.ParseResult
+      description: 
+references:
+- uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
+  fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
+  Type: Namespace
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel
+  parent: Microsoft.DocAsCode.EntityModel.ViewModels
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel.yml
+  name: MapFileItemViewModel
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel
+  Type: Class
+- uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext
+  parent: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext.yml
+  name: IndexerContext
+  fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext
+  Type: Class
+- uid: Microsoft.DocAsCode.EntityModel.ParseResult
+  parent: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
+  name: ParseResult
+  fullname: Microsoft.DocAsCode.EntityModel.ParseResult
+  Type: Class
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel.ViewModels
+  fullname: Microsoft.DocAsCode.EntityModel.ViewModels
+  Type: Namespace
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullname: Microsoft.DocAsCode.EntityModel
+  Type: Namespace
