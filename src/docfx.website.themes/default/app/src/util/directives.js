@@ -160,33 +160,31 @@
     };
   }])
     .directive('code', function () {
+    function render(element, content, language){
+      element.text(content);
+      if (language) element.addClass(language);
+      angular.forEach(element, function (block) {
+        hljs.highlightBlock(block, language);
+      });
+    }
+    
     return {
       restrict: 'E',
-      require: 'ngModel',
-      scope: {
-        bindonce: "@",
-      },
       terminal: true,
-      link: function (scope, element, attrs, ngModel) {
-        var unwatch = scope.$watch(function () { return ngModel.$modelValue; }, function (value, oldValue) {
+      scope: {
+        language: "=ngLanguage",
+        data: "=data"
+      },
+      link: function (scope, element, attrs) {
+        var unwatchData = scope.$watch("data", function (value, oldValue) {
           if (value === undefined) return;
-          var language;
-          var content;
-          if (value.CSharp) {
-            language = "csharp";
-            content = value.CSharp;
-          } else if (value.VB) {
-            language = "vb";
-            content = value.VB;
-          }
-
-          element.text(content);
-          angular.forEach(element, function (block) {
-            hljs.highlightBlock(block, language);
-          });
-          if (scope.bindonce) {
-            unwatch();
-          }
+          render(element, value, scope.language);
+          unwatchData();
+        });
+        var unwatchLang = scope.$watch("language", function (value, oldValue) {
+          if (value === undefined) return;
+          render(element, scope.data, value);
+          unwatchLang();
         });
       }
     };

@@ -67,7 +67,7 @@
               <div class="">
                 <div ng-repeat="inhe in model.inheritanceModel">
                   <span ng-repeat="i in getNumber($index) track by $index"></span>↳
-                  <composite-link ng-data="inhe" ng-language="'csharp'"></composite-link>
+                  <composite-link ng-data="inhe" ng-language="lang"></composite-link>
                 </div>
                 <div class="">
                   <span ng-repeat="i in getNumber(model.inheritanceModel.length) track by $index"></span>↳
@@ -84,7 +84,7 @@
           <div class="" ng-if="model.syntax">
             <div class="declaration">
               <h5>Syntax</h5>
-              <pre><code ng-model="model.syntax.content"></code></pre>
+              <pre><code ng-language="lang" data="getSyntax(model.syntax, lang)"></code></pre>
             </div>
             <div class="typeParameters" ng-if="(model.syntax.typeParameters && model.syntax.typeParameters.length >0)">
               <h5>Type Parameters</h5>
@@ -124,7 +124,7 @@
               <tbody>
                 <tr ng-repeat="par in model.exceptions">
                   <td scope="row">
-                    <composite-link ng-data="par.typeModel" ng-language="'csharp'"></composite-link>
+                    <composite-link ng-data="par.typeModel" ng-language="lang"></composite-link>
                   </td>
                   <td>
                     <div class="definition">
@@ -174,7 +174,7 @@
                   <div class="" ng-if="item.syntax">
                     <div class="declaration">
                       <h5>Declaration</h5>
-                      <pre><code ng-model="item.syntax.content"></code></pre>
+                      <pre><code ng-language="lang" data="getSyntax(item.syntax, lang)"></code></pre>
                     </div>
                     <div class="typeParameters" ng-if="(item.syntax.typeParameters && item.syntax.typeParameters.length >0)">
                       <h5>Type Parameters</h5>
@@ -214,7 +214,7 @@
                         <tbody>
                           <tr ng-repeat="par in item.syntax.parameters">
                             <td scope="row">
-                              <composite-link ng-data="par.typeModel" ng-language="'csharp'"></composite-link>
+                              <composite-link ng-data="par.typeModel" ng-language="lang"></composite-link>
                             </td>
                             <td scope="row">
                               <em class="term">{{par.id}}</em>
@@ -243,7 +243,7 @@
                         <tbody>
                           <tr>
                             <td scope="row">
-                              <composite-link ng-data="item.syntax.return.typeModel" ng-language="'csharp'"></composite-link>
+                              <composite-link ng-data="item.syntax.return.typeModel" ng-language="lang"></composite-link>
                             </td>
                             <td>
                               <div class="definition">
@@ -269,7 +269,7 @@
                         <tbody>
                           <tr ng-repeat="par in item.exceptions">
                             <td scope="row">
-                              <composite-link ng-data="par.typeModel" ng-language="'csharp'"></composite-link>
+                              <composite-link ng-data="par.typeModel" ng-language="lang"></composite-link>
                             </td>
                             <td>
                               <div class="definition">

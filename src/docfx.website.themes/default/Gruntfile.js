@@ -1,5 +1,4 @@
 // Developed upon generator-angular 0.11.1
-'use strict';
 
 // # Globbing
 // for performance reasons we're only matching one level down:
@@ -8,7 +7,8 @@
 // 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
-
+  'use strict';
+  
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
@@ -106,7 +106,13 @@ module.exports = function (grunt) {
       dist: {
         options: {
           open: true,
-          base: '<%= docfx.dist %>'
+          keepalive: true,
+          middleware: function (connect) {
+            return [
+              connect.static('dist'),
+              connect.static('sample')
+            ];
+          }
         }
       }
     },

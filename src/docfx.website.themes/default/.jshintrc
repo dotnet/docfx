@@ -39,6 +39,8 @@
     "google": true,
     "hljs": true,
     "L": true,
-    "console": true
+    "console": true,
+    "module": true,
+    "require": true
   }
 }

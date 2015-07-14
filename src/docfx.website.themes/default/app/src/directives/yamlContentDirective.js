@@ -45,6 +45,11 @@
       return urlService.getLinkHref(url, $location.path());
     }
     
+    function getSyntax(element, language) {
+      if (!element) return null;
+      return utility.getNameWithSelector("content", language, element);
+    }
+    
     function getDisplayName(element, language) {
       return utility.getDisplayName(element, language);
     }
@@ -236,6 +241,7 @@
       $scope.getNumber = getNumber;
       $scope.getTocHref = getTocHref;
       $scope.getDisplayName = getDisplayName;
+      $scope.getSyntax = getSyntax;
     }
 
     YamlContentController.$inject = ['$scope'];
