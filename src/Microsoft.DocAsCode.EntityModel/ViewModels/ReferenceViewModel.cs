@@ -40,7 +40,7 @@
         [YamlMember(Alias = "fullname.vb")]
         public string FullnameForVB { get; set; }
 
-        [YamlMember(Alias = "Type")]
+        [YamlMember(Alias = "type")]
         public MemberType? Type { get; set; }
 
         [YamlMember(Alias = "summary")]
