@@ -16,9 +16,9 @@
                     Name = item.Name,
                     NameForCSharp = item.NameForCSharp,
                     NameForVB = item.NameForVB,
-                    Fullname = item.Fullname,
-                    FullnameForCSharp = item.FullnameForCSharp,
-                    FullnameForVB = item.FullnameForVB,
+                    FullName = item.FullName,
+                    FullNameForCSharp = item.FullNameForCSharp,
+                    FullNameForVB = item.FullNameForVB,
                     Type = item.Type,
                     Href = new Uri(baseUri, item.Href).ToString(),
                 };
