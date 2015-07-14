@@ -39,9 +39,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataItem.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataItem.cs
     startLine: 6
   assemblies:
@@ -674,7 +674,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -886,7 +886,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: SyntaxLanguage
   fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
-  Type: Enum
+  type: Enum
 - uid: System.Collections.Generic.SortedList{Microsoft.DocAsCode.EntityModel.SyntaxLanguage,System.String}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.SortedList`2
@@ -980,14 +980,14 @@ references:
   href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   name: MetadataItem
   fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MemberType
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: MemberType
   fullname: Microsoft.DocAsCode.EntityModel.MemberType
-  Type: Enum
+  type: Enum
 - uid: System.Collections.Generic.List{System.String}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.List`1
@@ -1056,7 +1056,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
   name: SourceDetail
   fullname: Microsoft.DocAsCode.EntityModel.SourceDetail
-  Type: Class
+  type: Class
 - uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.LayoutItem}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.List`1
@@ -1097,7 +1097,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.SyntaxDetail.yml
   name: SyntaxDetail
   fullname: Microsoft.DocAsCode.EntityModel.SyntaxDetail
-  Type: Class
+  type: Class
 - uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.CrefInfo}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.List`1

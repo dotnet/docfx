@@ -19,9 +19,9 @@ items:
   source:
     remote:
       path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/IndexerContext.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/IndexerContext.cs
   assemblies:
   - Microsoft.DocAsCode.EntityModel
@@ -31,66 +31,66 @@ references:
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.LoadApiIndex.yml
   name: LoadApiIndex
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.LoadApiIndex
-  Type: Class
+  type: Class
   summary: 'TODO: looks like it is duplicate work for each markdown file to load index file every time'
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.LoadMarkdownFile
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.LoadMarkdownFile.yml
   name: LoadMarkdownFile
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.LoadMarkdownFile
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.Save
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.Save.yml
   name: Save
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.Save
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.GenerateFullTextIndex
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.GenerateFullTextIndex.yml
   name: GenerateFullTextIndex
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.GenerateFullTextIndex
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveApiReference
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveApiReference.yml
   name: ResolveApiReference
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveApiReference
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveCodeSnippet
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveCodeSnippet.yml
   name: ResolveCodeSnippet
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveCodeSnippet
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveYamlHeader
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveYamlHeader.yml
   name: ResolveYamlHeader
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.ResolveYamlHeader
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline
   parent: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline.yml
   name: IIndexerPipeline
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IIndexerPipeline
-  Type: Interface
+  type: Interface
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.MarkdownIndexer
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.MarkdownIndexer.yml
   name: MarkdownIndexer
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.MarkdownIndexer
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext
   parent: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext.yml
   name: IndexerContext
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
-  Type: Namespace
+  type: Namespace

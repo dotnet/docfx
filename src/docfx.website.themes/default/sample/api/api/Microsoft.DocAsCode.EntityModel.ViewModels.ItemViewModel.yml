@@ -38,9 +38,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ViewModels/ItemViewModel.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/ViewModels/ItemViewModel.cs
     startLine: 5
   assemblies:
@@ -654,7 +654,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -1013,19 +1013,19 @@ references:
   href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
   name: SourceDetail
   fullname: Microsoft.DocAsCode.EntityModel.SourceDetail
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
   name: SyntaxDetailViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
-  Type: Class
+  type: Class
 - uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.CrefInfo}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.List`1
@@ -1066,11 +1066,11 @@ references:
   href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   name: MetadataItem
   fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: ItemViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
-  Type: Class
+  type: Class

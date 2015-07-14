@@ -16,9 +16,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
     startLine: 70
   assemblies:
@@ -128,4 +128,4 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace

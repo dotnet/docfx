@@ -13,9 +13,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.Utility/Glob/Glob.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.Utility/Glob/Glob.cs
     startLine: 22
   assemblies:
@@ -122,7 +122,7 @@ references:
   isExternal: false
   name: IronRuby.Builtins
   fullname: IronRuby.Builtins
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true

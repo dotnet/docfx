@@ -11,9 +11,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/MarkdownIndexer.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/MarkdownIndexer.cs
     startLine: 8
   assemblies:
@@ -62,7 +62,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -287,16 +287,16 @@ references:
   href: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext.yml
   name: IndexerContext
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer.IndexerContext
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ParseResult
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ParseResult
   fullname: Microsoft.DocAsCode.EntityModel.ParseResult
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace

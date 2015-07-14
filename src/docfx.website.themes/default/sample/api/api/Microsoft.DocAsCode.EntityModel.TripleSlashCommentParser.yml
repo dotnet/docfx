@@ -19,9 +19,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
     startLine: 28
   assemblies:
@@ -153,6 +153,9 @@ items:
     return:
       type: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.CrefInfo}
       description: 
+  see:
+  - type: Microsoft.DocAsCode.EntityModel.SpecIdHelper
+  - type: System.Diagnostics.SourceSwitch
 - uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetSeeAlsos(System.String,Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   id: GetSeeAlsos(System.String,Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
@@ -181,6 +184,8 @@ items:
     return:
       type: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.CrefInfo}
       description: 
+  seealso:
+  - type: System.IO.WaitForChangedResult
 - uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExample(System.String,Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   id: GetExample(System.String,Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
@@ -196,6 +201,26 @@ items:
   - Microsoft.DocAsCode.EntityModel
   namespace: Microsoft.DocAsCode.EntityModel
   summary: To get `example` tags out
+  example: >-
+    This sample shows how to call the [Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String,Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)](Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml) method.
+
+    <code>
+
+    class TestClass
+
+    {
+
+    static int Main()
+
+    {
+
+    return GetExceptions(null, null).Count();
+
+    }
+
+    }
+
+    </code>
   syntax:
     content: public static string GetExample(string xml, ITripleSlashCommentParserContext context)
     content.vb: Public Shared Function GetExample(xml As String, context As ITripleSlashCommentParserContext) As String
@@ -293,7 +318,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -522,7 +547,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.yml
   name: ITripleSlashCommentParserContext
   fullname: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
-  Type: Interface
+  type: Interface
 - uid: System.Xml.XmlException
 - uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.CrefInfo}
   parent: System.Collections.Generic
@@ -591,3 +616,7 @@ references:
   isExternal: false
   name: System.Collections.Generic
   fullname: System.Collections.Generic
+- uid: Microsoft.DocAsCode.EntityModel.SpecIdHelper
+- uid: System.Diagnostics.SourceSwitch
+- uid: System.IO.WaitForChangedResult
+- uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String,Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)

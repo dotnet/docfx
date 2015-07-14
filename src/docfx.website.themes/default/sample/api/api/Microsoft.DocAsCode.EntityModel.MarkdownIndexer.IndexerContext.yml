@@ -20,9 +20,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/IndexerContext.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/MarkdownIndexer/IndexerContext.cs
     startLine: 4
   assemblies:
@@ -256,7 +256,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
   fullname: Microsoft.DocAsCode.EntityModel.MarkdownIndexer
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -480,7 +480,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ApiReferenceModel.yml
   name: ApiReferenceModel
   fullname: Microsoft.DocAsCode.EntityModel.ApiReferenceModel
-  Type: Class
+  type: Class
 - uid: System.String[]
   isExternal: true
   name: String[]

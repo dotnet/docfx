@@ -10,9 +10,9 @@ items:
   source:
     remote:
       path: src/Microsoft.DocAsCode.Utility/Glob/Glob.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.Utility/Glob/Glob.cs
     startLine: 20
   assemblies:
@@ -23,4 +23,4 @@ references:
   href: IronRuby.Builtins.Glob.yml
   name: Glob
   fullname: IronRuby.Builtins.Glob
-  Type: Class
+  type: Class

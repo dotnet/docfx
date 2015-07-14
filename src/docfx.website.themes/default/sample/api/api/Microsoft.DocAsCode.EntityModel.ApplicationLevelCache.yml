@@ -11,9 +11,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Incremental/IncrementalCache.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Incremental/IncrementalCache.cs
     startLine: 327
   assemblies:
@@ -70,7 +70,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -81,7 +81,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: CacheBase
   fullname: Microsoft.DocAsCode.EntityModel.CacheBase
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase.AssemblyName
   parent: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: false
@@ -680,7 +680,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.yml
   name: ApplicationLevelCache
   fullname: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
-  Type: Class
+  type: Class
 - uid: System.Collections.Generic.IEnumerable`1
   parent: System.Collections.Generic
   isExternal: true

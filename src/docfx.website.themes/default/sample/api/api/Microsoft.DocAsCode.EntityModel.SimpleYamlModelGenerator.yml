@@ -17,9 +17,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Visitor/SimpleYamlModelGenerator.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Visitor/SimpleYamlModelGenerator.cs
     startLine: 6
   assemblies:
@@ -201,7 +201,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -213,7 +213,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: YamlModelGenerator
   fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   parent: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   isExternal: true
@@ -769,14 +769,14 @@ references:
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: SyntaxLanguage
   fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
-  Type: Enum
+  type: Enum
 - uid: Microsoft.DocAsCode.EntityModel.MemberType
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: MemberType
   fullname: Microsoft.DocAsCode.EntityModel.MemberType
-  Type: Enum
+  type: Enum
 - uid: Microsoft.CodeAnalysis.ISymbol
   parent: Microsoft.CodeAnalysis
   isExternal: true
@@ -788,7 +788,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   name: SymbolVisitorAdapter
   fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
-  Type: Class
+  type: Class
 - uid: System.String
   parent: System
   isExternal: true
@@ -804,18 +804,18 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
   name: ReferenceItem
   fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   name: SimpleYamlModelGenerator
   fullname: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.yml
   name: CompositeYamlModelGenerator
   fullname: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
-  Type: Class
+  type: Class

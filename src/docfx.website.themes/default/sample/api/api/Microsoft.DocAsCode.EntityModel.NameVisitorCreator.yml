@@ -15,9 +15,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
     startLine: 9
   assemblies:
@@ -147,7 +147,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -386,18 +386,18 @@ references:
   href: Microsoft.DocAsCode.EntityModel.NameVisitor.yml
   name: NameVisitor
   fullname: Microsoft.DocAsCode.EntityModel.NameVisitor
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.NameOptions
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: NameOptions
   fullname: Microsoft.DocAsCode.EntityModel.NameOptions
-  Type: Enum
+  type: Enum
 - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
   name: NameVisitorCreator
   fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
-  Type: Class
+  type: Class

@@ -11,9 +11,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Resolvers/IResolverPipeline.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Resolvers/IResolverPipeline.cs
     startLine: 2
   assemblies:
@@ -52,25 +52,25 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: Microsoft.DocAsCode.EntityModel.MetadataModel
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MetadataModel.yml
   name: MetadataModel
   fullname: Microsoft.DocAsCode.EntityModel.MetadataModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ResolverContext
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResolverContext.yml
   name: ResolverContext
   fullname: Microsoft.DocAsCode.EntityModel.ResolverContext
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ParseResult
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ParseResult
   fullname: Microsoft.DocAsCode.EntityModel.ParseResult
-  Type: Class
+  type: Class

@@ -15,9 +15,9 @@ items:
   source:
     remote:
       path: src/docfx/SubCommands/ISubCommand.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/docfx/SubCommands/ISubCommand.cs
   assemblies:
   - docfx
@@ -27,40 +27,40 @@ references:
   href: Microsoft.DocAsCode.ConsoleExtension.yml
   name: ConsoleExtension
   fullname: Microsoft.DocAsCode.ConsoleExtension
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.FileMappingConverter
   isExternal: false
   href: Microsoft.DocAsCode.FileMappingConverter.yml
   name: FileMappingConverter
   fullname: Microsoft.DocAsCode.FileMappingConverter
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.AssemblyLicenseAttribute
   isExternal: false
   href: Microsoft.DocAsCode.AssemblyLicenseAttribute.yml
   name: AssemblyLicenseAttribute
   fullname: Microsoft.DocAsCode.AssemblyLicenseAttribute
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.AssemblyUsageAttribute
   isExternal: false
   href: Microsoft.DocAsCode.AssemblyUsageAttribute.yml
   name: AssemblyUsageAttribute
   fullname: Microsoft.DocAsCode.AssemblyUsageAttribute
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.CustomAssemblyTextAttribute
   parent: Microsoft.DocAsCode
   isExternal: false
   href: Microsoft.DocAsCode.CustomAssemblyTextAttribute.yml
   name: CustomAssemblyTextAttribute
   fullname: Microsoft.DocAsCode.CustomAssemblyTextAttribute
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.Constants
   isExternal: false
   href: Microsoft.DocAsCode.Constants.yml
   name: Constants
   fullname: Microsoft.DocAsCode.Constants
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode
   isExternal: false
   name: Microsoft.DocAsCode
   fullname: Microsoft.DocAsCode
-  Type: Namespace
+  type: Namespace

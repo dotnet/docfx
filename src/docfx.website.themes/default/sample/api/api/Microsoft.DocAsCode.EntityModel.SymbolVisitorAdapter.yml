@@ -24,9 +24,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Visitor/SymbolVisitorAdapter.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Visitor/SymbolVisitorAdapter.cs
     startLine: 9
   assemblies:
@@ -393,7 +393,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -1389,14 +1389,14 @@ references:
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: YamlModelGenerator
   fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: SyntaxLanguage
   fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
-  Type: Enum
+  type: Enum
 - uid: System.Boolean
   parent: System
   isExternal: true
@@ -1445,7 +1445,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   name: MetadataItem
   fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
-  Type: Class
+  type: Class
 - uid: Microsoft.CodeAnalysis.SymbolVisitor`1.DefaultVisit(Microsoft.CodeAnalysis.ISymbol)
   parent: Microsoft.CodeAnalysis.SymbolVisitor`1
   isExternal: true

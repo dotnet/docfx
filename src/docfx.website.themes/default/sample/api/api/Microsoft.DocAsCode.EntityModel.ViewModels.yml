@@ -24,9 +24,9 @@ items:
   source:
     remote:
       path: src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs
   assemblies:
   - Microsoft.DocAsCode.EntityModel
@@ -37,105 +37,105 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: ItemViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.PageViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.PageViewModel.yml
   name: PageViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.PageViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
   name: ReferenceViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
   name: SpecViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
   name: SyntaxDetailViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.TocItemViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.TocItemViewModel.yml
   name: TocItemViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.TocItemViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.TocViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.TocViewModel.yml
   name: TocViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.TocViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility.yml
   name: ViewModelUtility
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ViewModelUtility
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileViewModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileViewModel.yml
   name: MapFileViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.ReferencesViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ReferencesViewModel.yml
   name: ReferencesViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ReferencesViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.yml
   name: MapFileType
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
-  Type: Enum
+  type: Enum
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel.yml
   name: MapFileItemViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileItemViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.Section
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.Section.yml
   name: Section
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.Section
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.Location
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.Location.yml
   name: Location
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.Location
-  Type: Struct
+  type: Struct
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.yml
   name: Coordinate
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate
-  Type: Struct
+  type: Struct
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels
-  Type: Namespace
+  type: Namespace

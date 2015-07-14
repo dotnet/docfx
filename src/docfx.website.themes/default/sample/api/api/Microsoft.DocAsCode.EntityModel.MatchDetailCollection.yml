@@ -13,9 +13,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs
     startLine: 5
   assemblies:
@@ -154,7 +154,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -2593,7 +2593,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.yml
   name: MatchDetailCollection
   fullname: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
-  Type: Class
+  type: Class
 - uid: System.Collections.Generic.IEnumerable`1
   parent: System.Collections.Generic
   isExternal: true

@@ -18,9 +18,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ExtractMetadata/ExtractMetadataInputModel.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/ExtractMetadata/ExtractMetadataInputModel.cs
     startLine: 6
   assemblies:
@@ -210,7 +210,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -609,4 +609,4 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel.yml
   name: ExtractMetadataInputModel
   fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
-  Type: Class
+  type: Class

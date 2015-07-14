@@ -16,9 +16,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.Utility/TaskUtility.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.Utility/TaskUtility.cs
     startLine: 285
   assemblies:
@@ -438,7 +438,7 @@ references:
   name.vb: AsyncConcurrentCache(Of TKey, TValue)
   fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>
   fullname.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue)
-  Type: Class
+  type: Class
   summary: An asynchronous wrapper over concurrent dictionary
   spec.csharp:
   - uid: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2

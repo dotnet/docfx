@@ -17,9 +17,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs
     startLine: 225
   assemblies:
@@ -189,7 +189,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels
-  Type: Namespace
+  type: Namespace
 - uid: System.ValueType.Equals(System.Object)
   parent: System.ValueType
   isExternal: true
@@ -378,7 +378,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.yml
   name: Coordinate
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate
-  Type: Struct
+  type: Struct
 - uid: System.String
   parent: System
   isExternal: true

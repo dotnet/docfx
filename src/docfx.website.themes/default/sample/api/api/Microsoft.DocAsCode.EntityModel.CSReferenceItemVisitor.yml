@@ -23,9 +23,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Visitor/ReferenceItemVisitor.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Visitor/ReferenceItemVisitor.cs
     startLine: 59
   assemblies:
@@ -332,7 +332,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -348,7 +348,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor.yml
   name: ReferenceItemVisitor
   fullname: Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor.ShortFormat
   parent: Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor
   isExternal: false
@@ -944,7 +944,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
   name: ReferenceItem
   fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem
-  Type: Class
+  type: Class
 - uid: Microsoft.CodeAnalysis.SymbolVisitor.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)
   parent: Microsoft.CodeAnalysis.SymbolVisitor
   isExternal: true

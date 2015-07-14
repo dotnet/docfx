@@ -15,9 +15,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.CodeAnalysis.Workspaces.Dnx/Model/ProjectReference.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.CodeAnalysis.Workspaces.Dnx/Model/ProjectReference.cs
     startLine: 9
   assemblies:
@@ -146,7 +146,7 @@ references:
   isExternal: false
   name: Microsoft.CodeAnalysis.Workspaces.Dnx
   fullname: Microsoft.CodeAnalysis.Workspaces.Dnx
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true

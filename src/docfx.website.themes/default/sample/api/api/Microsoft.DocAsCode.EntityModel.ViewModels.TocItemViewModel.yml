@@ -17,9 +17,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ViewModels/TocItemViewModel.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/ViewModels/TocItemViewModel.cs
     startLine: 6
   assemblies:
@@ -192,7 +192,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -422,23 +422,23 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ViewModels.TocViewModel.yml
   name: TocViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.TocViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   name: MetadataItem
   fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.TocItemViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.TocItemViewModel.yml
   name: TocItemViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.TocItemViewModel
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace

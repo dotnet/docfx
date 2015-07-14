@@ -17,9 +17,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Visitor/VisitorHelper.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/Visitor/VisitorHelper.cs
     startLine: 9
   assemblies:
@@ -217,7 +217,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -456,13 +456,13 @@ references:
   href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   name: MetadataItem
   fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.yml
   name: ITripleSlashCommentParserContext
   fullname: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
-  Type: Interface
+  type: Interface
 - uid: System.String
   parent: System
   isExternal: true
@@ -474,7 +474,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ApiParameter.yml
   name: ApiParameter
   fullname: Microsoft.DocAsCode.EntityModel.ApiParameter
-  Type: Class
+  type: Class
 - uid: Microsoft.CodeAnalysis.ITypeParameterSymbol
   parent: Microsoft.CodeAnalysis
   isExternal: true
@@ -486,7 +486,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
   name: SourceDetail
   fullname: Microsoft.DocAsCode.EntityModel.SourceDetail
-  Type: Class
+  type: Class
 - uid: Microsoft.CodeAnalysis.TypeKind
   parent: Microsoft.CodeAnalysis
   isExternal: true
@@ -498,4 +498,4 @@ references:
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: MemberType
   fullname: Microsoft.DocAsCode.EntityModel.MemberType
-  Type: Enum
+  type: Enum

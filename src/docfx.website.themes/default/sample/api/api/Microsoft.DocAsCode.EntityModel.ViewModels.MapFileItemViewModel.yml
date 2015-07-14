@@ -26,9 +26,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs
     startLine: 42
   assemblies:
@@ -388,7 +388,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -541,7 +541,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.yml
   name: MapFileType
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
-  Type: Enum
+  type: Enum
 - uid: System.Int32
   parent: System
   isExternal: true
@@ -712,7 +712,7 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ReferencesViewModel.yml
   name: ReferencesViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ReferencesViewModel
-  Type: Class
+  type: Class
 - uid: System.Collections.Generic.Dictionary{System.String,System.Object}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.Dictionary`2

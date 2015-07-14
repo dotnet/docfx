@@ -13,9 +13,9 @@ items:
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ExternalReferences/ExternalReferencePackageReader.cs
-      branch: FixBuildCmd
+      branch: DefaultTheme
       repo: https://github.com/aspnet/docfx.git
-      key: 4f0d42e4
+      key: 121f5b59
     path: src/Microsoft.DocAsCode.EntityModel/ExternalReferences/ExternalReferencePackageReader.cs
     startLine: 11
   assemblies:
@@ -109,7 +109,7 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
   fullname: Microsoft.DocAsCode.EntityModel
-  Type: Namespace
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
@@ -339,14 +339,14 @@ references:
   href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
   name: ExternalReferencePackageReader
   fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
-  Type: Class
+  type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
   name: ReferenceViewModel
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel
-  Type: Class
+  type: Class
 - uid: System.Boolean
   parent: System
   isExternal: true
@@ -356,4 +356,4 @@ references:
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
   fullname: Microsoft.DocAsCode.EntityModel.ViewModels
-  Type: Namespace
+  type: Namespace
