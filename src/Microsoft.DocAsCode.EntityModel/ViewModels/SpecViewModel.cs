@@ -10,8 +10,8 @@
         [YamlMember(Alias = "name")]
         public string Name { get; set; }
 
-        [YamlMember(Alias = "fullname")]
-        public string Fullname { get; set; }
+        [YamlMember(Alias = "fullName")]
+        public string FullName { get; set; }
 
         [YamlMember(Alias = "isExternal")]
         public bool IsExternal { get; set; }
@@ -29,7 +29,7 @@
             {
                 Uid = model.Name,
                 Name = model.DisplayName,
-                Fullname = model.DisplayQualifiedNames,
+                FullName = model.DisplayQualifiedNames,
                 IsExternal = model.IsExternalPath,
                 Href = model.Href,
             };

@@ -29,14 +29,14 @@
         [YamlMember(Alias = "name.vb")]
         public string NameForVB { get; set; }
 
-        [YamlMember(Alias = "fullname")]
-        public string Fullname { get; set; }
+        [YamlMember(Alias = "fullName")]
+        public string FullName { get; set; }
 
-        [YamlMember(Alias = "fullname.csharp")]
-        public string FullnameForCSharp { get; set; }
+        [YamlMember(Alias = "fullName.csharp")]
+        public string FullNameForCSharp { get; set; }
 
-        [YamlMember(Alias = "fullname.vb")]
-        public string FullnameForVB { get; set; }
+        [YamlMember(Alias = "fullName.vb")]
+        public string FullNameForVB { get; set; }
 
         [YamlMember(Alias = "type")]
         public MemberType? Type { get; set; }
@@ -130,16 +130,16 @@
                 result.NameForVB = nameForVB;
             }
 
-            result.Fullname = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.Default);
+            result.FullName = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.Default);
             var fullnameForCSharp = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.CSharp);
-            if (result.Fullname != fullnameForCSharp)
+            if (result.FullName != fullnameForCSharp)
             {
-                result.FullnameForCSharp = fullnameForCSharp;
+                result.FullNameForCSharp = fullnameForCSharp;
             }
             var fullnameForVB = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.VB);
-            if (result.Fullname != fullnameForVB)
+            if (result.FullName != fullnameForVB)
             {
-                result.FullnameForVB = fullnameForVB;
+                result.FullNameForVB = fullnameForVB;
             }
 
             return result;
