@@ -27,6 +27,14 @@
     "font-awesome": "~4.3.0",
     "bootstrap": "~3.3.5"
   },
+  "overrides": {
+    "bootstrap": {
+      "main": "dist/css/bootstrap.css"
+    },
+    "highlightjs": {
+      "main": ["styles/solarized_dark.css", "highlight.pack.js"]
+    }
+  },
   "devDependencies": {
     "angular-mocks": "^1.3.0"
   },
