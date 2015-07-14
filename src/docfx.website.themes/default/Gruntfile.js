@@ -8,6 +8,7 @@
 
 module.exports = function (grunt) {
   'use strict';
+  var path = require('path');
   
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
@@ -314,6 +315,25 @@ module.exports = function (grunt) {
       ]
     },
 
+    // zip to create the template package
+    // template name is by default the current folder name
+    // Sample usage: grunt compress --dist=../../docfx/Template
+    compress: {
+      dist: {
+        options: {
+          archive: path.join(grunt.option('dist')||'.', (grunt.option('name') || path.basename(process.cwd()) || 'default') + '.zip')
+        },
+        files: [
+          {
+            src: ['**'], 
+            cwd: 'dist', 
+            expand: true,
+            dest: '.'
+          }
+        ]
+      }
+    },
+    
     // Test settings
     karma: {
       unit: {
@@ -373,10 +393,9 @@ module.exports = function (grunt) {
   grunt.registerTask('default', [
     'newer:jshint',
     'test',
-    'build',
-    'pack'
+    'build'
   ]);
 
   // TODO: use pack to generate zipped theme package for docfx
-  grunt.registerTask('pack', []);
+  grunt.registerTask('pack', ['build', 'compress']);
 };
