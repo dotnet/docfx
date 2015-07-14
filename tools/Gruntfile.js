@@ -56,6 +56,7 @@ module.exports = function(grunt) {
     var hour = date.getHours();
     hour = (hour < 10 ? "0" : "") + hour;
     var min = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
     var year = date.getFullYear().toString().substring(2);
     var month = date.getMonth() + 1;
     month = (month < 10 ? "0" : "") + month;
