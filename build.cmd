@@ -17,7 +17,10 @@ IF NOT DEFINED VisualStudioVersion (
 
 :EnvSet
 SET BuildProj=%~dp0All.sln
-SET Configuration=Debug
+SET Configuration=%1
+IF '%Configuration%'=='' (
+    SET Configuration=Release
+)
 SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
 :: node.js nuget wrapper requires nuget.exe path in %PATH%

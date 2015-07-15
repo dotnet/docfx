@@ -321,7 +321,7 @@ module.exports = function (grunt) {
     compress: {
       dist: {
         options: {
-          archive: path.join(grunt.option('dist')||'.', (grunt.option('name') || path.basename(process.cwd()) || 'default') + '.zip')
+          archive: path.join(grunt.option('dist')||'../../docfx/Template/', (grunt.option('name') || path.basename(process.cwd()) || 'default') + '.zip')
         },
         files: [
           {
