@@ -6,14 +6,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.Get(System.Collections.Generic.IEnumerable{System.String})
   href: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.yml
   name: ApplicationLevelCache
-  fullname: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
+  fullName: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Incremental/IncrementalCache.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Incremental/IncrementalCache.cs
     startLine: 327
   assemblies:
@@ -46,8 +46,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.yml
   name: Get(IEnumerable<String>)
   name.vb: Get(IEnumerable(Of String))
-  fullname: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.Get(System.Collections.Generic.IEnumerable<System.String>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.Get(System.Collections.Generic.IEnumerable(Of System.String))
+  fullName: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.Get(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.Get(System.Collections.Generic.IEnumerable(Of System.String))
   type: Method
   source:
     remote: *o0
@@ -69,648 +69,648 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: CacheBase
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase.AssemblyName
   parent: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: AssemblyName
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase.AssemblyName
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase.AssemblyName
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig(System.Collections.Generic.IEnumerable{System.String})
   parent: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: GetValidConfig(IEnumerable<String>)
   name.vb: GetValidConfig(IEnumerable(Of String))
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig(System.Collections.Generic.IEnumerable<System.String>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig(System.Collections.Generic.IEnumerable(Of System.String))
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig(System.Collections.Generic.IEnumerable(Of System.String))
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig(System.Collections.Generic.IEnumerable{System.String})
     name: GetValidConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig(System.Collections.Generic.IEnumerable{System.String})
     name: GetValidConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.GetValidConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.List{System.String}},System.DateTime,System.String,System.Collections.Generic.IList{System.String})
   parent: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: SaveToCache(IEnumerable<String>, IDictionary<String, List<String>>, DateTime, String, IList<String>)
   name.vb: SaveToCache(IEnumerable(Of String), IDictionary(Of String, List(Of String)), DateTime, String, IList(Of String))
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache(System.Collections.Generic.IEnumerable<System.String>, System.Collections.Generic.IDictionary<System.String, System.Collections.Generic.List<System.String>>, System.DateTime, System.String, System.Collections.Generic.IList<System.String>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache(System.Collections.Generic.IEnumerable(Of System.String), System.Collections.Generic.IDictionary(Of System.String, System.Collections.Generic.List(Of System.String)), System.DateTime, System.String, System.Collections.Generic.IList(Of System.String))
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache(System.Collections.Generic.IEnumerable<System.String>, System.Collections.Generic.IDictionary<System.String, System.Collections.Generic.List<System.String>>, System.DateTime, System.String, System.Collections.Generic.IList<System.String>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache(System.Collections.Generic.IEnumerable(Of System.String), System.Collections.Generic.IDictionary(Of System.String, System.Collections.Generic.List(Of System.String)), System.DateTime, System.String, System.Collections.Generic.IList(Of System.String))
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.List{System.String}},System.DateTime,System.String,System.Collections.Generic.IList{System.String})
     name: SaveToCache
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.IDictionary`2
     name: IDictionary
-    fullname: System.Collections.Generic.IDictionary
+    fullName: System.Collections.Generic.IDictionary
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.DateTime
     name: DateTime
-    fullname: System.DateTime
+    fullName: System.DateTime
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.List{System.String}},System.DateTime,System.String,System.Collections.Generic.IList{System.String})
     name: SaveToCache
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.SaveToCache
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.IDictionary`2
     name: IDictionary
-    fullname: System.Collections.Generic.IDictionary
+    fullName: System.Collections.Generic.IDictionary
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.DateTime
     name: DateTime
-    fullname: System.DateTime
+    fullName: System.DateTime
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig(System.String)
   parent: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: GetConfig(String)
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig(System.String)
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig(System.String)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig(System.String)
     name: GetConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig(System.String)
     name: GetConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.GetConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig(System.String)
   parent: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: ReadConfig(String)
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig(System.String)
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig(System.String)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig(System.String)
     name: ReadConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig(System.String)
     name: ReadConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.ReadConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig(System.String,Microsoft.DocAsCode.EntityModel.BuildInfo)
   parent: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: SaveConfig(String, BuildInfo)
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig(System.String, Microsoft.DocAsCode.EntityModel.BuildInfo)
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig(System.String, Microsoft.DocAsCode.EntityModel.BuildInfo)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig(System.String,Microsoft.DocAsCode.EntityModel.BuildInfo)
     name: SaveConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.BuildInfo
     name: BuildInfo
-    fullname: Microsoft.DocAsCode.EntityModel.BuildInfo
+    fullName: Microsoft.DocAsCode.EntityModel.BuildInfo
     href: Microsoft.DocAsCode.EntityModel.BuildInfo.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig(System.String,Microsoft.DocAsCode.EntityModel.BuildInfo)
     name: SaveConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.SaveConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.BuildInfo
     name: BuildInfo
-    fullname: Microsoft.DocAsCode.EntityModel.BuildInfo
+    fullName: Microsoft.DocAsCode.EntityModel.BuildInfo
     href: Microsoft.DocAsCode.EntityModel.BuildInfo.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig
   parent: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: CleanupConfig()
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig()
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig()
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig
     name: CleanupConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig
     name: CleanupConfig
-    fullname: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig
+    fullName: Microsoft.DocAsCode.EntityModel.CacheBase.CleanupConfig
     href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.Collections.Generic.IEnumerable{System.String}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.IEnumerable`1
   name: IEnumerable<String>
   name.vb: IEnumerable(Of String)
-  fullname: System.Collections.Generic.IEnumerable<System.String>
-  fullname.vb: System.Collections.Generic.IEnumerable(Of System.String)
+  fullName: System.Collections.Generic.IEnumerable<System.String>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of System.String)
   spec.csharp:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.yml
   name: ApplicationLevelCache
-  fullname: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
+  fullName: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
   type: Class
 - uid: System.Collections.Generic.IEnumerable`1
   parent: System.Collections.Generic
   isExternal: true
   name: IEnumerable<T>
   name.vb: IEnumerable(Of T)
-  fullname: System.Collections.Generic.IEnumerable<T>
-  fullname.vb: System.Collections.Generic.IEnumerable(Of T)
+  fullName: System.Collections.Generic.IEnumerable<T>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic

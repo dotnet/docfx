@@ -10,14 +10,14 @@ items:
   - Microsoft.DocAsCode.Constants
   href: Microsoft.DocAsCode.yml
   name: Microsoft.DocAsCode
-  fullname: Microsoft.DocAsCode
+  fullName: Microsoft.DocAsCode
   type: Namespace
   source:
     remote:
       path: src/docfx/SubCommands/ISubCommand.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/docfx/SubCommands/ISubCommand.cs
   assemblies:
   - docfx
@@ -26,41 +26,41 @@ references:
   isExternal: false
   href: Microsoft.DocAsCode.ConsoleExtension.yml
   name: ConsoleExtension
-  fullname: Microsoft.DocAsCode.ConsoleExtension
+  fullName: Microsoft.DocAsCode.ConsoleExtension
   type: Class
 - uid: Microsoft.DocAsCode.FileMappingConverter
   isExternal: false
   href: Microsoft.DocAsCode.FileMappingConverter.yml
   name: FileMappingConverter
-  fullname: Microsoft.DocAsCode.FileMappingConverter
+  fullName: Microsoft.DocAsCode.FileMappingConverter
   type: Class
 - uid: Microsoft.DocAsCode.AssemblyLicenseAttribute
   isExternal: false
   href: Microsoft.DocAsCode.AssemblyLicenseAttribute.yml
   name: AssemblyLicenseAttribute
-  fullname: Microsoft.DocAsCode.AssemblyLicenseAttribute
+  fullName: Microsoft.DocAsCode.AssemblyLicenseAttribute
   type: Class
 - uid: Microsoft.DocAsCode.AssemblyUsageAttribute
   isExternal: false
   href: Microsoft.DocAsCode.AssemblyUsageAttribute.yml
   name: AssemblyUsageAttribute
-  fullname: Microsoft.DocAsCode.AssemblyUsageAttribute
+  fullName: Microsoft.DocAsCode.AssemblyUsageAttribute
   type: Class
 - uid: Microsoft.DocAsCode.CustomAssemblyTextAttribute
   parent: Microsoft.DocAsCode
   isExternal: false
   href: Microsoft.DocAsCode.CustomAssemblyTextAttribute.yml
   name: CustomAssemblyTextAttribute
-  fullname: Microsoft.DocAsCode.CustomAssemblyTextAttribute
+  fullName: Microsoft.DocAsCode.CustomAssemblyTextAttribute
   type: Class
 - uid: Microsoft.DocAsCode.Constants
   isExternal: false
   href: Microsoft.DocAsCode.Constants.yml
   name: Constants
-  fullname: Microsoft.DocAsCode.Constants
+  fullName: Microsoft.DocAsCode.Constants
   type: Class
 - uid: Microsoft.DocAsCode
   isExternal: false
   name: Microsoft.DocAsCode
-  fullname: Microsoft.DocAsCode
+  fullName: Microsoft.DocAsCode
   type: Namespace

@@ -10,15 +10,15 @@ items:
   href: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.yml
   name: AsyncConcurrentCache<TKey, TValue>
   name.vb: AsyncConcurrentCache(Of TKey, TValue)
-  fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>
-  fullname.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue)
+  fullName: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>
+  fullName.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue)
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.Utility/TaskUtility.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.Utility/TaskUtility.cs
     startLine: 285
   assemblies:
@@ -50,8 +50,8 @@ items:
   href: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.yml
   name: AsyncConcurrentCache(IEqualityComparer<TKey>)
   name.vb: AsyncConcurrentCache(IEqualityComparer(Of TKey))
-  fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>.AsyncConcurrentCache(System.Collections.Generic.IEqualityComparer<TKey>)
-  fullname.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue).AsyncConcurrentCache(System.Collections.Generic.IEqualityComparer(Of TKey))
+  fullName: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>.AsyncConcurrentCache(System.Collections.Generic.IEqualityComparer<TKey>)
+  fullName.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue).AsyncConcurrentCache(System.Collections.Generic.IEqualityComparer(Of TKey))
   type: Constructor
   source:
     remote: *o0
@@ -72,8 +72,8 @@ items:
   href: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.yml
   name: GetOrAdd(TKey, Func<TKey, Task<TValue>>, Boolean)
   name.vb: GetOrAdd(TKey, Func(Of TKey, Task(Of TValue)), Boolean)
-  fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>.GetOrAdd(TKey, System.Func<TKey, System.Threading.Tasks.Task<TValue>>, System.Boolean)
-  fullname.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue).GetOrAdd(TKey, System.Func(Of TKey, System.Threading.Tasks.Task(Of TValue)), System.Boolean)
+  fullName: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>.GetOrAdd(TKey, System.Func<TKey, System.Threading.Tasks.Task<TValue>>, System.Boolean)
+  fullName.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue).GetOrAdd(TKey, System.Func(Of TKey, System.Threading.Tasks.Task(Of TValue)), System.Boolean)
   type: Method
   source:
     remote: *o0
@@ -105,8 +105,8 @@ items:
   href: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.yml
   name: TryGetValue(TKey, out Task<TValue>)
   name.vb: TryGetValue(TKey, ByRef Task(Of TValue))
-  fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>.TryGetValue(TKey, out System.Threading.Tasks.Task<TValue>)
-  fullname.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue).TryGetValue(TKey, ByRef System.Threading.Tasks.Task(Of TValue))
+  fullName: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>.TryGetValue(TKey, out System.Threading.Tasks.Task<TValue>)
+  fullName.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue).TryGetValue(TKey, ByRef System.Threading.Tasks.Task(Of TValue))
   type: Method
   source:
     remote: *o0
@@ -130,8 +130,8 @@ items:
   parent: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2
   href: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.yml
   name: Values
-  fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>.Values
-  fullname.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue).Values
+  fullName: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>.Values
+  fullName.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue).Values
   type: Property
   source:
     remote: *o0
@@ -150,558 +150,559 @@ references:
 - uid: Microsoft.DocAsCode.Utility
   isExternal: false
   name: Microsoft.DocAsCode.Utility
-  fullname: Microsoft.DocAsCode.Utility
+  fullName: Microsoft.DocAsCode.Utility
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.Collections.Generic.IEqualityComparer{{TKey}}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.IEqualityComparer`1
   name: IEqualityComparer<TKey>
   name.vb: IEqualityComparer(Of TKey)
-  fullname: System.Collections.Generic.IEqualityComparer<TKey>
-  fullname.vb: System.Collections.Generic.IEqualityComparer(Of TKey)
+  fullName: System.Collections.Generic.IEqualityComparer<TKey>
+  fullName.vb: System.Collections.Generic.IEqualityComparer(Of TKey)
   spec.csharp:
   - uid: System.Collections.Generic.IEqualityComparer`1
     name: IEqualityComparer
-    fullname: System.Collections.Generic.IEqualityComparer
+    fullName: System.Collections.Generic.IEqualityComparer
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEqualityComparer`1
     name: IEqualityComparer
-    fullname: System.Collections.Generic.IEqualityComparer
+    fullName: System.Collections.Generic.IEqualityComparer
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IEqualityComparer`1
   parent: System.Collections.Generic
   isExternal: true
   name: IEqualityComparer<T>
   name.vb: IEqualityComparer(Of T)
-  fullname: System.Collections.Generic.IEqualityComparer<T>
-  fullname.vb: System.Collections.Generic.IEqualityComparer(Of T)
+  fullName: System.Collections.Generic.IEqualityComparer<T>
+  fullName.vb: System.Collections.Generic.IEqualityComparer(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.IEqualityComparer`1
     name: IEqualityComparer
-    fullname: System.Collections.Generic.IEqualityComparer
+    fullName: System.Collections.Generic.IEqualityComparer
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEqualityComparer`1
     name: IEqualityComparer
-    fullname: System.Collections.Generic.IEqualityComparer
+    fullName: System.Collections.Generic.IEqualityComparer
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic
 - uid: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2
   isExternal: false
   href: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.yml
   name: AsyncConcurrentCache<TKey, TValue>
   name.vb: AsyncConcurrentCache(Of TKey, TValue)
-  fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>
-  fullname.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue)
+  fullName: Microsoft.DocAsCode.Utility.AsyncConcurrentCache<TKey, TValue>
+  fullName.vb: Microsoft.DocAsCode.Utility.AsyncConcurrentCache(Of TKey, TValue)
   type: Class
   summary: An asynchronous wrapper over concurrent dictionary
   spec.csharp:
   - uid: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2
     name: AsyncConcurrentCache
-    fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache
+    fullName: Microsoft.DocAsCode.Utility.AsyncConcurrentCache
     href: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.yml
   - name: <
-    fullname: <
+    fullName: <
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2
     name: AsyncConcurrentCache
-    fullname: Microsoft.DocAsCode.Utility.AsyncConcurrentCache
+    fullName: Microsoft.DocAsCode.Utility.AsyncConcurrentCache
     href: Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.yml
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
 - uid: '{TKey}'
   isExternal: false
   name: TKey
-  fullname: TKey
+  fullName: TKey
 - uid: System.Func{{TKey},System.Threading.Tasks.Task{{TValue}}}
   parent: System
   definition: System.Func`2
   name: Func<TKey, Task<TValue>>
   name.vb: Func(Of TKey, Task(Of TValue))
-  fullname: System.Func<TKey, System.Threading.Tasks.Task<TValue>>
-  fullname.vb: System.Func(Of TKey, System.Threading.Tasks.Task(Of TValue))
+  fullName: System.Func<TKey, System.Threading.Tasks.Task<TValue>>
+  fullName.vb: System.Func(Of TKey, System.Threading.Tasks.Task(Of TValue))
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Boolean
   parent: System
   isExternal: true
   name: Boolean
-  fullname: System.Boolean
+  fullName: System.Boolean
 - uid: System.Threading.Tasks.Task{{TValue}}
   parent: System.Threading.Tasks
   definition: System.Threading.Tasks.Task`1
   name: Task<TValue>
   name.vb: Task(Of TValue)
-  fullname: System.Threading.Tasks.Task<TValue>
-  fullname.vb: System.Threading.Tasks.Task(Of TValue)
+  fullName: System.Threading.Tasks.Task<TValue>
+  fullName.vb: System.Threading.Tasks.Task(Of TValue)
   spec.csharp:
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Func`2
   parent: System
   isExternal: true
   name: Func<T, TResult>
   name.vb: Func(Of T, TResult)
-  fullname: System.Func<T, TResult>
-  fullname.vb: System.Func(Of T, TResult)
+  fullName: System.Func<T, TResult>
+  fullName.vb: System.Func(Of T, TResult)
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Threading.Tasks.Task`1
   parent: System.Threading.Tasks
   isExternal: true
   name: Task<TResult>
   name.vb: Task(Of TResult)
-  fullname: System.Threading.Tasks.Task<TResult>
-  fullname.vb: System.Threading.Tasks.Task(Of TResult)
+  fullName: System.Threading.Tasks.Task<TResult>
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
   spec.csharp:
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Threading.Tasks
   isExternal: false
   name: System.Threading.Tasks
-  fullname: System.Threading.Tasks
+  fullName: System.Threading.Tasks
 - uid: System.Collections.Generic.List{System.Threading.Tasks.Task{{TValue}}}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.List`1
   name: List<Task<TValue>>
   name.vb: List(Of Task(Of TValue))
-  fullname: System.Collections.Generic.List<System.Threading.Tasks.Task<TValue>>
-  fullname.vb: System.Collections.Generic.List(Of System.Threading.Tasks.Task(Of TValue))
+  fullName: System.Collections.Generic.List<System.Threading.Tasks.Task<TValue>>
+  fullName.vb: System.Collections.Generic.List(Of System.Threading.Tasks.Task(Of TValue))
   spec.csharp:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.List`1
   parent: System.Collections.Generic
   isExternal: true
   name: List<T>
   name.vb: List(Of T)
-  fullname: System.Collections.Generic.List<T>
-  fullname.vb: System.Collections.Generic.List(Of T)
+  fullName: System.Collections.Generic.List<T>
+  fullName.vb: System.Collections.Generic.List(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )

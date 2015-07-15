@@ -14,14 +14,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetTypeParameter(System.String,System.String,Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: TripleSlashCommentParser
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Parsers/TripleSlashCommentParser.cs
     startLine: 28
   assemblies:
@@ -45,7 +45,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetSummary(String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetSummary(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetSummary(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -72,7 +72,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetRemarks(String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetRemarks(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetRemarks(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -100,7 +100,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetExceptions(String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -130,7 +130,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetSees(String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetSees(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetSees(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -161,7 +161,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetSeeAlsos(String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetSeeAlsos(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetSeeAlsos(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -191,7 +191,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetExample(String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExample(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExample(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -239,7 +239,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetReturns(String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetReturns(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetReturns(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -264,7 +264,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetParam(String, String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetParam(System.String, System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetParam(System.String, System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -291,7 +291,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: GetTypeParameter(String, String, ITripleSlashCommentParserContext)
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetTypeParameter(System.String, System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetTypeParameter(System.String, System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)
   type: Method
   source:
     remote: *o0
@@ -317,236 +317,236 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.String
   parent: System
   isExternal: true
   name: String
-  fullname: System.String
+  fullName: System.String
 - uid: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.yml
   name: ITripleSlashCommentParserContext
-  fullname: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
+  fullName: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
   type: Interface
 - uid: System.Xml.XmlException
 - uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.CrefInfo}
@@ -555,67 +555,67 @@ references:
   href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   name: List<CrefInfo>
   name.vb: List(Of CrefInfo)
-  fullname: System.Collections.Generic.List<Microsoft.DocAsCode.EntityModel.CrefInfo>
-  fullname.vb: System.Collections.Generic.List(Of Microsoft.DocAsCode.EntityModel.CrefInfo)
+  fullName: System.Collections.Generic.List<Microsoft.DocAsCode.EntityModel.CrefInfo>
+  fullName.vb: System.Collections.Generic.List(Of Microsoft.DocAsCode.EntityModel.CrefInfo)
   spec.csharp:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: Microsoft.DocAsCode.EntityModel.CrefInfo
     name: CrefInfo
-    fullname: Microsoft.DocAsCode.EntityModel.CrefInfo
+    fullName: Microsoft.DocAsCode.EntityModel.CrefInfo
     href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: Microsoft.DocAsCode.EntityModel.CrefInfo
     name: CrefInfo
-    fullname: Microsoft.DocAsCode.EntityModel.CrefInfo
+    fullName: Microsoft.DocAsCode.EntityModel.CrefInfo
     href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.List`1
   parent: System.Collections.Generic
   isExternal: true
   name: List<T>
   name.vb: List(Of T)
-  fullname: System.Collections.Generic.List<T>
-  fullname.vb: System.Collections.Generic.List(Of T)
+  fullName: System.Collections.Generic.List<T>
+  fullName.vb: System.Collections.Generic.List(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic
 - uid: Microsoft.DocAsCode.EntityModel.SpecIdHelper
 - uid: System.Diagnostics.SourceSwitch
 - uid: System.IO.WaitForChangedResult

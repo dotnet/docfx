@@ -7,14 +7,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.CrefInfo.Description
   href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   name: CrefInfo
-  fullname: Microsoft.DocAsCode.EntityModel.CrefInfo
+  fullName: Microsoft.DocAsCode.EntityModel.CrefInfo
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Model/ExceptionDetail.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Model/ExceptionDetail.cs
     startLine: 2
   assemblies:
@@ -38,7 +38,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.CrefInfo
   href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   name: Type
-  fullname: Microsoft.DocAsCode.EntityModel.CrefInfo.Type
+  fullName: Microsoft.DocAsCode.EntityModel.CrefInfo.Type
   type: Property
   source:
     remote: *o0
@@ -59,7 +59,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.CrefInfo
   href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   name: Description
-  fullname: Microsoft.DocAsCode.EntityModel.CrefInfo.Description
+  fullName: Microsoft.DocAsCode.EntityModel.CrefInfo.Description
   type: Property
   source:
     remote: *o0
@@ -79,228 +79,228 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.String
   parent: System
   isExternal: true
   name: String
-  fullname: System.String
+  fullName: System.String

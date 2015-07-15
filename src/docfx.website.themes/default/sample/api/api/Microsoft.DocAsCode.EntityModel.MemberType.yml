@@ -20,14 +20,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.MemberType.Operator
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: MemberType
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType
   type: Enum
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Model/MemberType.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Model/MemberType.cs
     startLine: 2
   assemblies:
@@ -41,7 +41,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Default
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Default
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Default
   type: Field
   source:
     remote: *o0
@@ -57,7 +57,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Toc
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Toc
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Toc
   type: Field
   source:
     remote: *o0
@@ -73,7 +73,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Assembly
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Assembly
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Assembly
   type: Field
   source:
     remote: *o0
@@ -89,7 +89,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Namespace
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Namespace
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Namespace
   type: Field
   source:
     remote: *o0
@@ -105,7 +105,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Class
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Class
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Class
   type: Field
   source:
     remote: *o0
@@ -121,7 +121,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Interface
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Interface
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Interface
   type: Field
   source:
     remote: *o0
@@ -137,7 +137,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Struct
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Struct
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Struct
   type: Field
   source:
     remote: *o0
@@ -153,7 +153,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Delegate
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Delegate
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Delegate
   type: Field
   source:
     remote: *o0
@@ -169,7 +169,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Enum
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Enum
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Enum
   type: Field
   source:
     remote: *o0
@@ -185,7 +185,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Field
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Field
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Field
   type: Field
   source:
     remote: *o0
@@ -201,7 +201,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Property
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Property
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Property
   type: Field
   source:
     remote: *o0
@@ -217,7 +217,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Event
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Event
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Event
   type: Field
   source:
     remote: *o0
@@ -233,7 +233,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Constructor
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Constructor
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Constructor
   type: Field
   source:
     remote: *o0
@@ -249,7 +249,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Method
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Method
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Method
   type: Field
   source:
     remote: *o0
@@ -265,7 +265,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MemberType
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Operator
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType.Operator
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType.Operator
   type: Field
   source:
     remote: *o0
@@ -280,5 +280,5 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace

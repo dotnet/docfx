@@ -9,14 +9,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.op_Addition(Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator,Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator)
   href: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.yml
   name: CompositeYamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Visitor/CompositeYamlModelGenerator.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Visitor/CompositeYamlModelGenerator.cs
     startLine: 7
   assemblies:
@@ -47,8 +47,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.yml
   name: CompositeYamlModelGenerator(IEnumerable<SimpleYamlModelGenerator>)
   name.vb: CompositeYamlModelGenerator(IEnumerable(Of SimpleYamlModelGenerator))
-  fullname: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.CompositeYamlModelGenerator(System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.CompositeYamlModelGenerator(System.Collections.Generic.IEnumerable(Of Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator))
+  fullName: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.CompositeYamlModelGenerator(System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.CompositeYamlModelGenerator(System.Collections.Generic.IEnumerable(Of Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator))
   type: Constructor
   source:
     remote: *o0
@@ -69,8 +69,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.yml
   name: CompositeYamlModelGenerator(SimpleYamlModelGenerator[])
   name.vb: CompositeYamlModelGenerator(SimpleYamlModelGenerator())
-  fullname: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.CompositeYamlModelGenerator(Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator[])
-  fullname.vb: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.CompositeYamlModelGenerator(Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator())
+  fullName: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.CompositeYamlModelGenerator(Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator[])
+  fullName.vb: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.CompositeYamlModelGenerator(Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator())
   type: Constructor
   source:
     remote: *o0
@@ -90,7 +90,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
   href: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.yml
   name: DefaultVisit(ISymbol, MetadataItem, SymbolVisitorAdapter)
-  fullname: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
+  fullName: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   type: Method
   source:
     remote: *o0
@@ -115,7 +115,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
   href: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.yml
   name: Addition(CompositeYamlModelGenerator, SimpleYamlModelGenerator)
-  fullname: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.Addition(Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator, Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator)
+  fullName: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.Addition(Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator, Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator)
   type: Operator
   source:
     remote: *o0
@@ -139,691 +139,691 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: YamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   parent: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: GenerateNamedType(INamedTypeSymbol, MetadataItem, SymbolVisitorAdapter)
-  fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
+  fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateNamedType
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.INamedTypeSymbol
     name: INamedTypeSymbol
-    fullname: Microsoft.CodeAnalysis.INamedTypeSymbol
+    fullName: Microsoft.CodeAnalysis.INamedTypeSymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateNamedType
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateNamedType
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.INamedTypeSymbol
     name: INamedTypeSymbol
-    fullname: Microsoft.CodeAnalysis.INamedTypeSymbol
+    fullName: Microsoft.CodeAnalysis.INamedTypeSymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod(Microsoft.CodeAnalysis.IMethodSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   parent: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: GenerateMethod(IMethodSymbol, MetadataItem, SymbolVisitorAdapter)
-  fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod(Microsoft.CodeAnalysis.IMethodSymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
+  fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod(Microsoft.CodeAnalysis.IMethodSymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod(Microsoft.CodeAnalysis.IMethodSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateMethod
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.IMethodSymbol
     name: IMethodSymbol
-    fullname: Microsoft.CodeAnalysis.IMethodSymbol
+    fullName: Microsoft.CodeAnalysis.IMethodSymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod(Microsoft.CodeAnalysis.IMethodSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateMethod
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateMethod
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.IMethodSymbol
     name: IMethodSymbol
-    fullname: Microsoft.CodeAnalysis.IMethodSymbol
+    fullName: Microsoft.CodeAnalysis.IMethodSymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField(Microsoft.CodeAnalysis.IFieldSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   parent: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: GenerateField(IFieldSymbol, MetadataItem, SymbolVisitorAdapter)
-  fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField(Microsoft.CodeAnalysis.IFieldSymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
+  fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField(Microsoft.CodeAnalysis.IFieldSymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField(Microsoft.CodeAnalysis.IFieldSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateField
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.IFieldSymbol
     name: IFieldSymbol
-    fullname: Microsoft.CodeAnalysis.IFieldSymbol
+    fullName: Microsoft.CodeAnalysis.IFieldSymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField(Microsoft.CodeAnalysis.IFieldSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateField
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateField
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.IFieldSymbol
     name: IFieldSymbol
-    fullname: Microsoft.CodeAnalysis.IFieldSymbol
+    fullName: Microsoft.CodeAnalysis.IFieldSymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent(Microsoft.CodeAnalysis.IEventSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   parent: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: GenerateEvent(IEventSymbol, MetadataItem, SymbolVisitorAdapter)
-  fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent(Microsoft.CodeAnalysis.IEventSymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
+  fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent(Microsoft.CodeAnalysis.IEventSymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent(Microsoft.CodeAnalysis.IEventSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateEvent
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.IEventSymbol
     name: IEventSymbol
-    fullname: Microsoft.CodeAnalysis.IEventSymbol
+    fullName: Microsoft.CodeAnalysis.IEventSymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent(Microsoft.CodeAnalysis.IEventSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateEvent
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateEvent
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.IEventSymbol
     name: IEventSymbol
-    fullname: Microsoft.CodeAnalysis.IEventSymbol
+    fullName: Microsoft.CodeAnalysis.IEventSymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty(Microsoft.CodeAnalysis.IPropertySymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   parent: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: GenerateProperty(IPropertySymbol, MetadataItem, SymbolVisitorAdapter)
-  fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty(Microsoft.CodeAnalysis.IPropertySymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
+  fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty(Microsoft.CodeAnalysis.IPropertySymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty(Microsoft.CodeAnalysis.IPropertySymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateProperty
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.IPropertySymbol
     name: IPropertySymbol
-    fullname: Microsoft.CodeAnalysis.IPropertySymbol
+    fullName: Microsoft.CodeAnalysis.IPropertySymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty(Microsoft.CodeAnalysis.IPropertySymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: GenerateProperty
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.GenerateProperty
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.IPropertySymbol
     name: IPropertySymbol
-    fullname: Microsoft.CodeAnalysis.IPropertySymbol
+    fullName: Microsoft.CodeAnalysis.IPropertySymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.IEnumerable`1
   href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   name: IEnumerable<SimpleYamlModelGenerator>
   name.vb: IEnumerable(Of SimpleYamlModelGenerator)
-  fullname: System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator>
-  fullname.vb: System.Collections.Generic.IEnumerable(Of Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator)
+  fullName: System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator)
   spec.csharp:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
     name: SimpleYamlModelGenerator
-    fullname: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
+    fullName: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
     href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
     name: SimpleYamlModelGenerator
-    fullname: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
+    fullName: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
     href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IEnumerable`1
   parent: System.Collections.Generic
   isExternal: true
   name: IEnumerable<T>
   name.vb: IEnumerable(Of T)
-  fullname: System.Collections.Generic.IEnumerable<T>
-  fullname.vb: System.Collections.Generic.IEnumerable(Of T)
+  fullName: System.Collections.Generic.IEnumerable<T>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic
 - uid: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator[]
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   name: SimpleYamlModelGenerator[]
   name.vb: SimpleYamlModelGenerator()
-  fullname: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator[]
-  fullname.vb: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator()
+  fullName: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator[]
+  fullName.vb: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator()
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
     name: SimpleYamlModelGenerator
-    fullname: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
+    fullName: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
     href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   - name: '[]'
-    fullname: '[]'
+    fullName: '[]'
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
     name: SimpleYamlModelGenerator
-    fullname: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
+    fullName: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
     href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   - name: ()
-    fullname: ()
+    fullName: ()
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   parent: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   isExternal: true
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: DefaultVisit(ISymbol, MetadataItem, SymbolVisitorAdapter)
-  fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
+  fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol, Microsoft.DocAsCode.EntityModel.MetadataItem, Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
   spec.csharp:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: DefaultVisit
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.ISymbol
     name: ISymbol
-    fullname: Microsoft.CodeAnalysis.ISymbol
+    fullName: Microsoft.CodeAnalysis.ISymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)
     name: DefaultVisit
-    fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit
+    fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.DefaultVisit
     href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.CodeAnalysis.ISymbol
     name: ISymbol
-    fullname: Microsoft.CodeAnalysis.ISymbol
+    fullName: Microsoft.CodeAnalysis.ISymbol
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
     name: MetadataItem
-    fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+    fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
     href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     name: SymbolVisitorAdapter
-    fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+    fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
     href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.CodeAnalysis.ISymbol
   parent: Microsoft.CodeAnalysis
   isExternal: true
   name: ISymbol
-  fullname: Microsoft.CodeAnalysis.ISymbol
+  fullName: Microsoft.CodeAnalysis.ISymbol
 - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   name: MetadataItem
-  fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+  fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   name: SymbolVisitorAdapter
-  fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+  fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
   type: Class
 - uid: Microsoft.CodeAnalysis
   isExternal: false
   name: Microsoft.CodeAnalysis
-  fullname: Microsoft.CodeAnalysis
+  fullName: Microsoft.CodeAnalysis
 - uid: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.yml
   name: CompositeYamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   name: SimpleYamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
   type: Class

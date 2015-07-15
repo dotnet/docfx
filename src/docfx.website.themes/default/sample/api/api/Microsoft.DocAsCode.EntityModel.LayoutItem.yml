@@ -13,14 +13,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.LayoutItem.MemberTable
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: LayoutItem
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem
   type: Enum
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Model/LayoutItem.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Model/LayoutItem.cs
     startLine: 5
   assemblies:
@@ -35,7 +35,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LayoutItem
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: Title
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem.Title
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem.Title
   type: Field
   source:
     remote: *o0
@@ -51,7 +51,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LayoutItem
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: Hierarchy
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem.Hierarchy
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem.Hierarchy
   type: Field
   source:
     remote: *o0
@@ -67,7 +67,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LayoutItem
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: Exception
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem.Exception
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem.Exception
   type: Field
   source:
     remote: *o0
@@ -83,7 +83,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LayoutItem
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: Syntax
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem.Syntax
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem.Syntax
   type: Field
   source:
     remote: *o0
@@ -99,7 +99,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LayoutItem
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: InlineComments
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem.InlineComments
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem.InlineComments
   type: Field
   source:
     remote: *o0
@@ -115,7 +115,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LayoutItem
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: ExternalComments
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem.ExternalComments
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem.ExternalComments
   type: Field
   source:
     remote: *o0
@@ -131,7 +131,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LayoutItem
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: SeeAlso
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem.SeeAlso
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem.SeeAlso
   type: Field
   source:
     remote: *o0
@@ -147,7 +147,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LayoutItem
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: MemberTable
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem.MemberTable
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem.MemberTable
   type: Field
   source:
     remote: *o0
@@ -162,5 +162,5 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace

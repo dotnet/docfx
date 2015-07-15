@@ -12,14 +12,14 @@ items:
   - Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Project
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.yml
   name: ProjectInformation
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.CodeAnalysis.Workspaces.Dnx/Model/ProjectInformation.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.CodeAnalysis.Workspaces.Dnx/Model/ProjectInformation.cs
     startLine: 8
   assemblies:
@@ -43,7 +43,7 @@ items:
   parent: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.yml
   name: Path
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Path
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Path
   type: Property
   source:
     remote: *o0
@@ -64,7 +64,7 @@ items:
   parent: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.yml
   name: Configuration
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Configuration
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Configuration
   type: Property
   source:
     remote: *o0
@@ -85,7 +85,7 @@ items:
   parent: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.yml
   name: Framework
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Framework
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Framework
   type: Property
   source:
     remote: *o0
@@ -106,7 +106,7 @@ items:
   parent: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.yml
   name: CompilationSettings
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.CompilationSettings
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.CompilationSettings
   type: Property
   source:
     remote: *o0
@@ -127,7 +127,7 @@ items:
   parent: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.yml
   name: SourceFiles
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.SourceFiles
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.SourceFiles
   type: Property
   source:
     remote: *o0
@@ -148,7 +148,7 @@ items:
   parent: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.yml
   name: DependencyInfo
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.DependencyInfo
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.DependencyInfo
   type: Property
   source:
     remote: *o0
@@ -169,7 +169,7 @@ items:
   parent: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.yml
   name: Project
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Project
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.ProjectInformation.Project
   type: Property
   source:
     remote: *o0
@@ -189,327 +189,327 @@ references:
 - uid: Microsoft.CodeAnalysis.Workspaces.Dnx
   isExternal: false
   name: Microsoft.CodeAnalysis.Workspaces.Dnx
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.String
   parent: System
   isExternal: true
   name: String
-  fullname: System.String
+  fullName: System.String
 - uid: System.Runtime.Versioning.FrameworkName
   parent: System.Runtime.Versioning
   isExternal: true
   name: FrameworkName
-  fullname: System.Runtime.Versioning.FrameworkName
+  fullName: System.Runtime.Versioning.FrameworkName
 - uid: System.Runtime.Versioning
   isExternal: false
   name: System.Runtime.Versioning
-  fullname: System.Runtime.Versioning
+  fullName: System.Runtime.Versioning
 - uid: Microsoft.Framework.Runtime.Roslyn.CompilationSettings
   parent: Microsoft.Framework.Runtime.Roslyn
   isExternal: true
   name: CompilationSettings
-  fullname: Microsoft.Framework.Runtime.Roslyn.CompilationSettings
+  fullName: Microsoft.Framework.Runtime.Roslyn.CompilationSettings
 - uid: Microsoft.Framework.Runtime.Roslyn
   isExternal: false
   name: Microsoft.Framework.Runtime.Roslyn
-  fullname: Microsoft.Framework.Runtime.Roslyn
+  fullName: Microsoft.Framework.Runtime.Roslyn
 - uid: System.Collections.Generic.IList{System.String}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.IList`1
   name: IList<String>
   name.vb: IList(Of String)
-  fullname: System.Collections.Generic.IList<System.String>
-  fullname.vb: System.Collections.Generic.IList(Of System.String)
+  fullName: System.Collections.Generic.IList<System.String>
+  fullName.vb: System.Collections.Generic.IList(Of System.String)
   spec.csharp:
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IList`1
   parent: System.Collections.Generic
   isExternal: true
   name: IList<T>
   name.vb: IList(Of T)
-  fullname: System.Collections.Generic.IList<T>
-  fullname.vb: System.Collections.Generic.IList(Of T)
+  fullName: System.Collections.Generic.IList<T>
+  fullName.vb: System.Collections.Generic.IList(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic
 - uid: Microsoft.CodeAnalysis.Workspaces.Dnx.DependencyInformation
   isExternal: false
   href: Microsoft.CodeAnalysis.Workspaces.Dnx.DependencyInformation.yml
   name: DependencyInformation
-  fullname: Microsoft.CodeAnalysis.Workspaces.Dnx.DependencyInformation
+  fullName: Microsoft.CodeAnalysis.Workspaces.Dnx.DependencyInformation
   type: Class
 - uid: Microsoft.Framework.Runtime.Project
   parent: Microsoft.Framework.Runtime
   isExternal: true
   name: Project
-  fullname: Microsoft.Framework.Runtime.Project
+  fullName: Microsoft.Framework.Runtime.Project
 - uid: Microsoft.Framework.Runtime
   isExternal: false
   name: Microsoft.Framework.Runtime
-  fullname: Microsoft.Framework.Runtime
+  fullName: Microsoft.Framework.Runtime

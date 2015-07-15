@@ -8,14 +8,14 @@ items:
   - Microsoft.DocAsCode.FileMappingConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)
   href: Microsoft.DocAsCode.FileMappingConverter.yml
   name: FileMappingConverter
-  fullname: Microsoft.DocAsCode.FileMappingConverter
+  fullName: Microsoft.DocAsCode.FileMappingConverter
   type: Class
   source:
     remote: &o0
       path: src/docfx/ConfigModel.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/docfx/ConfigModel.cs
     startLine: 48
   assemblies:
@@ -43,7 +43,7 @@ items:
   parent: Microsoft.DocAsCode.FileMappingConverter
   href: Microsoft.DocAsCode.FileMappingConverter.yml
   name: CanConvert(Type)
-  fullname: Microsoft.DocAsCode.FileMappingConverter.CanConvert(System.Type)
+  fullName: Microsoft.DocAsCode.FileMappingConverter.CanConvert(System.Type)
   type: Method
   source:
     remote: *o0
@@ -67,7 +67,7 @@ items:
   parent: Microsoft.DocAsCode.FileMappingConverter
   href: Microsoft.DocAsCode.FileMappingConverter.yml
   name: ReadJson(JsonReader, Type, Object, JsonSerializer)
-  fullname: Microsoft.DocAsCode.FileMappingConverter.ReadJson(Newtonsoft.Json.JsonReader, System.Type, System.Object, Newtonsoft.Json.JsonSerializer)
+  fullName: Microsoft.DocAsCode.FileMappingConverter.ReadJson(Newtonsoft.Json.JsonReader, System.Type, System.Object, Newtonsoft.Json.JsonSerializer)
   type: Method
   source:
     remote: *o0
@@ -97,7 +97,7 @@ items:
   parent: Microsoft.DocAsCode.FileMappingConverter
   href: Microsoft.DocAsCode.FileMappingConverter.yml
   name: WriteJson(JsonWriter, Object, JsonSerializer)
-  fullname: Microsoft.DocAsCode.FileMappingConverter.WriteJson(Newtonsoft.Json.JsonWriter, System.Object, Newtonsoft.Json.JsonSerializer)
+  fullName: Microsoft.DocAsCode.FileMappingConverter.WriteJson(Newtonsoft.Json.JsonWriter, System.Object, Newtonsoft.Json.JsonSerializer)
   type: Method
   source:
     remote: *o0
@@ -121,443 +121,443 @@ references:
 - uid: Microsoft.DocAsCode
   isExternal: false
   name: Microsoft.DocAsCode
-  fullname: Microsoft.DocAsCode
+  fullName: Microsoft.DocAsCode
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: Newtonsoft.Json.JsonConverter
   parent: Newtonsoft.Json
   isExternal: true
   name: JsonConverter
-  fullname: Newtonsoft.Json.JsonConverter
+  fullName: Newtonsoft.Json.JsonConverter
 - uid: Newtonsoft.Json.JsonConverter.GetSchema
   parent: Newtonsoft.Json.JsonConverter
   isExternal: true
   name: GetSchema()
-  fullname: Newtonsoft.Json.JsonConverter.GetSchema()
+  fullName: Newtonsoft.Json.JsonConverter.GetSchema()
   spec.csharp:
   - uid: Newtonsoft.Json.JsonConverter.GetSchema
     name: GetSchema
-    fullname: Newtonsoft.Json.JsonConverter.GetSchema
+    fullName: Newtonsoft.Json.JsonConverter.GetSchema
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Newtonsoft.Json.JsonConverter.GetSchema
     name: GetSchema
-    fullname: Newtonsoft.Json.JsonConverter.GetSchema
+    fullName: Newtonsoft.Json.JsonConverter.GetSchema
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: Newtonsoft.Json.JsonConverter.CanRead
   parent: Newtonsoft.Json.JsonConverter
   isExternal: true
   name: CanRead
-  fullname: Newtonsoft.Json.JsonConverter.CanRead
+  fullName: Newtonsoft.Json.JsonConverter.CanRead
 - uid: Newtonsoft.Json.JsonConverter.CanWrite
   parent: Newtonsoft.Json.JsonConverter
   isExternal: true
   name: CanWrite
-  fullname: Newtonsoft.Json.JsonConverter.CanWrite
+  fullName: Newtonsoft.Json.JsonConverter.CanWrite
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: Newtonsoft.Json
   isExternal: false
   name: Newtonsoft.Json
-  fullname: Newtonsoft.Json
+  fullName: Newtonsoft.Json
 - uid: Newtonsoft.Json.JsonConverter.CanConvert(System.Type)
   parent: Newtonsoft.Json.JsonConverter
   isExternal: true
   name: CanConvert(Type)
-  fullname: Newtonsoft.Json.JsonConverter.CanConvert(System.Type)
+  fullName: Newtonsoft.Json.JsonConverter.CanConvert(System.Type)
   spec.csharp:
   - uid: Newtonsoft.Json.JsonConverter.CanConvert(System.Type)
     name: CanConvert
-    fullname: Newtonsoft.Json.JsonConverter.CanConvert
+    fullName: Newtonsoft.Json.JsonConverter.CanConvert
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Type
     name: Type
-    fullname: System.Type
+    fullName: System.Type
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Newtonsoft.Json.JsonConverter.CanConvert(System.Type)
     name: CanConvert
-    fullname: Newtonsoft.Json.JsonConverter.CanConvert
+    fullName: Newtonsoft.Json.JsonConverter.CanConvert
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Type
     name: Type
-    fullname: System.Type
+    fullName: System.Type
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Type
   parent: System
   isExternal: true
   name: Type
-  fullname: System.Type
+  fullName: System.Type
 - uid: System.Boolean
   parent: System
   isExternal: true
   name: Boolean
-  fullname: System.Boolean
+  fullName: System.Boolean
 - uid: Newtonsoft.Json.JsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)
   parent: Newtonsoft.Json.JsonConverter
   isExternal: true
   name: ReadJson(JsonReader, Type, Object, JsonSerializer)
-  fullname: Newtonsoft.Json.JsonConverter.ReadJson(Newtonsoft.Json.JsonReader, System.Type, System.Object, Newtonsoft.Json.JsonSerializer)
+  fullName: Newtonsoft.Json.JsonConverter.ReadJson(Newtonsoft.Json.JsonReader, System.Type, System.Object, Newtonsoft.Json.JsonSerializer)
   spec.csharp:
   - uid: Newtonsoft.Json.JsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)
     name: ReadJson
-    fullname: Newtonsoft.Json.JsonConverter.ReadJson
+    fullName: Newtonsoft.Json.JsonConverter.ReadJson
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: Newtonsoft.Json.JsonReader
     name: JsonReader
-    fullname: Newtonsoft.Json.JsonReader
+    fullName: Newtonsoft.Json.JsonReader
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Type
     name: Type
-    fullname: System.Type
+    fullName: System.Type
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Newtonsoft.Json.JsonSerializer
     name: JsonSerializer
-    fullname: Newtonsoft.Json.JsonSerializer
+    fullName: Newtonsoft.Json.JsonSerializer
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Newtonsoft.Json.JsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)
     name: ReadJson
-    fullname: Newtonsoft.Json.JsonConverter.ReadJson
+    fullName: Newtonsoft.Json.JsonConverter.ReadJson
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: Newtonsoft.Json.JsonReader
     name: JsonReader
-    fullname: Newtonsoft.Json.JsonReader
+    fullName: Newtonsoft.Json.JsonReader
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Type
     name: Type
-    fullname: System.Type
+    fullName: System.Type
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Newtonsoft.Json.JsonSerializer
     name: JsonSerializer
-    fullname: Newtonsoft.Json.JsonSerializer
+    fullName: Newtonsoft.Json.JsonSerializer
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: Newtonsoft.Json.JsonReader
   parent: Newtonsoft.Json
   isExternal: true
   name: JsonReader
-  fullname: Newtonsoft.Json.JsonReader
+  fullName: Newtonsoft.Json.JsonReader
 - uid: Newtonsoft.Json.JsonSerializer
   parent: Newtonsoft.Json
   isExternal: true
   name: JsonSerializer
-  fullname: Newtonsoft.Json.JsonSerializer
+  fullName: Newtonsoft.Json.JsonSerializer
 - uid: Newtonsoft.Json.JsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)
   parent: Newtonsoft.Json.JsonConverter
   isExternal: true
   name: WriteJson(JsonWriter, Object, JsonSerializer)
-  fullname: Newtonsoft.Json.JsonConverter.WriteJson(Newtonsoft.Json.JsonWriter, System.Object, Newtonsoft.Json.JsonSerializer)
+  fullName: Newtonsoft.Json.JsonConverter.WriteJson(Newtonsoft.Json.JsonWriter, System.Object, Newtonsoft.Json.JsonSerializer)
   spec.csharp:
   - uid: Newtonsoft.Json.JsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)
     name: WriteJson
-    fullname: Newtonsoft.Json.JsonConverter.WriteJson
+    fullName: Newtonsoft.Json.JsonConverter.WriteJson
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: Newtonsoft.Json.JsonWriter
     name: JsonWriter
-    fullname: Newtonsoft.Json.JsonWriter
+    fullName: Newtonsoft.Json.JsonWriter
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Newtonsoft.Json.JsonSerializer
     name: JsonSerializer
-    fullname: Newtonsoft.Json.JsonSerializer
+    fullName: Newtonsoft.Json.JsonSerializer
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: Newtonsoft.Json.JsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)
     name: WriteJson
-    fullname: Newtonsoft.Json.JsonConverter.WriteJson
+    fullName: Newtonsoft.Json.JsonConverter.WriteJson
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: Newtonsoft.Json.JsonWriter
     name: JsonWriter
-    fullname: Newtonsoft.Json.JsonWriter
+    fullName: Newtonsoft.Json.JsonWriter
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Newtonsoft.Json.JsonSerializer
     name: JsonSerializer
-    fullname: Newtonsoft.Json.JsonSerializer
+    fullName: Newtonsoft.Json.JsonSerializer
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: Newtonsoft.Json.JsonWriter
   parent: Newtonsoft.Json
   isExternal: true
   name: JsonWriter
-  fullname: Newtonsoft.Json.JsonWriter
+  fullName: Newtonsoft.Json.JsonWriter

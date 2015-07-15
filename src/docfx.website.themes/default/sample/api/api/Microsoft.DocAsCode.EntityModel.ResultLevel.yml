@@ -10,14 +10,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.ResultLevel.Error
   href: Microsoft.DocAsCode.EntityModel.ResultLevel.yml
   name: ResultLevel
-  fullname: Microsoft.DocAsCode.EntityModel.ResultLevel
+  fullName: Microsoft.DocAsCode.EntityModel.ResultLevel
   type: Enum
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Model/ParseResult.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Model/ParseResult.cs
     startLine: 4
   assemblies:
@@ -31,7 +31,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ResultLevel
   href: Microsoft.DocAsCode.EntityModel.ResultLevel.yml
   name: Success
-  fullname: Microsoft.DocAsCode.EntityModel.ResultLevel.Success
+  fullName: Microsoft.DocAsCode.EntityModel.ResultLevel.Success
   type: Field
   source:
     remote: *o0
@@ -47,7 +47,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ResultLevel
   href: Microsoft.DocAsCode.EntityModel.ResultLevel.yml
   name: Verbose
-  fullname: Microsoft.DocAsCode.EntityModel.ResultLevel.Verbose
+  fullName: Microsoft.DocAsCode.EntityModel.ResultLevel.Verbose
   type: Field
   source:
     remote: *o0
@@ -63,7 +63,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ResultLevel
   href: Microsoft.DocAsCode.EntityModel.ResultLevel.yml
   name: Info
-  fullname: Microsoft.DocAsCode.EntityModel.ResultLevel.Info
+  fullName: Microsoft.DocAsCode.EntityModel.ResultLevel.Info
   type: Field
   source:
     remote: *o0
@@ -79,7 +79,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ResultLevel
   href: Microsoft.DocAsCode.EntityModel.ResultLevel.yml
   name: Warning
-  fullname: Microsoft.DocAsCode.EntityModel.ResultLevel.Warning
+  fullName: Microsoft.DocAsCode.EntityModel.ResultLevel.Warning
   type: Field
   source:
     remote: *o0
@@ -95,7 +95,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ResultLevel
   href: Microsoft.DocAsCode.EntityModel.ResultLevel.yml
   name: Error
-  fullname: Microsoft.DocAsCode.EntityModel.ResultLevel.Error
+  fullName: Microsoft.DocAsCode.EntityModel.ResultLevel.Error
   type: Field
   source:
     remote: *o0
@@ -110,5 +110,5 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace

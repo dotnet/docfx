@@ -15,14 +15,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.ParseResult.ToString
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ParseResult
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Model/ParseResult.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Model/ParseResult.cs
     startLine: 13
   assemblies:
@@ -45,7 +45,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ParseResult
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: SuccessResult
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.SuccessResult
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.SuccessResult
   type: Field
   source:
     remote: *o0
@@ -62,7 +62,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ParseResult
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: WarningResult
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.WarningResult
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.WarningResult
   type: Field
   source:
     remote: *o0
@@ -79,7 +79,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ParseResult
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ErrorResult
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.ErrorResult
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.ErrorResult
   type: Field
   source:
     remote: *o0
@@ -96,7 +96,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ParseResult
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ResultLevel
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.ResultLevel
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.ResultLevel
   type: Property
   source:
     remote: *o0
@@ -117,7 +117,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ParseResult
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: Message
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.Message
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.Message
   type: Property
   source:
     remote: *o0
@@ -139,8 +139,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ParseResult(ResultLevel, String, String[])
   name.vb: ParseResult(ResultLevel, String, String())
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.ParseResult(Microsoft.DocAsCode.EntityModel.ResultLevel, System.String, System.String[])
-  fullname.vb: Microsoft.DocAsCode.EntityModel.ParseResult.ParseResult(Microsoft.DocAsCode.EntityModel.ResultLevel, System.String, System.String())
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.ParseResult(Microsoft.DocAsCode.EntityModel.ResultLevel, System.String, System.String[])
+  fullName.vb: Microsoft.DocAsCode.EntityModel.ParseResult.ParseResult(Microsoft.DocAsCode.EntityModel.ResultLevel, System.String, System.String())
   type: Constructor
   source:
     remote: *o0
@@ -164,7 +164,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ParseResult
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ParseResult(ResultLevel)
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.ParseResult(Microsoft.DocAsCode.EntityModel.ResultLevel)
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.ParseResult(Microsoft.DocAsCode.EntityModel.ResultLevel)
   type: Constructor
   source:
     remote: *o0
@@ -184,7 +184,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ParseResult
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: WriteToConsole()
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.WriteToConsole()
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.WriteToConsole()
   type: Method
   source:
     remote: *o0
@@ -202,8 +202,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: WriteToConsole(ResultLevel, String, String[])
   name.vb: WriteToConsole(ResultLevel, String, String())
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.WriteToConsole(Microsoft.DocAsCode.EntityModel.ResultLevel, System.String, System.String[])
-  fullname.vb: Microsoft.DocAsCode.EntityModel.ParseResult.WriteToConsole(Microsoft.DocAsCode.EntityModel.ResultLevel, System.String, System.String())
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.WriteToConsole(Microsoft.DocAsCode.EntityModel.ResultLevel, System.String, System.String[])
+  fullName.vb: Microsoft.DocAsCode.EntityModel.ParseResult.WriteToConsole(Microsoft.DocAsCode.EntityModel.ResultLevel, System.String, System.String())
   type: Method
   source:
     remote: *o0
@@ -227,7 +227,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ParseResult
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ToString()
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult.ToString()
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult.ToString()
   type: Method
   source:
     remote: *o0
@@ -247,255 +247,255 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: Microsoft.DocAsCode.EntityModel.ResultLevel
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResultLevel.yml
   name: ResultLevel
-  fullname: Microsoft.DocAsCode.EntityModel.ResultLevel
+  fullName: Microsoft.DocAsCode.EntityModel.ResultLevel
   type: Enum
 - uid: System.String
   parent: System
   isExternal: true
   name: String
-  fullname: System.String
+  fullName: System.String
 - uid: System.String[]
   isExternal: true
   name: String[]
   name.vb: String()
-  fullname: System.String[]
-  fullname.vb: System.String()
+  fullName: System.String[]
+  fullName.vb: System.String()
   spec.csharp:
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '[]'
-    fullname: '[]'
+    fullName: '[]'
   spec.vb:
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ()
-    fullname: ()
+    fullName: ()
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )

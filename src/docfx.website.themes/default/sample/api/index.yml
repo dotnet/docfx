@@ -565,9 +565,9 @@ Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Href: api/Microsoft.Doc
 Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Name: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NameForCSharp: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NameForVB: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
-Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Fullname: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
-Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullnameForCSharp: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
-Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullnameForVB: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
+Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullName: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
+Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullNameForCSharp: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
+Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullNameForVB: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Type: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Source: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Documentation: api/Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
@@ -598,9 +598,9 @@ Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.Href: api/Microsof
 Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.Name: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.NameForCSharp: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.NameForVB: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
-Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.Fullname: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
-Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.FullnameForCSharp: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
-Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.FullnameForVB: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
+Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.FullName: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
+Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.FullNameForCSharp: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
+Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.FullNameForVB: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.Type: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.Summary: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.SpecForCSharp: api/Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.yml
@@ -610,7 +610,7 @@ Microsoft.DocAsCode.EntityModel.ViewModels.ReferenceViewModel.SpecForVB: api/Mic
 Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel: api/Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Uid: api/Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Name: api/Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
-Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Fullname: api/Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
+Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.FullName: api/Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.IsExternal: api/Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Href: api/Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
 Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.FromModel(Microsoft.DocAsCode.EntityModel.LinkItem): api/Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml

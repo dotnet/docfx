@@ -142,6 +142,12 @@ return GetExceptions(null, null).Count();
             Assert.Equal(1, codeSnippet.Count());
             Assert.Equal("relativePath", codeSnippet[0].Path);
 
+            input = @" {{'relativePath' }}";
+            codeSnippet = CodeSnippetParser.Select(input);
+            Assert.Equal(1, codeSnippet.Count());
+            Assert.Equal("relativePath", codeSnippet[0].Path);
+            Assert.Equal(-1, codeSnippet[0].EndLine);
+
             input = @" {{'<code_source_file_path>'[1-2] }}";
             codeSnippet = CodeSnippetParser.Select(input);
             Assert.Equal(0, codeSnippet.Count());

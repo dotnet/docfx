@@ -8,14 +8,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.MatchDetailCollection.Merge(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.EntityModel.MatchSingleDetail})
   href: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.yml
   name: MatchDetailCollection
-  fullname: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
+  fullName: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs
     startLine: 5
   assemblies:
@@ -90,7 +90,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
   href: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.yml
   name: MatchDetailCollection()
-  fullname: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.MatchDetailCollection()
+  fullName: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.MatchDetailCollection()
   type: Constructor
   source:
     remote: *o0
@@ -108,8 +108,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.yml
   name: MatchDetailCollection(IEqualityComparer<String>)
   name.vb: MatchDetailCollection(IEqualityComparer(Of String))
-  fullname: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.MatchDetailCollection(System.Collections.Generic.IEqualityComparer<System.String>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.MatchDetailCollection(System.Collections.Generic.IEqualityComparer(Of System.String))
+  fullName: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.MatchDetailCollection(System.Collections.Generic.IEqualityComparer<System.String>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.MatchDetailCollection(System.Collections.Generic.IEqualityComparer(Of System.String))
   type: Constructor
   source:
     remote: *o0
@@ -130,8 +130,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.yml
   name: Merge(IEnumerable<MatchSingleDetail>)
   name.vb: Merge(IEnumerable(Of MatchSingleDetail))
-  fullname: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.Merge(System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.EntityModel.MatchSingleDetail>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.Merge(System.Collections.Generic.IEnumerable(Of Microsoft.DocAsCode.EntityModel.MatchSingleDetail))
+  fullName: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.Merge(System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.EntityModel.MatchSingleDetail>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.Merge(System.Collections.Generic.IEnumerable(Of Microsoft.DocAsCode.EntityModel.MatchSingleDetail))
   type: Method
   source:
     remote: *o0
@@ -153,2473 +153,2473 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.Dictionary`2
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: Dictionary<String, MatchDetail>
   name.vb: Dictionary(Of String, MatchDetail)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2
     name: Dictionary
-    fullname: System.Collections.Generic.Dictionary
+    fullName: System.Collections.Generic.Dictionary
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2
     name: Dictionary
-    fullname: System.Collections.Generic.Dictionary
+    fullName: System.Collections.Generic.Dictionary
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.Add(System.String,Microsoft.DocAsCode.EntityModel.MatchDetail)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.Add({TKey},{TValue})
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: Add(String, MatchDetail)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Add(System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Add(System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Add(System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Add(System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.Add(`0,`1)
     name: Add
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Add
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.Add(`0,`1)
     name: Add
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Add
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Add(System.Collections.Generic.KeyValuePair{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail})
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Add(System.Collections.Generic.KeyValuePair{{TKey},{TValue}})
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: ICollection<KeyValuePair<String, MatchDetail>>.Add(KeyValuePair<String, MatchDetail>)
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add(KeyValuePair(Of String, MatchDetail))
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Add(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail))
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Add(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail))
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Add(System.Collections.Generic.KeyValuePair{`0,`1})
     name: ICollection<KeyValuePair<String, MatchDetail>>.Add
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Add
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Add(System.Collections.Generic.KeyValuePair{`0,`1})
     name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Contains(System.Collections.Generic.KeyValuePair{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail})
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Contains(System.Collections.Generic.KeyValuePair{{TKey},{TValue}})
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: ICollection<KeyValuePair<String, MatchDetail>>.Contains(KeyValuePair<String, MatchDetail>)
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains(KeyValuePair(Of String, MatchDetail))
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Contains(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail))
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Contains(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail))
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})
     name: ICollection<KeyValuePair<String, MatchDetail>>.Contains
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Contains
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Contains
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})
     name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Remove(System.Collections.Generic.KeyValuePair{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail})
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Remove(System.Collections.Generic.KeyValuePair{{TKey},{TValue}})
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: ICollection<KeyValuePair<String, MatchDetail>>.Remove(KeyValuePair<String, MatchDetail>)
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove(KeyValuePair(Of String, MatchDetail))
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Remove(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail))
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Remove(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail))
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})
     name: ICollection<KeyValuePair<String, MatchDetail>>.Remove
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Remove
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})
     name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.Clear
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.Clear
   name: Clear()
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Clear()
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Clear()
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Clear()
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Clear()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.Clear
     name: Clear
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Clear
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Clear
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.Clear
     name: Clear
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Clear
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Clear
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.ContainsKey(System.String)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.ContainsKey({TKey})
   name: ContainsKey(String)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.ContainsKey(System.String)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).ContainsKey(System.String)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.ContainsKey(System.String)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).ContainsKey(System.String)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.ContainsKey(`0)
     name: ContainsKey
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.ContainsKey
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.ContainsKey
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.ContainsKey(`0)
     name: ContainsKey
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).ContainsKey
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).ContainsKey
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.ContainsValue(Microsoft.DocAsCode.EntityModel.MatchDetail)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.ContainsValue({TValue})
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: ContainsValue(MatchDetail)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.ContainsValue(Microsoft.DocAsCode.EntityModel.MatchDetail)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).ContainsValue(Microsoft.DocAsCode.EntityModel.MatchDetail)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.ContainsValue(Microsoft.DocAsCode.EntityModel.MatchDetail)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).ContainsValue(Microsoft.DocAsCode.EntityModel.MatchDetail)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.ContainsValue(`1)
     name: ContainsValue
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.ContainsValue
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.ContainsValue
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.ContainsValue(`1)
     name: ContainsValue
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).ContainsValue
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).ContainsValue
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.GetEnumerator
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.GetEnumerator
   name: GetEnumerator()
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.GetEnumerator()
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).GetEnumerator()
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.GetEnumerator()
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).GetEnumerator()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.GetEnumerator
     name: GetEnumerator
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.GetEnumerator
     name: GetEnumerator
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).GetEnumerator
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator
   name: IEnumerable<KeyValuePair<String, MatchDetail>>.GetEnumerator()
   name.vb: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator()
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.GetEnumerator()
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator()
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.GetEnumerator()
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator
     name: IEnumerable<KeyValuePair<String, MatchDetail>>.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator
     name: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
   name: GetObjectData(SerializationInfo, StreamingContext)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     name: GetObjectData
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.GetObjectData
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.GetObjectData
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Runtime.Serialization.SerializationInfo
     name: SerializationInfo
-    fullname: System.Runtime.Serialization.SerializationInfo
+    fullName: System.Runtime.Serialization.SerializationInfo
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Runtime.Serialization.StreamingContext
     name: StreamingContext
-    fullname: System.Runtime.Serialization.StreamingContext
+    fullName: System.Runtime.Serialization.StreamingContext
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     name: GetObjectData
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).GetObjectData
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).GetObjectData
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Runtime.Serialization.SerializationInfo
     name: SerializationInfo
-    fullname: System.Runtime.Serialization.SerializationInfo
+    fullName: System.Runtime.Serialization.SerializationInfo
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Runtime.Serialization.StreamingContext
     name: StreamingContext
-    fullname: System.Runtime.Serialization.StreamingContext
+    fullName: System.Runtime.Serialization.StreamingContext
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.OnDeserialization(System.Object)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.OnDeserialization(System.Object)
   name: OnDeserialization(Object)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.OnDeserialization(System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).OnDeserialization(System.Object)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.OnDeserialization(System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).OnDeserialization(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.OnDeserialization(System.Object)
     name: OnDeserialization
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.OnDeserialization
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.OnDeserialization
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.OnDeserialization(System.Object)
     name: OnDeserialization
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).OnDeserialization
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).OnDeserialization
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.Remove(System.String)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.Remove({TKey})
   name: Remove(String)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Remove(System.String)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Remove(System.String)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Remove(System.String)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Remove(System.String)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.Remove(`0)
     name: Remove
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Remove
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.Remove(`0)
     name: Remove
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Remove
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.TryGetValue(System.String,Microsoft.DocAsCode.EntityModel.MatchDetail@)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.TryGetValue({TKey},{TValue}@)
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: TryGetValue(String, MatchDetail)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.TryGetValue(System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).TryGetValue(System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.TryGetValue(System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).TryGetValue(System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.TryGetValue(`0,`1@)
     name: TryGetValue
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.TryGetValue
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.TryGetValue
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.TryGetValue(`0,`1@)
     name: TryGetValue
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).TryGetValue
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).TryGetValue
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#CopyTo(System.Collections.Generic.KeyValuePair{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}[],System.Int32)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#CopyTo(System.Collections.Generic.KeyValuePair{{TKey},{TValue}}[],System.Int32)
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: ICollection<KeyValuePair<String, MatchDetail>>.CopyTo(KeyValuePair<String, MatchDetail>[], Int32)
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo(KeyValuePair(Of String, MatchDetail)(), Int32)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.CopyTo(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>[], System.Int32)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)(), System.Int32)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.CopyTo(System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>[], System.Int32)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo(System.Collections.Generic.KeyValuePair(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail)(), System.Int32)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)
     name: ICollection<KeyValuePair<String, MatchDetail>>.CopyTo
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.CopyTo
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.CopyTo
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: '[]'
-    fullname: '[]'
+    fullName: '[]'
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Int32
     name: Int32
-    fullname: System.Int32
+    fullName: System.Int32
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)
     name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
   - name: ()
-    fullname: ()
+    fullName: ()
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Int32
     name: Int32
-    fullname: System.Int32
+    fullName: System.Int32
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
   name: ICollection.CopyTo(Array, Int32)
   name.vb: System.Collections.ICollection.CopyTo(Array, Int32)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.ICollection.CopyTo(System.Array, System.Int32)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.ICollection.CopyTo(System.Array, System.Int32)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.ICollection.CopyTo(System.Array, System.Int32)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.ICollection.CopyTo(System.Array, System.Int32)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
     name: ICollection.CopyTo
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.ICollection.CopyTo
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.ICollection.CopyTo
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Array
     name: Array
-    fullname: System.Array
+    fullName: System.Array
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Int32
     name: Int32
-    fullname: System.Int32
+    fullName: System.Int32
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
     name: System.Collections.ICollection.CopyTo
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.ICollection.CopyTo
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.ICollection.CopyTo
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Array
     name: Array
-    fullname: System.Array
+    fullName: System.Array
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Int32
     name: Int32
-    fullname: System.Int32
+    fullName: System.Int32
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IEnumerable#GetEnumerator
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IEnumerable#GetEnumerator
   name: IEnumerable.GetEnumerator()
   name.vb: System.Collections.IEnumerable.GetEnumerator()
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IEnumerable.GetEnumerator()
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IEnumerable.GetEnumerator()
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IEnumerable.GetEnumerator()
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IEnumerable.GetEnumerator()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IEnumerable#GetEnumerator
     name: IEnumerable.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IEnumerable.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IEnumerable.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IEnumerable#GetEnumerator
     name: System.Collections.IEnumerable.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IEnumerable.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IEnumerable.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#get_Item(System.Object)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#get_Item(System.Object)
   name: IDictionary.get_Item(Object)
   name.vb: System.Collections.IDictionary.get_Item(Object)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.get_Item(System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.get_Item(System.Object)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.get_Item(System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.get_Item(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#get_Item(System.Object)
     name: IDictionary.get_Item
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.get_Item
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.get_Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#get_Item(System.Object)
     name: System.Collections.IDictionary.get_Item
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.get_Item
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.get_Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#set_Item(System.Object,System.Object)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#set_Item(System.Object,System.Object)
   name: IDictionary.set_Item(Object, Object)
   name.vb: System.Collections.IDictionary.set_Item(Object, Object)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.set_Item(System.Object, System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.set_Item(System.Object, System.Object)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.set_Item(System.Object, System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.set_Item(System.Object, System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#set_Item(System.Object,System.Object)
     name: IDictionary.set_Item
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.set_Item
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.set_Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#set_Item(System.Object,System.Object)
     name: System.Collections.IDictionary.set_Item
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.set_Item
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.set_Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#Add(System.Object,System.Object)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)
   name: IDictionary.Add(Object, Object)
   name.vb: System.Collections.IDictionary.Add(Object, Object)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Add(System.Object, System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Add(System.Object, System.Object)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Add(System.Object, System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Add(System.Object, System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)
     name: IDictionary.Add
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Add
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)
     name: System.Collections.IDictionary.Add
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Add
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#Contains(System.Object)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Contains(System.Object)
   name: IDictionary.Contains(Object)
   name.vb: System.Collections.IDictionary.Contains(Object)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Contains(System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Contains(System.Object)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Contains(System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Contains(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Contains(System.Object)
     name: IDictionary.Contains
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Contains
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Contains
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Contains(System.Object)
     name: System.Collections.IDictionary.Contains
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Contains
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Contains
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#GetEnumerator
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#GetEnumerator
   name: IDictionary.GetEnumerator()
   name.vb: System.Collections.IDictionary.GetEnumerator()
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.GetEnumerator()
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.GetEnumerator()
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.GetEnumerator()
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.GetEnumerator()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#GetEnumerator
     name: IDictionary.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#GetEnumerator
     name: System.Collections.IDictionary.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#Remove(System.Object)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Remove(System.Object)
   name: IDictionary.Remove(Object)
   name.vb: System.Collections.IDictionary.Remove(Object)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Remove(System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Remove(System.Object)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Remove(System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Remove(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Remove(System.Object)
     name: IDictionary.Remove
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Remove
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Remove(System.Object)
     name: System.Collections.IDictionary.Remove
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Remove
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.Comparer
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.Comparer
   name: Comparer
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Comparer
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Comparer
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Comparer
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Comparer
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.Count
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.Count
   name: Count
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Count
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Count
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Count
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Count
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.Keys
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.Keys
   name: Keys
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Keys
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Keys
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Keys
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Keys
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#IDictionary{TKey,TValue}#Keys
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Keys
   name: IDictionary<String, MatchDetail>.Keys
   name.vb: System.Collections.Generic.IDictionary<TKey,TValue>.Keys
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IDictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Keys
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IDictionary<TKey,TValue>.Keys
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IDictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Keys
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IDictionary<TKey,TValue>.Keys
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Keys
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Keys
   name: IReadOnlyDictionary<String, MatchDetail>.Keys
   name.vb: System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Keys
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IReadOnlyDictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Keys
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Keys
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IReadOnlyDictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Keys
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Keys
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.Values
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.Values
   name: Values
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Values
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Values
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Values
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Values
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#IDictionary{TKey,TValue}#Values
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Values
   name: IDictionary<String, MatchDetail>.Values
   name.vb: System.Collections.Generic.IDictionary<TKey,TValue>.Values
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IDictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Values
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IDictionary<TKey,TValue>.Values
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IDictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Values
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IDictionary<TKey,TValue>.Values
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Values
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Values
   name: IReadOnlyDictionary<String, MatchDetail>.Values
   name.vb: System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Values
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IReadOnlyDictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Values
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Values
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.IReadOnlyDictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Values
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Values
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.Item(System.String)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.Item({TKey})
   name: Item[String]
   name.vb: Item(String)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Item[System.String]
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Item(System.String)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Item[System.String]
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Item(System.String)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.Item(`0)
     name: Item
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Item
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.Item
     isExternal: true
   - name: '['
-    fullname: '['
+    fullName: '['
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ']'
-    fullname: ']'
+    fullName: ']'
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.Item(`0)
     name: Item
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Item
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#IsReadOnly
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#IsReadOnly
   name: ICollection<KeyValuePair<String, MatchDetail>>.IsReadOnly
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.IsReadOnly
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.IsReadOnly
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.IsReadOnly
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>>.IsReadOnly
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.IsReadOnly
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#ICollection#IsSynchronized
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#IsSynchronized
   name: ICollection.IsSynchronized
   name.vb: System.Collections.ICollection.IsSynchronized
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.ICollection.IsSynchronized
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.ICollection.IsSynchronized
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.ICollection.IsSynchronized
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.ICollection.IsSynchronized
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#ICollection#SyncRoot
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#SyncRoot
   name: ICollection.SyncRoot
   name.vb: System.Collections.ICollection.SyncRoot
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.ICollection.SyncRoot
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.ICollection.SyncRoot
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.ICollection.SyncRoot
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.ICollection.SyncRoot
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#IsFixedSize
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#IsFixedSize
   name: IDictionary.IsFixedSize
   name.vb: System.Collections.IDictionary.IsFixedSize
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.IsFixedSize
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.IsFixedSize
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.IsFixedSize
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.IsFixedSize
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#IsReadOnly
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#IsReadOnly
   name: IDictionary.IsReadOnly
   name.vb: System.Collections.IDictionary.IsReadOnly
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.IsReadOnly
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.IsReadOnly
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.IsReadOnly
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.IsReadOnly
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#Keys
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Keys
   name: IDictionary.Keys
   name.vb: System.Collections.IDictionary.Keys
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Keys
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Keys
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Keys
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Keys
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#Values
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Values
   name: IDictionary.Values
   name.vb: System.Collections.IDictionary.Values
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Values
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Values
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Values
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Values
 - uid: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}.System#Collections#IDictionary#Item(System.Object)
   parent: System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.EntityModel.MatchDetail}
   definition: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Item(System.Object)
   name: IDictionary.Item[Object]
   name.vb: System.Collections.IDictionary.Item(Object)
-  fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Item[System.Object]
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Item(System.Object)
+  fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Item[System.Object]
+  fullName.vb: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Item(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Item(System.Object)
     name: IDictionary.Item
-    fullname: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Item
+    fullName: System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.EntityModel.MatchDetail>.System.Collections.IDictionary.Item
     isExternal: true
   - name: '['
-    fullname: '['
+    fullName: '['
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ']'
-    fullname: ']'
+    fullName: ']'
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Item(System.Object)
     name: System.Collections.IDictionary.Item
-    fullname: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Item
+    fullName: System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.EntityModel.MatchDetail).System.Collections.IDictionary.Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.Collections.Generic.Dictionary`2
   parent: System.Collections.Generic
   isExternal: true
   name: Dictionary<TKey, TValue>
   name.vb: Dictionary(Of TKey, TValue)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2
     name: Dictionary
-    fullname: System.Collections.Generic.Dictionary
+    fullName: System.Collections.Generic.Dictionary
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2
     name: Dictionary
-    fullname: System.Collections.Generic.Dictionary
+    fullName: System.Collections.Generic.Dictionary
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic
 - uid: System.Collections.Generic.Dictionary`2.Add({TKey},{TValue})
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: Add(TKey, TValue)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Add(TKey, TValue)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Add(TKey, TValue)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Add(TKey, TValue)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Add(TKey, TValue)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.Add(`0,`1)
     name: Add
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Add
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.Add(`0,`1)
     name: Add
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).Add
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Add(System.Collections.Generic.KeyValuePair{{TKey},{TValue}})
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue>)
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add(KeyValuePair(Of TKey, TValue))
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Add(System.Collections.Generic.KeyValuePair<TKey, TValue>)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add(System.Collections.Generic.KeyValuePair(Of TKey, TValue))
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Add(System.Collections.Generic.KeyValuePair<TKey, TValue>)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add(System.Collections.Generic.KeyValuePair(Of TKey, TValue))
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Add(System.Collections.Generic.KeyValuePair{`0,`1})
     name: ICollection<KeyValuePair<TKey, TValue>>.Add
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Add
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Add(System.Collections.Generic.KeyValuePair{`0,`1})
     name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Contains(System.Collections.Generic.KeyValuePair{{TKey},{TValue}})
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue>)
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains(KeyValuePair(Of TKey, TValue))
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Contains(System.Collections.Generic.KeyValuePair<TKey, TValue>)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains(System.Collections.Generic.KeyValuePair(Of TKey, TValue))
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Contains(System.Collections.Generic.KeyValuePair<TKey, TValue>)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains(System.Collections.Generic.KeyValuePair(Of TKey, TValue))
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})
     name: ICollection<KeyValuePair<TKey, TValue>>.Contains
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Contains
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Contains
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Contains(System.Collections.Generic.KeyValuePair{`0,`1})
     name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Contains
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Remove(System.Collections.Generic.KeyValuePair{{TKey},{TValue}})
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue>)
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove(KeyValuePair(Of TKey, TValue))
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Remove(System.Collections.Generic.KeyValuePair<TKey, TValue>)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove(System.Collections.Generic.KeyValuePair(Of TKey, TValue))
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Remove(System.Collections.Generic.KeyValuePair<TKey, TValue>)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove(System.Collections.Generic.KeyValuePair(Of TKey, TValue))
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})
     name: ICollection<KeyValuePair<TKey, TValue>>.Remove
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Remove
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Remove(System.Collections.Generic.KeyValuePair{`0,`1})
     name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.Clear
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: Clear()
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Clear()
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Clear()
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Clear()
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Clear()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.Clear
     name: Clear
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Clear
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Clear
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.Clear
     name: Clear
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).Clear
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).Clear
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.ContainsKey({TKey})
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ContainsKey(TKey)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.ContainsKey(TKey)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).ContainsKey(TKey)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.ContainsKey(TKey)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).ContainsKey(TKey)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.ContainsKey(`0)
     name: ContainsKey
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.ContainsKey
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.ContainsKey
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.ContainsKey(`0)
     name: ContainsKey
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).ContainsKey
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).ContainsKey
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.ContainsValue({TValue})
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ContainsValue(TValue)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.ContainsValue(TValue)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).ContainsValue(TValue)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.ContainsValue(TValue)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).ContainsValue(TValue)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.ContainsValue(`1)
     name: ContainsValue
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.ContainsValue
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.ContainsValue
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.ContainsValue(`1)
     name: ContainsValue
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).ContainsValue
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).ContainsValue
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.GetEnumerator
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: GetEnumerator()
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.GetEnumerator()
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).GetEnumerator()
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.GetEnumerator()
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).GetEnumerator()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.GetEnumerator
     name: GetEnumerator
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.GetEnumerator
     name: GetEnumerator
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).GetEnumerator
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
   name.vb: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator()
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey, TValue>>.GetEnumerator()
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator()
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey, TValue>>.GetEnumerator()
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator
     name: IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey, TValue>>.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey, TValue>>.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator
     name: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<TKey,TValue>>.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: GetObjectData(SerializationInfo, StreamingContext)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     name: GetObjectData
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.GetObjectData
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.GetObjectData
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Runtime.Serialization.SerializationInfo
     name: SerializationInfo
-    fullname: System.Runtime.Serialization.SerializationInfo
+    fullName: System.Runtime.Serialization.SerializationInfo
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Runtime.Serialization.StreamingContext
     name: StreamingContext
-    fullname: System.Runtime.Serialization.StreamingContext
+    fullName: System.Runtime.Serialization.StreamingContext
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     name: GetObjectData
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).GetObjectData
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).GetObjectData
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Runtime.Serialization.SerializationInfo
     name: SerializationInfo
-    fullname: System.Runtime.Serialization.SerializationInfo
+    fullName: System.Runtime.Serialization.SerializationInfo
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Runtime.Serialization.StreamingContext
     name: StreamingContext
-    fullname: System.Runtime.Serialization.StreamingContext
+    fullName: System.Runtime.Serialization.StreamingContext
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.OnDeserialization(System.Object)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: OnDeserialization(Object)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.OnDeserialization(System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).OnDeserialization(System.Object)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.OnDeserialization(System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).OnDeserialization(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.OnDeserialization(System.Object)
     name: OnDeserialization
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.OnDeserialization
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.OnDeserialization
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.OnDeserialization(System.Object)
     name: OnDeserialization
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).OnDeserialization
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).OnDeserialization
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.Remove({TKey})
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: Remove(TKey)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Remove(TKey)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Remove(TKey)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Remove(TKey)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Remove(TKey)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.Remove(`0)
     name: Remove
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Remove
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.Remove(`0)
     name: Remove
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).Remove
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.TryGetValue({TKey},{TValue}@)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: TryGetValue(TKey, TValue)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.TryGetValue(TKey, TValue)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).TryGetValue(TKey, TValue)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.TryGetValue(TKey, TValue)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).TryGetValue(TKey, TValue)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.TryGetValue(`0,`1@)
     name: TryGetValue
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.TryGetValue
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.TryGetValue
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.TryGetValue(`0,`1@)
     name: TryGetValue
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).TryGetValue
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).TryGetValue
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#CopyTo(System.Collections.Generic.KeyValuePair{{TKey},{TValue}}[],System.Int32)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[], Int32)
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo(KeyValuePair(Of TKey, TValue)(), Int32)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.CopyTo(System.Collections.Generic.KeyValuePair<TKey, TValue>[], System.Int32)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo(System.Collections.Generic.KeyValuePair(Of TKey, TValue)(), System.Int32)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.CopyTo(System.Collections.Generic.KeyValuePair<TKey, TValue>[], System.Int32)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo(System.Collections.Generic.KeyValuePair(Of TKey, TValue)(), System.Int32)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)
     name: ICollection<KeyValuePair<TKey, TValue>>.CopyTo
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.CopyTo
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.CopyTo
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: '[]'
-    fullname: '[]'
+    fullName: '[]'
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Int32
     name: Int32
-    fullname: System.Int32
+    fullName: System.Int32
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)
     name: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.CopyTo
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Collections.Generic.KeyValuePair`2
     name: KeyValuePair
-    fullname: System.Collections.Generic.KeyValuePair
+    fullName: System.Collections.Generic.KeyValuePair
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TValue
-    fullname: TValue
+    fullName: TValue
   - name: )
-    fullname: )
+    fullName: )
   - name: ()
-    fullname: ()
+    fullName: ()
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Int32
     name: Int32
-    fullname: System.Int32
+    fullName: System.Int32
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ICollection.CopyTo(Array, Int32)
   name.vb: System.Collections.ICollection.CopyTo(Array, Int32)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.ICollection.CopyTo(System.Array, System.Int32)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.ICollection.CopyTo(System.Array, System.Int32)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.ICollection.CopyTo(System.Array, System.Int32)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.ICollection.CopyTo(System.Array, System.Int32)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
     name: ICollection.CopyTo
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.ICollection.CopyTo
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.ICollection.CopyTo
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Array
     name: Array
-    fullname: System.Array
+    fullName: System.Array
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Int32
     name: Int32
-    fullname: System.Int32
+    fullName: System.Int32
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)
     name: System.Collections.ICollection.CopyTo
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.ICollection.CopyTo
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.ICollection.CopyTo
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Array
     name: Array
-    fullname: System.Array
+    fullName: System.Array
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Int32
     name: Int32
-    fullname: System.Int32
+    fullName: System.Int32
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IEnumerable#GetEnumerator
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IEnumerable.GetEnumerator()
   name.vb: System.Collections.IEnumerable.GetEnumerator()
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IEnumerable.GetEnumerator()
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IEnumerable.GetEnumerator()
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IEnumerable.GetEnumerator()
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IEnumerable.GetEnumerator()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IEnumerable#GetEnumerator
     name: IEnumerable.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IEnumerable.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IEnumerable.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IEnumerable#GetEnumerator
     name: System.Collections.IEnumerable.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IEnumerable.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IEnumerable.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#get_Item(System.Object)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.get_Item(Object)
   name.vb: System.Collections.IDictionary.get_Item(Object)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.get_Item(System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.get_Item(System.Object)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.get_Item(System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.get_Item(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#get_Item(System.Object)
     name: IDictionary.get_Item
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.get_Item
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.get_Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#get_Item(System.Object)
     name: System.Collections.IDictionary.get_Item
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.get_Item
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.get_Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#set_Item(System.Object,System.Object)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.set_Item(Object, Object)
   name.vb: System.Collections.IDictionary.set_Item(Object, Object)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.set_Item(System.Object, System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.set_Item(System.Object, System.Object)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.set_Item(System.Object, System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.set_Item(System.Object, System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#set_Item(System.Object,System.Object)
     name: IDictionary.set_Item
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.set_Item
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.set_Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#set_Item(System.Object,System.Object)
     name: System.Collections.IDictionary.set_Item
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.set_Item
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.set_Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.Add(Object, Object)
   name.vb: System.Collections.IDictionary.Add(Object, Object)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Add(System.Object, System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Add(System.Object, System.Object)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Add(System.Object, System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Add(System.Object, System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)
     name: IDictionary.Add
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Add
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Add(System.Object,System.Object)
     name: System.Collections.IDictionary.Add
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Add
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Add
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Contains(System.Object)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.Contains(Object)
   name.vb: System.Collections.IDictionary.Contains(Object)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Contains(System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Contains(System.Object)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Contains(System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Contains(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Contains(System.Object)
     name: IDictionary.Contains
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Contains
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Contains
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Contains(System.Object)
     name: System.Collections.IDictionary.Contains
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Contains
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Contains
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#GetEnumerator
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.GetEnumerator()
   name.vb: System.Collections.IDictionary.GetEnumerator()
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.GetEnumerator()
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.GetEnumerator()
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.GetEnumerator()
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.GetEnumerator()
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#GetEnumerator
     name: IDictionary.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#GetEnumerator
     name: System.Collections.IDictionary.GetEnumerator
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.GetEnumerator
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.GetEnumerator
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Remove(System.Object)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.Remove(Object)
   name.vb: System.Collections.IDictionary.Remove(Object)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Remove(System.Object)
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Remove(System.Object)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Remove(System.Object)
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Remove(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Remove(System.Object)
     name: IDictionary.Remove
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Remove
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Remove(System.Object)
     name: System.Collections.IDictionary.Remove
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Remove
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Remove
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.Comparer
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: Comparer
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Comparer
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Comparer
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Comparer
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Comparer
 - uid: System.Collections.Generic.Dictionary`2.Count
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: Count
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Count
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Count
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Count
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Count
 - uid: System.Collections.Generic.Dictionary`2.Keys
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: Keys
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Keys
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Keys
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Keys
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Keys
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Keys
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary<TKey, TValue>.Keys
   name.vb: System.Collections.Generic.IDictionary<TKey,TValue>.Keys
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IDictionary<TKey, TValue>.Keys
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IDictionary<TKey,TValue>.Keys
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IDictionary<TKey, TValue>.Keys
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IDictionary<TKey,TValue>.Keys
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Keys
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IReadOnlyDictionary<TKey, TValue>.Keys
   name.vb: System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Keys
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>.Keys
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Keys
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>.Keys
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Keys
 - uid: System.Collections.Generic.Dictionary`2.Values
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: Values
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Values
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Values
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Values
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Values
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Values
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary<TKey, TValue>.Values
   name.vb: System.Collections.Generic.IDictionary<TKey,TValue>.Values
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IDictionary<TKey, TValue>.Values
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IDictionary<TKey,TValue>.Values
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IDictionary<TKey, TValue>.Values
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IDictionary<TKey,TValue>.Values
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Values
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IReadOnlyDictionary<TKey, TValue>.Values
   name.vb: System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Values
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>.Values
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Values
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>.Values
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.IReadOnlyDictionary<TKey,TValue>.Values
 - uid: System.Collections.Generic.Dictionary`2.Item({TKey})
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: Item[TKey]
   name.vb: Item(TKey)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Item[TKey]
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Item(TKey)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Item[TKey]
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).Item(TKey)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.Item(`0)
     name: Item
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.Item
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.Item
     isExternal: true
   - name: '['
-    fullname: '['
+    fullName: '['
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: ']'
-    fullname: ']'
+    fullName: ']'
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.Item(`0)
     name: Item
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).Item
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: TKey
-    fullname: TKey
+    fullName: TKey
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#IsReadOnly
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly
   name.vb: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.IsReadOnly
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.IsReadOnly
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.IsReadOnly
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey, TValue>>.IsReadOnly
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<TKey,TValue>>.IsReadOnly
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#IsSynchronized
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ICollection.IsSynchronized
   name.vb: System.Collections.ICollection.IsSynchronized
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.ICollection.IsSynchronized
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.ICollection.IsSynchronized
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.ICollection.IsSynchronized
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.ICollection.IsSynchronized
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#ICollection#SyncRoot
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: ICollection.SyncRoot
   name.vb: System.Collections.ICollection.SyncRoot
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.ICollection.SyncRoot
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.ICollection.SyncRoot
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.ICollection.SyncRoot
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.ICollection.SyncRoot
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#IsFixedSize
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.IsFixedSize
   name.vb: System.Collections.IDictionary.IsFixedSize
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.IsFixedSize
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.IsFixedSize
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.IsFixedSize
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.IsFixedSize
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#IsReadOnly
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.IsReadOnly
   name.vb: System.Collections.IDictionary.IsReadOnly
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.IsReadOnly
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.IsReadOnly
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.IsReadOnly
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.IsReadOnly
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Keys
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.Keys
   name.vb: System.Collections.IDictionary.Keys
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Keys
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Keys
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Keys
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Keys
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Values
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.Values
   name.vb: System.Collections.IDictionary.Values
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Values
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Values
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Values
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Values
 - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Item(System.Object)
   parent: System.Collections.Generic.Dictionary`2
   isExternal: true
   name: IDictionary.Item[Object]
   name.vb: System.Collections.IDictionary.Item(Object)
-  fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Item[System.Object]
-  fullname.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Item(System.Object)
+  fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Item[System.Object]
+  fullName.vb: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Item(System.Object)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Item(System.Object)
     name: IDictionary.Item
-    fullname: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Item
+    fullName: System.Collections.Generic.Dictionary<TKey, TValue>.System.Collections.IDictionary.Item
     isExternal: true
   - name: '['
-    fullname: '['
+    fullName: '['
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ']'
-    fullname: ']'
+    fullName: ']'
   spec.vb:
   - uid: System.Collections.Generic.Dictionary`2.System#Collections#IDictionary#Item(System.Object)
     name: System.Collections.IDictionary.Item
-    fullname: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Item
+    fullName: System.Collections.Generic.Dictionary(Of TKey, TValue).System.Collections.IDictionary.Item
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IEqualityComparer{System.String}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.IEqualityComparer`1
   name: IEqualityComparer<String>
   name.vb: IEqualityComparer(Of String)
-  fullname: System.Collections.Generic.IEqualityComparer<System.String>
-  fullname.vb: System.Collections.Generic.IEqualityComparer(Of System.String)
+  fullName: System.Collections.Generic.IEqualityComparer<System.String>
+  fullName.vb: System.Collections.Generic.IEqualityComparer(Of System.String)
   spec.csharp:
   - uid: System.Collections.Generic.IEqualityComparer`1
     name: IEqualityComparer
-    fullname: System.Collections.Generic.IEqualityComparer
+    fullName: System.Collections.Generic.IEqualityComparer
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEqualityComparer`1
     name: IEqualityComparer
-    fullname: System.Collections.Generic.IEqualityComparer
+    fullName: System.Collections.Generic.IEqualityComparer
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IEqualityComparer`1
   parent: System.Collections.Generic
   isExternal: true
   name: IEqualityComparer<T>
   name.vb: IEqualityComparer(Of T)
-  fullname: System.Collections.Generic.IEqualityComparer<T>
-  fullname.vb: System.Collections.Generic.IEqualityComparer(Of T)
+  fullName: System.Collections.Generic.IEqualityComparer<T>
+  fullName.vb: System.Collections.Generic.IEqualityComparer(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.IEqualityComparer`1
     name: IEqualityComparer
-    fullname: System.Collections.Generic.IEqualityComparer
+    fullName: System.Collections.Generic.IEqualityComparer
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEqualityComparer`1
     name: IEqualityComparer
-    fullname: System.Collections.Generic.IEqualityComparer
+    fullName: System.Collections.Generic.IEqualityComparer
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.EntityModel.MatchSingleDetail}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.IEnumerable`1
   href: Microsoft.DocAsCode.EntityModel.MatchSingleDetail.yml
   name: IEnumerable<MatchSingleDetail>
   name.vb: IEnumerable(Of MatchSingleDetail)
-  fullname: System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.EntityModel.MatchSingleDetail>
-  fullname.vb: System.Collections.Generic.IEnumerable(Of Microsoft.DocAsCode.EntityModel.MatchSingleDetail)
+  fullName: System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.EntityModel.MatchSingleDetail>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of Microsoft.DocAsCode.EntityModel.MatchSingleDetail)
   spec.csharp:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
     name: MatchSingleDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
     href: Microsoft.DocAsCode.EntityModel.MatchSingleDetail.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
     name: MatchSingleDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
     href: Microsoft.DocAsCode.EntityModel.MatchSingleDetail.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.yml
   name: MatchDetailCollection
-  fullname: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
+  fullName: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
   type: Class
 - uid: System.Collections.Generic.IEnumerable`1
   parent: System.Collections.Generic
   isExternal: true
   name: IEnumerable<T>
   name.vb: IEnumerable(Of T)
-  fullname: System.Collections.Generic.IEnumerable<T>
-  fullname.vb: System.Collections.Generic.IEnumerable(Of T)
+  fullName: System.Collections.Generic.IEnumerable<T>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )

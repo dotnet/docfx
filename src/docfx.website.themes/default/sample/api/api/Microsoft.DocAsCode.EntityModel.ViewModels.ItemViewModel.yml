@@ -11,9 +11,9 @@ items:
   - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Name
   - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NameForCSharp
   - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NameForVB
-  - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Fullname
-  - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullnameForCSharp
-  - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullnameForVB
+  - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullName
+  - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullNameForCSharp
+  - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullNameForVB
   - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Type
   - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Source
   - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Documentation
@@ -33,14 +33,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FromModel(Microsoft.DocAsCode.EntityModel.MetadataItem)
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: ItemViewModel
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ViewModels/ItemViewModel.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/ViewModels/ItemViewModel.cs
     startLine: 5
   assemblies:
@@ -64,7 +64,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Uid
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Uid
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Uid
   type: Property
   source:
     remote: *o0
@@ -85,7 +85,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Id
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Id
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Id
   type: Property
   source:
     remote: *o0
@@ -106,7 +106,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Parent
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Parent
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Parent
   type: Property
   source:
     remote: *o0
@@ -127,7 +127,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Children
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Children
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Children
   type: Property
   source:
     remote: *o0
@@ -148,7 +148,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Href
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Href
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Href
   type: Property
   source:
     remote: *o0
@@ -169,7 +169,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Name
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Name
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Name
   type: Property
   source:
     remote: *o0
@@ -190,7 +190,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: NameForCSharp
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NameForCSharp
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NameForCSharp
   type: Property
   source:
     remote: *o0
@@ -211,7 +211,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: NameForVB
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NameForVB
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NameForVB
   type: Property
   source:
     remote: *o0
@@ -227,12 +227,12 @@ items:
     return:
       type: System.String
       description: 
-- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Fullname
-  id: Fullname
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullName
+  id: FullName
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
-  name: Fullname
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Fullname
+  name: FullName
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullName
   type: Property
   source:
     remote: *o0
@@ -242,18 +242,18 @@ items:
   - Microsoft.DocAsCode.EntityModel
   namespace: Microsoft.DocAsCode.EntityModel.ViewModels
   syntax:
-    content: public string Fullname { get; set; }
-    content.vb: Public Property Fullname As String
+    content: public string FullName { get; set; }
+    content.vb: Public Property FullName As String
     parameters: []
     return:
       type: System.String
       description: 
-- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullnameForCSharp
-  id: FullnameForCSharp
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullNameForCSharp
+  id: FullNameForCSharp
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
-  name: FullnameForCSharp
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullnameForCSharp
+  name: FullNameForCSharp
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullNameForCSharp
   type: Property
   source:
     remote: *o0
@@ -263,18 +263,18 @@ items:
   - Microsoft.DocAsCode.EntityModel
   namespace: Microsoft.DocAsCode.EntityModel.ViewModels
   syntax:
-    content: public string FullnameForCSharp { get; set; }
-    content.vb: Public Property FullnameForCSharp As String
+    content: public string FullNameForCSharp { get; set; }
+    content.vb: Public Property FullNameForCSharp As String
     parameters: []
     return:
       type: System.String
       description: 
-- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullnameForVB
-  id: FullnameForVB
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullNameForVB
+  id: FullNameForVB
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
-  name: FullnameForVB
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullnameForVB
+  name: FullNameForVB
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FullNameForVB
   type: Property
   source:
     remote: *o0
@@ -284,8 +284,8 @@ items:
   - Microsoft.DocAsCode.EntityModel
   namespace: Microsoft.DocAsCode.EntityModel.ViewModels
   syntax:
-    content: public string FullnameForVB { get; set; }
-    content.vb: Public Property FullnameForVB As String
+    content: public string FullNameForVB { get; set; }
+    content.vb: Public Property FullNameForVB As String
     parameters: []
     return:
       type: System.String
@@ -295,7 +295,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Type
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Type
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Type
   type: Property
   source:
     remote: *o0
@@ -316,7 +316,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Source
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Source
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Source
   type: Property
   source:
     remote: *o0
@@ -337,7 +337,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Documentation
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Documentation
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Documentation
   type: Property
   source:
     remote: *o0
@@ -358,7 +358,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: AssemblyNameList
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.AssemblyNameList
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.AssemblyNameList
   type: Property
   source:
     remote: *o0
@@ -379,7 +379,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: NamespaceName
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NamespaceName
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.NamespaceName
   type: Property
   source:
     remote: *o0
@@ -400,7 +400,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Summary
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Summary
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Summary
   type: Property
   source:
     remote: *o0
@@ -421,7 +421,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Remarks
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Remarks
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Remarks
   type: Property
   source:
     remote: *o0
@@ -442,7 +442,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Example
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Example
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Example
   type: Property
   source:
     remote: *o0
@@ -463,7 +463,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Syntax
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Syntax
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Syntax
   type: Property
   source:
     remote: *o0
@@ -484,7 +484,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Overridden
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Overridden
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Overridden
   type: Property
   source:
     remote: *o0
@@ -505,7 +505,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Exceptions
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Exceptions
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Exceptions
   type: Property
   source:
     remote: *o0
@@ -526,7 +526,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: SeeAlsos
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.SeeAlsos
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.SeeAlsos
   type: Property
   source:
     remote: *o0
@@ -547,7 +547,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Sees
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Sees
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Sees
   type: Property
   source:
     remote: *o0
@@ -568,7 +568,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Inheritance
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Inheritance
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Inheritance
   type: Property
   source:
     remote: *o0
@@ -589,7 +589,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: Implements
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Implements
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.Implements
   type: Property
   source:
     remote: *o0
@@ -610,7 +610,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: InheritedMembers
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.InheritedMembers
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.InheritedMembers
   type: Property
   source:
     remote: *o0
@@ -631,7 +631,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: FromModel(MetadataItem)
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FromModel(Microsoft.DocAsCode.EntityModel.MetadataItem)
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.FromModel(Microsoft.DocAsCode.EntityModel.MetadataItem)
   type: Method
   source:
     remote: *o0
@@ -653,378 +653,378 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.String
   parent: System
   isExternal: true
   name: String
-  fullname: System.String
+  fullName: System.String
 - uid: System.Collections.Generic.List{System.String}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.List`1
   name: List<String>
   name.vb: List(Of String)
-  fullname: System.Collections.Generic.List<System.String>
-  fullname.vb: System.Collections.Generic.List(Of System.String)
+  fullName: System.Collections.Generic.List<System.String>
+  fullName.vb: System.Collections.Generic.List(Of System.String)
   spec.csharp:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.List`1
   parent: System.Collections.Generic
   isExternal: true
   name: List<T>
   name.vb: List(Of T)
-  fullname: System.Collections.Generic.List<T>
-  fullname.vb: System.Collections.Generic.List(Of T)
+  fullName: System.Collections.Generic.List<T>
+  fullName.vb: System.Collections.Generic.List(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic
 - uid: System.Nullable{Microsoft.DocAsCode.EntityModel.MemberType}
   parent: System
   definition: System.Nullable`1
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: Nullable<MemberType>
   name.vb: Nullable(Of MemberType)
-  fullname: System.Nullable<Microsoft.DocAsCode.EntityModel.MemberType>
-  fullname.vb: System.Nullable(Of Microsoft.DocAsCode.EntityModel.MemberType)
+  fullName: System.Nullable<Microsoft.DocAsCode.EntityModel.MemberType>
+  fullName.vb: System.Nullable(Of Microsoft.DocAsCode.EntityModel.MemberType)
   spec.csharp:
   - uid: System.Nullable`1
     name: Nullable
-    fullname: System.Nullable
+    fullName: System.Nullable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: Microsoft.DocAsCode.EntityModel.MemberType
     name: MemberType
-    fullname: Microsoft.DocAsCode.EntityModel.MemberType
+    fullName: Microsoft.DocAsCode.EntityModel.MemberType
     href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Nullable`1
     name: Nullable
-    fullname: System.Nullable
+    fullName: System.Nullable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: Microsoft.DocAsCode.EntityModel.MemberType
     name: MemberType
-    fullname: Microsoft.DocAsCode.EntityModel.MemberType
+    fullName: Microsoft.DocAsCode.EntityModel.MemberType
     href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Nullable`1
   parent: System
   isExternal: true
   name: Nullable<T>
   name.vb: Nullable(Of T)
-  fullname: System.Nullable<T>
-  fullname.vb: System.Nullable(Of T)
+  fullName: System.Nullable<T>
+  fullName.vb: System.Nullable(Of T)
   spec.csharp:
   - uid: System.Nullable`1
     name: Nullable
-    fullname: System.Nullable
+    fullName: System.Nullable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Nullable`1
     name: Nullable
-    fullname: System.Nullable
+    fullName: System.Nullable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.SourceDetail
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
   name: SourceDetail
-  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail
+  fullName: Microsoft.DocAsCode.EntityModel.SourceDetail
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel.yml
   name: SyntaxDetailViewModel
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SyntaxDetailViewModel
   type: Class
 - uid: System.Collections.Generic.List{Microsoft.DocAsCode.EntityModel.CrefInfo}
   parent: System.Collections.Generic
@@ -1032,45 +1032,45 @@ references:
   href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   name: List<CrefInfo>
   name.vb: List(Of CrefInfo)
-  fullname: System.Collections.Generic.List<Microsoft.DocAsCode.EntityModel.CrefInfo>
-  fullname.vb: System.Collections.Generic.List(Of Microsoft.DocAsCode.EntityModel.CrefInfo)
+  fullName: System.Collections.Generic.List<Microsoft.DocAsCode.EntityModel.CrefInfo>
+  fullName.vb: System.Collections.Generic.List(Of Microsoft.DocAsCode.EntityModel.CrefInfo)
   spec.csharp:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: Microsoft.DocAsCode.EntityModel.CrefInfo
     name: CrefInfo
-    fullname: Microsoft.DocAsCode.EntityModel.CrefInfo
+    fullName: Microsoft.DocAsCode.EntityModel.CrefInfo
     href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.List`1
     name: List
-    fullname: System.Collections.Generic.List
+    fullName: System.Collections.Generic.List
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: Microsoft.DocAsCode.EntityModel.CrefInfo
     name: CrefInfo
-    fullname: Microsoft.DocAsCode.EntityModel.CrefInfo
+    fullName: Microsoft.DocAsCode.EntityModel.CrefInfo
     href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   name: MetadataItem
-  fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+  fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel.yml
   name: ItemViewModel
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.ItemViewModel
   type: Class

@@ -7,14 +7,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.TreeIterator.Preorder``1(``0,``0,System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Func{``0,``0,System.Boolean})
   href: Microsoft.DocAsCode.EntityModel.TreeIterator.yml
   name: TreeIterator
-  fullname: Microsoft.DocAsCode.EntityModel.TreeIterator
+  fullName: Microsoft.DocAsCode.EntityModel.TreeIterator
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Utility.cs
     startLine: 6
   assemblies:
@@ -39,8 +39,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.TreeIterator.yml
   name: PreorderAsync<T>(T, T, Func<T, IEnumerable<T>>, Func<T, T, Task<Boolean>>)
   name.vb: PreorderAsync(Of T)(T, T, Func(Of T, IEnumerable(Of T)), Func(Of T, T, Task(Of Boolean)))
-  fullname: Microsoft.DocAsCode.EntityModel.TreeIterator.PreorderAsync<T>(T, T, System.Func<T, System.Collections.Generic.IEnumerable<T>>, System.Func<T, T, System.Threading.Tasks.Task<System.Boolean>>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.TreeIterator.PreorderAsync(Of T)(T, T, System.Func(Of T, System.Collections.Generic.IEnumerable(Of T)), System.Func(Of T, T, System.Threading.Tasks.Task(Of System.Boolean)))
+  fullName: Microsoft.DocAsCode.EntityModel.TreeIterator.PreorderAsync<T>(T, T, System.Func<T, System.Collections.Generic.IEnumerable<T>>, System.Func<T, T, System.Threading.Tasks.Task<System.Boolean>>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.TreeIterator.PreorderAsync(Of T)(T, T, System.Func(Of T, System.Collections.Generic.IEnumerable(Of T)), System.Func(Of T, T, System.Threading.Tasks.Task(Of System.Boolean)))
   type: Method
   source:
     remote: *o0
@@ -72,8 +72,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.TreeIterator.yml
   name: Preorder<T>(T, T, Func<T, IEnumerable<T>>, Func<T, T, Boolean>)
   name.vb: Preorder(Of T)(T, T, Func(Of T, IEnumerable(Of T)), Func(Of T, T, Boolean))
-  fullname: Microsoft.DocAsCode.EntityModel.TreeIterator.Preorder<T>(T, T, System.Func<T, System.Collections.Generic.IEnumerable<T>>, System.Func<T, T, System.Boolean>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.TreeIterator.Preorder(Of T)(T, T, System.Func(Of T, System.Collections.Generic.IEnumerable(Of T)), System.Func(Of T, T, System.Boolean))
+  fullName: Microsoft.DocAsCode.EntityModel.TreeIterator.Preorder<T>(T, T, System.Func<T, System.Collections.Generic.IEnumerable<T>>, System.Func<T, T, System.Boolean>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.TreeIterator.Preorder(Of T)(T, T, System.Func(Of T, System.Collections.Generic.IEnumerable(Of T)), System.Func(Of T, T, System.Boolean))
   type: Method
   source:
     remote: *o0
@@ -100,485 +100,485 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: '{T}'
   isExternal: false
   name: T
-  fullname: T
+  fullName: T
 - uid: System.Func{{T},System.Collections.Generic.IEnumerable{{T}}}
   parent: System
   definition: System.Func`2
   name: Func<T, IEnumerable<T>>
   name.vb: Func(Of T, IEnumerable(Of T))
-  fullname: System.Func<T, System.Collections.Generic.IEnumerable<T>>
-  fullname.vb: System.Func(Of T, System.Collections.Generic.IEnumerable(Of T))
+  fullName: System.Func<T, System.Collections.Generic.IEnumerable<T>>
+  fullName.vb: System.Func(Of T, System.Collections.Generic.IEnumerable(Of T))
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Func{{T},{T},System.Threading.Tasks.Task{System.Boolean}}
   parent: System
   definition: System.Func`3
   name: Func<T, T, Task<Boolean>>
   name.vb: Func(Of T, T, Task(Of Boolean))
-  fullname: System.Func<T, T, System.Threading.Tasks.Task<System.Boolean>>
-  fullname.vb: System.Func(Of T, T, System.Threading.Tasks.Task(Of System.Boolean))
+  fullName: System.Func<T, T, System.Threading.Tasks.Task<System.Boolean>>
+  fullName.vb: System.Func(Of T, T, System.Threading.Tasks.Task(Of System.Boolean))
   spec.csharp:
   - uid: System.Func`3
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.Boolean
     name: Boolean
-    fullname: System.Boolean
+    fullName: System.Boolean
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`3
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.Boolean
     name: Boolean
-    fullname: System.Boolean
+    fullName: System.Boolean
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Threading.Tasks.Task
   parent: System.Threading.Tasks
   isExternal: true
   name: Task
-  fullname: System.Threading.Tasks.Task
+  fullName: System.Threading.Tasks.Task
 - uid: System.Func`2
   parent: System
   isExternal: true
   name: Func<T, TResult>
   name.vb: Func(Of T, TResult)
-  fullname: System.Func<T, TResult>
-  fullname.vb: System.Func(Of T, TResult)
+  fullName: System.Func<T, TResult>
+  fullName.vb: System.Func(Of T, TResult)
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Func`3
   parent: System
   isExternal: true
   name: Func<T1, T2, TResult>
   name.vb: Func(Of T1, T2, TResult)
-  fullname: System.Func<T1, T2, TResult>
-  fullname.vb: System.Func(Of T1, T2, TResult)
+  fullName: System.Func<T1, T2, TResult>
+  fullName.vb: System.Func(Of T1, T2, TResult)
   spec.csharp:
   - uid: System.Func`3
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T1
-    fullname: T1
+    fullName: T1
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: T2
-    fullname: T2
+    fullName: T2
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`3
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T1
-    fullname: T1
+    fullName: T1
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: T2
-    fullname: T2
+    fullName: T2
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Threading.Tasks
   isExternal: false
   name: System.Threading.Tasks
-  fullname: System.Threading.Tasks
+  fullName: System.Threading.Tasks
 - uid: System.Func{{T},{T},System.Boolean}
   parent: System
   definition: System.Func`3
   name: Func<T, T, Boolean>
   name.vb: Func(Of T, T, Boolean)
-  fullname: System.Func<T, T, System.Boolean>
-  fullname.vb: System.Func(Of T, T, System.Boolean)
+  fullName: System.Func<T, T, System.Boolean>
+  fullName.vb: System.Func(Of T, T, System.Boolean)
   spec.csharp:
   - uid: System.Func`3
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Boolean
     name: Boolean
-    fullname: System.Boolean
+    fullName: System.Boolean
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`3
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Boolean
     name: Boolean
-    fullname: System.Boolean
+    fullName: System.Boolean
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )

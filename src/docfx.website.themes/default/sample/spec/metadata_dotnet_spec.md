@@ -84,7 +84,7 @@ So for any namespace, *ID* is always same with its *UID*.
 > uid: System.IO
 > id: System.IO
 > name: System.IO
-> fullname: System.IO
+> fullName: System.IO
 > ```
 
 The children of namespace are all the visible types in the namespace.
@@ -118,23 +118,23 @@ The children of types are members.
 > - uid: System.String
 >   id: String
 >   name.csharp: String
->   fullname.csharp: System.String
+>   fullName.csharp: System.String
 > - uid: System.Boolean
 >   id: Boolean
 >   name.csharp: Boolean
->   fullname.csharp: System.String
+>   fullName.csharp: System.String
 > - uid: System.IComparable
 >   id: IComparable
 >   name.csharp: IComparable
->   fullname.csharp: System.IComparable
+>   fullName.csharp: System.IComparable
 > - uid: System.ConsoleColor
 >   id: ConsoleColor
 >   name.csharp: ConsoleColor
->   fullname.csharp: System.ConsoleColor
+>   fullName.csharp: System.ConsoleColor
 > - uid: System.Action
 >   id: Action
 >   name.csharp: Action
->   fullname.csharp: System.Action
+>   fullName.csharp: System.Action
 > ```
 
 #### 4.1 ID for Nested Types
@@ -160,7 +160,7 @@ The parent type of a nested type is its containing namespace, rather than its co
 > uid: System.Environment.SpecialFolder
 > id: Environment.SpecialFolder
 > name.csharp: Environment.SpecialFolder
-> fullname.csharp: System.Environment.SpecialFolder
+> fullName.csharp: System.Environment.SpecialFolder
 > ```
 
 #### 4.2 Inheritance
@@ -226,11 +226,11 @@ The syntax part for constructors contains special languages declaration, and des
 > - uid: System.String.#ctor
 >   id: #ctor
 >   name.csharp: String()
->   fullname.csharp: System.String.String()
+>   fullName.csharp: System.String.String()
 > - uid: System.String.#ctor(System.Char[])
 >   id: #ctor(System.Char[])
 >   name.csharp: String(Char[])
->   fullname.csharp: System.String.String(System.Char[])
+>   fullName.csharp: System.String.String(System.Char[])
 > ```
 
 #### 5.2 Methods
@@ -262,11 +262,11 @@ The syntax part for method contains special languages declaration, and descripti
 > - uid: System.String.ToString
 >   id: ToString
 >   name.csharp: ToString()
->   fullname.csharp: System.String.ToString()
+>   fullName.csharp: System.String.ToString()
 > - uid: System.String.ToString(System.IFormatProvider)
 >   id: ToString(System.IFormatProvider)
 >   name.csharp: ToString(IFormatProvider)
->   fullname.csharp: System.String.ToString(System.IFormatProvider)
+>   fullName.csharp: System.String.ToString(System.IFormatProvider)
 > ```
 
 #### 5.2.1 Explicit Interface Implementation
@@ -292,7 +292,7 @@ The *ID* of an explicit interface implementation (EII) member **MUST** be prefix
 > - uid: "System.String.System#Collections#IEnumerable#GetEnumerator"
 >   id: "System#Collections#IEnumerable#GetEnumerator"
 >   name.csharp: IEnumerable.GetEnumerator()
->   fullname.csharp: System.String.System.Collections.IEnumerable.GetEnumerator()
+>   fullName.csharp: System.String.System.Collections.IEnumerable.GetEnumerator()
 > ```
 
 #### 5.4 Operator Overloads
@@ -326,11 +326,11 @@ The syntax part for methods contains special languages declaration, descriptions
 > - uid: System.Decimal.op_Implicit(System.Char to System.Decimal)
 >   id: op_Implicit(System.Char to System.Decimal)
 >   name.csharp: Implicit(Char to Decimal)
->   fullname.csharp: System.Decimal.Implicit(System.Char to System.Decimal)
+>   fullName.csharp: System.Decimal.Implicit(System.Char to System.Decimal)
 > - uid: System.String.op_Equality(System.String,System.String)
 >   id: op_Equality(System.String,System.String)
 >   name.csharp: Equality(String,String)
->   fullname.csharp: System.String.Equality(System.String,System.String)
+>   fullName.csharp: System.String.Equality(System.String,System.String)
 > ```
 
 Please check [overloadable operators][1] for all overloadable operators.
@@ -365,15 +365,15 @@ For event, it contains special languages declaration, descriptions of event hand
 > - uid: System.String.Empty
 >   id: Empty
 >   name.csharp: Empty
->   fullname.csharp: System.String.Empty
+>   fullName.csharp: System.String.Empty
 > - uid: System.String.Length
 >   id: Length
 >   name.csharp: Length
->   fullname.csharp: System.String.Length
+>   fullName.csharp: System.String.Length
 > - uid: System.Console.CancelKeyPress
 >   id: CancelKeyPress
 >   name.csharp: CancelKeyPress
->   fullname.csharp: System.Console.CancelKeyPress
+>   fullName.csharp: System.Console.CancelKeyPress
 > ```
 
 #### 5.6 Indexer
@@ -396,7 +396,7 @@ Indexer operator's name is metadata name, by default, it is `Item`, with bracket
 > - uid: "System.Collections.IList.Item[System.Int32]"
 >   id: "Item[System.Int32]"
 >   name.csharp: Item[Int32]
->   fullname.csharp: System.Collections.IList.Item[System.Int32]
+>   fullName.csharp: System.Collections.IList.Item[System.Int32]
 > ```
 
 6. Generics
@@ -424,18 +424,18 @@ The *ID* of a generic method uses postfix ``` ``n ```, `n` is the count of in me
 > - uid: System.Tuple.Create``1(``0)
 >   id: Create``1(``0)
 >   name.csharp:  Create<T1>(T1)
->   fullname.csharp: System.Tuple.Create<T1>(T1)
+>   fullName.csharp: System.Tuple.Create<T1>(T1)
 > - uid: System.Tuple.Create``2(``0,``1)
 >   id: Create``2(``0,``1)
 >   name.csharp:  Create<T1,T2>(T1,T2)
->   fullname.csharp: System.Tuple.Create<T1,T2>(T1,T2)
+>   fullName.csharp: System.Tuple.Create<T1,T2>(T1,T2)
 > ```
 
 7. Reference
 ------------
 
 The reference contains following member:
-  name, fullname, summary, isExternal, href, and more.
+  name, fullName, summary, isExternal, href, and more.
 
 The *UID* in reference can be a *Spec Id*, then it contains one more member: spec.
 The *spec* in reference is very like a list of lightweight references, it describes how to compose the gerenic type in some special language.

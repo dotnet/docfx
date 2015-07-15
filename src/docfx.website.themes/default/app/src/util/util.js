@@ -32,13 +32,14 @@
       }
     };
 
-    // StartLine starts @1 to be consistent with IDE
+    // startline starts @1 to be consistent with IDE
+    // endline < 1 stands for infinite
     this.substringLine = function (input, startline, endline) {
-      if (!input || endline < 1 || startline > endline) return '';
+      if (!input) return '';
       var lines = input.split('\n');
       var maxLine = lines.length;
       startline = startline <= 1 ? 1 : startline;
-      endline = endline >= maxLine ? maxLine : endline;
+      endline = endline >= maxLine || endline < 1 ? maxLine : endline;
       var snippet = '';
       for (var i = startline - 1; i < endline; i++) {
         snippet += lines[i] + '\n';

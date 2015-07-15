@@ -15,14 +15,14 @@ items:
   - Microsoft.DocAsCode.Utility.StringExtension.CoalesceNullOrEmpty(System.String,System.String)
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: StringExtension
-  fullname: Microsoft.DocAsCode.Utility.StringExtension
+  fullName: Microsoft.DocAsCode.Utility.StringExtension
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.Utility/Extensions.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.Utility/Extensions.cs
     startLine: 19
   assemblies:
@@ -46,7 +46,7 @@ items:
   parent: Microsoft.DocAsCode.Utility.StringExtension
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: ForwardSlashCombine(String, String)
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.ForwardSlashCombine(System.String, System.String)
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.ForwardSlashCombine(System.String, System.String)
   type: Method
   source:
     remote: *o0
@@ -71,7 +71,7 @@ items:
   parent: Microsoft.DocAsCode.Utility.StringExtension
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: BackSlashToForwardSlash(String)
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.BackSlashToForwardSlash(System.String)
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.BackSlashToForwardSlash(System.String)
   type: Method
   source:
     remote: *o0
@@ -95,8 +95,8 @@ items:
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: ToArray(String, StringSplitOptions, Char[])
   name.vb: ToArray(String, StringSplitOptions, Char())
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.ToArray(System.String, System.StringSplitOptions, System.Char[])
-  fullname.vb: Microsoft.DocAsCode.Utility.StringExtension.ToArray(System.String, System.StringSplitOptions, System.Char())
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.ToArray(System.String, System.StringSplitOptions, System.Char[])
+  fullName.vb: Microsoft.DocAsCode.Utility.StringExtension.ToArray(System.String, System.StringSplitOptions, System.Char())
   type: Method
   source:
     remote: *o0
@@ -124,8 +124,8 @@ items:
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: ToDelimitedString(IEnumerable<String>, String)
   name.vb: ToDelimitedString(IEnumerable(Of String), String)
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.ToDelimitedString(System.Collections.Generic.IEnumerable<System.String>, System.String)
-  fullname.vb: Microsoft.DocAsCode.Utility.StringExtension.ToDelimitedString(System.Collections.Generic.IEnumerable(Of System.String), System.String)
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.ToDelimitedString(System.Collections.Generic.IEnumerable<System.String>, System.String)
+  fullName.vb: Microsoft.DocAsCode.Utility.StringExtension.ToDelimitedString(System.Collections.Generic.IEnumerable(Of System.String), System.String)
   type: Method
   source:
     remote: *o0
@@ -151,8 +151,8 @@ items:
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: GetNormalizedFullPathKey(IEnumerable<String>)
   name.vb: GetNormalizedFullPathKey(IEnumerable(Of String))
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathKey(System.Collections.Generic.IEnumerable<System.String>)
-  fullname.vb: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathKey(System.Collections.Generic.IEnumerable(Of System.String))
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathKey(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathKey(System.Collections.Generic.IEnumerable(Of System.String))
   type: Method
   source:
     remote: *o0
@@ -176,8 +176,8 @@ items:
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: GetNormalizedFullPathList(IEnumerable<String>)
   name.vb: GetNormalizedFullPathList(IEnumerable(Of String))
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathList(System.Collections.Generic.IEnumerable<System.String>)
-  fullname.vb: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathList(System.Collections.Generic.IEnumerable(Of System.String))
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathList(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathList(System.Collections.Generic.IEnumerable(Of System.String))
   type: Method
   source:
     remote: *o0
@@ -201,8 +201,8 @@ items:
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: GetNormalizedPathList(IEnumerable<String>)
   name.vb: GetNormalizedPathList(IEnumerable(Of String))
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedPathList(System.Collections.Generic.IEnumerable<System.String>)
-  fullname.vb: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedPathList(System.Collections.Generic.IEnumerable(Of System.String))
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedPathList(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedPathList(System.Collections.Generic.IEnumerable(Of System.String))
   type: Method
   source:
     remote: *o0
@@ -225,7 +225,7 @@ items:
   parent: Microsoft.DocAsCode.Utility.StringExtension
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: ToNormalizedFullPath(String)
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.ToNormalizedFullPath(System.String)
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.ToNormalizedFullPath(System.String)
   type: Method
   source:
     remote: *o0
@@ -255,7 +255,7 @@ items:
   parent: Microsoft.DocAsCode.Utility.StringExtension
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: ToNormalizedPath(String)
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.ToNormalizedPath(System.String)
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.ToNormalizedPath(System.String)
   type: Method
   source:
     remote: *o0
@@ -278,7 +278,7 @@ items:
   parent: Microsoft.DocAsCode.Utility.StringExtension
   href: Microsoft.DocAsCode.Utility.StringExtension.yml
   name: CoalesceNullOrEmpty(String, String)
-  fullname: Microsoft.DocAsCode.Utility.StringExtension.CoalesceNullOrEmpty(System.String, System.String)
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.CoalesceNullOrEmpty(System.String, System.String)
   type: Method
   source:
     remote: *o0
@@ -302,338 +302,339 @@ references:
 - uid: Microsoft.DocAsCode.Utility
   isExternal: false
   name: Microsoft.DocAsCode.Utility
-  fullname: Microsoft.DocAsCode.Utility
+  fullName: Microsoft.DocAsCode.Utility
+  type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.String
   parent: System
   isExternal: true
   name: String
-  fullname: System.String
+  fullName: System.String
 - uid: System.StringSplitOptions
   parent: System
   isExternal: true
   name: StringSplitOptions
-  fullname: System.StringSplitOptions
+  fullName: System.StringSplitOptions
 - uid: System.Char[]
   isExternal: true
   name: Char[]
   name.vb: Char()
-  fullname: System.Char[]
-  fullname.vb: System.Char()
+  fullName: System.Char[]
+  fullName.vb: System.Char()
   spec.csharp:
   - uid: System.Char
     name: Char
-    fullname: System.Char
+    fullName: System.Char
     isExternal: true
   - name: '[]'
-    fullname: '[]'
+    fullName: '[]'
   spec.vb:
   - uid: System.Char
     name: Char
-    fullname: System.Char
+    fullName: System.Char
     isExternal: true
   - name: ()
-    fullname: ()
+    fullName: ()
 - uid: System.String[]
   isExternal: true
   name: String[]
   name.vb: String()
-  fullname: System.String[]
-  fullname.vb: System.String()
+  fullName: System.String[]
+  fullName.vb: System.String()
   spec.csharp:
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '[]'
-    fullname: '[]'
+    fullName: '[]'
   spec.vb:
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ()
-    fullname: ()
+    fullName: ()
 - uid: System.Collections.Generic.IEnumerable{System.String}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.IEnumerable`1
   name: IEnumerable<String>
   name.vb: IEnumerable(Of String)
-  fullname: System.Collections.Generic.IEnumerable<System.String>
-  fullname.vb: System.Collections.Generic.IEnumerable(Of System.String)
+  fullName: System.Collections.Generic.IEnumerable<System.String>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of System.String)
   spec.csharp:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IEnumerable`1
   parent: System.Collections.Generic
   isExternal: true
   name: IEnumerable<T>
   name.vb: IEnumerable(Of T)
-  fullname: System.Collections.Generic.IEnumerable<T>
-  fullname.vb: System.Collections.Generic.IEnumerable(Of T)
+  fullName: System.Collections.Generic.IEnumerable<T>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IEnumerable`1
     name: IEnumerable
-    fullname: System.Collections.Generic.IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic

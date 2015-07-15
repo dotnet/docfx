@@ -9,14 +9,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.CodeSnippet
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.yml
   name: MapFileType
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
   type: Enum
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs
     startLine: 34
   assemblies:
@@ -30,7 +30,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.yml
   name: Markdown
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.Markdown
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.Markdown
   type: Field
   source:
     remote: *o0
@@ -46,7 +46,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.yml
   name: Yaml
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.Yaml
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.Yaml
   type: Field
   source:
     remote: *o0
@@ -62,7 +62,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.yml
   name: Link
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.Link
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.Link
   type: Field
   source:
     remote: *o0
@@ -78,7 +78,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType
   href: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.yml
   name: CodeSnippet
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.CodeSnippet
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.MapFileType.CodeSnippet
   type: Field
   source:
     remote: *o0
@@ -93,5 +93,5 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels
   type: Namespace

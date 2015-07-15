@@ -7,14 +7,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataAsync
   href: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.yml
   name: ExtractMetadataWorker
-  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
+  fullName: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ExtractMetadata/ExtractMetadataWorker.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/ExtractMetadata/ExtractMetadataWorker.cs
     startLine: 19
   assemblies:
@@ -38,7 +38,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
   href: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.yml
   name: ExtractMetadataWorker(ExtractMetadataInputModel, Boolean)
-  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataWorker(Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel, System.Boolean)
+  fullName: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataWorker(Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel, System.Boolean)
   type: Constructor
   source:
     remote: *o0
@@ -60,7 +60,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
   href: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.yml
   name: ExtractMetadataAsync()
-  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataAsync()
+  fullName: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.ExtractMetadataAsync()
   type: Method
   source:
     remote: *o0
@@ -79,302 +79,302 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel.yml
   name: ExtractMetadataInputModel
-  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
+  fullName: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
   type: Class
 - uid: System.Boolean
   parent: System
   isExternal: true
   name: Boolean
-  fullname: System.Boolean
+  fullName: System.Boolean
 - uid: System.Threading.Tasks.Task{Microsoft.DocAsCode.EntityModel.ParseResult}
   parent: System.Threading.Tasks
   definition: System.Threading.Tasks.Task`1
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: Task<ParseResult>
   name.vb: Task(Of ParseResult)
-  fullname: System.Threading.Tasks.Task<Microsoft.DocAsCode.EntityModel.ParseResult>
-  fullname.vb: System.Threading.Tasks.Task(Of Microsoft.DocAsCode.EntityModel.ParseResult)
+  fullName: System.Threading.Tasks.Task<Microsoft.DocAsCode.EntityModel.ParseResult>
+  fullName.vb: System.Threading.Tasks.Task(Of Microsoft.DocAsCode.EntityModel.ParseResult)
   spec.csharp:
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: Microsoft.DocAsCode.EntityModel.ParseResult
     name: ParseResult
-    fullname: Microsoft.DocAsCode.EntityModel.ParseResult
+    fullName: Microsoft.DocAsCode.EntityModel.ParseResult
     href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: Microsoft.DocAsCode.EntityModel.ParseResult
     name: ParseResult
-    fullname: Microsoft.DocAsCode.EntityModel.ParseResult
+    fullName: Microsoft.DocAsCode.EntityModel.ParseResult
     href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Threading.Tasks.Task`1
   parent: System.Threading.Tasks
   isExternal: true
   name: Task<TResult>
   name.vb: Task(Of TResult)
-  fullname: System.Threading.Tasks.Task<TResult>
-  fullname.vb: System.Threading.Tasks.Task(Of TResult)
+  fullName: System.Threading.Tasks.Task<TResult>
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
   spec.csharp:
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Threading.Tasks.Task`1
     name: Task
-    fullname: System.Threading.Tasks.Task
+    fullName: System.Threading.Tasks.Task
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Threading.Tasks
   isExternal: false
   name: System.Threading.Tasks
-  fullname: System.Threading.Tasks
+  fullName: System.Threading.Tasks

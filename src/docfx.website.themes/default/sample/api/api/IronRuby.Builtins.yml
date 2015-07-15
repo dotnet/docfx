@@ -5,14 +5,14 @@ items:
   - IronRuby.Builtins.Glob
   href: IronRuby.Builtins.yml
   name: IronRuby.Builtins
-  fullname: IronRuby.Builtins
+  fullName: IronRuby.Builtins
   type: Namespace
   source:
     remote:
       path: src/Microsoft.DocAsCode.Utility/Glob/Glob.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.Utility/Glob/Glob.cs
     startLine: 20
   assemblies:
@@ -22,5 +22,5 @@ references:
   isExternal: false
   href: IronRuby.Builtins.Glob.yml
   name: Glob
-  fullname: IronRuby.Builtins.Glob
+  fullName: IronRuby.Builtins.Glob
   type: Class

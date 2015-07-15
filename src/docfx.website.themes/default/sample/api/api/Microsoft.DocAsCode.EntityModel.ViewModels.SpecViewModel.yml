@@ -5,20 +5,20 @@ items:
   children:
   - Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Uid
   - Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Name
-  - Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Fullname
+  - Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.FullName
   - Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.IsExternal
   - Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Href
   - Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.FromModel(Microsoft.DocAsCode.EntityModel.LinkItem)
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
   name: SpecViewModel
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SpecViewModel.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/ViewModels/SpecViewModel.cs
     startLine: 4
   assemblies:
@@ -42,7 +42,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
   name: Uid
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Uid
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Uid
   type: Property
   source:
     remote: *o0
@@ -63,7 +63,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
   name: Name
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Name
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Name
   type: Property
   source:
     remote: *o0
@@ -79,12 +79,12 @@ items:
     return:
       type: System.String
       description: 
-- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Fullname
-  id: Fullname
+- uid: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.FullName
+  id: FullName
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
-  name: Fullname
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Fullname
+  name: FullName
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.FullName
   type: Property
   source:
     remote: *o0
@@ -94,8 +94,8 @@ items:
   - Microsoft.DocAsCode.EntityModel
   namespace: Microsoft.DocAsCode.EntityModel.ViewModels
   syntax:
-    content: public string Fullname { get; set; }
-    content.vb: Public Property Fullname As String
+    content: public string FullName { get; set; }
+    content.vb: Public Property FullName As String
     parameters: []
     return:
       type: System.String
@@ -105,7 +105,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
   name: IsExternal
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.IsExternal
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.IsExternal
   type: Property
   source:
     remote: *o0
@@ -126,7 +126,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
   name: Href
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Href
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.Href
   type: Property
   source:
     remote: *o0
@@ -147,7 +147,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
   name: FromModel(LinkItem)
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.FromModel(Microsoft.DocAsCode.EntityModel.LinkItem)
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.FromModel(Microsoft.DocAsCode.EntityModel.LinkItem)
   type: Method
   source:
     remote: *o0
@@ -169,252 +169,252 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel.ViewModels
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.String
   parent: System
   isExternal: true
   name: String
-  fullname: System.String
+  fullName: System.String
 - uid: System.Boolean
   parent: System
   isExternal: true
   name: Boolean
-  fullname: System.Boolean
+  fullName: System.Boolean
 - uid: Microsoft.DocAsCode.EntityModel.LinkItem
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.LinkItem.yml
   name: LinkItem
-  fullname: Microsoft.DocAsCode.EntityModel.LinkItem
+  fullName: Microsoft.DocAsCode.EntityModel.LinkItem
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   parent: Microsoft.DocAsCode.EntityModel.ViewModels
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel.yml
   name: SpecViewModel
-  fullname: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
+  fullName: Microsoft.DocAsCode.EntityModel.ViewModels.SpecViewModel
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace

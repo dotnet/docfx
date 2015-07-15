@@ -75,14 +75,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.MetadataModelUtility
   href: Microsoft.DocAsCode.EntityModel.yml
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
   source:
     remote:
       path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataModel.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Model/MetadataModel.cs
   assemblies:
   - Microsoft.DocAsCode.EntityModel
@@ -91,122 +91,122 @@ references:
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.Constants.yml
   name: Constants
-  fullname: Microsoft.DocAsCode.EntityModel.Constants
+  fullName: Microsoft.DocAsCode.EntityModel.Constants
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.JsonUtility
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.JsonUtility.yml
   name: JsonUtility
-  fullname: Microsoft.DocAsCode.EntityModel.JsonUtility
+  fullName: Microsoft.DocAsCode.EntityModel.JsonUtility
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.YamlUtility
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.YamlUtility.yml
   name: YamlUtility
-  fullname: Microsoft.DocAsCode.EntityModel.YamlUtility
+  fullName: Microsoft.DocAsCode.EntityModel.YamlUtility
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader.yml
   name: ExternalReferencePackageReader
-  fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
+  fullName: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageReader
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageWriter
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageWriter.yml
   name: ExternalReferencePackageWriter
-  fullname: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageWriter
+  fullName: Microsoft.DocAsCode.EntityModel.ExternalReferencePackageWriter
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ExternalReferenceConverter
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ExternalReferenceConverter.yml
   name: ExternalReferenceConverter
-  fullname: Microsoft.DocAsCode.EntityModel.ExternalReferenceConverter
+  fullName: Microsoft.DocAsCode.EntityModel.ExternalReferenceConverter
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker.yml
   name: ExtractMetadataWorker
-  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
+  fullName: Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.BuildInfo
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.BuildInfo.yml
   name: BuildInfo
-  fullname: Microsoft.DocAsCode.EntityModel.BuildInfo
+  fullName: Microsoft.DocAsCode.EntityModel.BuildInfo
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.CacheBase
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CacheBase.yml
   name: CacheBase
-  fullname: Microsoft.DocAsCode.EntityModel.CacheBase
+  fullName: Microsoft.DocAsCode.EntityModel.CacheBase
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ProjectLevelCache
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ProjectLevelCache.yml
   name: ProjectLevelCache
-  fullname: Microsoft.DocAsCode.EntityModel.ProjectLevelCache
+  fullName: Microsoft.DocAsCode.EntityModel.ProjectLevelCache
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.yml
   name: ApplicationLevelCache
-  fullname: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
+  fullName: Microsoft.DocAsCode.EntityModel.ApplicationLevelCache
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel.yml
   name: ExtractMetadataInputModel
-  fullname: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
+  fullName: Microsoft.DocAsCode.EntityModel.ExtractMetadataInputModel
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.CrefInfo
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CrefInfo.yml
   name: CrefInfo
-  fullname: Microsoft.DocAsCode.EntityModel.CrefInfo
+  fullName: Microsoft.DocAsCode.EntityModel.CrefInfo
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ApiReferenceViewModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ApiReferenceViewModel.yml
   name: ApiReferenceViewModel
-  fullname: Microsoft.DocAsCode.EntityModel.ApiReferenceViewModel
+  fullName: Microsoft.DocAsCode.EntityModel.ApiReferenceViewModel
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ApiReferenceModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ApiReferenceModel.yml
   name: ApiReferenceModel
-  fullname: Microsoft.DocAsCode.EntityModel.ApiReferenceModel
+  fullName: Microsoft.DocAsCode.EntityModel.ApiReferenceModel
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel.yml
   name: ApiIndexItemModel
-  fullname: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
+  fullName: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ReferenceItem
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ReferenceItem.yml
   name: ReferenceItem
-  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItem
+  fullName: Microsoft.DocAsCode.EntityModel.ReferenceItem
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.LinkItem
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.LinkItem.yml
   name: LinkItem
-  fullname: Microsoft.DocAsCode.EntityModel.LinkItem
+  fullName: Microsoft.DocAsCode.EntityModel.LinkItem
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.YamlHeaderParser
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.YamlHeaderParser.yml
   name: YamlHeaderParser
-  fullname: Microsoft.DocAsCode.EntityModel.YamlHeaderParser
+  fullName: Microsoft.DocAsCode.EntityModel.YamlHeaderParser
   type: Class
   summary: >-
     Match yaml header from markdown files.
@@ -226,7 +226,7 @@ references:
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CodeSnippetParser.yml
   name: CodeSnippetParser
-  fullname: Microsoft.DocAsCode.EntityModel.CodeSnippetParser
+  fullName: Microsoft.DocAsCode.EntityModel.CodeSnippetParser
   type: Class
   summary: >-
     Match code snippet from markdown files.
@@ -241,102 +241,102 @@ references:
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MatchDetailCollection.yml
   name: MatchDetailCollection
-  fullname: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
+  fullName: Microsoft.DocAsCode.EntityModel.MatchDetailCollection
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SectionCollection
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SectionCollection.yml
   name: SectionCollection
-  fullname: Microsoft.DocAsCode.EntityModel.SectionCollection
+  fullName: Microsoft.DocAsCode.EntityModel.SectionCollection
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: MatchDetail
-  fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+  fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MatchSingleDetail.yml
   name: MatchSingleDetail
-  fullname: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
+  fullName: Microsoft.DocAsCode.EntityModel.MatchSingleDetail
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.yml
   name: ITripleSlashCommentParserContext
-  fullname: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
+  fullName: Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext
   type: Interface
 - uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext.yml
   name: TripleSlashCommentParserContext
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.yml
   name: TripleSlashCommentParser
-  fullname: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
+  fullName: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.LinkParser
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.LinkParser.yml
   name: LinkParser
-  fullname: Microsoft.DocAsCode.EntityModel.LinkParser
+  fullName: Microsoft.DocAsCode.EntityModel.LinkParser
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ResolveReference
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResolveReference.yml
   name: ResolveReference
-  fullname: Microsoft.DocAsCode.EntityModel.ResolveReference
+  fullName: Microsoft.DocAsCode.EntityModel.ResolveReference
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SetParent
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SetParent.yml
   name: SetParent
-  fullname: Microsoft.DocAsCode.EntityModel.SetParent
+  fullName: Microsoft.DocAsCode.EntityModel.SetParent
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.TemplateManager
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.TemplateManager.yml
   name: TemplateManager
-  fullname: Microsoft.DocAsCode.EntityModel.TemplateManager
+  fullName: Microsoft.DocAsCode.EntityModel.TemplateManager
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: SyntaxLanguage
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   type: Enum
 - uid: Microsoft.DocAsCode.EntityModel.MemberType
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MemberType.yml
   name: MemberType
-  fullname: Microsoft.DocAsCode.EntityModel.MemberType
+  fullName: Microsoft.DocAsCode.EntityModel.MemberType
   type: Enum
 - uid: Microsoft.DocAsCode.EntityModel.ResultLevel
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResultLevel.yml
   name: ResultLevel
-  fullname: Microsoft.DocAsCode.EntityModel.ResultLevel
+  fullName: Microsoft.DocAsCode.EntityModel.ResultLevel
   type: Enum
 - uid: Microsoft.DocAsCode.EntityModel.ParseResult
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ParseResult.yml
   name: ParseResult
-  fullname: Microsoft.DocAsCode.EntityModel.ParseResult
+  fullName: Microsoft.DocAsCode.EntityModel.ParseResult
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.LayoutItem
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.LayoutItem.yml
   name: LayoutItem
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutItem
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutItem
   type: Enum
   summary: Defines the layout for an API page
 - uid: Microsoft.DocAsCode.EntityModel.MetadataItem
@@ -344,227 +344,227 @@ references:
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MetadataItem.yml
   name: MetadataItem
-  fullname: Microsoft.DocAsCode.EntityModel.MetadataItem
+  fullName: Microsoft.DocAsCode.EntityModel.MetadataItem
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.NormalizeSyntax
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.NormalizeSyntax.yml
   name: NormalizeSyntax
-  fullname: Microsoft.DocAsCode.EntityModel.NormalizeSyntax
+  fullName: Microsoft.DocAsCode.EntityModel.NormalizeSyntax
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ResolveGitPath
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResolveGitPath.yml
   name: ResolveGitPath
-  fullname: Microsoft.DocAsCode.EntityModel.ResolveGitPath
+  fullName: Microsoft.DocAsCode.EntityModel.ResolveGitPath
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ResolveLink
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResolveLink.yml
   name: ResolveLink
-  fullname: Microsoft.DocAsCode.EntityModel.ResolveLink
+  fullName: Microsoft.DocAsCode.EntityModel.ResolveLink
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ResolvePath
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResolvePath.yml
   name: ResolvePath
-  fullname: Microsoft.DocAsCode.EntityModel.ResolvePath
+  fullName: Microsoft.DocAsCode.EntityModel.ResolvePath
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ResolveRelativePath
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResolveRelativePath.yml
   name: ResolveRelativePath
-  fullname: Microsoft.DocAsCode.EntityModel.ResolveRelativePath
+  fullName: Microsoft.DocAsCode.EntityModel.ResolveRelativePath
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.LayoutCheckAndCleanup
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.LayoutCheckAndCleanup.yml
   name: LayoutCheckAndCleanup
-  fullname: Microsoft.DocAsCode.EntityModel.LayoutCheckAndCleanup
+  fullName: Microsoft.DocAsCode.EntityModel.LayoutCheckAndCleanup
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.BuildIndex
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.BuildIndex.yml
   name: BuildIndex
-  fullname: Microsoft.DocAsCode.EntityModel.BuildIndex
+  fullName: Microsoft.DocAsCode.EntityModel.BuildIndex
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.BuildMembers
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.BuildMembers.yml
   name: BuildMembers
-  fullname: Microsoft.DocAsCode.EntityModel.BuildMembers
+  fullName: Microsoft.DocAsCode.EntityModel.BuildMembers
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ResolverContext
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ResolverContext.yml
   name: ResolverContext
-  fullname: Microsoft.DocAsCode.EntityModel.ResolverContext
+  fullName: Microsoft.DocAsCode.EntityModel.ResolverContext
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.IResolverPipeline
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.IResolverPipeline.yml
   name: IResolverPipeline
-  fullname: Microsoft.DocAsCode.EntityModel.IResolverPipeline
+  fullName: Microsoft.DocAsCode.EntityModel.IResolverPipeline
   type: Interface
 - uid: Microsoft.DocAsCode.EntityModel.BuildToc
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.BuildToc.yml
   name: BuildToc
-  fullname: Microsoft.DocAsCode.EntityModel.BuildToc
+  fullName: Microsoft.DocAsCode.EntityModel.BuildToc
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.yml
   name: CompositeYamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor.yml
   name: ReferenceItemVisitor
-  fullname: Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor
+  fullName: Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.CSReferenceItemVisitor
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CSReferenceItemVisitor.yml
   name: CSReferenceItemVisitor
-  fullname: Microsoft.DocAsCode.EntityModel.CSReferenceItemVisitor
+  fullName: Microsoft.DocAsCode.EntityModel.CSReferenceItemVisitor
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.yml
   name: VBReferenceItemVisitor
-  fullname: Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor
+  fullName: Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator.yml
   name: SimpleYamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.SimpleYamlModelGenerator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter.yml
   name: SymbolVisitorAdapter
-  fullname: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
+  fullName: Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.NameVisitorCreator.yml
   name: NameVisitorCreator
-  fullname: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
+  fullName: Microsoft.DocAsCode.EntityModel.NameVisitorCreator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.NameVisitor
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.NameVisitor.yml
   name: NameVisitor
-  fullname: Microsoft.DocAsCode.EntityModel.NameVisitor
+  fullName: Microsoft.DocAsCode.EntityModel.NameVisitor
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.NameOptions
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: NameOptions
-  fullname: Microsoft.DocAsCode.EntityModel.NameOptions
+  fullName: Microsoft.DocAsCode.EntityModel.NameOptions
   type: Enum
 - uid: Microsoft.DocAsCode.EntityModel.CSharpNameVisitorCreator
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CSharpNameVisitorCreator.yml
   name: CSharpNameVisitorCreator
-  fullname: Microsoft.DocAsCode.EntityModel.CSharpNameVisitorCreator
+  fullName: Microsoft.DocAsCode.EntityModel.CSharpNameVisitorCreator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator.yml
   name: VBNameVisitorCreator
-  fullname: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator
+  fullName: Microsoft.DocAsCode.EntityModel.VBNameVisitorCreator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.VisitorHelper
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.VisitorHelper.yml
   name: VisitorHelper
-  fullname: Microsoft.DocAsCode.EntityModel.VisitorHelper
+  fullName: Microsoft.DocAsCode.EntityModel.VisitorHelper
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.CSYamlModelGenerator
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.CSYamlModelGenerator.yml
   name: CSYamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.CSYamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.CSYamlModelGenerator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.yml
   name: VBYamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.YamlModelGenerator.yml
   name: YamlModelGenerator
-  fullname: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
+  fullName: Microsoft.DocAsCode.EntityModel.YamlModelGenerator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.YamlMetadataResolver
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.YamlMetadataResolver.yml
   name: YamlMetadataResolver
-  fullname: Microsoft.DocAsCode.EntityModel.YamlMetadataResolver
+  fullName: Microsoft.DocAsCode.EntityModel.YamlMetadataResolver
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.TreeIterator
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.TreeIterator.yml
   name: TreeIterator
-  fullname: Microsoft.DocAsCode.EntityModel.TreeIterator
+  fullName: Microsoft.DocAsCode.EntityModel.TreeIterator
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.yml
   name: YamlViewModelExtension
-  fullname: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
+  fullName: Microsoft.DocAsCode.EntityModel.YamlViewModelExtension
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.ApiParameter
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.ApiParameter.yml
   name: ApiParameter
-  fullname: Microsoft.DocAsCode.EntityModel.ApiParameter
+  fullName: Microsoft.DocAsCode.EntityModel.ApiParameter
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SourceDetail
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SourceDetail.yml
   name: SourceDetail
-  fullname: Microsoft.DocAsCode.EntityModel.SourceDetail
+  fullName: Microsoft.DocAsCode.EntityModel.SourceDetail
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.SyntaxDetail
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.SyntaxDetail.yml
   name: SyntaxDetail
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxDetail
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxDetail
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MetadataModel
   parent: Microsoft.DocAsCode.EntityModel
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MetadataModel.yml
   name: MetadataModel
-  fullname: Microsoft.DocAsCode.EntityModel.MetadataModel
+  fullName: Microsoft.DocAsCode.EntityModel.MetadataModel
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel.MetadataModelUtility
   isExternal: false
   href: Microsoft.DocAsCode.EntityModel.MetadataModelUtility.yml
   name: MetadataModelUtility
-  fullname: Microsoft.DocAsCode.EntityModel.MetadataModelUtility
+  fullName: Microsoft.DocAsCode.EntityModel.MetadataModelUtility
   type: Class
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace

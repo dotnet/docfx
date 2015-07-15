@@ -11,14 +11,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.SyntaxLanguage.VB
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: SyntaxLanguage
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   type: Enum
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Model/SyntaxLanguage.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Model/SyntaxLanguage.cs
     startLine: 2
   assemblies:
@@ -32,7 +32,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: Default
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.Default
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.Default
   type: Field
   source:
     remote: *o0
@@ -48,7 +48,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: CSharp
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.CSharp
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.CSharp
   type: Field
   source:
     remote: *o0
@@ -64,7 +64,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: CPlusPlus
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.CPlusPlus
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.CPlusPlus
   type: Field
   source:
     remote: *o0
@@ -80,7 +80,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: FSharp
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.FSharp
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.FSharp
   type: Field
   source:
     remote: *o0
@@ -96,7 +96,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: Javascript
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.Javascript
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.Javascript
   type: Field
   source:
     remote: *o0
@@ -112,7 +112,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.SyntaxLanguage
   href: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.yml
   name: VB
-  fullname: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.VB
+  fullName: Microsoft.DocAsCode.EntityModel.SyntaxLanguage.VB
   type: Field
   source:
     remote: *o0
@@ -127,5 +127,5 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace

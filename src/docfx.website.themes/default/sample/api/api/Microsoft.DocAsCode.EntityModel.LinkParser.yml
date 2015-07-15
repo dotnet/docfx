@@ -11,14 +11,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.LinkParser.Select(System.String)
   href: Microsoft.DocAsCode.EntityModel.LinkParser.yml
   name: LinkParser
-  fullname: Microsoft.DocAsCode.EntityModel.LinkParser
+  fullName: Microsoft.DocAsCode.EntityModel.LinkParser
   type: Class
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Parsers/LinkParser.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Parsers/LinkParser.cs
     startLine: 10
   assemblies:
@@ -42,7 +42,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LinkParser
   href: Microsoft.DocAsCode.EntityModel.LinkParser.yml
   name: CommentIdRegex
-  fullname: Microsoft.DocAsCode.EntityModel.LinkParser.CommentIdRegex
+  fullName: Microsoft.DocAsCode.EntityModel.LinkParser.CommentIdRegex
   type: Field
   source:
     remote: *o0
@@ -59,7 +59,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LinkParser
   href: Microsoft.DocAsCode.EntityModel.LinkParser.yml
   name: LinkFromSelfWrittenRegex
-  fullname: Microsoft.DocAsCode.EntityModel.LinkParser.LinkFromSelfWrittenRegex
+  fullName: Microsoft.DocAsCode.EntityModel.LinkParser.LinkFromSelfWrittenRegex
   type: Field
   source:
     remote: *o0
@@ -77,8 +77,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.LinkParser.yml
   name: ResolveToMarkdownLink(Func<String, ApiIndexItemModel>, String, Func<ApiIndexItemModel, String>)
   name.vb: ResolveToMarkdownLink(Func(Of String, ApiIndexItemModel), String, Func(Of ApiIndexItemModel, String))
-  fullname: Microsoft.DocAsCode.EntityModel.LinkParser.ResolveToMarkdownLink(System.Func<System.String, Microsoft.DocAsCode.EntityModel.ApiIndexItemModel>, System.String, System.Func<Microsoft.DocAsCode.EntityModel.ApiIndexItemModel, System.String>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.LinkParser.ResolveToMarkdownLink(System.Func(Of System.String, Microsoft.DocAsCode.EntityModel.ApiIndexItemModel), System.String, System.Func(Of Microsoft.DocAsCode.EntityModel.ApiIndexItemModel, System.String))
+  fullName: Microsoft.DocAsCode.EntityModel.LinkParser.ResolveToMarkdownLink(System.Func<System.String, Microsoft.DocAsCode.EntityModel.ApiIndexItemModel>, System.String, System.Func<Microsoft.DocAsCode.EntityModel.ApiIndexItemModel, System.String>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.LinkParser.ResolveToMarkdownLink(System.Func(Of System.String, Microsoft.DocAsCode.EntityModel.ApiIndexItemModel), System.String, System.Func(Of Microsoft.DocAsCode.EntityModel.ApiIndexItemModel, System.String))
   type: Method
   source:
     remote: *o0
@@ -106,8 +106,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.LinkParser.yml
   name: ResolveText<T>(Func<String, T>, String, Func<T, String>, Func<String, String>)
   name.vb: ResolveText(Of T)(Func(Of String, T), String, Func(Of T, String), Func(Of String, String))
-  fullname: Microsoft.DocAsCode.EntityModel.LinkParser.ResolveText<T>(System.Func<System.String, T>, System.String, System.Func<T, System.String>, System.Func<System.String, System.String>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.LinkParser.ResolveText(Of T)(System.Func(Of System.String, T), System.String, System.Func(Of T, System.String), System.Func(Of System.String, System.String))
+  fullName: Microsoft.DocAsCode.EntityModel.LinkParser.ResolveText<T>(System.Func<System.String, T>, System.String, System.Func<T, System.String>, System.Func<System.String, System.String>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.LinkParser.ResolveText(Of T)(System.Func(Of System.String, T), System.String, System.Func(Of T, System.String), System.Func(Of System.String, System.String))
   type: Method
   source:
     remote: *o0
@@ -139,8 +139,8 @@ items:
   href: Microsoft.DocAsCode.EntityModel.LinkParser.yml
   name: Resolve(String, Func<String, String>)
   name.vb: Resolve(String, Func(Of String, String))
-  fullname: Microsoft.DocAsCode.EntityModel.LinkParser.Resolve(System.String, System.Func<System.String, System.String>)
-  fullname.vb: Microsoft.DocAsCode.EntityModel.LinkParser.Resolve(System.String, System.Func(Of System.String, System.String))
+  fullName: Microsoft.DocAsCode.EntityModel.LinkParser.Resolve(System.String, System.Func<System.String, System.String>)
+  fullName.vb: Microsoft.DocAsCode.EntityModel.LinkParser.Resolve(System.String, System.Func(Of System.String, System.String))
   type: Method
   source:
     remote: *o0
@@ -165,7 +165,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.LinkParser
   href: Microsoft.DocAsCode.EntityModel.LinkParser.yml
   name: Select(String)
-  fullname: Microsoft.DocAsCode.EntityModel.LinkParser.Select(System.String)
+  fullName: Microsoft.DocAsCode.EntityModel.LinkParser.Select(System.String)
   type: Method
   source:
     remote: *o0
@@ -187,551 +187,551 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
 - uid: System.Object
   parent: System
   isExternal: true
   name: Object
-  fullname: System.Object
+  fullName: System.Object
 - uid: System.Object.ToString
   parent: System.Object
   isExternal: true
   name: ToString()
-  fullname: System.Object.ToString()
+  fullName: System.Object.ToString()
   spec.csharp:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ToString
     name: ToString
-    fullname: System.Object.ToString
+    fullName: System.Object.ToString
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object)
-  fullname: System.Object.Equals(System.Object)
+  fullName: System.Object.Equals(System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.Equals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: Equals(Object, Object)
-  fullname: System.Object.Equals(System.Object, System.Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.Equals(System.Object,System.Object)
     name: Equals
-    fullname: System.Object.Equals
+    fullName: System.Object.Equals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.ReferenceEquals(System.Object,System.Object)
   parent: System.Object
   isExternal: true
   name: ReferenceEquals(Object, Object)
-  fullname: System.Object.ReferenceEquals(System.Object, System.Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
   spec.csharp:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.ReferenceEquals(System.Object,System.Object)
     name: ReferenceEquals
-    fullname: System.Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.Object
     name: Object
-    fullname: System.Object
+    fullName: System.Object
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetHashCode
   parent: System.Object
   isExternal: true
   name: GetHashCode()
-  fullname: System.Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
   spec.csharp:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetHashCode
     name: GetHashCode
-    fullname: System.Object.GetHashCode
+    fullName: System.Object.GetHashCode
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.GetType
   parent: System.Object
   isExternal: true
   name: GetType()
-  fullname: System.Object.GetType()
+  fullName: System.Object.GetType()
   spec.csharp:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.GetType
     name: GetType
-    fullname: System.Object.GetType
+    fullName: System.Object.GetType
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Object.MemberwiseClone
   parent: System.Object
   isExternal: true
   name: MemberwiseClone()
-  fullname: System.Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
   spec.csharp:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
   spec.vb:
   - uid: System.Object.MemberwiseClone
     name: MemberwiseClone
-    fullname: System.Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
     isExternal: true
   - name: (
-    fullname: (
+    fullName: (
   - name: )
-    fullname: )
+    fullName: )
 - uid: System
   isExternal: false
   name: System
-  fullname: System
+  fullName: System
 - uid: System.Func{System.String,Microsoft.DocAsCode.EntityModel.ApiIndexItemModel}
   parent: System
   definition: System.Func`2
   href: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel.yml
   name: Func<String, ApiIndexItemModel>
   name.vb: Func(Of String, ApiIndexItemModel)
-  fullname: System.Func<System.String, Microsoft.DocAsCode.EntityModel.ApiIndexItemModel>
-  fullname.vb: System.Func(Of System.String, Microsoft.DocAsCode.EntityModel.ApiIndexItemModel)
+  fullName: System.Func<System.String, Microsoft.DocAsCode.EntityModel.ApiIndexItemModel>
+  fullName.vb: System.Func(Of System.String, Microsoft.DocAsCode.EntityModel.ApiIndexItemModel)
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
     name: ApiIndexItemModel
-    fullname: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
+    fullName: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
     href: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
     name: ApiIndexItemModel
-    fullname: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
+    fullName: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
     href: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.String
   parent: System
   isExternal: true
   name: String
-  fullname: System.String
+  fullName: System.String
 - uid: System.Func{Microsoft.DocAsCode.EntityModel.ApiIndexItemModel,System.String}
   parent: System
   definition: System.Func`2
   href: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel.yml
   name: Func<ApiIndexItemModel, String>
   name.vb: Func(Of ApiIndexItemModel, String)
-  fullname: System.Func<Microsoft.DocAsCode.EntityModel.ApiIndexItemModel, System.String>
-  fullname.vb: System.Func(Of Microsoft.DocAsCode.EntityModel.ApiIndexItemModel, System.String)
+  fullName: System.Func<Microsoft.DocAsCode.EntityModel.ApiIndexItemModel, System.String>
+  fullName.vb: System.Func(Of Microsoft.DocAsCode.EntityModel.ApiIndexItemModel, System.String)
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
     name: ApiIndexItemModel
-    fullname: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
+    fullName: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
     href: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
     name: ApiIndexItemModel
-    fullname: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
+    fullName: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel
     href: Microsoft.DocAsCode.EntityModel.ApiIndexItemModel.yml
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Func`2
   parent: System
   isExternal: true
   name: Func<T, TResult>
   name.vb: Func(Of T, TResult)
-  fullname: System.Func<T, TResult>
-  fullname.vb: System.Func(Of T, TResult)
+  fullName: System.Func<T, TResult>
+  fullName.vb: System.Func(Of T, TResult)
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: TResult
-    fullname: TResult
+    fullName: TResult
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Func{System.String,{T}}
   parent: System
   definition: System.Func`2
   name: Func<String, T>
   name.vb: Func(Of String, T)
-  fullname: System.Func<System.String, T>
-  fullname.vb: System.Func(Of System.String, T)
+  fullName: System.Func<System.String, T>
+  fullName.vb: System.Func(Of System.String, T)
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Func{{T},System.String}
   parent: System
   definition: System.Func`2
   name: Func<T, String>
   name.vb: Func(Of T, String)
-  fullname: System.Func<T, System.String>
-  fullname.vb: System.Func(Of T, System.String)
+  fullName: System.Func<T, System.String>
+  fullName.vb: System.Func(Of T, System.String)
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Func{System.String,System.String}
   parent: System
   definition: System.Func`2
   name: Func<String, String>
   name.vb: Func(Of String, String)
-  fullname: System.Func<System.String, System.String>
-  fullname.vb: System.Func(Of System.String, System.String)
+  fullName: System.Func<System.String, System.String>
+  fullName.vb: System.Func(Of System.String, System.String)
   spec.csharp:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Func`2
     name: Func
-    fullname: System.Func
+    fullName: System.Func
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: ', '
-    fullname: ', '
+    fullName: ', '
   - uid: System.String
     name: String
-    fullname: System.String
+    fullName: System.String
     isExternal: true
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IList{Microsoft.DocAsCode.EntityModel.MatchDetail}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.IList`1
   href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   name: IList<MatchDetail>
   name.vb: IList(Of MatchDetail)
-  fullname: System.Collections.Generic.IList<Microsoft.DocAsCode.EntityModel.MatchDetail>
-  fullname.vb: System.Collections.Generic.IList(Of Microsoft.DocAsCode.EntityModel.MatchDetail)
+  fullName: System.Collections.Generic.IList<Microsoft.DocAsCode.EntityModel.MatchDetail>
+  fullName.vb: System.Collections.Generic.IList(Of Microsoft.DocAsCode.EntityModel.MatchDetail)
   spec.csharp:
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - uid: Microsoft.DocAsCode.EntityModel.MatchDetail
     name: MatchDetail
-    fullname: Microsoft.DocAsCode.EntityModel.MatchDetail
+    fullName: Microsoft.DocAsCode.EntityModel.MatchDetail
     href: Microsoft.DocAsCode.EntityModel.MatchDetail.yml
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic.IList`1
   parent: System.Collections.Generic
   isExternal: true
   name: IList<T>
   name.vb: IList(Of T)
-  fullname: System.Collections.Generic.IList<T>
-  fullname.vb: System.Collections.Generic.IList(Of T)
+  fullName: System.Collections.Generic.IList<T>
+  fullName.vb: System.Collections.Generic.IList(Of T)
   spec.csharp:
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: <
-    fullname: <
+    fullName: <
   - name: T
-    fullname: T
+    fullName: T
   - name: '>'
-    fullname: '>'
+    fullName: '>'
   spec.vb:
   - uid: System.Collections.Generic.IList`1
     name: IList
-    fullname: System.Collections.Generic.IList
+    fullName: System.Collections.Generic.IList
     isExternal: true
   - name: '(Of '
-    fullname: '(Of '
+    fullName: '(Of '
   - name: T
-    fullname: T
+    fullName: T
   - name: )
-    fullname: )
+    fullName: )
 - uid: System.Collections.Generic
   isExternal: false
   name: System.Collections.Generic
-  fullname: System.Collections.Generic
+  fullName: System.Collections.Generic

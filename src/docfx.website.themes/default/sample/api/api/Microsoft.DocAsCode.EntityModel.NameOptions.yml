@@ -11,14 +11,14 @@ items:
   - Microsoft.DocAsCode.EntityModel.NameOptions.All
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: NameOptions
-  fullname: Microsoft.DocAsCode.EntityModel.NameOptions
+  fullName: Microsoft.DocAsCode.EntityModel.NameOptions
   type: Enum
   source:
     remote: &o0
       path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
-      branch: DefaultTheme
+      branch: dev
       repo: https://github.com/aspnet/docfx.git
-      key: 121f5b59
+      key: 9c90d3ed
     path: src/Microsoft.DocAsCode.EntityModel/Visitor/NameVisitor.cs
     startLine: 70
   assemblies:
@@ -32,7 +32,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.NameOptions
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: None
-  fullname: Microsoft.DocAsCode.EntityModel.NameOptions.None
+  fullName: Microsoft.DocAsCode.EntityModel.NameOptions.None
   type: Field
   source:
     remote: *o0
@@ -48,7 +48,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.NameOptions
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: UseAlias
-  fullname: Microsoft.DocAsCode.EntityModel.NameOptions.UseAlias
+  fullName: Microsoft.DocAsCode.EntityModel.NameOptions.UseAlias
   type: Field
   source:
     remote: *o0
@@ -64,7 +64,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.NameOptions
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: Qualified
-  fullname: Microsoft.DocAsCode.EntityModel.NameOptions.Qualified
+  fullName: Microsoft.DocAsCode.EntityModel.NameOptions.Qualified
   type: Field
   source:
     remote: *o0
@@ -80,7 +80,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.NameOptions
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: WithGenericParameter
-  fullname: Microsoft.DocAsCode.EntityModel.NameOptions.WithGenericParameter
+  fullName: Microsoft.DocAsCode.EntityModel.NameOptions.WithGenericParameter
   type: Field
   source:
     remote: *o0
@@ -96,7 +96,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.NameOptions
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: WithParameter
-  fullname: Microsoft.DocAsCode.EntityModel.NameOptions.WithParameter
+  fullName: Microsoft.DocAsCode.EntityModel.NameOptions.WithParameter
   type: Field
   source:
     remote: *o0
@@ -112,7 +112,7 @@ items:
   parent: Microsoft.DocAsCode.EntityModel.NameOptions
   href: Microsoft.DocAsCode.EntityModel.NameOptions.yml
   name: All
-  fullname: Microsoft.DocAsCode.EntityModel.NameOptions.All
+  fullName: Microsoft.DocAsCode.EntityModel.NameOptions.All
   type: Field
   source:
     remote: *o0
@@ -127,5 +127,5 @@ references:
 - uid: Microsoft.DocAsCode.EntityModel
   isExternal: false
   name: Microsoft.DocAsCode.EntityModel
-  fullname: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
   type: Namespace
