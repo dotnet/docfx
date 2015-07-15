@@ -104,12 +104,12 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\docfx.msbuild.0.1.0-alpha-150713226\build\docfx.msbuild.targets" Condition="Exists('..\packages\docfx.msbuild.0.1.0-alpha-150713226\build\docfx.msbuild.targets')" />
+  <Import Project="..\packages\docfx.msbuild.0.1.0-alpha-1507141639\build\docfx.msbuild.targets" Condition="Exists('..\packages\docfx.msbuild.0.1.0-alpha-1507141639\build\docfx.msbuild.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\docfx.msbuild.0.1.0-alpha-150713226\build\docfx.msbuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\docfx.msbuild.0.1.0-alpha-150713226\build\docfx.msbuild.targets'))" />
+    <Error Condition="!Exists('..\packages\docfx.msbuild.0.1.0-alpha-1507141639\build\docfx.msbuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\docfx.msbuild.0.1.0-alpha-1507141639\build\docfx.msbuild.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
