@@ -110,6 +110,7 @@
             return from list in GetAllCommentId().ToObservable()
                    from entry in list
                    from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry, _msdnVersion))
+                   where vm.Count > 0
                    select new EntryNameAndViewModel(entry.EntryName, vm);
         }
 
@@ -283,6 +284,7 @@
         {
             return from file in GlobPathHelper.GetFiles(_baseDirectory, _globPattern)
                    select (from commentId in GetAllCommentId(file)
+                           where commentId.StartsWith("T:") || commentId.StartsWith("E:") || commentId.StartsWith("F:") || commentId.StartsWith("M:") || commentId.StartsWith("P:")
                            let uid = commentId.Substring(2)
                            group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("T:") ? uid : uid.Remove(uid.Split('(')[0].LastIndexOf('.')) into g
                            select new ClassEntry(g.Key, g.ToList())).ToList();
@@ -304,13 +306,20 @@
         private async Task<List<ReferenceViewModel>> CheckAsync(List<ReferenceViewModel> vm)
         {
             return (from pair in
-                       (from r in
-                            (await Task.WhenAll(
-                                 from item in vm
-                                 select _client.GetAsync(item.Href))).ProtectResource()
-                        select r.StatusCode == HttpStatusCode.OK).Zip(vm, (r, item) => new { IsOK = r, Item = item })
+                       (await Task.WhenAll(
+                           from item in vm
+                           select IsUrlOkAsync(item.Href)))
+                       .Zip(vm, (isOK, item) => new { IsOK = isOK, Item = item })
                     where pair.IsOK
                     select pair.Item).ToList();
+        }
+
+        private async Task<bool> IsUrlOkAsync(string url)
+        {
+            using (var response = await _client.GetAsync(url))
+            {
+                return response.StatusCode == HttpStatusCode.OK;
+            }
         }
     }
 }
