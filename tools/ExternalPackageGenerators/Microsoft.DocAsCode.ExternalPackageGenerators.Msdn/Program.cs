@@ -12,6 +12,7 @@
     using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Xml;
 
@@ -19,6 +20,7 @@
     {
         private const string MsdnUrlTemplate = "https://msdn.microsoft.com/en-us/library/{0}(v={1}).aspx";
         private const string MtpsApiUrlTemplate = "http://services.mtps.microsoft.com/ServiceAPI/content/{0}/en-us;{1}/common/mtps.links";
+        private const int HttpMaxConcurrency = 32;
 
         private readonly Regex NormalUid = new Regex(@"^[a-zA-Z0-9\.]+$", RegexOptions.Compiled);
         private readonly HttpClient _client = new HttpClient();
@@ -40,7 +42,7 @@
             }
             try
             {
-                ServicePointManager.DefaultConnectionLimit = 50;
+                ServicePointManager.DefaultConnectionLimit = HttpMaxConcurrency;
                 var p = new Program(args[0], args[1], args[2], args[3]);
                 p.PackReference();
                 return 0;
@@ -87,7 +89,7 @@
         private void PackReference()
         {
             var items = GetItems();
-            using (var writer = ExternalReferencePackageWriter.Create(_packageFile, new Uri("https://msdn.microsoft.com/")))
+            using (var writer = ExternalReferencePackageWriter.Append(_packageFile, new Uri("https://msdn.microsoft.com/")))
             using (var enumrator = items.GetEnumerator())
             {
                 while (enumrator.MoveNext())
@@ -99,24 +101,26 @@
 
         private IObservable<EntryNameAndViewModel> GetItems()
         {
+            var semaphore = new SemaphoreSlim(HttpMaxConcurrency);
             return from item in GetRawItems()
-                   from checkedVM in Observable.FromAsync(() => CheckAsync(item.ViewModel))
+                   from checkedVM in Observable.FromAsync(() => CheckAsync(item.ViewModel, semaphore))
                    where checkedVM.Count > 0
                    select new EntryNameAndViewModel(item.EntryName, checkedVM);
         }
 
         private IObservable<EntryNameAndViewModel> GetRawItems()
         {
+            var semaphore = new SemaphoreSlim(HttpMaxConcurrency);
             return from list in GetAllCommentId().ToObservable()
                    from entry in list
-                   from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry, _msdnVersion))
+                   from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry, _msdnVersion, semaphore))
                    where vm.Count > 0
                    select new EntryNameAndViewModel(entry.EntryName, vm);
         }
 
-        private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry, string msdnVersion)
+        private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry, string msdnVersion, SemaphoreSlim semaphore)
         {
-            var urls = await Task.WhenAll(from item in entry.Items select GetMsdnUrlAsync(item));
+            var urls = await Task.WhenAll(from item in entry.Items select GetMsdnUrlAsync(item, semaphore));
             return (from pair in entry.Items.Zip(urls, (item, url) => new { item, url })
                     where pair.url != null
                     select new ReferenceViewModel
@@ -126,7 +130,7 @@
                     }).ToList();
         }
 
-        private async Task<string> GetMsdnUrlAsync(CommentIdAndUid pair)
+        private async Task<string> GetMsdnUrlAsync(CommentIdAndUid pair, SemaphoreSlim semaphore)
         {
             if (NormalUid.IsMatch(pair.Uid))
             {
@@ -134,12 +138,20 @@
             }
             else
             {
-                var shortId = await _shortIdCache.GetAsync(pair.CommentId);
-                if (string.IsNullOrEmpty(shortId))
+                await semaphore.WaitAsync();
+                try
                 {
-                    return null;
+                    var shortId = await _shortIdCache.GetAsync(pair.CommentId);
+                    if (string.IsNullOrEmpty(shortId))
+                    {
+                        return null;
+                    }
+                    return string.Format(MsdnUrlTemplate, shortId, _msdnVersion);
                 }
-                return string.Format(MsdnUrlTemplate, shortId, _msdnVersion);
+                finally
+                {
+                    semaphore.Release();
+                }
             }
         }
 
@@ -292,6 +304,7 @@
 
         private IEnumerable<string> GetAllCommentId(string file)
         {
+            Console.WriteLine("Loading comment id from {0} ...", file);
             return from reader in
                        new Func<XmlReader>(() => XmlReader.Create(file))
                        .EmptyIfThrow()
@@ -303,22 +316,28 @@
                    select commentId;
         }
 
-        private async Task<List<ReferenceViewModel>> CheckAsync(List<ReferenceViewModel> vm)
+        private async Task<List<ReferenceViewModel>> CheckAsync(List<ReferenceViewModel> vm, SemaphoreSlim semaphore)
         {
             return (from pair in
-                       (await Task.WhenAll(
-                           from item in vm
-                           select IsUrlOkAsync(item.Href)))
+                       (await Task.WhenAll(from item in vm select IsUrlOkAsync(item.Href, semaphore)))
                        .Zip(vm, (isOK, item) => new { IsOK = isOK, Item = item })
                     where pair.IsOK
                     select pair.Item).ToList();
         }
 
-        private async Task<bool> IsUrlOkAsync(string url)
+        private async Task<bool> IsUrlOkAsync(string url, SemaphoreSlim semaphore)
         {
-            using (var response = await _client.GetAsync(url))
+            await semaphore.WaitAsync();
+            try
             {
-                return response.StatusCode == HttpStatusCode.OK;
+                using (var response = await _client.GetAsync(url))
+                {
+                    return response.StatusCode == HttpStatusCode.OK;
+                }
+            }
+            finally
+            {
+                semaphore.Release();
             }
         }
     }
