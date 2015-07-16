@@ -379,9 +379,9 @@
             Assert.Equal("C1", reference.Name);
             Assert.Null(reference.NameForCSharp);
             Assert.Null(reference.NameForVB);
-            Assert.Equal("N1.C1", reference.Fullname);
-            Assert.Null(reference.FullnameForCSharp);
-            Assert.Null(reference.FullnameForVB);
+            Assert.Equal("N1.C1", reference.FullName);
+            Assert.Null(reference.FullNameForCSharp);
+            Assert.Null(reference.FullNameForVB);
             Assert.False(reference.IsExternal);
             Assert.Equal("href!", reference.Href);
         }
@@ -435,9 +435,9 @@
             Assert.Equal("Object", reference.Name);
             Assert.Null(reference.NameForCSharp);
             Assert.Null(reference.NameForVB);
-            Assert.Equal("System.Object", reference.Fullname);
-            Assert.Null(reference.FullnameForCSharp);
-            Assert.Null(reference.FullnameForVB);
+            Assert.Equal("System.Object", reference.FullName);
+            Assert.Null(reference.FullNameForCSharp);
+            Assert.Null(reference.FullNameForVB);
             Assert.True(reference.IsExternal);
             Assert.Equal("System", reference.Parent);
             Assert.Null(reference.Href);
@@ -447,9 +447,9 @@
             Assert.Equal("GetHashCode()", reference.Name);
             Assert.Null(reference.NameForCSharp);
             Assert.Null(reference.NameForVB);
-            Assert.Equal("System.Object.GetHashCode()", reference.Fullname);
-            Assert.Null(reference.FullnameForCSharp);
-            Assert.Null(reference.FullnameForVB);
+            Assert.Equal("System.Object.GetHashCode()", reference.FullName);
+            Assert.Null(reference.FullNameForCSharp);
+            Assert.Null(reference.FullNameForVB);
             Assert.True(reference.IsExternal);
             Assert.Equal("System.Object", reference.Parent);
             Assert.Null(reference.Href);
@@ -459,14 +459,14 @@
             Assert.Equal("List<Object>", reference.Name);
             Assert.Null(reference.NameForCSharp);
             Assert.Equal("List(Of Object)", reference.NameForVB);
-            Assert.Equal("System.Collections.Generic.List<System.Object>", reference.Fullname);
-            Assert.Null(reference.FullnameForCSharp);
-            Assert.Equal("System.Collections.Generic.List(Of System.Object)", reference.FullnameForVB);
+            Assert.Equal("System.Collections.Generic.List<System.Object>", reference.FullName);
+            Assert.Null(reference.FullNameForCSharp);
+            Assert.Equal("System.Collections.Generic.List(Of System.Object)", reference.FullNameForVB);
             {
                 var list = reference.SpecForCSharp;
                 Assert.NotNull(list);
                 Assert.Equal(new[] { "List", "<", "Object", ">" }, (from x in list select x.Name).ToList());
-                Assert.Equal(new[] { "System.Collections.Generic.List", "<", "System.Object", ">" }, (from x in list select x.Fullname).ToList());
+                Assert.Equal(new[] { "System.Collections.Generic.List", "<", "System.Object", ">" }, (from x in list select x.FullName).ToList());
                 Assert.Equal("System.Collections.Generic.List`1", list[0].Uid);
                 Assert.Null(list[1].Uid);
                 Assert.Equal("System.Object", list[2].Uid);
@@ -484,7 +484,7 @@
                 var list = reference.SpecForVB;
                 Assert.NotNull(list);
                 Assert.Equal(new[] { "List", "(Of ", "Object", ")" }, (from x in list select x.Name).ToList());
-                Assert.Equal(new[] { "System.Collections.Generic.List", "(Of ", "System.Object", ")" }, (from x in list select x.Fullname).ToList());
+                Assert.Equal(new[] { "System.Collections.Generic.List", "(Of ", "System.Object", ")" }, (from x in list select x.FullName).ToList());
                 Assert.Equal("System.Collections.Generic.List`1", list[0].Uid);
                 Assert.Null(list[1].Uid);
                 Assert.Equal("System.Object", list[2].Uid);

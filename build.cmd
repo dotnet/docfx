@@ -17,7 +17,10 @@ IF NOT DEFINED VisualStudioVersion (
 
 :EnvSet
 SET BuildProj=%~dp0All.sln
-SET Configuration=Debug
+SET Configuration=%1
+IF '%Configuration%'=='' (
+    SET Configuration=Release
+)
 SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
 :: node.js nuget wrapper requires nuget.exe path in %PATH%
@@ -56,16 +59,21 @@ CALL :Build %*
 SET BuildPrefix=
 SET BuildPostfix=
 CALL :Build %*
+IF NOT '%ErrorLevel%'=='0' (
+    GOTO :AfterBuild
+)
 
 :GenerateNuget
-:: Generate Version
-
 PUSHD tools
 :: Install npm packages
 CALL npm install
 
 :: GRUNT to generate nuget packages
 CALL node node_modules/grunt-cli/bin/grunt --Configuration=%Configuration%
+
+IF NOT '%ErrorLevel%'=='0' (
+    SET NugetErrorLevel=1
+)
 POPD
 
 :AfterBuild
@@ -73,13 +81,19 @@ POPD
 :: Pull the build summary from the log file
 ECHO.
 ECHO === BUILD RESULT === 
-findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%" & cd
+findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%" & cd >nul
 
 :: Pull xunit test result from the log file
 ECHO.
 ECHO === TEST EXECUTION SUMMARY === 
-findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%" & cd
+findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%" & cd >nul
 ECHO Exit Code: %BuildErrorLevel%
+
+:: Pull nuget package result
+IF '%NugetErrorLevel%'=='1' (
+    ECHO === GENERATING NUGET PACKAGES ===
+    ECHO ERROR: GENERATING NUGET PACKAGES FAILED, TRY RUNNING `grunt` UNDER `tools` FOLDER MANUALLY!
+)
 GOTO :Exit
 
 :Build
