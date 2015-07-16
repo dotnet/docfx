@@ -9,6 +9,6 @@
         }
     },
     "dependencies": {
-        "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.0.0-rc3-20150618-03"
+        "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.0.0"
     }
 }
