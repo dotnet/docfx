@@ -70,46 +70,72 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static void CopyResources(Assembly assembly, string rootNamespace, string targetFolder, string customTemplateRootFolder, bool overwrite, string themeName)
         {
+            var assemblyName = assembly.GetName().Name;
+            var prefix = string.Format("{0}.{1}.", assemblyName, rootNamespace);
+            var resourceNames = GetThemeNames(themeName);
             var embeddedThemes = assembly.GetManifestResourceNames();
-            IEnumerable<string> providedThemes = embeddedThemes;
-            if (!string.IsNullOrEmpty(customTemplateRootFolder) && Directory.Exists(customTemplateRootFolder))
-            {
-                providedThemes = providedThemes.Union(Directory.GetFiles(customTemplateRootFolder, "*.zip", SearchOption.AllDirectories));
-            }
+            IEnumerable<string> availableBuiltinThemes = embeddedThemes.Select(s => Path.GetFileNameWithoutExtension(s).Substring(prefix.Length));
+            IEnumerable<string> matchedBuiltinThemes = availableBuiltinThemes.Intersect(resourceNames, StringComparer.OrdinalIgnoreCase);
 
-            List<string> themeResources = new List<string>();
-
-            // NOTE: order matters
-            foreach(var resourceName in GetResourceNamesFromTheme(assembly, rootNamespace, themeName))
+            var embedded = embeddedThemes.Where(s=> matchedBuiltinThemes.Contains(Path.GetFileNameWithoutExtension(s).Substring(prefix.Length)));
+            var notFoundThemes = resourceNames.Except(matchedBuiltinThemes, StringComparer.OrdinalIgnoreCase);
+            if (notFoundThemes.Any())
             {
-                // Fetch embedded resource name as embedded resources are case sensitive.
-                var name = embeddedThemes.FirstOrDefault(s => s.Equals(resourceName, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrEmpty(name)) themeResources.Add(name);
-            }
-
-            if (themeResources.Count == 0)
-            {
-                ParseResult.WriteToConsole(ResultLevel.Error, "Unable to find {0} theme package.", themeName);
+                ParseResult.WriteToConsole(ResultLevel.Info, "Did not find any matching builtin themes for '{0}'.", notFoundThemes.ToDelimitedString());
             }
             else
             {
-                foreach(var resource in themeResources)
+                foreach (var resource in embedded)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Info, "{0} theme package found, start unzipping template into target folder {1}.", resource, targetFolder);
+                    ParseResult.WriteToConsole(ResultLevel.Info, "Builtin '{0}' theme package found, start unzipping template into target folder '{1}'.", resource, targetFolder);
                     using (var stream = assembly.GetManifestResourceStream(resource))
                     {
                         UnzipTemplate(stream, targetFolder, overwrite);
                     }
                 }
             }
-        }
 
-        private static IEnumerable<string> GetResourceNamesFromTheme(Assembly assembly, string rootNamespace, string themeName)
-        {
-            var assemblyName = assembly.GetName().Name;
-            return GetThemeNames(themeName).Select(s => string.Format("{0}.{1}.{2}.zip", assemblyName, rootNamespace, s));
-        }
+            IEnumerable<string> availableCustomThemes = null;
+            IEnumerable<string> matchedCustomThemes = null;
 
+            // Search custom template folder, templates inside custom template folder overrides the embeded resources
+            if (!string.IsNullOrEmpty(customTemplateRootFolder) && Directory.Exists(customTemplateRootFolder))
+            {
+                var customThemes = Directory.GetFiles(customTemplateRootFolder, "*.zip", SearchOption.AllDirectories);
+                availableCustomThemes = customThemes.Select(s => Path.GetFileNameWithoutExtension(s));
+                matchedCustomThemes = availableCustomThemes.Intersect(resourceNames, StringComparer.OrdinalIgnoreCase);
+
+                var customs = customThemes.Where(s => matchedCustomThemes.Contains(Path.GetFileNameWithoutExtension(s)));
+                notFoundThemes = notFoundThemes.Except(matchedCustomThemes, StringComparer.OrdinalIgnoreCase);
+                if (notFoundThemes.Any())
+                {
+                    ParseResult.WriteToConsole(ResultLevel.Info, "Did not find any matching custom themes for '{0}'.", notFoundThemes.ToDelimitedString());
+                }
+                else
+                {
+                    foreach (var resource in customs)
+                    {
+                        ParseResult.WriteToConsole(ResultLevel.Info, "'{0}' theme package found, start unzipping template into target folder '{1}'.", resource, targetFolder);
+                        using (var stream = File.OpenRead(resource))
+                        {
+                            UnzipTemplate(stream, targetFolder, overwrite);
+                        }
+                    }
+                }
+            }
+
+            if (notFoundThemes.Any())
+            {
+                var message = string.Format("Unable to find any matching themes for '{0}'. The available builtin themes are '{1}' while the matching ones are '{2}'. ", notFoundThemes.ToDelimitedString(), availableBuiltinThemes.ToDelimitedString(), matchedBuiltinThemes.ToDelimitedString());
+                if (!string.IsNullOrEmpty(customTemplateRootFolder))
+                {
+                    if (!Directory.Exists(customTemplateRootFolder)) message += string.Format("The custom template folder '{0}' does not exist", customTemplateRootFolder);
+                    else message += string.Format("The themes available in the custom template folder '{0}' are '{1}' while the matching ones are '{2}'", customTemplateRootFolder, availableCustomThemes.ToDelimitedString(), matchedCustomThemes.ToDelimitedString());
+                }
+                ParseResult.WriteToConsole(ResultLevel.Error, message);
+            }
+        }
+        
         /// <summary>
         /// Theme names are combined by `.`: [theme 1].[theme 2].[theme 3] combines theme 1, 2, 3 inorder and the latter one will override the former one if name collapses
         /// Order matters
