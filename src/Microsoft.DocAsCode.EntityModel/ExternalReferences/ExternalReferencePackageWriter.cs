@@ -42,11 +42,11 @@
         {
             if (projectPaths == null)
             {
-                throw new ArgumentNullException("projectPaths");
+                throw new ArgumentNullException(nameof(projectPaths));
             }
             if (projectPaths.Count == 0)
             {
-                throw new ArgumentException("Empty collection is not allowed.", "projectPaths");
+                throw new ArgumentException("Empty collection is not allowed.", nameof(projectPaths));
             }
             for (int i = 0; i < projectPaths.Count; i++)
             {
@@ -61,11 +61,11 @@
         {
             if (docPaths == null)
             {
-                throw new ArgumentNullException("apiPaths");
+                throw new ArgumentNullException(nameof(docPaths));
             }
             if (docPaths.Count == 0)
             {
-                throw new ArgumentException("Empty collection is not allowed.", "apiPaths");
+                throw new ArgumentException("Empty collection is not allowed.", nameof(docPaths));
             }
             var uri = string.IsNullOrEmpty(relativePath) ? _baseUri : new Uri(_baseUri, relativePath);
             foreach (var item in from doc in docPaths
@@ -85,6 +85,33 @@
                 {
                     YamlUtility.Serialize(sw, item.Refs);
                 }
+            }
+        }
+
+        public void AddOrUpdateEntry(string entryName, List<ReferenceViewModel> vm)
+        {
+            if (entryName == null)
+            {
+                throw new ArgumentNullException(nameof(entryName));
+            }
+            if (vm == null)
+            {
+                throw new ArgumentNullException(nameof(vm));
+            }
+            if (vm.Count == 0)
+            {
+                throw new ArgumentException("Empty collection is not allowed.", nameof(vm));
+            }
+            ZipArchiveEntry entry = null;
+            if (_zip.Mode == ZipArchiveMode.Update)
+            {
+                entry = _zip.GetEntry(entryName);
+            }
+            entry = entry ?? _zip.CreateEntry(entryName);
+            using (var stream = entry.Open())
+            using (var sw = new StreamWriter(stream))
+            {
+                YamlUtility.Serialize(sw, vm);
             }
         }
 

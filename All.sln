@@ -87,6 +87,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{04B2D6B6
 		src\nuspec\msdn.yml\tools\uninstall.ps1 = src\nuspec\msdn.yml\tools\uninstall.ps1
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalPackageGenerators", "ExternalPackageGenerators", "{416A17AC-FFD4-4722-A990-598EF44F8D90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.ExternalPackageGenerators.Msdn", "tools\ExternalPackageGenerators\Microsoft.DocAsCode.ExternalPackageGenerators.Msdn\Microsoft.DocAsCode.ExternalPackageGenerators.Msdn.csproj", "{1090FD24-DC6F-4DDA-913B-F69817B31A9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +137,10 @@ Global
 		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1090FD24-DC6F-4DDA-913B-F69817B31A9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1090FD24-DC6F-4DDA-913B-F69817B31A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1090FD24-DC6F-4DDA-913B-F69817B31A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1090FD24-DC6F-4DDA-913B-F69817B31A9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,5 +167,7 @@ Global
 		{BB721096-D78C-4CF4-9D60-E66A26A3CB49} = {7056DE24-9537-4504-95CF-7A63FBE74772}
 		{8BFFE355-4712-4187-8252-F69AA515525A} = {8CFE8DE6-598F-4951-899D-8D09325FB618}
 		{04B2D6B6-82DC-48CA-AC0E-9B4A32DD71C5} = {7056DE24-9537-4504-95CF-7A63FBE74772}
+		{416A17AC-FFD4-4722-A990-598EF44F8D90} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
+		{1090FD24-DC6F-4DDA-913B-F69817B31A9B} = {416A17AC-FFD4-4722-A990-598EF44F8D90}
 	EndGlobalSection
 EndGlobal
