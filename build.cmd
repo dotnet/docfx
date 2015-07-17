@@ -29,11 +29,18 @@ SET PATH=%PATH%;%LocalAppData%\NuGet
 :: Check if DNU exists globally
 :: DNU is OPTIONAL
 SET BuildDnxProjects=1
-WHERE dnu
+WHERE dnvm
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO WARNING: DNU is not installed globally, DNX related projects will not be built!
     SET BuildDnxProjects=0
     SET BuildProj=%~dp0NonDnx.sln
+) ELSE (
+  WHERE dnu
+  IF NOT '!ERRORLEVEL!'=='0' (
+    ECHO WARNING: DNU is correctly set, please manually select DNU by running `dnvm list` and `dnvm use`
+    SET BuildDnxProjects=0
+    SET BuildProj=%~dp0NonDnx.sln
+  )
 )
 
 :: Check if node exists globally
@@ -82,6 +89,9 @@ POPD
 ECHO.
 ECHO === BUILD RESULT === 
 findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%" & cd >nul
+IF '%BuildDnxProjects%'=='0' (
+   ECHO WARNING: DNX runtime is not successfully configured. Please follow http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm to install dnvm.
+)
 
 :: Pull xunit test result from the log file
 ECHO.
