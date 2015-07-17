@@ -183,6 +183,11 @@
 
         private string GetAlias(string commentId)
         {
+            if (commentId.StartsWith("M:") || commentId.StartsWith("P:"))
+            {
+                // method/property maybe have overloads.
+                return null;
+            }
             var uid = commentId.Substring(2);
             if (NormalUid.IsMatch(uid))
             {
@@ -210,12 +215,21 @@
                     {
                         return shortId;
                     }
+                    else
+                    {
+                        // maybe case not match.
+                        shortId = dict.FirstOrDefault(p => string.Equals(p.Key, commentId, StringComparison.OrdinalIgnoreCase)).Value;
+                        if (shortId != null)
+                        {
+                            return shortId;
+                        }
+                    }
                     currentCommentId = containingCommentId;
                 } while (commentId[0] == 'T'); // handle nested type
             }
             else
             {
-                using (var response = await _client.GetAsync(string.Format(MsdnUrlTemplate, alias, _msdnVersion)))
+                using (var response = await _client.GetWithRetryAsync(string.Format(MsdnUrlTemplate, alias, _msdnVersion), 1000))
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
@@ -243,7 +257,7 @@
             var shortId = await _shortIdCache.GetAsync(containingCommentId);
             if (!string.IsNullOrEmpty(shortId))
             {
-                using (var response = await _client.GetAsync(string.Format(MtpsApiUrlTemplate, shortId, _msdnVersion)))
+                using (var response = await _client.GetWithRetryAsync(string.Format(MtpsApiUrlTemplate, shortId, _msdnVersion), 1000))
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
@@ -330,7 +344,7 @@
             await semaphore.WaitAsync();
             try
             {
-                using (var response = await _client.GetAsync(url))
+                using (var response = await _client.GetWithRetryAsync(url, 1000))
                 {
                     return response.StatusCode == HttpStatusCode.OK;
                 }
