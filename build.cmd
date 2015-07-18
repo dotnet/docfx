@@ -107,7 +107,7 @@ IF '%NugetErrorLevel%'=='1' (
 GOTO :Exit
 
 :Build
-%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %* %BuildPostfix%
+%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix%
 SET BuildErrorLevel=%ERRORLEVEL%
 GOTO :Exit
 

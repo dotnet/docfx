@@ -141,7 +141,7 @@
                     {
                         if (location.IsIn(range))
                         {
-                            sections.Add(referenceKey.Key, referenceKey.Value);
+                            sections[referenceKey.Key] = referenceKey.Value;
                             continue;
                         }
                     }
