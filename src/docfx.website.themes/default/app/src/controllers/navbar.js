@@ -19,11 +19,14 @@
 
   angular.module('docascode.controller')
     .controller('NavbarController', [
-      '$rootScope', '$scope', '$location', 'NG_ITEMTYPES', 'contentService', 'urlService', 'docConstants',
+      '$rootScope', '$scope', '$location', 'NG_ITEMTYPES', 'contentService', 'urlService', 'docConstants', 'docsSearch',
       NavbarController
     ]);
 
-  function NavbarController($rootScope, $scope, $location, NG_ITEMTYPES, contentService, urlService, docConstants) {
+  function NavbarController($rootScope, $scope, $location, NG_ITEMTYPES, contentService, urlService, docConstants, docsSearch) {
+    $scope.search = search;
+    $scope.submit = submit;
+    $scope.hideResults = hideResults;
     $scope.navClass = navClass;
     $scope.getNavHref = getNavHref;
     $scope.getBreadCrumbHref = getBreadCrumbHref;
@@ -75,6 +78,68 @@
           // TODO： what to do with navbar error?
         });
       });
+
+    function clearResults() {
+      $scope.results = [];
+      $scope.colClassName = null;
+      $scope.hasResults = false;
+    }
+
+    function search(q) {
+      var MIN_SEARCH_LENGTH = 2;
+      if(q.length >= MIN_SEARCH_LENGTH) {
+        docsSearch(q).then(function(hits) {
+          var results = {};
+          angular.forEach(hits, function(hit) {
+            var area = hit.area;
+
+            var limit = 30;
+            results[area] = results[area] || [];
+            if(results[area].length < limit) {
+              results[area].push(hit);
+            }
+          });
+
+          var totalAreas = 0;
+          for(var i in results) {
+            ++totalAreas;
+          }
+          $scope.hasResults = totalAreas > 0;
+          $scope.results = results;
+        });
+      }
+      else {
+        clearResults();
+      }
+      if(!$scope.$$phase) $scope.$apply();
+    }
+
+    function submit() {
+      var result;
+      if ($scope.results.api) {
+        result = $scope.results.api[0];
+      } else {
+        for(var i in $scope.results) {
+          result = $scope.results[i][0];
+          if(result) {
+            break;
+          }
+        }
+      }
+      if(result) {
+        $location.path(result.path);
+        $scope.hideResults();
+      }
+    }
+
+    function hideResults() {
+      clearResults();
+      $scope.q = '';
+      if ($(".navbar-collapse").hasClass("in")) {
+        $(".navbar-collapse").collapse('hide');
+      }
+    }
+
     function breadCrumbWatcher(currentNavItem, currentGroup, currentPage) {
       // breadcrumb generation logic
       var breadcrumb = $scope.breadcrumb = [];
