@@ -11,7 +11,7 @@
         private readonly Dictionary<string, Task<T>> _shortIdTaskMap = new Dictionary<string, Task<T>>();
         private readonly MemoryCache _cache;
         private readonly Func<string, Task<T>> _loader;
-        private readonly CacheItemPolicy _policy = new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(1) };
+        private readonly CacheItemPolicy _policy = new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(5) };
 
         public Cache(string name, Func<string, Task<T>> loader)
         {

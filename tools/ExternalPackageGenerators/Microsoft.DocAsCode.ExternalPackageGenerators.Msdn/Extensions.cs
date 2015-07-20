@@ -49,12 +49,16 @@
 
         public static async Task<HttpResponseMessage> GetWithRetryAsync(this HttpClient client, string url, params int[] retryDelay)
         {
+            if (retryDelay.Any(delay => delay <= 0))
+            {
+                throw new ArgumentException("Delay should be greate than 0.", nameof(retryDelay));
+            }
             int retryCount = 0;
             while (true)
             {
                 try
                 {
-                    return await client.GetAsync(url);
+                    return await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
                 }
                 catch (TaskCanceledException)
                 {
