@@ -21,8 +21,10 @@
             {
                 var referenceId = matchDetail.Id;
                 var apiId = matchDetail.Id;
-                ApiIndexItemModel api;
-                if (apis.TryGetValue(apiId, out api))
+
+                // TODO: Support short name resolve 
+                ApiIndexItemModel api = GetApi(apis, apiId, null);
+                if (api != null)
                 {
                     var indexFolder = Path.GetDirectoryName(api.IndexFilePath);
                     var apiYamlFilePath = FileExtensions.GetFullPath(indexFolder, api.Href);
@@ -41,5 +43,26 @@
 
             return new ParseResult(ResultLevel.Success);
         }
+
+        private ApiIndexItemModel GetApi(ApiReferenceModel dict, string key, string currentNamespace)
+        {
+            ApiIndexItemModel api;
+            // 1. Try resolve with full name
+            if (dict.TryGetValue(key, out api))
+            {
+                return api;
+            }
+
+            if (string.IsNullOrEmpty(currentNamespace)) return null;
+
+            // 2. Append current namespace
+            key = currentNamespace + "." + key;
+            if (dict.TryGetValue(key, out api))
+            {
+                return api;
+            }
+            return null;
+        }
+
     }
 }

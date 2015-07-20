@@ -510,10 +510,18 @@
                 var typeParamterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
                 while (type != null)
                 {
+                    // TODO: special handles for errorType: change to System.Object
+                    if (type.Kind == SymbolKind.ErrorType)
+                    {
+                        inheritance.Add("System.Object");
+                        break;
+                    }
+
                     if (type != symbol)
                     {
                         inheritance.Add(AddSpecReference(type, typeParamterNames));
                     }
+
                     AddInheritedMembers(symbol, type, dict, typeParamterNames);
                     type = type.BaseType;
                 }

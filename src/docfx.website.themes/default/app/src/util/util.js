@@ -34,18 +34,31 @@
 
     // startline starts @1 to be consistent with IDE
     // endline < 1 stands for infinite
-    this.substringLine = function (input, startline, endline) {
+    this.substringLine = function (input, startline, endline, dedent) {
       if (!input) return '';
       var lines = input.split('\n');
       var maxLine = lines.length;
       startline = startline <= 1 ? 1 : startline;
       endline = endline >= maxLine || endline < 1 ? maxLine : endline;
       var snippet = '';
+      var maxDedent;
       for (var i = startline - 1; i < endline; i++) {
-        snippet += lines[i] + '\n';
+        if (i === startline - 1)  maxDedent = getSpaceIndex(lines[i]);
+        var currentDedent = getSpaceIndex(lines[i]);
+        var activeDedent = currentDedent > maxDedent? maxDedent: currentDedent;
+        var line = lines[i];
+        if (dedent) line = line.substring(activeDedent);
+        snippet += line + '\n';
       }
       return snippet;
     };
+    
+    function getSpaceIndex(input){
+      var i = -1;
+      while (input.length > 0 && input[++i] === ' '){
+      }
+      return i;
+    }
     
     this.escapeRegExp = function (str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");

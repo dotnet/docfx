@@ -7,13 +7,49 @@
     using System.Linq;
 
     using Microsoft.DocAsCode.Utility;
+    using System.Globalization;
 
-    public class MapFileViewModel : Dictionary<string, MapFileItemViewModel>
+    public class MapFileViewModel : SortedList<string, MapFileItemViewModel>
     {
+        public MapFileViewModel() : base(DecendentStringComparer.OrdinalIgnoreCase)
+        {
+
+        }
     }
 
-    public class ReferencesViewModel : Dictionary<string, MapFileItemViewModel>
+    public class DecendentStringComparer : StringComparer
     {
+        public static new DecendentStringComparer OrdinalIgnoreCase = new DecendentStringComparer(StringComparer.OrdinalIgnoreCase);
+
+        private StringComparer _comparer;
+        protected DecendentStringComparer(StringComparer comparer) : base()
+        {
+            _comparer = comparer;
+        }
+
+        public override int Compare(string x, string y)
+        {
+            return _comparer.Compare(y, x);
+        }
+
+        public override bool Equals(string x, string y)
+        {
+            return _comparer.Equals(x, y);
+        }
+
+        public override int GetHashCode(string obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
+
+    public class ReferencesViewModel : SortedList<string, MapFileItemViewModel>
+    {
+        public ReferencesViewModel() : base(DecendentStringComparer.OrdinalIgnoreCase)
+        {
+
+        }
+
         /// <summary>
         /// TODO: Any possible scenarios requires MERGE?
         /// </summary>

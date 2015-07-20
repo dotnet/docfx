@@ -22,7 +22,7 @@
         private static readonly List<string> RequiredProperties = new List<string> { "uid" };
 
         // If is not the end of the file, then \n should be appended to ---
-        public static readonly Regex YamlHeaderRegex = new Regex(@"((?!\n)\s)*\n((?!\n)\s)*\-\-\-((?!\n)\s)*\n((?!\n)\s)*(?<content>uid:.*?)\s*\-\-\-((?!\n)\s)*\n", RegexOptions.Compiled | RegexOptions.Singleline);
+        public static readonly Regex YamlHeaderRegex = new Regex(@"((((?!\n)\s)*\n)|^)((?!\n)\s)*\-\-\-((?!\n)\s)*\n((?!\n)\s)*(?<content>uid:.*?)\s*\-\-\-((?!\n)\s)*\n", RegexOptions.Compiled | RegexOptions.Singleline);
 
         public static IList<MatchDetail> Select(string input)
         {

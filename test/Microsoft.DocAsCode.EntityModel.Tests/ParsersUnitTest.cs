@@ -114,13 +114,14 @@ return GetExceptions(null, null).Count();
             Assert.Equal(1, yamlHeaders.Count());
             Assert.Equal("abc", yamlHeaders[0].Id);
 
-            // --- should be prefixed by a new line
+            // --- Should also work
             input = @"---      
                              uid: abc
                             ---
                             ";
             yamlHeaders = YamlHeaderParser.Select(input);
-            Assert.Null(yamlHeaders);
+            Assert.Equal(1, yamlHeaders.Count());
+            Assert.Equal("abc", yamlHeaders[0].Id);
 
             // --- should be start with uid
             input = @"

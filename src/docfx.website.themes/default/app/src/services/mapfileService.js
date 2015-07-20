@@ -127,7 +127,7 @@
     function makeReplaceCodeSnippetFunction(mapModel, keys, startLine, endLine) {
       return function (result) {
         if (!result) return;
-        var codeSnippet = utility.substringLine(result.data, startLine, endLine);
+        var codeSnippet = utility.substringLine(result.data, startLine, endLine, true);
         // TODO: check if succeed
         var preCodeSnippetResolved = mapModel.content;
         mapModel.content = replaceAllKeys(keys, preCodeSnippetResolved, codeSnippet);
