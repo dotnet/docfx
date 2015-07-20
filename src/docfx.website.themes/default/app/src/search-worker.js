@@ -3,7 +3,7 @@
 /* global importScripts, onmessage: true, postMessage, lunr */
 
 // Load up the lunr library
-importScripts('lunr.min.js');
+importScripts('../../bower_components/lunr.js/lunr.js');
 
 // Create the lunr index - the docs should be an array of object, each object containing
 // the path and search terms for a page
