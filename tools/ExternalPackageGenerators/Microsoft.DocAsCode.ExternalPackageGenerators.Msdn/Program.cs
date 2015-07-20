@@ -150,9 +150,9 @@
                     _apiCount.ToString());
                 Console.WriteLine(
                     "Working status: http:{0}, validate:{1}, query:{2}",
-                    (_maxHttp - _semamphoreForHttp.CurrentCount).ToString(),
-                    (_maxVM - _validateSemamphoreForVM.CurrentCount).ToString(),
-                    (_maxVM - _shortIdSemamphoreForVM.CurrentCount).ToString());
+                    (_maxHttp - _semamphoreForHttp.CurrentCount).ToString().PadLeft(3),
+                    (_maxVM - _validateSemamphoreForVM.CurrentCount).ToString().PadLeft(3),
+                    (_maxVM - _shortIdSemamphoreForVM.CurrentCount).ToString().PadLeft(3));
             }
             try
             {
@@ -161,7 +161,6 @@
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                throw;
             }
         }
 
