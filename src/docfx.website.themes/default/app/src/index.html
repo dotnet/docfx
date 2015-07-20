@@ -64,6 +64,7 @@
     <script src="../../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
+    <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- build:js(app/src) scripts/docfx.js -->
     <script src="services/contentService.js"></script>
     <script src="services/csplayService.js"></script>
@@ -85,7 +86,26 @@
     <script src="util/versions-data.js"></script>
     <script src="util/versions.js"></script>
     <script src="search-data.json"></script>
-    <script src="lunr.min.js"></script>
     <!-- endbuild -->
+    <script type="text/javascript">
+    // auto collapsed when navbar into two lines
+      function autocollapse() {
+        var navbar = $('#autocollapse');
+        if (navbar.height() === null) {
+          setTimeout(autocollapse,300);
+        }
+        navbar.removeClass('collapsed');
+        if(navbar.height() > 60) {
+            navbar.addClass('collapsed');
+        }
+      }
+      $(document).ready(autocollapse);
+      $(window).on('resize', autocollapse);
+      $(document).on('click','.navbar-collapse.in',function(e) {
+        if( $(e.target).is('a') ) {
+          $(this).collapse('hide');
+      }
+  });
+    </script>
   </body>
 </html>
