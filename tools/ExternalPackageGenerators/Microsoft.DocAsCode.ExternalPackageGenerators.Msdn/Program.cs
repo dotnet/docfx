@@ -60,6 +60,8 @@
             try
             {
                 ServicePointManager.DefaultConnectionLimit = HttpMaxConcurrency;
+                ThreadPool.SetMinThreads(HttpMaxConcurrency, HttpMaxConcurrency);
+                ThreadPool.SetMaxThreads(HttpMaxConcurrency, HttpMaxConcurrency * 2);
                 var p = new Program(args[0], args[1], args[2], args[3], HttpMaxConcurrency);
                 p.PackReference();
                 return 0;
@@ -87,7 +89,7 @@
             _checkUrlCache = new Cache<StrongBox<bool>>(nameof(_checkUrlCache), IsUrlOkAsync);
 
             _maxHttp = httpMaxConcurrency;
-            _maxEntry = httpMaxConcurrency / 4 + 1;
+            _maxEntry = httpMaxConcurrency / 3 + 1;
 
             _semaphoreForHttp = new SemaphoreSlim(_maxHttp);
             _semaphoreForEntry = new SemaphoreSlim(_maxEntry);
@@ -126,35 +128,45 @@
                         _apiCount += pair.ViewModel.Count;
                     }
                 });
-                PrintStatic(task, stopwatch).Wait();
+                PrintStatistics(task, stopwatch).Wait();
             }
         }
 
-        private async Task PrintStatic(Task mainTask, Stopwatch stopwatch)
+        private async Task PrintStatistics(Task mainTask, Stopwatch stopwatch)
         {
+            const int FreshPerSecond = 5;
             bool isFirst = true;
-            int top = 0;
-            var width = Console.WindowWidth;
+            var queue = new Queue<Tuple<int, int>>(10* FreshPerSecond);
             while (!mainTask.IsCompleted)
             {
-                await Task.Delay(500);
+                await Task.Delay(1000 / FreshPerSecond);
+                if (queue.Count >= 10 * FreshPerSecond)
+                {
+                    queue.Dequeue();
+                }
+                var last = Tuple.Create(_entryCount, _apiCount);
+                queue.Enqueue(last);
                 if (isFirst)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    top = Console.CursorTop - 2;
                     isFirst = false;
                 }
-                Console.SetCursorPosition(0, top);
+                else
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop - 3);
+                }
                 Console.WriteLine(
-                    "Elapsed time: {0}, count of type: {1}, count of api: {2}",
+                    "Elapsed time: {0}, generated type: {1}, generated api: {2}",
                     stopwatch.Elapsed.ToString(@"hh\:mm\:ss"),
                     _entryCount.ToString(),
                     _apiCount.ToString());
                 Console.WriteLine(
-                    "Working status: http:{0}, type entry:{1}",
+                    "Status: http:{0,4}, type entry:{1,4}",
                     (_maxHttp - _semaphoreForHttp.CurrentCount).ToString().PadLeft(3),
                     (_maxEntry - _semaphoreForEntry.CurrentCount).ToString().PadLeft(3));
+                Console.WriteLine(
+                    "Generating per second: type:{0,7}, api:{1,7}",
+                    ((double)(last.Item1 - queue.Peek().Item1) * FreshPerSecond / queue.Count).ToString("F2"),
+                    ((double)(last.Item2 - queue.Peek().Item2) * FreshPerSecond / queue.Count).ToString("F2"));
             }
             try
             {
@@ -185,7 +197,7 @@
             {
                 result = (await Task.WhenAll(
                     from item in entry.Items
-                    select GetMsdnUrlAsync(item))).ToList();
+                    select GetViewModelItemAsync(item))).ToList();
             }
             finally
             {
@@ -210,17 +222,19 @@
             return result;
         }
 
-        private async Task<ReferenceViewModel> GetMsdnUrlAsync(CommentIdAndUid pair)
+        private async Task<ReferenceViewModel> GetViewModelItemAsync(CommentIdAndUid pair)
         {
-            if (NormalUid.IsMatch(pair.Uid))
+            var alias = GetAlias(pair.CommentId);
+            if (alias != null)
             {
-                var url = string.Format(MsdnUrlTemplate, pair.Uid.ToLower(), _msdnVersion);
+                var url = string.Format(MsdnUrlTemplate, alias, _msdnVersion);
+                // verify alias exists
                 if ((await _checkUrlCache.GetAsync(url)).Value)
                 {
                     return new ReferenceViewModel
                     {
                         Uid = pair.Uid,
-                        Href = string.Format(MsdnUrlTemplate, pair.Uid.ToLower(), _msdnVersion),
+                        Href = url,
                     };
                 }
             }
@@ -275,7 +289,7 @@
             var uid = commentId.Substring(2);
             if (NormalUid.IsMatch(uid))
             {
-                return uid;
+                return uid.ToLower();
             }
             return null;
         }
