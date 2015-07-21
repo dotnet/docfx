@@ -47,28 +47,36 @@
             }
         }
 
-        public static async Task<HttpResponseMessage> GetWithRetryAsync(this HttpClient client, string url, params int[] retryDelay)
+        public static async Task<HttpResponseMessage> GetWithRetryAsync(this HttpClient client, string url, SemaphoreSlim semaphore, params int[] retryDelay)
         {
             if (retryDelay.Any(delay => delay <= 0))
             {
                 throw new ArgumentException("Delay should be greate than 0.", nameof(retryDelay));
             }
-            int retryCount = 0;
-            while (true)
+            await semaphore.WaitAsync();
+            try
             {
-                try
+                int retryCount = 0;
+                while (true)
                 {
-                    return await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-                }
-                catch (TaskCanceledException)
-                {
-                    if (retryCount >= retryDelay.Length)
+                    try
                     {
-                        throw;
+                        return await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
                     }
+                    catch (TaskCanceledException)
+                    {
+                        if (retryCount >= retryDelay.Length)
+                        {
+                            throw;
+                        }
+                    }
+                    await Task.Delay(retryDelay[retryCount]);
+                    retryCount++;
                 }
-                await Task.Delay(retryDelay[retryCount]);
-                retryCount++;
+            }
+            finally
+            {
+                semaphore.Release();
             }
         }
     }

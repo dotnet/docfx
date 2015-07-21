@@ -16,8 +16,10 @@
     using System.Threading.Tasks;
     using System.Xml;
 
-    internal class Program
+    internal sealed class Program
     {
+
+        #region Consts/Fields
         private const string MsdnUrlTemplate = "https://msdn.microsoft.com/en-us/library/{0}(v={1}).aspx";
         private const string MtpsApiUrlTemplate = "http://services.mtps.microsoft.com/ServiceAPI/content/{0}/en-us;{1}/common/mtps.links";
         private const int HttpMaxConcurrency = 64;
@@ -37,14 +39,14 @@
         private readonly string _msdnVersion;
 
         private readonly int _maxHttp;
-        private readonly int _maxVM;
+        private readonly int _maxEntry;
 
-        private readonly SemaphoreSlim _semamphoreForHttp;
-        private readonly SemaphoreSlim _validateSemamphoreForVM;
-        private readonly SemaphoreSlim _shortIdSemamphoreForVM;
+        private readonly SemaphoreSlim _semaphoreForHttp;
+        private readonly SemaphoreSlim _semaphoreForEntry;
 
         private int _entryCount;
         private int _apiCount;
+        #endregion
 
         #region Entry Point
 
@@ -85,14 +87,15 @@
             _checkUrlCache = new Cache<StrongBox<bool>>(nameof(_checkUrlCache), IsUrlOkAsync);
 
             _maxHttp = httpMaxConcurrency;
-            _maxVM = httpMaxConcurrency / 4 + 1;
+            _maxEntry = httpMaxConcurrency / 4 + 1;
 
-            _semamphoreForHttp = new SemaphoreSlim(_maxHttp);
-            _validateSemamphoreForVM = new SemaphoreSlim(_maxVM);
-            _shortIdSemamphoreForVM = new SemaphoreSlim(_maxVM);
+            _semaphoreForHttp = new SemaphoreSlim(_maxHttp);
+            _semaphoreForEntry = new SemaphoreSlim(_maxEntry);
         }
 
         #endregion
+
+        #region Methods
 
         private static void PrintUsage()
         {
@@ -149,10 +152,9 @@
                     _entryCount.ToString(),
                     _apiCount.ToString());
                 Console.WriteLine(
-                    "Working status: http:{0}, validate:{1}, query:{2}",
-                    (_maxHttp - _semamphoreForHttp.CurrentCount).ToString().PadLeft(3),
-                    (_maxVM - _validateSemamphoreForVM.CurrentCount).ToString().PadLeft(3),
-                    (_maxVM - _shortIdSemamphoreForVM.CurrentCount).ToString().PadLeft(3));
+                    "Working status: http:{0}, type entry:{1}",
+                    (_maxHttp - _semaphoreForHttp.CurrentCount).ToString().PadLeft(3),
+                    (_maxEntry - _semaphoreForEntry.CurrentCount).ToString().PadLeft(3));
             }
             try
             {
@@ -166,14 +168,6 @@
 
         private IObservable<EntryNameAndViewModel> GetItems()
         {
-            return from item in GetRawItems()
-                   from checkedVM in Observable.FromAsync(() => CheckAsync(item.ViewModel))
-                   where checkedVM.Count > 0
-                   select new EntryNameAndViewModel(item.EntryName, checkedVM);
-        }
-
-        private IObservable<EntryNameAndViewModel> GetRawItems()
-        {
             return from entry in
                        (from list in GetAllCommentId()
                         from entry in list
@@ -185,7 +179,7 @@
 
         private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry)
         {
-            await _shortIdSemamphoreForVM.WaitAsync();
+            await _semaphoreForEntry.WaitAsync();
             List<ReferenceViewModel> result;
             try
             {
@@ -195,7 +189,7 @@
             }
             finally
             {
-                _shortIdSemamphoreForVM.Release();
+                _semaphoreForEntry.Release();
             }
             var type = result.Find(item => item.Uid == entry.EntryName);
             if (type != null && type.Href != null)
@@ -206,7 +200,6 @@
                     if (item.Href == null)
                     {
                         item.Href = type.Href;
-                        item.IsExternal = type.IsExternal;
                     }
                 }
             }
@@ -221,37 +214,29 @@
         {
             if (NormalUid.IsMatch(pair.Uid))
             {
-                return new ReferenceViewModel
+                var url = string.Format(MsdnUrlTemplate, pair.Uid.ToLower(), _msdnVersion);
+                if ((await _checkUrlCache.GetAsync(url)).Value)
                 {
-                    Uid = pair.Uid,
-                    Href = string.Format(MsdnUrlTemplate, pair.Uid.ToLower(), _msdnVersion),
-                    IsExternal = true, // mark it as require check.
-                };
-            }
-            else
-            {
-                await _semamphoreForHttp.WaitAsync();
-                try
-                {
-                    var shortId = await _shortIdCache.GetAsync(pair.CommentId);
-                    if (string.IsNullOrEmpty(shortId))
-                    {
-                        return new ReferenceViewModel
-                        {
-                            Uid = pair.Uid,
-                        };
-                    }
                     return new ReferenceViewModel
                     {
                         Uid = pair.Uid,
-                        Href = string.Format(MsdnUrlTemplate, shortId, _msdnVersion),
+                        Href = string.Format(MsdnUrlTemplate, pair.Uid.ToLower(), _msdnVersion),
                     };
                 }
-                finally
-                {
-                    _semamphoreForHttp.Release();
-                }
             }
+            var shortId = await _shortIdCache.GetAsync(pair.CommentId);
+            if (string.IsNullOrEmpty(shortId))
+            {
+                return new ReferenceViewModel
+                {
+                    Uid = pair.Uid,
+                };
+            }
+            return new ReferenceViewModel
+            {
+                Uid = pair.Uid,
+                Href = string.Format(MsdnUrlTemplate, shortId, _msdnVersion),
+            };
         }
 
         private string GetContainingCommentId(string commentId)
@@ -328,7 +313,7 @@
             }
             else
             {
-                using (var response = await _client.GetWithRetryAsync(string.Format(MsdnUrlTemplate, alias, _msdnVersion), RetryDelay))
+                using (var response = await _client.GetWithRetryAsync(string.Format(MsdnUrlTemplate, alias, _msdnVersion), _semaphoreForHttp, RetryDelay))
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
@@ -356,7 +341,7 @@
             var shortId = await _shortIdCache.GetAsync(containingCommentId);
             if (!string.IsNullOrEmpty(shortId))
             {
-                using (var response = await _client.GetWithRetryAsync(string.Format(MtpsApiUrlTemplate, shortId, _msdnVersion), RetryDelay))
+                using (var response = await _client.GetWithRetryAsync(string.Format(MtpsApiUrlTemplate, shortId, _msdnVersion), _semaphoreForHttp, RetryDelay))
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
@@ -429,48 +414,14 @@
                    select commentId;
         }
 
-        private async Task<List<ReferenceViewModel>> CheckAsync(List<ReferenceViewModel> vm)
+        private async Task<StrongBox<bool>> IsUrlOkAsync(string url)
         {
-            await _validateSemamphoreForVM.WaitAsync();
-            try
+            using (var response = await _client.GetWithRetryAsync(url, _semaphoreForHttp, RetryDelay))
             {
-                var checkingItems = (from item in vm
-                                     where item.IsExternal == true
-                                     select item).ToList();
-                var fakes = from pair in
-                                    (await Task.WhenAll(from item in vm
-                                                        where item.IsExternal == true
-                                                        select _checkUrlCache.GetAsync(item.Href)))
-                                    .Zip(checkingItems, (isOK, item) => new { IsOK = isOK.Value, Item = item })
-                            where pair.IsOK == false
-                            select pair.Item;
-                var result = vm.Except(fakes).ToList();
-                foreach (var item in result)
-                {
-                    item.IsExternal = null;
-                }
-                return result;
-            }
-            finally
-            {
-                _validateSemamphoreForVM.Release();
+                return new StrongBox<bool>(response.StatusCode == HttpStatusCode.OK);
             }
         }
 
-        private async Task<StrongBox<bool>> IsUrlOkAsync(string url)
-        {
-            await _semamphoreForHttp.WaitAsync();
-            try
-            {
-                using (var response = await _client.GetWithRetryAsync(url, RetryDelay))
-                {
-                    return new StrongBox<bool>(response.StatusCode == HttpStatusCode.OK);
-                }
-            }
-            finally
-            {
-                _semamphoreForHttp.Release();
-            }
-        }
+        #endregion
     }
 }

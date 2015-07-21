@@ -5,7 +5,7 @@
     using System.Runtime.Caching;
     using System.Threading.Tasks;
 
-    internal class Cache<T>
+    internal sealed class Cache<T>
         where T : class
     {
         private readonly Dictionary<string, Task<T>> _shortIdTaskMap = new Dictionary<string, Task<T>>();
