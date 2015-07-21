@@ -1,10 +1,10 @@
 {
-    "version": "1.0.0",
+    "version": "1.0.0-*",
     "frameworks": {
         "dnx451": {
             "dependencies": {
-                "Microsoft.Framework.Runtime": "1.0.0-beta6-12085",
-                "Microsoft.Framework.Runtime.Roslyn.Common": "1.0.0-beta6-12085"
+                "Microsoft.Framework.Runtime": "1.0.0-beta6",
+                "Microsoft.Framework.Runtime.Roslyn.Common": "1.0.0-beta6"
             }
         }
     },

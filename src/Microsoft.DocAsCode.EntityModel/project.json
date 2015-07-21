@@ -1,8 +1,8 @@
 {
-    "version": "1.0.0",
+    "version": "1.0.0-*",
     "dependencies": {
-        "Microsoft.CodeAnalysis.Workspaces.Dnx": "",
-        "Microsoft.DocAsCode.Utility": "",
+        "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.0.0-*",
+        "Microsoft.DocAsCode.Utility": "1.0.0-*",
         "Microsoft.CodeAnalysis.Common": "1.0.0",
         "Microsoft.CodeAnalysis.VisualBasic": "1.0.0",
         "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.0.0",
