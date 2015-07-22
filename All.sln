@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22919.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -73,7 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{FE35
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{BB721096-D78C-4CF4-9D60-E66A26A3CB49}"
 	ProjectSection(SolutionItems) = preProject
-		src\nuspec\msdn.yml\content\msdn.yml = src\nuspec\msdn.yml\content\msdn.yml
+		src\nuspec\msdn.yml\content\msdn.4.5.2.rpk = src\nuspec\msdn.yml\content\msdn.4.5.2.rpk
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{8BFFE355-4712-4187-8252-F69AA515525A}"
