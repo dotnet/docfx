@@ -277,7 +277,10 @@ module.exports = function (grunt) {
           dest: '<%= docfx.dist %>',
           src: [
             '*.html',
-            '{,*/}*.html'
+            '{,*/}*.html',
+            'lunr.min.js',
+            'search-data.json',
+            'search-worker.js'
           ]
         }, {
           expand: true,

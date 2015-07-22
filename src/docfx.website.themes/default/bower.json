@@ -28,9 +28,6 @@
     "bootstrap": "~3.0.2"
   },
   "overrides": {
-    "bootstrap": {
-      "main": "dist/css/bootstrap.css"
-    },
     "highlightjs": {
       "main": ["styles/solarized_dark.css", "highlight.pack.js"]
     }
