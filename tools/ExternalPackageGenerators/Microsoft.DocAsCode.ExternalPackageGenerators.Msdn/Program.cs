@@ -5,31 +5,48 @@
     using Microsoft.DocAsCode.Utility;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Reactive.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
+    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Xml;
 
-    internal class Program
+    internal sealed class Program
     {
+
+        #region Consts/Fields
         private const string MsdnUrlTemplate = "https://msdn.microsoft.com/en-us/library/{0}(v={1}).aspx";
         private const string MtpsApiUrlTemplate = "http://services.mtps.microsoft.com/ServiceAPI/content/{0}/en-us;{1}/common/mtps.links";
-        private const int HttpMaxConcurrency = 32;
+        private const int HttpMaxConcurrency = 64;
+
+        private static readonly int[] RetryDelay = new[] { 1000, 3000, 10000 };
 
         private readonly Regex NormalUid = new Regex(@"^[a-zA-Z0-9\.]+$", RegexOptions.Compiled);
         private readonly HttpClient _client = new HttpClient();
+
         private readonly Cache<string> _shortIdCache;
         private readonly Cache<Dictionary<string, string>> _commentIdToShortIdMapCache;
+        private readonly Cache<StrongBox<bool>> _checkUrlCache;
+
         private readonly string _packageFile;
         private readonly string _baseDirectory;
         private readonly string _globPattern;
         private readonly string _msdnVersion;
+
+        private readonly int _maxHttp;
+        private readonly int _maxEntry;
+
+        private readonly SemaphoreSlim _semaphoreForHttp;
+        private readonly SemaphoreSlim _semaphoreForEntry;
+
+        private int _entryCount;
+        private int _apiCount;
+        #endregion
 
         #region Entry Point
 
@@ -43,7 +60,9 @@
             try
             {
                 ServicePointManager.DefaultConnectionLimit = HttpMaxConcurrency;
-                var p = new Program(args[0], args[1], args[2], args[3]);
+                ThreadPool.SetMinThreads(HttpMaxConcurrency, HttpMaxConcurrency);
+                ThreadPool.SetMaxThreads(HttpMaxConcurrency, HttpMaxConcurrency * 2);
+                var p = new Program(args[0], args[1], args[2], args[3], HttpMaxConcurrency);
                 p.PackReference();
                 return 0;
             }
@@ -58,7 +77,7 @@
 
         #region Constructor
 
-        public Program(string packageFile, string baseDirectory, string globPattern, string msdnVersion)
+        public Program(string packageFile, string baseDirectory, string globPattern, string msdnVersion, int httpMaxConcurrency)
         {
             _packageFile = packageFile;
             _baseDirectory = baseDirectory;
@@ -67,9 +86,18 @@
 
             _shortIdCache = new Cache<string>(nameof(_shortIdCache), LoadShortIdAsync);
             _commentIdToShortIdMapCache = new Cache<Dictionary<string, string>>(nameof(_commentIdToShortIdMapCache), LoadCommentIdToShortIdMapAsync);
+            _checkUrlCache = new Cache<StrongBox<bool>>(nameof(_checkUrlCache), IsUrlOkAsync);
+
+            _maxHttp = httpMaxConcurrency;
+            _maxEntry = httpMaxConcurrency / 3 + 1;
+
+            _semaphoreForHttp = new SemaphoreSlim(_maxHttp);
+            _semaphoreForEntry = new SemaphoreSlim(_maxEntry);
         }
 
         #endregion
+
+        #region Methods
 
         private static void PrintUsage()
         {
@@ -88,71 +116,141 @@
 
         private void PackReference()
         {
-            var items = GetItems();
+            var stopwatch = Stopwatch.StartNew();
             using (var writer = ExternalReferencePackageWriter.Append(_packageFile, new Uri("https://msdn.microsoft.com/")))
-            using (var enumrator = items.GetEnumerator())
             {
-                while (enumrator.MoveNext())
+                var task = GetItems().ForEachAsync(pair =>
                 {
-                    writer.AddOrUpdateEntry(enumrator.Current.EntryName + ".yml", enumrator.Current.ViewModel);
+                    lock (this)
+                    {
+                        writer.AddOrUpdateEntry(pair.EntryName + ".yml", pair.ViewModel);
+                        _entryCount++;
+                        _apiCount += pair.ViewModel.Count;
+                    }
+                });
+                PrintStatistics(task, stopwatch).Wait();
+            }
+        }
+
+        private async Task PrintStatistics(Task mainTask, Stopwatch stopwatch)
+        {
+            const int FreshPerSecond = 5;
+            bool isFirst = true;
+            var queue = new Queue<Tuple<int, int>>(10* FreshPerSecond);
+            while (!mainTask.IsCompleted)
+            {
+                await Task.Delay(1000 / FreshPerSecond);
+                if (queue.Count >= 10 * FreshPerSecond)
+                {
+                    queue.Dequeue();
                 }
+                var last = Tuple.Create(_entryCount, _apiCount);
+                queue.Enqueue(last);
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop - 3);
+                }
+                Console.WriteLine(
+                    "Elapsed time: {0}, generated type: {1}, generated api: {2}",
+                    stopwatch.Elapsed.ToString(@"hh\:mm\:ss"),
+                    _entryCount.ToString(),
+                    _apiCount.ToString());
+                Console.WriteLine(
+                    "Status: http:{0,4}, type entry:{1,4}",
+                    (_maxHttp - _semaphoreForHttp.CurrentCount).ToString().PadLeft(3),
+                    (_maxEntry - _semaphoreForEntry.CurrentCount).ToString().PadLeft(3));
+                Console.WriteLine(
+                    "Generating per second: type:{0,7}, api:{1,7}",
+                    ((double)(last.Item1 - queue.Peek().Item1) * FreshPerSecond / queue.Count).ToString("F2"),
+                    ((double)(last.Item2 - queue.Peek().Item2) * FreshPerSecond / queue.Count).ToString("F2"));
+            }
+            try
+            {
+                await mainTask;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
 
         private IObservable<EntryNameAndViewModel> GetItems()
         {
-            var semaphore = new SemaphoreSlim(HttpMaxConcurrency);
-            return from item in GetRawItems()
-                   from checkedVM in Observable.FromAsync(() => CheckAsync(item.ViewModel, semaphore))
-                   where checkedVM.Count > 0
-                   select new EntryNameAndViewModel(item.EntryName, checkedVM);
-        }
-
-        private IObservable<EntryNameAndViewModel> GetRawItems()
-        {
-            var semaphore = new SemaphoreSlim(HttpMaxConcurrency);
-            return from list in GetAllCommentId().ToObservable()
-                   from entry in list
-                   from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry, _msdnVersion, semaphore))
+            return from entry in
+                       (from list in GetAllCommentId()
+                        from entry in list
+                        select entry).ToObservable()
+                   from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry))
                    where vm.Count > 0
                    select new EntryNameAndViewModel(entry.EntryName, vm);
         }
 
-        private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry, string msdnVersion, SemaphoreSlim semaphore)
+        private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry)
         {
-            var urls = await Task.WhenAll(from item in entry.Items select GetMsdnUrlAsync(item, semaphore));
-            return (from pair in entry.Items.Zip(urls, (item, url) => new { item, url })
-                    where pair.url != null
-                    select new ReferenceViewModel
-                    {
-                        Uid = pair.item.Uid,
-                        Href = pair.url
-                    }).ToList();
-        }
-
-        private async Task<string> GetMsdnUrlAsync(CommentIdAndUid pair, SemaphoreSlim semaphore)
-        {
-            if (NormalUid.IsMatch(pair.Uid))
+            await _semaphoreForEntry.WaitAsync();
+            List<ReferenceViewModel> result;
+            try
             {
-                return string.Format(MsdnUrlTemplate, pair.Uid.ToLower(), _msdnVersion);
+                result = (await Task.WhenAll(
+                    from item in entry.Items
+                    select GetViewModelItemAsync(item))).ToList();
+            }
+            finally
+            {
+                _semaphoreForEntry.Release();
+            }
+            var type = result.Find(item => item.Uid == entry.EntryName);
+            if (type != null && type.Href != null)
+            {
+                // handle enum field, or other one-page-member
+                foreach (var item in result)
+                {
+                    if (item.Href == null)
+                    {
+                        item.Href = type.Href;
+                    }
+                }
             }
             else
             {
-                await semaphore.WaitAsync();
-                try
+                result.RemoveAll(item => item.Href == null);
+            }
+            return result;
+        }
+
+        private async Task<ReferenceViewModel> GetViewModelItemAsync(CommentIdAndUid pair)
+        {
+            var alias = GetAlias(pair.CommentId);
+            if (alias != null)
+            {
+                var url = string.Format(MsdnUrlTemplate, alias, _msdnVersion);
+                // verify alias exists
+                if ((await _checkUrlCache.GetAsync(url)).Value)
                 {
-                    var shortId = await _shortIdCache.GetAsync(pair.CommentId);
-                    if (string.IsNullOrEmpty(shortId))
+                    return new ReferenceViewModel
                     {
-                        return null;
-                    }
-                    return string.Format(MsdnUrlTemplate, shortId, _msdnVersion);
-                }
-                finally
-                {
-                    semaphore.Release();
+                        Uid = pair.Uid,
+                        Href = url,
+                    };
                 }
             }
+            var shortId = await _shortIdCache.GetAsync(pair.CommentId);
+            if (string.IsNullOrEmpty(shortId))
+            {
+                return new ReferenceViewModel
+                {
+                    Uid = pair.Uid,
+                };
+            }
+            return new ReferenceViewModel
+            {
+                Uid = pair.Uid,
+                Href = string.Format(MsdnUrlTemplate, shortId, _msdnVersion),
+            };
         }
 
         private string GetContainingCommentId(string commentId)
@@ -183,10 +281,15 @@
 
         private string GetAlias(string commentId)
         {
+            if (commentId.StartsWith("M:") || commentId.StartsWith("P:"))
+            {
+                // method/property maybe have overloads.
+                return null;
+            }
             var uid = commentId.Substring(2);
             if (NormalUid.IsMatch(uid))
             {
-                return uid;
+                return uid.ToLower();
             }
             return null;
         }
@@ -210,12 +313,21 @@
                     {
                         return shortId;
                     }
+                    else
+                    {
+                        // maybe case not match.
+                        shortId = dict.FirstOrDefault(p => string.Equals(p.Key, commentId, StringComparison.OrdinalIgnoreCase)).Value;
+                        if (shortId != null)
+                        {
+                            return shortId;
+                        }
+                    }
                     currentCommentId = containingCommentId;
                 } while (commentId[0] == 'T'); // handle nested type
             }
             else
             {
-                using (var response = await _client.GetAsync(string.Format(MsdnUrlTemplate, alias, _msdnVersion)))
+                using (var response = await _client.GetWithRetryAsync(string.Format(MsdnUrlTemplate, alias, _msdnVersion), _semaphoreForHttp, RetryDelay))
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
@@ -243,7 +355,7 @@
             var shortId = await _shortIdCache.GetAsync(containingCommentId);
             if (!string.IsNullOrEmpty(shortId))
             {
-                using (var response = await _client.GetAsync(string.Format(MtpsApiUrlTemplate, shortId, _msdnVersion)))
+                using (var response = await _client.GetWithRetryAsync(string.Format(MtpsApiUrlTemplate, shortId, _msdnVersion), _semaphoreForHttp, RetryDelay))
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
@@ -316,29 +428,14 @@
                    select commentId;
         }
 
-        private async Task<List<ReferenceViewModel>> CheckAsync(List<ReferenceViewModel> vm, SemaphoreSlim semaphore)
+        private async Task<StrongBox<bool>> IsUrlOkAsync(string url)
         {
-            return (from pair in
-                       (await Task.WhenAll(from item in vm select IsUrlOkAsync(item.Href, semaphore)))
-                       .Zip(vm, (isOK, item) => new { IsOK = isOK, Item = item })
-                    where pair.IsOK
-                    select pair.Item).ToList();
+            using (var response = await _client.GetWithRetryAsync(url, _semaphoreForHttp, RetryDelay))
+            {
+                return new StrongBox<bool>(response.StatusCode == HttpStatusCode.OK);
+            }
         }
 
-        private async Task<bool> IsUrlOkAsync(string url, SemaphoreSlim semaphore)
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                using (var response = await _client.GetAsync(url))
-                {
-                    return response.StatusCode == HttpStatusCode.OK;
-                }
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-        }
+        #endregion
     }
 }
