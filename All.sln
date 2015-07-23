@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22919.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -60,9 +60,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docfx.msbuild", "docfx.msbu
 		src\nuspec\docfx.msbuild\Readme.txt = src\nuspec\docfx.msbuild\Readme.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "msdn.yml", "msdn.yml", "{7056DE24-9537-4504-95CF-7A63FBE74772}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "msdn.4.5.2", "msdn.4.5.2", "{7056DE24-9537-4504-95CF-7A63FBE74772}"
 	ProjectSection(SolutionItems) = preProject
-		src\nuspec\msdn.yml\msdn.yml.nuspec = src\nuspec\msdn.yml\msdn.yml.nuspec
+		src\nuspec\msdn.4.5.2\msdn.4.5.2.nuspec = src\nuspec\msdn.4.5.2\msdn.4.5.2.nuspec
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{FE35AC88-7137-4B5F-8CA2-D31B0BC6CD83}"
@@ -73,7 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{FE35
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{BB721096-D78C-4CF4-9D60-E66A26A3CB49}"
 	ProjectSection(SolutionItems) = preProject
-		src\nuspec\msdn.yml\content\msdn.yml = src\nuspec\msdn.yml\content\msdn.yml
+		src\nuspec\msdn.4.5.2\content\msdn.4.5.2.rpk = src\nuspec\msdn.4.5.2\content\msdn.4.5.2.rpk
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{8BFFE355-4712-4187-8252-F69AA515525A}"
@@ -83,8 +83,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{8BFFE355
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{04B2D6B6-82DC-48CA-AC0E-9B4A32DD71C5}"
 	ProjectSection(SolutionItems) = preProject
-		src\nuspec\msdn.yml\tools\install.ps1 = src\nuspec\msdn.yml\tools\install.ps1
-		src\nuspec\msdn.yml\tools\uninstall.ps1 = src\nuspec\msdn.yml\tools\uninstall.ps1
+		src\nuspec\msdn.4.5.2\tools\install.ps1 = src\nuspec\msdn.4.5.2\tools\install.ps1
+		src\nuspec\msdn.4.5.2\tools\uninstall.ps1 = src\nuspec\msdn.4.5.2\tools\uninstall.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalPackageGenerators", "ExternalPackageGenerators", "{416A17AC-FFD4-4722-A990-598EF44F8D90}"
