@@ -62,7 +62,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docfx.msbuild", "docfx.msbu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "msdn.yml", "msdn.yml", "{7056DE24-9537-4504-95CF-7A63FBE74772}"
 	ProjectSection(SolutionItems) = preProject
-		src\nuspec\msdn.yml\msdn.yml.nuspec = src\nuspec\msdn.yml\msdn.yml.nuspec
+		src\nuspec\msdn.yml\msdn.4.5.2.nuspec = src\nuspec\msdn.yml\msdn.4.5.2.nuspec
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{FE35AC88-7137-4B5F-8CA2-D31B0BC6CD83}"

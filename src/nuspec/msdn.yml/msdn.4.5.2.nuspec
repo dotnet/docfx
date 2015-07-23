@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
-    <id>msdn.yml</id>
+    <id>msdn.4.5.2</id>
     <version>$version$</version>
     <title>MSDN External Reference</title>
     <authors>DocAsCode</authors>

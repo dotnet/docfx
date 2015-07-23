@@ -4,7 +4,7 @@ Write-Host $toolsPath
 $configPath = ($project.FullName | split-path) + '/xdoc.json';
 
 # Set content to be relative path of xdoc.json
-$content = ($installPath -replace '\\','/')+ "/content/$($package.Id)";
+$content = ($installPath -replace '\\','/')+ "/content/**";
 
 $root = $project.FullName | split-path
 $current = $content
