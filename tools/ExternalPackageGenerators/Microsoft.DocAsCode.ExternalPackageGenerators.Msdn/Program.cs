@@ -4,6 +4,7 @@
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Utility;
     using System;
+    using System.Configuration;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -20,11 +21,12 @@
     {
 
         #region Consts/Fields
-        private const string MsdnUrlTemplate = "https://msdn.microsoft.com/en-us/library/{0}(v={1}).aspx";
-        private const string MtpsApiUrlTemplate = "http://services.mtps.microsoft.com/ServiceAPI/content/{0}/en-us;{1}/common/mtps.links";
-        private const int HttpMaxConcurrency = 64;
+        private static string MsdnUrlTemplate = "https://msdn.microsoft.com/en-us/library/{0}(v={1}).aspx";
+        private static string MtpsApiUrlTemplate = "http://services.mtps.microsoft.com/ServiceAPI/content/{0}/en-us;{1}/common/mtps.links";
+        private static int HttpMaxConcurrency = 64;
 
-        private static readonly int[] RetryDelay = new[] { 1000, 3000, 10000 };
+        private static int[] RetryDelay = new[] { 1000, 3000, 10000 };
+        private static int StatisticsFreshPerSecond = 5;
 
         private readonly Regex NormalUid = new Regex(@"^[a-zA-Z0-9\.]+$", RegexOptions.Compiled);
         private readonly HttpClient _client = new HttpClient();
@@ -59,10 +61,11 @@
             }
             try
             {
+                ReadConfig();
                 ServicePointManager.DefaultConnectionLimit = HttpMaxConcurrency;
                 ThreadPool.SetMinThreads(HttpMaxConcurrency, HttpMaxConcurrency);
                 ThreadPool.SetMaxThreads(HttpMaxConcurrency * 2, HttpMaxConcurrency * 2);
-                var p = new Program(args[0], args[1], args[2], args[3], HttpMaxConcurrency);
+                var p = new Program(args[0], args[1], args[2], args[3]);
                 p.PackReference();
                 return 0;
             }
@@ -73,11 +76,62 @@
             }
         }
 
+        private static void ReadConfig()
+        {
+            MsdnUrlTemplate = ConfigurationManager.AppSettings["MsdnUrlTemplate"] ?? MsdnUrlTemplate;
+            MtpsApiUrlTemplate = ConfigurationManager.AppSettings["MsdnUrlTemplate"] ?? MtpsApiUrlTemplate;
+            if (ConfigurationManager.AppSettings["HttpMaxConcurrency"] != null)
+            {
+                int value;
+                if (int.TryParse(ConfigurationManager.AppSettings["HttpMaxConcurrency"], out value) && value > 0)
+                {
+                    HttpMaxConcurrency = value;
+                }
+                else
+                {
+                    Console.WriteLine("Bad config: HttpMaxConcurrency, using default value:{0}", HttpMaxConcurrency);
+                }
+            }
+            if (ConfigurationManager.AppSettings["RetryDelayInMillisecond"] != null)
+            {
+                string[] texts;
+                texts = ConfigurationManager.AppSettings["RetryDelayInMillisecond"].Split(',');
+                var values = new int[texts.Length];
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    if (!int.TryParse(texts[i].Trim(), out values[i]))
+                    {
+                        break;
+                    }
+                }
+                if (values.All(v => v > 0))
+                {
+                    RetryDelay = values;
+                }
+                else
+                {
+                    Console.WriteLine("Bad config: RetryDelayInMillisecond, using default value:{0}", string.Join(", ", RetryDelay));
+                }
+            }
+            if (ConfigurationManager.AppSettings["StatisticsFreshPerSecond"] != null)
+            {
+                int value;
+                if (int.TryParse(ConfigurationManager.AppSettings["StatisticsFreshPerSecond"], out value) && value > 0)
+                {
+                    StatisticsFreshPerSecond = value;
+                }
+                else
+                {
+                    Console.WriteLine("Bad config: StatisticsFreshPerSecond, using default value:{0}", HttpMaxConcurrency);
+                }
+            }
+        }
+
         #endregion
 
         #region Constructor
 
-        public Program(string packageFile, string baseDirectory, string globPattern, string msdnVersion, int httpMaxConcurrency)
+        public Program(string packageFile, string baseDirectory, string globPattern, string msdnVersion)
         {
             _packageFile = packageFile;
             _baseDirectory = baseDirectory;
@@ -88,8 +142,8 @@
             _commentIdToShortIdMapCache = new Cache<Dictionary<string, string>>(nameof(_commentIdToShortIdMapCache), LoadCommentIdToShortIdMapAsync);
             _checkUrlCache = new Cache<StrongBox<bool>>(nameof(_checkUrlCache), IsUrlOkAsync);
 
-            _maxHttp = httpMaxConcurrency;
-            _maxEntry = httpMaxConcurrency / 3 + 1;
+            _maxHttp = HttpMaxConcurrency;
+            _maxEntry = (int)(HttpMaxConcurrency * 1.5) + 1;
 
             _semaphoreForHttp = new SemaphoreSlim(_maxHttp);
             _semaphoreForEntry = new SemaphoreSlim(_maxEntry);
@@ -134,13 +188,12 @@
 
         private async Task PrintStatistics(Task mainTask, Stopwatch stopwatch)
         {
-            const int FreshPerSecond = 5;
             bool isFirst = true;
-            var queue = new Queue<Tuple<int, int>>(10* FreshPerSecond);
+            var queue = new Queue<Tuple<int, int>>(10 * StatisticsFreshPerSecond);
             while (!mainTask.IsCompleted)
             {
-                await Task.Delay(1000 / FreshPerSecond);
-                if (queue.Count >= 10 * FreshPerSecond)
+                await Task.Delay(1000 / StatisticsFreshPerSecond);
+                if (queue.Count >= 10 * StatisticsFreshPerSecond)
                 {
                     queue.Dequeue();
                 }
@@ -165,8 +218,8 @@
                     (_maxEntry - _semaphoreForEntry.CurrentCount).ToString());
                 Console.WriteLine(
                     "Generating per second: type:{0,7}, api:{1,7}",
-                    ((double)(last.Item1 - queue.Peek().Item1) * FreshPerSecond / queue.Count).ToString("F1"),
-                    ((double)(last.Item2 - queue.Peek().Item2) * FreshPerSecond / queue.Count).ToString("F1"));
+                    ((double)(last.Item1 - queue.Peek().Item1) * StatisticsFreshPerSecond / queue.Count).ToString("F1"),
+                    ((double)(last.Item2 - queue.Peek().Item2) * StatisticsFreshPerSecond / queue.Count).ToString("F1"));
             }
             try
             {
@@ -192,12 +245,13 @@
         private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry)
         {
             await _semaphoreForEntry.WaitAsync();
-            List<ReferenceViewModel> result;
+            List<ReferenceViewModel> result = new List<ReferenceViewModel>(entry.Items.Count);
             try
             {
-                result = (await Task.WhenAll(
-                    from item in entry.Items
-                    select GetViewModelItemAsync(item))).ToList();
+                foreach (var item in entry.Items)
+                {
+                    result.Add(await GetViewModelItemAsync(item));
+                }
             }
             finally
             {
