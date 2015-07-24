@@ -36,9 +36,9 @@ module.exports = function(grunt) {
           version: version
         }
       },
-      'msdn.yml': {
-        src: '../src/nuspec/msdn.yml/msdn.yml.nuspec',
-        dest: '../artifacts/msdn.yml/' + conf,
+      'msdn.4.5.2': {
+        src: '../src/nuspec/msdn.4.5.2/msdn.4.5.2.nuspec',
+        dest: '../artifacts/msdn.4.5.2/' + conf,
         options: {
           version: version
         }
