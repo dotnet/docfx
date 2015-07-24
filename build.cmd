@@ -98,12 +98,15 @@ ECHO.
 ECHO === TEST EXECUTION SUMMARY === 
 findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%" & cd >nul
 ECHO Exit Code: %BuildErrorLevel%
+SET ERRORLEVEL=%BuildErrorLevel%
 
 :: Pull nuget package result
 IF '%NugetErrorLevel%'=='1' (
     ECHO === GENERATING NUGET PACKAGES ===
     ECHO ERROR: GENERATING NUGET PACKAGES FAILED, TRY RUNNING `grunt` UNDER `tools` FOLDER MANUALLY!
+    SET ERRORLEVEL=%NugetErrorLevel%
 )
+
 GOTO :Exit
 
 :Build
