@@ -39,17 +39,17 @@
     </Reference>
     <Reference Include="Microsoft.Framework.Runtime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.Framework.Runtime.1.0.0-beta6-12085\lib\dnx451\Microsoft.Framework.Runtime.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Framework.Runtime.1.0.0-beta6\lib\dnx451\Microsoft.Framework.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Framework.Runtime.Abstractions">
-      <HintPath>..\..\packages\Microsoft.Framework.Runtime.Abstractions.1.0.0-beta6-12085\lib\dnx451\Microsoft.Framework.Runtime.Abstractions.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Framework.Runtime.Abstractions.1.0.0-beta6\lib\dnx451\Microsoft.Framework.Runtime.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Framework.Runtime.Caching">
-      <HintPath>..\..\packages\Microsoft.Framework.Runtime.Caching.1.0.0-beta6-12085\lib\dnx451\Microsoft.Framework.Runtime.Caching.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Framework.Runtime.Caching.1.0.0-beta6\lib\dnx451\Microsoft.Framework.Runtime.Caching.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Framework.Runtime.Roslyn.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.Framework.Runtime.Roslyn.Common.1.0.0-beta6-12085\lib\dnx451\Microsoft.Framework.Runtime.Roslyn.Common.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Framework.Runtime.Roslyn.Common.1.0.0-beta6\lib\dnx451\Microsoft.Framework.Runtime.Roslyn.Common.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
