@@ -1,6 +1,7 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
     using System.Collections.Generic;
+    using System.Linq;
     using YamlDotNet.Serialization;
 
     public class ItemViewModel
@@ -96,7 +97,7 @@
             {
                 Uid = model.Name,
                 Parent = model.Parent?.Name,
-                Children = model.Items?.ConvertAll(x => x.Name),
+                Children = model.Items?.Select(x => x.Name).OrderBy(s => s).ToList(),
                 Href = model.Href,
                 Type = model.Type,
                 Source = model.Source,

@@ -427,7 +427,14 @@ namespace IronRuby.Builtins
                 _dirOnly = _pattern.EndsWith("/");
                 _stripTwo = false;
                 _baseDirectory = baseDirectory;
-                _fileProvider = fileProvider ?? new Func<string, IEnumerable<string>>(s => Directory.GetFileSystemEntries(s, "*"));
+                _fileProvider = fileProvider ?? new Func<string, IEnumerable<string>>(s =>
+                {
+                    try
+                    {
+                        return Directory.GetFileSystemEntries(s, "*");
+                    }
+                    catch (PathTooLongException) { return null; }
+                });
             }
             internal int FindNextSeparator(int position, bool allowWildcard, out bool containsWildcard)
             {
