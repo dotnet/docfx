@@ -168,7 +168,6 @@ header .navbar {
 .navbar-brand {
   font-size: inherit;
   padding: 0 0 0 15px;
-  margin-right: -15px;
 }
 
 .navbar-collapse {
@@ -176,14 +175,14 @@ header .navbar {
 }
 
 // bug with angularjs collapse
-.navbar-collapse.collapse {
-  overflow: hidden !important;
-}
+//.navbar-collapse.collapse {
+//  overflow: hidden !important;
+//}
 
 // bug with angularjs collapse
-.navbar-collapse.in {
-  overflow-y: hidden;
-}
+//.navbar-collapse.in {
+//  overflow-y: hidden;
+//}
 
 .subnav {
   min-height: 40px;
@@ -203,6 +202,107 @@ header .navbar {
 // spacing issues with breadcrumb
 .breadcrumb>li+li:before {
   content: "\00a0/";
+}
+
+//========================================
+//  search box
+//========================================
+
+#autocollapse.collapsed .navbar-header {
+  float: none;
+}
+
+#autocollapse.collapsed .navbar-toggle {
+  display: block;
+}
+
+#autocollapse.collapsed .navbar-collapse {
+  border-top: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+#autocollapse.collapsed .navbar-collapse.collapse {
+  display: none !important;
+}
+
+#autocollapse.collapsed .navbar-nav {
+  float: none !important;
+  margin: 7.5px -15px;
+}
+
+#autocollapse.collapsed .navbar-nav>li {
+  float: none;
+}
+
+#autocollapse.collapsed .navbar-nav>li>a {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#autocollapse.collapsed .collapse.in {
+  display: block !important;
+}
+
+.navbar .navbar-nav {
+  display: inline-block;
+  float: none;
+}
+
+.docs-search {
+  background:white;
+  vertical-align:middle;
+}
+
+.docs-search > .search-query {
+  font-size:14px;
+  border:0;
+  width:120%;
+  color:#555;
+}
+
+.docs-search > .search-query:focus {
+  outline:0;
+}
+
+.search-results-frame {
+  clear:both;
+  display:table;
+  width:100%;
+}
+
+.search-results.ng-hide {
+  display:none;
+}
+
+.search-results-container {
+  padding-bottom:1em;
+  border-top:1px solid #111;
+  background:rgba(25, 25, 25, .5);
+}
+
+.search-results-container .search-results-group {
+  padding-top:50px !important;
+  padding:10px;
+}
+
+.search-results-group-heading {
+  font-family: "Open Sans";
+  padding-left:10px;
+  color:white;
+}
+
+.search-close {
+  position: absolute;
+  left: 50%;
+  margin-left: -100px;
+  color: white;
+  text-align: center;
+  padding: 5px;
+  background: #333;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  width: 200px;
+  box-shadow:0 0 10px #111;
 }
 
 //========================================
@@ -689,7 +789,4 @@ footer {
     white-space: inherit;
   }
   
-  .affix{
-    display: none;
-  }
 }

@@ -269,6 +269,12 @@ module.exports = function (grunt) {
 
     // Copies remaining files to places other tasks can use
     copy: {
+      lunr: {
+        expand: true,
+        cwd: './bower_components/lunr.js/',
+        dest: '<%= docfx.app %>/src',
+        src: 'lunr.min.js'
+      },
       dist: {
         files: [{
           expand: true,
@@ -277,7 +283,10 @@ module.exports = function (grunt) {
           dest: '<%= docfx.dist %>',
           src: [
             '*.html',
-            '{,*/}*.html'
+            '{,*/}*.html',
+            'lunr.min.js',
+            'search-data.json',
+            'search-worker.js'
           ]
         }, {
           expand: true,
@@ -353,6 +362,7 @@ module.exports = function (grunt) {
       'clean:server',
       'wiredep',
       'less',
+      'copy:lunr',
       'concurrent:server',
       'autoprefixer:server',
       'connect:livereload',
@@ -383,6 +393,7 @@ module.exports = function (grunt) {
     'autoprefixer',
     'concat',
     'ngAnnotate',
+    'copy:lunr',
     'copy:dist',
     'cssmin',
     'uglify',
