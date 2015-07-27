@@ -4,12 +4,14 @@
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Utility;
     using System;
-    using System.Configuration;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
+    using System.Reactive.Concurrency;
     using System.Reactive.Linq;
     using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
@@ -20,13 +22,15 @@
     internal sealed class Program
     {
 
-        #region Consts/Fields
+        #region Fields
         private static string MsdnUrlTemplate = "https://msdn.microsoft.com/en-us/library/{0}(v={1}).aspx";
         private static string MtpsApiUrlTemplate = "http://services.mtps.microsoft.com/ServiceAPI/content/{0}/en-us;{1}/common/mtps.links";
         private static int HttpMaxConcurrency = 64;
 
         private static int[] RetryDelay = new[] { 1000, 3000, 10000 };
         private static int StatisticsFreshPerSecond = 5;
+
+        private static readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
         private readonly Regex NormalUid = new Regex(@"^[a-zA-Z0-9\.]+$", RegexOptions.Compiled);
         private readonly HttpClient _client = new HttpClient();
@@ -35,7 +39,7 @@
         private readonly Cache<Dictionary<string, string>> _commentIdToShortIdMapCache;
         private readonly Cache<StrongBox<bool>> _checkUrlCache;
 
-        private readonly string _packageFile;
+        private readonly string _packageDirectory;
         private readonly string _baseDirectory;
         private readonly string _globPattern;
         private readonly string _msdnVersion;
@@ -48,6 +52,7 @@
 
         private int _entryCount;
         private int _apiCount;
+        private string[] _currentPackages = new string[2];
         #endregion
 
         #region Entry Point
@@ -64,7 +69,6 @@
                 ReadConfig();
                 ServicePointManager.DefaultConnectionLimit = HttpMaxConcurrency;
                 ThreadPool.SetMinThreads(HttpMaxConcurrency, HttpMaxConcurrency);
-                ThreadPool.SetMaxThreads(HttpMaxConcurrency * 2, HttpMaxConcurrency * 2);
                 var p = new Program(args[0], args[1], args[2], args[3]);
                 p.PackReference();
                 return 0;
@@ -79,7 +83,7 @@
         private static void ReadConfig()
         {
             MsdnUrlTemplate = ConfigurationManager.AppSettings["MsdnUrlTemplate"] ?? MsdnUrlTemplate;
-            MtpsApiUrlTemplate = ConfigurationManager.AppSettings["MsdnUrlTemplate"] ?? MtpsApiUrlTemplate;
+            MtpsApiUrlTemplate = ConfigurationManager.AppSettings["MtpsApiUrlTemplate"] ?? MtpsApiUrlTemplate;
             if (ConfigurationManager.AppSettings["HttpMaxConcurrency"] != null)
             {
                 int value;
@@ -131,9 +135,9 @@
 
         #region Constructor
 
-        public Program(string packageFile, string baseDirectory, string globPattern, string msdnVersion)
+        public Program(string packageDirectory, string baseDirectory, string globPattern, string msdnVersion)
         {
-            _packageFile = packageFile;
+            _packageDirectory = packageDirectory;
             _baseDirectory = baseDirectory;
             _globPattern = globPattern;
             _msdnVersion = msdnVersion;
@@ -143,7 +147,7 @@
             _checkUrlCache = new Cache<StrongBox<bool>>(nameof(_checkUrlCache), IsUrlOkAsync);
 
             _maxHttp = HttpMaxConcurrency;
-            _maxEntry = (int)(HttpMaxConcurrency * 1.5) + 1;
+            _maxEntry = (int)(HttpMaxConcurrency * 1.1) + 1;
 
             _semaphoreForHttp = new SemaphoreSlim(_maxHttp);
             _semaphoreForEntry = new SemaphoreSlim(_maxEntry);
@@ -170,10 +174,69 @@
 
         private void PackReference()
         {
-            var stopwatch = Stopwatch.StartNew();
-            using (var writer = ExternalReferencePackageWriter.Append(_packageFile, new Uri("https://msdn.microsoft.com/")))
+            Directory.CreateDirectory(_packageDirectory);
+            var task = PackReferenceAsync();
+            PrintStatistics(task).Wait();
+        }
+
+        private async Task PackReferenceAsync()
+        {
+            var files = GetAllFiles();
+            if (files.Count == 0)
             {
-                var task = GetItems().ForEachAsync(pair =>
+                return;
+            }
+            if (files.Count == 1)
+            {
+                await PackOneReferenceAsync(files[0]);
+                return;
+            }
+            // left is smaller files, right is bigger files.
+            var left = 0;
+            var right = files.Count - 1;
+            var leftTask = PackOneReferenceAsync(files[left]);
+            var rightTask = PackOneReferenceAsync(files[right]);
+            while (left <= right)
+            {
+                var completed = await Task.WhenAny(new[] { leftTask, rightTask }.Where(t => t != null));
+                await completed; // throw if any error.
+                if (completed == leftTask)
+                {
+                    left++;
+                    if (left < right)
+                    {
+                        leftTask = PackOneReferenceAsync(files[left]);
+                    }
+                    else
+                    {
+                        leftTask = null;
+                    }
+                }
+                else
+                {
+                    right--;
+                    if (left < right)
+                    {
+                        rightTask = PackOneReferenceAsync(files[right]);
+                    }
+                    else
+                    {
+                        rightTask = null;
+                    }
+                }
+            }
+        }
+
+        private async Task PackOneReferenceAsync(string file)
+        {
+            var currentPackage = Path.ChangeExtension(Path.GetFileName(file), "rpk");
+            lock (_currentPackages)
+            {
+                _currentPackages[Array.IndexOf(_currentPackages, null)] = currentPackage;
+            }
+            using (var writer = ExternalReferencePackageWriter.Append(Path.Combine(_packageDirectory, currentPackage), new Uri("https://msdn.microsoft.com/")))
+            {
+                await GetItems(file).ForEachAsync(pair =>
                 {
                     lock (this)
                     {
@@ -182,11 +245,14 @@
                         _apiCount += pair.ViewModel.Count;
                     }
                 });
-                PrintStatistics(task, stopwatch).Wait();
+            }
+            lock (_currentPackages)
+            {
+                _currentPackages[Array.IndexOf(_currentPackages, currentPackage)] = null;
             }
         }
 
-        private async Task PrintStatistics(Task mainTask, Stopwatch stopwatch)
+        private async Task PrintStatistics(Task mainTask)
         {
             bool isFirst = true;
             var queue = new Queue<Tuple<int, int>>(10 * StatisticsFreshPerSecond);
@@ -205,11 +271,18 @@
                 }
                 else
                 {
-                    Console.SetCursorPosition(0, Console.CursorTop - 3);
+                    Console.SetCursorPosition(0, Console.CursorTop - 3 - _currentPackages.Length);
+                }
+                lock (_currentPackages)
+                {
+                    for (int i = 0; i < _currentPackages.Length; i++)
+                    {
+                        Console.WriteLine("Package: " + (_currentPackages[i] ?? string.Empty).PadRight(Console.WindowWidth - "Package: ".Length - 1));
+                    }
                 }
                 Console.WriteLine(
                     "Elapsed time: {0}, generated type: {1}, generated api: {2}",
-                    stopwatch.Elapsed.ToString(@"hh\:mm\:ss"),
+                    Stopwatch.Elapsed.ToString(@"hh\:mm\:ss"),
                     _entryCount.ToString(),
                     _apiCount.ToString());
                 Console.WriteLine(
@@ -231,31 +304,22 @@
             }
         }
 
-        private IObservable<EntryNameAndViewModel> GetItems()
+        private IObservable<EntryNameAndViewModel> GetItems(string file)
         {
             return from entry in
-                       (from list in GetAllCommentId()
-                        from entry in list
-                        select entry).ToObservable()
-                   from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry))
+                       (from entry in GetAllCommentId(file)
+                        select entry).AcquireSemaphore(_semaphoreForEntry).ToObservable(Scheduler.Default)
+                   from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry)).Do(_ => _semaphoreForEntry.Release())
                    where vm.Count > 0
                    select new EntryNameAndViewModel(entry.EntryName, vm);
         }
 
         private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry)
         {
-            await _semaphoreForEntry.WaitAsync();
             List<ReferenceViewModel> result = new List<ReferenceViewModel>(entry.Items.Count);
-            try
+            foreach (var item in entry.Items)
             {
-                foreach (var item in entry.Items)
-                {
-                    result.Add(await GetViewModelItemAsync(item));
-                }
-            }
-            finally
-            {
-                _semaphoreForEntry.Release();
+                result.Add(await GetViewModelItemAsync(item));
             }
             var type = result.Find(item => item.Uid == entry.EntryName);
             if (type != null && type.Href != null)
@@ -458,19 +522,31 @@
             }
         }
 
-        private IEnumerable<List<ClassEntry>> GetAllCommentId()
+        private IEnumerable<ClassEntry> GetAllCommentId(string file)
         {
-            return from file in GlobPathHelper.GetFiles(_baseDirectory, _globPattern)
-                   select (from commentId in GetAllCommentId(file)
-                           where commentId.StartsWith("T:") || commentId.StartsWith("E:") || commentId.StartsWith("F:") || commentId.StartsWith("M:") || commentId.StartsWith("P:")
-                           let uid = commentId.Substring(2)
-                           group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("T:") ? uid : uid.Remove(uid.Split('(')[0].LastIndexOf('.')) into g
-                           select new ClassEntry(g.Key, g.ToList())).ToList();
+            return from commentId in GetAllCommentIdCore(file)
+                   where commentId.StartsWith("T:") || commentId.StartsWith("E:") || commentId.StartsWith("F:") || commentId.StartsWith("M:") || commentId.StartsWith("P:")
+                   let uid = commentId.Substring(2)
+                   group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("T:") ? uid : uid.Remove(uid.Split('(')[0].LastIndexOf('.')) into g
+                   select new ClassEntry(g.Key, g.ToList());
         }
 
-        private IEnumerable<string> GetAllCommentId(string file)
+        private List<string> GetAllFiles()
         {
-            Console.WriteLine("Loading comment id from {0} ...", file);
+            // just guess: the bigger files contains more apis/types.
+            var files = (from file in GlobPathHelper.GetFiles(_baseDirectory, _globPattern)
+                         let fi = new FileInfo(file)
+                         orderby fi.Length
+                         select file).ToList();
+            foreach (var file in files)
+            {
+                Console.WriteLine("Loading comment id from {0} ...", file);
+            }
+            return files;
+        }
+
+        private IEnumerable<string> GetAllCommentIdCore(string file)
+        {
             return from reader in
                        new Func<XmlReader>(() => XmlReader.Create(file))
                        .EmptyIfThrow()

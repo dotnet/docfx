@@ -47,6 +47,15 @@
             }
         }
 
+        public static IEnumerable<T> AcquireSemaphore<T>(this IEnumerable<T> source, SemaphoreSlim semaphore)
+        {
+            foreach (var item in source)
+            {
+                semaphore.Wait();
+                yield return item;
+            }
+        }
+
         public static async Task<HttpResponseMessage> GetWithRetryAsync(this HttpClient client, string url, SemaphoreSlim semaphore, params int[] retryDelay)
         {
             if (retryDelay.Any(delay => delay <= 0))
