@@ -1,3 +1,4 @@
+// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 (function(){"use strict";
 /* jshint browser: true */
 /* global importScripts, onmessage: true, postMessage, lunr */

@@ -1,3 +1,4 @@
+// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 /*
  * Define general utility functions used in docsApp
  * Wrap Angular components in an Immediately Invoked Function Expression (IIFE)
