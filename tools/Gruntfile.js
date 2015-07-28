@@ -43,11 +43,36 @@ module.exports = function(grunt) {
           version: version
         }
       }
+    },
+    header:{
+      cs:{
+        src: "**/*.cs",
+        cwd: "..",
+        expand: true,
+        options: {
+          content: "// Copyright (c) Microsoft. All rights reserved.\n\
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.\n\n"
+        }
+      }
     }
   });
 
-
   grunt.config.set('conf', conf);
+  grunt.registerMultiTask('header', function(){
+    var header = this.options().content;
+    this.files.forEach(function(filePair){
+      filePair.src.forEach(function(src){
+        if (grunt.file.isFile(src)){
+          grunt.verbose.writeln('Adding header ' + header + ' to ' + src);
+          var content = grunt.file.read(src);
+          if (content.indexOf(header) < 0) {
+            content = header +  content;
+            grunt.file.write(src, content);
+          }
+        }
+      })
+    })
+  });
   grunt.registerTask('pack', ['copy', 'nugetpack']);
   grunt.registerTask('default', ['pack']);
 
