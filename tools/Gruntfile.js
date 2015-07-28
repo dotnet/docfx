@@ -45,6 +45,15 @@ module.exports = function(grunt) {
       }
     },
     header:{
+      vb:{
+        src: "**/*.vb",
+        cwd: "..",
+        expand: true,
+        options: {
+          content: "' Copyright (c) Microsoft. All rights reserved.\n\
+' Licensed under the MIT license. See LICENSE file in the project root for full license information.\n\n"
+        }
+      },
       cs:{
         src: "**/*.cs",
         cwd: "..",
@@ -53,9 +62,19 @@ module.exports = function(grunt) {
           content: "// Copyright (c) Microsoft. All rights reserved.\n\
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.\n\n"
         }
+      },
+      js:{
+        src: ["**/*.js", "!src/lunr.min.js"],
+        cwd: "../src/docfx.website.themes/default/app",
+        expand: true,
+        options: {
+          content: "// Copyright (c) Microsoft. All rights reserved.\
+ Licensed under the MIT license. See LICENSE file in the project root for full license information.\n"
+        }
       }
     }
   });
+
 
   grunt.config.set('conf', conf);
   grunt.registerMultiTask('header', function(){
@@ -63,11 +82,14 @@ module.exports = function(grunt) {
     this.files.forEach(function(filePair){
       filePair.src.forEach(function(src){
         if (grunt.file.isFile(src)){
-          grunt.verbose.writeln('Adding header ' + header + ' to ' + src);
           var content = grunt.file.read(src);
           if (content.indexOf(header) < 0) {
+            grunt.verbose.writeln('Adding header to ' + src);
             content = header +  content;
             grunt.file.write(src, content);
+          }
+          else {
+            grunt.verbose.writeln('Header already exists in ' + src + ', skipped.');
           }
         }
       })
