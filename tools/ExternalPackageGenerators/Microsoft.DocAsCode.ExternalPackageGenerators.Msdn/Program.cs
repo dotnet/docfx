@@ -335,10 +335,6 @@
             {
                 result.AddRange(await vmsTask);
             }
-            foreach (var item in entry.Items)
-            {
-                result.Add(await GetViewModelItemAsync(item));
-            }
             if (typeVM != null && typeVM.Href != null)
             {
                 // handle enum field, or other one-page-member
