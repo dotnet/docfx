@@ -1,4 +1,7 @@
-﻿namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 {
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
