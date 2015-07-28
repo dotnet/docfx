@@ -238,7 +238,7 @@
             {
                 await GetItems(file).ForEachAsync(pair =>
                 {
-                    lock (this)
+                    lock (writer)
                     {
                         writer.AddOrUpdateEntry(pair.EntryName + ".yml", pair.ViewModel);
                         _entryCount++;
@@ -317,19 +317,36 @@
         private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry)
         {
             List<ReferenceViewModel> result = new List<ReferenceViewModel>(entry.Items.Count);
+            var type = entry.Items.Find(item => item.Uid == entry.EntryName);
+            ReferenceViewModel typeVM = null;
+            if (type != null)
+            {
+                typeVM = await GetViewModelItemAsync(type);
+                result.Add(typeVM);
+            }
+            int size = 1;
+
+            foreach (var vmsTask in
+                from block in
+                    (from item in entry.Items
+                     where item != type
+                     select item).BlockBuffer(() => size <<= 1)
+                select Task.WhenAll(from item in block select GetViewModelItemAsync(item)))
+            {
+                result.AddRange(await vmsTask);
+            }
             foreach (var item in entry.Items)
             {
                 result.Add(await GetViewModelItemAsync(item));
             }
-            var type = result.Find(item => item.Uid == entry.EntryName);
-            if (type != null && type.Href != null)
+            if (typeVM != null && typeVM.Href != null)
             {
                 // handle enum field, or other one-page-member
                 foreach (var item in result)
                 {
                     if (item.Href == null)
                     {
-                        item.Href = type.Href;
+                        item.Href = typeVM.Href;
                     }
                 }
             }
@@ -399,9 +416,8 @@
 
         private string GetAlias(string commentId)
         {
-            if (commentId.StartsWith("M:") || commentId.StartsWith("P:"))
+            if (!commentId.StartsWith("T:"))
             {
-                // method/property maybe have overloads.
                 return null;
             }
             var uid = commentId.Substring(2);
@@ -538,9 +554,17 @@
                          let fi = new FileInfo(file)
                          orderby fi.Length
                          select file).ToList();
-            foreach (var file in files)
+            if (files.Count > 0)
             {
-                Console.WriteLine("Loading comment id from {0} ...", file);
+                Console.WriteLine("Loading comment id from:");
+                foreach (var file in files)
+                {
+                    Console.WriteLine(file);
+                }
+            }
+            else
+            {
+                Console.WriteLine("File not found.");
             }
             return files;
         }

@@ -56,6 +56,30 @@
             }
         }
 
+        public static IEnumerable<List<T>> BlockBuffer<T>(this IEnumerable<T> source, Func<int> getBlockSize)
+        {
+            var blockSize = getBlockSize();
+            if (blockSize <= 0)
+            {
+                blockSize = 1;
+            }
+            var list = new List<T>(blockSize);
+            foreach (var item in source)
+            {
+                list.Add(item);
+                if (list.Count == blockSize)
+                {
+                    yield return list;
+                    blockSize = getBlockSize();
+                    if (blockSize <= 0)
+                    {
+                        blockSize = 1;
+                    }
+                    list = new List<T>(blockSize);
+                }
+            }
+        }
+
         public static async Task<HttpResponseMessage> GetWithRetryAsync(this HttpClient client, string url, SemaphoreSlim semaphore, params int[] retryDelay)
         {
             if (retryDelay.Any(delay => delay <= 0))
