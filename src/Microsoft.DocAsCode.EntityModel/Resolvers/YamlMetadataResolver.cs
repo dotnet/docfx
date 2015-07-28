@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 References = allReferences,
                 PreserveRawInlineComments = preserveRawInlineComments,
                 ExternalReferences = (from reader in
-                                          from package in externalReferencePackages
+                                          from package in externalReferencePackages.AsParallel()
                                           select ExternalReferencePackageReader.CreateNoThrow(package)
                                       where reader != null
                                       select reader).ToList(),
