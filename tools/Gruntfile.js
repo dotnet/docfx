@@ -113,7 +113,9 @@ module.exports = function(grunt) {
       })
     })
   });
-  grunt.registerTask('pack', ['copy', 'nugetpack']);
+
+  // disable docfx.msbuild nuget package generation here as it is moved to docfx.msbuild.csproj
+  grunt.registerTask('pack', ['nugetpack:msdn.4.5.2']);
   grunt.registerTask('default', ['pack']);
 
   function getDateTime() {
