@@ -29,13 +29,14 @@ module.exports = function(grunt) {
       },
     },
     nugetpack: {
-      'docfx.msbuild': {
-        src: docfxSrc + "/docfx.msbuild.nuspec",
-        dest: docfxDest,
-        options: {
-          version: version
-        }
-      },
+      // disable docfx.msbuild nuget package generation here as it is moved to docfx.msbuild.csproj
+      // 'docfx.msbuild': {
+      //   src: docfxSrc + "/docfx.msbuild.nuspec",
+      //   dest: docfxDest,
+      //   options: {
+      //     version: version
+      //   }
+      // },
       'msdn.4.5.2': {
         src: '../src/nuspec/msdn.4.5.2/msdn.4.5.2.nuspec',
         dest: '../artifacts/msdn.4.5.2/' + conf,

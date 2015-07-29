@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.22919.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -55,20 +55,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Documentation", "Documentation\Documentation.csproj", "{03FA881A-7B27-469A-A086-FFBA385EBACA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docfx.msbuild", "docfx.msbuild", "{8CFE8DE6-598F-4951-899D-8D09325FB618}"
-	ProjectSection(SolutionItems) = preProject
-		src\nuspec\docfx.msbuild\docfx.msbuild.nuspec = src\nuspec\docfx.msbuild\docfx.msbuild.nuspec
-		src\nuspec\docfx.msbuild\Readme.txt = src\nuspec\docfx.msbuild\Readme.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "msdn.4.5.2", "msdn.4.5.2", "{7056DE24-9537-4504-95CF-7A63FBE74772}"
 	ProjectSection(SolutionItems) = preProject
 		src\nuspec\msdn.4.5.2\msdn.4.5.2.nuspec = src\nuspec\msdn.4.5.2\msdn.4.5.2.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{FE35AC88-7137-4B5F-8CA2-D31B0BC6CD83}"
-	ProjectSection(SolutionItems) = preProject
-		src\nuspec\docfx.msbuild\content\toc.yml = src\nuspec\docfx.msbuild\content\toc.yml
-		src\nuspec\docfx.msbuild\content\xdoc.json = src\nuspec\docfx.msbuild\content\xdoc.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{BB721096-D78C-4CF4-9D60-E66A26A3CB49}"
@@ -197,11 +187,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{BB72
 		src\nuspec\msdn.4.5.2\content\WindowsBase.rpk = src\nuspec\msdn.4.5.2\content\WindowsBase.rpk
 		src\nuspec\msdn.4.5.2\content\WindowsFormsIntegration.rpk = src\nuspec\msdn.4.5.2\content\WindowsFormsIntegration.rpk
 		src\nuspec\msdn.4.5.2\content\XamlBuildTask.rpk = src\nuspec\msdn.4.5.2\content\XamlBuildTask.rpk
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{8BFFE355-4712-4187-8252-F69AA515525A}"
-	ProjectSection(SolutionItems) = preProject
-		src\nuspec\docfx.msbuild\build\docfx.msbuild.targets = src\nuspec\docfx.msbuild\build\docfx.msbuild.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{04B2D6B6-82DC-48CA-AC0E-9B4A32DD71C5}"
@@ -341,6 +326,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5D21F2DC
 		src\nuspec\msdn.4.0\tools\uninstall.ps1 = src\nuspec\msdn.4.0\tools\uninstall.ps1
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx.msbuild", "src\nuspec\docfx.msbuild\docfx.msbuild.csproj", "{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -391,6 +378,10 @@ Global
 		{1090FD24-DC6F-4DDA-913B-F69817B31A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1090FD24-DC6F-4DDA-913B-F69817B31A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1090FD24-DC6F-4DDA-913B-F69817B31A9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -413,14 +404,13 @@ Global
 		{03FA881A-7B27-469A-A086-FFBA385EBACA} = {3E93DD37-948B-41CF-8C91-892B36B07E58}
 		{8CFE8DE6-598F-4951-899D-8D09325FB618} = {BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}
 		{7056DE24-9537-4504-95CF-7A63FBE74772} = {BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}
-		{FE35AC88-7137-4B5F-8CA2-D31B0BC6CD83} = {8CFE8DE6-598F-4951-899D-8D09325FB618}
 		{BB721096-D78C-4CF4-9D60-E66A26A3CB49} = {7056DE24-9537-4504-95CF-7A63FBE74772}
-		{8BFFE355-4712-4187-8252-F69AA515525A} = {8CFE8DE6-598F-4951-899D-8D09325FB618}
 		{04B2D6B6-82DC-48CA-AC0E-9B4A32DD71C5} = {7056DE24-9537-4504-95CF-7A63FBE74772}
 		{416A17AC-FFD4-4722-A990-598EF44F8D90} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{1090FD24-DC6F-4DDA-913B-F69817B31A9B} = {416A17AC-FFD4-4722-A990-598EF44F8D90}
 		{3E130485-4332-4CDE-BE7C-94BD745AA9EB} = {BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}
 		{E50AF56D-0F80-4862-B565-0927B1C17459} = {3E130485-4332-4CDE-BE7C-94BD745AA9EB}
 		{5D21F2DC-87EE-4205-B20A-B3403F2C7007} = {3E130485-4332-4CDE-BE7C-94BD745AA9EB}
+		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44} = {8CFE8DE6-598F-4951-899D-8D09325FB618}
 	EndGlobalSection
 EndGlobal
