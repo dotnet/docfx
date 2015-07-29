@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-/* 
+/*
  * https://github.com/johnpapa/angular-styleguide
  * define 1 component per file
 */
@@ -11,7 +11,7 @@ angular.module('docsApp', [
   'bootstrap',
   'ui.bootstrap',
   'ui.bootstrap.dropdown',
-  
+
   'docascode.controller',
   'docascode.directives',
 ]);

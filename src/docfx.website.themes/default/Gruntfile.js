@@ -9,7 +9,7 @@
 module.exports = function (grunt) {
   'use strict';
   var path = require('path');
-  
+
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
@@ -19,7 +19,8 @@ module.exports = function (grunt) {
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
-    dist: 'dist'
+    dist: 'dist',
+    copyright: require('./package.json').copyright
   };
 
   // Define the configuration for all the tasks
@@ -27,7 +28,6 @@ module.exports = function (grunt) {
 
     // Project settings
     docfx: appConfig,
-
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       bower: {
@@ -135,7 +135,8 @@ module.exports = function (grunt) {
       all: {
         src: [
           'Gruntfile.js',
-          '<%= docfx.app %>/src/{,*/}*.js'
+          '<%= docfx.app %>/src/{,*/}*.js',
+          '!<%= docfx.app %>/src/lunr.min.js',
         ]
       },
       test: {
@@ -231,9 +232,20 @@ module.exports = function (grunt) {
           html: {
             steps: {
               js: ['concat', 'uglifyjs'],
-              css: ['cssmin']
+              css: ['concat', 'cssmin']
             },
-            post: {}
+            post: {
+              js: [{
+                name: 'uglify',
+                createConfig: function(context, block){
+                  var generated = context.options.generated;
+                  generated.options = {
+                    preserveComments: 'some',
+                    banner: '/*! <%= docfx.copyright %> */'
+                  };
+                }
+              }]
+            }
           }
         }
       }
@@ -348,15 +360,15 @@ module.exports = function (grunt) {
         },
         files: [
           {
-            src: ['**'], 
-            cwd: 'dist', 
+            src: ['**'],
+            cwd: 'dist',
             expand: true,
             dest: '.'
           }
         ]
       }
     },
-    
+
     // Test settings
     karma: {
       unit: {
