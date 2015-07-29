@@ -80,6 +80,10 @@ module.exports = function (grunt) {
               connect.static('app/content'),
               connect.static('sample'),
               connect().use(
+                '/scripts',
+                connect.static('app/src')
+              ),
+              connect().use(
                 '/bower_components',
                 connect.static('./bower_components')
               ),
@@ -95,6 +99,10 @@ module.exports = function (grunt) {
             return [
               connect.static('.tmp'),
               connect.static('app/tests'),
+              connect().use(
+                '/scripts',
+                connect.static('app/src')
+              ),
               connect().use(
                 '/bower_components',
                 connect.static('./bower_components')
@@ -275,6 +283,15 @@ module.exports = function (grunt) {
         dest: '<%= docfx.app %>/src',
         src: 'lunr.min.js'
       },
+      js: {
+        expand: true,
+        cwd: '<%= docfx.app %>/src',
+        dest: '<%= docfx.dist %>/scripts',
+        src: [
+          'lunr.min.js',
+          'search-worker.js'
+        ]
+      },
       dist: {
         files: [{
           expand: true,
@@ -284,9 +301,6 @@ module.exports = function (grunt) {
           src: [
             '*.html',
             '{,*/}*.html',
-            'lunr.min.js',
-            'search-data.json',
-            'search-worker.js'
           ]
         }, {
           expand: true,
@@ -363,6 +377,7 @@ module.exports = function (grunt) {
       'wiredep',
       'less',
       'copy:lunr',
+      'copy:js',
       'concurrent:server',
       'autoprefixer:server',
       'connect:livereload',
@@ -394,6 +409,7 @@ module.exports = function (grunt) {
     'concat',
     'ngAnnotate',
     'copy:lunr',
+    'copy:js',
     'copy:dist',
     'cssmin',
     'uglify',

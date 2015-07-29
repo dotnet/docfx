@@ -62,7 +62,7 @@
       var searchIndex = $q.defer();
       var results;
 
-      var worker = new Worker('search-worker.js');
+      var worker = new Worker('scripts/search-worker.js');
 
       // The worker will send us a message in two situations:
       // - when the index has been built, ready to run a query
