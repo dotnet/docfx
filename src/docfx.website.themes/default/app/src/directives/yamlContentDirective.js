@@ -6,7 +6,7 @@
  * @element ANY
  * @priority 1000
  * @scope
- * 
+ *
  * @description yamlContent directive to help render markdown pages
  **/
 
@@ -40,21 +40,21 @@
     function getNumber(num) {
       return new Array(num + 1);
     }
-  
+
     // Href relative to current file
     function getLinkHref(url) {
       return urlService.getLinkHref(url, $location.path());
     }
-    
+
     function getSyntax(element, language) {
       if (!element) return null;
       return utility.getNameWithSelector("content", language, element);
     }
-    
+
     function getDisplayName(element, language) {
       return utility.getDisplayName(element, language);
     }
-    
+
     // expand / collapse all logic for model items
     function expandAll(model, state) {
       if (model && model.items) {
@@ -66,31 +66,31 @@
         });
       }
     }
-    
+
     /**************************************/
     function getMatchedItem(key, references) {
       var matched = references.filter(function (x) {return x.uid === key;})[0] || {};
       if (matched.uid) {
         return matched;
-      } 
+      }
       return null;
     }
-    
+
     // Parameters/exceptions as an array for object {id, type, description}
     function setArrayTypeModel(parameters, references){
       if (!parameters || parameters.length === 0) return null;
       parameters.forEach(function(element) {
-        // type is uid for 
+        // type is uid for
         var matched = getMatchedItem(element.type, references);
         if (matched && matched.uid){
-          element.typeModel = matched; 
+          element.typeModel = matched;
         } else {
           // If no matching item is found, using element.type as name
           element.typeModel = {name: element.type};
         }
       });
     }
-    
+
     function setReturnTypeModel(returnValue, references){
       if (!returnValue) return null;
       var matched = getMatchedItem(returnValue.type, references);
@@ -101,7 +101,7 @@
         returnValue.typeModel = {name: returnValue.type};
       }
     }
-    
+
     function render(scope, element, yamlFilePath, loadMapFile) {
       if (!yamlFilePath) return;
       scope.contentType = '';
@@ -116,7 +116,7 @@
         var allItems;
         // May be itself
         references = items.concat(references || []);
-        
+
         // Get children
         if (item.children) {
           var children = {};
@@ -128,7 +128,7 @@
           }
           allItems = children;
         }
-        
+
         // Get inheritance=>array of UID
         var inheritance = item.inheritance;
         if (inheritance) {
@@ -139,23 +139,23 @@
               inheritanceModel.push(matched);
             }
           }, this);
-            
+
           item.inheritanceModel = inheritanceModel;
         }
-        
+
         var syntax = item.syntax;
         if (syntax){
           // Set type model for parameter's type
           setArrayTypeModel(syntax.parameters, references);
-          
+
           // Set type model for return's type
           setReturnTypeModel(syntax.return, references);
         }
-        
+
         // Set type model for exception's type
         setArrayTypeModel(item.exceptions, references);
-        
-        
+
+
         // Set type model for children's parameter's & return's type & exception type
         for (var itemKey in allItems){
           if (allItems.hasOwnProperty(itemKey) && allItems[itemKey]) {
@@ -166,14 +166,14 @@
             }
           }
         }
-        
+
         // For View model
         if (item.type.toLowerCase() === 'namespace') {
           scope.contentType = 'namespace';
         } else {
           scope.contentType = 'class';
         }
-        
+
         var childrenModel = [];
         if (allItems){
           var displayTypes = scope.contentType === 'namespace' ? NG_ITEMTYPES.namespace : NG_ITEMTYPES.class;
@@ -202,7 +202,7 @@
             }
           }
         }
-        
+
         if (childrenModel.length > 0) item.items = childrenModel;
         scope.model = item;
         // For affix:
@@ -217,7 +217,7 @@
       }
       );
     }
-    
+
     // Href relative to current toc file
     function getTocHref(url) {
       // if (!$scope.model) return '';
@@ -226,14 +226,14 @@
       pathInfo.contentPath = '';
       return urlService.getHref(pathInfo.tocPath, '', url);
     }
-    
+
     function escapeId(id) {
       // html id attr only allows a-z A-Z 0-9 . : _
       // while . : are valid selectors
       if (!id) return id;
       return id.replace(/[^a-zA-Z0-9_]/g, '_');
     }
-    
+
     function YamlContentController($scope) {
       $scope.getViewSourceHref = getViewSourceHref;
       $scope.getImproveTheDocHref = getImproveTheDocHref;
@@ -248,7 +248,7 @@
     YamlContentController.$inject = ['$scope'];
     return {
       restrict: 'E',
-      replace: true,
+      replace: false,
       templateUrl: 'views/yamlContent.html',
       priority: 100,
       require: 'ngModel',

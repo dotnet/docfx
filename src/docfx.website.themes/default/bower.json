@@ -1,5 +1,5 @@
 {
-  "name": "docfx",
+  "name": "docfx.theme.angular",
   "version": "0.0.0",
   "ignore": [
     "**/.*",
