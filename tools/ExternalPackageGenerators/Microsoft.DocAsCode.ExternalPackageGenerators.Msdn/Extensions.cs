@@ -81,6 +81,10 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                     list = new List<T>(blockSize);
                 }
             }
+            if (list.Count > 0)
+            {
+                yield return list;
+            }
         }
 
         public static async Task<HttpResponseMessage> GetWithRetryAsync(this HttpClient client, string url, SemaphoreSlim semaphore, params int[] retryDelay)

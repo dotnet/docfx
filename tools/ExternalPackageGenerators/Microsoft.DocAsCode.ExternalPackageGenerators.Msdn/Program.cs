@@ -327,13 +327,13 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                 typeVM = await GetViewModelItemAsync(type);
                 result.Add(typeVM);
             }
-            int size = 1;
+            int size = 0;
 
             foreach (var vmsTask in
                 from block in
                     (from item in entry.Items
                      where item != type
-                     select item).BlockBuffer(() => size <<= 1)
+                     select item).BlockBuffer(() => size = size * 2 + 1)
                 select Task.WhenAll(from item in block select GetViewModelItemAsync(item)))
             {
                 result.AddRange(await vmsTask);
