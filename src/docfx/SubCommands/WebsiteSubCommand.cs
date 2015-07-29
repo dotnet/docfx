@@ -2,6 +2,7 @@
 {
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.MarkdownIndexer;
+    using Microsoft.DocAsCode.EntityModel.ExtractSearchData;
     using Microsoft.DocAsCode.Utility;
     using System;
     using System.Collections.Generic;
@@ -80,6 +81,9 @@
 
             // TODO: Pass in theme name
             TemplateManager.CopyToOutput(configModel.BaseDirectory, "Template", assembly, templateFolder, outputFolder, toc, configModel.TemplateTheme);
+
+            // 4. Build search data of the website
+            ExtractSearchData.GenerateSearchDataFile(outputFolder);
 
             return ParseResult.SuccessResult;
         }

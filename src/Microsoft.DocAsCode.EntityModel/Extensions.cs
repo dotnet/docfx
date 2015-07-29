@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.EntityModel
     public static class YamlUtility
     {
         private static readonly ThreadLocal<Serializer> serializer = new ThreadLocal<Serializer>(() => new Serializer());
-        private static readonly ThreadLocal<Deserializer> deserializer = new ThreadLocal<Deserializer>(() => new Deserializer());
+        private static readonly ThreadLocal<Deserializer> deserializer = new ThreadLocal<Deserializer>(() => new Deserializer(ignoreUnmatched:true));
 
         public static void Serialize(TextWriter writer, object graph)
         {

@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtractSearchDataTest.cs" />
     <Compile Include="ParsersUnitTest.cs" />
     <Compile Include="ConvertToViewModelUnitTest.cs" />
     <Compile Include="GenerateMetadataFromVBUnitTest.cs" />

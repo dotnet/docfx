@@ -26,7 +26,7 @@ searchDataRequest.onload = function() {
   }
   postMessage({ e: 'index-ready' });
 };
-searchDataRequest.open('GET', 'search-data.json');
+searchDataRequest.open('GET', '/search-data.json');
 searchDataRequest.send();
 
 // The worker receives a message everytime the web app wants to query the index
