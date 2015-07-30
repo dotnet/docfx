@@ -168,15 +168,11 @@ header .navbar {
 
 .navbar-brand {
   font-size: inherit;
-  padding: 0 0 0 15px;
+  padding: 0;
 }
 
 .navbar-collapse {
   margin: 0 -15px;
-}
-
-#navbar {
-  height: 50px !important;
 }
 
 // bug with angularjs collapse
@@ -212,45 +208,76 @@ header .navbar {
 //========================================
 //  search box
 //========================================
-
-#autocollapse.collapsed .navbar-header {
-  float: none;
+#mobile-indicator {
+  display: none;
 }
 
-#autocollapse.collapsed .navbar-toggle {
-  display: block;
+#autocollapse.collapsed {
+  .navbar-header {
+    float: none;
+  }
+  .navbar-toggle {
+    display: block;
+  }
+  .navbar-collapse {
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .navbar-collapse.collapse {
+    display: none !important;
+  }
+  .navbar-nav {
+    float: none !important;
+    margin: 7.5px -15px;
+  }
+  .navbar-nav>li {
+    float: none;
+  }
+  .navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .collapse.in, .collapsing {
+    display: block !important;
+    .navbar-right {
+      float: none !important;
+    }
+  }
 }
 
-#autocollapse.collapsed .navbar-collapse {
-  border-top: 1px solid transparent;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+#autocollapse {
+  .form-group {
+    width: 100%;
+  }
+  .form-control {
+    width: 100%;
+  }
+  .navbar-header {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .navbar-brand {
+    margin-left: 0;
+  }
 }
 
-#autocollapse.collapsed .navbar-collapse.collapse {
-  display: none !important;
+.collapse.in, .collapsing {
+  text-align: center;
 }
 
-#autocollapse.collapsed .navbar-nav {
-  float: none !important;
-  margin: 7.5px -15px;
+.collapsing .navbar-form {
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 10px 15px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
 }
 
-#autocollapse.collapsed .navbar-nav>li {
-  float: none;
-}
-
-#autocollapse.collapsed .navbar-nav>li>a {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-#autocollapse.collapsed .collapse.in {
-  display: block !important;
+.collapsed .collapse.in .navbar-form {
+  .collapsing .navbar-form();
 }
 
 .navbar .navbar-nav {
   display: inline-block;
-  float: none;
 }
 
 .docs-search {
@@ -715,6 +742,9 @@ footer {
 }
 
 @media only screen and (max-width : 768px) {
+  #mobile-indicator {
+    display: block;
+  }
 
 /* TOC display for responsive */
 
