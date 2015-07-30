@@ -92,11 +92,13 @@
     // auto collapsed when navbar into two lines
       function autocollapse() {
         var navbar = $('#autocollapse');
-        if (navbar.height() === null) {
+        var navbarCollapse = $('.navbar-collapse');
+        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        if (navbarCollapse.height() === null) {
           setTimeout(autocollapse,300);
         }
         navbar.removeClass('collapsed');
-        if(navbar.height() > 60) {
+        if(width <= 768 || navbarCollapse.height() > 60) {
             navbar.addClass('collapsed');
         }
       }

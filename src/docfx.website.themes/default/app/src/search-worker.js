@@ -27,13 +27,13 @@ searchDataRequest.onload = function() {
   }
   postMessage({ e: 'index-ready' });
 };
-searchDataRequest.open('GET', '/search-data.json');
+searchDataRequest.open('GET', '../search-data.json');
 searchDataRequest.send();
 
 // The worker receives a message everytime the web app wants to query the index
 onmessage = function(oEvent) {
-  var q = oEvent.data.q;
-  var hits = index.search(q);
+  var q = oEvent.data.q
+  ;var hits = index.search(q);
   var results = [];
   // Only return the array of paths to pages
   hits.forEach(function(hit) {
