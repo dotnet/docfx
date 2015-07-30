@@ -113,12 +113,12 @@
   </Target>
   -->
   <!-- Reinstall docfx package before build-->
-  <Target Name="BeforeBuild">
+  <Target BeforeTargets="Compile" Name="ReInstallDocfxPackage">
     <Warning Text="Unable to find nuget.exe! Please install nuget.exe to $(NugetPath) to make sure docfx.msbuild is re-installed!" Condition="!Exists($(NugetPath))">
     </Warning>
-    <CallTarget Targets="ReInstallDocfxPackage" Condition="Exists($(NugetPath))" />
+    <CallTarget Targets="_ReInstallDocfxPackage" Condition="Exists($(NugetPath))" />
   </Target>
-  <Target Name="ReInstallDocfxPackage">
+  <Target BeforeTargets="Compile" Name="_ReInstallDocfxPackage">
     <!-- Remove the package folder so that nuget restore re-install the docfx package -->
     <RemoveDir Directories="$(DocfxNugetPackagePath)" />
     <Exec Command="&quot;$(NugetPath)&quot; restore -PackagesDirectory $(PackagesDirectory) -NoCache " />
