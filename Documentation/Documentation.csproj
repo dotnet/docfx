@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Documentation</RootNamespace>
     <AssemblyName>Documentation</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -23,7 +23,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <NugetPath Condition=" '$(NugetPath)'=='' ">$(LocalAppData)\NuGet\NuGet.exe</NugetPath>
-    <PackagesDirectory>..\packages\</PackagesDirectory>
+    <PackagesDirectory>$(MSBuildThisFileDirectory)..\packages\</PackagesDirectory>
     <DocfxNugetPackagePath>$(PackagesDirectory)\docfx.msbuild.1.0.0</DocfxNugetPackagePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -59,19 +59,7 @@
     <Content Include="spec\toc.yml" />
     <Content Include="tutorial\docfx.exe_user_manual.md" />
     <Content Include="tutorial\docfx_getting_started.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\src\nuspec\docfx.msbuild\docfx.msbuild.csproj">
-      <Project>{1a7fd832-ebe9-47b2-ab59-718cb18dca44}</Project>
-      <Name>docfx.msbuild</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="NuGet.config">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="NuGet.config" />
     <Content Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
@@ -113,7 +101,8 @@
   </Target>
   -->
   <!-- Reinstall docfx package before build-->
-  <Target BeforeTargets="Compile" Name="ReInstallDocfxPackage">
+  <Target Name="BeforeBuild">
+    <MSBuild Projects="..\src\nuspec\docfx.msbuild\docfx.msbuild.csproj" Properties="PackageVersion=1.0.0;WithSuffix=False;PackageOutputPath=$(MSBuildThisFileDirectory)..\artifacts\DocsPackage"/>
     <Warning Text="Unable to find nuget.exe! Please install nuget.exe to $(NugetPath) to make sure docfx.msbuild is re-installed!" Condition="!Exists($(NugetPath))">
     </Warning>
     <CallTarget Targets="_ReInstallDocfxPackage" Condition="Exists($(NugetPath))" />

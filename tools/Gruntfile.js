@@ -29,14 +29,13 @@ module.exports = function(grunt) {
       },
     },
     nugetpack: {
-      // disable docfx.msbuild nuget package generation here as it is moved to docfx.msbuild.csproj
-      // 'docfx.msbuild': {
-      //   src: docfxSrc + "/docfx.msbuild.nuspec",
-      //   dest: docfxDest,
-      //   options: {
-      //     version: version
-      //   }
-      // },
+      'docfx.msbuild': {
+        src: docfxSrc + "/docfx.msbuild.nuspec",
+        dest: docfxDest,
+        options: {
+          version: version
+        }
+      },
       'msdn.4.5.2': {
         src: '../src/nuspec/msdn.4.5.2/msdn.4.5.2.nuspec',
         dest: '../artifacts/msdn.4.5.2/' + conf,
@@ -114,7 +113,9 @@ module.exports = function(grunt) {
       })
     })
   });
-  grunt.registerTask('pack', ['copy', 'nugetpack']);
+
+  // disable docfx.msbuild nuget package generation here as it is moved to docfx.msbuild.csproj
+  grunt.registerTask('pack', ['nugetpack:msdn.4.5.2']);
   grunt.registerTask('default', ['pack']);
 
   function getDateTime() {
