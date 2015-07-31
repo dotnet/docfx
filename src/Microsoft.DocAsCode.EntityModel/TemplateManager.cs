@@ -135,6 +135,17 @@ namespace Microsoft.DocAsCode.EntityModel
                     if (!Directory.Exists(customTemplateRootFolder)) message += string.Format("The custom template folder '{0}' does not exist", customTemplateRootFolder);
                     else message += string.Format("The themes available in the custom template folder '{0}' are '{1}' while the matching ones are '{2}'", customTemplateRootFolder, availableCustomThemes.ToDelimitedString(), matchedCustomThemes.ToDelimitedString());
                 }
+                else
+                {
+                    // If no builtin themes are applied
+                    if (!availableBuiltinThemes.Any())
+                    {
+                        message = "There is no theme provided.";
+                        ParseResult.WriteToConsole(ResultLevel.Info, message);
+                        return;
+                    }
+                }
+
                 ParseResult.WriteToConsole(ResultLevel.Error, message);
             }
         }
