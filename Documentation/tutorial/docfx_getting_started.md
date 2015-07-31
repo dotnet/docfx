@@ -1,31 +1,40 @@
-Getting Started with DocFx
+Getting Started with `docfx`
 ===============
 
 Getting Started
 ---------------
 
-DocFx is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphnix. It has the ability to extract triple slash comments out from your source code. What's more, it has syntax to link additional files to API to add additional remarks. DocFx will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. The website is currently written in AngularJS, but DocFx provides the flexibility for you to customize the website through specifying templates.
+`docfx` is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphnix. It has the ability to extract triple slash comments out from your source code. What's more, it has syntax to link additional files to API to add additional remarks. `docfx` will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. The website is currently written in AngularJS, but `docfx` provides the flexibility for you to customize the website through specifying templates.
 
 * Click "View Source" for an API to route to the source code in GitHub (your API must be pushed to GitHub)
+* `docfx` provide DNX version for cross platform use. **NOTSUPPORTED** FOR NOW: DNX version of `docfx` can only generate YAML metadata files.
+* `docfx` can be used within Visual Studio seamlessly. **NOTE** offical `docfx.msbuild` nuget package is on the way to publish, you can now build your own with source code and use it locally.
 
-* **NOTSUPPORTED** FOR NOW: DNX version of DocFx can only generate YAML metadata files for now.
-
-Use DocFx under Visual Studio IDE
+Use `docfx` under Visual Studio IDE
 ---------------
-As a prerequisite, you will need VS 2015 to use DocFx.
+As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use `docfx` in IDE.
 ### Quick Start
+* `git clone` to get the latest code.
+* Run `build.cmd` under root folder
+* Add `artifacts` folder to nuget source by in IDE:
+  > Tools > Nuget Package Manager > Package Manager Settings > Package Sources
 * Create an empty ASP.NET website. (Actually any project will work, we use ASP.NET website as it has built-in *PREVIEW* feature so that we can preview the generated website easily.)
-* Install Nuget Package `DocFx` prerelase version.
+* Install Nuget Package `docfx.msbuild` prerelase version.
 	
   Under *Package Manager Console*
 	> `Install-Package docfx.msbuild -Pre`
 * You will notice that inside the project, default files *xdoc.json*, *toc.yml* are automatically added.
 * Preview the website, and navigate to `/_site` url.
 
-Run DocFx Command Line
----------------
+Use `docfx` under DNX
+----------------
+As a prerequisite, you will need to install [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm) and [DNX](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx).
+###Quick Start
+* `dnvm upgrade` to get the latest dnvm.
+* `dnu commands install docfx` to install `docfx` as a command
+* `docfx Documentation/xdoc.json` to build generate `docfx` project into a website under `_site` folder!
 
-Please refer to [DocFx User Manual](docfx.exe_user_manual.md) for detailed description of the usage of *xdoc.json*.
+Please refer to [`docfx` User Manual](docfx.exe_user_manual.md) for detailed description of the usage of *xdoc.json*.
 
 Adding conceptual content
 -------------------------

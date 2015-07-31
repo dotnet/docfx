@@ -1,3 +1,1 @@
-TO BE ADDED
-
-Containing the *docfx* project organizing documents.
+Documentation project uses *docfx.msbuild* nuget package to generate documentation for *docfx* project, along with conceputal files, with `xdoc.json` to provide configuration for *docfx*.
