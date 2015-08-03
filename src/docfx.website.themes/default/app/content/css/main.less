@@ -168,7 +168,7 @@ header .navbar {
 
 .navbar-brand {
   font-size: inherit;
-  padding: 0 0 0 15px;
+  padding: 0;
 }
 
 .navbar-collapse {
@@ -208,6 +208,9 @@ header .navbar {
 //========================================
 //  search box
 //========================================
+#mobile-indicator {
+  display: none;
+}
 
 #autocollapse.collapsed {
   .navbar-header {
@@ -234,14 +237,11 @@ header .navbar {
     padding-top: 10px;
     padding-bottom: 10px;
   }
-  .collapse.in {
+  .collapse.in, .collapsing {
     display: block !important;
-  }
-  .collapse.in .navbar-right {
-    float: none !important;
-  }
-  .collapsing .navbar-right {
-    float: none !important;
+    .navbar-right {
+      float: none !important;
+    }
   }
 }
 
@@ -742,6 +742,9 @@ footer {
 }
 
 @media only screen and (max-width : 768px) {
+  #mobile-indicator {
+    display: block;
+  }
 
 /* TOC display for responsive */
 
