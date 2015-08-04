@@ -23,7 +23,7 @@
 
       var searchData = {};
       // Delay building the index by loading the data asynchronously
-      var indexReadyPromise = $http.get('search-data.json').then(function(response) {
+      var indexReadyPromise = $http.get('../search-data.json').then(function(response) {
         searchData = response.data;
         // Delay building the index for 500ms to allow the page to render
         return $timeout(function() {
