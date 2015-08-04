@@ -1,10 +1,8 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-namespace Microsoft.DocAsCode
+﻿namespace Microsoft.DocAsCode
 {
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.MarkdownIndexer;
+    using Microsoft.DocAsCode.EntityModel.ExtractSearchData;
     using Microsoft.DocAsCode.Utility;
     using System;
     using System.Collections.Generic;
@@ -83,6 +81,9 @@ namespace Microsoft.DocAsCode
 
             // TODO: Pass in theme name
             TemplateManager.CopyToOutput(configModel.BaseDirectory, "Template", assembly, templateFolder, outputFolder, toc, configModel.TemplateTheme);
+
+            // 4. Build search data of the website
+            ExtractSearchData.GenerateSearchDataFile(outputFolder);
 
             return ParseResult.SuccessResult;
         }

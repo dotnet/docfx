@@ -1,7 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-/// <summary>
+﻿/// <summary>
 /// The utility class for docascode project
 /// </summary>
 namespace Microsoft.DocAsCode.EntityModel
@@ -64,7 +61,7 @@ namespace Microsoft.DocAsCode.EntityModel
     public static class YamlUtility
     {
         private static readonly ThreadLocal<Serializer> serializer = new ThreadLocal<Serializer>(() => new Serializer());
-        private static readonly ThreadLocal<Deserializer> deserializer = new ThreadLocal<Deserializer>(() => new Deserializer());
+        private static readonly ThreadLocal<Deserializer> deserializer = new ThreadLocal<Deserializer>(() => new Deserializer(ignoreUnmatched:true));
 
         public static void Serialize(TextWriter writer, object graph)
         {
