@@ -66,5 +66,6 @@
     <Copy SourceFiles="@(DocfxFiles)" DestinationFolder="$(OutputPath)\tools" />
     <Exec Command="&quot;$(NugetPath)&quot; pack &quot;$(OutputPath)$(NuspecPath)&quot; -Version &quot;$(PackageVersionWithSuffix)&quot; -OutputDirectory &quot;bin/$(Configuration)&quot;"/>
     <Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg" DestinationFolder="$(PackageOutputPath)" />
+    <Message Text="Successfully created package '$(PackageOutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg'."/>
   </Target>
 </Project>
