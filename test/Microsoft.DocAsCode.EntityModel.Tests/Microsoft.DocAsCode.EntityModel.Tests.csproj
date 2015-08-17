@@ -89,6 +89,7 @@
     <Compile Include="ConvertToViewModelUnitTest.cs" />
     <Compile Include="GenerateMetadataFromVBUnitTest.cs" />
     <Compile Include="GenerateMetadataFromCSUnitTest.cs" />
+    <Compile Include="RelativePathTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

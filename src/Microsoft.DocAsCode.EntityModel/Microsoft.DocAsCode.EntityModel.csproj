@@ -121,6 +121,23 @@
     <Compile Include="Model\SourceDetail.cs" />
     <Compile Include="Model\SyntaxDetail.cs" />
     <Compile Include="Model\MetadataModel.cs" />
+    <Compile Include="YamlConverters\Dispatcher.cs" />
+    <Compile Include="YamlConverters\DocumentType.cs" />
+    <Compile Include="YamlConverters\FileAndType.cs" />
+    <Compile Include="YamlConverters\FileCollection.cs" />
+    <Compile Include="YamlConverters\FileModel.cs" />
+    <Compile Include="YamlConverters\EntitiesAndInterfaces.cs" />
+    <Compile Include="YamlConverters\MergeApiYamlHandler.cs" />
+    <Compile Include="YamlConverters\NonApiYamlHandler.cs" />
+    <Compile Include="YamlConverters\Pipeline.cs" />
+    <Compile Include="YamlConverters\OverrideDocumentHandler.cs" />
+    <Compile Include="YamlConverters\RelativePath.cs" />
+    <Compile Include="YamlConverters\UidIndexBuilder.cs" />
+    <Compile Include="YamlConverters\UidRelationship.cs" />
+    <Compile Include="YamlConverters\YamlConverter.cs" />
+    <Compile Include="YamlConverters\MarkdownReader.cs" />
+    <Compile Include="YamlConverters\YamlConverterContext.cs" />
+    <Compile Include="YamlConverters\YamlLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
