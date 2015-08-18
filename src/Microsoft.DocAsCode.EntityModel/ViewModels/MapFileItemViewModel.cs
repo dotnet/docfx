@@ -273,7 +273,11 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
 
         public Coordinate Add(Coordinate toAdd)
         {
-            return new Coordinate() { Line = this.Line + toAdd.Line, Column = this.Column + toAdd.Column };
+            return new Coordinate
+            {
+                Line = this.Line + toAdd.Line,
+                Column = toAdd.Line == 0 ? this.Column + toAdd.Column : toAdd.Column
+            };
         }
 
         /// <summary>
@@ -283,34 +287,37 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         /// <returns></returns>
         public static Coordinate GetCoordinate(string content)
         {
-            if (string.IsNullOrEmpty(content)) return Coordinate.Default;
+            if (string.IsNullOrEmpty(content))
+            {
+                return Default;
+            }
             int index = content.Length - 1;
-            int line = content.Split(NewLineCharacter).Length - 1;
+            int line = content.Count(c => c == NewLineCharacter) - 1;
 
             // Remove last new line character if it is last character of the content
             if (content[content.Length - 1] == NewLineCharacter)
             {
-                content = content.Substring(0, content.Length - 1);
-                line = line - 1;
-                index -= 1;
+                line--;
+                index--;
             }
-            int lineStart = content.LastIndexOf(NewLineCharacter);
+            int lineStart = content.LastIndexOf(NewLineCharacter, index);
             int col = index - lineStart - 1;
             return new Coordinate { Line = line, Column = col };
         }
 
         public int CompareTo(Coordinate other)
         {
-            if (this.Line > other.Line) return 1;
-            if (this.Line < other.Line) return -1;
-            if (this.Column > other.Column) return 1;
-            if (this.Column < other.Column) return -1;
-            return 0;
+            var lineDiff = Line - other.Line;
+            if (lineDiff != 0)
+            {
+                return lineDiff;
+            }
+            return Column - other.Column;
         }
 
         public override string ToString()
         {
-            return string.Format("{{line{0}, col{1}}}", Line, Column);
+            return string.Format("{{line{0}, col{1}}}", Line.ToString(), Column.ToString());
         }
     }
 }
