@@ -6,7 +6,7 @@
 
     public sealed class FileModel
     {
-        public FileModel(FileAndType ft, Dictionary<string, object> content)
+        public FileModel(FileAndType ft, Dictionary<object, object> content)
         {
             FileAndType = ft;
             Content = content;
@@ -14,7 +14,7 @@
 
         public FileAndType FileAndType { get; private set; }
 
-        public Dictionary<string, object> Content { get; private set; }
+        public Dictionary<object, object> Content { get; private set; }
 
         public string BaseDir => FileAndType.BaseDir;
 
@@ -22,7 +22,7 @@
 
         public DocumentType Type => FileAndType.Type;
 
-        public IEnumerable<Dictionary<string, object>> GetItems()
+        public IEnumerable<Dictionary<object, object>> GetItems()
         {
             if (Content == null)
             {
@@ -37,7 +37,7 @@
             }
             foreach (var item in items)
             {
-                var result = item as Dictionary<string, object>;
+                var result = item as Dictionary<object, object>;
                 if (result!= null)
                 {
                     yield return result;
@@ -45,7 +45,7 @@
             }
         }
 
-        public Dictionary<string, object> GetItem(string uid)
+        public Dictionary<object, object> GetItem(string uid)
         {
             foreach (var item in GetItems())
             {
@@ -90,7 +90,7 @@
                 result.Parent = value as string;
                 item.TryGetValue("children", out value);
                 result.Children = (value as IEnumerable<object> ?? new object[0]).OfType<string>().ToList();
-                if (item.TryGetValue("ispage", out value))
+                if (item.TryGetValue("isPage", out value))
                 {
                     result.IsPage = (bool)Convert.ChangeType(value, typeof(bool));
                 }
@@ -115,7 +115,7 @@
             throw new Exception($"Cannot find uid: {uid}");
         }
 
-        public void Replace(string uid, Dictionary<string, object> content)
+        public void Replace(string uid, Dictionary<object, object> content)
         {
             if (Content == null)
             {

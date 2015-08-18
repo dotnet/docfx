@@ -9,7 +9,7 @@
     /// <summary>
     /// relative path for case sensitive os.
     /// </summary>
-    internal sealed class RelativePath : IEquatable<RelativePath>
+    public sealed class RelativePath : IEquatable<RelativePath>
     {
 
         #region Consts/Fields

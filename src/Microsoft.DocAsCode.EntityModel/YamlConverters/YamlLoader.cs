@@ -41,11 +41,11 @@
             // read markdown files in override document.
             dispatcher = from item in markdown
                          where item.Type == DocumentType.OverrideDocument
-                         select new FileModel(item, MarkdownReader.ReadMarkDownAsOverride(item.BaseDir, item.File));
+                         select new FileModel(item, MarkdownReader.ReadMarkdownAsOverride(item.BaseDir, item.File));
             // read markdown files in conceptual document.
             dispatcher = from item in markdown
                          where item.Type == DocumentType.ConceptualDocument
-                         select new FileModel(item, MarkdownReader.ReadMarkDownAsConceptual(item.BaseDir, item.File));
+                         select new FileModel(item, MarkdownReader.ReadMarkdownAsConceptual(item.BaseDir, item.File));
             // ignore other markdown files.
             dispatcher = from item in markdown
                          select null;
@@ -60,7 +60,7 @@
         {
             try
             {
-                return new FileModel(item, YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(item.BaseDir, item.File)));
+                return new FileModel(item, YamlUtility.Deserialize<Dictionary<object, object>>(Path.Combine(item.BaseDir, item.File)));
             }
             catch (Exception ex)
             {

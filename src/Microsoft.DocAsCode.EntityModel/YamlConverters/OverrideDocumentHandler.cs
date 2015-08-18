@@ -1,7 +1,6 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel.YamlConverters
 {
     using System.Linq;
-    using System.Threading.Tasks;
 
     public class OverrideDocumentHandler : IPipelineItem<ConverterModel, IHasUidIndex, ConverterModel>
     {
@@ -15,12 +14,13 @@
                 if (odIndex != -1)
                 {
                     var od = list[odIndex];
+                    var rp = (RelativePath)od.ft.File;
                     list.RemoveAt(odIndex);
                     foreach (var item in list)
                     {
                         foreach (var p in od.m)
                         {
-                            item.m[p.Key] = p.Value;
+                            item.m[p.Key] = RelativePathRewriter.Rewrite(p.Value, rp, (RelativePath)item.ft.File);
                         }
                     }
                 }

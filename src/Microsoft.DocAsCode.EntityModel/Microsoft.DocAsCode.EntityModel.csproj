@@ -74,6 +74,7 @@
     <Compile Include="Parsers\MatchDetail.cs" />
     <Compile Include="Parsers\TripleSlashCommentParser.cs" />
     <Compile Include="Parsers\LinkParser.cs" />
+    <Compile Include="YamlConverters\RelativePathRewriter.cs" />
     <Compile Include="Resolvers\ResolveReference.cs" />
     <Compile Include="Resolvers\SetParent.cs" />
     <Compile Include="TemplateManager.cs" />

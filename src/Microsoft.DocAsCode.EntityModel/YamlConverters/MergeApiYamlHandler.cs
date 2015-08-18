@@ -7,6 +7,9 @@
 
     public class MergeApiYamlHandler : IPipelineItem<ConverterModel, IHasUidIndex, ConverterModel>
     {
+        // todo : move to context, or constructor?.
+        public static readonly RelativePath OutputFolder = (RelativePath)"api/";
+
         public ConverterModel Exec(ConverterModel arg, IHasUidIndex context)
         {
             var result = new ConverterModel(arg.BaseDir);
@@ -29,31 +32,31 @@
                 }
                 string parent = null;
                 var children = new HashSet<string>();
-                var properties = new Dictionary<string, object>();
+                var properties = new Dictionary<object, object>();
                 foreach (var apiDoc in apiDocs)
                 {
-                    var relationShip = context.UidTree[pair.Key];
-                    Debug.Assert(relationShip != null);
+                    var relationship = context.UidTree[pair.Key];
+                    Debug.Assert(relationship != null);
                     if (parent == null)
                     {
-                        parent = relationShip.Parent;
+                        parent = relationship.Parent;
                         properties["parent"] = parent;
                     }
-                    else if (parent != relationShip.Parent)
+                    else if (parent != relationship.Parent)
                     {
                         // todo : log
                         Console.WriteLine($@"Different parent for same uid:
     uid: {pair.Key}
     parent: {parent} in {apiDocs[0].File}
-    parent: {relationShip.Parent} in {apiDoc.File}");
+    parent: {relationship.Parent} in {apiDoc.File}");
                         throw new Exception();
                     }
-                    children.UnionWith(relationShip.Children);
+                    children.UnionWith(relationship.Children);
                     foreach (var p in models[apiDoc].GetItem(pair.Key))
                     {
                         if (!properties.ContainsKey(p.Key))
                         {
-                            if (p.Key != "parent" && p.Key != "children")
+                            if (!"parent".Equals(p.Key) && !"children".Equals(p.Key))
                             {
                                 properties[p.Key] = ResolveLink(apiDoc, p.Value);
                             }
@@ -71,8 +74,7 @@
 
         private static object ResolveLink(FileAndType ft, object value)
         {
-            // todo : resolve link, how??
-            return value;
+            return RelativePathRewriter.Rewrite(value, (RelativePath)ft.File, OutputFolder);
         }
     }
 }

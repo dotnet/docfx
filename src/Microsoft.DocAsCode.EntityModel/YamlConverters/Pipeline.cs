@@ -36,11 +36,6 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
             return new Subpipeline(this);
         }
 
-        public ParallelPipeline AsParallel()
-        {
-            return new ParallelPipeline(this);
-        }
-
         public ParallelPipeline<TNewResult> AsParallel<TNewResult>(Func<TResult, TNewResult> seedFunc)
         {
             return new ParallelPipeline<TNewResult>(this, seedFunc);
@@ -73,37 +68,6 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
             public TResult Exec(TArg arg, TContext context)
             {
                 return _pipeline.Run(arg, context);
-            }
-        }
-
-        public sealed class ParallelPipeline : Pipeline<TArg, TContext, TResult>
-        {
-            private readonly Pipeline<TArg, TContext, TResult> _pipeline;
-            private readonly IPipelineItem<TResult, TContext, TResult>[] _children;
-
-            internal ParallelPipeline(Pipeline<TArg, TContext, TResult> pipeline, params IPipelineItem<TResult, TContext, TResult>[] children)
-            {
-                _pipeline = pipeline;
-                _children = children;
-            }
-
-            public override TResult Run(TArg arg, TContext context)
-            {
-                var result = _pipeline.Run(arg, context);
-                Parallel.ForEach(_children, c => c.Exec(result, context));
-                return result;
-            }
-
-            public ParallelPipeline AppendParallel(IPipelineItem<TResult, TContext, TResult> item)
-            {
-                if (item == null)
-                {
-                    throw new ArgumentNullException(nameof(item));
-                }
-                var children = new IPipelineItem<TResult, TContext, TResult>[_children.Length + 1];
-                Array.Copy(_children, children, _children.Length);
-                children[children.Length - 1] = item;
-                return new ParallelPipeline(_pipeline, children);
             }
         }
 
