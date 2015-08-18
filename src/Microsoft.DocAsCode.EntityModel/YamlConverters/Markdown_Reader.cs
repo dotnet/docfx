@@ -7,21 +7,21 @@
 
     public class MarkdownReader
     {
-        public static Dictionary<string, object> ReadMarkDownAsOverride(string baseDir, string file)
+        public static Dictionary<object, object> ReadMarkdownAsOverride(string baseDir, string file)
         {
-            return new Dictionary<string, object>
+            return new Dictionary<object, object>
             {
                 ["items"] = ReadMarkDownCore(Path.Combine(baseDir, file)).ToList(),
             };
         }
 
-        public static Dictionary<string, object> ReadMarkDownAsConceptual(string baseDir, string file)
+        public static Dictionary<object, object> ReadMarkdownAsConceptual(string baseDir, string file)
         {
-            return new Dictionary<string, object>
+            return new Dictionary<object, object>
             {
                 ["items"] = new[]
                 {
-                    new Dictionary<string, object>
+                    new Dictionary<object, object>
                     {
                         ["uid"] = file,
                         ["conceptual"] = File.ReadAllText(Path.Combine(baseDir, file)),
@@ -31,7 +31,7 @@
             };
         }
 
-        private static IEnumerable<Dictionary<string, object>> ReadMarkDownCore(string file)
+        private static IEnumerable<Dictionary<object, object>> ReadMarkDownCore(string file)
         {
             var content = File.ReadAllText(file);
             var lineIndex = GetLineIndex(content).ToList();
@@ -49,7 +49,11 @@
                 {
                     int start = lineIndex[item.Location.EndLocation.Line] + item.Location.EndLocation.Column + 1;
                     int end = lineIndex[currentEnd.Line] + currentEnd.Column;
-                    var dict = new Dictionary<string, object>(item.Detail.Properties);
+                    var dict = new Dictionary<object, object>();
+                    foreach (var prop in item.Detail.Properties)
+                    {
+                        dict[prop.Key] = prop.Value;
+                    }
                     dict["uid"] = item.Id;
                     dict["conceptual"] = content.Substring(start, end - start + 1);
                     yield return dict;
