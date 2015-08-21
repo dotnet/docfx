@@ -20,6 +20,6 @@
   ],
   "externalReferences": [],
   "title": "Doc-as-code documentation",
-  "theme": "IIS.Default",
+  "theme": "angular",
   "output": "_site"
 }
