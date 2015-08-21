@@ -17,6 +17,7 @@ IF NOT DEFINED VisualStudioVersion (
 
 :EnvSet
 SET BuildProj=%~dp0All.sln
+SET DocsProj=%~dp0Docs.sln
 SET Configuration=%1
 IF '%Configuration%'=='' (
     SET Configuration=Release
@@ -110,7 +111,8 @@ IF '%NugetErrorLevel%'=='1' (
 GOTO :Exit
 
 :Build
-%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix%
+%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix% 
+%BuildPrefix% msbuild "%DocsProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix% 
 SET BuildErrorLevel=%ERRORLEVEL%
 GOTO :Exit
 

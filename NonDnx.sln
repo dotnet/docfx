@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.22919.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -14,8 +14,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Utility", "src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj", "{619EC13D-8939-4F23-B7DC-7A98964BB9A4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{3E93DD37-948B-41CF-8C91-892B36B07E58}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E872B0D7-6331-4E40-8264-0015330DA5D3}"
 EndProject
@@ -31,15 +29,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5AED685E
 		build.cmd = build.cmd
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47192798-670B-4F7C-A48B-CF8A695E6C45}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspec", "nuspec", "{BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docfx.msbuild", "docfx.msbuild", "{3D98A411-465A-4B1E-8D46-78DFE34BA35F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx.msbuild", "src\nuspec\docfx.msbuild\docfx.msbuild.csproj", "{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Documentation", "Documentation\Documentation.csproj", "{03FA881A-7B27-469A-A086-FFBA385EBACA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +65,6 @@ Global
 		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03FA881A-7B27-469A-A086-FFBA385EBACA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +80,5 @@ Global
 		{BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{3D98A411-465A-4B1E-8D46-78DFE34BA35F} = {BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}
 		{1A7FD832-EBE9-47B2-AB59-718CB18DCA44} = {3D98A411-465A-4B1E-8D46-78DFE34BA35F}
-		{03FA881A-7B27-469A-A086-FFBA385EBACA} = {3E93DD37-948B-41CF-8C91-892B36B07E58}
 	EndGlobalSection
 EndGlobal
