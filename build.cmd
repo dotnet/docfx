@@ -47,7 +47,7 @@ IF NOT '%ERRORLEVEL%'=='0' (
 WHERE node
 
 IF NOT '%ERRORLEVEL%'=='0' (
-    ECHO ERROR: build.cmd requires node installed gloablly. 
+    ECHO ERROR: build.cmd requires node installed gloablly.
     GOTO :Exit
 )
 
@@ -87,7 +87,7 @@ POPD
 
 :: Pull the build summary from the log file
 ECHO.
-ECHO === BUILD RESULT === 
+ECHO === BUILD RESULT ===
 findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%" & cd >nul
 IF '%BuildDnxProjects%'=='0' (
    ECHO WARNING: DNX runtime is not successfully configured. Please follow http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm to install dnvm.
@@ -95,7 +95,7 @@ IF '%BuildDnxProjects%'=='0' (
 
 :: Pull xunit test result from the log file
 ECHO.
-ECHO === TEST EXECUTION SUMMARY === 
+ECHO === TEST EXECUTION SUMMARY ===
 findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%" & cd >nul
 ECHO Exit Code: %BuildErrorLevel%
 SET ERRORLEVEL=%BuildErrorLevel%
@@ -110,7 +110,7 @@ IF '%NugetErrorLevel%'=='1' (
 GOTO :Exit
 
 :Build
-%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix%
+%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix%
 SET BuildErrorLevel=%ERRORLEVEL%
 GOTO :Exit
 
