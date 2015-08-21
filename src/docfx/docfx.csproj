@@ -103,17 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Template\default.zip">
+    <EmbeddedResource Include="Template\angular.zip">
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Template.default.zip</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Template\Github.zip">
-      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Template.Github.zip</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Template\IIS.zip">
-      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Template.IIS.zip</LogicalName>
+      <LogicalName>$(AssemblyName).Template.angular.zip</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
