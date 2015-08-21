@@ -1,5 +1,9 @@
 Doc-As-Code
 ===========
+Appveyor | Travis
+---------|-------
+         |![Travis](https://magnum.travis-ci.com/aspnet/docfx.svg?token=n9BDZAas1q7gHYsnYZNi)
+
 Easily build and publish your API documentation. We currently support C# and VB projects.
 Getting Started
 ---------------
