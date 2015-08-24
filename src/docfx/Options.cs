@@ -39,8 +39,8 @@ namespace Microsoft.DocAsCode
                 OutputFolder = OutputFolder,
                 Projects = Projects,
                 ForceRebuild = ForceRebuild,
-                TemplateFolder = TemplateFolder,
-                WebsiteTheme = WebsiteTheme,
+                Template = Template,
+                TemplateThemeFolder = TemplateThemeFolder,
             };
         }
     }
@@ -70,17 +70,25 @@ namespace Microsoft.DocAsCode
     /// </summary>
     class WebsiteSubOptions : MetadataSubOptions
     {
-        [Option('t', "template")]
+        [Option('t', "template", HelpText = "Specifies the template name to apply to. By default 'markdown.tmpl' and 'html.tmpl' are offered.")]
+        public string Template { get; set; }
+
+        [Option("templateFolder", HelpText = "If specified, this folder will be searched first to get the matching template.")]
         public string TemplateFolder { get; set; }
 
-        [Option("theme", HelpText = "Specifies which theme to use. By default 'Github.default' and 'IIS.default' are offered")]
-        public string WebsiteTheme { get; set; }
+        [Option("theme", HelpText = "Specifies which theme to use. By default 'angular' theme is offered.")]
+        public string TemplateTheme { get; set; }
+
+        [Option("themeFolder", HelpText = "If specified, this folder will be searched first to get the matching theme.")]
+        public string TemplateThemeFolder { get; set; }
 
         public WebsiteSubOptions(WebsiteSubOptions options) : base(options)
         {
             this.ForceRebuild = options.ForceRebuild;
+            this.Template = options.Template;
             this.TemplateFolder = options.TemplateFolder;
-            this.WebsiteTheme = options.WebsiteTheme;
+            this.TemplateTheme = options.TemplateTheme;
+            this.TemplateThemeFolder = options.TemplateThemeFolder;
         }
 
         public WebsiteSubOptions(MetadataSubOptions options) : base(options)

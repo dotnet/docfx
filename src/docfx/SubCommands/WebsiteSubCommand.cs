@@ -73,17 +73,30 @@
                 }
             }
 
-            // 3. Copy website template files
-            var toc = TemplateManager.GenerateDefaultToc(inputModel.Items.Where(s => s.Value != null && s.Value.Any()).Select(s => s.Key), mdFiles?.Items.Where(s => s.Files != null && s.Files.Any()).Select(s => s.Name), outputFolder);
+            // 3. Generate default toc file
+            TemplateManager.GenerateDefaultToc(inputModel.Items.Where(s => s.Value != null && s.Value.Any()).Select(s => s.Key), mdFiles?.Items.Where(s => s.Files != null && s.Files.Any()).Select(s => s.Name), outputFolder, false);
+
+            // TODO: Integrate with zhyan's work that all the yaml files are processed and all the markdown files are transformed to yaml format
+            // Current: As for a temp workaround, get all the yaml files in output folder...
+            var tempFileList = Directory.GetFiles(outputFolder, "*.yml", SearchOption.AllDirectories);
 
             // typeof(Program).Assembly is not available in DNX Core 5.0
             var assembly = typeof(Program).GetTypeInfo().Assembly;
 
-            // TODO: Pass in theme name
-            TemplateManager.CopyToOutput(configModel.BaseDirectory, "Template", assembly, templateFolder, outputFolder, toc, configModel.TemplateTheme);
+            using (var manager = new TemplateManager(assembly, "Template", configModel.TemplateFolder, configModel.Template, configModel.TemplateThemeFolder, configModel.TemplateTheme))
+            {
+                manager.ProcessTemplateAndTheme(tempFileList, outputFolder, outputFolder, true);
+            }
 
             // 4. Build search data of the website
-            ExtractSearchData.GenerateSearchDataFile(outputFolder);
+            try
+            {
+                ExtractSearchData.GenerateSearchDataFile(outputFolder);
+            }
+            catch (Exception e)
+            {
+                ParseResult.WriteToConsole(ResultLevel.Warning, "Something wrong when generating search data: {0}.", e.Message);
+            }
 
             return ParseResult.SuccessResult;
         }

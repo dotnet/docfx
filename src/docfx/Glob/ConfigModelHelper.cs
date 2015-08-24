@@ -99,9 +99,10 @@ namespace Microsoft.DocAsCode
             if (websiteOption != null)
             {
                 // If template folder has been set in command line, override the one defined in configModel
-                var template = websiteOption.TemplateFolder;
-                if (template != null) configModel.TemplateFolder = template;
-                if (!string.IsNullOrEmpty(websiteOption.WebsiteTheme)) configModel.TemplateTheme = websiteOption.WebsiteTheme;
+                if (!string.IsNullOrEmpty(websiteOption.Template)) configModel.Template = websiteOption.Template;
+                if (!string.IsNullOrEmpty(websiteOption.TemplateTheme)) configModel.Template = websiteOption.TemplateTheme;
+                if (!string.IsNullOrEmpty(websiteOption.TemplateThemeFolder)) configModel.TemplateThemeFolder = websiteOption.TemplateThemeFolder;
+                if (!string.IsNullOrEmpty(websiteOption.TemplateFolder)) configModel.TemplateFolder = websiteOption.TemplateFolder;
             }
 
             // If OutputFolder is Empty, it is set to current folder

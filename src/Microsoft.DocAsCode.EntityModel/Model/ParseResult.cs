@@ -46,6 +46,12 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
+        public static void WriteInfo(object message)
+        {
+            Console.Write(ResultLevel.Info + ": ");
+            Console.WriteLine(message);
+        }
+
         public static void WriteToConsole(ResultLevel resultLevel, string message, params string[] arg)
         {
             var formatter = resultLevel + ": " + message;

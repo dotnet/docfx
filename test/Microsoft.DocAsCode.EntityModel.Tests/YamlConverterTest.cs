@@ -30,13 +30,13 @@
             Assert.Equal(5, list.Count);
             Assert.Equal("relative path link test", list[0]);
             Assert.Equal("external link [external link](http://www.microsoft.com).", list[1]);
-            Assert.Equal(@"relative path [c](../x/y/a/b/c.xml ""this is relative path"").", list[2]);
+            Assert.Equal(@"relative path [c](a/b/c.xml ""this is relative path"").", list[2]);
             {
                 Assert.IsType<Dictionary<object, object>>(list[3]);
                 var d = (Dictionary<object, object>)list[3];
                 Assert.Equal(2, d.Count);
                 Assert.Equal("x", d["name"]);
-                Assert.Equal("relative path [a](../a.xml).", d["summary"]);
+                Assert.Equal("relative path [a](../../a.xml).", d["summary"]);
             }
             Assert.Equal("absolute path [a](/a.xml).", list[4]);
         }

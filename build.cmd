@@ -67,6 +67,12 @@ CALL :Build %*
 SET BuildPrefix=
 SET BuildPostfix=
 CALL :Build %*
+
+IF NOT '%ErrorLevel%'=='0' (
+    GOTO :AfterBuild
+)
+
+CALL :BuildDocs %*
 IF NOT '%ErrorLevel%'=='0' (
     GOTO :AfterBuild
 )
@@ -112,9 +118,13 @@ GOTO :Exit
 
 :Build
 %BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix% 
-%BuildPrefix% msbuild "%DocsProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix% 
 SET BuildErrorLevel=%ERRORLEVEL%
-GOTO :Exit
+EXIT /B %BuildErrorLevel%
+
+:BuildDocs
+%BuildPrefix% msbuild "%DocsProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %BuildPostfix% 
+SET DocsErrorLevel=%ERRORLEVEL%
+EXIT /B %DocsErrorLevel%
 
 :RestorePackage
 :: Restore inside each subfolder
@@ -142,4 +152,5 @@ nuget restore "%BuildProj%"
 :Exit
 POPD
 ECHO.
+
 EXIT /B %ERRORLEVEL%

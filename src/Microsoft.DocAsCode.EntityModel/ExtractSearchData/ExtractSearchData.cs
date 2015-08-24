@@ -111,15 +111,22 @@
             if (!string.IsNullOrEmpty(Path.GetExtension(item.Href)))
             {
                 var filePath = Path.Combine(curPath, item.Href);
-                var searchItem = ExtractIndexOfFile(filePath);
-                if (searchItem != null)
+                try
                 {
-                    searchItem.Display = item.Name;
-                    searchItem.Path =
-                        prefix != Prefix ?
-                        Path.Combine(prefix, "!" + item.Href).ToNormalizedPath() :
-                        Path.Combine(prefix, item.Href).ToNormalizedPath();
-                    searchItemList.Add(searchItem);
+                    var searchItem = ExtractIndexOfFile(filePath);
+                    if (searchItem != null)
+                    {
+                        searchItem.Display = item.Name;
+                        searchItem.Path =
+                            prefix != Prefix ?
+                            Path.Combine(prefix, "!" + item.Href).ToNormalizedPath() :
+                            Path.Combine(prefix, item.Href).ToNormalizedPath();
+                        searchItemList.Add(searchItem);
+                    }
+                }
+                catch (Exception e)
+                {
+                    ParseResult.WriteToConsole(ResultLevel.Warning, "File {0} is not valid, ignored: {1}", filePath, e.Message);
                 }
             }
             // folder

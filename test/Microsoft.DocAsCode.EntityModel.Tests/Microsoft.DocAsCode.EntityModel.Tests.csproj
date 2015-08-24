@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtractSearchDataTest.cs" />
+    <Compile Include="TemplateManagerUnitTest.cs" />
     <Compile Include="ParsersUnitTest.cs" />
     <Compile Include="ConvertToViewModelUnitTest.cs" />
     <Compile Include="GenerateMetadataFromVBUnitTest.cs" />
@@ -94,6 +95,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="tmpl\tmpl1.zip" />
+    <None Include="tmpl\tmpl1\sub\file1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="tmpl\tmpl1\tmpl1.dot.%24">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\docfx\docfx.csproj">
