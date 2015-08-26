@@ -67,7 +67,7 @@
                 var result = new Dictionary<object, object>();
                 foreach (var pair in dict)
                 {
-                    result.Add(pair.Key, RewriteCore(pair.Value, func, new RewriteContext(ParentType.Object, pair.Key)));
+                    result.Add(pair.Key, RewriteCore(pair.Value, func, new RewriteContext(ParentType.Object, pair.Key as string)));
                 }
                 return result;
             }
