@@ -17,15 +17,15 @@ Overwrite Files | The files with YAML header used to override YAML files when `u
 3. YAML files => Website
 
 
-2. Features
----------------
-1. Support [Docfx Flavored Markdown](docfx_flavored_markdown.md)
-
-
-3. Architecture
+2. Architecture
 ---------------
 ![Workflow](images/docfx_workflow.png)
 
+3. Feature List
+---------------
+1. Support [Docfx Flavored Markdown](docfx_flavored_markdown.md)
+2. able to parse TOC.json/TOC.yml/TOC.md
+3. Custom template naming: {type}.{extension}.tmpl under folder {templateName} 
 
 4. Open Issues
 ------------------------
