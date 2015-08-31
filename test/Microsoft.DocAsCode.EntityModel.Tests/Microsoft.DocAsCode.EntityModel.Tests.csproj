@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtractSearchDataTest.cs" />
+    <Compile Include="MarkdownLiteTest.cs" />
     <Compile Include="TemplateManagerUnitTest.cs" />
     <Compile Include="ParsersUnitTest.cs" />
     <Compile Include="ConvertToViewModelUnitTest.cs" />
@@ -115,6 +116,10 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
       <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
       <Name>Microsoft.DocAsCode.EntityModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
+      <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
+      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Shared\base.props" />
+  <PropertyGroup>
+    <ProjectGuid>{81AD853E-6176-44CA-A43E-A699EA05CC3E}</ProjectGuid>
+    <RootNamespace>Microsoft.DocAsCode.MarkdownLite</RootNamespace>
+    <AssemblyName>Microsoft.DocAsCode.MarkdownLite</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Align.cs" />
+    <Compile Include="InlineLexer.cs" />
+    <Compile Include="IRenderer.cs" />
+    <Compile Include="Lexer.cs" />
+    <Compile Include="LinkObj.cs" />
+    <Compile Include="Marked.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="Regexes.cs" />
+    <Compile Include="Renderer.cs" />
+    <Compile Include="Rules\BreaksInlineRules.cs" />
+    <Compile Include="Rules\GfmInlineRules.cs" />
+    <Compile Include="Rules\InlineRules.cs" />
+    <Compile Include="Rules\NormalInlineRules.cs" />
+    <Compile Include="Rules\PedanticInlineRules.cs" />
+    <Compile Include="Rules\BlockRules.cs" />
+    <Compile Include="Rules\GfmBlockRules.cs" />
+    <Compile Include="Rules\NormalBlockRules.cs" />
+    <Compile Include="Rules\TablesBlockRules.cs" />
+    <Compile Include="StringBuffer.cs" />
+    <Compile Include="StringHelper.cs" />
+    <Compile Include="TableCellFlags.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="TokensResult.cs" />
+    <Compile Include="TokenType.cs" />
+    <Compile Include="TokenTypes.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
