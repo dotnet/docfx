@@ -1,10 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.EntityModel.YamlConverters
 {
+    using System;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+
     public static class Pipeline
     {
         public static Pipeline<TArg, TContext, TArg> StartWith<TArg, TContext>()
