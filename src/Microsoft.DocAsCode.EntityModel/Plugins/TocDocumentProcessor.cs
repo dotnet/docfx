@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Composition;
     using System.IO;
 
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(typeof(IDocumentProcessor))]
@@ -26,24 +27,39 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 {
                     return ProcessingPriority.High;
                 }
-                if ("toc.json".Equals(Path.GetFileName(file.File), StringComparison.OrdinalIgnoreCase))
-                {
-                    return ProcessingPriority.High;
-                }
             }
             return ProcessingPriority.NotSupportted;
         }
 
         public FileModel Load(FileAndType file)
         {
-            // todo : load toc.
-            throw new NotImplementedException();
+            TocViewModel toc = null;
+            if ("toc.md".Equals(Path.GetFileName(file.File), StringComparison.OrdinalIgnoreCase))
+            {
+                toc = MarkdownTocReader.LoadToc(File.ReadAllText(Path.Combine(file.BaseDir, file.File)), file.File);
+            }
+            else if ("toc.yml".Equals(Path.GetFileName(file.File), StringComparison.OrdinalIgnoreCase))
+            {
+                toc = YamlUtility.Deserialize<TocViewModel>(Path.Combine(file.BaseDir, file.File));
+            }
+            if (toc == null)
+            {
+                throw new NotSupportedException();
+            }
+            return new FileModel(file, toc)
+            {
+                Uids = new[] { file.File }.ToImmutableArray(),
+            };
         }
 
-        public void Save(FileModel model)
+        public SaveResult Save(FileModel model)
         {
-            // todo : save toc.
-            throw new NotImplementedException();
+            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), model.Content);
+            return new SaveResult
+            {
+                DocumentType = "TOC",
+                ModelFile = model.File,
+            };
         }
 
         public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)
@@ -53,6 +69,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public void Build(FileModel model, IHostService host)
         {
+            model.File = Path.ChangeExtension(model.File, ".yml");
             // todo : metadata.
         }
 

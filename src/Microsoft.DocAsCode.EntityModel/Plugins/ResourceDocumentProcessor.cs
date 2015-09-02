@@ -20,10 +20,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 return ProcessingPriority.Normal;
             }
-            if (file.Type == DocumentType.Article)
-            {
-                return ProcessingPriority.Lowest;
-            }
             return ProcessingPriority.NotSupportted;
         }
 
@@ -35,7 +31,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        public void Save(FileModel model)
+        public SaveResult Save(FileModel model)
         {
             if (model.FileAndType != model.OriginalFileAndType)
             {
@@ -45,6 +41,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     true);
                 // todo : metadata.
             }
+            return new SaveResult
+            {
+                DocumentType = "Resource",
+                ResourceFile = model.File,
+            };
         }
 
         public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)

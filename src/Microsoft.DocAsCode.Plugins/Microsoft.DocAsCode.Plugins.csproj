@@ -21,6 +21,7 @@
     <Compile Include="FileModel.cs" />
     <Compile Include="IDocumentProcessor.cs" />
     <Compile Include="IHostService.cs" />
+    <Compile Include="SaveResult.cs" />
     <Compile Include="ProcessingPriority.cs" />
     <Compile Include="PropertyChangedEventArgs.cs" />
   </ItemGroup>

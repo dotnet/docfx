@@ -63,13 +63,18 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
         }
 
-        public void Save(FileModel model)
+        public SaveResult Save(FileModel model)
         {
             if (model.Type != DocumentType.Article)
             {
                 throw new NotSupportedException();
             }
             YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), model.Content);
+            return new SaveResult
+            {
+                DocumentType = "ManagedReference",
+                ModelFile = model.File,
+            };
         }
 
         public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)

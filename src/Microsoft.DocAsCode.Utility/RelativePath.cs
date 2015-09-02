@@ -88,6 +88,58 @@ namespace Microsoft.DocAsCode.Utility
         public bool IsEmpty => ReferenceEquals(this, Empty);
 
         /// <summary>
+        /// Concat two relative path
+        /// e.g.:
+        ///     {d/e.txt}.BasedOn({a/b/c/}) = {a/b/c/d/e.txt}
+        ///     {../d/e.txt}.BasedOn({a/b/c/}) = {a/b/d/e.txt}
+        ///     {d/e.txt}.BasedOn({a/b/c.txt}) = {a/b/d/e.txt}
+        ///     {../e.txt}.BasedOn({a/b/c.txt}) = {a/e.txt}
+        ///     {../e.txt}.BasedOn({../c.txt}) = {../../e.txt}
+        /// </summary>
+        public RelativePath BasedOn(RelativePath path)
+        {
+            if (this.ParentDirectoryCount >= path.SubdirectoryCount)
+            {
+                return Create(path.ParentDirectoryCount - path.SubdirectoryCount + this.ParentDirectoryCount, this._parts);
+            }
+            else
+            {
+                return Create(path.ParentDirectoryCount, path.GetSubdirectories(this.ParentDirectoryCount).Concat(this._parts));
+            }
+        }
+
+        /// <summary>
+        /// Get relative path from right relative path to left relative path
+        /// e.g.:
+        ///     {a/b/c.txt}.MakeRelativeTo({d/e.txt}) = {../a/b/c.txt}
+        ///     {a/b/c.txt}.MakeRelativeTo({a/d.txt}) = {b/c.txt}
+        ///     {../../a.txt}.MakeRelativeTo({../b.txt}) = {../a.txt}
+        ///     {../../a.txt}.MakeRelativeTo({../b/c.txt}) = {../../a.txt}
+        ///     {a.txt}.MakeRelativeTo({../b.txt}) = Oop...
+        /// </summary>
+        public RelativePath MakeRelativeTo(RelativePath relativeTo)
+        {
+            if (_parentDirectoryCount < relativeTo._parentDirectoryCount)
+            {
+                throw new NotSupportedException("Relative to path has too many '../'.");
+            }
+            var parentCount = _parentDirectoryCount - relativeTo._parentDirectoryCount;
+            var leftParts = _parts;
+            var rightParts = relativeTo._parts;
+            var commonCount = 0;
+            for (int i = 0; i < rightParts.Length - 1; i++)
+            {
+                if (i >= leftParts.Length - 1)
+                    break;
+                if (leftParts[i] != rightParts[i])
+                    break;
+                commonCount++;
+            }
+            parentCount += rightParts.Length - 1 - commonCount;
+            return Create(parentCount, leftParts.Skip(commonCount));
+        }
+
+        /// <summary>
         /// Rebase the relative path
         /// </summary>
         /// <param name="from">original base path</param>
@@ -154,8 +206,9 @@ namespace Microsoft.DocAsCode.Utility
         {
             var partArray = parts.ToArray();
             if (parentDirectoryCount == 0 &&
-                partArray.Length == 1 &&
-                partArray[0].Length == 0)
+                (partArray.Length == 0 ||
+                 (partArray.Length == 1 &&
+                  partArray[0].Length == 0)))
             {
                 return Empty;
             }
@@ -186,14 +239,7 @@ namespace Microsoft.DocAsCode.Utility
         /// </summary>
         public static RelativePath operator +(RelativePath left, RelativePath right)
         {
-            if (right.ParentDirectoryCount >= left.SubdirectoryCount)
-            {
-                return Create(left.ParentDirectoryCount - left.SubdirectoryCount + right.ParentDirectoryCount, right._parts);
-            }
-            else
-            {
-                return Create(left.ParentDirectoryCount, left.GetSubdirectories(right.ParentDirectoryCount).Concat(right._parts));
-            }
+            return (right ?? Empty).BasedOn(left ?? Empty);
         }
 
         /// <summary>
@@ -207,24 +253,7 @@ namespace Microsoft.DocAsCode.Utility
         /// </summary>
         public static RelativePath operator -(RelativePath left, RelativePath right)
         {
-            if (left._parentDirectoryCount < right._parentDirectoryCount)
-            {
-                throw new NotSupportedException("Right relative path has too many '../'.");
-            }
-            var parentCount = left._parentDirectoryCount - right._parentDirectoryCount;
-            var leftParts = left._parts;
-            var rightParts = right._parts;
-            var commonCount = 0;
-            for (int i = 0; i < rightParts.Length - 1; i++)
-            {
-                if (i >= leftParts.Length - 1)
-                    break;
-                if (leftParts[i] != rightParts[i])
-                    break;
-                commonCount++;
-            }
-            parentCount += rightParts.Length - 1 - commonCount;
-            return Create(parentCount, leftParts.Skip(commonCount));
+            return (left ?? Empty).MakeRelativeTo(right ?? Empty);
         }
 
         public static implicit operator string (RelativePath path)

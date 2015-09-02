@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\DocumentBuilder.cs" />
+    <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Builders\YamlFormatter.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
@@ -100,11 +101,13 @@
     <Compile Include="Parsers\MatchDetail.cs" />
     <Compile Include="Parsers\TripleSlashCommentParser.cs" />
     <Compile Include="Parsers\LinkParser.cs" />
+    <Compile Include="Builders\DocumentBuildContext.cs" />
     <Compile Include="Plugins\ResourceDocumentProcessor.cs" />
     <Compile Include="Plugins\TocDocumentProcessor.cs" />
     <Compile Include="Plugins\ConceptualDocumentProcessor.cs" />
     <Compile Include="Plugins\ManagedReferenceDocumentProcessor.cs" />
     <Compile Include="Builders\HostService.cs" />
+    <Compile Include="Plugins\MarkdownTocReader.cs" />
     <Compile Include="Resolvers\ResolveReference.cs" />
     <Compile Include="Resolvers\SetParent.cs" />
     <Compile Include="TemplateManager\ResourceFinder.cs" />

@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Plugins
     {
         ProcessingPriority GetProcessingPriority(FileAndType file);
         FileModel Load(FileAndType file);
-        void Save(FileModel model);
+        SaveResult Save(FileModel model);
         IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host);
         void Build(FileModel model, IHostService host);
         IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host);

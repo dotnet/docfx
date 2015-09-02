@@ -56,6 +56,68 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.Equal(s, r);
                 Assert.Same(RelativePath.Empty, r);
             }
+            {
+                var s = ".";
+                var r = (RelativePath)s;
+                Assert.NotNull(r);
+                Assert.Equal(0, r.ParentDirectoryCount);
+                Assert.Equal(string.Empty, r.ToString());
+                Assert.Equal(string.Empty, r);
+                Assert.Same(RelativePath.Empty, r);
+            }
+            {
+                var s = "a/../";
+                var r = (RelativePath)s;
+                Assert.NotNull(r);
+                Assert.Equal(0, r.ParentDirectoryCount);
+                Assert.Equal(string.Empty, r.ToString());
+                Assert.Equal(string.Empty, r);
+                Assert.Same(RelativePath.Empty, r);
+            }
+        }
+
+        [Theory]
+        [InlineData("d/e.txt", "a/b/c/", "a/b/c/d/e.txt")]
+        [InlineData("../d/e.txt", "a/b/c/", "a/b/d/e.txt")]
+        [InlineData("d/e.txt", "a/b/c.txt", "a/b/d/e.txt")]
+        [InlineData("../e.txt", "a/b/c.txt", "a/e.txt")]
+        [InlineData("../e.txt", "../c.txt", "../../e.txt")]
+        [InlineData("../a.txt", "", "../a.txt")]
+        [InlineData("", "../a/b.txt", "../a/")]
+        [InlineData("../", "a/", "")]
+        [InlineData("", "", "")]
+        public void TestRelativePath_BasedOn(string thisPath, string basedOnPath, string expected)
+        {
+            var actual = ((RelativePath)thisPath).BasedOn((RelativePath)basedOnPath);
+            Assert.NotNull(actual);
+            Assert.Equal(expected, actual.ToString());
+        }
+
+        [Theory]
+        [InlineData("a/b/c.txt", "d/e.txt", "../a/b/c.txt")]
+        [InlineData("a/b/c.txt", "a/d.txt", "b/c.txt")]
+        [InlineData("../../a.txt", "../b.txt", "../a.txt")]
+        [InlineData("../../a.txt", "../b/c.txt", "../../a.txt")]
+        [InlineData("a.txt", "../b.txt", null)]
+        [InlineData("a/b.txt", "", "a/b.txt")]
+        [InlineData("", "a/b.txt", "../")]
+        [InlineData("a/", "a/", "")]
+        [InlineData("", "", "")]
+        public void TestRelativePath_MakeRelativeTo(string thisPath, string relativeToPath, string expected)
+        {
+            try
+            {
+                var actual = ((RelativePath)thisPath).MakeRelativeTo((RelativePath)relativeToPath);
+                Assert.NotNull(actual);
+                Assert.Equal(expected, actual.ToString());
+            }
+            catch (NotSupportedException)
+            {
+                if (expected != null)
+                {
+                    throw;
+                }
+            }
         }
 
         [Fact]

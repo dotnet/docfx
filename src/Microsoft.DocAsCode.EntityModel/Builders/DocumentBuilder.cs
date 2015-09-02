@@ -12,10 +12,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.Reflection;
 
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
 
     public class DocumentBuilder
     {
         private static readonly CompositionHost Container = GetContainer();
+        private static readonly RelativePath Root = (RelativePath)"~/";
 
         private static CompositionHost GetContainer()
         {
@@ -51,7 +53,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 throw new ArgumentException("Output base directory must be rooted.", nameof(outputBaseDir));
             }
             Directory.CreateDirectory(outputBaseDir);
-
+            var context = new DocumentBuildContext(outputBaseDir);
             foreach (var item in
                 from file in files.EnumerateFiles()
                 group file by (from processor in Processors
@@ -62,27 +64,29 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 if (item.Key != null)
                 {
-                    BuildCore(item.Key, item, outputBaseDir);
+                    BuildCore(item.Key, item, context);
                 }
                 else
                 {
                     // todo : log warning: Cannot handle following file: ...
                 }
             }
+            Merge(outputBaseDir, context);
         }
 
-        private void BuildCore(IDocumentProcessor processor, IEnumerable<FileAndType> files, string outputBaseDir)
+        private void BuildCore(
+            IDocumentProcessor processor,
+            IEnumerable<FileAndType> files,
+            DocumentBuildContext context)
         {
             using (var hostService = new HostService(
                 from file in files
-                let m = processor.Load(file)
-                let _ = m.Serialize()
-                select m))
+                select processor.Load(file)))
             {
                 Prebuild(processor, hostService);
                 BuildArticle(processor, hostService);
                 Postbuild(processor, hostService);
-                Save(processor, hostService, outputBaseDir);
+                Save(processor, hostService, context);
             }
         }
 
@@ -113,7 +117,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
         }
 
-        private void Save(IDocumentProcessor processor, HostService hostService, string outputBaseDir)
+        private void Save(IDocumentProcessor processor, HostService hostService, DocumentBuildContext context)
         {
             foreach (var m in hostService.Models)
             {
@@ -121,8 +125,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 {
                     if (m.Type != DocumentType.Override)
                     {
-                        m.BaseDir = outputBaseDir;
-                        processor.Save(m);
+                        m.BaseDir = context.BuildOutputFolder;
+                        var result = processor.Save(m);
+                        if (result != null)
+                        {
+                            RenderMap(context, m, result);
+                        }
                     }
                 }
                 finally
@@ -130,6 +138,29 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     m.Dispose();
                 }
             }
+        }
+
+        private void RenderMap(
+            DocumentBuildContext context,
+            FileModel model,
+            SaveResult result)
+        {
+            context.FileMap[Root + (RelativePath)model.OriginalFileAndType.File] = Root + (RelativePath)model.File;
+            foreach (var uid in model.Uids)
+            {
+                context.UidMap[uid] = Root + (RelativePath)model.File;
+            }
+            context.Manifest.Add(new ManifestItem
+            {
+                DocumentType = result.DocumentType,
+                ModelFile = result.ModelFile,
+                ResourceFile = result.ResourceFile,
+            });
+        }
+
+        private void Merge(string outputBaseDir, DocumentBuildContext context)
+        {
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.manifest"), context.Manifest);
         }
     }
 }
