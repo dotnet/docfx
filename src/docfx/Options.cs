@@ -70,13 +70,13 @@ namespace Microsoft.DocAsCode
     /// </summary>
     class WebsiteSubOptions : MetadataSubOptions
     {
-        [Option('t', "template", HelpText = "Specifies the template name to apply to. By default 'markdown.tmpl' and 'html.tmpl' are offered.")]
+        [Option('t', "template", HelpText = "Specifies the template name to apply to. If not specified, output YAML file will not be transformed.")]
         public string Template { get; set; }
 
         [Option("templateFolder", HelpText = "If specified, this folder will be searched first to get the matching template.")]
         public string TemplateFolder { get; set; }
 
-        [Option("theme", HelpText = "Specifies which theme to use. By default 'angular' theme is offered.")]
+        [Option("theme", HelpText = "Specifies which theme to use. By default 'default' theme is offered.")]
         public string TemplateTheme { get; set; }
 
         [Option("themeFolder", HelpText = "If specified, this folder will be searched first to get the matching theme.")]

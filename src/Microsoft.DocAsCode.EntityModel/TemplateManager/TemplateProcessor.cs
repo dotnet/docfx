@@ -61,17 +61,26 @@ namespace Microsoft.DocAsCode.EntityModel
 
             var modelInfo = modelPaths.Select(path =>
             {
-                var modelRelativePath = FileExtensions.MakeRelativePath(baseDirectory, path);
-                using (var reader = new StreamReader(path))
+                try
                 {
-                    var model = YamlUtility.Deserialize<object>(reader);
-                    return new TemplateModelInfo
+                    using (var reader = new StreamReader(path))
                     {
-                        RelativePath = modelRelativePath,
-                        Model = model,
-                    };
+                        object model = YamlUtility.Deserialize<object>(reader);
+
+                        var modelRelativePath = FileExtensions.MakeRelativePath(baseDirectory, path);
+                        return new TemplateModelInfo
+                        {
+                            RelativePath = modelRelativePath,
+                            Model = model,
+                        };
+                    }
                 }
-            });
+                catch (Exception e)
+                {
+                    ParseResult.WriteToConsole(ResultLevel.Warning, $"File {path} is not in valid YAML format: {e.Message}. Ignored.");
+                    return null;
+                }
+            }).Where(s => s != null);
 
             Process(modelInfo, outputDirectory);
         }
