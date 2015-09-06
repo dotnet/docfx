@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode
         public static Func<string, string> GetIndexFilePathFunc = new Func<string, string>(s => Path.Combine(s, "index.yml"));
         public const string ConfigFileName = "xdoc.json";
         public const string WebsiteReferenceFolderName = "_ref_"; // Current OutputFolder
-        public const string DefaultRootOutputFolderPath = "xdoc";
+        public const string DefaultRootOutputFolderPath = "_site";
         public const string DefaultMetadataOutputFolderName = "_api_";
         public const string DefaultConceputalOutputFolderName = ""; // Current OutputFolder
     }

@@ -111,10 +111,10 @@ namespace Microsoft.DocAsCode
                 configModel.TemplateTheme = "default";
             }
 
-            // If OutputFolder is Empty, it is set to current folder
+            // If OutputFolder is Empty, it is set to _site folder
             if (string.IsNullOrWhiteSpace(configModel.OutputFolder))
             {
-                configModel.OutputFolder = Environment.CurrentDirectory;
+                configModel.OutputFolder = Constants.DefaultRootOutputFolderPath;
             }
 
             // If BaseDirectory is Empty, it is set to current folder
