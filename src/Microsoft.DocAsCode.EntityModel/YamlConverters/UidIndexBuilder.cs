@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public class UidIndexBuilder
         : IPipelineItem<ConverterModel, IHasUidIndex, ConverterModel>
     {
@@ -25,10 +27,9 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
         private void BuildIndexCore(IEnumerable<FileModel> models, IHasUidIndex context)
         {
             context.UidIndex = new Dictionary<string, HashSet<FileAndType>>();
-            context.UidTree = new Dictionary<string, UidTreeNode>();
             foreach (var model in models)
             {
-                foreach (var uid in model.GetUids())
+                foreach (var uid in model.Uids)
                 {
                     HashSet<FileAndType> set;
                     if (!context.UidIndex.TryGetValue(uid, out set))
@@ -37,27 +38,6 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
                         context.UidIndex[uid] = set;
                     }
                     set.Add(model.FileAndType);
-                }
-                foreach (var r in model.GetRelationships())
-                {
-                    UidTreeNode node;
-                    if (!context.UidTree.TryGetValue(r.Uid, out node))
-                    {
-                        node = new UidTreeNode(r.Uid, r.Parent);
-                        context.UidTree[r.Uid] = node;
-                    }
-                    foreach (var child in r.Children)
-                    {
-                        node.Children.Add(child);
-                    }
-                    if (node.IsPage.HasValue && r.IsPage.HasValue)
-                    {
-                        if (node.IsPage != r.IsPage)
-                        {
-                            // todo : throw.
-                        }
-                    }
-                    node.IsPage = node.IsPage ?? r.IsPage;
                 }
             }
         }
@@ -72,7 +52,7 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
             foreach (var item in index)
             {
                 list.AddRange(from ft in item.Value
-                              where ft.Type != DocumentType.ApiDocument
+                              where ft.Type != DocumentType.Article
                               select ft);
                 if (list.Count > 1)
                 {

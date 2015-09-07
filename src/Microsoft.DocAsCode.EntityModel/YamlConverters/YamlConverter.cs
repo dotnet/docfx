@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
     using System;
     using System.Collections.Generic;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public static class YamlConverter
     {
         private static readonly Pipeline<FileCollection, YamlConverterContext, ConverterModel> YamlPipeline =

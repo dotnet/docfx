@@ -45,6 +45,21 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Composition.AttributedModel">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Convention">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Hosting">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Runtime">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml" />
@@ -83,6 +98,8 @@
     <Compile Include="Parsers\MatchDetail.cs" />
     <Compile Include="Parsers\TripleSlashCommentParser.cs" />
     <Compile Include="Parsers\LinkParser.cs" />
+    <Compile Include="Plugins\ConceptualDocumentProcessor.cs" />
+    <Compile Include="Plugins\ManagedReferenceDocumentProcessor.cs" />
     <Compile Include="YamlConverters\RelativePathRewriter.cs" />
     <Compile Include="Resolvers\ResolveReference.cs" />
     <Compile Include="Resolvers\SetParent.cs" />
@@ -135,10 +152,7 @@
     <Compile Include="Model\SyntaxDetail.cs" />
     <Compile Include="Model\MetadataModel.cs" />
     <Compile Include="YamlConverters\Dispatcher.cs" />
-    <Compile Include="YamlConverters\DocumentType.cs" />
-    <Compile Include="YamlConverters\FileAndType.cs" />
     <Compile Include="YamlConverters\FileCollection.cs" />
-    <Compile Include="YamlConverters\FileModel.cs" />
     <Compile Include="YamlConverters\EntitiesAndInterfaces.cs" />
     <Compile Include="YamlConverters\MergeApiYamlHandler.cs" />
     <Compile Include="YamlConverters\NonApiYamlHandler.cs" />
@@ -159,6 +173,10 @@
     <ProjectReference Include="..\Microsoft.CodeAnalysis.Workspaces.Dnx\Microsoft.CodeAnalysis.Workspaces.Dnx.csproj">
       <Project>{5a876ec5-d4d2-4160-9a03-aa0245c322f4}</Project>
       <Name>Microsoft.CodeAnalysis.Workspaces.Dnx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
+      <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
+      <Name>Microsoft.DocAsCode.Plugins</Name>
     </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>

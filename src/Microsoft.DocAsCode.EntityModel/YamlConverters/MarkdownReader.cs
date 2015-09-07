@@ -10,21 +10,21 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
 
     public class MarkdownReader
     {
-        public static Dictionary<object, object> ReadMarkdownAsOverride(string baseDir, string file)
+        public static Dictionary<string, object> ReadMarkdownAsOverride(string baseDir, string file)
         {
-            return new Dictionary<object, object>
+            return new Dictionary<string, object>
             {
                 ["items"] = ReadMarkDownCore(Path.Combine(baseDir, file)).ToList(),
             };
         }
 
-        public static Dictionary<object, object> ReadMarkdownAsConceptual(string baseDir, string file)
+        public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
         {
-            return new Dictionary<object, object>
+            return new Dictionary<string, object>
             {
                 ["items"] = new[]
                 {
-                    new Dictionary<object, object>
+                    new Dictionary<string, object>
                     {
                         ["uid"] = file,
                         ["conceptual"] = File.ReadAllText(Path.Combine(baseDir, file)),
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
             };
         }
 
-        private static IEnumerable<Dictionary<object, object>> ReadMarkDownCore(string file)
+        private static IEnumerable<Dictionary<string, object>> ReadMarkDownCore(string file)
         {
             var content = File.ReadAllText(file);
             var lineIndex = GetLineIndex(content).ToList();
@@ -52,11 +52,7 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
                 {
                     int start = lineIndex[item.Location.EndLocation.Line] + item.Location.EndLocation.Column + 1;
                     int end = lineIndex[currentEnd.Line] + currentEnd.Column;
-                    var dict = new Dictionary<object, object>();
-                    foreach (var prop in item.Detail.Properties)
-                    {
-                        dict[prop.Key] = prop.Value;
-                    }
+                    var dict = new Dictionary<string, object>(item.Detail.Properties);
                     dict["uid"] = item.Id;
                     dict["conceptual"] = content.Substring(start, end - start + 1);
                     yield return dict;

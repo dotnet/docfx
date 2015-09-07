@@ -12,7 +12,9 @@
         "Newtonsoft.Json": "6.0.8",
         "YamlDotNet.Signed": "3.5.1",
         "Jint": "2.5.0",
-        "Nustache": "1.15.3.5"
+        "Nustache": "1.15.3.5",
+        "Microsoft.Composition": "1.0.27",
+        "Microsoft.DocAsCode.Plugins": "1.0.0-*"
     },
     "frameworks": {
         "dnx451": {

@@ -5,6 +5,8 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
 {
     using System;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public class NonApiYamlHandler : IPipelineItem<ConverterModel, object, ConverterModel>
     {
         public ConverterModel Exec(ConverterModel arg, object context)
@@ -14,10 +16,10 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
             {
                 switch (item.Type)
                 {
-                    case DocumentType.ApiDocument:
-                    case DocumentType.OverrideDocument:
+                    case DocumentType.Article:
+                    case DocumentType.Toc:
+                    case DocumentType.Override:
                         break;
-                    case DocumentType.ConceptualDocument:
                     case DocumentType.Resource:
                         result.Add(item.FileAndType, item);
                         break;

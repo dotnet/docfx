@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public class FileCollection
     {
         private readonly List<FileAndType> _files = new List<FileAndType>();
@@ -17,22 +19,22 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
 
         public string BaseDir { get; set; }
 
-        public void AddApis(IEnumerable<string> files)
+        public void AddArticle(IEnumerable<string> files)
         {
             _files.AddRange(from f in files
-                            select new FileAndType(BaseDir, f, DocumentType.ApiDocument));
+                            select new FileAndType(BaseDir, f, DocumentType.Article));
         }
 
         public void AddOverrides(IEnumerable<string> files)
         {
             _files.AddRange(from f in files
-                            select new FileAndType(BaseDir, f, DocumentType.OverrideDocument));
+                            select new FileAndType(BaseDir, f, DocumentType.Override));
         }
 
-        public void AddConceptual(IEnumerable<string> files)
+        public void AddToc(IEnumerable<string> files)
         {
             _files.AddRange(from f in files
-                            select new FileAndType(BaseDir, f, DocumentType.ConceptualDocument));
+                            select new FileAndType(BaseDir, f, DocumentType.Toc));
         }
 
         public IEnumerable<FileAndType> EnumerateFiles()

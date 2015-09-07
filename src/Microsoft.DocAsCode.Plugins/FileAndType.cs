@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.YamlConverters
+namespace Microsoft.DocAsCode.Plugins
 {
     using System;
 
@@ -43,6 +43,24 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
         public override int GetHashCode()
         {
             return File.GetHashCode() + (int)Type ^ BaseDir.GetHashCode();
+        }
+
+        public static bool operator ==(FileAndType left, FileAndType right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+            if (ReferenceEquals(left, null))
+            {
+                return false;
+            }
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(FileAndType left, FileAndType right)
+        {
+            return !(left == right);
         }
     }
 }

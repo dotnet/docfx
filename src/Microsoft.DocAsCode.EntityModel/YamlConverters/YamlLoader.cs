@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public class YamlLoader
         : IPipelineItem<FileCollection, object, ConverterModel>
     {
@@ -32,7 +34,7 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
                        select item;
             // read yaml files in api document.
             dispatcher = from item in yaml
-                         where item.Type == DocumentType.ApiDocument
+                         where item.Type == DocumentType.Article
                          select ReadYamlFile(item);
             // ignore other yaml files.
             dispatcher = from item in yaml
@@ -43,11 +45,11 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
                            select item;
             // read markdown files in override document.
             dispatcher = from item in markdown
-                         where item.Type == DocumentType.OverrideDocument
+                         where item.Type == DocumentType.Override
                          select new FileModel(item, MarkdownReader.ReadMarkdownAsOverride(item.BaseDir, item.File));
             // read markdown files in conceptual document.
             dispatcher = from item in markdown
-                         where item.Type == DocumentType.ConceptualDocument
+                         where item.Type == DocumentType.Toc
                          select new FileModel(item, MarkdownReader.ReadMarkdownAsConceptual(item.BaseDir, item.File));
             // ignore other markdown files.
             dispatcher = from item in markdown

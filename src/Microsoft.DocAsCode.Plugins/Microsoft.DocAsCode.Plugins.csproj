@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Shared\base.props" />
+  <PropertyGroup>
+    <ProjectGuid>{42F7A3B4-464B-403C-8352-5FBF40C696FF}</ProjectGuid>
+    <RootNamespace>Microsoft.DocAsCode.Plugins</RootNamespace>
+    <AssemblyName>Microsoft.DocAsCode.Plugins</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DocumentType.cs" />
+    <Compile Include="FileAndType.cs" />
+    <Compile Include="FileModel.cs" />
+    <Compile Include="IDocumentProcessor.cs" />
+    <Compile Include="IHostService.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
     using System;
     using System.Collections.Generic;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public class ConverterModel : Dictionary<FileAndType, FileModel>
     {
         public ConverterModel(string baseDir)
@@ -32,25 +34,5 @@ namespace Microsoft.DocAsCode.EntityModel.YamlConverters
     public interface IHasUidIndex
     {
         Dictionary<string, HashSet<FileAndType>> UidIndex { get; set; }
-
-        Dictionary<string, UidTreeNode> UidTree { get; set; }
-    }
-
-    public class UidTreeNode
-    {
-        public UidTreeNode(string uid, string parent)
-        {
-            Uid = uid;
-            Parent = parent;
-            Children = new HashSet<string>();
-        }
-
-        public string Uid { get; private set; }
-
-        public string Parent { get; private set; }
-
-        public HashSet<string> Children { get; private set; }
-
-        public bool? IsPage { get; set; }
     }
 }
