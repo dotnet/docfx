@@ -14,7 +14,9 @@ angular.module('docsApp', [
 
   'docascode.controller',
   'docascode.directives',
-]);
+]).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+  $locationProvider.html5Mode(true);
+}]);
 
 angular.module('docascode.controller', ['docascode.contentService', 'docascode.urlService', 'docascode.directives', 'docascode.util', 'docascode.constants', 'docascode.searchService']);
 

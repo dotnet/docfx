@@ -50,8 +50,10 @@
 
         $scope.$watch(function(){return $location.path();}, function(path){
           
-          if (!path && navbar && navbar.length > 0 && navbar[0].href) 
-            $location.url(navbar[0].href);
+          if ((!path || path==='/') && navbar && navbar.length > 0 && navbar[0].href) {
+            $location.path(navbar[0].href);
+            $location.replace();
+          }
         
           var pathInfo = urlService.getPathInfo(path);
           if (pathInfo) {
@@ -197,7 +199,7 @@
     function getNavHref(url) {
       if (urlService.isAbsoluteUrl(url)) return url;
       if (!url) return '';
-      return '#' + url;
+      return url;
     }
 
   }

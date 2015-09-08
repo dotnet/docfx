@@ -252,7 +252,7 @@
       // TODO: if path is : /#/toc1!../a.md => toc should be toc1/toc.yml?
        var path = this.getAbsolutePath(sourcePageHref, targetPageHref);
 
-      return '#' + this.getContentUrl({tocPath:tocPath, contentPath:path});
+      return this.getContentUrl({tocPath:tocPath, contentPath:path});
     };
     
     // Href relative to current file
@@ -278,7 +278,7 @@
           }
       }
 
-      return '#' + this.getContentUrl({ tocPath: toc, contentPath: path });
+      return this.getContentUrl({ tocPath: toc, contentPath: path });
     };
   }
 
