@@ -19,6 +19,11 @@ As for this angular template, we use HTML5 mode other than hashbang, so you will
 The problem caused by the fact that angular's route strategy conflicts with back-end route strategy.
 And the solution is to redirect the request to angular index in the back-end. 
 
+From this [documentation](https://docs.angularjs.org/guide/$location)
+
+> Server side
+> Using this [HTML5] mode requires URL rewriting on server side, basically you have to rewrite all your links to [the] entry point of your application (e.g. index.html)
+
 There are two examples. 
 
 For Express framework

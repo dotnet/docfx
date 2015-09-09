@@ -175,7 +175,7 @@
     // Href relative to current toc file
     function getBreadCrumbHref(url) {
       // For navbar url, no need to calculate relative path from toc
-      if (url && url.indexOf('/#/') === 0) return url.substring(1);
+      if (url && url.indexOf('/#/') === 0) return url.substring(3);
       var currentPath = $location.path();
       var pathInfo = urlService.getPathInfo(currentPath);
       return urlService.getHref(pathInfo.tocPath, '', url);
