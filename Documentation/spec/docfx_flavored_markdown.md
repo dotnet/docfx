@@ -1,6 +1,16 @@
 Docfx Flavored Markdown
 ==========================================
 Docfx supports "Docfx Flavored Markdown," or DFM. It is 100% compatiable with [Github Flavored Markdown](https://help.github.com/articles/github-flavored-markdown/), and adds some additional functionality, including cross reference and file inclusion.
+### Yaml Header
+Yaml header in DFM is considered as the metadata for the markdown file. It will be transformed to `yamlheader` tag when processed.
+Yaml header MUST be the first thing in the file and MUST take the form of valid YAML set between triple-dashed lines. Here is a basic example:
+
+```md
+---
+uid: A.md
+title: A
+---
+```
 
 ### Cross Reference
 Using `@uid` to quickly reference to other documentations.
@@ -13,9 +23,16 @@ This is a markdown file
 ```
 
 ### File Inclusion
-DFM adds syntax to include other file parts into current file, such file parts can be code snippets or simply plain text.
+DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax. *NOTE* that YAML header is **NOT** supported when the file is an inclusion.
+There are two types of file inclusion: inline one and block one, as similar to inline code span and block code.
+
+#### Inline
+Inline file inclusion is in the following syntax, in which `<title>` stands for the title of the included file, and `<filepath>` stands for the file path of the included file, file path can be either absolute file path or relative file path.`<filepath>` can be wrapped by `'` or `"`. *NOTE* that for inline file inclusion, the file included will be considered as containing only inline tags, e.g. `###header` inside the file will not be transformed as `<h3>` is a block tag, while `[a](b)` will be transformed to `<a href='b'>a</a>` as `<a>` is an inline tag.
 ```
-{{<filepath>[<startline>-<endline>, <anotherline>]}}
+...Other inline contents... [!inc[<title>](<filepath>)]
 ```
-`<filepath>` can be wrapped by `'`, `"` if it contains `[`,`}`,`-`.
-Line number can be ommited. If ommited, the whole content from the file will be included.
+#### Block
+Block file inclusion must be in a single line and with no prefix characters before the start `[`. Content inside the included file will be transformed using DFM syntax.
+```
+[!inc[<title>](<filepath>)]
+```

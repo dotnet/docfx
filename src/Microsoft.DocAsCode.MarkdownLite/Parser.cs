@@ -10,25 +10,27 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         private readonly Options _options;
         private readonly InlineLexer _inline;
-        private readonly TokensResult _src;
+        private TokensResult _src;
         private IEnumerator<Token> _tokens;
-
-        public Parser(TokensResult src, Options options)
+        
+        public Parser(Options options, InlineLexer inline = null)
         {
             if (options == null)
             {
                 throw new ArgumentNullException("options");
             }
-            _inline = new InlineLexer(src.Links, _options);
-            _src = src;
+            if (inline == null) _inline = new InlineLexer(options);
+            else _inline = inline;
+
             _options = options;
         }
 
         /// <summary>
         /// Parse Loop
         /// </summary>
-        public virtual string Parse()
+        public virtual string Parse(TokensResult src)
         {
+            Init(src);
             using (_tokens = _src.Enumerate().GetEnumerator())
             {
                 var result = StringBuffer.Empty;
@@ -53,6 +55,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
         protected Options Options { get { return _options; } }
 
         protected InlineLexer Inline { get { return _inline; } }
+
+        protected virtual void Init(TokensResult src)
+        {
+            if (src == null)
+            {
+                throw new ArgumentNullException("src");
+            }
+
+            if (src.Links != null)
+            {
+                _inline.SetLinks(src.Links);
+            }
+
+            _src = src;
+        }
 
         /// <summary>
         /// Parse Text Tokens

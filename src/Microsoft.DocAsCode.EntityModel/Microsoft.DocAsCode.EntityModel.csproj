@@ -7,6 +7,10 @@
     <NuGetPackageImportStamp>4dff0804</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Jint, Version=2.5.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Jint.2.5.0\lib\portable-net40+sl50+win+wpa81+wp80\Jint.dll</HintPath>
       <Private>True</Private>
@@ -62,6 +66,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml" />
     <Reference Include="YamlDotNet, Version=3.5.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -73,6 +78,14 @@
     <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Builders\YamlFormatter.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredInlineLexer.cs" />
+    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredParser.cs" />
+    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredLexer.cs" />
+    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredRenderer.cs" />
+    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredOptions.cs" />
+    <Compile Include="DocfxFlavoredMarked\FileCacheLite.cs" />
+    <Compile Include="DocfxFlavoredMarked\MarkdownNodeType.cs" />
+    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredIncHelper.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageWriter.cs" />
@@ -96,6 +109,7 @@
     <Compile Include="Model\ExceptionDetail.cs" />
     <Compile Include="Model\ApiReferenceModel.cs" />
     <Compile Include="Model\ReferenceItem.cs" />
+    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredMarked.cs" />
     <Compile Include="Parsers\YamlHeaderParser.cs" />
     <Compile Include="Parsers\CodeSnippetParser.cs" />
     <Compile Include="Parsers\MatchDetail.cs" />
@@ -172,6 +186,10 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
       <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
       <Name>Microsoft.DocAsCode.Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
+      <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
+      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
     </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>

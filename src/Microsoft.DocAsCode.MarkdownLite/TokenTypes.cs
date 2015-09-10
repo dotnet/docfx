@@ -5,6 +5,36 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Immutable;
 
+    public class TokenName
+    {
+        public const string NewLine = "NewLine";
+        public const string Fences = "Fences";
+        public const string Heading = "Heading";
+        public const string NoLeadingPipe = "NoLeadingPipe";
+        public const string LHeading = "LHeading";
+        public const string Hr = "Hr";
+        public const string Blockquote = "Blockquote";
+        public const string List = "List";
+        public const string Html = "Html";
+        public const string Def = "Def";
+        public const string Table = "Table";
+        public const string Paragraph = "Paragraph";
+
+        public const string Escape = "Escape";
+        public const string AutoLink = "AutoLink";
+        public const string Url = "Url";
+        public const string Tag = "Tag";
+        public const string Link = "Link";
+        public const string RefLink = "RefLink";
+        public const string NoLink = "NoLink";
+        public const string Strong = "Strong";
+        public const string Em = "Em";
+        public const string Code = "Code";
+        public const string Br = "Br";
+        public const string Del = "Del";
+        public const string Text = "Text";
+    }
+
     public class TokenTypes
     {
 

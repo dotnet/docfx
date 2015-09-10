@@ -21,7 +21,7 @@
     },
   ],
   "build": { // input could be YAML or MARKDOWN files, outputs are Final-YAML files
-    "content": {
+    "content":
       [
         {
           "files": ["**/*.yml"],
@@ -33,8 +33,12 @@
         {
           "files": ["toc.yml"],
         }
-      ]
-    },
+      ],
+    "resource": [
+        {
+          "files": ["images/**"]
+        }
+    ]
     "overwrite": "apispec/*.md",
     "externalReference": [
       "external/*.yml.zip"

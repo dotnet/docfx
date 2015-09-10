@@ -7,28 +7,37 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    public class BlockResolverContext : IResolverContext
+    {
+        public bool top { get; set; }
+    }
+
     public class Lexer
     {
-
         private readonly Options _options;
         private readonly BlockRules _rules;
-
+        public ResolversCollection<Resolver<TokensResult>> BlockResolvers { get; private set; } = new ResolversCollection<Resolver<TokensResult>>();
+        private BlockResolverContext _context = new BlockResolverContext { top = true };
         public Lexer(Options options)
         {
             _options = options ?? new Options();
-            _rules = new NormalBlockRules();
 
-            if (_options.Gfm)
-            {
-                if (_options.Tables)
-                {
-                    _rules = new TablesBlockRules();
-                }
-                else
-                {
-                    _rules = new GfmBlockRules();
-                }
-            }
+            _rules = GetDefaultBlockRule(_options);
+
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.NewLine, _rules.Newline, ApplyNewLine));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Code, _rules.Сode, ApplyCode));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Fences, _rules.Fences, ApplyFences));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Heading, _rules.Heading, ApplyHeading));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.NoLeadingPipe, _rules.NpTable, ApplyNoLeadingPipe, a => ((BlockResolverContext)a).top));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.LHeading, _rules.LHeading, ApplyLHeading));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Hr, _rules.Hr, ApplyHr));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Blockquote, _rules.Blockquote, ApplyBlockquote));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.List, _rules.List, ApplyList));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Html, _rules.Html, ApplyHtml));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Def, _rules.Def, ApplyDef, a => ((BlockResolverContext)a).top));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Table, _rules.Table, ApplyTable, a => ((BlockResolverContext)a).top));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Paragraph, _rules.Paragraph, ApplyParagraph, a => ((BlockResolverContext)a).top));
+            BlockResolvers.Add(new Resolver<TokensResult>(TokenName.Text, _rules.Text, ApplyText));
         }
 
         /// <summary>
@@ -46,16 +55,35 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return tokens;
         }
 
+        protected virtual BlockRules GetDefaultBlockRule(Options options)
+        {
+            if (options.Gfm)
+            {
+                if (options.Tables)
+                {
+                    return new TablesBlockRules();
+                }
+                else
+                {
+                    return new GfmBlockRules();
+                }
+            }
+            else
+            {
+                return new NormalBlockRules();
+            }
+        }
+
         /// <summary>
         /// Lexing
         /// </summary>
         protected virtual void Token(string srcOrig, bool top, TokensResult tokens)
         {
             var src = Preprocess(srcOrig);
-
+            _context.top = top;
             while (!string.IsNullOrEmpty(src))
             {
-                if (!ApplyRules(top, ref src, tokens))
+                if (!ApplyRules(ref src, ref tokens, _context))
                 {
                     throw new Exception("Cannot find suitable rule for byte: " + ((int)src[0]).ToString());
                 }
@@ -67,400 +95,277 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return Regexes.Lexers.WhiteSpaceLine.Replace(src, string.Empty);
         }
 
-        protected virtual bool ApplyRules(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyRules(ref string src, ref TokensResult tokens, IResolverContext context)
         {
-            return
-                // newline
-                ApplyNewLine(top, ref src, tokens) ||
-                // code
-                ApplyCode(top, ref src, tokens) ||
-                // fences (gfm)
-                ApplyFences(top, ref src, tokens) ||
-                // heading
-                ApplyHeading(top, ref src, tokens) ||
-                // table no leading pipe (gfm)
-                ApplyNoLeadingPipe(top, ref src, tokens) ||
-                // lheading
-                ApplyLHeading(top, ref src, tokens) ||
-                // hr
-                ApplyHr(top, ref src, tokens) ||
-                // blockquote
-                ApplyBlockquote(top, ref src, tokens) ||
-                // list
-                ApplyList(top, ref src, tokens) ||
-                // html
-                ApplyHtml(top, ref src, tokens) ||
-                // def
-                ApplyDef(top, ref src, tokens) ||
-                // table (gfm)
-                ApplyTable(top, ref src, tokens) ||
-                // top-level paragraph
-                ApplyParagraph(top, ref src, tokens) ||
-                // text
-                ApplyText(top, ref src, tokens);
-        }
-
-        protected virtual bool ApplyNewLine(bool top, ref string src, TokensResult tokens)
-        {
-            var cap = _rules.Newline.Apply(src);
-            if (cap.Length > 0)
+            foreach (var rule in BlockResolvers)
             {
-                src = src.Substring(cap[0].Length);
-                if (cap[0].Length > 1)
+                if (rule.Apply(ref src, ref tokens, context))
                 {
-                    tokens.Add(new Token
-                    {
-                        Type = TokenTypes.Space
-                    });
+                    return true;
                 }
-                return true;
             }
+
             return false;
         }
 
-        protected virtual bool ApplyCode(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyNewLine(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
         {
-            var cap = _rules.Сode.Apply(src);
-            if (cap.Length > 0)
+            if (match.Groups[0].Value.Length > 1)
             {
-                src = src.Substring(cap[0].Length);
-                var capStr = Regexes.Lexers.LeadingWhiteSpaces.Replace(cap[0], string.Empty);
                 tokens.Add(new Token
                 {
-                    Type = TokenTypes.Code,
-                    Text = !_options.Pedantic
-                      ? Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty)
-                      : capStr
+                    Type = TokenTypes.Space
                 });
-                return true;
             }
-            return false;
+            return true;
         }
 
-        protected virtual bool ApplyFences(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyCode(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
         {
-            var cap = _rules.Fences.Apply(src);
-            if (cap.Length > 0)
+            var capStr = Regexes.Lexers.LeadingWhiteSpaces.Replace(match.Groups[0].Value, string.Empty);
+            tokens.Add(new Token
             {
-                src = src.Substring(cap[0].Length);
-                tokens.Add(new Token
-                {
-                    Type = TokenTypes.Code,
-                    Lang = cap[2],
-                    Text = cap[3]
-                });
-                return true;
-            }
-            return false;
+                Type = TokenTypes.Code,
+                Text = !_options.Pedantic
+                  ? Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty)
+                  : capStr
+            });
+            return true;
         }
 
-        protected virtual bool ApplyHeading(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyFences(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
         {
-            var cap = _rules.Heading.Apply(src);
-            if (cap.Length > 0)
+            tokens.Add(new Token
             {
-                src = src.Substring(cap[0].Length);
-                tokens.Add(new Token
-                {
-                    Type = TokenTypes.Heading,
-                    Depth = cap[1].Length,
-                    Text = cap[2]
-                });
-                return true;
-            }
-            return false;
+                Type = TokenTypes.Code,
+                Lang = match.Groups[2].Value,
+                Text = match.Groups[3].Value
+            });
+            return true;
         }
 
-        protected virtual bool ApplyNoLeadingPipe(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyHeading(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
         {
-            if (!top)
+            tokens.Add(new Token
             {
-                return false;
+                Type = TokenTypes.Heading,
+                Depth = match.Groups[1].Value.Length,
+                Text = match.Groups[2].Value
+            });
+            return true;
+        }
+
+        protected virtual bool ApplyNoLeadingPipe(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
+        {
+            var item = new Token
+            {
+                Type = TokenTypes.Table,
+                Header = match.Groups[1].Value.ReplaceRegex(Regexes.Lexers.UselessTableHeader, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter),
+                Align = ParseAligns(match.Groups[2].Value.ReplaceRegex(Regexes.Lexers.UselessTableAlign, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter)),
+                Cells = match.Groups[3].Value.ReplaceRegex(Regexes.Lexers.EndWithNewLine, string.Empty).Split('\n').Select(x => new string[] { x }).ToArray()
+            };
+
+            for (int i = 0; i < item.Cells.Length; i++)
+            {
+                item.Cells[i] = item.Cells[i][0].SplitRegex(Regexes.Lexers.TableSplitter);
             }
-            var cap = _rules.NpTable.Apply(src);
-            if (cap.Length > 0)
+
+            tokens.Add(item);
+
+            return true;
+        }
+
+        protected virtual bool ApplyLHeading(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
+        {
+            tokens.Add(new Token
             {
-                src = src.Substring(cap[0].Length);
+                Type = TokenTypes.Heading,
+                Depth = match.Groups[2].Value == "=" ? 1 : 2,
+                Text = match.Groups[1].Value
+            });
+            return true;
+        }
 
-                var item = new Token
-                {
-                    Type = TokenTypes.Table,
-                    Header = cap[1].ReplaceRegex(Regexes.Lexers.UselessTableHeader, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter),
-                    Align = ParseAligns(cap[2].ReplaceRegex(Regexes.Lexers.UselessTableAlign, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter)),
-                    Cells = cap[3].ReplaceRegex(Regexes.Lexers.EndWithNewLine, string.Empty).Split('\n').Select(x => new string[] { x }).ToArray()
-                };
+        protected virtual bool ApplyHr(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
+        {
+            tokens.Add(new Token
+            {
+                Type = TokenTypes.Hr
+            });
+            return true;
+        }
 
-                for (int i = 0; i < item.Cells.Length; i++)
+        protected virtual bool ApplyBlockquote(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
+        {
+            tokens.Add(new Token
+            {
+                Type = TokenTypes.BlockquoteStart
+            });
+
+            var capStr = Regexes.Lexers.LeadingBlockquote.Replace(match.Groups[0].Value, string.Empty);
+
+            // Pass `top` to keep the current
+            // "toplevel" state. This is exactly
+            // how markdown.pl works.
+            Token(capStr, ((BlockResolverContext)context).top, tokens);
+
+            tokens.Add(new Token
+            {
+                Type = TokenTypes.BlockquoteEnd
+            });
+
+            return true;
+        }
+
+        protected virtual bool ApplyList(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
+        {
+            var bull = match.Groups[2].Value;
+
+            tokens.Add(new Token
+            {
+                Type = TokenTypes.ListStart,
+                Ordered = bull.Length > 1
+            });
+
+            // Get each top-level item.
+            var cap = match.Groups[0].Value.Match(_rules.Item);
+
+            var next = false;
+            var l = cap.Length;
+            int i = 0;
+
+            for (; i < l; i++)
+            {
+                var item = cap[i];
+
+                // Remove the list item's bullet
+                // so it is seen as the next token.
+                var space = item.Length;
+                item = item.ReplaceRegex(Regexes.Lexers.LeadingBullet, string.Empty);
+
+                // Outdent whatever the
+                // list item contains. Hacky.
+                if (item.IndexOf("\n ") > -1)
                 {
-                    item.Cells[i] = item.Cells[i][0].SplitRegex(Regexes.Lexers.TableSplitter);
+                    space -= item.Length;
+                    item = !_options.Pedantic
+                      ? Regex.Replace(item, "^ {1," + space + "}", "", RegexOptions.Multiline)
+                      : Regex.Replace(item, @"/^ {1,4}", "", RegexOptions.Multiline);
                 }
 
-                tokens.Add(item);
-
-                return true;
-            }
-            return false;
-        }
-
-        protected virtual bool ApplyLHeading(bool top, ref string src, TokensResult tokens)
-        {
-            var cap = _rules.LHeading.Apply(src);
-            if (cap.Length > 0)
-            {
-                src = src.Substring(cap[0].Length);
-                tokens.Add(new Token
+                // Determine whether the next list item belongs here.
+                // Backpedal if it does not belong in this list.
+                if (_options.SmartLists && i != l - 1)
                 {
-                    Type = TokenTypes.Heading,
-                    Depth = cap[2] == "=" ? 1 : 2,
-                    Text = cap[1]
-                });
-                return true;
-            }
-            return false;
-        }
-
-        protected virtual bool ApplyHr(bool top, ref string src, TokensResult tokens)
-        {
-            var cap = _rules.Hr.Apply(src);
-            if (cap.Length > 0)
-            {
-                src = src.Substring(cap[0].Length);
-                tokens.Add(new Token
-                {
-                    Type = TokenTypes.Hr
-                });
-                return true;
-            }
-            return false;
-        }
-
-        protected virtual bool ApplyBlockquote(bool top, ref string src, TokensResult tokens)
-        {
-            var cap = _rules.Blockquote.Apply(src);
-            if (cap.Length > 0)
-            {
-                src = src.Substring(cap[0].Length);
-
-                tokens.Add(new Token
-                {
-                    Type = TokenTypes.BlockquoteStart
-                });
-
-                var capStr = Regexes.Lexers.LeadingBlockquote.Replace(cap[0], string.Empty);
-
-                // Pass `top` to keep the current
-                // "toplevel" state. This is exactly
-                // how markdown.pl works.
-                Token(capStr, top, tokens);
-
-                tokens.Add(new Token
-                {
-                    Type = TokenTypes.BlockquoteEnd
-                });
-
-                return true;
-            }
-            return false;
-        }
-
-        protected virtual bool ApplyList(bool top, ref string src, TokensResult tokens)
-        {
-            var cap = _rules.List.Apply(src);
-            if (cap.Length > 0)
-            {
-                src = src.Substring(cap[0].Length);
-                var bull = cap[2];
-
-                tokens.Add(new Token
-                {
-                    Type = TokenTypes.ListStart,
-                    Ordered = bull.Length > 1
-                });
-
-                // Get each top-level item.
-                cap = cap[0].Match(_rules.Item);
-
-                var next = false;
-                var l = cap.Length;
-                int i = 0;
-
-                for (; i < l; i++)
-                {
-                    var item = cap[i];
-
-                    // Remove the list item's bullet
-                    // so it is seen as the next token.
-                    var space = item.Length;
-                    item = item.ReplaceRegex(Regexes.Lexers.LeadingBullet, string.Empty);
-
-                    // Outdent whatever the
-                    // list item contains. Hacky.
-                    if (item.IndexOf("\n ") > -1)
+                    var b = _rules.Bullet.Apply(cap[i + 1])[0]; // !!!!!!!!!!!
+                    if (bull != b && !(bull.Length > 1 && b.Length > 1))
                     {
-                        space -= item.Length;
-                        item = !_options.Pedantic
-                          ? Regex.Replace(item, "^ {1," + space + "}", "", RegexOptions.Multiline)
-                          : Regex.Replace(item, @"/^ {1,4}", "", RegexOptions.Multiline);
+                        src = String.Join("\n", cap.Skip(i + 1)) + src;
+                        i = l - 1;
                     }
+                }
 
-                    // Determine whether the next list item belongs here.
-                    // Backpedal if it does not belong in this list.
-                    if (_options.SmartLists && i != l - 1)
-                    {
-                        var b = _rules.Bullet.Apply(cap[i + 1])[0]; // !!!!!!!!!!!
-                        if (bull != b && !(bull.Length > 1 && b.Length > 1))
-                        {
-                            src = String.Join("\n", cap.Skip(i + 1)) + src;
-                            i = l - 1;
-                        }
-                    }
-
-                    // Determine whether item is loose or not.
-                    // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
-                    // for discount behavior.
-                    var loose = next || Regex.IsMatch(item, @"\n\n(?!\s*$)");
-                    if (i != l - 1)
-                    {
-                        next = item[item.Length - 1] == '\n';
-                        if (!loose) loose = next;
-                    }
-
-                    tokens.Add(new Token
-                    {
-                        Type = loose
-                          ? TokenTypes.LooseItemStart
-                          : TokenTypes.ListItemStart
-                    });
-
-                    // Recurse.
-                    Token(item, false, tokens);
-
-                    tokens.Add(new Token
-                    {
-                        Type = TokenTypes.ListItemEnd
-                    });
+                // Determine whether item is loose or not.
+                // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
+                // for discount behavior.
+                var loose = next || Regex.IsMatch(item, @"\n\n(?!\s*$)");
+                if (i != l - 1)
+                {
+                    next = item[item.Length - 1] == '\n';
+                    if (!loose) loose = next;
                 }
 
                 tokens.Add(new Token
                 {
-                    Type = TokenTypes.ListEnd
+                    Type = loose
+                      ? TokenTypes.LooseItemStart
+                      : TokenTypes.ListItemStart
                 });
 
-                return true;
-            }
-            return false;
-        }
+                // Recurse.
+                Token(item, false, tokens);
 
-        protected virtual bool ApplyHtml(bool top, ref string src, TokensResult tokens)
-        {
-            var cap = _rules.Html.Apply(src);
-            if (cap.Length > 0)
-            {
-                src = src.Substring(cap[0].Length);
                 tokens.Add(new Token
                 {
-                    Type = _options.Sanitize
-                      ? TokenTypes.Paragraph
-                      : TokenTypes.Html,
-                    Pre = (_options.Sanitizer == null)
-                      && (cap[1] == "pre" || cap[1] == "script" || cap[1] == "style"),
-                    Text = cap[0]
+                    Type = TokenTypes.ListItemEnd
                 });
-                return true;
             }
-            return false;
+
+            tokens.Add(new Token
+            {
+                Type = TokenTypes.ListEnd
+            });
+
+            return true;
         }
 
-        protected virtual bool ApplyDef(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyHtml(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
         {
-            if (!top)
+            tokens.Add(new Token
             {
-                return false;
-            }
-            var cap = _rules.Def.Apply(src);
-            if (cap.Length > 0)
-            {
-                src = src.Substring(cap[0].Length);
-                tokens.Links[cap[1].ToLower()] = new LinkObj
-                {
-                    Href = cap[2],
-                    Title = cap[3]
-                };
-                return true;
-            }
-            return false;
+                Type = _options.Sanitize
+                  ? TokenTypes.Paragraph
+                  : TokenTypes.Html,
+                Pre = (_options.Sanitizer == null)
+                  && (match.Groups[1].Value == "pre" || match.Groups[1].Value == "script" || match.Groups[1].Value == "style"),
+                Text = match.Groups[0].Value
+            });
+            return true;
         }
 
-        protected virtual bool ApplyTable(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyDef(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
         {
-            if (!top)
+            tokens.Links[match.Groups[1].Value.ToLower()] = new LinkObj
             {
-                return false;
-            }
-            var cap = _rules.Table.Apply(src);
-            if (cap.Length > 0)
-            {
-                src = src.Substring(cap[0].Length);
-
-                var item = new Token
-                {
-                    Type = TokenTypes.Table,
-                    Header = cap[1].ReplaceRegex(Regexes.Lexers.UselessTableHeader, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter),
-                    Align = ParseAligns(cap[2].ReplaceRegex(Regexes.Lexers.UselessTableAlign, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter)),
-                    Cells = cap[3].ReplaceRegex(Regexes.Lexers.UselessGfmTableCell, string.Empty).Split('\n').Select(x => new string[] { x }).ToArray()
-                };
-
-                for (int i = 0; i < item.Cells.Length; i++)
-                {
-                    item.Cells[i] = item.Cells[i][0]
-                      .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
-                      .SplitRegex(Regexes.Lexers.TableSplitter);
-                }
-
-                tokens.Add(item);
-
-                return true;
-            }
-            return false;
+                Href = match.Groups[2].Value,
+                Title = match.Groups[3].Value
+            };
+            return true;
         }
 
-        protected virtual bool ApplyParagraph(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyTable(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
         {
-            if (!top)
+            var item = new Token
             {
-                return false;
-            }
-            var cap = _rules.Paragraph.Apply(src);
-            if (cap.Length > 0)
+                Type = TokenTypes.Table,
+                Header = match.Groups[1].Value.ReplaceRegex(Regexes.Lexers.UselessTableHeader, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter),
+                Align = ParseAligns(match.Groups[2].Value.ReplaceRegex(Regexes.Lexers.UselessTableAlign, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter)),
+                Cells = match.Groups[3].Value.ReplaceRegex(Regexes.Lexers.UselessGfmTableCell, string.Empty).Split('\n').Select(x => new string[] { x }).ToArray()
+            };
+
+            for (int i = 0; i < item.Cells.Length; i++)
             {
-                src = src.Substring(cap[0].Length);
-                tokens.Add(new Token
-                {
-                    Type = TokenTypes.Paragraph,
-                    Text = cap[1][cap[1].Length - 1] == '\n'
-                      ? cap[1].Substring(0, cap[1].Length - 1)
-                      : cap[1]
-                });
-                return true;
+                item.Cells[i] = item.Cells[i][0]
+                  .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
+                  .SplitRegex(Regexes.Lexers.TableSplitter);
             }
-            return false;
+
+            tokens.Add(item);
+
+            return true;
         }
 
-        protected virtual bool ApplyText(bool top, ref string src, TokensResult tokens)
+        protected virtual bool ApplyParagraph(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
         {
-            var cap = _rules.Text.Apply(src);
-            if (cap.Length > 0)
+            tokens.Add(new Token
             {
-                // Top-level should never reach here.
-                src = src.Substring(cap[0].Length);
-                tokens.Add(new Token
-                {
-                    Type = TokenTypes.Text,
-                    Text = cap[0]
-                });
-                return true;
-            }
-            return false;
+                Type = TokenTypes.Paragraph,
+                Text = match.Groups[1].Value[match.Groups[1].Value.Length - 1] == '\n'
+                  ? match.Groups[1].Value.Substring(0, match.Groups[1].Value.Length - 1)
+                  : match.Groups[1].Value
+            });
+            return true;
+        }
+
+        protected virtual bool ApplyText(Match match, IResolverContext context, ref string src, ref TokensResult tokens)
+        {
+            // Top-level should never reach here.
+            tokens.Add(new Token
+            {
+                Type = TokenTypes.Text,
+                Text = match.Groups[0].Value
+            });
+            return true;
         }
 
         protected virtual Align[] ParseAligns(string[] aligns)

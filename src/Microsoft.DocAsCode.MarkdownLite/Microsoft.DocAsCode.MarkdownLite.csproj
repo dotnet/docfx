@@ -17,8 +17,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Align.cs" />
+    <Compile Include="Resolver.cs" />
     <Compile Include="InlineLexer.cs" />
     <Compile Include="IRenderer.cs" />
+    <Compile Include="ResolversCollection.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="LinkObj.cs" />
     <Compile Include="Marked.cs" />

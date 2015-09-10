@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "dnx451": {
+      "frameworkAssemblies": {
+        "Microsoft.CSharp": "",
+        "System.Core": "",
+        "System.Xml": "",
+        "System": "",
+        "System.Runtime": ""
+      },
+      "dependencies": {
+        "System.Collections.Immutable":  "1.0.0-*"
+      }
+    }
+  }
+}

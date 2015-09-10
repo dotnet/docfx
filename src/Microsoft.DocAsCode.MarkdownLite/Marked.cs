@@ -3,14 +3,35 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    public static class Marked
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+
+    public class Marked
     {
-        public static string Markup(string source, Options options = null)
+        protected Lexer Lexer { get; private set; }
+        protected Parser Parser { get; private set; }
+
+        public Options Options { get; private set; }
+
+        public Marked(Options options = null, Lexer lexer = null, Parser parser = null)
         {
             options = options ?? new Options();
-            var lexer = new Lexer(options);
-            var tokens = lexer.Lex(source);
-            return new Parser(tokens, options).Parse();
+            Options = options;
+            Lexer = lexer ?? new Lexer(options);
+            Parser = parser ?? new Parser(options);
+        }
+
+        public virtual string Parse(string src)
+        {
+            var tokens = Lexer.Lex(src);
+            return Parser.Parse(tokens);
+        }
+
+        public static string Markup(string source, Options options = null)
+        {
+            var marked = new Marked(options);
+            return marked.Parse(source);
         }
     }
 }
