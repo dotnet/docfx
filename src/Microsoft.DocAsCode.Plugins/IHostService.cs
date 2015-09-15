@@ -3,14 +3,13 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
-    using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     public interface IHostService
     {
         string Markup(string markdown, FileAndType ft);
-        ISet<string> GetAllUids();
-        IEnumerable<FileModel> GetAllModels(DocumentType? type = null);
-        FileAndType[] LookupByUid(string uid);
-        FileModel GetModel(FileAndType uid);
+        ImmutableHashSet<string> GetAllUids();
+        ImmutableArray<FileModel> GetModels(DocumentType? type = null);
+        ImmutableArray<FileModel> LookupByUid(string uid);
     }
 }

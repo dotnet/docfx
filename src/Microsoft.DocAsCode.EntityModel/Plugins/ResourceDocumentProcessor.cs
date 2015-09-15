@@ -12,28 +12,24 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.Plugins;
 
     [Export(typeof(IDocumentProcessor))]
-    public class ConceptualDocumentProcessor : IDocumentProcessor
+    public class ResourceDocumentProcessor : IDocumentProcessor
     {
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
-            if (file.Type != DocumentType.Article)
-            {
-                return ProcessingPriority.NotSupportted;
-            }
-            if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+            if (file.Type == DocumentType.Resource)
             {
                 return ProcessingPriority.Normal;
+            }
+            if (file.Type == DocumentType.Article)
+            {
+                return ProcessingPriority.Lowest;
             }
             return ProcessingPriority.NotSupportted;
         }
 
         public FileModel Load(FileAndType file)
         {
-            if (file.Type != DocumentType.Article)
-            {
-                throw new NotSupportedException();
-            }
-            return new FileModel(file, MarkdownReader.ReadMarkdownAsConceptual(file.BaseDir, file.File))
+            return new FileModel(file, null)
             {
                 Uids = new string[] { file.File }.ToImmutableArray(),
             };
@@ -41,11 +37,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public void Save(FileModel model)
         {
-            if (model.Type != DocumentType.Article)
+            if (model.FileAndType != model.OriginalFileAndType)
             {
-                throw new NotSupportedException();
+                File.Copy(
+                    Path.Combine(model.OriginalFileAndType.BaseDir, model.OriginalFileAndType.File),
+                    Path.Combine(model.BaseDir, model.File),
+                    true);
+                // todo : metadata.
             }
-            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), model.Content);
         }
 
         public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)
@@ -55,14 +54,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public void Build(FileModel model, IHostService host)
         {
-            if (model.Type != DocumentType.Article)
+            if (model.Type != DocumentType.Article && model.Type != DocumentType.Resource)
             {
-                return;
+                throw new NotSupportedException();
             }
-            var content = (Dictionary<string, object>)model.Content;
-            var markdown = (string)content["conceptual"];
-            content["conceptual"] = host.Markup(markdown, model.FileAndType);
-            model.File = Path.ChangeExtension(model.File, ".yml");
+            // todo : metadata.
         }
 
         public IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host)

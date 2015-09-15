@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="Glob\Glob.cs" />
     <Compile Include="Glob\GlobPathHelper.cs" />
+    <Compile Include="RelativePath.cs" />
     <Compile Include="TaskUtility.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GitUtility.cs" />

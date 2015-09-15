@@ -92,7 +92,7 @@
     <Compile Include="GenerateMetadataFromVBUnitTest.cs" />
     <Compile Include="GenerateMetadataFromCSUnitTest.cs" />
     <Compile Include="RelativePathTest.cs" />
-    <Compile Include="YamlConverterTest.cs" />
+    <Compile Include="DocumentBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -120,6 +120,10 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
       <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
       <Name>Microsoft.DocAsCode.MarkdownLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
+      <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
+      <Name>Microsoft.DocAsCode.Plugins</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>

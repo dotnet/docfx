@@ -3,9 +3,10 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Tests
 {
-    using Microsoft.DocAsCode.EntityModel.YamlConverters;
     using System;
     using Xunit;
+
+    using Microsoft.DocAsCode.Utility;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Related", "RelativePath")]

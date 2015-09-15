@@ -10,13 +10,34 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.IO;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
-    using Microsoft.DocAsCode.EntityModel.YamlConverters;
     using Microsoft.DocAsCode.Plugins;
+    using System.Collections.Immutable;
 
-    [Export("ManagedReference", typeof(IDocumentProcessor))]
+    [Export(typeof(IDocumentProcessor))]
     public class ManagedReferenceDocumentProcessor : IDocumentProcessor
     {
-        public Type ArticleModelType { get { return typeof(PageViewModel); } }
+        public ProcessingPriority GetProcessingPriority(FileAndType file)
+        {
+            switch (file.Type)
+            {
+                case DocumentType.Article:
+                    if (".csyml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
+                        ".csyaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ProcessingPriority.Normal;
+                    }
+                    break;
+                case DocumentType.Override:
+                    if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ProcessingPriority.Normal;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return ProcessingPriority.NotSupportted;
+        }
 
         public FileModel Load(FileAndType file)
         {
@@ -26,19 +47,15 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     var page = YamlUtility.Deserialize<PageViewModel>(Path.Combine(file.BaseDir, file.File));
                     return new FileModel(file, page)
                     {
-                        Uids = (from item in page.Items select item.Uid).ToArray(),
+                        Uids = (from item in page.Items select item.Uid).ToImmutableArray(),
                     };
-                case DocumentType.Toc:
-                    throw new NotImplementedException();
-                case DocumentType.Resource:
-                    return new FileModel(file, null);
                 case DocumentType.Override:
                     var overrides = MarkdownReader.ReadMarkdownAsOverride(file.BaseDir, file.File);
                     return new FileModel(file, overrides)
                     {
                         // todo : strong type
                         Uids = (from Dictionary<string, object> item in (List<Dictionary<string, object>>)overrides["items"]
-                                select (string)item["uid"]).ToArray()
+                                select (string)item["uid"]).ToImmutableArray(),
                     };
                 default:
                     throw new NotSupportedException();
@@ -47,46 +64,37 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public void Save(FileModel model)
         {
+            if (model.Type != DocumentType.Article)
+            {
+                throw new NotSupportedException();
+            }
+            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), model.Content);
+        }
+
+        public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)
+        {
+            return models;
+        }
+
+        public void Build(FileModel model, IHostService host)
+        {
             switch (model.Type)
             {
                 case DocumentType.Article:
-                    YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), model.Content);
-                    break;
-                case DocumentType.Toc:
-                    throw new NotImplementedException();
-                case DocumentType.Resource:
-                    var originalFile = (FileAndType)model.Content;
-                    if (model.FileAndType != originalFile)
+                    var page = (PageViewModel)model.Content;
+                    foreach (var item in page.Items)
                     {
-                        File.Copy(Path.Combine(originalFile.BaseDir, originalFile.File), Path.Combine(model.BaseDir, model.File));
+                        BuildItem(host, item, model.FileAndType);
                     }
                     break;
                 case DocumentType.Override:
+                    return;
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        public IEnumerable<FileModel> Prebuild(IEnumerable<FileModel> models, IHostService host)
-        {
-            return models;
-        }
-
-        public FileModel BuildArticle(FileModel model, IHostService host)
-        {
-            if (model.Type != DocumentType.Article)
-            {
-                return model;
-            }
-            var page = (PageViewModel)model.Content;
-            foreach (var item in page.Items)
-            {
-                BuildItem(host, item, model.FileAndType);
-            }
-            return model;
-        }
-
-        public IEnumerable<FileModel> Postbuild(IEnumerable<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host)
         {
             // todo : merge
             return models;

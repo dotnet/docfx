@@ -3,16 +3,16 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
-    using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     public interface IDocumentProcessor
     {
-        Type ArticleModelType { get; }
+        ProcessingPriority GetProcessingPriority(FileAndType file);
         FileModel Load(FileAndType file);
         void Save(FileModel model);
-        IEnumerable<FileModel> Prebuild(IEnumerable<FileModel> models, IHostService host);
-        FileModel BuildArticle(FileModel model, IHostService host);
-        IEnumerable<FileModel> Postbuild(IEnumerable<FileModel> models, IHostService host);
+        IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host);
+        void Build(FileModel model, IHostService host);
+        IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host);
     }
 }

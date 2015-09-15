@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\DocumentBuilder.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
@@ -98,9 +99,11 @@
     <Compile Include="Parsers\MatchDetail.cs" />
     <Compile Include="Parsers\TripleSlashCommentParser.cs" />
     <Compile Include="Parsers\LinkParser.cs" />
+    <Compile Include="Plugins\ResourceDocumentProcessor.cs" />
+    <Compile Include="Plugins\TocDocumentProcessor.cs" />
     <Compile Include="Plugins\ConceptualDocumentProcessor.cs" />
     <Compile Include="Plugins\ManagedReferenceDocumentProcessor.cs" />
-    <Compile Include="YamlConverters\RelativePathRewriter.cs" />
+    <Compile Include="Builders\HostService.cs" />
     <Compile Include="Resolvers\ResolveReference.cs" />
     <Compile Include="Resolvers\SetParent.cs" />
     <Compile Include="TemplateManager\ResourceFinder.cs" />
@@ -151,20 +154,8 @@
     <Compile Include="Model\SourceDetail.cs" />
     <Compile Include="Model\SyntaxDetail.cs" />
     <Compile Include="Model\MetadataModel.cs" />
-    <Compile Include="YamlConverters\Dispatcher.cs" />
-    <Compile Include="YamlConverters\FileCollection.cs" />
-    <Compile Include="YamlConverters\EntitiesAndInterfaces.cs" />
-    <Compile Include="YamlConverters\MergeApiYamlHandler.cs" />
-    <Compile Include="YamlConverters\NonApiYamlHandler.cs" />
-    <Compile Include="YamlConverters\Pipeline.cs" />
-    <Compile Include="YamlConverters\OverrideDocumentHandler.cs" />
-    <Compile Include="YamlConverters\RelativePath.cs" />
-    <Compile Include="YamlConverters\UidIndexBuilder.cs" />
-    <Compile Include="YamlConverters\UidRelationship.cs" />
-    <Compile Include="YamlConverters\YamlConverter.cs" />
-    <Compile Include="YamlConverters\MarkdownReader.cs" />
-    <Compile Include="YamlConverters\YamlConverterContext.cs" />
-    <Compile Include="YamlConverters\YamlLoader.cs" />
+    <Compile Include="Builders\FileCollection.cs" />
+    <Compile Include="Plugins\MarkdownReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -182,6 +173,9 @@
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="YamlConverters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
