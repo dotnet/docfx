@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Composition;
     using System.IO;
 
+    using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(typeof(IDocumentProcessor))]
@@ -33,7 +34,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 throw new NotSupportedException();
             }
-            return new FileModel(file, MarkdownReader.ReadMarkdownAsConceptual(file.BaseDir, file.File))
+            return new FileModel(
+                file,
+                MarkdownReader.ReadMarkdownAsConceptual(file.BaseDir, file.File),
+                serializer: YamlFormatter<Dictionary<string, object>>.Instance)
             {
                 Uids = new string[] { file.File }.ToImmutableArray(),
             };

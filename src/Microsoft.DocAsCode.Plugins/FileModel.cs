@@ -52,6 +52,7 @@ namespace Microsoft.DocAsCode.Plugins
                 {
                     _tempFile.Close();
                     _tempFile = null;
+                    Serialize();
                 }
             }
         }
@@ -113,6 +114,7 @@ namespace Microsoft.DocAsCode.Plugins
             }
             else
             {
+                _tempFile.Seek(0, SeekOrigin.Begin);
                 _tempFile.SetLength(0);
             }
             _serializer.Serialize(_tempFile, _content);

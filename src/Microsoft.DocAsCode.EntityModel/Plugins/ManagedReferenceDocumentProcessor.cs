@@ -5,13 +5,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
     using System.IO;
 
+    using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
-    using System.Collections.Immutable;
 
     [Export(typeof(IDocumentProcessor))]
     public class ManagedReferenceDocumentProcessor : IDocumentProcessor
@@ -45,7 +46,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 case DocumentType.Article:
                     var page = YamlUtility.Deserialize<PageViewModel>(Path.Combine(file.BaseDir, file.File));
-                    return new FileModel(file, page)
+                    return new FileModel(file, page, serializer: YamlFormatter<PageViewModel>.Instance)
                     {
                         Uids = (from item in page.Items select item.Uid).ToImmutableArray(),
                     };

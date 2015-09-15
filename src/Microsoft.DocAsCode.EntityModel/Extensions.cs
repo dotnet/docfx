@@ -1,11 +1,12 @@
-﻿/// <summary>
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+/// <summary>
 /// The utility class for docascode project
 /// </summary>
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
-    using System.ComponentModel;
-    using System.Globalization;
     using System.IO;
     using System.Threading;
 

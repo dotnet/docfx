@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\DocumentBuilder.cs" />
+    <Compile Include="Builders\YamlFormatter.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
