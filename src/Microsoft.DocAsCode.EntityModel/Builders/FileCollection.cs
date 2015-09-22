@@ -12,17 +12,23 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         private readonly List<FileAndType> _files = new List<FileAndType>();
 
-        public FileCollection(string baseDir)
+        public FileCollection(string defaultBaseDir)
         {
-            BaseDir = baseDir;
+            DefaultBaseDir = defaultBaseDir;
         }
 
-        public string BaseDir { get; set; }
+        public string DefaultBaseDir { get; set; }
 
         public void Add(DocumentType type, IEnumerable<string> files)
         {
             _files.AddRange(from f in files
-                            select new FileAndType(BaseDir, f, type));
+                            select new FileAndType(DefaultBaseDir, f, type));
+        }
+
+        public void Add(DocumentType type, string baseDir, IEnumerable<string> files)
+        {
+            _files.AddRange(from f in files
+                            select new FileAndType(baseDir, f, type));
         }
 
         public IEnumerable<FileAndType> EnumerateFiles()

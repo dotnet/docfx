@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.Collections.Immutable;
     using System.Reflection;
 
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
@@ -43,20 +44,24 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         [ImportMany]
         internal IEnumerable<IDocumentProcessor> Processors { get; set; }
 
-        public void Build(FileCollection files, string outputBaseDir, ImmutableDictionary<string, object> metadata)
+        public void Build(DocumentBuildParameters parameters)
         {
-            if (outputBaseDir == null)
+            if (parameters == null)
             {
-                throw new ArgumentNullException(nameof(outputBaseDir));
+                throw new ArgumentNullException(nameof(parameters));
             }
-            if (!Path.IsPathRooted(outputBaseDir))
+            if (parameters.OutputBaseDir == null)
             {
-                throw new ArgumentException("Output base directory must be rooted.", nameof(outputBaseDir));
+                throw new ArgumentException("Output folder cannot be null.", nameof(parameters) + "." + nameof(parameters.OutputBaseDir));
             }
-            Directory.CreateDirectory(outputBaseDir);
-            var context = new DocumentBuildContext(outputBaseDir);
+            if (!Path.IsPathRooted(parameters.OutputBaseDir))
+            {
+                throw new ArgumentException("Output base directory must be rooted.", nameof(parameters) + "." + nameof(parameters.OutputBaseDir));
+            }
+            Directory.CreateDirectory(parameters.OutputBaseDir);
+            var context = new DocumentBuildContext(parameters.OutputBaseDir, parameters.ExternalReferencePackages);
             foreach (var item in
-                from file in files.EnumerateFiles()
+                from file in parameters.Files.EnumerateFiles()
                 group file by (from processor in Processors
                                let priority = processor.GetProcessingPriority(file)
                                where priority != ProcessingPriority.NotSupportted
@@ -65,14 +70,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 if (item.Key != null)
                 {
-                    BuildCore(item.Key, item, metadata, context);
+                    BuildCore(item.Key, item, parameters.Metadata, context);
                 }
                 else
                 {
                     // todo : log warning: Cannot handle following file: ...
                 }
             }
-            Merge(outputBaseDir, context);
+            Merge(parameters.OutputBaseDir, context);
         }
 
         private void BuildCore(
@@ -131,7 +136,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         var result = processor.Save(m);
                         if (result != null)
                         {
-                            RenderMap(context, m, result);
+                            HandleSaveResult(context, m, result);
                         }
                     }
                 }
@@ -142,7 +147,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
         }
 
-        private void RenderMap(
+        private void HandleSaveResult(
             DocumentBuildContext context,
             FileModel model,
             SaveResult result)
@@ -151,6 +156,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             foreach (var uid in model.Uids)
             {
                 context.UidMap[uid] = Root + (RelativePath)model.File;
+            }
+            if (result.XRef != null)
+            {
+                context.XRef.UnionWith(result.XRef);
             }
             context.Manifest.Add(new ManifestItem
             {
@@ -163,6 +172,63 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         private void Merge(string outputBaseDir, DocumentBuildContext context)
         {
             YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.manifest"), context.Manifest);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.filemap"), context.FileMap);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xref"), GetXRef(context));
         }
+
+        private Dictionary<string, string> GetXRef(DocumentBuildContext context)
+        {
+            var common = context.UidMap.Keys.Intersect(context.XRef).ToList();
+            var xref = new Dictionary<string, string>(context.XRef.Count);
+            foreach (var uid in common)
+            {
+                xref[uid] = context.UidMap[uid];
+            }
+            context.XRef.ExceptWith(common);
+            if (context.XRef.Count > 0 && context.ExternalReferencePackages.Length > 0)
+            {
+                var externalReferences = (from reader in
+                                              from package in context.ExternalReferencePackages.AsParallel()
+                                              select ExternalReferencePackageReader.CreateNoThrow(package)
+                                          where reader != null
+                                          select reader).ToList();
+
+                foreach (var uid in context.XRef.Except(common))
+                {
+                    var href = GetExternalReference(externalReferences, uid);
+                    if (href != null)
+                    {
+                        context.UidMap[uid] = href;
+                    }
+                    else
+                    {
+                        // todo : trace xref cannot find.
+                    }
+                }
+            }
+            else
+            {
+                // todo : trace xref cannot find.
+            }
+
+            return xref;
+        }
+
+        public string GetExternalReference(List<ExternalReferencePackageReader> externalReferences, string uid)
+        {
+            if (externalReferences != null)
+            {
+                foreach (var reader in externalReferences)
+                {
+                    ReferenceViewModel vm;
+                    if (reader.TryGetReference(uid, out vm))
+                    {
+                        return vm.Href;
+                    }
+                }
+            }
+            return null;
+        }
+
     }
 }

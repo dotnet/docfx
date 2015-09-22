@@ -29,12 +29,15 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             files.Add(DocumentType.Resource, new[] { resourceFile });
             var builder = new DocumentBuilder();
             builder.Build(
-                files,
-                outputBaseDir,
-                new Dictionary<string, object>
+                new DocumentBuildParameters
                 {
-                    ["meta"] = "Hello world!",
-                }.ToImmutableDictionary());
+                    Files = files,
+                    OutputBaseDir = outputBaseDir,
+                    Metadata = new Dictionary<string, object>
+                    {
+                        ["meta"] = "Hello world!",
+                    }.ToImmutableDictionary()
+                });
             Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
             Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".yml")));
             var meta = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".yml"));

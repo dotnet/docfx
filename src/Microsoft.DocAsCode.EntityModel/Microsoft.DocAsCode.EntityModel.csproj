@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\DocumentBuilder.cs" />
+    <Compile Include="Builders\DocumentBuildParameters.cs" />
     <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Builders\YamlFormatter.cs" />
     <Compile Include="Constants.cs" />

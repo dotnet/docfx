@@ -8,5 +8,6 @@ namespace Microsoft.DocAsCode.Plugins
         public string DocumentType { get; set; }
         public string ModelFile { get; set; }
         public string ResourceFile { get; set; }
+        public string[] XRef { get; set; }
     }
 }

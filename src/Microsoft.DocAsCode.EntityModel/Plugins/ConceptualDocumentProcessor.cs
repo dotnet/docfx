@@ -62,6 +62,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 DocumentType = "Conceptual",
                 ModelFile = model.File,
+                XRef = new string[0], // todo : find xref.
             };
         }
 

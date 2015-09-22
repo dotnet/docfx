@@ -88,6 +88,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 DocumentType = "ManagedReference",
                 ModelFile = model.File,
+                XRef = new string[0], // todo : find xref.
             };
         }
 
