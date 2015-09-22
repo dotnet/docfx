@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return ProcessingPriority.NotSupportted;
         }
 
-        public FileModel Load(FileAndType file)
+        public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             TocViewModel toc = null;
             if ("toc.md".Equals(Path.GetFileName(file.File), StringComparison.OrdinalIgnoreCase))
@@ -46,6 +46,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 throw new NotSupportedException();
             }
+            // todo : metadata.
             return new FileModel(file, toc)
             {
                 Uids = new[] { file.File }.ToImmutableArray(),

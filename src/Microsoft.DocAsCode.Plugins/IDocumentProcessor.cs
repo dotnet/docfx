@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Plugins
     public interface IDocumentProcessor
     {
         ProcessingPriority GetProcessingPriority(FileAndType file);
-        FileModel Load(FileAndType file);
+        FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata);
         SaveResult Save(FileModel model);
         IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host);
         void Build(FileModel model, IHostService host);

@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
 
@@ -23,9 +24,29 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return ProcessingPriority.NotSupportted;
         }
 
-        public FileModel Load(FileAndType file)
+        public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
-            return new FileModel(file, null)
+            Dictionary<string, object> content = null;
+            var metafile = Path.Combine(file.BaseDir, file.File.TrimEnd('.') + ".meta");
+            if (File.Exists(metafile))
+            {
+                content = YamlUtility.Deserialize<Dictionary<string, object>>(metafile);
+                if (content != null)
+                {
+                    foreach (var item in metadata)
+                    {
+                        if (!content.ContainsKey(item.Key))
+                        {
+                            content[item.Key] = item.Value;
+                        }
+                    }
+                }
+            }
+            if (content == null)
+            {
+                content = metadata.ToDictionary(p => p.Key, p => p.Value);
+            }
+            return new FileModel(file, metadata)
             {
                 Uids = new string[] { file.File }.ToImmutableArray(),
             };
@@ -39,13 +60,19 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     Path.Combine(model.OriginalFileAndType.BaseDir, model.OriginalFileAndType.File),
                     Path.Combine(model.BaseDir, model.File),
                     true);
-                // todo : metadata.
             }
-            return new SaveResult
+            var result = new SaveResult
             {
                 DocumentType = "Resource",
                 ResourceFile = model.File,
             };
+            if (model.Content != null)
+            {
+                var modelFile = model.File.TrimEnd('.') + ".yml";
+                YamlUtility.Serialize(Path.Combine(model.BaseDir, modelFile), model.Content);
+                result.ModelFile = modelFile;
+            }
+            return result;
         }
 
         public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)

@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.Linq;
     using System.Composition;
     using System.Composition.Hosting;
+    using System.Collections.Immutable;
     using System.Reflection;
 
     using Microsoft.DocAsCode.Plugins;
@@ -42,7 +43,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         [ImportMany]
         internal IEnumerable<IDocumentProcessor> Processors { get; set; }
 
-        public void Build(FileCollection files, string outputBaseDir)
+        public void Build(FileCollection files, string outputBaseDir, ImmutableDictionary<string, object> metadata)
         {
             if (outputBaseDir == null)
             {
@@ -64,7 +65,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 if (item.Key != null)
                 {
-                    BuildCore(item.Key, item, context);
+                    BuildCore(item.Key, item, metadata, context);
                 }
                 else
                 {
@@ -77,11 +78,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         private void BuildCore(
             IDocumentProcessor processor,
             IEnumerable<FileAndType> files,
+            ImmutableDictionary<string, object> metadata,
             DocumentBuildContext context)
         {
             using (var hostService = new HostService(
                 from file in files
-                select processor.Load(file)))
+                select processor.Load(file, metadata)))
             {
                 Prebuild(processor, hostService);
                 BuildArticle(processor, hostService);

@@ -14,6 +14,9 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [YamlMember(Alias = "references")]
         public List<ReferenceViewModel> References { get; set; } = new List<ReferenceViewModel>();
 
+        [YamlMember(Alias = "metadata")]
+        public Dictionary<string, object> Metadata { get; set; }
+
         public static PageViewModel FromModel(MetadataItem model)
         {
             if (model == null)

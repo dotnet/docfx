@@ -40,12 +40,26 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return ProcessingPriority.NotSupportted;
         }
 
-        public FileModel Load(FileAndType file)
+        public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             switch (file.Type)
             {
                 case DocumentType.Article:
                     var page = YamlUtility.Deserialize<PageViewModel>(Path.Combine(file.BaseDir, file.File));
+                    if (page.Metadata == null)
+                    {
+                        page.Metadata = metadata.ToDictionary(p => p.Key, p => p.Value);
+                    }
+                    else
+                    {
+                        foreach (var item in metadata)
+                        {
+                            if (page.Metadata.ContainsKey(item.Key))
+                            {
+                                page.Metadata[item.Key] = item.Value;
+                            }
+                        }
+                    }
                     return new FileModel(file, page, serializer: YamlFormatter<PageViewModel>.Instance)
                     {
                         Uids = (from item in page.Items select item.Uid).ToImmutableArray(),

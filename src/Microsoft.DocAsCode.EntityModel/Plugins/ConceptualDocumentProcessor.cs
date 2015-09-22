@@ -28,15 +28,23 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return ProcessingPriority.NotSupportted;
         }
 
-        public FileModel Load(FileAndType file)
+        public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             if (file.Type != DocumentType.Article)
             {
                 throw new NotSupportedException();
             }
+            var content = MarkdownReader.ReadMarkdownAsConceptual(file.BaseDir, file.File);
+            foreach (var item in metadata)
+            {
+                if (!content.ContainsKey(item.Key))
+                {
+                    content[item.Key] = item.Value;
+                }
+            }
             return new FileModel(
                 file,
-                MarkdownReader.ReadMarkdownAsConceptual(file.BaseDir, file.File),
+                content,
                 serializer: YamlFormatter<Dictionary<string, object>>.Instance)
             {
                 Uids = new string[] { file.File }.ToImmutableArray(),

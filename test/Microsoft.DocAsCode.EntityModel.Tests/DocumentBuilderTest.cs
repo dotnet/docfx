@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -20,15 +21,26 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     public class DocumentBuilderTest
     {
         [Fact]
-        public void TestRelativePathRewriter()
+        public void TestBuild()
         {
             var outputBaseDir = Path.Combine(Environment.CurrentDirectory, "output");
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
             files.Add(DocumentType.Resource, new[] { resourceFile });
             var builder = new DocumentBuilder();
-            builder.Build(files, outputBaseDir);
+            builder.Build(
+                files,
+                outputBaseDir,
+                new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary());
             Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
+            Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".yml")));
+            var meta = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".yml"));
+            Assert.Equal(1, meta.Count);
+            Assert.True(meta.ContainsKey("meta"));
+            Assert.Equal("Hello world!", meta["meta"]);
         }
 
         [Fact]
