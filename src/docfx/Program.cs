@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode
     public static class Constants
     {
         public static Func<string, string> GetIndexFilePathFunc = new Func<string, string>(s => Path.Combine(s, "index.yml"));
-        public const string ConfigFileName = "xdoc.json";
+        public const string ConfigFileName = "docfx.json";
         public const string WebsiteReferenceFolderName = "_ref_"; // Current OutputFolder
         public const string DefaultRootOutputFolderPath = "_site";
         public const string DefaultMetadataOutputFolderName = "_api_";
@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode
             object invokedVerbInstance = null;
             if(args.Length == 0)
             {
-                // If no args, search for xdoc.json in current directory
+                // If no args, search for docfx.json in current directory
                 // Add this additional check as CommandLine.Parser throws NULL exception in this case
                 options.Projects = new System.Collections.Generic.List<string> { Constants.ConfigFileName };
                 return ParseResult.SuccessResult;
@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode
             {
                 if (options.Projects == null || options.Projects.Count == 0)
                 {
-                    // If no args, search for xdoc.json in current directory
+                    // If no args, search for docfx.json in current directory
                     options.Projects = new System.Collections.Generic.List<string> { Constants.ConfigFileName };
 
                     ParseResult.WriteToConsole(ResultLevel.Warning, "No projects are specified, try loading {0} config file.", Constants.ConfigFileName);

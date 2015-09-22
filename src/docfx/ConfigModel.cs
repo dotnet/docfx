@@ -42,13 +42,13 @@ namespace Microsoft.DocAsCode
         public string OutputFolder { get; set; }
 
         /// <summary>
-        /// DO NOT add --raw option to xdoc.json config
+        /// DO NOT add --raw option to docfx.json config
         /// </summary>
         [JsonIgnore]
         public bool PreserveRawInlineComments { get; set; }
 
         /// <summary>
-        /// The directory of the xdoc.json to do glob search, if there is no xdoc.json file, use current folder
+        /// The directory of the docfx.json to do glob search, if there is no docfx.json file, use current folder
         /// </summary>
         [JsonIgnore]
         public string BaseDirectory { get; set; }

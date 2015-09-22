@@ -1,9 +1,9 @@
 param($installPath, $toolsPath, $package, $project)
 Write-Host $installPath
 Write-Host $toolsPath
-$configPath = ($project.FullName | split-path) + '/xdoc.json';
+$configPath = ($project.FullName | split-path) + '/docfx.json';
 
-# Set content to be relative path of xdoc.json
+# Set content to be relative path of docfx.json
 $content = ($installPath -replace '\\','/')+ "/content/**";
 
 $root = $project.FullName | split-path

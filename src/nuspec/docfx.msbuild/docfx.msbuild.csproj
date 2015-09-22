@@ -27,7 +27,7 @@
     <None Include="content\toc.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="content\xdoc.json">
+    <None Include="content\docfx.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="docfx.msbuild.nuspec">
@@ -64,8 +64,8 @@
       </DocfxFiles>
     </ItemGroup>
     <Copy SourceFiles="@(DocfxFiles)" DestinationFolder="$(OutputPath)\tools" />
-    <Exec Command="&quot;$(NugetPath)&quot; pack &quot;$(OutputPath)$(NuspecPath)&quot; -Version &quot;$(PackageVersionWithSuffix)&quot; -OutputDirectory &quot;bin/$(Configuration)&quot;"/>
+    <Exec Command="&quot;$(NugetPath)&quot; pack &quot;$(OutputPath)$(NuspecPath)&quot; -Version &quot;$(PackageVersionWithSuffix)&quot; -OutputDirectory &quot;bin/$(Configuration)&quot;" />
     <Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg" DestinationFolder="$(PackageOutputPath)" />
-    <Message Text="Successfully created package '$(PackageOutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg'."/>
+    <Message Text="Successfully created package '$(PackageOutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg'." />
   </Target>
 </Project>

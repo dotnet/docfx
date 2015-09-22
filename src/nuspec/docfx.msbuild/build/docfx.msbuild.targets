@@ -25,11 +25,11 @@
   <!-- *************************** GenerateMetadata Phase ********************** -->
   <!-- ************************************************************************* -->
   <Target Name="XdocGenerateMetadata" >
-    <Exec Condition="$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; -f &quot;$(MSBuildProjectDirectory)/xdoc.json&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
+    <Exec Condition="$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; -f &quot;$(MSBuildProjectDirectory)/docfx.json&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
       <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
       <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
     </Exec>
-    <Exec Condition="!$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(MSBuildProjectDirectory)/xdoc.json&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
+    <Exec Condition="!$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(MSBuildProjectDirectory)/docfx.json&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
       <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
       <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
     </Exec>

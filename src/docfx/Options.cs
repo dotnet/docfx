@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode
         [VerbOption("help", HelpText = "Read the detailed help documentation")]
         public HelpSubOptions HelpVerb { get; set; } = new HelpSubOptions();
 
-        [VerbOption("init", HelpText = "Init xdoc.json with recommended settings")]
+        [VerbOption("init", HelpText = "Init docfx.json with recommended settings")]
         public InitSubOptions InitVerb { get; set; } = new InitSubOptions();
 
         [VerbOption("metadata", HelpText = "Generate API YAML metadata")]
@@ -110,10 +110,10 @@ namespace Microsoft.DocAsCode
 
     class InitSubOptions
     {
-        [Option('q', "quiet", HelpText = "Quietly generate the default xdoc.json")]
+        [Option('q', "quiet", HelpText = "Quietly generate the default docfx.json")]
         public bool Quiet { get; set; }
 
-        [Option('n', "name", HelpText = "Specify the name of the config file generated", DefaultValue = "xdoc.json")]
+        [Option('n', "name", HelpText = "Specify the name of the config file generated", DefaultValue = "docfx.json")]
         public string Name { get; set; }
 
         [Option('o', "output", HelpText = "Specify the output folder of the config file. If not specified, the config file will be saved to current folder")]

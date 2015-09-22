@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode
             var otherFiles = validProjects.Except(configFiles).ToList();
             ConfigModel configModel = null;
 
-            // 1. Load xdoc.json
+            // 1. Load docfx.json
             if (configFiles.Count > 0)
             {
                 var configFile = configFiles[0];
@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode
                 }
             }
 
-            // 2. Merge into xdoc.json if there exists other project files
+            // 2. Merge into docfx.json if there exists other project files
             if (otherFiles.Count > 0)
             {
                 if (configModel == null) configModel = new ConfigModel();

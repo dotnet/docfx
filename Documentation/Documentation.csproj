@@ -45,7 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="toc.yml" />
-    <Content Include="xdoc.json" />
+    <Content Include="docfx.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,7 +102,7 @@
   -->
   <!-- Reinstall docfx package before build-->
   <Target Name="BeforeBuild">
-    <MSBuild Projects="..\src\nuspec\docfx.msbuild\docfx.msbuild.csproj" Properties="PackageVersion=1.0.0;WithSuffix=False;PackageOutputPath=$(MSBuildThisFileDirectory)..\artifacts\DocsPackage"/>
+    <MSBuild Projects="..\src\nuspec\docfx.msbuild\docfx.msbuild.csproj" Properties="PackageVersion=1.0.0;WithSuffix=False;PackageOutputPath=$(MSBuildThisFileDirectory)..\artifacts\DocsPackage" />
     <Warning Text="Unable to find nuget.exe! Please install nuget.exe to $(NugetPath) to make sure docfx.msbuild is re-installed!" Condition="!Exists($(NugetPath))">
     </Warning>
     <CallTarget Targets="_ReInstallDocfxPackage" Condition="Exists($(NugetPath))" />

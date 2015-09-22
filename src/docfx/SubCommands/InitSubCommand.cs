@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode
 
     class InitSubCommand : ISubCommand
     {
-        private const string ConfigName = "xdoc.json";
+        private const string ConfigName = Constants.ConfigFileName;
         private static List<IQuestion> _questions = new List<IQuestion> {
             new SingleAnswerQuestion(
                 "What is the title of your documentation?", (s, m) => m.Title = s,
