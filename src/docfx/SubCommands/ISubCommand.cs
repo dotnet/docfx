@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode
         Init,
         Help,
         Metadata,
+        Build,
         Website,
         Export,
         Pack,

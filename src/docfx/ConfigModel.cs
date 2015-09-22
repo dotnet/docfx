@@ -75,6 +75,10 @@ namespace Microsoft.DocAsCode
             {
                 jItems = JContainer.Load(reader);
             }
+            else if (reader.TokenType == JsonToken.String)
+            {
+                jItems = JRaw.Load(reader);
+            }
             else
             {
                 jItems = JObject.Load(reader);
@@ -161,12 +165,13 @@ namespace Microsoft.DocAsCode
 
     class FileItems : List<string>
     {
+        private static IEnumerable<string> Empty = new List<string>();
         public FileItems(string file) : base()
         {
             this.Add(file);
         }
 
-        public FileItems(IEnumerable<string> files) : base(files)
+        public FileItems(IEnumerable<string> files) : base(files ?? Empty)
         {
         }
 

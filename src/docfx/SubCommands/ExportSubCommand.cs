@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode
 
             var inputModel = MetadataSubCommand.ConvertToInputModel(configModel);
 
-            var worker = new ExtractMetadataWorker(inputModel, options.ForceRebuild);
+            var worker = new ExtractMetadataWorker(inputModel, options.ExportVerb.ForceRebuild);
             var extractMetadataResult = worker.ExtractMetadataAsync().Result;
 
             extractMetadataResult.WriteToConsole();

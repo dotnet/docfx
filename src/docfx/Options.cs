@@ -4,23 +4,22 @@
 namespace Microsoft.DocAsCode
 {
     using CommandLine;
-    using Microsoft.DocAsCode.EntityModel;
     using System.Collections.Generic;
 
-    class Options : WebsiteSubOptions
+    class Options
     {
         public SubCommandType? CurrentSubCommand { get; set; }
 
         [ParserState]
         public IParserState LastParserState { get; set; }
-
+        #region TODO REFACTOR
         [VerbOption("help", HelpText = "Read the detailed help documentation")]
         public HelpSubOptions HelpVerb { get; set; } = new HelpSubOptions();
 
         [VerbOption("init", HelpText = "Init docfx.json with recommended settings")]
         public InitSubOptions InitVerb { get; set; } = new InitSubOptions();
 
-        [VerbOption("metadata", HelpText = "Generate API YAML metadata")]
+        [VerbOption("metadata_obselete", HelpText = "Generate API YAML metadata")]
         public MetadataSubOptions MetadataVerb { get; set; } = new MetadataSubOptions();
 
         [VerbOption("website", HelpText = "Generate website as documenation")]
@@ -31,18 +30,13 @@ namespace Microsoft.DocAsCode
 
         [VerbOption("pack", HelpText = "Pack existing API YAML for external reference")]
         public PackSubOptions PackVerb { get; set; } = new PackSubOptions();
+        #endregion
 
-        public WebsiteSubOptions GetTopLevelOptions()
-        {
-            return new WebsiteSubOptions
-            {
-                OutputFolder = OutputFolder,
-                Projects = Projects,
-                ForceRebuild = ForceRebuild,
-                Template = Template,
-                TemplateThemeFolder = TemplateThemeFolder,
-            };
-        }
+        [VerbOption("metadata", HelpText = "Generate API YAML metadata")]
+        public MetadataCommandOptions MetadataCommand { get; set; } = new MetadataCommandOptions();
+
+        [VerbOption("build", HelpText = "Build the project into documentation")]
+        public BuildCommandOptions BuildCommand { get; set; } = new BuildCommandOptions();
     }
 
     class TopLevelOptions
@@ -130,6 +124,9 @@ namespace Microsoft.DocAsCode
 
         [Option('a', "append", HelpText = "Append the package.")]
         public bool AppendMode { get; set; }
+
+        [Option('f', "force", HelpText = "Force re-generate all the metadata")]
+        public bool ForceRebuild { get; set; }
     }
 
     class PackSubOptions : TopLevelOptions

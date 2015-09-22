@@ -33,32 +33,6 @@ b:
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestInclusion_Success()
-        {
-            // 1. Prepare data
-            var root = @"
-```
-                [!inc[ref1](ref1.md ""This is root"")]
-```
-## Header [!inc[ref2](ref2.md ""This is root"")]
-
-`[!inc[](ref3.md)]`
-*[!inc[ref4](ref4.md)]*
-                ";
-
-            var ref1 = @"
-```
-                [!inc[ref1](ref1.md ""This is root"")]
-```
-## Header [!inc[ref2](ref2.md ""This is root"")]
-
-`[!inc[](ref3.md)]`
-*[!inc[ref4](ref4.md)]*
-                ";
-        }
-
-        [Fact]
-        [Trait("Related", "DfmMarkdown")]
         public void TestInclusion_BlockLevel()
         {
             // -r

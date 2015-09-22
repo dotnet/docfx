@@ -34,11 +34,7 @@ namespace Microsoft.DocAsCode
 
         public static string GetHelpMessage(Options options, string verb = null)
         {
-            if (string.IsNullOrEmpty(verb))
-            {
-                HelpText.AddOptions(options.GetTopLevelOptions());
-            }
-            else
+            if (!string.IsNullOrEmpty(verb))
             {
                 var subOption = GetSubOption(options, verb);
                 if (subOption == null)

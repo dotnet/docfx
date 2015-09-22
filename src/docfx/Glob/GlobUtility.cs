@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode
             return includeFiles.Except(excludeFiles);
         }
 
-        public static FileMapping ExpandFileMapping(string baseDirectory, FileMapping fileMapping, Func<string, string> keyGenerator)
+        public static FileMapping ExpandFileMapping(string baseDirectory, FileMapping fileMapping, Func<string, string> keyGenerator = null)
         {
             if (fileMapping == null)
             {
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode
                     }
                 }
 
-                string key = keyGenerator(item.Name);
+                string key = keyGenerator != null ? keyGenerator(item.Name) : null;
                 var files = GetFilesFromFileMappingItem(workingDirectory, item).ToList();
                 if (files.Count == 0)
                 {

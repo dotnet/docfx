@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 ApiFolder = apiFolder,
                 References = allReferences,
                 PreserveRawInlineComments = preserveRawInlineComments,
-                ExternalReferences = (from reader in
+                ExternalReferences = externalReferencePackages == null ? null : (from reader in
                                           from package in externalReferencePackages.AsParallel()
                                           select ExternalReferencePackageReader.CreateNoThrow(package)
                                       where reader != null

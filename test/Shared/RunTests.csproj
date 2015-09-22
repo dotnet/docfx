@@ -11,6 +11,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\docfx.Tests\docfx.Tests.csproj">
+      <Project>{f84bb644-a042-4364-ad2d-bf9d5bbd44bc}</Project>
+      <Name>docfx.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.EntityModel.Tests\Microsoft.DocAsCode.EntityModel.Tests.csproj">
       <Project>{efaa7a53-d047-422e-a3fb-ecc834944ce6}</Project>
       <Name>Microsoft.DocAsCode.EntityModel.Tests</Name>

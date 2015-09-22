@@ -51,10 +51,15 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             using (StreamReader reader = new StreamReader(path))
             {
-                using (JsonReader json = new JsonTextReader(reader))
-                {
-                    return serializer.Value.Deserialize<T>(json);
-                }
+                return Deserialize<T>(reader);
+            }
+        }
+
+        public static T Deserialize<T>(TextReader reader)
+        {
+            using (JsonReader json = new JsonTextReader(reader))
+            {
+                return serializer.Value.Deserialize<T>(json);
             }
         }
     }

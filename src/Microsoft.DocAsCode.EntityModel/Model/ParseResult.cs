@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public ResultLevel ResultLevel { get; set; }
         public string Message { get; set; }
+        public string Phase { get; set; }
         public ParseResult(ResultLevel resultLevel, string message, params string[] arg)
         {
             this.ResultLevel = resultLevel;
