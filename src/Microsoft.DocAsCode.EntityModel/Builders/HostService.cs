@@ -7,14 +7,18 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
+    using HtmlAgilityPack;
 
     [Export(typeof(IHostService))]
     internal sealed class HostService : IHostService, IDisposable
     {
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
+        private readonly RelativePath RootSymbol = (RelativePath)"~/";
 
         public ImmutableArray<FileModel> Models { get; private set; }
 
@@ -51,10 +55,46 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             return ImmutableArray<FileModel>.Empty;
         }
 
-        public string Markup(string markdown, FileAndType ft)
+        public MarkupResult Markup(string markdown, FileAndType ft)
         {
-            // todo : DFM
-            throw new NotImplementedException();
+            var html = DocfxFlavoredMarked.Markup(markdown, Path.Combine(ft.BaseDir, ft.File));
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            foreach (var link in from n in doc.DocumentNode.Descendants()
+                                 where n.Name != "xref"
+                                 from attr in n.Attributes
+                                 where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
+                                       string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
+                                 where !string.IsNullOrWhiteSpace(attr.Value)
+                                 select attr)
+            {
+                Uri uri;
+                if (Uri.TryCreate(link.Value, UriKind.Relative, out uri))
+                {
+                    var path = (RelativePath)ft.File + (RelativePath)link.Value;
+                    if (path.ParentDirectoryCount > 0)
+                    {
+                        throw new InvalidOperationException($"Cannot refer out of project. Path: {path}");
+                    }
+                    link.Value = RootSymbol + path;
+                }
+            }
+            var result = new MarkupResult();
+            var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
+            if (node != null)
+            {
+                using (var sr = new StringReader(node.InnerHtml))
+                {
+                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr);
+                }
+                node.Remove();
+            }
+            using (var sw = new StringWriter())
+            {
+                doc.Save(sw);
+                result.Html = sw.ToString();
+            }
+            return result;
         }
 
         #endregion

@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Plugins
     {
         private readonly WeakReference<object> _weakRef = new WeakReference<object>(null);
         private readonly IFormatter _serializer;
-        private ImmutableArray<string> _uids;
+        private ImmutableArray<string> _uids = ImmutableArray<string>.Empty;
         private object _content;
         private FileStream _tempFile;
 

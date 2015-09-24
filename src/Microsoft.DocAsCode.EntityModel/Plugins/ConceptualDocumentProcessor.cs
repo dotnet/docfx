@@ -45,10 +45,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return new FileModel(
                 file,
                 content,
-                serializer: YamlFormatter<Dictionary<string, object>>.Instance)
-            {
-                Uids = new string[] { file.File }.ToImmutableArray(),
-            };
+                serializer: YamlFormatter<Dictionary<string, object>>.Instance);
         }
 
         public SaveResult Save(FileModel model)
@@ -79,7 +76,26 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
             var content = (Dictionary<string, object>)model.Content;
             var markdown = (string)content["conceptual"];
-            content["conceptual"] = host.Markup(markdown, model.FileAndType);
+            var result = host.Markup(markdown, model.FileAndType);
+            content["conceptual"] = result.Html;
+            if (result.YamlHeader != null && result.YamlHeader.Count > 0)
+            {
+                foreach (var item in result.YamlHeader)
+                {
+                    if (item.Key == "uid")
+                    {
+                        var uid = item.Value as string;
+                        if (!string.IsNullOrWhiteSpace(uid))
+                        {
+                            model.Uids = new[] { uid }.ToImmutableArray();
+                        }
+                    }
+                    else
+                    {
+                        content[item.Key] = item.Value;
+                    }
+                }
+            }
             model.File = Path.ChangeExtension(model.File, ".yml");
         }
 

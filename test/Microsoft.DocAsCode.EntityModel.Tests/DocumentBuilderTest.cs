@@ -23,27 +23,74 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         [Fact]
         public void TestBuild()
         {
-            var outputBaseDir = Path.Combine(Environment.CurrentDirectory, "output");
+            const string documentsBaseDir = "documents";
+            const string outputBaseDir = "output";
+            if (Directory.Exists(documentsBaseDir))
+            {
+                Directory.Delete(documentsBaseDir, true);
+            }
+            if (Directory.Exists(outputBaseDir))
+            {
+                Directory.Delete(outputBaseDir, true);
+            }
+            Directory.CreateDirectory(documentsBaseDir);
+            Directory.CreateDirectory(outputBaseDir);
+            var conceptualFile = Path.Combine(documentsBaseDir, "test.md");
+            File.WriteAllLines(
+                conceptualFile,
+                new[]
+                {
+                    "---",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef1",
+                    "Test link: [link text](test/test.md)",
+                    "<p>",
+                    "test",
+                });
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
+            files.Add(DocumentType.Article, new[] { conceptualFile });
             files.Add(DocumentType.Resource, new[] { resourceFile });
-            var builder = new DocumentBuilder();
-            builder.Build(
+
+            new DocumentBuilder().Build(
                 new DocumentBuildParameters
                 {
                     Files = files,
-                    OutputBaseDir = outputBaseDir,
+                    OutputBaseDir = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
                     Metadata = new Dictionary<string, object>
                     {
                         ["meta"] = "Hello world!",
                     }.ToImmutableDictionary()
                 });
+
+            Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml"))));
+            var model = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml")));
+            Assert.Equal(
+                "<h1 id=\"hello-world\">Hello World</h1>\n" +
+                "<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
+                "Test link: <a href=\"~/documents/test/test.md\">link text</a></p>\n" +
+                "<p><p>\n" +
+                "test</p>\n",
+                model["conceptual"]);
+            Assert.Equal("Conceptual", model["type"]);
+            Assert.Equal("Hello world!", model["meta"]);
+            Assert.Equal("b", model["a"]);
+            Assert.IsType<Dictionary<object, object>>(model["b"]);
+            Assert.Equal("e", ((Dictionary<object, object>)model["b"])["c"]);
+
             Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
             Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".yml")));
             var meta = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".yml"));
             Assert.Equal(1, meta.Count);
             Assert.True(meta.ContainsKey("meta"));
             Assert.Equal("Hello world!", meta["meta"]);
+
+            Directory.Delete(documentsBaseDir, true);
+            Directory.Delete(outputBaseDir, true);
         }
 
         [Fact]

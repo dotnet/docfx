@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Plugins
 
     public interface IHostService
     {
-        string Markup(string markdown, FileAndType ft);
+        MarkupResult Markup(string markdown, FileAndType ft);
         ImmutableHashSet<string> GetAllUids();
         ImmutableArray<FileModel> GetModels(DocumentType? type = null);
         ImmutableArray<FileModel> LookupByUid(string uid);

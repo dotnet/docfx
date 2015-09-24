@@ -145,7 +145,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 return markdown;
             }
-            return host.Markup(markdown, ft);
+            return host.Markup(markdown, ft).Html;
         }
     }
 }

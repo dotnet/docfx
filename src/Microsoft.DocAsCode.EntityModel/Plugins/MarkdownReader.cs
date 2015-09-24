@@ -23,15 +23,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             return new Dictionary<string, object>
             {
-                ["items"] = new[]
-                {
-                    new Dictionary<string, object>
-                    {
-                        ["uid"] = file,
-                        ["conceptual"] = File.ReadAllText(Path.Combine(baseDir, file)),
-                        ["type"] = "Conceptual",
-                    }
-                },
+                ["conceptual"] = File.ReadAllText(Path.Combine(baseDir, file)),
+                ["type"] = "Conceptual",
             };
         }
 
