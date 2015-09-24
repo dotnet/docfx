@@ -77,7 +77,7 @@ Paragraph1
             WriteToFile("r/c/c.md", c);
             WriteToFile("r/empty.md", string.Empty);
             var marked = DocfxFlavoredMarked.Markup(root, Path.GetFullPath("r/root.md"));
-            Assert.Equal("<p>Paragraph1\n<a href=\"b/a.md\">link</a>\n<a href=\"link/md/c.md\">link</a>\n<img src=\"b/img/img.jpg\" alt=\"Image\">\n<error>Unable to resolve &quot;[!inc[root](r/root.md)]&quot;: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot;</error></p>\n<p><strong>Hello</strong></p>\n<p><strong>Hello</strong></p>\n<pre><error>Absolute path &quot;http://microsoft.com/a.md&quot; is not supported.</error></pre>", marked);
+            Assert.Equal("<!-- BEGIN INC: Include content from &quot;b/linkAndRefRoot.md&quot; --><p>Paragraph1\n<a href=\"b/a.md\">link</a>\n<!-- BEGIN INC: Include content from &quot;r/link/link2.md&quot; --><a href=\"link/md/c.md\">link</a><!--END INC -->\n<img src=\"b/img/img.jpg\" alt=\"Image\">\n<!-- BEGIN ERROR INC: Unable to resolve &quot;[!inc[root](r/root.md)]&quot;: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!inc[root](../root.md)]<!--END ERROR INC --></p>\n<!--END INC --><!-- BEGIN INC: Include content from &quot;a/refc.md&quot; --><!-- BEGIN INC: Include content from &quot;../c/c.md&quot; --><p><strong>Hello</strong></p>\n<!--END INC --><!--END INC --><!-- BEGIN INC: Include content from &quot;a/refc.md&quot; --><!-- BEGIN INC: Include content from &quot;../c/c.md&quot; --><p><strong>Hello</strong></p>\n<!--END INC --><!--END INC --><!-- BEGIN INC: Include content from &quot;empty.md&quot; --><!--END INC --><!-- BEGIN ERROR INC: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. --><inc src='http://microsoft.com/a.md' title=''>external</inc><!--END ERROR INC -->", marked);
         }
 
         private static void WriteToFile(string file, string content)
@@ -106,7 +106,7 @@ Inline [!inc[ref3](ref3.md ""This is root"")]
             File.WriteAllText("ref3.md", ref3);
 
             var marked = DocfxFlavoredMarked.Markup(root, "root.md");
-            Assert.Equal("<p>Inline ## Inline inclusion do not parse header <error>Unable to resolve &quot;[!inc[root](root.md &#39;This is root&#39;)]&quot;: Circular dependency found in &quot;ref2.md&quot;</error>\nInline <strong>Hello</strong></p>\n", marked);
+            Assert.Equal("<p>Inline <!-- BEGIN INC: Include content from &quot;ref1.md&quot; --><!-- BEGIN INC: Include content from &quot;ref2.md&quot; -->## Inline inclusion do not parse header <!-- BEGIN ERROR INC: Unable to resolve &quot;[!inc[root](root.md &#39;This is root&#39;)]&quot;: Circular dependency found in &quot;ref2.md&quot; -->[!inc[root](root.md \"This is root\")]<!--END ERROR INC --><!--END INC --><!--END INC -->\nInline <!-- BEGIN INC: Include content from &quot;ref3.md&quot; --><strong>Hello</strong><!--END INC --></p>\n", marked);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using MarkdownLite;
     using Utility;
 
-    public sealed class DocfxFlavoredIncHelper : IDisposable
+    internal sealed class DocfxFlavoredIncHelper : IDisposable
     {
         private readonly FileCacheLite _cache;
 
@@ -24,16 +24,16 @@ namespace Microsoft.DocAsCode.EntityModel
             _cache = new FileCacheLite(new FilePathComparer());
         }
 
-        public string Load(string currentPath, string title, string value, Stack<string> parents, string src, Func<string, Stack<string>, string> resolver, MarkdownNodeType nodeType, DocfxFlavoredOptions options)
+        public string Load(string currentPath, string title, string value, string raw, Stack<string> parents, string src, Func<string, Stack<string>, string> resolver, MarkdownNodeType nodeType, DocfxFlavoredOptions options)
         {
             // If currentPath is not set, unable to resolve inc syntax
             if (string.IsNullOrEmpty(currentPath)) return resolver(src, parents);
             currentPath = FileExtensions.MakeRelativePath(Environment.CurrentDirectory, currentPath);
-            return LoadCore((RelativePath)currentPath, title, value, parents, src, resolver, nodeType, options);
+            return LoadCore((RelativePath)currentPath, title, value, raw, parents, src, resolver, nodeType, options);
         }
 
         /// <summary>
-        /// The actual recusive function to load included files
+        /// The actual recursive function to load included files
         /// </summary>
         /// <param name="currentPath"></param>
         /// <param name="title"></param>
@@ -45,10 +45,10 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <param name="visited"></param>
         /// <param name="isRoot">If current content is ROOT content, href will not be updated</param>
         /// <returns></returns>
-        private string LoadCore(RelativePath currentPath, string title, string value, Stack<string> parents, string src, Func<string, Stack<string>, string> resolver, MarkdownNodeType nodeType, DocfxFlavoredOptions options)
+        private string LoadCore(RelativePath currentPath, string title, string value, string raw, Stack<string> parents, string src, Func<string, Stack<string>, string> resolver, MarkdownNodeType nodeType, DocfxFlavoredOptions options)
         {
             if (string.IsNullOrEmpty(src) && !IsRelativePath(currentPath))
-                return GenerateErrorNode($"Invalid file path {currentPath}", nodeType);
+                return GenerateNodeWithCommentWrapper("ERROR INC", $"Invalid file path {currentPath}", raw);
 
             var originalPath = currentPath;
             string parent = string.Empty;
@@ -57,18 +57,18 @@ namespace Microsoft.DocAsCode.EntityModel
             else if (parents.Count > 0)
             {
                 parent = parents.Peek();
-                currentPath = (RelativePath)parent + currentPath;
+                currentPath = currentPath.BasedOn((RelativePath)parent);
             }
 
             if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
             {
                 var incSyntax = string.IsNullOrEmpty(title) ? $"[!inc[{value}]({currentPath})]" : $"[!inc[{value}]({currentPath} '{title}')]";
-                return GenerateErrorNode($"Unable to resolve \"{incSyntax}\": Circular dependency found in \"{parent}\"", nodeType);
+                return GenerateNodeWithCommentWrapper("ERROR INC", $"Unable to resolve \"{incSyntax}\": Circular dependency found in \"{parent}\"", raw);
             }
 
             string result = string.Empty;
             
-            // Add current file path to chain when entering recusion
+            // Add current file path to chain when entering recursion
             parents.Push(currentPath);
             try
             {
@@ -93,12 +93,12 @@ namespace Microsoft.DocAsCode.EntityModel
                             var eleValue = element.InnerText;
                             if (IsRelativePath(eleSrc))
                             {
-                                var parsed = LoadCore((RelativePath)eleSrc, eleTitle, eleValue, parents, null, resolver, nodeType, options);
-                                return parsed;
+                                var parsed = LoadCore((RelativePath)eleSrc, eleTitle, eleValue, element.OuterHtml, parents, null, resolver, nodeType, options);
+                                return GenerateNodeWithCommentWrapper("INC", $"Include content from \"{eleSrc}\"", parsed);
                             }
                             else
                             {
-                               return GenerateErrorNode($"Absolute path \"{eleSrc}\" is not supported.", nodeType);
+                                return GenerateNodeWithCommentWrapper("ERROR INC", $"Absolute path \"{eleSrc}\" is not supported.", element.OuterHtml);
                             }
                         });
                     }
@@ -108,11 +108,15 @@ namespace Microsoft.DocAsCode.EntityModel
                         UpdateHref(node, originalPath);
 
                     result = node.WriteTo();
+                    if (nodeType == MarkdownNodeType.Inline)
+                    {
+                        result = GenerateNodeWithCommentWrapper("INC", $"Include content from \"{currentPath}\"", result);
+                    }
                 }
             }
             catch (Exception e)
             {
-                result = GenerateErrorNode($"Unable to resolve \"[!inc[{value}]({currentPath} '{title}')]\":{e.Message}", nodeType);
+                result = GenerateNodeWithCommentWrapper("ERROR INC", $"Unable to resolve \"[!inc[{value}]({currentPath} '{title}')]\":{e.Message}", raw);
             }
 
             _cache.Add(currentPath, result);
@@ -138,12 +142,10 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static string GenerateErrorNode(string message, MarkdownNodeType nodeType)
+        private static string GenerateNodeWithCommentWrapper(string tag, string comment, string html)
         {
-            message = $"<error>{StringHelper.Escape(message, true)}</error>";
-            if (nodeType == MarkdownNodeType.Inline) return message;
-
-            return $"<pre>{message}</pre>";
+            string escapedTag = StringHelper.Escape(tag);
+            return $"<!-- BEGIN {escapedTag}: {StringHelper.Escape(comment)} -->{html}<!--END {escapedTag} -->";
         }
 
         private static void UpdateHref(HtmlNode node, string filePath)

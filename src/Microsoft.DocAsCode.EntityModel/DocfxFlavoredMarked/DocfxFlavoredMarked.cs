@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public string Parse(string src, string path)
         {
             if (string.IsNullOrEmpty(src) && string.IsNullOrEmpty(path)) return string.Empty;
-            return _incHelper.Load(path, string.Empty, string.Empty, null, src, InternalParse, MarkdownNodeType.Block, (DocfxFlavoredOptions)Options);
+            return _incHelper.Load(path, string.Empty, string.Empty, string.Empty, null, src, InternalParse, MarkdownNodeType.Block, (DocfxFlavoredOptions)Options);
         }
 
         private string InternalParse(string src, Stack<string> parents)

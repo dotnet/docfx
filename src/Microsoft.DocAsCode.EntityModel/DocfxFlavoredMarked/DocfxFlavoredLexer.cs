@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using MarkdownLite;
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Text.RegularExpressions;
 
@@ -32,7 +33,7 @@ namespace Microsoft.DocAsCode.EntityModel
             try
             {
                 using (StringReader reader = new StringReader(value))
-                    YamlUtility.Deserialize<object>(reader);
+                    YamlUtility.Deserialize<Dictionary<string, object>>(reader);
             }
             catch (Exception)
             {

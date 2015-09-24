@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var title = match.Groups[4].Value;
 
             // 3. Apply inline rules to the included content
-            var resolved = _inclusionHelper.Load(path, title, value, Parents, null, ApplyRules, MarkdownNodeType.Inline, (DocfxFlavoredOptions)Options);
+            var resolved = _inclusionHelper.Load(path, title, value, match.Groups[0].Value, Parents, null, ApplyRules, MarkdownNodeType.Inline, (DocfxFlavoredOptions)Options);
             result += resolved;
             return true;
         }
