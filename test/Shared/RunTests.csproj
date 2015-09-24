@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Shared\test.base.props" />
+  <PropertyGroup>
+    <ProjectGuid>{D16CE2F7-525C-47A6-BCED-2B02CE9CBE7D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.EntityModel.Tests\Microsoft.DocAsCode.EntityModel.Tests.csproj">
+      <Project>{efaa7a53-d047-422e-a3fb-ecc834944ce6}</Project>
+      <Name>Microsoft.DocAsCode.EntityModel.Tests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <UsingTask AssemblyFile="$(MSBuildThisFileDirectory)..\..\packages\xunit.runner.msbuild.2.1.0-beta3-build3029\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
+  <Target Name="XunitTest" AfterTargets="AfterBuild">
+    <ItemGroup>
+      <Assembly Include="$(OutputPath)*.Tests.dll" />
+    </ItemGroup>
+    <Message Text="Running xunit tests towards @(Assembly)" />
+    <xunit Assemblies="@(Assembly)" />
+  </Target>
+</Project>
