@@ -3,10 +3,13 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Builders
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
 
     public class FileCollection
     {
@@ -14,7 +17,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         public FileCollection(string defaultBaseDir)
         {
-            DefaultBaseDir = defaultBaseDir;
+            if (string.IsNullOrEmpty(defaultBaseDir))
+            {
+                DefaultBaseDir = Environment.CurrentDirectory;
+            }
+            else
+            {
+                DefaultBaseDir = Path.Combine(Environment.CurrentDirectory, defaultBaseDir);
+            }
         }
 
         public string DefaultBaseDir { get; set; }
@@ -22,13 +32,23 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         public void Add(DocumentType type, IEnumerable<string> files)
         {
             _files.AddRange(from f in files
-                            select new FileAndType(DefaultBaseDir, f, type));
+                            select new FileAndType(DefaultBaseDir, ToRelative(f, DefaultBaseDir), type));
         }
 
         public void Add(DocumentType type, string baseDir, IEnumerable<string> files)
         {
+            var rootedBaseDir = Path.Combine(Environment.CurrentDirectory, baseDir ?? string.Empty);
             _files.AddRange(from f in files
-                            select new FileAndType(baseDir, f, type));
+                            select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type));
+        }
+
+        private string ToRelative(string file, string rootedBaseDir)
+        {
+            if (!Path.IsPathRooted(file))
+            {
+                return file;
+            }
+            return FileExtensions.MakeRelativePath(rootedBaseDir, file);
         }
 
         public IEnumerable<FileAndType> EnumerateFiles()

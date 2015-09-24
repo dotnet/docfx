@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         public FileCollection Files { get; set; }
         public string OutputBaseDir { get; set; }
-        public ImmutableArray<string> ExternalReferencePackages { get; set; }
-        public ImmutableDictionary<string, object> Metadata { get; set; }
+        public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
+        public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
     }
 }

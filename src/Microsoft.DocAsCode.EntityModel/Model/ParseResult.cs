@@ -21,29 +21,32 @@ namespace Microsoft.DocAsCode.EntityModel
         public static ParseResult ErrorResult = new ParseResult(ResultLevel.Error);
 
         public ResultLevel ResultLevel { get; set; }
+
         public string Message { get; set; }
+
         public string Phase { get; set; }
+
         public ParseResult(ResultLevel resultLevel, string message, params string[] arg)
         {
-            this.ResultLevel = resultLevel;
-            this.Message = string.Format(message, arg);
+            ResultLevel = resultLevel;
+            Message = string.Format(message, arg);
         }
 
         public ParseResult(ResultLevel resultLevel)
         {
-            this.ResultLevel = resultLevel;
+            ResultLevel = resultLevel;
         }
 
         public void WriteToConsole()
         {
-            if (string.IsNullOrEmpty(this.Message)) return;
-            if (this.ResultLevel > ResultLevel.Info)
+            if (string.IsNullOrEmpty(Message)) return;
+            if (ResultLevel > ResultLevel.Info)
             {
-                Console.Error.WriteLine(this.ToString());
+                Console.Error.WriteLine(ToString());
             }
             else
             {
-                Console.WriteLine(this.ToString());
+                Console.WriteLine(ToString());
             }
         }
 
@@ -51,6 +54,12 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             Console.Write(ResultLevel.Info + ": ");
             Console.WriteLine(message);
+        }
+
+        // optimize, prevent new string[0].
+        public static void WriteToConsole(ResultLevel resultLevel, string message)
+        {
+            WriteToConsole(resultLevel, message, null);
         }
 
         public static void WriteToConsole(ResultLevel resultLevel, string message, params string[] arg)
@@ -82,7 +91,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public override string ToString()
         {
-            return ResultLevel + ": " + Message;
+            return ResultLevel.ToString() + ": " + Message;
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Tests
            ParseResult result = new BuildCommand(new BuildCommandOptions
             {
                 Content = new List<string> { conceptualFile },
-                OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
+                OutputFolder = outputBaseDir,
             }).Exec(null);
 
             Assert.Equal(ResultLevel.Success, result.ResultLevel);

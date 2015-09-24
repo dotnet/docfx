@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.Composition.Hosting;
     using System.Collections.Immutable;
     using System.Reflection;
+    using System.Text;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
@@ -18,27 +19,26 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
     public class DocumentBuilder
     {
-        private static readonly CompositionHost Container = GetContainer();
         private static readonly RelativePath Root = (RelativePath)"~/";
 
-        private static CompositionHost GetContainer()
+        private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
         {
             var configuration = new ContainerConfiguration();
-            configuration.WithAssembly(typeof(DocumentBuilder).Assembly);
-            var pluginDir = Path.Combine(Path.GetDirectoryName(typeof(DocumentBuilder).Assembly.Location), "plugins");
-            if (Directory.Exists(pluginDir))
+            foreach (var assembly in assemblies)
             {
-                foreach (var file in Directory.EnumerateFiles(pluginDir, "*.dll"))
-                {
-                    configuration.WithAssembly(Assembly.LoadFile(file));
-                }
+                configuration.WithAssembly(assembly);
             }
             return configuration.CreateContainer();
         }
 
         public DocumentBuilder()
+            : this(new[] { typeof(DocumentBuilder).Assembly })
         {
-            Container.SatisfyImports(this);
+        }
+
+        public DocumentBuilder(IEnumerable<Assembly> assemblies)
+        {
+            GetContainer(assemblies).SatisfyImports(this);
         }
 
         [ImportMany]
@@ -54,12 +54,15 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 throw new ArgumentException("Output folder cannot be null.", nameof(parameters) + "." + nameof(parameters.OutputBaseDir));
             }
-            if (!Path.IsPathRooted(parameters.OutputBaseDir))
+            if (parameters.Files == null)
             {
-                throw new ArgumentException("Output base directory must be rooted.", nameof(parameters) + "." + nameof(parameters.OutputBaseDir));
+                throw new ArgumentException("Source files cannot be null.", nameof(parameters) + "." + nameof(parameters.Files));
             }
+
             Directory.CreateDirectory(parameters.OutputBaseDir);
-            var context = new DocumentBuildContext(parameters.OutputBaseDir, parameters.ExternalReferencePackages);
+            var context = new DocumentBuildContext(
+                Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
+                parameters.ExternalReferencePackages);
             foreach (var item in
                 from file in parameters.Files.EnumerateFiles()
                 group file by (from processor in Processors
@@ -70,11 +73,18 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 if (item.Key != null)
                 {
-                    BuildCore(item.Key, item, parameters.Metadata, context);
+                    BuildCore(item.Key, item, parameters.Metadata ?? ImmutableDictionary<string, object>.Empty, context);
                 }
                 else
                 {
-                    // todo : log warning: Cannot handle following file: ...
+                    var sb = new StringBuilder();
+                    sb.AppendLine("Cannot handle following file:");
+                    foreach (var f in item)
+                    {
+                        sb.Append("\t");
+                        sb.AppendLine(f.File);
+                    }
+                    ParseResult.WriteToConsole(ResultLevel.Warning, sb.ToString());
                 }
             }
             Merge(parameters.OutputBaseDir, context);

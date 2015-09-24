@@ -4,22 +4,44 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
+    using System.IO;
 
     public sealed class FileAndType
         : IEquatable<FileAndType>
     {
         public FileAndType(string baseDir, string file, DocumentType type)
         {
+            if (baseDir == null)
+            {
+                throw new ArgumentNullException(nameof(baseDir));
+            }
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            if (!Path.IsPathRooted(baseDir))
+            {
+                throw new ArgumentException("Base directory must be rooted.", nameof(baseDir));
+            }
+            if (string.IsNullOrWhiteSpace(file))
+            {
+                throw new ArgumentException("File cannot be empty or whitespace.", nameof(file));
+            }
+            if (Path.IsPathRooted(file))
+            {
+                throw new ArgumentException("File cannot be rooted.", nameof(file));
+            }
+
             BaseDir = baseDir;
             File = file;
             Type = type;
         }
 
-        public string BaseDir { get; private set; }
+        public string BaseDir { get; }
 
-        public string File { get; private set; }
+        public string File { get; }
 
-        public DocumentType Type { get; private set; }
+        public DocumentType Type { get; }
 
         public FileAndType ChangeType(DocumentType type)
         {

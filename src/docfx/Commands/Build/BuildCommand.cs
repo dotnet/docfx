@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode
             {
                 foreach (var mapping in file.Item2.Items)
                 {
-                    fileCollection.Add(file.Item1, mapping.CurrentWorkingDirectory ?? Environment.CurrentDirectory, mapping.Files.Select(s => FileExtensions.MakeRelativePath(mapping.CurrentWorkingDirectory ?? Environment.CurrentDirectory, s)));
+                    fileCollection.Add(file.Item1, mapping.CurrentWorkingDirectory, mapping.Files);
                 }
             }
 
