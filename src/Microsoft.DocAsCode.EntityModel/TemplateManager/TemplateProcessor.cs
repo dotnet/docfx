@@ -11,83 +11,53 @@ namespace Microsoft.DocAsCode.EntityModel
     using Utility;
     using Jint;
     using System.Linq;
-
-    public class TemplateModelInfo
-    {
-        public string RelativePath { get; set; }
-        public object Model { get; set; }
-        public TemplateModelInfo(string path, object model)
-        {
-            RelativePath = path;
-            Model = model;
-        }
-
-        public TemplateModelInfo() { }
-    }
+    using Builders;
+    using System.Collections;
 
     public class TemplateProcessor : IDisposable
     {
         private static Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private string _script = null;
 
-        private Template _template;
+        private TemplateCollection _templates;
         private ResourceCollection _resourceProvider = null;
-        private string _extension;
 
-        public ResourceCollection ResourceProvider { get { return _resourceProvider; } }
-
+        /// <summary>
+        /// TemplateName can be either file or folder
+        /// 1. If TemplateName is file, it is considered as the default template
+        /// 2. If TemplateName is a folder, files inside the folder is considered as the template, each file is named after {DocumentType}.{extension}
+        /// </summary>
+        /// <param name="templateName"></param>
+        /// <param name="resourceProvider"></param>
         public TemplateProcessor(string templateName, ResourceCollection resourceProvider)
         {
             _resourceProvider = resourceProvider;
-            _extension = GetProcessedFileExtension(templateName);
-            _template = GetTemplate(templateName);
+            _templates = new TemplateCollection(templateName, resourceProvider);
             var scriptName = templateName + ".js";
-            var script = resourceProvider.GetResource(scriptName);
-            _script = script;
-            ParseResult.WriteToConsole(ResultLevel.Info, $"Using template {templateName}" + script == null ? string.Empty : $" and pre-process script {scriptName}");
+            _script = resourceProvider?.GetResource(scriptName);
+            ParseResult.WriteToConsole(ResultLevel.Info, $"Using template {templateName}" + _script == null ? string.Empty : $" and pre-process script {scriptName}");
         }
 
-        public TemplateProcessor(string template, string script, string extension, ResourceCollection resourceProvider)
+        public void Process(DocumentBuildContext context, string outputDirectory)
         {
-            _resourceProvider = resourceProvider;
-            _extension = extension;
-            _template = new Template(template, null);
-            _script = script;
-        }
+            var baseDirectory = context.BuildOutputFolder;
 
-        public void Process(IEnumerable<string> modelPaths, string baseDirectory, string outputDirectory)
-        {
+            // href/src file id mapping: string<->string from which file to which file
+            var fileMap = context.FileMap;
+
+            // xref id mapping: string<->string from which xref to which xref
+            var xref = context.XRefMap;
+
+            // model file: convert; resource file: copy; type: decide which template to apply
+            var manifest = context.Manifest;
+
             if (string.IsNullOrEmpty(outputDirectory)) outputDirectory = Environment.CurrentDirectory;
+            if (string.IsNullOrEmpty(baseDirectory)) baseDirectory = Environment.CurrentDirectory;
 
-            var modelInfo = modelPaths.Select(path =>
-            {
-                try
-                {
-                    using (var reader = new StreamReader(path))
-                    {
-                        object model = YamlUtility.Deserialize<object>(reader);
+            bool isSameFolder = false;
+            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(outputDirectory, baseDirectory)) isSameFolder = true;
 
-                        var modelRelativePath = FileExtensions.MakeRelativePath(baseDirectory, path);
-                        return new TemplateModelInfo
-                        {
-                            RelativePath = modelRelativePath,
-                            Model = model,
-                        };
-                    }
-                }
-                catch (Exception e)
-                {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, $"File {path} is not in valid YAML format: {e.Message}. Ignored.");
-                    return null;
-                }
-            }).Where(s => s != null);
-
-            Process(modelInfo, outputDirectory);
-        }
-
-        public void Process(IEnumerable<TemplateModelInfo> modelInfo, string outputDirectory)
-        {
-            if (string.IsNullOrEmpty(outputDirectory)) outputDirectory = Environment.CurrentDirectory;
+            if (!Directory.Exists(outputDirectory)) Directory.CreateDirectory(outputDirectory);
 
             // 1. Copy dependent files with path relative to the base output directory
             ProcessDependencies(outputDirectory);
@@ -98,32 +68,76 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             
             // 2. Process every model and save to output directory
-            foreach (var info in modelInfo)
+            foreach (var item in manifest)
             {
-                var transformed = Transform(info.Model);
-                var modelOutputPath = Path.ChangeExtension(Path.Combine(outputDirectory, info.RelativePath), _extension);
-                if (!string.IsNullOrWhiteSpace(transformed))
+                try
                 {
-                    File.WriteAllText(modelOutputPath, transformed);
-                    ParseResult.WriteToConsole(ResultLevel.Success, "Transformed model {0} to {1}.", info.RelativePath, modelOutputPath);
+                    object model;
+                    using (var reader = new StreamReader(Path.Combine(baseDirectory, item.ModelFile)))
+                    {
+                        model = YamlUtility.Deserialize<object>(reader);
+                        var template = _templates[item.DocumentType];
+                        // 1. process model
+                        if (template == null)
+                        {
+                            ParseResult.WriteToConsole(ResultLevel.Warning, $"Unable to find template for '{item.DocumentType}', '{item.ModelFile}' is not processed.");
+                        }
+                        else
+                        {
+                            var transformed = Transform(model, template);
+                            var extension = template.Extension;
+                            if (!string.IsNullOrWhiteSpace(transformed))
+                            {
+                                // Update HREF and XREF
+                                HtmlAgilityPack.HtmlDocument html = new HtmlAgilityPack.HtmlDocument();
+                                html.LoadHtml(transformed);
+                                var srcNodes = html.DocumentNode.SelectNodes("//*/@src");
+                                if (srcNodes != null)
+                                    foreach (var link in srcNodes)
+                                    {
+                                        UpdateHref(link, "src", fileMap, s => Path.ChangeExtension(s, extension));
+                                    }
+
+                                var hrefNodes = html.DocumentNode.SelectNodes("//*/@href");
+                                if (hrefNodes != null)
+                                    foreach (var link in hrefNodes)
+                                    {
+                                        // xref is generated by docfx, and is lower-cased
+                                        if (link.Name == "xref")
+                                        {
+                                            UpdateXref(link, xref, s => Path.ChangeExtension(s, extension));
+                                        }
+                                        else
+                                        {
+                                            UpdateHref(link, "href", fileMap, s => Path.ChangeExtension(s, extension));
+                                        }
+                                    }
+
+                                // Save with extension changed
+                                var modelOutputPath = Path.Combine(outputDirectory, Path.ChangeExtension(item.ModelFile, extension));
+                                var subDirectory = Path.GetDirectoryName(modelOutputPath);
+                                if (!string.IsNullOrEmpty(subDirectory) && !Directory.Exists(subDirectory)) Directory.CreateDirectory(subDirectory);
+                                File.WriteAllText(modelOutputPath, transformed);
+                                ParseResult.WriteToConsole(ResultLevel.Success, "Transformed model {0} to {1}.", item.ModelFile, modelOutputPath);
+                            }
+                            else
+                            {
+                                ParseResult.WriteToConsole(ResultLevel.Info, "Model {0} is transformed to empty string, ignored.", item.ModelFile);
+                            }
+                        }
+
+                        // 2. process resource
+                        if (!isSameFolder && item.ResourceFile != null)
+                        {
+                            File.Copy(Path.Combine(baseDirectory, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile));
+                        }
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Verbose, "Model {0} is transformed to empty string, ignored.", info.RelativePath);
+                    ParseResult.WriteToConsole(ResultLevel.Warning, $"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
                 }
             }
-        }
-
-        private Template GetTemplate(string templateName)
-        {
-            if (_resourceProvider == null) return null;
-
-            // First, get resource with the same name as the template name;
-            var template = _resourceProvider.GetResource(templateName);
-
-            // Second, if resource does not exist, try getting resource with <templateName>.tmpl
-            if (template == null) template = _resourceProvider.GetResource(templateName + ".tmpl");
-            return new Template(template, templateName);
         }
 
         private void ProcessDependencies(string outputDirectory)
@@ -134,9 +148,9 @@ namespace Microsoft.DocAsCode.EntityModel
                 return;
             }
 
-            if (_template != null)
+            if (_templates != null)
             {
-                foreach (var resourceInfo in ExtractDependentFilePaths(_template).Distinct())
+                foreach (var filePath in ExtractDependentFilePaths(_templates).Distinct())
                 {
                     try
                     {
@@ -174,17 +188,16 @@ namespace Microsoft.DocAsCode.EntityModel
         /// 2. If {name}.js file exists, run it
         /// </summary>
         /// <param name="model">The model to be parsed</param>
-        private string Transform(object model)
+        private string Transform(object model, Template template)
         {
             if (_script == null)
             {
-                if (_template == null) return null;
-                return Render.StringToString(_template.Content, model);
+                return Render.StringToString(template.Content, model);
             }
             else
             {
                 var processedModel = ProcessWithJint(model);
-                return Render.StringToString(_template.Content, processedModel);
+                return Render.StringToString(template.Content, processedModel);
             }
         }
 
@@ -194,14 +207,17 @@ namespace Microsoft.DocAsCode.EntityModel
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
         /// <param name="template"></param>
-        private IEnumerable<TemplateResourceInfo> ExtractDependentFilePaths(Template template)
+        private IEnumerable<string> ExtractDependentFilePaths(TemplateCollection templates)
         {
-            foreach (Match match in IncludeRegex.Matches(template.Content))
+            foreach(var template in templates)
             {
-                var filePath = match.Groups["file"].Value;
-                if (string.IsNullOrWhiteSpace(filePath)) yield break;
-                if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
-                yield return new TemplateResourceInfo(template.GetRelativeResourceKey(filePath), filePath);
+                foreach (Match match in IncludeRegex.Matches(template.Value.Content))
+                {
+                    var filePath = match.Groups["file"].Value;
+                    if (string.IsNullOrWhiteSpace(filePath)) yield break;
+                    if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
+                    yield return template.Value.GetRelativeResourceKey(filePath);
+                }
             }
         }
 
@@ -255,24 +271,135 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        /// <summary>
-        /// Supports template name formatting: 
-        /// 1. {template description}.{template type}
-        /// 2. {template type}
-        /// </summary>
-        /// <param name="templateName">Template name</param>
-        /// <returns>The file extension for the generated file</returns>
-        private static string GetProcessedFileExtension(string templateName)
+        private static void UpdateXref(HtmlAgilityPack.HtmlNode xref, Dictionary<string, string> map, Func<string, string> updater)
         {
-            string extension = Path.GetExtension(templateName);
-            string fileName = Path.GetFileName(templateName);
-            if (extension == string.Empty) extension = fileName;
-            return extension;
+            xref.Name = "a";
+            var key = xref.GetAttributeValue("href", null);
+
+            if (IsMappedPath(key))
+            {
+                string xrefValue;
+                if (map.TryGetValue(key, out xrefValue))
+                {
+                    xrefValue = updater(xrefValue);
+                    xref.AppendChild(HtmlAgilityPack.HtmlNode.CreateNode(key));
+                }
+            }
+        }
+
+        private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, Dictionary<string, string> map, Func<string, string> updater)
+        {
+            var key = link.GetAttributeValue(attribute, null);
+            if (IsMappedPath(key))
+            {
+                string xrefValue;
+                if (map.TryGetValue(key, out xrefValue))
+                {
+                    xrefValue = updater(xrefValue);
+                    link.SetAttributeValue(attribute, xrefValue);
+                }
+            }
+        }
+
+        private static bool IsMappedPath(string path)
+        {
+            return path.StartsWith("~/");
         }
 
         public void Dispose()
         {
             _resourceProvider?.Dispose();
+        }
+
+        private class Template
+        {
+            public string Content { get; }
+            public string Name { get; }
+            public string Extension { get; }
+            public string Type { get; }
+            public Template(string template, string templateName)
+            {
+                Name = templateName;
+                Content = template;
+                Extension = GetFileExtensionFromTemplate(templateName);
+                Type = GetTemplateTypeFromTemplateName(templateName);
+            }
+
+            public string GetRelativeResourceKey(string relativePath)
+            {
+                return Path.Combine(Path.GetDirectoryName(this.Name ?? string.Empty) ?? string.Empty, relativePath).ToNormalizedPath();
+            }
+
+            private static string GetFileExtensionFromTemplate(string templateName)
+            {
+                return Path.GetExtension(Path.GetFileNameWithoutExtension(templateName ?? string.Empty));
+            }
+
+            private static string GetTemplateTypeFromTemplateName(string templateName)
+            {
+                return Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(templateName));
+            }
+        }
+        private class TemplateCollection : Dictionary<string, Template>
+        {
+            private ResourceCollection _resourceProvider;
+            private string _templateName;
+            public Template DefaultTemplate { get; private set; } = null;
+
+            public new Template this[string key]
+            {
+                get
+                {
+                    Template template;
+                    if (key != null && this.TryGetValue(key, out template))
+                    {
+                        return template;
+                    }
+
+                    return DefaultTemplate;
+                }
+                set
+                {
+                    this[key] = value;
+                }
+            }
+
+            public TemplateCollection(string templateName, ResourceCollection provider) : base(ReadTemplate(templateName, provider))
+            {
+                if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
+                _resourceProvider = provider;
+                _templateName = templateName;
+                var defaultTemplateResource = provider?.GetResource($"{templateName}.tmpl");
+                if (defaultTemplateResource != null)
+                    DefaultTemplate = new Template(defaultTemplateResource, $"{templateName}.tmpl");
+            }
+
+            private static Dictionary<string, Template> ReadTemplate(string templateName, ResourceCollection resource)
+            {
+                var dict = new Dictionary<string, Template>();
+                if (resource == null) return dict;
+                // Template file ends with .tmpl
+                // Template file naming convention: {template file name}.{file extension}.tmpl
+                var templates = resource.GetResources($"**.tmpl");
+                if (templates != null)
+                {
+                    foreach (var item in templates)
+                    {
+                        var template = new Template(item.Value, item.Key);
+                        Template saved;
+                        if (dict.TryGetValue(template.Type, out saved))
+                        {
+                            ParseResult.WriteToConsole(ResultLevel.Warning, $"Multiple template for type '{saved.Type}' is found, The one from '{saved.Name}' is taken.");
+                        }
+                        else
+                        {
+                            dict[template.Type] = template;
+                        }
+                    }
+                }
+
+                return dict;
+            }
         }
     }
 }

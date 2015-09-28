@@ -3,12 +3,12 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using Builders;
+    using System;
     using System.Collections.Generic;
     using System.IO;
-    using Utility;
     using System.Reflection;
-    using System.Text;
-    using System;
+    using Utility;
 
     public class TemplateManager : IDisposable
     {
@@ -65,12 +65,12 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        public void ProcessTemplateAndTheme(IEnumerable<string> modelFilePaths, string baseDirectory, string outputDirectory, bool overwrite)
+        public void ProcessTemplateAndTheme(DocumentBuildContext context, string outputDirectory, bool overwrite)
         {
             if (_templateProcessor != null)
             {
                 ParseResult.WriteToConsole(ResultLevel.Info, "Template resource found, starting applying template.");
-                _templateProcessor.Process(modelFilePaths, baseDirectory, outputDirectory);
+                _templateProcessor.Process(context, outputDirectory);
             }
 
             if (_themeResource != null)

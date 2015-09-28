@@ -21,9 +21,19 @@ namespace Microsoft.DocAsCode.EntityModel
         public ResourceFinder(Assembly assembly, string rootNamespace)
         {
             _assembly = assembly;
-            _resourcePrefix = string.Format("{0}.{1}.", assembly.GetName().Name, rootNamespace);
-            _embeddedResourceNames = assembly.GetManifestResourceNames();
+            if (assembly != null)
+            {
+                _resourcePrefix = string.Format("{0}.{1}.", assembly.GetName().Name, rootNamespace);
+                _embeddedResourceNames = assembly.GetManifestResourceNames();
+            }
+            else
+            {
+                _resourcePrefix = string.Empty;
+                _embeddedResourceNames = new List<string>();
+            }
         }
+
+        public ResourceFinder(string folder) : this(null, null, folder) { }
 
         public ResourceFinder(Assembly assembly, string rootNamespace, string overrideFolder) : this(assembly, rootNamespace)
         {

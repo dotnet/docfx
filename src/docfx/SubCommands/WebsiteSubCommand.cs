@@ -95,7 +95,8 @@
 
             using (var manager = new TemplateManager(assembly, "Template", configModel.TemplateFolder, configModel.Template, configModel.TemplateThemeFolder, configModel.TemplateTheme))
             {
-                manager.ProcessTemplateAndTheme(tempFileList, outputFolder, outputFolder, true);
+                // TODO: REMOVE WebsiteSubCommand.cs
+                // manager.ProcessTemplateAndTheme(tempFileList, outputFolder, true);
             }
 
             // 4. Build search data of the website

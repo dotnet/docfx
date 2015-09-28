@@ -87,7 +87,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     ParseResult.WriteToConsole(ResultLevel.Warning, sb.ToString());
                 }
             }
-            Merge(parameters.OutputBaseDir, context);
+
+            context.SerializeTo(parameters.OutputBaseDir);
         }
 
         private void BuildCore(
@@ -178,69 +179,5 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 ResourceFile = result.ResourceFile,
             });
         }
-
-        private void Merge(string outputBaseDir, DocumentBuildContext context)
-        {
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.manifest"), context.Manifest);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.filemap"), context.FileMap);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xref"), GetXRef(context));
-        }
-
-        private Dictionary<string, string> GetXRef(DocumentBuildContext context)
-        {
-            var common = context.UidMap.Keys.Intersect(context.XRef).ToList();
-            var xref = new Dictionary<string, string>(context.XRef.Count);
-            foreach (var uid in common)
-            {
-                xref[uid] = context.UidMap[uid];
-            }
-            context.XRef.ExceptWith(common);
-            if (context.XRef.Count > 0)
-            {
-                if (context.ExternalReferencePackages.Length > 0)
-                {
-                    var externalReferences = (from reader in
-                                                  from package in context.ExternalReferencePackages.AsParallel()
-                                                  select ExternalReferencePackageReader.CreateNoThrow(package)
-                                              where reader != null
-                                              select reader).ToList();
-
-                    foreach (var uid in context.XRef.Except(common))
-                    {
-                        var href = GetExternalReference(externalReferences, uid);
-                        if (href != null)
-                        {
-                            context.UidMap[uid] = href;
-                        }
-                        else
-                        {
-                            // todo : trace xref cannot find.
-                        }
-                    }
-                }
-                else
-                {
-                    // todo : trace xref cannot find.
-                }
-            }
-            return xref;
-        }
-
-        public string GetExternalReference(List<ExternalReferencePackageReader> externalReferences, string uid)
-        {
-            if (externalReferences != null)
-            {
-                foreach (var reader in externalReferences)
-                {
-                    ReferenceViewModel vm;
-                    if (reader.TryGetReference(uid, out vm))
-                    {
-                        return vm.Href;
-                    }
-                }
-            }
-            return null;
-        }
-
     }
 }

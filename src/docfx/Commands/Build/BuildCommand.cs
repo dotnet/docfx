@@ -45,7 +45,19 @@ namespace Microsoft.DocAsCode
         {
             try
             {
-                _builder.Build(ConfigToParameter(config));
+                var parameters = ConfigToParameter(config);
+                _builder.Build(parameters);
+
+                var documentContext = DocumentBuildContext.DeserializeFrom(parameters.OutputBaseDir);
+                var assembly = typeof(Program).Assembly;
+
+                using (var manager = new TemplateManager(assembly, "Template", config.TemplateFolder, config.Template, config.TemplateThemeFolder, config.TemplateTheme))
+                {
+                    manager.ProcessTemplateAndTheme(documentContext, config.Destination, true);
+                }
+
+                // TODO: SEARCH DATA
+
                 return ParseResult.SuccessResult;
             }
             catch (Exception e)
@@ -57,7 +69,8 @@ namespace Microsoft.DocAsCode
         private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config)
         {
             var parameters = new DocumentBuildParameters();
-            parameters.OutputBaseDir = config.Destination;
+
+            parameters.OutputBaseDir = Path.GetFullPath(Path.Combine("obj", Path.GetRandomFileName()));
             parameters.Metadata = (config.GlobalMetadata ?? new Dictionary<string, object>()).ToImmutableDictionary();
             parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(null, config.ExternalReference)).ToImmutableArray();
             parameters.Files = GetFileCollectionFromFileMapping(
@@ -103,11 +116,12 @@ namespace Microsoft.DocAsCode
             }
 
             var config = new BuildJsonConfig();
-            config.Template = options.Template;
-            config.TemplateFolder = options.TemplateFolder;
-            config.TemplateTheme = options.TemplateTheme;
-            config.TemplateThemeFolder = options.TemplateThemeFolder;
-            config.Destination = options.OutputFolder;
+            if (!string.IsNullOrEmpty(options.Template)) config.Template = options.Template;
+            if (!string.IsNullOrEmpty(options.TemplateFolder)) config.TemplateFolder = options.TemplateFolder;
+
+            if (!string.IsNullOrEmpty(options.TemplateTheme)) config.TemplateTheme = options.TemplateTheme;
+            if (!string.IsNullOrEmpty(options.TemplateThemeFolder)) config.TemplateThemeFolder = options.TemplateThemeFolder;
+            if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = options.OutputFolder;
             config.Content = new FileMapping(new FileMappingItem() { Files = new FileItems(options.Content) });
             config.Resource = new FileMapping(new FileMappingItem() { Files = new FileItems(options.Resource) });
             config.Overwrite = new FileMapping(new FileMappingItem() { Files = new FileItems(options.Overwrite) });

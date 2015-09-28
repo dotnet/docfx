@@ -8,11 +8,13 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Utility;
-    
+
     public sealed class ArchiveResourceCollection : ResourceCollection
     {
         private ZipArchive _zipped = null;
+        private bool disposed = false;
 
         public ArchiveResourceCollection(Stream stream)
         {
@@ -31,12 +33,15 @@ namespace Microsoft.DocAsCode.EntityModel
             return _zipped.GetEntry(name.ToNormalizedPath())?.Open();
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
+            if (disposed) return;
             _zipped?.Dispose();
-            base.Dispose();
-        }
+            _zipped = null;
+            disposed = true;
 
+            base.Dispose(disposing);
+        }
     }
 
     public sealed class FileResourceCollection : ResourceCollection
@@ -66,6 +71,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public abstract class ResourceCollection : IDisposable
     {
+        private bool disposed = false;
+
         public IEnumerable<string> Names { get; set; }
 
         public string GetResource(string name)
@@ -73,9 +80,57 @@ namespace Microsoft.DocAsCode.EntityModel
             using (var stream = GetResourceStream(name))
                 return GetString(stream);
         }
+
+        public IEnumerable<KeyValuePair<string, string>> GetResources(string selector)
+        {
+            foreach(var tuple in GetResourceStreams(selector))
+            {
+                using (tuple.Value)
+                    yield return new KeyValuePair<string, string>(tuple.Key, GetString(tuple.Value));
+            }
+        }
+
         public abstract Stream GetResourceStream(string name);
 
-        public virtual void Dispose() { }
+        public IEnumerable<KeyValuePair<string,Stream>> GetResourceStreams(string selector)
+        {
+            var regex = $"^{GlobPathHelper.GlobPatternToRegex(selector, false, true)}$";
+
+            foreach(var name in Names)
+            {
+                if (new Regex(regex, RegexOptions.IgnoreCase).IsMatch(name))
+                {
+                    yield return new KeyValuePair<string, Stream>(name, GetResourceStream(name));
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed) return;
+            if (disposing)
+            {
+                // Free any other managed objects here.
+                Names = null;
+            }
+
+            // Free any unmangaed objects here.
+            disposed = true;
+        }
+
+        /// <summary>
+        /// Override Object.Finalize by defining a destructor
+        /// </summary>
+        ~ResourceCollection()
+        {
+            Dispose(false);
+        }
 
         private static string GetString(Stream stream)
         {

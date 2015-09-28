@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode
         public string Title { get; set; }
 
         [JsonProperty("template")]
-        public string Template { get; set; }
+        public string Template { get; set; } = Constants.DefaultTemplateName;
 
         [JsonProperty("templateFolder")]
         public string TemplateFolder { get; set; }

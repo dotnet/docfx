@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.Tests
         {
             const string documentsBaseDir = "documents";
             const string outputBaseDir = "output";
+            const string templateDir = "template";
             if (Directory.Exists(documentsBaseDir))
             {
                 Directory.Delete(documentsBaseDir, true);
@@ -29,8 +30,19 @@ namespace Microsoft.DocAsCode.Tests
             {
                 Directory.Delete(outputBaseDir, true);
             }
+            if (Directory.Exists(templateDir))
+            {
+                Directory.Delete(templateDir, true);
+            }
+
+            // Create default template
+            var defaultTemplate = @"
+{{{conceptual}}}
+";
+            Directory.CreateDirectory(Path.Combine(templateDir, "default"));
             Directory.CreateDirectory(documentsBaseDir);
             Directory.CreateDirectory(outputBaseDir);
+            File.WriteAllText(Path.Combine(templateDir, "default", "Conceptual.html.tmpl"), defaultTemplate);
             var conceptualFile = Path.Combine(documentsBaseDir, "test.md");
             File.WriteAllLines(
                 conceptualFile,
@@ -48,29 +60,29 @@ namespace Microsoft.DocAsCode.Tests
                     "test",
                 });
 
-           ParseResult result = new BuildCommand(new BuildCommandOptions
+            ParseResult result = new BuildCommand(new BuildCommandOptions
             {
                 Content = new List<string> { conceptualFile },
-                OutputFolder = outputBaseDir,
+                OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
+                TemplateFolder = templateDir
             }).Exec(null);
 
             Assert.Equal(ResultLevel.Success, result.ResultLevel);
-            Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml"))));
-            var model = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml")));
-            Assert.Equal(
-                "<h1 id=\"hello-world\">Hello World</h1>\n" +
-                "<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
-                "Test link: <a href=\"~/documents/test/test.md\">link text</a></p>\n" +
-                "<p><p>\n" +
-                "test</p>\n",
-                model["conceptual"]);
-            Assert.Equal("Conceptual", model["type"]);
-            Assert.Equal("b", model["a"]);
-            Assert.IsType<Dictionary<object, object>>(model["b"]);
-            Assert.Equal("e", ((Dictionary<object, object>)model["b"])["c"]);
-
-            Directory.Delete(documentsBaseDir, true);
-            Directory.Delete(outputBaseDir, true);
+            var file = Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".html"));
+            Assert.True(File.Exists(file));
+            // TODO: Update when XREF is implemented by @zhyan
+            Assert.Equal<string>(
+                new string[]
+                {
+                    "",
+                    "<h1 id=\"hello-world\">Hello World</h1>",
+                    "<p>Test XRef: <xref href=\"XRef1\"></xref>",
+                    "Test link: <a href=\"~/documents/test/test.md\">link text</a></p>",
+                    "<p><p>",
+                    "test</p>",
+                    ""
+                },
+                File.ReadAllLines(file));
         }
     }
 }
