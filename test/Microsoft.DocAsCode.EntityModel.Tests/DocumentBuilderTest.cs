@@ -67,34 +67,62 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                     }.ToImmutableDictionary()
                 });
 
-            Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml"))));
-            var model = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml")));
-            Assert.Equal(
-                "<h1 id=\"hello-world\">Hello World</h1>\n" +
-                "<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
-                "Test link: <a href=\"~/documents/test/test.md\">link text</a></p>\n" +
-                "<p><p>\n" +
-                "test</p>\n",
-                model["conceptual"]);
-            Assert.Equal("Conceptual", model["type"]);
-            Assert.Equal("Hello world!", model["meta"]);
-            Assert.Equal("b", model["a"]);
-            Assert.IsType<Dictionary<object, object>>(model["b"]);
-            Assert.Equal("e", ((Dictionary<object, object>)model["b"])["c"]);
+            {
+                // check conceptual.
+                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml"))));
+                var model = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml")));
+                Assert.Equal(
+                    "<h1 id=\"hello-world\">Hello World</h1>\n" +
+                    "<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
+                    "Test link: <a href=\"~/documents/test/test.md\">link text</a></p>\n" +
+                    "<p><p>\n" +
+                    "test</p>\n",
+                    model["conceptual"]);
+                Assert.Equal("Conceptual", model["type"]);
+                Assert.Equal("Hello world!", model["meta"]);
+                Assert.Equal("b", model["a"]);
+                Assert.IsType<Dictionary<object, object>>(model["b"]);
+                Assert.Equal("e", ((Dictionary<object, object>)model["b"])["c"]);
+            }
 
-            Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
-            Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".yml")));
-            var meta = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".yml"));
-            Assert.Equal(1, meta.Count);
-            Assert.True(meta.ContainsKey("meta"));
-            Assert.Equal("Hello world!", meta["meta"]);
+            {
+                // check resource.
+                Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
+                Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".yml")));
+                var meta = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".yml"));
+                Assert.Equal(1, meta.Count);
+                Assert.True(meta.ContainsKey("meta"));
+                Assert.Equal("Hello world!", meta["meta"]);
+            }
 
+            {
+                // check manifest file.
+                var filepath = Path.Combine(outputBaseDir, ".docfx.manifest");
+                Assert.True(File.Exists(filepath));
+                var manifest = YamlUtility.Deserialize<List<Dictionary<string, object>>>(filepath);
+                Assert.Equal(2, manifest.Count);
+                Assert.Equal("Conceptual", manifest[0]["type"]);
+                Assert.Equal(@"documents\test.yml", manifest[0]["model"]);
+                Assert.Equal("Resource", manifest[1]["type"]);
+                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.yml", manifest[1]["model"]);
+                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[1]["resource"]);
+            }
+
+            {
+                // check file map
+                var filepath = Path.Combine(outputBaseDir, ".docfx.filemap");
+                Assert.True(File.Exists(filepath));
+                var filemap = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
+                Assert.Equal(2, filemap.Count);
+                Assert.Equal("~/documents/test.yml", filemap["~/documents/test.md"]);
+                Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
+            }
             Directory.Delete(documentsBaseDir, true);
             Directory.Delete(outputBaseDir, true);
         }
 
         [Fact]
-        public void TestTocMdReader2()
+        public void TestTocMdReader()
         {
             var toc = MarkdownTocReader.LoadToc(@"
 # [Article1](article1.md)

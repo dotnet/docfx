@@ -1,14 +1,13 @@
 {
-    "version": "1.0.0-*",
-    "frameworks": {
-        "dnx451": {
-            "dependencies": {
-                "Microsoft.Framework.Runtime": "1.0.0-beta6",
-                "Microsoft.Framework.Runtime.Roslyn.Common": "1.0.0-beta6"
-            }
-        }
-    },
-    "dependencies": {
-        "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.0.0"
+  "version": "1.0.0-*",
+  "frameworks": {
+    "dnx451": {
     }
+  },
+  "dependencies": {
+    "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.0.0",
+    "Microsoft.Framework.Runtime": "1.0.0-beta6",
+    "Microsoft.Framework.Runtime.Roslyn.Common": "1.0.0-beta6",
+    "Microsoft.Composition": "1.0.27"
+  }
 }

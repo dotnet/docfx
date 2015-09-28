@@ -1,12 +1,12 @@
 {
   "version": "1.0.0-*",
+  "dependencies": {
+    "GitSharp": "0.3.0",
+    "Newtonsoft.Json": "6.0.8",
+    "YamlDotNet.Signed": "3.5.1"
+  },
   "frameworks": {
     "dnx451": {
-      "dependencies": {
-        "GitSharp": "0.3.0",
-        "Newtonsoft.Json": "6.0.8",
-        "YamlDotNet.Signed": "3.5.1"
-      },
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": ""

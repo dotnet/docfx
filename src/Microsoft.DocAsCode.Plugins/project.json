@@ -2,7 +2,6 @@
   "version": "1.0.0-*",
   "frameworks": {
     "dnx451": {
-      "dependencies": {},
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": ""
