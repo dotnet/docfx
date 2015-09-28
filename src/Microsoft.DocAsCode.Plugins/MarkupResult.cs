@@ -3,11 +3,13 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
-    using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     public class MarkupResult
     {
         public string Html { get; set; }
-        public Dictionary<string, object> YamlHeader { get; set; }
+        public ImmutableDictionary<string, object> YamlHeader { get; set; }
+        public ImmutableArray<string> LinkToFiles { get; set; }
+        public ImmutableArray<string> LinkToUids { get; set; }
     }
 }

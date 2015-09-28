@@ -167,9 +167,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 context.UidMap[uid] = Root + (RelativePath)model.File;
             }
-            if (result.XRef != null)
+            if (result.LinkToUids.Length > 0)
             {
-                context.XRef.UnionWith(result.XRef);
+                context.XRef.UnionWith(result.LinkToUids);
             }
             context.Manifest.Add(new ManifestItem
             {
@@ -195,32 +195,34 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 xref[uid] = context.UidMap[uid];
             }
             context.XRef.ExceptWith(common);
-            if (context.XRef.Count > 0 && context.ExternalReferencePackages.Length > 0)
+            if (context.XRef.Count > 0)
             {
-                var externalReferences = (from reader in
-                                              from package in context.ExternalReferencePackages.AsParallel()
-                                              select ExternalReferencePackageReader.CreateNoThrow(package)
-                                          where reader != null
-                                          select reader).ToList();
-
-                foreach (var uid in context.XRef.Except(common))
+                if (context.ExternalReferencePackages.Length > 0)
                 {
-                    var href = GetExternalReference(externalReferences, uid);
-                    if (href != null)
+                    var externalReferences = (from reader in
+                                                  from package in context.ExternalReferencePackages.AsParallel()
+                                                  select ExternalReferencePackageReader.CreateNoThrow(package)
+                                              where reader != null
+                                              select reader).ToList();
+
+                    foreach (var uid in context.XRef.Except(common))
                     {
-                        context.UidMap[uid] = href;
-                    }
-                    else
-                    {
-                        // todo : trace xref cannot find.
+                        var href = GetExternalReference(externalReferences, uid);
+                        if (href != null)
+                        {
+                            context.UidMap[uid] = href;
+                        }
+                        else
+                        {
+                            // todo : trace xref cannot find.
+                        }
                     }
                 }
+                else
+                {
+                    // todo : trace xref cannot find.
+                }
             }
-            else
-            {
-                // todo : trace xref cannot find.
-            }
-
             return xref;
         }
 

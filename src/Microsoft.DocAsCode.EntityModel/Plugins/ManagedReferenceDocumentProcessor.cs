@@ -60,10 +60,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                             }
                         }
                     }
-                    return new FileModel(file, page, serializer: YamlFormatter<PageViewModel>.Instance)
+                    var result = new FileModel(file, page, serializer: YamlFormatter<PageViewModel>.Instance)
                     {
                         Uids = (from item in page.Items select item.Uid).ToImmutableArray(),
                     };
+                    result.Properties.LinkToFiles = new HashSet<string>();
+                    result.Properties.LinkToUids = new HashSet<string>();
+                    return result;
                 case DocumentType.Override:
                     var overrides = MarkdownReader.ReadMarkdownAsOverride(file.BaseDir, file.File);
                     return new FileModel(file, overrides)
@@ -88,7 +91,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 DocumentType = "ManagedReference",
                 ModelFile = model.File,
-                XRef = new string[0], // todo : find xref.
+                LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
+                LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableArray(), // todo : more uid link
             };
         }
 
@@ -105,7 +109,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     var page = (PageViewModel)model.Content;
                     foreach (var item in page.Items)
                     {
-                        BuildItem(host, item, model.FileAndType);
+                        BuildItem(host, item, model);
                     }
                     break;
                 case DocumentType.Override:
@@ -121,31 +125,34 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return models;
         }
 
-        private void BuildItem(IHostService host, ItemViewModel item, FileAndType ft)
+        private void BuildItem(IHostService host, ItemViewModel item, FileModel model)
         {
-            item.Summary = Markup(host, item.Summary, ft);
-            item.Remarks = Markup(host, item.Remarks, ft);
+            item.Summary = Markup(host, item.Summary, model);
+            item.Remarks = Markup(host, item.Remarks, model);
             if (item.Syntax?.Return?.Description != null)
             {
-                item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, ft);
+                item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, model);
             }
             var parameters = item.Syntax?.Parameters;
             if (parameters != null)
             {
                 foreach (var parameter in parameters)
                 {
-                    parameter.Description = Markup(host, parameter.Description, ft);
+                    parameter.Description = Markup(host, parameter.Description, model);
                 }
             }
         }
 
-        private string Markup(IHostService host, string markdown, FileAndType ft)
+        private string Markup(IHostService host, string markdown, FileModel model)
         {
             if (string.IsNullOrEmpty(markdown))
             {
                 return markdown;
             }
-            return host.Markup(markdown, ft).Html;
+            var mr = host.Markup(markdown, model.FileAndType);
+            ((HashSet<string>)model.Properties.LinkToFiles).UnionWith(mr.LinkToFiles);
+            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(mr.LinkToUids);
+            return mr.Html;
         }
     }
 }

@@ -60,8 +60,19 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             var html = DocfxFlavoredMarked.Markup(markdown, Path.Combine(ft.BaseDir, ft.File));
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
+            var result = new MarkupResult();
+            var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
+            if (node != null)
+            {
+                using (var sr = new StringReader(node.InnerHtml))
+                {
+                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr).ToImmutableDictionary();
+                }
+                node.Remove();
+            }
+            var linkToFiles = new List<string>();
             foreach (var link in from n in doc.DocumentNode.Descendants()
-                                 where n.Name != "xref"
+                                 where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
                                  from attr in n.Attributes
                                  where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
                                        string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
@@ -76,19 +87,18 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     {
                         throw new InvalidOperationException($"Cannot refer out of project. Path: {path}");
                     }
-                    link.Value = RootSymbol + path;
+                    var file = RootSymbol + path;
+                    link.Value = file;
+                    linkToFiles.Add(file);
                 }
             }
-            var result = new MarkupResult();
-            var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
-            if (node != null)
-            {
-                using (var sr = new StringReader(node.InnerHtml))
-                {
-                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr);
-                }
-                node.Remove();
-            }
+            result.LinkToFiles = linkToFiles.ToImmutableArray();
+            result.LinkToUids = (from n in doc.DocumentNode.Descendants()
+                                 where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                                 from attr in n.Attributes
+                                 where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
+                                 where !string.IsNullOrWhiteSpace(attr.Value)
+                                 select attr.Value).ToImmutableArray();
             using (var sw = new StringWriter())
             {
                 doc.Save(sw);

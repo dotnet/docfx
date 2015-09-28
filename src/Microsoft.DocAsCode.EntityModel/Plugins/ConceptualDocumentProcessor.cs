@@ -59,7 +59,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 DocumentType = "Conceptual",
                 ModelFile = model.File,
-                XRef = new string[0], // todo : find xref.
+                LinkToFiles = model.Properties.LinkToFiles,
+                LinkToUids = model.Properties.LinkToUids,
             };
         }
 
@@ -96,6 +97,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     }
                 }
             }
+            model.Properties.LinkToFiles = result.LinkToFiles;
+            model.Properties.LinkToUids = result.LinkToUids;
             model.File = Path.ChangeExtension(model.File, ".yml");
         }
 

@@ -41,6 +41,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 new[]
                 {
                     "---",
+                    "uid: XRef1",
                     "a: b",
                     "b:",
                     "  c: e",
@@ -52,6 +53,8 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                     "test",
                 });
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
+            var resourceMetaFile = resourceFile + ".meta";
+            File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"" }");
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
             files.Add(DocumentType.Article, new[] { conceptualFile });
             files.Add(DocumentType.Resource, new[] { resourceFile });
@@ -90,9 +93,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
                 Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".yml")));
                 var meta = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".yml"));
-                Assert.Equal(1, meta.Count);
+                Assert.Equal(2, meta.Count);
                 Assert.True(meta.ContainsKey("meta"));
                 Assert.Equal("Hello world!", meta["meta"]);
+                Assert.True(meta.ContainsKey("abc"));
+                Assert.Equal("xyz", meta["abc"]);
             }
 
             {
@@ -117,8 +122,18 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.Equal("~/documents/test.yml", filemap["~/documents/test.md"]);
                 Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
             }
+
+            {
+                // check xref
+                var filepath = Path.Combine(outputBaseDir, ".docfx.xref");
+                Assert.True(File.Exists(filepath));
+                var xref = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
+                Assert.Equal(1, xref.Count);
+                Assert.Equal("~/documents/test.yml", xref["XRef1"]);
+            }
             Directory.Delete(documentsBaseDir, true);
             Directory.Delete(outputBaseDir, true);
+            File.Delete(resourceMetaFile);
         }
 
         [Fact]

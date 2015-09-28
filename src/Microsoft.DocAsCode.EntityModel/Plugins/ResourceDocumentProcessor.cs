@@ -46,10 +46,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 content = metadata.ToDictionary(p => p.Key, p => p.Value);
             }
-            return new FileModel(file, metadata)
-            {
-                Uids = new string[] { file.File }.ToImmutableArray(),
-            };
+            return new FileModel(file, content);
         }
 
         public SaveResult Save(FileModel model)

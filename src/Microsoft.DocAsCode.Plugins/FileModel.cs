@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Plugins
 {
     using System;
     using System.Collections.Immutable;
+    using System.Dynamic;
     using System.IO;
     using System.Runtime.Serialization;
 
@@ -90,6 +91,8 @@ namespace Microsoft.DocAsCode.Plugins
         }
 
         public DocumentType Type => FileAndType.Type;
+
+        public dynamic Properties { get; } = new ExpandoObject();
 
         public ImmutableArray<string> Uids
         {
