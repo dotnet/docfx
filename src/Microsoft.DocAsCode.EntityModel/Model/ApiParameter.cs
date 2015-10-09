@@ -3,9 +3,12 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using Microsoft.DocAsCode.Utility.EntityMergers;
+
     public class ApiParameter
     {
         [YamlDotNet.Serialization.YamlMember(Alias = "id")]
+        [MergeOption(MergeOption.MergeKey)]
         public string Name { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(Alias = "type")]

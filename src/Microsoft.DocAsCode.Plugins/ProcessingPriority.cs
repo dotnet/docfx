@@ -7,15 +7,15 @@ namespace Microsoft.DocAsCode.Plugins
 
     public enum ProcessingPriority
     {
-        NotSupportted,
+        NotSupportted = -1,
         [EditorBrowsable(EditorBrowsableState.Never)]
-        Lowest,
-        Low,
-        BelowNormal,
-        Normal,
-        AboveNormal,
-        High,
+        Lowest = 0,
+        Low = 64,
+        BelowNormal = 128,
+        Normal = 256,
+        AboveNormal = 512,
+        High = 1024,
         [EditorBrowsable(EditorBrowsableState.Never)]
-        Highest,
+        Highest = int.MaxValue,
     }
 }

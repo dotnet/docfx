@@ -87,6 +87,7 @@
     <Compile Include="ExtractSearchDataTest.cs" />
     <Compile Include="DocfxFlavoredMarkdownTest.cs" />
     <Compile Include="MarkdownLiteTest.cs" />
+    <Compile Include="ReflectionEntityMergerTest.cs" />
     <Compile Include="TemplateManagerUnitTest.cs" />
     <Compile Include="ParsersUnitTest.cs" />
     <Compile Include="ConvertToViewModelUnitTest.cs" />

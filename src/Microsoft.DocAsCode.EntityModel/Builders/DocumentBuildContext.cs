@@ -32,14 +32,14 @@
 
         public void SerializeTo(string outputBaseDir)
         {
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.manifest"), this.Manifest);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.filemap"), this.FileMap);
-            if (this.XRefMap == null)
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.manifest"), Manifest);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.filemap"), FileMap);
+            if (XRefMap == null)
             {
-                this.XRefMap = GetXRef();
+                XRefMap = GetXRef();
             }
 
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xref"), this.XRefMap);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xref"), XRefMap);
         }
 
         public static DocumentBuildContext DeserializeFrom(string outputBaseDir)
@@ -53,29 +53,29 @@
 
         private Dictionary<string, string> GetXRef()
         {
-            var common = this.UidMap.Keys.Intersect(this.XRef).ToList();
-            var xref = new Dictionary<string, string>(this.XRef.Count);
+            var common = UidMap.Keys.Intersect(XRef).ToList();
+            var result = new Dictionary<string, string>(XRef.Count);
             foreach (var uid in common)
             {
-                xref[uid] = this.UidMap[uid];
+                result[uid] = UidMap[uid];
             }
-            this.XRef.ExceptWith(common);
-            if (this.XRef.Count > 0)
+            XRef.ExceptWith(common);
+            if (XRef.Count > 0)
             {
-                if (this.ExternalReferencePackages.Length > 0)
+                if (ExternalReferencePackages.Length > 0)
                 {
                         var externalReferences = (from reader in
-                                                      from package in this.ExternalReferencePackages.AsParallel()
+                                                      from package in ExternalReferencePackages.AsParallel()
                                                       select ExternalReferencePackageReader.CreateNoThrow(package)
                                                   where reader != null
                                                   select reader).ToList();
 
-                    foreach (var uid in this.XRef.Except(common))
+                    foreach (var uid in XRef)
                     {
                         var href = GetExternalReference(externalReferences, uid);
                         if (href != null)
                         {
-                            this.UidMap[uid] = href;
+                            result[uid] = href;
                         }
                         else
                         {
@@ -88,7 +88,7 @@
                     // todo : trace xref cannot find.
                 }
             }
-            return xref;
+            return result;
         }
 
         private static string GetExternalReference(List<ExternalReferencePackageReader> externalReferences, string uid)

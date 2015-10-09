@@ -11,12 +11,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     public class MarkdownReader
     {
-        public static Dictionary<string, object> ReadMarkdownAsOverride(string baseDir, string file)
+        public static List<ItemViewModel> ReadMarkdownAsOverride(string baseDir, string file)
         {
-            return new Dictionary<string, object>
-            {
-                ["items"] = ReadMarkDownCore(Path.Combine(baseDir, file)).ToList(),
-            };
+            return ReadMarkDownCore(Path.Combine(baseDir, file)).ToList();
         }
 
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
@@ -28,7 +25,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        private static IEnumerable<Dictionary<string, object>> ReadMarkDownCore(string file)
+        private static IEnumerable<ItemViewModel> ReadMarkDownCore(string file)
         {
             var content = File.ReadAllText(file);
             var lineIndex = GetLineIndex(content).ToList();
@@ -46,10 +43,16 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 {
                     int start = lineIndex[item.Location.EndLocation.Line] + item.Location.EndLocation.Column + 1;
                     int end = lineIndex[currentEnd.Line] + currentEnd.Column;
-                    var dict = new Dictionary<string, object>(item.Detail.Properties);
-                    dict["uid"] = item.Id;
-                    dict["conceptual"] = content.Substring(start, end - start + 1);
-                    yield return dict;
+                    using (var sw = new StringWriter())
+                    {
+                        YamlUtility.Serialize(sw, item.Detail.Properties);
+                        using (var sr = new StringReader(sw.ToString()))
+                        {
+                            var vm = YamlUtility.Deserialize<ItemViewModel>(sr);
+                            vm.Conceptual = content.Substring(start, end - start + 1);
+                            yield return vm;
+                        }
+                    }
                 }
                 currentEnd = item.Location.StartLocation;
             }

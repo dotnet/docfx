@@ -33,8 +33,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityMergers\MergeBehaviorOption.cs" />
+    <Compile Include="EntityMergers\MergeOptionAttribute.cs" />
     <Compile Include="Glob\Glob.cs" />
     <Compile Include="Glob\GlobPathHelper.cs" />
+    <Compile Include="EntityMergers\ReflectionEntityMerger.cs" />
     <Compile Include="RelativePath.cs" />
     <Compile Include="TaskUtility.cs" />
     <Compile Include="Extensions.cs" />

@@ -19,31 +19,6 @@ namespace Microsoft.DocAsCode.Utility
     public static class TaskHelper
     {
         /// <summary>
-        /// WithFinally
-        /// </summary>
-        /// <param name="tryCode">the task contains try part</param>
-        /// <param name="finallyCode">the task contains finally part</param>
-        /// <returns>the task included try part and finally part</returns>
-        public static async Task WithFinally(this Task tryCode, Func<Task, Task> finallyCode)
-        {
-            await await tryCode.ContinueWith(finallyCode);
-            await tryCode;
-        }
-
-        /// <summary>
-        /// WithFinally
-        /// </summary>
-        /// <typeparam name="TResult">TResult</typeparam>
-        /// <param name="tryCode">the task contains try part</param>
-        /// <param name="finallyCode">the task contains finally part</param>
-        /// <returns>the task included try part and finally part</returns>
-        public static async Task<TResult> WithFinally<TResult>(this Task<TResult> tryCode, Func<Task<TResult>, Task> finallyCode)
-        {
-            await await tryCode.ContinueWith(finallyCode);
-            return await tryCode;
-        }
-
-        /// <summary>
         /// Task.WhenAll, and re-throw AggregateException containing exceptions from all failed tasks
         /// </summary>
         /// <typeparam name="TResult">task result type</typeparam>

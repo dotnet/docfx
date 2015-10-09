@@ -13,10 +13,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(typeof(IDocumentProcessor))]
     public class ManagedReferenceDocumentProcessor : IDocumentProcessor
     {
+        private readonly ReflectionEntityMerger Merger = new ReflectionEntityMerger();
+
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             switch (file.Type)
@@ -71,9 +74,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     var overrides = MarkdownReader.ReadMarkdownAsOverride(file.BaseDir, file.File);
                     return new FileModel(file, overrides)
                     {
-                        // todo : strong type
-                        Uids = (from Dictionary<string, object> item in (List<Dictionary<string, object>>)overrides["items"]
-                                select (string)item["uid"]).ToImmutableArray(),
+                        Uids = (from item in overrides
+                                select item.Uid).ToImmutableArray(),
                     };
                 default:
                     throw new NotSupportedException();
@@ -121,8 +123,36 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host)
         {
-            // todo : merge
+            if (models.Length > 0)
+            {
+                ApplyOverrides(models, host);
+            }
             return models;
+        }
+
+        #region Private methods
+
+        private void ApplyOverrides(ImmutableArray<FileModel> models, IHostService host)
+        {
+            foreach (var uid in host.GetAllUids())
+            {
+                var ms = host.LookupByUid(uid);
+                var od = ms.SingleOrDefault(m => m.Type == DocumentType.Override);
+                if (od != null)
+                {
+                    var ovm = ((List<ItemViewModel>)od.Content).Single(vm => vm.Uid == uid);
+                    foreach (var item in from m in ms
+                                         where m.Type == DocumentType.Article
+                                         from item in ((PageViewModel)m.Content).Items
+                                         where item.Uid == uid
+                                         select item)
+                    {
+                        var vm = item;
+                        // todo : fix file path
+                        Merger.Merge(ref vm, ovm);
+                    }
+                }
+            }
         }
 
         private void BuildItem(IHostService host, ItemViewModel item, FileModel model)
@@ -154,5 +184,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             ((HashSet<string>)model.Properties.LinkToUids).UnionWith(mr.LinkToUids);
             return mr.Html;
         }
+
+        #endregion
     }
 }

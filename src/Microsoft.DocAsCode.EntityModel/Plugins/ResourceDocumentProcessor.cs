@@ -15,11 +15,21 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(typeof(IDocumentProcessor))]
     public class ResourceDocumentProcessor : IDocumentProcessor
     {
+        [Import]
+        public IResourceFileConfig Config { get; set; }
+
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             if (file.Type == DocumentType.Resource)
             {
                 return ProcessingPriority.Normal;
+            }
+            if (file.Type == DocumentType.Article)
+            {
+                if (Config != null && Config.IsResourceFile(Path.GetExtension(file.File)))
+                {
+                    return ProcessingPriority.Lowest;
+                }
             }
             return ProcessingPriority.NotSupportted;
         }

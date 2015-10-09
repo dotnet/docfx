@@ -7,9 +7,12 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     using System.Linq;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Utility.EntityMergers;
+
     public class ItemViewModel
     {
         [YamlMember(Alias = "uid")]
+        [MergeOption(MergeOption.MergeKey)]
         public string Uid { get; set; }
 
         [YamlMember(Alias = "id")]
@@ -19,6 +22,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         public string Parent { get; set; }
 
         [YamlMember(Alias = "children")]
+        [MergeOption(MergeOption.Ignore)] // todo : merge more children
         public List<string> Children { get; set; }
 
         [YamlMember(Alias = "href")]
@@ -46,12 +50,15 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         public MemberType? Type { get; set; }
 
         [YamlMember(Alias = "source")]
+        [MergeOption(MergeOption.Ignore)]
         public SourceDetail Source { get; set; }
 
         [YamlMember(Alias = "documentation")]
+        [MergeOption(MergeOption.Ignore)]
         public SourceDetail Documentation { get; set; }
 
         [YamlMember(Alias = "assemblies")]
+        [MergeOption(MergeOption.Ignore)] // todo : merge more children
         public List<string> AssemblyNameList { get; set; }
 
         [YamlMember(Alias = "namespace")]
@@ -82,13 +89,19 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         public List<CrefInfo> Sees { get; set; }
 
         [YamlMember(Alias = "inheritance")]
+        [MergeOption(MergeOption.Ignore)]
         public List<string> Inheritance { get; set; }
 
         [YamlMember(Alias = "implements")]
+        [MergeOption(MergeOption.Ignore)] // todo : merge more children
         public List<string> Implements { get; set; }
 
         [YamlMember(Alias = "inheritedMembers")]
+        [MergeOption(MergeOption.Ignore)] // todo : merge more children
         public List<string> InheritedMembers { get; set; }
+
+        [YamlMember(Alias = "conceptual")]
+        public string Conceptual { get; set; }
 
         public static ItemViewModel FromModel(MetadataItem model)
         {

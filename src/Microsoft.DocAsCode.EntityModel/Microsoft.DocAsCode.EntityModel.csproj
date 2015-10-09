@@ -117,6 +117,7 @@
     <Compile Include="Parsers\TripleSlashCommentParser.cs" />
     <Compile Include="Parsers\LinkParser.cs" />
     <Compile Include="Builders\DocumentBuildContext.cs" />
+    <Compile Include="Plugins\IResourceFileConfig.cs" />
     <Compile Include="Plugins\ResourceDocumentProcessor.cs" />
     <Compile Include="Plugins\TocDocumentProcessor.cs" />
     <Compile Include="Plugins\ConceptualDocumentProcessor.cs" />
@@ -196,9 +197,6 @@
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="YamlConverters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
