@@ -27,9 +27,9 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
             foreach (var codeSnippet in codeSnippets)
             {
                 var referenceId = codeSnippet.Id;
-                var codeSnippetPath = FileExtensions.GetFullPath(Path.GetDirectoryName(sourceFilePath), codeSnippet.Path);
+                var codeSnippetPath = PathUtility.GetFullPath(Path.GetDirectoryName(sourceFilePath), codeSnippet.Path);
                 // As reference, copy file to local
-                var targetFileName = FileExtensions.MakeRelativePath(referenceFolder, codeSnippetPath).ToValidFilePath();
+                var targetFileName = PathUtility.MakeRelativePath(referenceFolder, codeSnippetPath).ToValidFilePath();
                 // Append ref incase the file name starts with ".", which means a hidden file in Linux
                 targetFileName = "ref" + targetFileName;
                 var targetPath = Path.Combine(referenceFolder, targetFileName);
@@ -48,12 +48,12 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                 }
                 else
                 {
-                    FileExtensions.CopyFile(codeSnippetPath, targetPath);
+                    PathUtility.CopyFile(codeSnippetPath, targetPath);
                     reference = new MapFileItemViewModel
                     {
                         Id = referenceId,
                         ReferenceKeys = codeSnippet.MatchedSections,
-                        Href = FileExtensions.MakeRelativePath(Path.GetDirectoryName(filePath), targetPath).BackSlashToForwardSlash(),
+                        Href = PathUtility.MakeRelativePath(Path.GetDirectoryName(filePath), targetPath).BackSlashToForwardSlash(),
                         Startline = codeSnippet.StartLine,
                         Endline = codeSnippet.EndLine,
                         MapFileType = MapFileType.CodeSnippet

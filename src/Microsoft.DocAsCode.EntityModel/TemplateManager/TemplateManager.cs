@@ -100,13 +100,13 @@ namespace Microsoft.DocAsCode.EntityModel
                     if (apiFolder != null)
                         foreach (var i in apiFolder)
                         {
-                            var relativePath = FileExtensions.MakeRelativePath(outputFolder, i);
+                            var relativePath = PathUtility.MakeRelativePath(outputFolder, i);
                             writer.Write(string.Format(TocApi, relativePath));
                         }
                     if (conceptualFolder != null)
                         foreach (var i in conceptualFolder)
                         {
-                            var relativePath = FileExtensions.MakeRelativePath(outputFolder, i);
+                            var relativePath = PathUtility.MakeRelativePath(outputFolder, i);
                             writer.Write(string.Format(TocConceputal, relativePath));
                         }
                     ParseResult.WriteToConsole(ResultLevel.Info, message);

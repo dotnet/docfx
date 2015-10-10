@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             };
             var modelFileName = "TestTemplateProcessor_NoScript.yml";
             var item = new ManifestItem { ModelFile = modelFileName, ResourceFile = modelFileName };
-            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create($"{templateName}.tmpl", template));
+            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.tmpl", template));
 
             var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
             Assert.True(File.Exists(outputFile));
@@ -115,6 +115,8 @@ test2
         [Fact]
         public void TestTemplateProcessor_NoTemplate()
         {
+            var modelFileName = "TestTemplateProcessor_NoTemplate.yml";
+            var modelFile = Path.Combine(_outputFolder, modelFileName);
             var model = new
             {
                 model = new List<dynamic>
@@ -123,14 +125,13 @@ test2
                    new {name = "test2"},
                }
             };
-            var modelFileName = "TestTemplateProcessor_NoTemplate.yml";
             var templateName = "NoTemplate";
             var item = new ManifestItem { ModelFile = modelFileName };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
-            Assert.True(!File.Exists(Path.Combine(_outputFolder, modelFileName)));
+            Assert.True(!File.Exists(modelFile));
             item = new ManifestItem { ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
-            Assert.True(File.Exists(Path.Combine(_outputFolder, modelFileName)));
+            Assert.True(File.Exists(modelFile));
         }
 
         [Trait("Related", "TemplateProcessor")]
@@ -142,8 +143,8 @@ test2
             var modelFileName = "TestTemplateProcessor_InvalidTemplate.yml";
             var item = new ManifestItem { ModelFile = modelFileName };
             ProcessTemplate(templateName, inputFolder, new[] { item }, new object(), _outputFolder,
-                Tuple.Create($"{templateName}.invalidtmpl", string.Empty),
-                Tuple.Create($"{templateName}.js", string.Empty),
+                Tuple.Create("default.invalidtmpl", string.Empty),
+                Tuple.Create("default.js", string.Empty),
                 Tuple.Create("reference1.html", string.Empty),
                 Tuple.Create("reference2.html", string.Empty)
                 );
@@ -181,8 +182,8 @@ function transform(text){
             string inputFolder = null;
             var item = new ManifestItem { ModelFile = modelFileName };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder, 
-                Tuple.Create($"{templateName}.tmpl", template), 
-                Tuple.Create($"{templateName}.js", script),
+                Tuple.Create("default.html.tmpl", template), 
+                Tuple.Create("default.html.js", script),
                 Tuple.Create("reference1.html", string.Empty),
                 Tuple.Create("reference2.html", string.Empty)
                 );
@@ -229,12 +230,13 @@ function transform(text){
             };
 
             string inputFolder = null;
-            var item1 = new ManifestItem { ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType1.yml", DocumentType = "conceptual" };
+            var item1 = new ManifestItem { ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType1.yml", DocumentType = "Conceptual" };
             var item2 = new ManifestItem { ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType2.yml" };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
-                Tuple.Create($"{templateName}.tmpl", defaultTemplate),
+                Tuple.Create("default.html.tmpl", defaultTemplate),
                 Tuple.Create($"{templateName}/conceptual.md.tmpl", conceptualTemplate),
-                Tuple.Create($"{templateName}.js", script)
+                Tuple.Create("default.html.js", script),
+                Tuple.Create("conceptual.md.js", script)
                 );
             var outputFilePath1 = Path.Combine(_outputFolder, "TestTemplateProcessor_TemplateFolderWithDifferentType1.md");
             Assert.True(File.Exists(outputFilePath1));

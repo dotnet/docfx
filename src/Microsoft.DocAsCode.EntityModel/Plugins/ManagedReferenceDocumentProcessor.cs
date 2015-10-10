@@ -25,6 +25,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             switch (file.Type)
             {
                 case DocumentType.Article:
+                    if (".yml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ProcessingPriority.Normal;
+                    }
+
                     if (".csyml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
                         ".csyaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                     {

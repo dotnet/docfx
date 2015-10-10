@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Linq;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Utility;
 
     public class MarkdownReader
     {
@@ -18,10 +19,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
         {
+            var filePath = Path.Combine(baseDir, file);
             return new Dictionary<string, object>
             {
-                ["conceptual"] = File.ReadAllText(Path.Combine(baseDir, file)),
+                ["conceptual"] = File.ReadAllText(filePath),
                 ["type"] = "Conceptual",
+                ["remote"] = GitUtility.GetGitDetail(filePath),
+                ["path"] = file,
             };
         }
 

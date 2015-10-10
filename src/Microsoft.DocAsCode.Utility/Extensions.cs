@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Utility
     /// <summary>
     /// 
     /// </summary>
-    public static class FileExtensions
+    public static class PathUtility
     {
         private static char[] InvalidFilePathChars = Path.GetInvalidFileNameChars();
         public static string ToValidFilePath(this string input)
@@ -282,29 +282,22 @@ namespace Microsoft.DocAsCode.Utility
             return Path.Combine(folder, href);
         }
 
-        public static void CopyFile(string path, string targetPath)
+        public static void CopyFile(string path, string targetPath, bool overwrite = false)
         {
             if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(targetPath)) return;
-            var source = Path.GetFullPath(path);
-            var target = Path.GetFullPath(targetPath);
-            var targetFolder = Path.GetDirectoryName(target);
-            if (!string.IsNullOrEmpty(targetFolder) && !Directory.Exists(targetFolder))
-            {
-                Directory.CreateDirectory(targetFolder);
-            }
+            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(path, targetPath)) return;
+            var targetFolder = Path.GetDirectoryName(targetPath);
+            if (!string.IsNullOrEmpty(targetFolder)) Directory.CreateDirectory(targetFolder);
 
-            // TODO: works only in single thread app
-            if (!File.Exists(target))
-            {
-                try
-                {
-                    File.Copy(source, target);
-                }
-                catch
-                {
-                    throw;
-                }
-            }
+            File.Copy(path, targetPath, overwrite);
+        }
+
+        public static bool IsRelativePath(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+            if (Uri.IsWellFormedUriString(path, UriKind.Absolute)) return false;
+
+            return !Path.IsPathRooted(path);
         }
 
         /// <summary>

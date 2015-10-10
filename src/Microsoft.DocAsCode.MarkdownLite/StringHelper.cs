@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
+    using System.Web;
 
     public static class StringHelper
     {
@@ -15,6 +16,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public static string DecodeURIComponent(string str)
         {
             return Uri.UnescapeDataString(str);
+        }
+
+        public static string HtmlEncode(string html)
+        {
+            return HttpUtility.HtmlEncode(html);
+        }
+
+        public static string HtmlDecode(string html)
+        {
+            return HttpUtility.HtmlDecode(html);
         }
 
         public static string Escape(string html, bool encode = false)

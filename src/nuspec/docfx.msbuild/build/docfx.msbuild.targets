@@ -1,10 +1,11 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <BuildDocToolPath>$(MSBuildThisFileDirectory)..\tools\docfx.exe</BuildDocToolPath>
+    <DocfxConfigFile Condition=" '$(DocfxConfigFile)' == '' ">$(MSBuildProjectDirectory)/docfx.json</DocfxConfigFile>
     <PreviewPort Condition=" '$(PreviewPort)' == '' ">8002</PreviewPort>
     <!-- Website project's output directory is current folder, disable it as a temp workaround until a better way is found-->
     <CopyToOutput>False</CopyToOutput>
-    <RebuildXDoc>False</RebuildXDoc>
+    <RebuildXDoc Condition=" '$(RebuildXDoc)' == '' ">False</RebuildXDoc>
   </PropertyGroup>
   <Target Name="XdocBuild" AfterTargets="Build">
     <CallTarget Targets="XdocValidation"/>
@@ -25,11 +26,11 @@
   <!-- *************************** GenerateMetadata Phase ********************** -->
   <!-- ************************************************************************* -->
   <Target Name="XdocGenerateMetadata" >
-    <Exec Condition="$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; -f &quot;$(MSBuildProjectDirectory)/docfx.json&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
+    <Exec Condition="$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; -f &quot;$(DocfxConfigFile)&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
       <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
       <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
     </Exec>
-    <Exec Condition="!$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(MSBuildProjectDirectory)/docfx.json&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
+    <Exec Condition="!$(RebuildXDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
       <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
       <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
     </Exec>

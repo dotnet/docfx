@@ -14,25 +14,17 @@ namespace Microsoft.DocAsCode
 
     class CompositeCommand : ICommand
     {
+        private string _baseDirectory;
         public IList<ICommand> Commands { get; }
 
-        public CompositeCommand(params ICommand[] commands)
-        {
-            Commands = commands;
-        }
-
-        public CompositeCommand(IList<ICommand> commands)
-        {
-            Commands = commands;
-        }
-
-        public CompositeCommand(JToken value) : this(CommandFactory.ConvertJTokenTo<Dictionary<string, JToken>>(value))
+        public CompositeCommand(string baseDirectory, JToken value) : this(baseDirectory, CommandFactory.ConvertJTokenTo<Dictionary<string, JToken>>(value))
         {
 
         }
 
-        public CompositeCommand(Dictionary<string, JToken> commands)
+        public CompositeCommand(string baseDirectory, Dictionary<string, JToken> commands)
         {
+            _baseDirectory = baseDirectory;
             var dictionary = new SortedDictionary<SubCommandType, JToken>();
             foreach (var pair in commands)
             {
@@ -50,7 +42,7 @@ namespace Microsoft.DocAsCode
                 }
                 else
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Info, $"{pair.Value} is not a valid command currently supported, ignored.");
+                    ParseResult.WriteToConsole(ResultLevel.Info, $"\"{pair.Key}\" is not a valid command currently supported, ignored.");
                 }
             }
 
@@ -60,6 +52,7 @@ namespace Microsoft.DocAsCode
 
         public ParseResult Exec(RunningContext context)
         {
+            context.BaseDirectory = _baseDirectory;
             return AggregateParseResult(YieldRun(context));
         }
 
@@ -88,14 +81,20 @@ namespace Microsoft.DocAsCode
 
             if (warningResults.Count > 0)
             {
-                return new ParseResult(ResultLevel.Warning, warningResults.Select(s => $"Warning in build phase {s.Phase}: {s.Message}").ToDelimitedString("\n"));
+                return new ParseResult(ResultLevel.Warning, warningResults.Select(s => $"Warning in build phase {s.Phase}: {EscapeFormatMessage(s.Message)}").ToDelimitedString("\n"));
             }
 
             return ParseResult.SuccessResult;
+        }
+
+        private static string EscapeFormatMessage(string message)
+        {
+            return message.Replace("{", "{{").Replace("}", "}}");
         }
     }
 
     public class RunningContext
     {
+        public string BaseDirectory { get; set; }
     }
 }

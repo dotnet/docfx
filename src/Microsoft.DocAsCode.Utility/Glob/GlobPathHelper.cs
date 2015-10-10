@@ -28,17 +28,5 @@ namespace Microsoft.DocAsCode.Utility
             // NOTE: '\' in base directory aslo need to be transformed
             return IronRuby.Builtins.Glob.GetMatches(baseDirectory.ToNormalizedPath(), globPattern, 0, filesProvider);
         }
-
-        /// <summary>
-        /// Convert glob pattern to regular expression
-        /// </summary>
-        /// <param name="pattern">The glob pattern</param>
-        /// <param name="pathName">Specifies if the to-be-matched string is a path name</param>
-        /// <param name="noEscape">Sepcifies whether or not to escape the pattern</param>
-        /// <returns></returns>
-        public static string GlobPatternToRegex(string pattern, bool pathName, bool noEscape)
-        {
-            return IronRuby.Builtins.Glob.PatternToRegex(pattern, pathName, noEscape);
-        }
     }
 }

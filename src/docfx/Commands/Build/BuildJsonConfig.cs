@@ -8,6 +8,9 @@ namespace Microsoft.DocAsCode
 
     class BuildJsonConfig
     {
+        [JsonIgnore]
+        public string BaseDirectory { get; set; }
+
         [JsonProperty("content")]
         public FileMapping Content { get; set; }
 

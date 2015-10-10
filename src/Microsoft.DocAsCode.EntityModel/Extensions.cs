@@ -32,6 +32,15 @@ namespace Microsoft.DocAsCode.EntityModel
             serializer.Value.Serialize(writer, graph);
         }
 
+        public static string Serialize(object graph, Formatting formatting = Formatting.None)
+        {
+            using (StringWriter writer = new StringWriter())
+            {
+                Serialize(writer, graph, formatting);
+                return writer.ToString();
+            }
+        }
+
         public static void Serialize(string path, object graph, Formatting formatting = Formatting.None)
         {
             var directory = Path.GetDirectoryName(path);
@@ -42,8 +51,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             using (StreamWriter writer = new StreamWriter(path))
             {
-                serializer.Value.Formatting = formatting;
-                serializer.Value.Serialize(writer, graph);
+                Serialize(writer, graph, formatting);
             }
         }
 

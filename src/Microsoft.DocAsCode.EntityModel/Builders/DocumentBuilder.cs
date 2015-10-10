@@ -172,11 +172,32 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 context.XRef.UnionWith(result.LinkToUids);
             }
+            if ((result.TocMap?.Count ?? 0) > 0)
+            {
+                foreach (var toc in result.TocMap)
+                {
+                    HashSet<string> list;
+                    if (context.TocMap.TryGetValue(toc.Key, out list))
+                    {
+                        foreach (var item in toc.Value)
+                        {
+                            list.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        context.TocMap[toc.Key] = toc.Value;
+                    }
+                }
+            }
+
             context.Manifest.Add(new ManifestItem
             {
                 DocumentType = result.DocumentType,
                 ModelFile = result.ModelFile,
                 ResourceFile = result.ResourceFile,
+                // TODO: What is API doc's originalFile?
+                OriginalFile = model.OriginalFileAndType.File
             });
         }
     }

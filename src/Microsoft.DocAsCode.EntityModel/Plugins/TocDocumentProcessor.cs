@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
+    using Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class TocDocumentProcessor : IDocumentProcessor
@@ -55,12 +56,44 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public SaveResult Save(FileModel model)
         {
-            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), model.Content);
+            var toc = (TocViewModel)model.Content;
+            var path = (RelativePath)model.OriginalFileAndType.File;
+            var tocMap = GetTocMap(null, toc, path);
+            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), toc);
             return new SaveResult
             {
-                DocumentType = "TOC",
+                DocumentType = "Toc",
                 ModelFile = model.File,
+                TocMap = tocMap.ToImmutableDictionary()
             };
+        }
+
+        private Dictionary<string, HashSet<string>> GetTocMap(Dictionary<string, HashSet<string>> tocMap, IList<TocItemViewModel> toc, RelativePath modelPath)
+        {
+            if (tocMap == null) tocMap = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveComparer);
+            foreach(var item in toc)
+            {
+                if (PathUtility.IsRelativePath(item.Href))
+                {
+                    var path = ((RelativePath)item.Href).BasedOn(modelPath);
+                    var tocPath = modelPath;
+                    HashSet<string> value;
+                    if (tocMap.TryGetValue(path, out value))
+                    {
+                        value.Add(tocPath);
+                    }
+                    else
+                    {
+                        tocMap[path] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocPath };
+                    }
+                }
+                if (item.Items != null && item.Items.Count > 0)
+                {
+                    GetTocMap(tocMap, item.Items, modelPath);
+                }
+            }
+            if (tocMap.Count == 0) return null;
+            return tocMap;
         }
 
         public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)

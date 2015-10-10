@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     public class SaveResult
@@ -12,5 +13,6 @@ namespace Microsoft.DocAsCode.Plugins
         public string ResourceFile { get; set; }
         public ImmutableArray<string> LinkToUids { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
+        public ImmutableDictionary<string, HashSet<string>> TocMap { get; set; } = ImmutableDictionary<string, HashSet<string>>.Empty;
     }
 }

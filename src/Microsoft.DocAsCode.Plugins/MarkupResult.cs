@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Plugins
     public class MarkupResult
     {
         public string Html { get; set; }
+        public string Title { get; set; }
         public ImmutableDictionary<string, object> YamlHeader { get; set; }
         public ImmutableArray<string> LinkToFiles { get; set; }
         public ImmutableArray<string> LinkToUids { get; set; }

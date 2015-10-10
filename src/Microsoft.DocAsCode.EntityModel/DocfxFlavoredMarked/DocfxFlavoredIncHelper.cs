@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             // If currentPath is not set, unable to resolve inc syntax
             if (string.IsNullOrEmpty(currentPath)) return resolver(src, parents);
-            currentPath = FileExtensions.MakeRelativePath(Environment.CurrentDirectory, currentPath);
+            currentPath = PathUtility.MakeRelativePath(Environment.CurrentDirectory, currentPath);
             return LoadCore((RelativePath)currentPath, title, value, raw, parents, src, resolver, nodeType, options);
         }
 
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <returns></returns>
         private string LoadCore(RelativePath currentPath, string title, string value, string raw, Stack<string> parents, string src, Func<string, Stack<string>, string> resolver, MarkdownNodeType nodeType, DocfxFlavoredOptions options)
         {
-            if (string.IsNullOrEmpty(src) && !IsRelativePath(currentPath))
+            if (string.IsNullOrEmpty(src) && !PathUtility.IsRelativePath(currentPath))
                 return GenerateNodeWithCommentWrapper("ERROR INC", $"Invalid file path {currentPath}", raw);
 
             var originalPath = currentPath;
@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.EntityModel
                             var eleSrc = element.GetAttributeValue("src", string.Empty);
                             var eleTitle = element.GetAttributeValue("title", string.Empty);
                             var eleValue = element.InnerText;
-                            if (IsRelativePath(eleSrc))
+                            if (PathUtility.IsRelativePath(eleSrc))
                             {
                                 var parsed = LoadCore((RelativePath)eleSrc, eleTitle, eleValue, element.OuterHtml, parents, null, resolver, nodeType, options);
                                 return GenerateNodeWithCommentWrapper("INC", $"Include content from \"{eleSrc}\"", parsed);
@@ -172,16 +172,8 @@ namespace Microsoft.DocAsCode.EntityModel
         private static void UpdateSingleHref(HtmlNode node, string attributeName, string filePath)
         {
             var href = node.GetAttributeValue(attributeName, string.Empty);
-            if (IsRelativePath(href))
+            if (PathUtility.IsRelativePath(href))
                 node.SetAttributeValue(attributeName, RebaseHref(href, filePath, string.Empty));
-        }
-
-        private static bool IsRelativePath(string path)
-        {
-            if (string.IsNullOrEmpty(path)) return false;
-            if (Uri.IsWellFormedUriString(path, UriKind.Absolute)) return false;
-
-            return !Path.IsPathRooted(path);
         }
 
         private static string RebaseHref(string refPath, string source, string target)

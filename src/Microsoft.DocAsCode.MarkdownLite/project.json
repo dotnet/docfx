@@ -10,7 +10,8 @@
         "System.Core": "",
         "System.Xml": "",
         "System": "",
-        "System.Runtime": ""
+        "System.Runtime": "",
+        "System.Web": ""
       }
     }
   }

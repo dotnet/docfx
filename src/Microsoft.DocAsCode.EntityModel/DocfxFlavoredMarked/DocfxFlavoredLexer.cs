@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.EntityModel
             tokens.Add(new Token
             {
                 Type = TokenTypes.Html,
-                Text = $"<yamlheader>{StringHelper.Escape(value)}</yamlheader>"
+                Text = $"<yamlheader>{StringHelper.HtmlEncode(value)}</yamlheader>"
             });
             return true;
         }

@@ -2,7 +2,7 @@ How-to: Create Custom Templates
 ===============================
 Custom Templates are organized to be a zip package or a folder. The name of the zip package or the folder is considered as the template name. 
 
-Currently `docfx` supports [Mustache](http://mustache.github.io) syntax as the templating language. The template file should also be named as `<templateName>`. `docfx` first searches for a template file naming `<templateName>`, if the file does not exist, `docfx` fallback to search for `<templateName>.tmpl`. If none of the files exists, `docfx` will not do the transformation.
+Currently `docfx` supports [Mustache](http://mustache.github.io) syntax as the templating language. Template files end with `.tmpl` extension, and multiple template files are allowed. The default template file is named to `default[.<extension>].tmpl`, `[.<extension>]` defines the extension of the transformed file, and could be omitted if the transformed file has no extension. The naming convention of the template file is `<type>[.<extension>].tmpl`, `<type>` defines the *Type* of the model the template file is defined to transform. If no matching *Type* is found, `docfx` fallbacks to use the `default[.<extension>].tmpl. If none of the files exists, `docfx` will not do the transformation.
 
 By default, `docfx` uses the template file and applies model to generate output files. Model can also be preprocessed before applying template as described in detail in Section 3.
 
@@ -25,10 +25,10 @@ _tocPath | The relative path of the TOC file, if exists
 _tocRel | The relative path of the folder of the TOC file to the root folder of the generated document, if exists
 
 ### 2. What is the extension of the output file?
-The extension of the output file is defined by the `<templateName>`. The naming of `<templateName>` is recommended to be in the following convention: `<template description>.<extension>.tmpl`. `<extension>` will be the extension for the output file. If `<extension>` is not defined, `<templateName>` as a whole will be considered as the extension. For example, with a template naming `markdown.md`, the extension will be `.md`; with a template naming `markdown`, the extension will be `.markdown`.
+The extension of the output file is defined by the naming of the template file `<type>[.<extension>].tmpl`. For example, with a template naming `markdown.md.tmpl`, the extension will be `.md`; with a template naming `markdown.tmpl`, the extension will be ``.
 
 ### 3. How to transform the model before applying it to the template?
-If a `<templateName>.js` file exists in the same folder as the template file, this javascript file will be evalated. `docfx` tries to evaluate the javascript file and call `transform` function afterwards. `docfx` considers `transform` function to be in the following syntax:
+If a `default.js` file exists in the same folder as the template file, this javascript file will be evalated. `docfx` tries to evaluate the javascript file and call `transform` function afterwards. `docfx` considers `transform` function to be in the following syntax:
 ```javascript
 function transform(model, _attrs) {}
 ```

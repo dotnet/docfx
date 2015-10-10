@@ -57,19 +57,19 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                     var apiPath = api.Href;
                     var apiIndexPath = api.IndexFilePath;
 
-                    var apiYamlPath = FileExtensions.GetFullPath(Path.GetDirectoryName(apiIndexPath), apiPath);
+                    var apiYamlPath = PathUtility.GetFullPath(Path.GetDirectoryName(apiIndexPath), apiPath);
                     string apiMapFileName = Path.GetFileName(apiPath) + Constants.MapFileExtension;
                     string apiFolder = Path.GetDirectoryName(apiYamlPath);
 
                     // Use the same folder as api.yaml if the output folder is not set
                     string apiMapFileFolder = (string.IsNullOrEmpty(apiMapFileOutputFolder) ? apiFolder : apiMapFileOutputFolder);
-                    string apiMapFileFullPath = FileExtensions.GetFullPath(apiMapFileFolder, apiMapFileName);
+                    string apiMapFileFullPath = PathUtility.GetFullPath(apiMapFileFolder, apiMapFileName);
 
                     // Path should be the relative path from .yml to .md
                     var markdownFilePath = context.MarkdownFileTargetPath;
                     var indexFolder = Path.GetDirectoryName(apiIndexPath);
-                    var apiYamlFilePath = FileExtensions.GetFullPath(indexFolder, api.Href);
-                    var relativePath = FileExtensions.MakeRelativePath(Path.GetDirectoryName(apiYamlFilePath), markdownFilePath).BackSlashToForwardSlash();
+                    var apiYamlFilePath = PathUtility.GetFullPath(indexFolder, api.Href);
+                    var relativePath = PathUtility.MakeRelativePath(Path.GetDirectoryName(apiYamlFilePath), markdownFilePath).BackSlashToForwardSlash();
                     MapFileItemViewModel apiMapFileSection = new MapFileItemViewModel
                     {
                         Id = apiId,
@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                             if (referenceItem.Value.Href != null && !Uri.TryCreate(referenceItem.Value.Href, UriKind.Absolute, out absoluteUri))
                             {
                                 var absolutePath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(markdownFilePath)), referenceItem.Value.Href);
-                                var relativeToCurrentApiYamlPath = FileExtensions.MakeRelativePath(Path.GetDirectoryName(apiYamlFilePath), absolutePath).BackSlashToForwardSlash();
+                                var relativeToCurrentApiYamlPath = PathUtility.MakeRelativePath(Path.GetDirectoryName(apiYamlFilePath), absolutePath).BackSlashToForwardSlash();
                                 referenceItem.Value.Href = relativeToCurrentApiYamlPath;
                             }
                         }

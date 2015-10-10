@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 return file;
             }
-            return FileExtensions.MakeRelativePath(rootedBaseDir, file);
+            return PathUtility.MakeRelativePath(rootedBaseDir, file);
         }
 
         public IEnumerable<FileAndType> EnumerateFiles()

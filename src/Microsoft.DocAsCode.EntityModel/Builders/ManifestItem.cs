@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         public string DocumentType { get; set; }
         [YamlMember(Alias = "model")]
         public string ModelFile { get; set; }
+        [YamlMember(Alias = "original")]
+        public string OriginalFile { get; set; }
         [YamlMember(Alias = "resource")]
         public string ResourceFile { get; set; }
     }

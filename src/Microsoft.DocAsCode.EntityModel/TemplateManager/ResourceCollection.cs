@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (string.IsNullOrEmpty(directory)) _directory = Environment.CurrentDirectory;
             else _directory = directory;
-            Names = Directory.GetFiles(_directory, "*", SearchOption.AllDirectories).Select(s => FileExtensions.MakeRelativePath(_directory, s));
+            Names = Directory.GetFiles(_directory, "*", SearchOption.AllDirectories).Select(s => PathUtility.MakeRelativePath(_directory, s));
         }
 
         public override Stream GetResourceStream(string name)
@@ -92,10 +92,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public abstract Stream GetResourceStream(string name);
 
-        public IEnumerable<KeyValuePair<string,Stream>> GetResourceStreams(string selector)
+        public IEnumerable<KeyValuePair<string,Stream>> GetResourceStreams(string regex)
         {
-            var regex = $"^{GlobPathHelper.GlobPatternToRegex(selector, false, true)}$";
-
             foreach(var name in Names)
             {
                 if (new Regex(regex, RegexOptions.IgnoreCase).IsMatch(name))

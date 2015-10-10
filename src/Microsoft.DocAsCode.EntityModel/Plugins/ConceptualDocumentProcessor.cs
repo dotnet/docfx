@@ -11,10 +11,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Plugins;
+    using Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class ConceptualDocumentProcessor : IDocumentProcessor
     {
+        private const string ConceputalKey = "conceptual";
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             if (file.Type != DocumentType.Article)
@@ -76,9 +78,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 return;
             }
             var content = (Dictionary<string, object>)model.Content;
-            var markdown = (string)content["conceptual"];
+            var markdown = (string)content[ConceputalKey];
             var result = host.Markup(markdown, model.FileAndType);
-            content["conceptual"] = result.Html;
+            content[ConceputalKey] = result.Html;
+            content["title"] = result.Title;
             if (result.YamlHeader != null && result.YamlHeader.Count > 0)
             {
                 foreach (var item in result.YamlHeader)

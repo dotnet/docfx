@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
     using HtmlAgilityPack;
+    using MarkdownLite;
 
     [Export(typeof(IHostService))]
     internal sealed class HostService : IHostService, IDisposable
@@ -61,10 +62,13 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             var result = new MarkupResult();
+
+            // TODO: how to get TITLE
+            result.Title = doc.DocumentNode.FirstChild?.InnerText;
             var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
             if (node != null)
             {
-                using (var sr = new StringReader(node.InnerHtml))
+                using (var sr = new StringReader(StringHelper.HtmlDecode(node.InnerHtml)))
                 {
                     result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr).ToImmutableDictionary();
                 }
@@ -79,8 +83,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                                  where !string.IsNullOrWhiteSpace(attr.Value)
                                  select attr)
             {
-                Uri uri;
-                if (Uri.TryCreate(link.Value, UriKind.Relative, out uri))
+                if (PathUtility.IsRelativePath(link.Value))
                 {
                     var path = (RelativePath)ft.File + (RelativePath)link.Value;
                     if (path.ParentDirectoryCount > 0)

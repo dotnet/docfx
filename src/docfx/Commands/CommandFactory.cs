@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode
             if (!File.Exists(path)) throw new FileNotFoundException($"Config file {path} does not exist!");
 
             var result = JsonUtility.Deserialize<Dictionary<string, JToken>>(path);
-            return new CompositeCommand(result);
+            return new CompositeCommand(Path.GetDirectoryName(path), result);
         }
 
         // TODO: use reflection to load commands?
@@ -45,6 +45,9 @@ namespace Microsoft.DocAsCode
         {
             if (rootOptions.CurrentSubCommand == null)
             {
+                if (!string.IsNullOrEmpty(rootOptions.ConfigFile))
+                    return ReadConfig(rootOptions.ConfigFile);
+                
                 // If no projects are set, set project to docfx.json file
                 return ReadConfig(Constants.ConfigFileName);
             }

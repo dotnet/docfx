@@ -10,6 +10,9 @@ namespace Microsoft.DocAsCode
     {
         public SubCommandType? CurrentSubCommand { get; set; }
 
+        [ValueOption(0)]
+        public string ConfigFile { get; set; }
+
         [ParserState]
         public IParserState LastParserState { get; set; }
         #region TODO REFACTOR

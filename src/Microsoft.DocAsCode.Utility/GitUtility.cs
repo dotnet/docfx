@@ -83,8 +83,8 @@ namespace Microsoft.DocAsCode.Utility
                 var branch = repo.CurrentBranch;
                 detail.RemoteRepositoryUrl = repo.Config["remote.origin.url"];
                 detail.RemoteBranch = branch.Name;
-                detail.Description = repo.Head?.CurrentCommit?.ShortHash;
-                detail.RelativePath = FileExtensions.MakeRelativePath(Path.GetDirectoryName(repoPath), path);
+                detail.Description = repo.Head.CurrentCommit.ShortHash;
+                detail.RelativePath = PathUtility.MakeRelativePath(Path.GetDirectoryName(repoPath), path);
             }
             catch (Exception)
             {

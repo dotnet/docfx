@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var wholeMatch = match.Groups[0];
 
             string id = match.Groups["source"].Value.Trim();
-            if (!FileExtensions.IsVaildFilePath(id))
+            if (!PathUtility.IsVaildFilePath(id))
             {
                 ParseResult.WriteToConsole(ResultLevel.Warning, "{0} is not a valid file path, ignored.", id);
                 return null;

@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 if (string.IsNullOrEmpty(currentHref)) return item.Href;
                 var directoryName = Path.GetDirectoryName(currentHref);
-                return FileExtensions.MakeRelativePath(directoryName, item.Href);
+                return PathUtility.MakeRelativePath(directoryName, item.Href);
             }
 
             return name;
@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 var currentHref = currentApi.Href;
                 if (string.IsNullOrEmpty(currentHref)) return item.Href;
                 var directoryName = Path.GetDirectoryName(currentHref);
-                return FileExtensions.MakeRelativePath(directoryName, item.Href);
+                return PathUtility.MakeRelativePath(directoryName, item.Href);
             }
             
             // If unable to resolve the Api, return null as href

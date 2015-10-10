@@ -15,8 +15,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(typeof(IDocumentProcessor))]
     public class ResourceDocumentProcessor : IDocumentProcessor
     {
-        [Import]
-        public IResourceFileConfig Config { get; set; }
+        [ImportMany]
+        public IEnumerable<IResourceFileConfig> Configs { get; set; }
 
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
@@ -26,9 +26,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
             if (file.Type == DocumentType.Article)
             {
-                if (Config != null && Config.IsResourceFile(Path.GetExtension(file.File)))
+                foreach (var config in Configs)
                 {
-                    return ProcessingPriority.Lowest;
+                    if (config.IsResourceFile(Path.GetExtension(file.File)))
+                    {
+                        return ProcessingPriority.Lowest;
+                    }
                 }
             }
             return ProcessingPriority.NotSupportted;
@@ -63,9 +66,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             if (model.FileAndType != model.OriginalFileAndType)
             {
+                var targetFile = Path.Combine(model.BaseDir, model.File);
+                Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
                 File.Copy(
                     Path.Combine(model.OriginalFileAndType.BaseDir, model.OriginalFileAndType.File),
-                    Path.Combine(model.BaseDir, model.File),
+                    targetFile,
                     true);
             }
             var result = new SaveResult

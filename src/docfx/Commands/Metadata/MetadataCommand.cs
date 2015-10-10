@@ -33,6 +33,7 @@ namespace Microsoft.DocAsCode
 
         public ParseResult Exec(RunningContext context)
         {
+            Config.BaseDirectory = context.BaseDirectory;
             return InternalExec(Config, context);
         }
 
@@ -67,7 +68,7 @@ namespace Microsoft.DocAsCode
         private static ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel, string baseDirectory)
         {
             var projects = configModel.Source;
-            var outputFolder = configModel.Destination == null ? Constants.DefaultRootOutputFolderPath : configModel.Destination.ToNormalizedFullPath();
+            var outputFolder = Path.Combine(baseDirectory ?? string.Empty, configModel.Destination ?? Constants.DefaultRootOutputFolderPath);
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel.Raw,

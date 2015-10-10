@@ -24,6 +24,8 @@
 
         public Dictionary<string, string> UidMap { get; private set; } = new Dictionary<string, string>();
 
+        public Dictionary<string, HashSet<string>> TocMap { get; private set; } = new Dictionary<string, HashSet<string>>();
+
         public Dictionary<string, string> XRefMap { get; private set; } = null;
 
         public List<ManifestItem> Manifest { get; private set; } = new List<ManifestItem>();
@@ -40,6 +42,7 @@
             }
 
             YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xref"), XRefMap);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.toc"), TocMap);
         }
 
         public static DocumentBuildContext DeserializeFrom(string outputBaseDir)
@@ -48,6 +51,7 @@
             context.Manifest = YamlUtility.Deserialize<List<ManifestItem>>(Path.Combine(outputBaseDir, ".docfx.manifest"));
             context.FileMap = YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, ".docfx.filemap"));
             context.XRefMap = YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, ".docfx.xref"));
+            context.TocMap = YamlUtility.Deserialize<Dictionary<string, HashSet<string>>>(Path.Combine(outputBaseDir, ".docfx.toc"));
             return context;
         }
 

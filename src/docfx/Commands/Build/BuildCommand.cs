@@ -38,6 +38,7 @@ namespace Microsoft.DocAsCode
 
         public ParseResult Exec(RunningContext context)
         {
+            Config.BaseDirectory = context?.BaseDirectory;
             return InternalExec(Config, context);
         }
 
@@ -50,10 +51,12 @@ namespace Microsoft.DocAsCode
 
                 var documentContext = DocumentBuildContext.DeserializeFrom(parameters.OutputBaseDir);
                 var assembly = typeof(Program).Assembly;
-
-                using (var manager = new TemplateManager(assembly, "Template", config.TemplateFolder, config.Template, config.TemplateThemeFolder, config.TemplateTheme))
+                var outputFolder = Path.Combine(config.BaseDirectory ?? string.Empty, config.Destination);
+                var templateFolder = string.IsNullOrEmpty(config.TemplateFolder) ? null : Path.Combine(config.BaseDirectory ?? string.Empty, config.TemplateFolder);
+                var themeFolder = string.IsNullOrEmpty(config.TemplateThemeFolder) ? null : Path.Combine(config.BaseDirectory ?? string.Empty, config.TemplateThemeFolder);
+                using (var manager = new TemplateManager(assembly, "Template", templateFolder, config.Template, themeFolder, config.TemplateTheme))
                 {
-                    manager.ProcessTemplateAndTheme(documentContext, config.Destination, true);
+                    manager.ProcessTemplateAndTheme(documentContext, outputFolder, true);
                 }
 
                 // TODO: SEARCH DATA
@@ -69,14 +72,15 @@ namespace Microsoft.DocAsCode
         private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config)
         {
             var parameters = new DocumentBuildParameters();
+            var baseDirectory = config.BaseDirectory ?? Environment.CurrentDirectory;
 
             parameters.OutputBaseDir = Path.GetFullPath(Path.Combine("obj", Path.GetRandomFileName()));
             parameters.Metadata = (config.GlobalMetadata ?? new Dictionary<string, object>()).ToImmutableDictionary();
-            parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(null, config.ExternalReference)).ToImmutableArray();
+            parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference)).ToImmutableArray();
             parameters.Files = GetFileCollectionFromFileMapping(
-               Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(null, config.Content)),
-               Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(null, config.Overwrite)),
-               Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(null, config.Resource)));
+               Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
+               Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
+               Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
             return parameters;
         }
 
@@ -96,9 +100,12 @@ namespace Microsoft.DocAsCode
             var fileCollection = new FileCollection(null);
             foreach(var file in files)
             {
-                foreach (var mapping in file.Item2.Items)
+                if (file.Item2 != null)
                 {
-                    fileCollection.Add(file.Item1, mapping.CurrentWorkingDirectory, mapping.Files);
+                    foreach (var mapping in file.Item2.Items)
+                    {
+                        fileCollection.Add(file.Item1, mapping.CurrentWorkingDirectory, mapping.Files);
+                    }
                 }
             }
 
