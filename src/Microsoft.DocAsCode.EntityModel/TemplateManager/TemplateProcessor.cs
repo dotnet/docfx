@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class TemplateProcessor : IDisposable
     {
+        private static RelativePath Root = (RelativePath)"~/";
         private static Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private const string ManifestFileName = ".manifest";
         private TemplateCollection _templates;
@@ -50,6 +51,10 @@ namespace Microsoft.DocAsCode.EntityModel
             // 2. Get extension for each item
             foreach(var item in context.Manifest)
             {
+                if (item.ModelFile == null) throw new ArgumentNullException("Model file path must be specified!");
+                if (item.DocumentType == null) throw new ArgumentNullException($"Document type is not allowed to be NULL for ${item.ModelFile}!");
+                // NOTE: Resource is not supported for applying templates
+                if (item.DocumentType.Equals("Resource", StringComparison.OrdinalIgnoreCase)) continue;
                 var templates = _templates[item.DocumentType];
                 // Get default template extension
                 if (templates == null || templates.Count == 0)
@@ -68,7 +73,15 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     var defaultTemplate = templates.FirstOrDefault(s => s.IsPrimary) ?? templates[0];
                     string key = (RelativePath)"~/" + (RelativePath)item.OriginalFile;
-                    context.FileMap[key] = Path.ChangeExtension(context.FileMap[key], defaultTemplate.Extension);
+                    string value;
+                    if (context.FileMap.TryGetValue(key, out value))
+                    {
+                        context.FileMap[key] = Path.ChangeExtension(value, defaultTemplate.Extension);
+                    }
+                    else
+                    {
+                        ParseResult.WriteToConsole(ResultLevel.Warning, $"{key} is not found in .filemap");
+                    }
                     //TODO: update XrefMap
                 }
             }
@@ -96,7 +109,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 var manifestItem = new TemplateManifestItem
                 {
                     DocumentType = item.DocumentType,
-                    OriginalFile = item.OriginalFile,
+                    OriginalFile = (RelativePath)item.RelativeBaseDir + (RelativePath)item.OriginalFile,
                     OutputFiles = new Dictionary<string, string>()
                 };
                 try
@@ -128,7 +141,7 @@ namespace Microsoft.DocAsCode.EntityModel
                                 }
                                 else
                                 {
-                                    File.WriteAllText(outputPath, transformed);
+                                    File.WriteAllText(outputPath, transformed, Encoding.UTF8);
                                 }
 
                                 ParseResult.WriteToConsole(ResultLevel.Success, "Transformed model \"{0}\" to \"{1}\".", item.ModelFile, outputPath);
@@ -160,7 +173,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // Save manifest
             var manifestPath = Path.Combine(outputDirectory, ManifestFileName);
             JsonUtility.Serialize(manifestPath, manifest);
-            ParseResult.WriteToConsole(ResultLevel.Info, $"Manifest file saved to {manifestPath}.");
+            ParseResult.WriteToConsole(ResultLevel.Success, $"Manifest file saved to {manifestPath}.");
         }
 
         private void TranformHtml(DocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
@@ -193,7 +206,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // Save with extension changed
             var subDirectory = Path.GetDirectoryName(outputPath);
             if (!string.IsNullOrEmpty(subDirectory) && !Directory.Exists(subDirectory)) Directory.CreateDirectory(subDirectory);
-            html.Save(outputPath);
+            html.Save(outputPath, Encoding.UTF8);
         }
 
         private void ProcessDependencies(string outputDirectory)
@@ -206,8 +219,9 @@ namespace Microsoft.DocAsCode.EntityModel
 
             if (_templates != null)
             {
-                foreach (var filePath in ExtractDependentFilePaths(_templates).Distinct())
+                foreach (var resourceInfo in ExtractDependentFilePaths(_templates).Distinct())
                 {
+                    var filePath = resourceInfo.FilePath;
                     try
                     {
                         var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey);
@@ -224,8 +238,7 @@ namespace Microsoft.DocAsCode.EntityModel
                                     stream.CopyTo(writer);
                                 }
                             }
-
-                            ParseResult.WriteToConsole(ResultLevel.Info, "Saved resource {0} that template dependants on to {1}", resourceInfo.ResourceKey, path);
+                            ParseResult.WriteToConsole(ResultLevel.Success, "Saved resource {0} that template dependants on to {1}", filePath, path);
                         }
                         else
                         {
@@ -246,7 +259,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
         /// <param name="template"></param>
-        private IEnumerable<string> ExtractDependentFilePaths(TemplateCollection templates)
+        private IEnumerable<TemplateResourceInfo> ExtractDependentFilePaths(TemplateCollection templates)
         {
             foreach(var templateList in templates.Values)
             {
@@ -257,9 +270,20 @@ namespace Microsoft.DocAsCode.EntityModel
                         var filePath = match.Groups["file"].Value;
                         if (string.IsNullOrWhiteSpace(filePath)) yield break;
                         if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
-                        yield return template.GetRelativeResourceKey(filePath);
+                        yield return new TemplateResourceInfo(template.GetRelativeResourceKey(filePath), filePath);
                     }
                 }
+            }
+        }
+
+        private sealed class TemplateResourceInfo
+        {
+            public string ResourceKey { get; }
+            public string FilePath { get; }
+            public TemplateResourceInfo(string resourceKey, string filePath)
+            {
+                ResourceKey = resourceKey;
+                FilePath = filePath;
             }
         }
 
@@ -287,13 +311,21 @@ namespace Microsoft.DocAsCode.EntityModel
         private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, Dictionary<string, string> map, Func<string, string> updater)
         {
             var key = link.GetAttributeValue(attribute, null);
-            if (IsMappedPath(key))
+            string path;
+            if (TryGetPathToRoot(key, out path))
             {
                 string xrefValue;
                 if (map.TryGetValue(key, out xrefValue))
                 {
                     xrefValue = updater(xrefValue);
                     link.SetAttributeValue(attribute, xrefValue);
+                }
+                else
+                {
+                    ParseResult.WriteToConsole(ResultLevel.Warning, "File {0} is not found.", path);
+                    // TODO: what to do if file path not exists?
+                    // CURRENT: fallback to the original one
+                    link.SetAttributeValue(attribute, path);
                 }
             }
         }
@@ -310,12 +342,12 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static bool TryGetPathToRoot(string path, out string pathToRoot)
         {
-            if (IsMappedPath(path))
+            if (!string.IsNullOrEmpty(path) && IsMappedPath(path))
             {
                 pathToRoot = path.Substring(2);
                 return true;
             }
-            pathToRoot = null;
+            pathToRoot = path;
             return false;
         }
 
@@ -354,21 +386,42 @@ namespace Microsoft.DocAsCode.EntityModel
 
             public SystemAttributes(DocumentBuildContext context, ManifestItem item)
             {
+                GetTocInfo(context, item);
+                TocPath = TocPath == null ? null : ((RelativePath)TocPath).MakeRelativeTo((RelativePath)item.ModelFile);
+                RootTocPath = RootTocPath == null ? null : ((RelativePath)RootTocPath).MakeRelativeTo((RelativePath)item.ModelFile);
+                RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo((RelativePath)item.ModelFile);
+            }
+
+            private void GetTocInfo(DocumentBuildContext context, ManifestItem item)
+            {
                 string relativePath = item.OriginalFile;
                 var tocMap = context.TocMap;
                 var fileMap = context.FileMap;
                 HashSet<string> parentTocs;
                 string parentToc = null;
-                string currentPath = relativePath;
+                string rootToc = null;
+                string currentPath = Root + (RelativePath)relativePath;
                 while (tocMap.TryGetValue(currentPath, out parentTocs) && parentTocs.Count > 0)
                 {
                     // Get the first toc only
                     currentPath = parentTocs.First();
+                    rootToc = currentPath;
                     if (parentToc == null) parentToc = currentPath;
                 }
-                RootTocPath = fileMap[(RelativePath)"~/" + (RelativePath)currentPath];
+                if (rootToc != null)
+                {
+                    rootToc = fileMap[Root + (RelativePath)rootToc];
+                    TryGetPathToRoot(rootToc, out rootToc);
+                    RootTocPath = rootToc;
+                }
+
                 if (parentToc == null) TocPath = RootTocPath;
-                else TocPath = fileMap[(RelativePath)"~/" + (RelativePath)parentToc];
+                else
+                {
+                    parentToc = fileMap[Root + (RelativePath)parentToc];
+                    TryGetPathToRoot(parentToc, out parentToc);
+                    TocPath = parentToc;
+                }
             }
         }
 

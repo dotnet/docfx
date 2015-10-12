@@ -1,0 +1,20 @@
+{
+  "name": "default.html",
+  "version": "1.0.0",
+  "description": "This is a docfx template to generate static website",
+  "main": "test.js",
+  "scripts": {
+    "test": "node test.js "
+  },
+  "keywords": [
+    "docfx",
+    "template"
+  ],
+  "author": "docfx",
+  "license": "MIT",
+  "devDependencies": {
+    "js-yaml": "^3.3.1",
+    "mkdirp": "^0.5.1",
+    "mustache": "^2.1.3"
+  }
+}

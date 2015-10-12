@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 var fileName = Path.Combine(_overrideFolder, $"{name}.zip");
                 if (File.Exists(fileName))
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Info, "Resource {0} is found in {1}.", name, _overrideFolder);
+                    ParseResult.WriteToConsole(ResultLevel.Success, "Resource {0} is found in {1}.", name, _overrideFolder);
                     return new ArchiveResourceCollection(new FileStream(fileName, FileMode.Open, FileAccess.Read));
                 }
                 else
@@ -89,12 +89,12 @@ namespace Microsoft.DocAsCode.EntityModel
             var resourceName = _embeddedResourceNames.FirstOrDefault(s => resourceNamePredicator(s, name, _resourcePrefix));
             if (resourceName == null)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to find matching embedded resource {0}.", name);
+                ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to find matching resource {0}.", name);
                 return null;
             }
             else
             {
-                ParseResult.WriteToConsole(ResultLevel.Info, "Resource {0} is found in embedded resources.", name);
+                ParseResult.WriteToConsole(ResultLevel.Success, "Resource {0} is found in embedded resources.", name);
                 return new ArchiveResourceCollection(_assembly.GetManifestResourceStream(resourceName));
             }
         }

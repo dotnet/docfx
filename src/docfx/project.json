@@ -13,7 +13,13 @@
     "Microsoft.CodeAnalysis.CSharp": "1.0.0",
     "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.0.0",
     "Microsoft.CodeAnalysis.Workspaces.Common": "1.0.0",
-    "System.Collections.Immutable": "1.1.36"
+    "Owin": "1.0.0",
+    "Microsoft.Owin": "3.0.1",
+    "Microsoft.Owin.FileSystems": "3.0.1",
+    "Microsoft.Owin.Host.HttpListener": "3.0.1",
+    "Microsoft.Owin.Hosting": "3.0.1",
+    "Microsoft.Owin.SelfHost": "3.0.1",
+    "Microsoft.Owin.StaticFiles": "3.0.1"
   },
   "frameworks": {
     "dnx451": {

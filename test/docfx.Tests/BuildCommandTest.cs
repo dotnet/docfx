@@ -65,7 +65,7 @@ namespace Microsoft.DocAsCode.Tests
                 Content = new List<string> { conceptualFile },
                 OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
                 TemplateFolder = templateDir
-            }).Exec(null);
+            }, null).Exec(null);
 
             Assert.Equal(ResultLevel.Success, result.ResultLevel);
             var file = Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".html"));

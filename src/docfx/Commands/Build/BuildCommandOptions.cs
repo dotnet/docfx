@@ -14,7 +14,13 @@ namespace Microsoft.DocAsCode
         [Option('o', "output")]
         public string OutputFolder { get; set; }
 
-        [ValueList(typeof(List<string>))]
+        [ValueOption(0)]
+        public string ConfigFile { get; set; }
+
+        [Option("help")]
+        public bool IsHelp { get; set; }
+
+        [Option("content", HelpText = "Specifies content files for generating documentation.")]
         public List<string> Content { get; set; }
 
         [Option("resource", HelpText = "Specifies resources used by content files.")]
@@ -37,5 +43,11 @@ namespace Microsoft.DocAsCode
 
         [Option("themeFolder", HelpText = "If specified, this folder will be searched first to get the matching theme.")]
         public string TemplateThemeFolder { get; set; }
+
+        [Option('s', "serve", HelpText = "Host the generated documentation to a website")]
+        public bool Serve { get; set; }
+
+        [Option('p', "port", HelpText = "Specify the port of the hosted website")]
+        public int? Port { get; set; }
     }
 }

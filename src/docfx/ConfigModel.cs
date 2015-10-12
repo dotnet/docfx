@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode
     }
 
     [JsonConverter(typeof(FileMappingConverter))]
-    class FileMapping
+    public class FileMapping
     {
         private List<FileMappingItem> _items = new List<FileMappingItem>();
 
@@ -148,7 +148,7 @@ namespace Microsoft.DocAsCode
         }
     }
 
-    class FileMappingItem
+    public class FileMappingItem
     {
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -163,7 +163,7 @@ namespace Microsoft.DocAsCode
         public string CurrentWorkingDirectory { get; set; }
     }
 
-    class FileItems : List<string>
+    public class FileItems : List<string>
     {
         private static IEnumerable<string> Empty = new List<string>();
         public FileItems(string file) : base()
@@ -181,7 +181,7 @@ namespace Microsoft.DocAsCode
         }
     }
 
-    enum FileMappingFormat
+    public enum FileMappingFormat
     {
         /// <summary>
         /// This format supports multiple name-files file mappings, with the property name as the name, and the value as the files.

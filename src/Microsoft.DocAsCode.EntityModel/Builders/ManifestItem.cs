@@ -15,5 +15,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         public string OriginalFile { get; set; }
         [YamlMember(Alias = "resource")]
         public string ResourceFile { get; set; }
+        [YamlMember(Alias = "base")]
+        public string RelativeBaseDir { get; set; }
     }
 }

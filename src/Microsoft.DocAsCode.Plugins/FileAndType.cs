@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Plugins
     public sealed class FileAndType
         : IEquatable<FileAndType>
     {
-        public FileAndType(string baseDir, string file, DocumentType type)
+        public FileAndType(string baseDir, string file, DocumentType type, string rootDir)
         {
             if (baseDir == null)
             {
@@ -33,6 +33,7 @@ namespace Microsoft.DocAsCode.Plugins
             }
 
             BaseDir = baseDir;
+            RootDir = rootDir;
             File = file;
             Type = type;
         }
@@ -43,9 +44,11 @@ namespace Microsoft.DocAsCode.Plugins
 
         public DocumentType Type { get; }
 
+        public string RootDir { get; set; }
+
         public FileAndType ChangeType(DocumentType type)
         {
-            return new FileAndType(BaseDir, File, type);
+            return new FileAndType(BaseDir, File, type, RootDir);
         }
 
         public bool Equals(FileAndType other)

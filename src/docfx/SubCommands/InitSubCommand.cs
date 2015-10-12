@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode
             {
 
                 ConfigModel config = new ConfigModel();
-                var initVerb = options.InitVerb;
+                var initVerb = options.InitCommand;
                 if (initVerb.Quiet)
                 {
                     // Generate a default Config

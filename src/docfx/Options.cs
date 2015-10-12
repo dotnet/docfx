@@ -13,14 +13,13 @@ namespace Microsoft.DocAsCode
         [ValueOption(0)]
         public string ConfigFile { get; set; }
 
-        [ParserState]
-        public IParserState LastParserState { get; set; }
-        #region TODO REFACTOR
-        [VerbOption("help", HelpText = "Read the detailed help documentation")]
-        public HelpSubOptions HelpVerb { get; set; } = new HelpSubOptions();
+        [Option('o', "output")]
+        public string RootOutputFolder { get; set; }
 
-        [VerbOption("init", HelpText = "Init docfx.json with recommended settings")]
-        public InitSubOptions InitVerb { get; set; } = new InitSubOptions();
+        [Option('f', "force")]
+        public bool ForceRebuild { get; set; }
+
+        #region TODO REFACTOR
 
         [VerbOption("metadata_obselete", HelpText = "Generate API YAML metadata")]
         public MetadataSubOptions MetadataVerb { get; set; } = new MetadataSubOptions();
@@ -40,6 +39,12 @@ namespace Microsoft.DocAsCode
 
         [VerbOption("build", HelpText = "Build the project into documentation")]
         public BuildCommandOptions BuildCommand { get; set; } = new BuildCommandOptions();
+
+        [VerbOption("help", HelpText = "Read the detailed help documentation")]
+        public HelpCommandOptions HelpCommand { get; set; } = new HelpCommandOptions();
+
+        [VerbOption("init", HelpText = "Init docfx.json with recommended settings")]
+        public InitCommandOptions InitCommand { get; set; } = new InitCommandOptions();
     }
 
     class TopLevelOptions
@@ -105,18 +110,6 @@ namespace Microsoft.DocAsCode
         public MetadataSubOptions() : base() { }
     }
 
-    class InitSubOptions
-    {
-        [Option('q', "quiet", HelpText = "Quietly generate the default docfx.json")]
-        public bool Quiet { get; set; }
-
-        [Option('n', "name", HelpText = "Specify the name of the config file generated", DefaultValue = "docfx.json")]
-        public string Name { get; set; }
-
-        [Option('o', "output", HelpText = "Specify the output folder of the config file. If not specified, the config file will be saved to current folder")]
-        public string OutputFolder { get; set; }
-    }
-
     class ExportSubOptions : TopLevelOptions
     {
         [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]
@@ -151,11 +144,5 @@ namespace Microsoft.DocAsCode
 
         [Option('f', "flat", HelpText = "Flat href path.")]
         public bool FlatMode { get; set; }
-    }
-
-    class HelpSubOptions
-    {
-        [ValueOption(0)]
-        public string Command { get; set; }
     }
 }

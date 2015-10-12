@@ -68,11 +68,13 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != BaseDir)
                 {
-                    FileAndType = new FileAndType(value, File, Type);
+                    FileAndType = new FileAndType(value, File, Type, RootDir);
                     OnFileOrBaseDirChanged();
                 }
             }
         }
+
+        public string RootDir => FileAndType.RootDir;
 
         public string File
         {
@@ -84,7 +86,7 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != File)
                 {
-                    FileAndType = new FileAndType(BaseDir, value, Type);
+                    FileAndType = new FileAndType(BaseDir, value, Type, RootDir);
                     OnFileOrBaseDirChanged();
                 }
             }

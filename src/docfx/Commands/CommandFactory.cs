@@ -14,23 +14,46 @@ namespace Microsoft.DocAsCode
 
     class CommandFactory
     {
-        public static CompositeCommand ReadConfig(string path)
+        public static CompositeCommand ReadConfig(string path, Options rootOptions)
         {
             if (!File.Exists(path)) throw new FileNotFoundException($"Config file {path} does not exist!");
 
             var result = JsonUtility.Deserialize<Dictionary<string, JToken>>(path);
-            return new CompositeCommand(Path.GetDirectoryName(path), result);
+            var context = new CommandContext
+            {
+                BaseDirectory = Path.GetDirectoryName(path),
+                ForceRebuild = rootOptions?.ForceRebuild ?? false,
+                RootOutputFolder = rootOptions?.RootOutputFolder
+            };
+            return new CompositeCommand(context, result);
         }
 
         // TODO: use reflection to load commands?
-        public static ICommand GetCommand<T>(SubCommandType command, dynamic value)
+        public static ICommand GetCommand(SubCommandType command, Options value, CommandContext context)
         {
             switch (command)
             {
                 case SubCommandType.Metadata:
-                    return new MetadataCommand(value);
+                    return new MetadataCommand(value, context);
                 case SubCommandType.Build:
-                    return new BuildCommand(value);
+                    return new BuildCommand(value, context);
+                case SubCommandType.Help:
+                    return new HelpCommand(value, context);
+                case SubCommandType.Init:
+                    return new InitCommand(value, context);
+                default:
+                    throw new NotSupportedException($"{command} is not registered");
+            }
+        }
+
+        public static ICommand GetCommand(SubCommandType command, JToken value, CommandContext context)
+        {
+            switch (command)
+            {
+                case SubCommandType.Metadata:
+                    return new MetadataCommand(value, context);
+                case SubCommandType.Build:
+                    return new BuildCommand(value, context);
                 default:
                     throw new NotSupportedException($"{command} is not registered");
             }
@@ -46,14 +69,14 @@ namespace Microsoft.DocAsCode
             if (rootOptions.CurrentSubCommand == null)
             {
                 if (!string.IsNullOrEmpty(rootOptions.ConfigFile))
-                    return ReadConfig(rootOptions.ConfigFile);
+                    return ReadConfig(rootOptions.ConfigFile, rootOptions);
                 
                 // If no projects are set, set project to docfx.json file
-                return ReadConfig(Constants.ConfigFileName);
+                return ReadConfig(Constants.ConfigFileName, rootOptions);
             }
             else
             {
-                return GetCommand<Options>(rootOptions.CurrentSubCommand.Value, rootOptions);
+                return GetCommand(rootOptions.CurrentSubCommand.Value, rootOptions, null);
             }
         }
 

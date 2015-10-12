@@ -197,7 +197,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 ModelFile = result.ModelFile,
                 ResourceFile = result.ResourceFile,
                 // TODO: What is API doc's originalFile?
-                OriginalFile = model.OriginalFileAndType.File
+                OriginalFile = model.OriginalFileAndType.File,
+                RelativeBaseDir = PathUtility.MakeRelativePath(model.OriginalFileAndType.RootDir, model.OriginalFileAndType.BaseDir),
             });
         }
     }

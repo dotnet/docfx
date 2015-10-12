@@ -1,0 +1,427 @@
+items:
+- uid: Microsoft.DocAsCode.EntityModel.ResourceCollection
+  id: ResourceCollection
+  parent: Microsoft.DocAsCode.EntityModel
+  children:
+  - Microsoft.DocAsCode.EntityModel.ResourceCollection.Dispose
+  - Microsoft.DocAsCode.EntityModel.ResourceCollection.GetResource(System.String)
+  - Microsoft.DocAsCode.EntityModel.ResourceCollection.GetResourceStream(System.String)
+  - Microsoft.DocAsCode.EntityModel.ResourceCollection.Names
+  href: Microsoft.DocAsCode.EntityModel.ResourceCollection.yml
+  name: ResourceCollection
+  fullName: Microsoft.DocAsCode.EntityModel.ResourceCollection
+  type: Class
+  source:
+    remote: &o0
+      path: src/Microsoft.DocAsCode.EntityModel/TemplateManager/ResourceCollection.cs
+      branch: dev
+      repo: https://github.com/aspnet/docfx.git
+      key: bc9c22b4
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager/ResourceCollection.cs
+    startLine: 66
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: 'public abstract class ResourceCollection : IDisposable'
+    content.vb: Public MustInherit Class ResourceCollection Implements IDisposable
+  inheritance:
+  - System.Object
+  implements:
+  - System.IDisposable
+  inheritedMembers:
+  - System.Object.ToString
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+- uid: Microsoft.DocAsCode.EntityModel.ResourceCollection.Names
+  id: Names
+  parent: Microsoft.DocAsCode.EntityModel.ResourceCollection
+  href: Microsoft.DocAsCode.EntityModel.ResourceCollection.yml
+  name: Names
+  fullName: Microsoft.DocAsCode.EntityModel.ResourceCollection.Names
+  type: Property
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager/ResourceCollection.cs
+    startLine: 68
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public IEnumerable<string> Names { get; set; }
+    content.vb: Public Property Names As IEnumerable(Of String)
+    parameters: []
+    return:
+      type: System.Collections.Generic.IEnumerable{System.String}
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ResourceCollection.GetResource(System.String)
+  id: GetResource(System.String)
+  parent: Microsoft.DocAsCode.EntityModel.ResourceCollection
+  href: Microsoft.DocAsCode.EntityModel.ResourceCollection.yml
+  name: GetResource(String)
+  fullName: Microsoft.DocAsCode.EntityModel.ResourceCollection.GetResource(System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager/ResourceCollection.cs
+    startLine: 70
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public string GetResource(string name)
+    content.vb: Public Function GetResource(name As String) As String
+    parameters:
+    - id: name
+      type: System.String
+    return:
+      type: System.String
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ResourceCollection.GetResourceStream(System.String)
+  id: GetResourceStream(System.String)
+  parent: Microsoft.DocAsCode.EntityModel.ResourceCollection
+  href: Microsoft.DocAsCode.EntityModel.ResourceCollection.yml
+  name: GetResourceStream(String)
+  fullName: Microsoft.DocAsCode.EntityModel.ResourceCollection.GetResourceStream(System.String)
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager/ResourceCollection.cs
+    startLine: 75
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public abstract Stream GetResourceStream(string name)
+    content.vb: Public MustOverride Function GetResourceStream(name As String) As Stream
+    parameters:
+    - id: name
+      type: System.String
+    return:
+      type: System.IO.Stream
+      description: 
+- uid: Microsoft.DocAsCode.EntityModel.ResourceCollection.Dispose
+  id: Dispose
+  parent: Microsoft.DocAsCode.EntityModel.ResourceCollection
+  href: Microsoft.DocAsCode.EntityModel.ResourceCollection.yml
+  name: Dispose()
+  fullName: Microsoft.DocAsCode.EntityModel.ResourceCollection.Dispose()
+  type: Method
+  source:
+    remote: *o0
+    path: src/Microsoft.DocAsCode.EntityModel/TemplateManager/ResourceCollection.cs
+    startLine: 77
+  assemblies:
+  - Microsoft.DocAsCode.EntityModel
+  namespace: Microsoft.DocAsCode.EntityModel
+  syntax:
+    content: public virtual void Dispose()
+    content.vb: Public Overridable Sub Dispose
+references:
+- uid: Microsoft.DocAsCode.EntityModel
+  isExternal: false
+  name: Microsoft.DocAsCode.EntityModel
+  fullName: Microsoft.DocAsCode.EntityModel
+  type: Namespace
+- uid: System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  fullName: System.Object
+- uid: System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullName: (
+  - name: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    fullName: (
+  - name: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullName: (
+  - name: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    fullName: (
+  - name: )
+    fullName: )
+- uid: System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullName: (
+  - name: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    fullName: (
+  - name: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullName: (
+  - name: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    fullName: (
+  - name: )
+    fullName: )
+- uid: System
+  isExternal: false
+  name: System
+  fullName: System
+- uid: System.Collections.Generic.IEnumerable{System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<String>
+  name.vb: IEnumerable(Of String)
+  fullName: System.Collections.Generic.IEnumerable<System.String>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of System.String)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    fullName: <
+  - uid: System.String
+    name: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  parent: System.Collections.Generic
+  isExternal: true
+  name: IEnumerable<T>
+  name.vb: IEnumerable(Of T)
+  fullName: System.Collections.Generic.IEnumerable<T>
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    fullName: <
+  - name: T
+    fullName: T
+  - name: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    fullName: '(Of '
+  - name: T
+    fullName: T
+  - name: )
+    fullName: )
+- uid: System.Collections.Generic
+  isExternal: false
+  name: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: System.String
+  parent: System
+  isExternal: true
+  name: String
+  fullName: System.String
+- uid: System.IO.Stream
+  parent: System.IO
+  isExternal: true
+  name: Stream
+  fullName: System.IO.Stream
+- uid: System.IO
+  isExternal: false
+  name: System.IO
+  fullName: System.IO

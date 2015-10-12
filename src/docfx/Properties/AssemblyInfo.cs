@@ -35,9 +35,9 @@ using System.Runtime.InteropServices;
     "   help        : Get an overall guide for the commands",
     "   init        : Generate an initial docfx.json following the instructions",
     "   metadata    : Generate YAML files for the APIs",
-    "   website     : Generate client-only website combining API in YAML files and conceptual files",
-    "   export      : Export APIs in project for external reference",
-    "   pack        : Pack existed APIs for external reference",
+    "   build     : Generate client-only website combining API in YAML files and conceptual files",
+    //"   export      : Export APIs in project for external reference",
+    //"   pack        : Pack existed APIs for external reference",
     "",
     "See 'docfx help <command> to read about a specific subcommand guide"
     )]

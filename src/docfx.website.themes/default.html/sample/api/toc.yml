@@ -1,0 +1,20 @@
+- uid: IronRuby.Builtins
+  name: IronRuby.Builtins
+  href: api/IronRuby.Builtins.yml
+  items:
+  - uid: IronRuby.Builtins.Glob
+    name: Glob
+    href: api/IronRuby.Builtins.Glob.yml
+- uid: Microsoft.DocAsCode.EntityModel
+  name: Microsoft.DocAsCode.EntityModel
+  href: api/Microsoft.DocAsCode.EntityModel.yml
+  items:
+  - uid: Microsoft.DocAsCode.EntityModel.ResourceCollection
+    name: ResourceCollection
+    href: api/Microsoft.DocAsCode.EntityModel.ResourceCollection.yml
+  - uid: Microsoft.DocAsCode.EntityModel.TemplateModelInfo
+    name: TemplateModelInfo
+    href: api/Microsoft.DocAsCode.EntityModel.TemplateModelInfo.yml
+  - uid: Microsoft.DocAsCode.EntityModel.TemplateProcessor
+    name: TemplateProcessor
+    href: api/Microsoft.DocAsCode.EntityModel.TemplateProcessor.yml

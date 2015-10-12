@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
     using System.Collections.Generic;
 
-    class BuildJsonConfig
+    public class BuildJsonConfig
     {
         [JsonIgnore]
         public string BaseDirectory { get; set; }
@@ -43,6 +43,11 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("themeFolder")]
         public string TemplateThemeFolder { get; set; }
-    }
 
+        [JsonProperty("serve")]
+        public bool Serve { get; set; }
+
+        [JsonProperty("port")]
+        public string Port { get; set; }
+    }
 }

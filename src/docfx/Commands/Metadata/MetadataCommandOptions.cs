@@ -17,6 +17,9 @@ namespace Microsoft.DocAsCode
         [Option("raw", HelpText = "Preserve the existing xml comment tags inside 'summary' triple slash comments")]
         public bool PreserveRawInlineComments { get; set; }
 
+        [Option("help")]
+        public bool IsHelp { get; set; }
+
         [ValueList(typeof(List<string>))]
         public List<string> Projects { get; set; }
     }

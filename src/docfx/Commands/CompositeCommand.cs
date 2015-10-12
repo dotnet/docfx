@@ -14,17 +14,10 @@ namespace Microsoft.DocAsCode
 
     class CompositeCommand : ICommand
     {
-        private string _baseDirectory;
         public IList<ICommand> Commands { get; }
 
-        public CompositeCommand(string baseDirectory, JToken value) : this(baseDirectory, CommandFactory.ConvertJTokenTo<Dictionary<string, JToken>>(value))
+        public CompositeCommand(CommandContext context, Dictionary<string, JToken> commands)
         {
-
-        }
-
-        public CompositeCommand(string baseDirectory, Dictionary<string, JToken> commands)
-        {
-            _baseDirectory = baseDirectory;
             var dictionary = new SortedDictionary<SubCommandType, JToken>();
             foreach (var pair in commands)
             {
@@ -47,12 +40,11 @@ namespace Microsoft.DocAsCode
             }
 
             // Order is now defined in SubCommandType
-            Commands = dictionary.Select(s => CommandFactory.GetCommand<JToken>(s.Key, s.Value)).ToList();
+            Commands = dictionary.Select(s => CommandFactory.GetCommand(s.Key, s.Value, context)).ToList();
         }
 
         public ParseResult Exec(RunningContext context)
         {
-            context.BaseDirectory = _baseDirectory;
             return AggregateParseResult(YieldRun(context));
         }
 
@@ -95,6 +87,12 @@ namespace Microsoft.DocAsCode
 
     public class RunningContext
     {
+    }
+
+    public class CommandContext
+    {
         public string BaseDirectory { get; set; }
+        public string RootOutputFolder { get; set; }
+        public bool ForceRebuild { get; set; }
     }
 }

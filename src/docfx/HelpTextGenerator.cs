@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode
         {
             var assembly = Assembly.GetAssembly(typeof(HelpTextGenerator));
             var version = assembly.GetName()?.Version?.ToString();
-            if (version != null) HelpText.Heading = new HeadingInfo("xdoc.exe", version);
+            if (version != null) HelpText.Heading = new HeadingInfo("docfx.exe", version);
 
             var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
             if (copyright != null) HelpText.Copyright = new CopyrightInfo(copyright, DateTime.Now.Year);
@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode
                 else
                 {
                     HelpText.AddPreOptionsLine(Environment.NewLine);
-                    HelpText.AddPreOptionsLine("Usage: xdoc " + verb);
+                    HelpText.AddPreOptionsLine("Usage: docfx " + verb);
                     HelpText.AddOptions(subOption);
                 }
             }

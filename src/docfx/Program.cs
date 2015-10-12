@@ -8,7 +8,8 @@ namespace Microsoft.DocAsCode
     using System;
     using System.Diagnostics;
     using System.IO;
-    
+    using System.Reflection;
+
     internal class Program
     {
         static int Main(string[] args)
@@ -22,6 +23,7 @@ namespace Microsoft.DocAsCode
             var context = new RunningContext();
             result = Exec(options, context);
             if (!string.IsNullOrEmpty(result.Message)) result.WriteToConsole();
+
             if (result.ResultLevel == ResultLevel.Error) return 1;
             if (result.ResultLevel == ResultLevel.Warning) return 2;
             return 0;

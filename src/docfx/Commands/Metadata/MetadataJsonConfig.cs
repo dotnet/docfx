@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
     using System.Collections.Generic;
 
-    internal class MetadataJsonConfig : List<MetadataJsonItemConfig>
+    public class MetadataJsonConfig : List<MetadataJsonItemConfig>
     {
         public string BaseDirectory { get; set; }
         
@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode
         }
     }
 
-    internal class MetadataJsonItemConfig
+    public class MetadataJsonItemConfig
     {
         [JsonProperty("src")]
         public FileMapping Source { get; set; }

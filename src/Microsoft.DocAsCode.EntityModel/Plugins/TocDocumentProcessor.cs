@@ -47,6 +47,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 throw new NotSupportedException();
             }
+
             // todo : metadata.
             return new FileModel(file, toc)
             {
@@ -59,6 +60,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var toc = (TocViewModel)model.Content;
             var path = (RelativePath)model.OriginalFileAndType.File;
             var tocMap = GetTocMap(null, toc, path);
+
+            foreach (var item in toc)
+            {
+                UpdateRelativePath(item, (RelativePath)model.File);
+            }
+
             YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), toc);
             return new SaveResult
             {
@@ -68,6 +75,18 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
+        private void UpdateRelativePath(TocItemViewModel item, RelativePath file)
+        {
+            if (PathUtility.IsRelativePath(item.Href)) item.Href = (RelativePath)"~/" + ((RelativePath)item.Href).BasedOn(file);
+            if (item.Items != null && item.Items.Count > 0)
+            {
+                foreach (var i in item.Items)
+                {
+                    UpdateRelativePath(i, file);
+                }
+            }
+        }
+
         private Dictionary<string, HashSet<string>> GetTocMap(Dictionary<string, HashSet<string>> tocMap, IList<TocItemViewModel> toc, RelativePath modelPath)
         {
             if (tocMap == null) tocMap = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveComparer);
@@ -75,7 +94,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 if (PathUtility.IsRelativePath(item.Href))
                 {
-                    var path = ((RelativePath)item.Href).BasedOn(modelPath);
+                    var path = (RelativePath)"~/" + ((RelativePath)item.Href).BasedOn(modelPath);
                     var tocPath = modelPath;
                     HashSet<string> value;
                     if (tocMap.TryGetValue(path, out value))

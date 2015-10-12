@@ -13,49 +13,67 @@ namespace Microsoft.DocAsCode
 
     internal class MetadataCommand : ICommand
     {
+        private CommandContext _context;
+        private string _helpMessage = null;
         public MetadataJsonConfig Config { get; }
-        public MetadataCommand(): this(new MetadataJsonConfig())
+        public MetadataCommand(CommandContext context) : this(new MetadataJsonConfig(), context)
         {
         }
 
-        public MetadataCommand(JToken value): this(CommandFactory.ConvertJTokenTo<MetadataJsonConfig>(value))
+        public MetadataCommand(JToken value, CommandContext context) : this(CommandFactory.ConvertJTokenTo<MetadataJsonConfig>(value), context)
         {
         }
 
-        public MetadataCommand(MetadataJsonConfig config)
+        public MetadataCommand(MetadataJsonConfig config, CommandContext context)
         {
+            _context = context;
             Config = config;
         }
 
-        public MetadataCommand(Options options) : this(options.MetadataCommand) { }
-
-        public MetadataCommand(MetadataCommandOptions options) : this(GetConfigFromOptions(options)) { }
+        public MetadataCommand(Options options, CommandContext context)
+        {
+            var metadataCommandOptions = options.MetadataCommand;
+            if (metadataCommandOptions.IsHelp)
+            {
+                _helpMessage = HelpTextGenerator.GetHelpMessage(options, "metadata");
+            }
+            else
+            {
+                Config = GetConfigFromOptions(metadataCommandOptions);
+                _context = context;
+            }
+        }
 
         public ParseResult Exec(RunningContext context)
         {
-            Config.BaseDirectory = context.BaseDirectory;
+            if (_helpMessage != null)
+            {
+                Console.WriteLine(_helpMessage);
+                return ParseResult.SuccessResult;
+            }
+            Config.BaseDirectory = _context.BaseDirectory;
             return InternalExec(Config, context);
         }
 
-        private ParseResult InternalExec(MetadataJsonConfig options, RunningContext context)
+        private ParseResult InternalExec(MetadataJsonConfig config, RunningContext context)
         {
             // TODO: can we do it parallelly?
-            return CompositeCommand.AggregateParseResult(YieldExec(options, context));
+            return CompositeCommand.AggregateParseResult(YieldExec(config, context));
         }
 
         /// <summary>
         /// TODO: catch exception 
         /// </summary>
-        /// <param name="options"></param>
+        /// <param name="configs"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private IEnumerable<ParseResult> YieldExec(MetadataJsonConfig options, RunningContext context)
+        private IEnumerable<ParseResult> YieldExec(MetadataJsonConfig configs, RunningContext context)
         {
-            foreach (var config in options)
+            foreach (var config in configs)
             {
                 var forceRebuild = config.Force;
 
-                var inputModel = ConvertToInputModel(config, options.BaseDirectory);
+                var inputModel = ConvertToInputModel(config, configs.BaseDirectory);
 
                 // TODO: Use plugin to generate metadata for files with different extension?
                 var worker = new ExtractMetadataWorker(inputModel, forceRebuild);
@@ -65,10 +83,11 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private static ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel, string baseDirectory)
+        private ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel, string baseDirectory)
         {
             var projects = configModel.Source;
-            var outputFolder = Path.Combine(baseDirectory ?? string.Empty, configModel.Destination ?? Constants.DefaultRootOutputFolderPath);
+            // If Root Output folder is specified from command line, use it instead of the base directory
+            var outputFolder = Path.Combine(_context?.RootOutputFolder ?? baseDirectory ?? string.Empty, configModel.Destination ?? Constants.DefaultRootOutputFolderPath);
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel.Raw,
@@ -88,7 +107,7 @@ namespace Microsoft.DocAsCode
             string jsonConfig;
             if (CommandFactory.TryGetJsonConfig(options.Projects, out jsonConfig))
             {
-                var command = (MetadataCommand)CommandFactory.ReadConfig(jsonConfig).Commands.FirstOrDefault(s => s is MetadataCommand);
+                var command = (MetadataCommand)CommandFactory.ReadConfig(jsonConfig, null).Commands.FirstOrDefault(s => s is MetadataCommand);
                 if (command == null) throw new ApplicationException($"Unable to find {SubCommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
                 return command.Config;
             }

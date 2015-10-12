@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode
     {
         public ParseResult Exec(Options options)
         {
-            var helpOptions = options.HelpVerb;
+            var helpOptions = options.HelpCommand;
             string text = HelpTextGenerator.GetHelpMessage(options, helpOptions.Command);
             options.CurrentSubCommand = SubCommandType.Help;
             Console.WriteLine(text);
