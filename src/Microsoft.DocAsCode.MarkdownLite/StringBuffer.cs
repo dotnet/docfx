@@ -19,7 +19,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private StringBuffer(string value)
         {
-            _buffer = new string[1] { value };
+            _buffer = new string[8];
+            _buffer[0] = value;
             _index = 1;
         }
 
@@ -54,7 +55,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             if (this == Empty)
             {
-                return new StringBuffer(8);
+                return new StringBuffer(Math.Max(count, 8));
+            }
+            if (_index > 100)
+            {
+                _buffer[0] = string.Concat(_buffer);
+                Array.Clear(_buffer, 1, _buffer.Length - 1);
+                _index = 1;
             }
             var expected = _index + count;
             if (expected > _buffer.Length)
@@ -112,7 +119,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new StringBuffer(value);
         }
 
-        public static implicit operator string(StringBuffer buffer)
+        public static implicit operator string (StringBuffer buffer)
         {
             return buffer.ToString();
         }

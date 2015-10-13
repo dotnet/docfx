@@ -65,7 +65,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 public static readonly Regex Url = new Regex(@"^(https?:\/\/[^\s<]+[^<.,:;""')\]\s])", RegexOptions.Compiled);
                 public static readonly Regex Del = new Regex(@"^~~(?=\S)([\s\S]*?\S)~~", RegexOptions.Compiled);
                 public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~]|https?:\/\/| {2,}\n|$)", RegexOptions.Compiled);
-
             }
 
             public static class Breaks

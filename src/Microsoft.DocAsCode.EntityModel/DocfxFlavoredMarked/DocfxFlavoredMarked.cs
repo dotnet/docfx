@@ -21,11 +21,15 @@ namespace Microsoft.DocAsCode.EntityModel
         {
         }
 
+        // todo : temp use gfm.
+        private static readonly MarkdownEngine _engine = new GfmEngineBuilder(new Options()).CreateEngine(new MarkdownRenderer());
+
         public static string Markup(string src, string path = null, DocfxFlavoredOptions options = null)
         {
-            var marked = options == null ? Default : new DocfxFlavoredMarked(options);
+            return _engine.Markup(src);
+            //var marked = options == null ? Default : new DocfxFlavoredMarked(options);
 
-            return marked.Parse(src, path);
+            //return marked.Parse(src, path);
         }
 
         public string Parse(string src, string path)
