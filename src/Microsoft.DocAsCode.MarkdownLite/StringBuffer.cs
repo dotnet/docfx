@@ -7,6 +7,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public sealed class StringBuffer : ICloneable
     {
+        private const int MinArrayLength = 8;
+        private const int ShrinkArrayLength = 100;
+
         public static readonly StringBuffer Empty = new StringBuffer(0);
         private string[] _buffer;
         private int _index;
@@ -19,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private StringBuffer(string value)
         {
-            _buffer = new string[8];
+            _buffer = new string[MinArrayLength];
             _buffer[0] = value;
             _index = 1;
         }
@@ -45,19 +48,28 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return another;
             }
-            var result = EnsureCapacity(another._index);
-            Array.Copy(another._buffer, 0, result._buffer, result._index, another._index);
-            result._index += another._index;
-            return result;
+            if (another._index > ShrinkArrayLength)
+            {
+                var result = EnsureCapacity(1);
+                result._buffer[result._index++] = another.ToString();
+                return result;
+            }
+            else
+            {
+                var result = EnsureCapacity(another._index);
+                Array.Copy(another._buffer, 0, result._buffer, result._index, another._index);
+                result._index += another._index;
+                return result;
+            }
         }
 
         private StringBuffer EnsureCapacity(int count)
         {
             if (this == Empty)
             {
-                return new StringBuffer(Math.Max(count, 8));
+                return new StringBuffer(Math.Max(count, MinArrayLength));
             }
-            if (_index > 100)
+            if (_index > ShrinkArrayLength)
             {
                 _buffer[0] = string.Concat(_buffer);
                 Array.Clear(_buffer, 1, _buffer.Length - 1);
@@ -66,7 +78,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var expected = _index + count;
             if (expected > _buffer.Length)
             {
-                var newLength = Math.Max(expected + 8, _buffer.Length * 2);
+                var newLength = Math.Max(expected + MinArrayLength, _buffer.Length * 2);
                 var temp = new string[newLength];
                 Array.Copy(_buffer, temp, _buffer.Length);
                 _buffer = temp;
@@ -80,7 +92,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            var result = new StringBuffer(_index + 8);
+            var result = new StringBuffer(_index + MinArrayLength);
             Array.Copy(_buffer, result._buffer, _index);
             result._index = _index;
             return result;

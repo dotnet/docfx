@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 var manifestItem = new TemplateManifestItem
                 {
                     DocumentType = item.DocumentType,
-                    OriginalFile = (RelativePath)item.RelativeBaseDir + (RelativePath)item.OriginalFile,
+                    OriginalFile = Path.Combine(item.RelativeBaseDir,item.OriginalFile).ToNormalizedPath(),
                     OutputFiles = new Dictionary<string, string>()
                 };
                 try

@@ -48,7 +48,7 @@
                     space -= item.Length;
                     item = !engine.Options.Pedantic
                       ? Regex.Replace(item, "^ {1," + space + "}", "", RegexOptions.Multiline)
-                      : Regex.Replace(item, @"/^ {1,4}", "", RegexOptions.Multiline);
+                      : Regex.Replace(item, @"^ {1,4}", "", RegexOptions.Multiline);
                 }
 
                 // Determine whether the next list item belongs here.

@@ -99,6 +99,10 @@
                     textContent += text.Content;
                     continue;
                 }
+                if (t is MarkdownNewLineBlockToken)
+                {
+                    continue;
+                }
                 if (textContent != StringBuffer.Empty)
                 {
                     content += ApplyInline(engine, textContent, context);

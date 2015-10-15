@@ -103,6 +103,7 @@ namespace Microsoft.DocAsCode
 
         private static void Serve(string folder, string port)
         {
+            folder = Path.GetFullPath(folder);
             port = string.IsNullOrWhiteSpace(port) ? "8080" : port;
             var url = $"http://localhost:{port}";
             var fileServerOptions = new FileServerOptions

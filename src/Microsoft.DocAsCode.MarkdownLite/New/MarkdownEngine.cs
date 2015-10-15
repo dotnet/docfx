@@ -6,15 +6,19 @@
     using System.Collections.Immutable;
     using System.Linq;
 
-    public class MarkdownEngine
+    public class MarkdownEngine : ICloneable
     {
-        private readonly Dictionary<IMarkdownContext, MarkdownEngine> _engineCache = new Dictionary<IMarkdownContext, MarkdownEngine>();
-
         public MarkdownEngine(IMarkdownContext context, object renderer, Options options)
+            : this(context, renderer, options, new Dictionary<string, LinkObj>())
+        {
+        }
+
+        protected MarkdownEngine(IMarkdownContext context, object renderer, Options options, Dictionary<string, LinkObj> links)
         {
             Context = context;
             Renderer = renderer;
             Options = options;
+            Links = links;
         }
 
         public object Renderer { get; }
@@ -23,7 +27,7 @@
 
         public IMarkdownContext Context { get; }
 
-        public Dictionary<string, LinkObj> Links { get; } = new Dictionary<string, LinkObj>();
+        public Dictionary<string, LinkObj> Links { get; }
 
         public StringBuffer Render(IMarkdownToken token, IMarkdownContext context)
         {
@@ -38,7 +42,7 @@
             }
         }
 
-        public MarkdownEngine ChangeContext(IMarkdownContext context)
+        public virtual MarkdownEngine ChangeContext(IMarkdownContext context)
         {
             if (context == null)
             {
@@ -48,13 +52,7 @@
             {
                 return this;
             }
-            MarkdownEngine result;
-            if (!_engineCache.TryGetValue(context, out result))
-            {
-                result = new MarkdownEngine(context, Renderer, Options);
-                _engineCache[context] = result;
-            }
-            return result;
+            return new MarkdownEngine(context, Renderer, Options, Links);
         }
 
         public string Normalize(string markdown)
@@ -106,6 +104,11 @@
                 tokens.Add(token);
             }
             return tokens;
+        }
+
+        public virtual object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

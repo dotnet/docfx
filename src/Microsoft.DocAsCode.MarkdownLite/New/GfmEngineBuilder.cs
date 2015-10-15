@@ -30,10 +30,6 @@
             brb.Add(rule);
             tbrb.Add(rule);
 
-            rule = new MarkdownNewLineBlockRule();
-            brb.Add(rule);
-            tbrb.Add(rule);
-
             rule = new MarkdownCodeBlockRule();
             brb.Add(rule);
             tbrb.Add(rule);
@@ -80,7 +76,6 @@
 
             rule = new MarkdownTextBlockRule();
             brb.Add(rule);
-            tbrb.Add(rule);
 
             BlockRules = brb.ToImmutable();
             TopBlockRules = tbrb.ToImmutable();

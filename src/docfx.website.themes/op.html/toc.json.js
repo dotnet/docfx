@@ -19,6 +19,7 @@ function transform(model, _attrs){
       if (isAbsolutePath(item.href)){
         item.external_link = item.href;
       }else{
+        if (item.href.indexOf('~/') == 0) item.href = item.href.substring(2);
         item.relative_path_in_depot = removeExtension(item.href);
       }
       item.href = undefined;

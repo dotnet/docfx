@@ -25,7 +25,7 @@
             return topBlock;
         }
 
-        public MarkdownEngine CreateEngine(object renderer)
+        public virtual MarkdownEngine CreateEngine(object renderer)
         {
             return new MarkdownEngine(CreateParseContext(), renderer, Options);
         }
