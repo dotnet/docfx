@@ -126,10 +126,10 @@ test2
                }
             };
             var templateName = "NoTemplate";
-            var item = new ManifestItem { ModelFile = modelFileName };
+            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
             Assert.True(!File.Exists(modelFile));
-            item = new ManifestItem { ModelFile = modelFileName, ResourceFile = modelFileName };
+            item = new ManifestItem { ModelFile = modelFileName, ResourceFile = modelFileName, DocumentType = string.Empty };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
             Assert.True(File.Exists(modelFile));
         }
@@ -141,7 +141,7 @@ test2
             var templateName = "InvalidTemplate.html";
             string inputFolder = null;
             var modelFileName = "TestTemplateProcessor_InvalidTemplate.yml";
-            var item = new ManifestItem { ModelFile = modelFileName };
+            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty };
             ProcessTemplate(templateName, inputFolder, new[] { item }, new object(), _outputFolder,
                 Tuple.Create("default.invalidtmpl", string.Empty),
                 Tuple.Create("default.js", string.Empty),

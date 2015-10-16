@@ -7,23 +7,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class Options
     {
-        #region Fields
-
-        private IRenderer _renderer;
-
-        #endregion
-
         #region Properties
 
         public Func<string, string, string> Highlight { get; set; }
 
         public Func<string, string> Sanitizer { get; set; }
-
-        public IRenderer Renderer
-        {
-            get { return _renderer; }
-            set { _renderer = value; if (_renderer != null) _renderer.Options = this; }
-        }
 
         public string LangPrefix { get; set; }
 
@@ -55,8 +43,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             Highlight = null;
             Sanitizer = null;
-            Renderer = new Renderer(this);
-
             LangPrefix = "lang-";
             HeaderPrefix = "";
             XHtml = false;

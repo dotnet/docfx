@@ -60,12 +60,17 @@ namespace Microsoft.DocAsCode.Tests
                     "test",
                 });
 
-            ParseResult result = new BuildCommand(new BuildCommandOptions
+            ParseResult result = new BuildCommand(new Options
             {
-                Content = new List<string> { conceptualFile },
-                OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
-                TemplateFolder = templateDir
-            }, null).Exec(null);
+                CurrentSubCommand = SubCommandType.Build,
+                BuildCommand = new BuildCommandOptions
+                {
+                    Content = new List<string> { conceptualFile },
+                    OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
+                    TemplateFolder = templateDir
+                }
+            }
+            , null).Exec(null);
 
             Assert.Equal(ResultLevel.Success, result.ResultLevel);
             var file = Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".html"));
@@ -77,7 +82,7 @@ namespace Microsoft.DocAsCode.Tests
                     "",
                     "<h1 id=\"hello-world\">Hello World</h1>",
                     "<p>Test XRef: <xref href=\"XRef1\"></xref>",
-                    "Test link: <a href=\"~/documents/test/test.md\">link text</a></p>",
+                    "Test link: <a href=\"documents/test/test.md\">link text</a></p>",
                     "<p><p>",
                     "test</p>",
                     ""

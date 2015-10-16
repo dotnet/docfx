@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         public ImmutableArray<FileModel> Models { get; private set; }
 
+        public ImmutableHashSet<string> SourceFiles { get; private set; }
+
         public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();
 
         public HostService(IEnumerable<FileModel> models)
@@ -74,7 +76,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 }
                 node.Remove();
             }
-            var linkToFiles = new List<string>();
+            var linkToFiles = new HashSet<string>();
             foreach (var link in from n in doc.DocumentNode.Descendants()
                                  where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
                                  from attr in n.Attributes
@@ -83,15 +85,27 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                                  where !string.IsNullOrWhiteSpace(attr.Value)
                                  select attr)
             {
-                if (PathUtility.IsRelativePath(link.Value))
+                string linkFile;
+                string anchor = null;
+                var index = link.Value.IndexOf('#');
+                if (index == -1)
                 {
-                    var path = (RelativePath)ft.File + (RelativePath)link.Value;
+                    linkFile = link.Value;
+                }
+                else
+                {
+                    linkFile = link.Value.Remove(index);
+                    anchor = link.Value.Substring(index);
+                }
+                if (PathUtility.IsRelativePath(linkFile))
+                {
+                    var path = (RelativePath)ft.File + (RelativePath)linkFile;
                     if (path.ParentDirectoryCount > 0)
                     {
-                        throw new InvalidOperationException($"Cannot refer out of project. Path: {path}");
+                        // todo : log $"Cannot refer out of project. Path: {path}"
                     }
                     var file = RootSymbol + path;
-                    link.Value = file;
+                    link.Value = file + anchor;
                     linkToFiles.Add(file);
                 }
             }
@@ -164,6 +178,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     FileMap[m.FileAndType] = m.FileAndType;
                 }
             }
+            SourceFiles = FileMap.Keys.Select(ft => ft.File).ToImmutableHashSet(FilePathComparer.OSPlatformSensitiveComparer);
         }
 
         private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<string>> e)

@@ -147,7 +147,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         var result = processor.Save(m);
                         if (result != null)
                         {
-                            HandleSaveResult(context, m, result);
+                            HandleSaveResult(context, hostService, m, result);
                         }
                     }
                 }
@@ -160,10 +160,18 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void HandleSaveResult(
             DocumentBuildContext context,
+            HostService hostService,
             FileModel model,
             SaveResult result)
         {
             context.FileMap[Root + (RelativePath)model.OriginalFileAndType.File] = Root + (RelativePath)model.File;
+            foreach (var fileLink in result.LinkToFiles)
+            {
+                if (!hostService.SourceFiles.Contains(fileLink))
+                {
+                    // todo : log invalidFileLink.
+                }
+            }
             foreach (var uid in model.Uids)
             {
                 context.UidMap[uid] = Root + (RelativePath)model.File;

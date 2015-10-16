@@ -79,13 +79,11 @@
     <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Builders\YamlFormatter.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredInlineLexer.cs" />
-    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredParser.cs" />
-    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredLexer.cs" />
-    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredRenderer.cs" />
-    <Compile Include="DocfxFlavoredMarked\DocfxFlavoredOptions.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmBlockRules.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmRenderer.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmInlineRules.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmEngine.cs" />
     <Compile Include="DocfxFlavoredMarked\FileCacheLite.cs" />
-    <Compile Include="DocfxFlavoredMarked\MarkdownNodeType.cs" />
     <Compile Include="DocfxFlavoredMarked\DocfxFlavoredIncHelper.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />

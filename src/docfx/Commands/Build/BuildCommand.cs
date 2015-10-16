@@ -139,6 +139,7 @@ namespace Microsoft.DocAsCode
 
         private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)
         {
+            if (mapping == null) yield break;
             foreach(var file in mapping.Items)
             {
                 foreach(var item in file.Files)

@@ -105,6 +105,7 @@ namespace Microsoft.DocAsCode.EntityModel
             set
             {
                 _weakReference.SetTarget(value);
+                _fs.SetLength(0);
                 using (StreamWriter writer = new StreamWriter(_fs, Encoding.UTF8, 4096, true))
                     writer.Write(value);
             }
