@@ -52,6 +52,9 @@ namespace Microsoft.DocAsCode
 
         [VerbOption("init", HelpText = "Init docfx.json with recommended settings")]
         public InitCommandOptions InitCommand { get; set; } = new InitCommandOptions();
+
+        [VerbOption("serve", HelpText = "Serve a static website")]
+        public ServeCommandOptions ServeCommand { get; set; } = new ServeCommandOptions();
     }
 
     class TopLevelOptions

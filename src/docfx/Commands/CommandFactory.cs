@@ -41,6 +41,8 @@ namespace Microsoft.DocAsCode
                     return new HelpCommand(value, context);
                 case SubCommandType.Init:
                     return new InitCommand(value, context);
+                case SubCommandType.Serve:
+                    return new ServeCommand(value, context);
                 default:
                     throw new NotSupportedException($"{command} is not registered");
             }

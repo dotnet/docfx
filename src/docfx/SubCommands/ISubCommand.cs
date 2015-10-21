@@ -19,5 +19,6 @@ namespace Microsoft.DocAsCode
         Website,
         Export,
         Pack,
+        Serve,
     }
 }

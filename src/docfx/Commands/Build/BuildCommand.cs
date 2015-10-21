@@ -10,13 +10,8 @@ namespace Microsoft.DocAsCode
     using System.IO;
     using System;
     using System.Collections.Generic;
-    using Utility;
     using System.Collections.Immutable;
     using Plugins;
-    using Owin.Hosting;
-    using Owin.StaticFiles;
-    using Owin.FileSystems;
-    using global::Owin;
 
     class BuildCommand : ICommand
     {
@@ -90,7 +85,7 @@ namespace Microsoft.DocAsCode
 
                 if (config.Serve)
                 {
-                   Serve(outputFolder, config.Port);
+                    ServeCommand.Serve(outputFolder, config.Port);
                 }
 
                 return ParseResult.SuccessResult;
@@ -99,27 +94,6 @@ namespace Microsoft.DocAsCode
             {
                 return new ParseResult(ResultLevel.Error, e.Message);
             }
-        }
-
-        private static void Serve(string folder, string port)
-        {
-            folder = Path.GetFullPath(folder);
-            port = string.IsNullOrWhiteSpace(port) ? "8080" : port;
-            var url = $"http://localhost:{port}";
-            var fileServerOptions = new FileServerOptions
-            {
-                EnableDirectoryBrowsing = true,
-                FileSystem = new PhysicalFileSystem(folder),
-            };
-
-            if (!File.Exists(Path.Combine(folder, "index.html")) && File.Exists(Path.Combine(folder, "toc.html")))
-            {
-                File.Copy(Path.Combine(folder, "toc.html"), Path.Combine(folder, "index.html"));
-            }
-
-            WebApp.Start(url, builder => builder.UseFileServer(fileServerOptions));
-            Console.WriteLine($"Listening at {url}");
-            Console.ReadLine();
         }
 
         private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config)

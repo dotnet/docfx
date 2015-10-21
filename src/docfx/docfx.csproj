@@ -113,6 +113,8 @@
     <Compile Include="Commands\Build\BuildCommandOptions.cs" />
     <Compile Include="Commands\Build\BuildJsonConfig.cs" />
     <Compile Include="Commands\CommandFactory.cs" />
+    <Compile Include="Commands\Serve\ServeCommand.cs" />
+    <Compile Include="Commands\Serve\ServeCommandOptions.cs" />
     <Compile Include="Commands\Init\InitCommand.cs" />
     <Compile Include="Commands\Init\InitCommandOptions.cs" />
     <Compile Include="Commands\ICommand.cs" />
