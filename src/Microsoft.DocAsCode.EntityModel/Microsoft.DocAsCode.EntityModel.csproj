@@ -95,6 +95,7 @@
     <Compile Include="Incremental\IncrementalCache.cs" />
     <Compile Include="Incremental\IncrementalCheck.cs" />
     <Compile Include="ExtractMetadata\ExtractMetadataInputModel.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MarkdownIndexer\Pipelines\LoadApiIndex.cs" />
     <Compile Include="MarkdownIndexer\Pipelines\LoadMarkdownFile.cs" />
     <Compile Include="MarkdownIndexer\Pipelines\Save.cs" />

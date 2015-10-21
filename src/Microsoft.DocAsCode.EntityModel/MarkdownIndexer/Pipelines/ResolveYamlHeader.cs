@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                         }
                         catch(Exception e)
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Warning, "Invalid map file {0} is found, overwriting. Detailed invalid message: {1}.", apiMapFileFullPath, e.Message);
+                            Logger.Log(LogLevel.Warning, $"Invalid map file {apiMapFileFullPath} is found, overwriting. Detailed invalid message: {e.Message}.");
                         }
                     }
 
@@ -124,7 +124,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                     if (apiMapFileSection.CustomProperties != null && apiMapFileSection.CustomProperties.Count == 0) apiMapFileSection.CustomProperties = null;
 
                     JsonUtility.Serialize(apiMapFileFullPath, apiMapFile);
-                    ParseResult.WriteToConsole(ResultLevel.Success, "Successfully generated {0}.", apiMapFileFullPath);
+                    Logger.Log(LogLevel.Verbose, $"Successfully generated {apiMapFileFullPath}.");
                 }
             }
 

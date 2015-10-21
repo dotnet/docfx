@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.EntityModel
             string message;
             if (!TryExtractProperties(content, RequiredProperties, out properties, out message))
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, message);
+                Logger.Log(LogLevel.Warning, message);
                 return null;
             }
 

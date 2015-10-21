@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode
             var worker = new ExtractMetadataWorker(inputModel, options.ExportVerb.ForceRebuild);
             var extractMetadataResult = worker.ExtractMetadataAsync().Result;
 
-            extractMetadataResult.WriteToConsole();
+            Logger.Log(extractMetadataResult);
             if (extractMetadataResult.ResultLevel == ResultLevel.Error)
             {
                 return extractMetadataResult;

@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode
                 var files = GetFilesFromFileMappingItem(workingDirectory, item).ToList();
                 if (files.Count == 0)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Info, "No files are found with glob pattern {0}, excluding {1}, under working directory {2}", item.Files.ToDelimitedString() ?? "<none>", item.Exclude.ToDelimitedString() ?? "<none>", baseDirectory ?? "<current>");
+                    Logger.Log(LogLevel.Info, $"No files are found with glob pattern {item.Files.ToDelimitedString() ?? "<none>"}, excluding {item.Exclude.ToDelimitedString() ?? "<none>"}, under working directory {baseDirectory ?? "<current>"}");
                 }
                 expandedFileMapping.Add(
                     new FileMappingItem

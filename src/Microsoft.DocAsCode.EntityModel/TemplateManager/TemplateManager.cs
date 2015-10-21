@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (string.IsNullOrEmpty(templateName))
             {
-                ParseResult.WriteToConsole(ResultLevel.Info, "Template is not specified.");
+                Logger.Log(LogLevel.Info, "Template is not specified.");
             }
             else
             {
@@ -47,20 +47,20 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, $"No template resource found for {templateName} from embedded resource {templateOverrideFolder}.");
+                    Logger.Log(LogLevel.Warning, $"No template resource found for {templateName}.");
                 }
             }
             
             if (string.IsNullOrEmpty(themeName))
             {
-                ParseResult.WriteToConsole(ResultLevel.Info, "Theme is not specified.");
+                Logger.Log(LogLevel.Info, "Theme is not specified.");
             }
             else
             {
                 _themeResource = new ResourceFinder(assembly, rootNamespace, themeOverrideFolder).Find(themeName);
                 if (_themeResource == null)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, $"No theme resource found for {themeName} from embedded resource {themeOverrideFolder}.");
+                    Logger.Log(LogLevel.Warning, $"No theme resource found for {themeName}.");
                 }
             }
         }
@@ -69,20 +69,20 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (_templateProcessor != null)
             {
-                ParseResult.WriteToConsole(ResultLevel.Info, "Template resource found, starting applying template.");
+                Logger.Log(LogLevel.Verbose, "Template resource found, starting applying template.");
                 _templateProcessor.Process(context, outputDirectory);
             }
 
             if (_themeResource != null)
             {
-                ParseResult.WriteToConsole(ResultLevel.Info, "Theme resource found, starting copying theme.");
+                Logger.Log(LogLevel.Verbose, "Theme resource found, starting copying theme.");
                 foreach (var resourceName in _themeResource.Names)
                 {
                     using (var stream = _themeResource.GetResourceStream(resourceName))
                     {
                         var outputPath = Path.Combine(outputDirectory, resourceName);
                         CopyResource(stream, outputPath, overwrite);
-                        ParseResult.WriteToConsole(ResultLevel.Info, $"Theme resource {resourceName} copied to {outputPath}.");
+                        Logger.Log(LogLevel.Info, $"Theme resource {resourceName} copied to {outputPath}.");
                     }
                 }
             }
@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.EntityModel
                             var relativePath = PathUtility.MakeRelativePath(outputFolder, i);
                             writer.Write(string.Format(TocConceputal, relativePath));
                         }
-                    ParseResult.WriteToConsole(ResultLevel.Info, message);
+                    Logger.Log(LogLevel.Info, message);
                 }
             }, targetTocPath, overwrite);
         }
@@ -139,7 +139,7 @@ namespace Microsoft.DocAsCode.EntityModel
             catch (IOException e)
             {
                 // If the file already exists, skip
-                ParseResult.WriteToConsole(ResultLevel.Info, "File {0}: {1}, skipped", filePath, e.Message);
+                Logger.Log(LogLevel.Info, $"File {filePath}: {e.Message}, skipped");
             }
         }
 

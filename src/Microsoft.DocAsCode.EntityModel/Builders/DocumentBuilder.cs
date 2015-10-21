@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         sb.Append("\t");
                         sb.AppendLine(f.File);
                     }
-                    ParseResult.WriteToConsole(ResultLevel.Warning, sb.ToString());
+                    Logger.Log(LogLevel.Warning, sb.ToString());
                 }
             }
 

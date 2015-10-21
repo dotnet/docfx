@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
 
                     if (!string.IsNullOrEmpty(result.Message))
                     {
-                        result.WriteToConsole();
+                        Logger.Log(result);
                     }
                 }
                 catch (Exception e)

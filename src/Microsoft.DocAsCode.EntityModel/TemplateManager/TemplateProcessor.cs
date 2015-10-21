@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     }
                     else
                     {
-                        ParseResult.WriteToConsole(ResultLevel.Warning, $"{key} is not found in .filemap");
+                        Logger.Log(LogLevel.Warning, $"{key} is not found in .filemap");
                     }
                     //TODO: update XrefMap
                 }
@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         sb.AppendLine($"  -\"{file}\"");
                     }
                 }
-                ParseResult.WriteToConsole(ResultLevel.Warning, sb.ToString());// not processed but copied to '{modelOutputPath}'");
+                Logger.Log(LogLevel.Warning, sb.ToString());// not processed but copied to '{modelOutputPath}'");
             }
 
             List<TemplateManifestItem> manifest = new List<TemplateManifestItem>();
@@ -144,12 +144,12 @@ namespace Microsoft.DocAsCode.EntityModel
                                     File.WriteAllText(outputPath, transformed, Encoding.UTF8);
                                 }
 
-                                ParseResult.WriteToConsole(ResultLevel.Success, "Transformed model \"{0}\" to \"{1}\".", item.ModelFile, outputPath);
+                                Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.ModelFile}\" to \"{outputPath}\".");
                             }
                             else
                             {
                                 // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
-                                ParseResult.WriteToConsole(ResultLevel.Warning, "Model \"{0}\" is transformed to empty string with template \"{1}\"", item.ModelFile, template.Name);
+                                Logger.Log(LogLevel.Warning, $"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
                                 File.WriteAllText(outputPath, string.Empty);
                             }
                             manifestItem.OutputFiles.Add(extension, outputFile);
@@ -165,7 +165,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 catch (Exception e)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, $"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
+                    Logger.Log(LogLevel.Warning, $"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
                 }
                 manifest.Add(manifestItem);
             }
@@ -173,7 +173,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // Save manifest
             var manifestPath = Path.Combine(outputDirectory, ManifestFileName);
             JsonUtility.Serialize(manifestPath, manifest);
-            ParseResult.WriteToConsole(ResultLevel.Success, $"Manifest file saved to {manifestPath}.");
+            Logger.Log(LogLevel.Verbose, $"Manifest file saved to {manifestPath}.");
         }
 
         private void TranformHtml(DocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
@@ -213,7 +213,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (_resourceProvider == null)
             {
-                ParseResult.WriteToConsole(ResultLevel.Info, "Resource provider is not specified, dependencies will not be processed.");
+                Logger.Log(LogLevel.Info, "Resource provider is not specified, dependencies will not be processed.");
                 return;
             }
 
@@ -238,16 +238,17 @@ namespace Microsoft.DocAsCode.EntityModel
                                     stream.CopyTo(writer);
                                 }
                             }
-                            ParseResult.WriteToConsole(ResultLevel.Success, "Saved resource {0} that template dependants on to {1}", filePath, path);
+
+                            Logger.Log(LogLevel.Verbose, $"Saved resource {filePath} that template dependants on to {path}");
                         }
                         else
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Info, "Unable to get relative resource for {0}", resourceInfo.ResourceKey);
+                            Logger.Log(LogLevel.Info, $"Unable to get relative resource for {filePath}");
                         }
                     }
                     catch (Exception e)
                     {
-                        ParseResult.WriteToConsole(ResultLevel.Info, "Unable to get relative resource for {0}: {1}", resourceInfo.ResourceKey, e.Message);
+                        Logger.Log(LogLevel.Info, $"Unable to get relative resource for {filePath}: {e.Message}");
                     }
                 }
             }
@@ -322,7 +323,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "File {0} is not found.", path);
+                    Logger.Log(LogLevel.Warning, $"File {path} is not found.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
                     link.SetAttributeValue(attribute, path);
@@ -465,12 +466,12 @@ namespace Microsoft.DocAsCode.EntityModel
 
             private object ProcessWithJint(object model, object attrs)
             {
-
                 var engine = new Engine();
+
                 // engine.SetValue("model", stream.ToString());
                 engine.SetValue("console", new
                 {
-                    log = new Action<object>(ParseResult.WriteInfo)
+                    log = new Action<object>(Logger.Log)
                 });
 
                 // throw exception when execution fails
@@ -549,7 +550,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         var currentScript = currentScripts.FirstOrDefault();
                         if (currentTemplates.Length > 1)
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Warning, $"Multiple templates for type '{group.Key}'(case insensitive) are found, the one from '{currentTemplates[0].Key}' is taken.");
+                            Logger.Log(LogLevel.Warning, $"Multiple templates for type '{group.Key}'(case insensitive) are found, the one from '{currentTemplates[0].Key}' is taken.");
                         }
                         else if (currentTemplates.Length == 0)
                         {
@@ -559,7 +560,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
                         if (currentScripts.Length > 1)
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Warning, $"Multiple template scripts for type '{group.Key}'(case insensitive) are found, the one from '{currentScripts[0].Key}' is taken.");
+                            Logger.Log(LogLevel.Warning, $"Multiple template scripts for type '{group.Key}'(case insensitive) are found, the one from '{currentScripts[0].Key}' is taken.");
                         }
 
                         var template = new Template(currentTemplate.Value, currentTemplate.Key, currentScript.Value);

@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 Debug.Assert(i.Type.IsPageLevel());
                 if (!i.Type.IsPageLevel())
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Error, "Invalid item inside yaml metadata: {0} is not allowed inside {1}. Will be ignored.", i.Type.ToString(), member.Type.ToString());
+                    Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
                     message.AppendFormat("{0} is not allowed inside {1}.", i.Type.ToString(), member.Type.ToString());
                     i.IsInvalid = true;
                 }
@@ -93,7 +93,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 Debug.Assert(!i.Type.IsPageLevel());
                 if (i.Type.IsPageLevel())
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Error, "Invalid item inside yaml metadata: {0} is not allowed inside {1}. Will be ignored.", i.Type.ToString(), member.Type.ToString());
+                    Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
                     message.AppendFormat("{0} is not allowed inside {1}.", i.Type.ToString(), member.Type.ToString());
                     i.IsInvalid = true;
                 }
@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     i.IsInvalid = true;
                 }
 
-                ParseResult.WriteToConsole(ResultLevel.Error, "Invalid item inside yaml metadata: {0} should not contain items. Will be ignored.", member.Type.ToString());
+                Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {member.Type.ToString()} should not contain items. Will be ignored.");
                 message.AppendFormat("{0} should not contain items.", member.Type.ToString());
             }
 

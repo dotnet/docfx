@@ -7,26 +7,37 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.EntityModel;
     using System;
     using System.Diagnostics;
-    using System.IO;
-    using System.Reflection;
 
     internal class Program
     {
         static int Main(string[] args)
         {
-            Options options;
-            var result = TryGetOptions(args, out options);
+            try
+            {
+                Logger.RegisterListener(new ConsoleLogListener());
+                Options options;
+                var result = TryGetOptions(args, out options);
 
-            if (!string.IsNullOrEmpty(result.Message)) result.WriteToConsole();
-            if (result.ResultLevel == ResultLevel.Error) return 1;
+                if (!string.IsNullOrWhiteSpace(options.Log)) Logger.RegisterListener(new ReportLogListener(options.Log));
 
-            var context = new RunningContext();
-            result = Exec(options, context);
-            if (!string.IsNullOrEmpty(result.Message)) result.WriteToConsole();
+                if (options.LogLevel.HasValue) Logger.LogLevelThreshold = options.LogLevel.Value;
 
-            if (result.ResultLevel == ResultLevel.Error) return 1;
-            if (result.ResultLevel == ResultLevel.Warning) return 2;
-            return 0;
+                if (!string.IsNullOrEmpty(result.Message)) Logger.Log(result);
+                if (result.ResultLevel == ResultLevel.Error) return 1;
+
+                var context = new RunningContext();
+                result = Exec(options, context);
+                if (!string.IsNullOrEmpty(result.Message)) Logger.Log(result);
+
+                if (result.ResultLevel == ResultLevel.Error) return 1;
+                if (result.ResultLevel == ResultLevel.Warning) return 2;
+                return 0;
+            }
+            finally
+            {
+                Logger.Flush();
+                Logger.UnregisterAllListeners();
+            }
         }
 
         private static ParseResult TryGetOptions(string[] args, out Options options)

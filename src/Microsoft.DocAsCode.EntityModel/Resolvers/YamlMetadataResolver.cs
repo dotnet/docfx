@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.EntityModel
             };
             var result = ExecutePipeline(viewModel, context);
 
-            result.WriteToConsole();
+            Logger.Log(result);
             return viewModel;
         }
 
@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
                 if (!string.IsNullOrEmpty(result.Message))
                 {
-                    result.WriteToConsole();
+                    Logger.Log(result);
                 }
             }
 

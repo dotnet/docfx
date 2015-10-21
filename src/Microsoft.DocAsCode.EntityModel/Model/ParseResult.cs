@@ -8,13 +8,12 @@ namespace Microsoft.DocAsCode.EntityModel
     public enum ResultLevel
     {
         Success,
-        Verbose,
         Info,
         Warning,
         Error,
     }
 
-    public class ParseResult
+    public class ParseResult : ILogItem
     {
         public static ParseResult SuccessResult = new ParseResult(ResultLevel.Success);
         public static ParseResult WarningResult = new ParseResult(ResultLevel.Warning);
@@ -25,6 +24,12 @@ namespace Microsoft.DocAsCode.EntityModel
         public string Message { get; set; }
 
         public string Phase { get; set; }
+
+        public string File { get; set; }
+
+        public string Line { get; set; }
+
+        public LogLevel LogLevel => GetLogLevel(ResultLevel);
 
         public ParseResult(ResultLevel resultLevel, string message, params string[] arg)
         {
@@ -37,61 +42,21 @@ namespace Microsoft.DocAsCode.EntityModel
             ResultLevel = resultLevel;
         }
 
-        public void WriteToConsole()
+        private LogLevel GetLogLevel(ResultLevel level)
         {
-            if (string.IsNullOrEmpty(Message)) return;
-            if (ResultLevel > ResultLevel.Info)
+            switch (level)
             {
-                Console.Error.WriteLine(ToString());
+                case ResultLevel.Success:
+                    return LogLevel.Verbose;
+                case ResultLevel.Info:
+                    return LogLevel.Info;
+                case ResultLevel.Warning:
+                    return LogLevel.Warning;
+                case ResultLevel.Error:
+                    return LogLevel.Error;
+                default:
+                    throw new NotSupportedException(level.ToString());
             }
-            else
-            {
-                Console.WriteLine(ToString());
-            }
-        }
-
-        public static void WriteInfo(object message)
-        {
-            Console.Write(ResultLevel.Info + ": ");
-            Console.WriteLine(message);
-        }
-
-        // optimize, prevent new string[0].
-        public static void WriteToConsole(ResultLevel resultLevel, string message)
-        {
-            WriteToConsole(resultLevel, message, null);
-        }
-
-        public static void WriteToConsole(ResultLevel resultLevel, string message, params string[] arg)
-        {
-            var formatter = resultLevel + ": " + message;
-            // TODO: add to input
-            if (resultLevel == ResultLevel.Verbose) return;
-            if (resultLevel > ResultLevel.Info)
-            {
-                if (arg == null || arg.Length == 0)
-                {
-                    // Incase there are {{}} inside the message
-                    Console.Error.WriteLine(formatter);
-                }
-                else
-                    Console.Error.WriteLine(formatter, arg);
-            }
-            else
-            {
-                if (arg == null || arg.Length == 0)
-                {
-                    // Incase there are {{}} inside the message
-                    Console.WriteLine(formatter);
-                }
-                else
-                    Console.WriteLine(formatter, arg);
-            }
-        }
-
-        public override string ToString()
-        {
-            return ResultLevel.ToString() + ": " + Message;
         }
     }
 }

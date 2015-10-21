@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                         MapFileType = MapFileType.CodeSnippet
                     };
 
-                    ParseResult.WriteToConsole(ResultLevel.Warning, reference.Message);
+                    Logger.Log(LogLevel.Warning, reference.Message);
                 }
                 else
                 {

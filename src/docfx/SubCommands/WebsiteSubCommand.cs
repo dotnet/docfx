@@ -31,7 +31,7 @@
             var worker = new ExtractMetadataWorker(inputModel, forceRebuild);
             var extractMetadataResult = worker.ExtractMetadataAsync().Result;
 
-            extractMetadataResult.WriteToConsole();
+            Logger.Log(extractMetadataResult);
             if (extractMetadataResult.ResultLevel == ResultLevel.Error) return extractMetadataResult;
 
             // 2. Process Conceputal files
@@ -76,7 +76,7 @@
                             ReferenceOutputFolder = referenceOutputFolder,
                         };
                         var indexerResult = MarkdownIndexer.Exec(context);
-                        indexerResult.WriteToConsole();
+                        Logger.Log(indexerResult);
                     }
 
                     resourceFiles.CopyFilesToFolder(cwd, targetFolder, true, s => ParseResult.WriteToConsole(ResultLevel.Info, s), s => { ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to copy file: {0}, ignored.", s); return true; });
@@ -106,7 +106,7 @@
             }
             catch (Exception e)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "Something wrong when generating search data: {0}.", e.Message);
+                Logger.Log(LogLevel.Warning, $"Something wrong when generating search data: {e.Message}.");
             }
 
             return ParseResult.SuccessResult;

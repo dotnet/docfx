@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode
 {
     using CommandLine;
+    using EntityModel;
     using System.Collections.Generic;
 
     class Options
@@ -18,6 +19,12 @@ namespace Microsoft.DocAsCode
 
         [Option('f', "force")]
         public bool ForceRebuild { get; set; }
+
+        [Option('l', "log", HelpText = "Specify the file name to save processing log")]
+        public string Log { get; set; }
+
+        [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
+        public LogLevel? LogLevel { get; set; }
 
         #region TODO REFACTOR
 

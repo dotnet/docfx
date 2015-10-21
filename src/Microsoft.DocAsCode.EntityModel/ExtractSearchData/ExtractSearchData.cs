@@ -46,7 +46,7 @@
                     break;
                 default:
                     var msg = $"{filePath} -- {ext} is not currently searchable";
-                    ParseResult.WriteToConsole(ResultLevel.Warning, msg);
+                    Logger.Log(LogLevel.Warning, msg);
                     break;
             }
             return item;
@@ -93,7 +93,7 @@
             if (!File.Exists(tocFilePath))
             {
                 var msg = $"{tocFilePath} not found";
-                ParseResult.WriteToConsole(ResultLevel.Info, msg);
+                Logger.Log(LogLevel.Info, msg);
                 return;
             }
 
@@ -126,7 +126,7 @@
                 }
                 catch (Exception e)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "File {0} is not valid, ignored: {1}", filePath, e.Message);
+                    Logger.Log(LogLevel.Warning, $"File {filePath} is not valid, ignored: {e.Message}");
                 }
             }
             // folder

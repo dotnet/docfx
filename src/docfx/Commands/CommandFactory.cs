@@ -102,15 +102,15 @@ namespace Microsoft.DocAsCode
                 var baseDirectory = Path.GetDirectoryName(configFile);
                 if (configFiles.Count > 1)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "Multiple {0} files are found! The first one in {1} is selected, and others are ignored.", Constants.ConfigFileName, configFiles[0]);
+                    Logger.Log(LogLevel.Warning, $"Multiple {Constants.ConfigFileName} files are found! The first one in {configFiles[0]} is selected, and others are ignored.");
                 }
                 else
                 {
                     if (otherFiles.Count > 0)
                     {
-                        ParseResult.WriteToConsole(ResultLevel.Warning, $"Config file {Constants.ConfigFileName} is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters will be ignored");
+                        Logger.Log(LogLevel.Warning, $"Config file {Constants.ConfigFileName} is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters will be ignored.");
                     }
-                    else ParseResult.WriteToConsole(ResultLevel.Verbose, "Config file is found in {0}", configFile);
+                    else Logger.Log(LogLevel.Verbose, $"Config file is found in {configFile}.");
                 }
 
                 return true;

@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                 }
                 catch (Exception e)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "{0} is not a valid API reference file, ignored: {1}", path, e.Message);
+                    Logger.Log(LogLevel.Warning, $"{path} is not a valid API reference file, ignored: {e.Message}");
                 }
             }
         }

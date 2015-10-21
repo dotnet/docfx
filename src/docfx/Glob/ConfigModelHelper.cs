@@ -42,11 +42,11 @@ namespace Microsoft.DocAsCode
                 var baseDirectory = Path.GetDirectoryName(configFile);
                 if (configFiles.Count > 1)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "Multiple {0} files are found! The first one in {1} is selected, and others are ignored.", Constants.ConfigFileName, configFiles[0]);
+                    Logger.Log(LogLevel.Warning, $"Multiple {Constants.ConfigFileName} files are found! The first one in {configFiles[0]} is selected, and others are ignored.");
                 }
                 else
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Verbose, "Config file is found in {0}", configFile);
+                    Logger.Log(LogLevel.Verbose, $"Config file is found in {configFile}");
                 }
                 try
                 {
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode
                 }
                 catch (Exception e)
                 {
-                    var result = new ParseResult(ResultLevel.Error, "Invalid config file {0}: {1}. Exiting...", configFile, e.Message);
+                    var result = new ParseResult(ResultLevel.Error, $"Invalid config file {configFile}: {e.Message}. Exiting...");
                     return Tuple.Create<ParseResult, ConfigModel>(result, null);
                 }
             }
@@ -79,8 +79,8 @@ namespace Microsoft.DocAsCode
 
             if (configModel == null || configModel.Projects == null || configModel.Projects.Count == 0)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "No project files are found from {0}, and no API metadata will be generated.", string.Join(",", projects ?? new List<string>()));
-                return Tuple.Create<ParseResult, ConfigModel>(ParseResult.WarningResult, configModel);
+                Logger.Log(LogLevel.Warning, $"No project files are found from {string.Join(",", projects ?? new List<string>())}, and no API metadata will be generated.");
+                return Tuple.Create<ParseResult, ConfigModel>(ParseResult.WarningResult, null);
             }
 
             // If outputFolder has been set, override the output folder inside configModel

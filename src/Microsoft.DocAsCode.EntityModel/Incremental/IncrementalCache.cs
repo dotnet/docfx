@@ -96,12 +96,12 @@ namespace Microsoft.DocAsCode.EntityModel
                     }
                     else
                     {
-                        ParseResult.WriteToConsole(ResultLevel.Warning, "Cache for {0} in {1} is corrupted", key, _path);
+                        Logger.Log(LogLevel.Warning, $"Cache for {key} in {_path} is corrupted");
                     }
                 }
                 catch (Exception e)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "Cache for {0} in {1} is not valid: {2}", key, _path, e.Message);
+                    Logger.Log(LogLevel.Warning, $"Cache for {key} in {_path} is not valid: {e.Message}");
                 }
             }
 

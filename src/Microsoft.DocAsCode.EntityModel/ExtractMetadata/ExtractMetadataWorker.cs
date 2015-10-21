@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.EntityModel
             else
             {
                 Debug.Assert(false, "Language not supported: " + compilation.Language);
-                ParseResult.WriteToConsole(ResultLevel.Error, "Language not supported: " + compilation.Language);
+                Logger.Log(LogLevel.Error, "Language not supported: " + compilation.Language);
                 return null;
             }
 
@@ -155,7 +155,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             if (input.Items == null || input.Items.Count == 0)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "No source project or file to process, exiting...");
+                Logger.Log(LogLevel.Warning, "No source project or file to process, exiting...");
                 return null;
             }
 
@@ -166,7 +166,8 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 if (string.IsNullOrWhiteSpace(pair.Key))
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "Empty folder name is found: '{0}': '{1}'. It is not supported, skipping", pair.Key, string.Join(",", pair.Value));
+                    var value = string.Join(", ", pair.Value);
+                    Logger.Log(LogLevel.Warning, $"Empty folder name is found: '{pair.Key}': '{value}'. It is not supported, skipping.");
                     continue;
                 }
 
@@ -185,12 +186,13 @@ namespace Microsoft.DocAsCode.EntityModel
                             }
                             else
                             {
-                                ParseResult.WriteToConsole(ResultLevel.Warning, "File {0} is not supported, supported file extension are: {1}. The file will be ignored.", inputFilePath, string.Join(",", SupportedExtensions));
+                                var value = string.Join(",", SupportedExtensions);
+                                Logger.Log(LogLevel.Warning, $"File {inputFilePath} is not supported, supported file extension are: {value}. The file will be ignored.");
                             }
                         }
                         else
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Warning, "File {0} does not exist, will be ignored.", inputFilePath);
+                            Logger.Log(LogLevel.Warning, $"File {inputFilePath} does not exist, will be ignored.");
                         }
                     }
                 }
@@ -300,7 +302,8 @@ namespace Microsoft.DocAsCode.EntityModel
                         }
                         else
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Warning, "Project {0} inside solution {1} is not supported, supported file extension are: {2}. The project will be ignored.", filePath, path, string.Join(",", SupportedExtensions));
+                            var value = string.Join(",", SupportedExtensions);
+                            Logger.Log(LogLevel.Warning, $"Project {filePath} inside solution {path} is not supported, supported file extension are: {value}. The project will be ignored.");
                         }
                     }
                 }
@@ -379,7 +382,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         }
                         catch (Exception e)
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to copy results from cache: {0}. Rebuild starts.", e.Message);
+                            Logger.Log(LogLevel.Warning, $"Unable to copy results from cache: {e.Message}. Rebuild starts.");
                         }
                     }
                 }
@@ -423,7 +426,8 @@ namespace Microsoft.DocAsCode.EntityModel
             
             if (allMemebers == null || allMemebers.Count == 0)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "No metadata is generated for {0}.", projectMetadataList.Select(s => s.Name).ToDelimitedString());
+                var value = projectMetadataList.Select(s => s.Name).ToDelimitedString();
+                Logger.Log(LogLevel.Warning, $"No metadata is generated for {value}.");
                 applicationCache.SaveToCache(inputs, null, triggeredTime, outputFolder, null);
             }
             else
@@ -441,12 +445,12 @@ namespace Microsoft.DocAsCode.EntityModel
             var relativeFiles = buildInfo.RelatvieOutputFiles;
             if (relativeFiles == null)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "No metadata is generated for '{0}'.", inputs.ToDelimitedString());
+                Logger.Log(LogLevel.Warning, $"No metadata is generated for '{inputs.ToDelimitedString()}'.");
                 return;
             }
 
-            ParseResult.WriteToConsole(ResultLevel.Info, "'{0}' keep up-to-date since '{1}', cached result from '{2}' is used.", inputs.ToDelimitedString(), buildInfo.TriggeredUtcTime.ToString(), buildInfo.OutputFolder);
-            relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => ParseResult.WriteToConsole(ResultLevel.Info, s), null);
+            Logger.Log(LogLevel.Info, $"'{inputs.ToDelimitedString()}' keep up-to-date since '{buildInfo.TriggeredUtcTime.ToString()}', cached result from '{buildInfo.OutputFolder}' is used.");
+            relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
         
         private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments)
@@ -502,12 +506,12 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 // Load from cache
                 var cacheFile = Path.Combine(projectConfig.OutputFolder, projectConfig.RelatvieOutputFiles.First());
-                ParseResult.WriteToConsole(ResultLevel.Info, "'{0}' keep up-to-date since '{1}', cached intermediate result '{2}' is used.", projectConfig.InputFilesKey, projectConfig.TriggeredUtcTime.ToString(), cacheFile);
+                Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' keep up-to-date since '{projectConfig.TriggeredUtcTime.ToString()}', cached intermediate result '{cacheFile}' is used.");
                 var result = TryParseYamlMetadataFile(cacheFile, out projectMetadata);
-                if (result.ResultLevel != ResultLevel.Success) result.WriteToConsole();
+                if (result.ResultLevel != ResultLevel.Success) Logger.Log(result);
                 if (projectMetadata == null)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Info, "'{0}' is invalid, rebuild needed.", projectConfig.InputFilesKey);
+                    Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' is invalid, rebuild needed.");
                 }
                 else
                 {
@@ -522,7 +526,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var cacheOutputFolder = projectLevelCache.OutputFolder;
             var path = Path.Combine(cacheOutputFolder, file);
             YamlUtility.Serialize(path, projectMetadata);
-            ParseResult.WriteToConsole(ResultLevel.Success, "Successfully generated metadata {0} for {1}", cacheOutputFolder, projectMetadata.Name);
+            Logger.Log(LogLevel.Verbose, $"Successfully generated metadata {cacheOutputFolder} for {projectMetadata.Name}");
 
             IDictionary<string, List<string>> containedFiles = null;
 
@@ -571,11 +575,11 @@ namespace Microsoft.DocAsCode.EntityModel
             foreach (var memberModel in members)
             {
                 outputFiles.Add(Path.Combine(apiFolder, memberModel.Href));
-                string itemFilepath = Path.Combine(folder, apiFolder, memberModel.Href);
-                Directory.CreateDirectory(Path.GetDirectoryName(itemFilepath));
+                string itemFilePath = Path.Combine(folder, apiFolder, memberModel.Href);
+                Directory.CreateDirectory(Path.GetDirectoryName(itemFilePath));
                 var memberViewModel = PageViewModel.FromModel(memberModel);
-                YamlUtility.Serialize(itemFilepath, memberViewModel);
-                ParseResult.WriteToConsole(ResultLevel.Success, "Metadata file for {0} is saved to {1}", memberModel.Name, itemFilepath);
+                YamlUtility.Serialize(itemFilePath, memberViewModel);
+                Logger.Log(LogLevel.Verbose, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
             }
 
             return outputFiles;
@@ -617,7 +621,7 @@ namespace Microsoft.DocAsCode.EntityModel
                                         }
                                         else
                                         {
-                                            ParseResult.WriteToConsole(ResultLevel.Info, "{0} already exists in {1}, ignore current one", i.Name, nsOther.Name);
+                                            Logger.Log(LogLevel.Info, $"{i.Name} already exists in {nsOther.Name}, ignore current one");
                                         }
                                     }
                                 }
@@ -638,7 +642,7 @@ namespace Microsoft.DocAsCode.EntityModel
                             MetadataItem existingMetadata;
                             if (allMembers.TryGetValue(s.Name, out existingMetadata))
                             {
-                                ParseResult.WriteToConsole(ResultLevel.Warning, "Duplicate member {0} is found from {1} and {2}, use the one in {1} and ignore the one from {2}", s.Name, existingMetadata.Source.Path, s.Source.Path);
+                                Logger.Log(LogLevel.Warning, $"Duplicate member {s.Name} is found from {existingMetadata.Source.Path} and {s.Source.Path}, use the one in {existingMetadata.Source.Path} and ignore the one from {s.Source.Path}");
                             }
                             else
                             {
@@ -650,7 +654,7 @@ namespace Microsoft.DocAsCode.EntityModel
                                 MetadataItem existingMetadata1;
                                 if (allMembers.TryGetValue(s1.Name, out existingMetadata1))
                                 {
-                                    ParseResult.WriteToConsole(ResultLevel.Warning, "Duplicate member {0} is found from {1} and {2}, use the one in {1} and ignore the one from {2}", s1.Name, existingMetadata1.Source.Path, s1.Source.Path);
+                                    Logger.Log(LogLevel.Warning, $"Duplicate member {s1.Name} is found from {existingMetadata1.Source.Path} and {s1.Source.Path}, use the one in {existingMetadata1.Source.Path} and ignore the one from {s1.Source.Path}");
                                 }
                                 else
                                 {
@@ -722,7 +726,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             catch (Exception e)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "Error generating compilation for C# code {0}: {1}. Ignored.", GetAbbreviateString(code), e.Message);
+                Logger.Log(LogLevel.Warning, $"Error generating compilation for C# code {GetAbbreviateString(code)}: {e.Message}. Ignored.");
                 return null;
             }
         }
@@ -741,7 +745,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             catch (Exception e)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "Error generating compilation for VB code {0}: {1}. Ignored.", GetAbbreviateString(code), e.Message);
+                Logger.Log(LogLevel.Warning, $"Error generating compilation for VB code {GetAbbreviateString(code)}: {e.Message}. Ignored.");
                 return null;
             }
         }
@@ -760,7 +764,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             catch (Exception e)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "Error opening solution {0}: {1}. Ignored.", path, e.Message);
+                Logger.Log(LogLevel.Warning, $"Error opening solution {path}: {e.Message}. Ignored.");
                 return null;
             }
         }
@@ -780,7 +784,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             catch (Exception e)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "Error opening project {0}: {1}. Ignored.", path, e.Message);
+                Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
                 return null;
             }
         }

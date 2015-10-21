@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 if (!Directory.Exists(overrideFolder))
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Warning, "Folder {0} does not exist", overrideFolder);
+                    Logger.Log(LogLevel.Warning, $"Folder {overrideFolder} does not exist");
                 }
                 else
                 {
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 var fileName = Path.Combine(_overrideFolder, $"{name}.zip");
                 if (File.Exists(fileName))
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Success, "Resource {0} is found in {1}.", name, _overrideFolder);
+                    Logger.Log(LogLevel.Verbose, $"Resource {name} is found in {_overrideFolder}.");
                     return new ArchiveResourceCollection(new FileStream(fileName, FileMode.Open, FileAccess.Read));
                 }
                 else
@@ -89,12 +89,12 @@ namespace Microsoft.DocAsCode.EntityModel
             var resourceName = _embeddedResourceNames.FirstOrDefault(s => resourceNamePredicator(s, name, _resourcePrefix));
             if (resourceName == null)
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to find matching resource {0}.", name);
+                Logger.Log(LogLevel.Warning, $"Unable to find matching resource {name}.");
                 return null;
             }
             else
             {
-                ParseResult.WriteToConsole(ResultLevel.Success, "Resource {0} is found in embedded resources.", name);
+                Logger.Log(LogLevel.Verbose, $"Resource {name} is found in embedded resources.");
                 return new ArchiveResourceCollection(_assembly.GetManifestResourceStream(resourceName));
             }
         }

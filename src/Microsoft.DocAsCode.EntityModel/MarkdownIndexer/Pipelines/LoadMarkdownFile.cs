@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
 
             if (string.IsNullOrEmpty(context.CurrentWorkingDirectory)) context.CurrentWorkingDirectory = Environment.CurrentDirectory;
 
-            var targetFiles = new string[] { context.MarkdownFileSourcePath }.CopyFilesToFolder(context.CurrentWorkingDirectory, context.TargetFolder, true, s => ParseResult.WriteToConsole(ResultLevel.Info, s), s => { ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to copy file: {0}, ignored.", s); return true; });
+            var targetFiles = new string[] { context.MarkdownFileSourcePath }.CopyFilesToFolder(context.CurrentWorkingDirectory, context.TargetFolder, true, s => Logger.Log(LogLevel.Info, s), s => { Logger.Log(LogLevel.Warning, $"Unable to copy file: {s}, ignored."); return true; });
             var targetFile = targetFiles?.FirstOrDefault() ?? context.MarkdownFileSourcePath;
 
             context.MarkdownContent = File.ReadAllText(targetFile);

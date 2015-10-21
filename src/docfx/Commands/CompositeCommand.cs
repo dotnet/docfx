@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode
                 {
                     if (dictionary.ContainsKey(subCommandType))
                     {
-                        ParseResult.WriteToConsole(ResultLevel.Warning, $"{subCommandType} is defined in config file for several times, the first config is used. NOTE that key is case insensitive.");
+                        Logger.Log(LogLevel.Warning, $"{subCommandType} is defined in config file for several times, the first config is used. NOTE that key is case insensitive.");
                     }
                     else
                     {
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode
                 }
                 else
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Info, $"\"{pair.Key}\" is not a valid command currently supported, ignored.");
+                    Logger.Log(LogLevel.Info, $"\"{pair.Key}\" is not a valid command currently supported, ignored.");
                 }
             }
 

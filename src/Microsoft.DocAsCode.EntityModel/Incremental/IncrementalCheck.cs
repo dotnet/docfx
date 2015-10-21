@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 _versionChanged = true;
                 if (_versionChanged)
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Verbose, "Assembly '{0}' when last build took place is not current assembly '{1}', rebuild required", version ?? "<undefined>", currentVersion);
+                    Logger.Log(LogLevel.Verbose, $"Assembly '{version ?? "<undefined>"}' when last build took place is not current assembly '{currentVersion}', rebuild required");
                 }
             }
 
@@ -64,19 +64,19 @@ namespace Microsoft.DocAsCode.EntityModel
             if (string.IsNullOrEmpty(file)) return false;
             if (!File.Exists(file))
             {
-                ParseResult.WriteToConsole(ResultLevel.Verbose, "File '{0}' does not exist anymore, rebuild needed", file);
+                Logger.Log(LogLevel.Verbose, $"File '{file}' does not exist anymore, rebuild needed");
                 return true;
             }
 
             var version = GetLastModifiedVersionForFile(file);
             if (VersionNewer(version))
             {
-                ParseResult.WriteToConsole(ResultLevel.Verbose, "File '{0}' version '{1}' newer than '{2}'", file, version.ToString(), _versionToBeCompared.ToString());
+                Logger.Log(LogLevel.Verbose, $"File '{file}' version '{version.ToString()}' newer than '{_versionToBeCompared.ToString()}'.");
                 return true;
             }
             else
             {
-                ParseResult.WriteToConsole(ResultLevel.Verbose, "File '{0}' version '{1}' older than '{2}', no need to rebuild", file, version.ToString(), _versionToBeCompared.ToString());
+                Logger.Log(LogLevel.Verbose, $"File '{file}' version '{version.ToString()}' older than '{_versionToBeCompared.ToString()}', no need to rebuild.");
             }
 
             return false;
@@ -111,12 +111,12 @@ namespace Microsoft.DocAsCode.EntityModel
 
             if (VersionNewer(version))
             {
-                ParseResult.WriteToConsole(ResultLevel.Verbose, "project file '{0}' version '{1}' newer than '{2}'", project.Name, version.ToString(), _versionToBeCompared.ToString());
+                Logger.Log(LogLevel.Verbose, $"project file '{project.Name}' version '{version.ToString()}' newer than '{_versionToBeCompared.ToString()}'");
                 return true;
             }
             else
             {
-                ParseResult.WriteToConsole(ResultLevel.Verbose, "project file '{0}' version '{1}' older than '{2}', no need to rebuild", project.Name, version.ToString(), _versionToBeCompared.ToString());
+                Logger.Log(LogLevel.Verbose, $"project file '{project.Name}' version '{version.ToString()}' older than '{_versionToBeCompared.ToString()}', no need to rebuild");
             }
 
             // 2. project's containing source files changed since <date>
@@ -135,12 +135,12 @@ namespace Microsoft.DocAsCode.EntityModel
 
                 if (VersionNewer(documentVersion))
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Verbose, "document '{0}' version '{1}' newer than '{2}'", document.Name, documentVersion.ToString(), _versionToBeCompared.ToString());
+                    Logger.Log(LogLevel.Verbose, $"document '{document.Name}' version '{documentVersion.ToString()}' newer than '{_versionToBeCompared.ToString()}'");
                     return true;
                 }
                 else
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Verbose, "document '{0}' version '{1}' older than '{2}', no need to rebuild", document.Name, documentVersion.ToString(), _versionToBeCompared.ToString());
+                    Logger.Log(LogLevel.Verbose, $"document '{document.Name}' version '{documentVersion.ToString()}' older than '{_versionToBeCompared.ToString()}', no need to rebuild");
                 }
             }
 
@@ -155,7 +155,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     var assemblyVersion = _metadataVersionCache.GetOrAdd(filePath, s => GetLastModifiedVersionForFile(s));
                     if (VersionNewer(assemblyVersion))
                     {
-                        Console.WriteLine("document {0} version {1} newer than {2}", filePath, assemblyVersion, _versionToBeCompared);
+                        Console.WriteLine($"document {filePath} version {assemblyVersion} newer than {_versionToBeCompared}");
                         return true;
                     }
                 }

@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.EntityModel
             string id = match.Groups["source"].Value.Trim();
             if (!PathUtility.IsVaildFilePath(id))
             {
-                ParseResult.WriteToConsole(ResultLevel.Warning, "{0} is not a valid file path, ignored.", id);
+                Logger.Log(LogLevel.Warning, $"{id} is not a valid file path, ignored.");
                 return null;
             }
 

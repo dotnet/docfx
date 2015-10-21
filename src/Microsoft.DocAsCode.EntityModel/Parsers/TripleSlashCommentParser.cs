@@ -244,7 +244,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         }
                         else
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Warning, "Invalid cref value {0} found in triple-slash-comments, ignored.", value);
+                            Logger.Log(LogLevel.Warning, $"Invalid cref value {value} found in triple-slash-comments, ignored.");
                         }
                     }
                 }

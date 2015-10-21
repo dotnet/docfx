@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         ApiIndexItemModel item;
                         if (yaml.Indexer.TryGetValue(member.Name, out item))
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Warning, "{0} already exists in {1}, the duplicate one {2} will be ignored", member.Name, item.Href, member.Href);
+                            Logger.Log(LogLevel.Warning, $"{member.Name} already exists in {item.Href}, the duplicate one {member.Href} will be ignored.");
                         }
                         else
                         {

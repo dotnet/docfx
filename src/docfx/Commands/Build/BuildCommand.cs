@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode
                 }
                 else
                 {
-                    ParseResult.WriteInfo($"Config file {Constants.ConfigFileName} found, start building...");
+                    Logger.Log(LogLevel.Info, $"Config file {Constants.ConfigFileName} found, start building...");
                 }
             }
                 
