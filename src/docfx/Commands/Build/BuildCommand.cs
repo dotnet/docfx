@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode
 
             if (!string.IsNullOrEmpty(options.TemplateTheme)) config.TemplateTheme = options.TemplateTheme;
             if (!string.IsNullOrEmpty(options.TemplateThemeFolder)) config.TemplateThemeFolder = Path.GetFullPath(options.TemplateThemeFolder);
-            if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(options.OutputFolder);
+            if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
             if (options.Content != null)
             {
                 if (config.Content == null)
