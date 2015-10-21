@@ -185,7 +185,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (srcNodes != null)
                 foreach (var link in srcNodes)
                 {
-                    UpdateHref(link, "src", context.FileMap, s => UpdateFilePath(s, relativeModelPath));
+                    UpdateSrc(link, context.FileMap, s => UpdateFilePath(s, relativeModelPath));
                 }
 
             var hrefNodes = html.DocumentNode.SelectNodes("//*/@href");
@@ -199,7 +199,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     }
                     else
                     {
-                        UpdateHref(link, "href", context.FileMap, s => UpdateFilePath(s, relativeModelPath));
+                        UpdateHref(link, context.FileMap, s => UpdateFilePath(s, relativeModelPath));
                     }
                 }
 
@@ -309,8 +309,43 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, Dictionary<string, string> map, Func<string, string> updater)
+        private static void UpdateHref(HtmlAgilityPack.HtmlNode link, Dictionary<string, string> map, Func<string, string> updater)
         {
+            string attribute = "href";
+            var key = link.GetAttributeValue(attribute, null);
+            string path;
+            if (TryGetPathToRoot(key, out path))
+            {
+                string href;
+                // For href, # may be appended, remove # before search file from map
+                var anchorIndex = key.IndexOf("#");
+                var anchor = string.Empty;
+                if (anchorIndex == 0) return;
+                if (anchorIndex > 0)
+                {
+                    anchor = key.Substring(anchorIndex);
+                    key = key.Remove(anchorIndex);
+                }
+                
+                if (map.TryGetValue(key, out href))
+                {
+                    href = updater(href);
+                    href += anchor;
+                    link.SetAttributeValue(attribute, href);
+                }
+                else
+                {
+                    Logger.Log(LogLevel.Warning, $"File {path} is not found.");
+                    // TODO: what to do if file path not exists?
+                    // CURRENT: fallback to the original one
+                    link.SetAttributeValue(attribute, path);
+                }
+            }
+        }
+
+        private static void UpdateSrc(HtmlAgilityPack.HtmlNode link, Dictionary<string, string> map, Func<string, string> updater)
+        {
+            string attribute = "src";
             var key = link.GetAttributeValue(attribute, null);
             string path;
             if (TryGetPathToRoot(key, out path))
