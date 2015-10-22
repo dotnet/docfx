@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     {
         private readonly ReflectionEntityMerger Merger = new ReflectionEntityMerger();
 
+        public string Name => nameof(ManagedReferenceDocumentProcessor);
+
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             switch (file.Type)
@@ -103,7 +105,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
             return models;
         }
@@ -126,9 +128,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
         }
 
-        public IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
-            if (models.Length > 0)
+            if (models.Count > 0)
             {
                 ApplyOverrides(models, host);
             }
@@ -137,7 +139,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         #region Private methods
 
-        private void ApplyOverrides(ImmutableArray<FileModel> models, IHostService host)
+        private void ApplyOverrides(ImmutableList<FileModel> models, IHostService host)
         {
             foreach (var uid in host.GetAllUids())
             {

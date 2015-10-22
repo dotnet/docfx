@@ -13,12 +13,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.Reflection;
     using System.Text;
 
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
     public class DocumentBuilder
     {
+        private const string Phase = "Build Document";
         private static readonly RelativePath Root = (RelativePath)"~/";
 
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
@@ -38,7 +38,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         public DocumentBuilder(IEnumerable<Assembly> assemblies)
         {
+            Logger.LogInfo("Loading plug-in...", phase: Phase);
             GetContainer(assemblies).SatisfyImports(this);
+            Logger.LogInfo($"Plug-in loaded ({string.Join(", ", from p in Processors select p.Name)})", phase: Phase);
         }
 
         [ImportMany]
@@ -62,7 +64,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             Directory.CreateDirectory(parameters.OutputBaseDir);
             var context = new DocumentBuildContext(
                 Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
+                parameters.Files.EnumerateFiles(),
                 parameters.ExternalReferencePackages);
+            Logger.LogInfo("Start building document ...", phase: Phase);
             foreach (var item in
                 from file in parameters.Files.EnumerateFiles()
                 group file by (from processor in Processors
@@ -84,11 +88,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         sb.Append("\t");
                         sb.AppendLine(f.File);
                     }
-                    Logger.Log(LogLevel.Warning, sb.ToString());
+                    Logger.LogWarning(sb.ToString(), phase: Phase);
                 }
             }
 
             context.SerializeTo(parameters.OutputBaseDir);
+            Logger.LogInfo("Building document completed.", phase: Phase);
         }
 
         private void BuildCore(
@@ -97,13 +102,20 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             ImmutableDictionary<string, object> metadata,
             DocumentBuildContext context)
         {
+            Logger.LogInfo($"Plug-in {processor.Name}: Loading document...", phase: Phase);
             using (var hostService = new HostService(
                 from file in files
                 select processor.Load(file, metadata)))
             {
+                hostService.SourceFiles = context.AllSourceFiles;
+                Logger.LogInfo($"Plug-in {processor.Name}: Document loaded (count = {hostService.Models.Count}).", phase: Phase);
+                Logger.LogInfo($"Plug-in {processor.Name}: Preprocessing...", phase: Phase);
                 Prebuild(processor, hostService);
+                Logger.LogInfo($"Plug-in {processor.Name}: Building...", phase: Phase);
                 BuildArticle(processor, hostService);
+                Logger.LogInfo($"Plug-in {processor.Name}: Postprocessing...", phase: Phase);
                 Postbuild(processor, hostService);
+                Logger.LogInfo($"Plug-in {processor.Name}: Saving...", phase: Phase);
                 Save(processor, hostService, context);
             }
         }
@@ -119,11 +131,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void BuildArticle(IDocumentProcessor processor, HostService hostService)
         {
-            foreach (var m in hostService.Models)
-            {
-                processor.Build(m, hostService);
-                m.Serialize();
-            }
+            hostService.Models.RunAll(
+                m =>
+                {
+                    processor.Build(m, hostService);
+                    m.Serialize();
+                });
         }
 
         private void Postbuild(IDocumentProcessor processor, HostService hostService)
@@ -137,25 +150,26 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void Save(IDocumentProcessor processor, HostService hostService, DocumentBuildContext context)
         {
-            foreach (var m in hostService.Models)
-            {
-                try
+            hostService.Models.RunAll(
+                m =>
                 {
-                    if (m.Type != DocumentType.Override)
+                    try
                     {
-                        m.BaseDir = context.BuildOutputFolder;
-                        var result = processor.Save(m);
-                        if (result != null)
+                        if (m.Type != DocumentType.Override)
                         {
-                            HandleSaveResult(context, hostService, m, result);
+                            m.BaseDir = context.BuildOutputFolder;
+                            var result = processor.Save(m);
+                            if (result != null)
+                            {
+                                HandleSaveResult(context, hostService, m, result);
+                            }
                         }
                     }
-                }
-                finally
-                {
-                    m.Dispose();
-                }
-            }
+                    finally
+                    {
+                        m.Dispose();
+                    }
+                });
         }
 
         private void HandleSaveResult(
@@ -165,13 +179,28 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             SaveResult result)
         {
             context.FileMap[Root + (RelativePath)model.OriginalFileAndType.File] = Root + (RelativePath)model.File;
-            foreach (var fileLink in result.LinkToFiles)
-            {
-                if (!hostService.SourceFiles.Contains(fileLink))
+            DocumentException.RunAll(
+                () => CheckFileLink(hostService, model, result),
+                () => HandleUids(context, model, result),
+                () => HandleToc(context, result),
+                () => RegisterManifest(context, model, result));
+        }
+
+        private static void CheckFileLink(HostService hostService, FileModel model, SaveResult result)
+        {
+            result.LinkToFiles.RunAll(
+                fileLink =>
                 {
-                    // todo : log invalidFileLink.
-                }
-            }
+                    if (!hostService.SourceFiles.Contains(fileLink))
+                    {
+                        Logger.LogError($"Invalid file link({fileLink})", phase: "Build Document", file: model.File);
+                        throw new DocumentException($"Invalid file link({fileLink}) in file \"{model.File}\"");
+                    }
+                });
+        }
+
+        private static void HandleUids(DocumentBuildContext context, FileModel model, SaveResult result)
+        {
             foreach (var uid in model.Uids)
             {
                 context.UidMap[uid] = Root + (RelativePath)model.File;
@@ -180,6 +209,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 context.XRef.UnionWith(result.LinkToUids);
             }
+        }
+
+        private static void HandleToc(DocumentBuildContext context, SaveResult result)
+        {
             if ((result.TocMap?.Count ?? 0) > 0)
             {
                 foreach (var toc in result.TocMap)
@@ -198,7 +231,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     }
                 }
             }
+        }
 
+        private static void RegisterManifest(DocumentBuildContext context, FileModel model, SaveResult result)
+        {
             context.Manifest.Add(new ManifestItem
             {
                 DocumentType = result.DocumentType,

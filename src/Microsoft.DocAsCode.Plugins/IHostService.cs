@@ -10,7 +10,14 @@ namespace Microsoft.DocAsCode.Plugins
         MarkupResult Markup(string markdown, FileAndType ft);
         ImmutableHashSet<string> SourceFiles { get; }
         ImmutableHashSet<string> GetAllUids();
-        ImmutableArray<FileModel> GetModels(DocumentType? type = null);
-        ImmutableArray<FileModel> LookupByUid(string uid);
+        ImmutableList<FileModel> GetModels(DocumentType? type = null);
+        ImmutableList<FileModel> LookupByUid(string uid);
+
+        #region Log
+        void LogVerbose(string message, string file = null, string line = null);
+        void LogInfo(string message, string file = null, string line = null);
+        void LogWarning(string message, string file = null, string line = null);
+        void LogError(string message, string file = null, string line = null);
+        #endregion
     }
 }

@@ -20,6 +20,16 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     [Trait("EntityType", "DocumentBuilder")]
     public class DocumentBuilderTest
     {
+        private void Init()
+        {
+            Logger.RegisterListener(new ConsoleLogListener());
+        }
+
+        private void CleanUp()
+        {
+            Logger.UnregisterAllListeners();
+        }
+
         [Fact]
         public void TestBuild()
         {
@@ -34,8 +44,12 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Directory.Delete(outputBaseDir, true);
             }
             Directory.CreateDirectory(documentsBaseDir);
+            Directory.CreateDirectory(documentsBaseDir + "/test");
             Directory.CreateDirectory(outputBaseDir);
             var conceptualFile = Path.Combine(documentsBaseDir, "test.md");
+            var conceptualFile2 = Path.Combine(documentsBaseDir, "test/test.md");
+            var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
+            var resourceMetaFile = resourceFile + ".meta";
             File.WriteAllLines(
                 conceptualFile,
                 new[]
@@ -49,26 +63,49 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                     "# Hello World",
                     "Test XRef: @XRef1",
                     "Test link: [link text](test/test.md)",
+                    "Test link: [link text 2](../" + resourceFile + ")",
                     "<p>",
                     "test",
                 });
-            var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
-            var resourceMetaFile = resourceFile + ".meta";
-            File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"" }");
+            File.WriteAllLines(
+                conceptualFile2,
+                new[]
+                {
+                    "---",
+                    "uid: XRef2",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef2",
+                    "Test link: [link text](../test.md)",
+                    "<p>",
+                    "test",
+                });
+            File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
-            files.Add(DocumentType.Article, new[] { conceptualFile });
+            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2 });
             files.Add(DocumentType.Resource, new[] { resourceFile });
 
-            new DocumentBuilder().Build(
-                new DocumentBuildParameters
-                {
-                    Files = files,
-                    OutputBaseDir = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
-                    Metadata = new Dictionary<string, object>
+            Init();
+            try
+            {
+                new DocumentBuilder().Build(
+                    new DocumentBuildParameters
                     {
-                        ["meta"] = "Hello world!",
-                    }.ToImmutableDictionary()
-                });
+                        Files = files,
+                        OutputBaseDir = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
+                        Metadata = new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        }.ToImmutableDictionary()
+                    });
+            }
+            finally
+            {
+                Logger.UnregisterAllListeners();
+            }
 
             {
                 // check conceptual.
@@ -77,7 +114,8 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.Equal(
                     "<h1 id=\"hello-world\">Hello World</h1>\n" +
                     "<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
-                    "Test link: <a href=\"~/documents/test/test.md\">link text</a></p>\n" +
+                    "Test link: <a href=\"~/documents/test/test.md\">link text</a>\n" +
+                    "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a></p>\n" +
                     "<p><p>\n" +
                     "test</p>\n",
                     model["conceptual"]);
@@ -93,11 +131,13 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
                 Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".yml")));
                 var meta = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".yml"));
-                Assert.Equal(2, meta.Count);
+                Assert.Equal(3, meta.Count);
                 Assert.True(meta.ContainsKey("meta"));
                 Assert.Equal("Hello world!", meta["meta"]);
                 Assert.True(meta.ContainsKey("abc"));
                 Assert.Equal("xyz", meta["abc"]);
+                Assert.True(meta.ContainsKey("uid"));
+                Assert.Equal("r1", meta["uid"]);
             }
 
             {
@@ -105,12 +145,14 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var filepath = Path.Combine(outputBaseDir, ".docfx.manifest");
                 Assert.True(File.Exists(filepath));
                 var manifest = YamlUtility.Deserialize<List<Dictionary<string, object>>>(filepath);
-                Assert.Equal(2, manifest.Count);
+                Assert.Equal(3, manifest.Count);
                 Assert.Equal("Conceptual", manifest[0]["type"]);
-                Assert.Equal(@"documents\test.yml", manifest[0]["model"]);
-                Assert.Equal("Resource", manifest[1]["type"]);
-                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.yml", manifest[1]["model"]);
-                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[1]["resource"]);
+                Assert.Equal(@"documents/test.yml", manifest[0]["model"]);
+                Assert.Equal("Conceptual", manifest[1]["type"]);
+                Assert.Equal(@"documents/test/test.yml", manifest[1]["model"]);
+                Assert.Equal("Resource", manifest[2]["type"]);
+                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.yml", manifest[2]["model"]);
+                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[2]["resource"]);
             }
 
             {
@@ -118,8 +160,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var filepath = Path.Combine(outputBaseDir, ".docfx.filemap");
                 Assert.True(File.Exists(filepath));
                 var filemap = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
-                Assert.Equal(2, filemap.Count);
+                Assert.Equal(3, filemap.Count);
                 Assert.Equal("~/documents/test.yml", filemap["~/documents/test.md"]);
+                Assert.Equal("~/documents/test/test.yml", filemap["~/documents/test/test.md"]);
                 Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
             }
 
@@ -128,8 +171,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var filepath = Path.Combine(outputBaseDir, ".docfx.xref");
                 Assert.True(File.Exists(filepath));
                 var xref = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
-                Assert.Equal(1, xref.Count);
+                Assert.Equal(2, xref.Count);
                 Assert.Equal("~/documents/test.yml", xref["XRef1"]);
+                Assert.Equal("~/documents/test/test.yml", xref["XRef2"]);
             }
             Directory.Delete(documentsBaseDir, true);
             Directory.Delete(outputBaseDir, true);

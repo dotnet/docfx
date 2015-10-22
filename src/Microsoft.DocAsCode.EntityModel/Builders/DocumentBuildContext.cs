@@ -1,24 +1,30 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel.Builders
 {
-    using ViewModels;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
+
     public sealed class DocumentBuildContext
     {
-        public DocumentBuildContext(string buildOutputFolder): this(buildOutputFolder, ImmutableArray<string>.Empty) { }
+        public DocumentBuildContext(string buildOutputFolder): this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty) { }
 
-        public DocumentBuildContext(string buildOutputFolder, ImmutableArray<string> externalReferencePackages)
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages)
         {
             BuildOutputFolder = buildOutputFolder;
+            AllSourceFiles = allSourceFiles.Select(ft => (string)(HostService.RootSymbol + (RelativePath)ft.File)).ToImmutableHashSet(FilePathComparer.OSPlatformSensitiveComparer);
             ExternalReferencePackages = externalReferencePackages;
         }
 
         public string BuildOutputFolder { get; }
 
         public ImmutableArray<string> ExternalReferencePackages { get; }
+
+        public ImmutableHashSet<string> AllSourceFiles { get; }
 
         public Dictionary<string, string> FileMap { get; private set; } = new Dictionary<string, string>();
 
@@ -47,7 +53,7 @@
 
         public static DocumentBuildContext DeserializeFrom(string outputBaseDir)
         {
-            var context = new DocumentBuildContext(outputBaseDir, new ImmutableArray<string>());
+            var context = new DocumentBuildContext(outputBaseDir);
             context.Manifest = YamlUtility.Deserialize<List<ManifestItem>>(Path.Combine(outputBaseDir, ".docfx.manifest"));
             context.FileMap = YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, ".docfx.filemap"));
             context.XRefMap = YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, ".docfx.xref"));

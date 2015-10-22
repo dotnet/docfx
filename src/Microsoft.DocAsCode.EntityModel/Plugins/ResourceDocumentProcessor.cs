@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         [ImportMany]
         public IEnumerable<IResourceFileConfig> Configs { get; set; }
 
+        public string Name => nameof(ResourceDocumentProcessor);
+
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             if (file.Type == DocumentType.Resource)
@@ -39,6 +41,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
+            string uid = null;
             Dictionary<string, object> content = null;
             var metafile = Path.Combine(file.BaseDir, file.File.TrimEnd('.') + ".meta");
             if (File.Exists(metafile))
@@ -52,6 +55,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         {
                             content[item.Key] = item.Value;
                         }
+                        if (item.Key == "uid")
+                        {
+                            uid = item.Value as string;
+                        }
                     }
                 }
             }
@@ -59,7 +66,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 content = metadata.ToDictionary(p => p.Key, p => p.Value);
             }
-            return new FileModel(file, content);
+            return new FileModel(file, content)
+            {
+                Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<string>.Empty : ImmutableArray<string>.Empty.Add(uid),
+            };
         }
 
         public SaveResult Save(FileModel model)
@@ -87,7 +97,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return result;
         }
 
-        public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
             return models;
         }
@@ -101,7 +111,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             // todo : metadata.
         }
 
-        public IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             return models;
         }

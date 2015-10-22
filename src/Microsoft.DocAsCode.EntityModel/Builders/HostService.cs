@@ -18,12 +18,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     [Export(typeof(IHostService))]
     internal sealed class HostService : IHostService, IDisposable
     {
+        public static readonly RelativePath RootSymbol = (RelativePath)"~/";
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
-        private readonly RelativePath RootSymbol = (RelativePath)"~/";
 
-        public ImmutableArray<FileModel> Models { get; private set; }
+        public ImmutableList<FileModel> Models { get; private set; }
 
-        public ImmutableHashSet<string> SourceFiles { get; private set; }
+        public ImmutableHashSet<string> SourceFiles { get; set; }
 
         public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();
 
@@ -34,13 +34,13 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         #region IHostService Members
 
-        public ImmutableArray<FileModel> GetModels(DocumentType? type)
+        public ImmutableList<FileModel> GetModels(DocumentType? type)
         {
             if (type == null)
             {
                 return Models;
             }
-            return (from m in Models where m.Type == type select m).ToImmutableArray();
+            return (from m in Models where m.Type == type select m).ToImmutableList();
         }
 
         public ImmutableHashSet<string> GetAllUids()
@@ -48,14 +48,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             return _uidIndex.Keys.ToImmutableHashSet();
         }
 
-        public ImmutableArray<FileModel> LookupByUid(string uid)
+        public ImmutableList<FileModel> LookupByUid(string uid)
         {
             List<FileModel> result;
             if (_uidIndex.TryGetValue(uid, out result))
             {
-                return result.ToImmutableArray();
+                return result.ToImmutableList();
             }
-            return ImmutableArray<FileModel>.Empty;
+            return ImmutableList<FileModel>.Empty;
         }
 
         public MarkupResult Markup(string markdown, FileAndType ft)
@@ -102,7 +102,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     var path = (RelativePath)ft.File + (RelativePath)linkFile;
                     if (path.ParentDirectoryCount > 0)
                     {
-                        // todo : log $"Cannot refer out of project. Path: {path}"
+                        Logger.LogError($"Cannot refer path: \"{path}\" out of project.", phase: "Build Document", file: ft.File);
+                        throw new DocumentException($"Cannot refer path \"{path}\" out of project in file \"{ft.File}\".");
                     }
                     var file = RootSymbol + path;
                     link.Value = file + anchor;
@@ -122,6 +123,26 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 result.Html = sw.ToString();
             }
             return result;
+        }
+
+        public void LogVerbose(string message, string file, string line)
+        {
+            Logger.LogVerbose(message, "Build Document - Plugin", file, line);
+        }
+
+        public void LogInfo(string message, string file, string line)
+        {
+            Logger.LogInfo(message, "Build Document - Plugin", file, line);
+        }
+
+        public void LogWarning(string message, string file, string line)
+        {
+            Logger.LogWarning(message, "Build Document - Plugin", file, line);
+        }
+
+        public void LogError(string message, string file, string line)
+        {
+            Logger.LogError(message, "Build Document - Plugin", file, line);
         }
 
         #endregion
@@ -156,7 +177,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     m.UidsChanged -= uidsChangedHandler;
                 }
             }
-            Models = models.ToImmutableArray();
+            Models = models.ToImmutableList();
             _uidIndex.Clear();
             FileMap.Clear();
             foreach (var m in Models)
@@ -178,7 +199,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     FileMap[m.FileAndType] = m.FileAndType;
                 }
             }
-            SourceFiles = FileMap.Keys.Select(ft => ft.File).ToImmutableHashSet(FilePathComparer.OSPlatformSensitiveComparer);
         }
 
         private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<string>> e)

@@ -17,6 +17,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocumentException.cs" />
+    <Compile Include="DocumentExceptionExtensions.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FileAndType.cs" />
     <Compile Include="FileModel.cs" />

@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Plugins
 
             BaseDir = baseDir;
             RootDir = rootDir;
-            File = file;
+            File = file.Replace('\\', '/');
             Type = type;
         }
 

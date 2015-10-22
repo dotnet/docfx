@@ -17,6 +17,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     public class ConceptualDocumentProcessor : IDocumentProcessor
     {
         private const string ConceputalKey = "conceptual";
+
+        public string Name => nameof(ConceptualDocumentProcessor);
+
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             if (file.Type != DocumentType.Article)
@@ -66,7 +69,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
             return models;
         }
@@ -105,7 +108,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             model.File = Path.ChangeExtension(model.File, ".yml");
         }
 
-        public IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             return models;
         }

@@ -16,6 +16,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(typeof(IDocumentProcessor))]
     public class TocDocumentProcessor : IDocumentProcessor
     {
+        public string Name => nameof(TocDocumentProcessor);
+
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             if (file.Type == DocumentType.Article)
@@ -115,7 +117,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return tocMap;
         }
 
-        public IEnumerable<FileModel> Prebuild(ImmutableArray<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
             return models;
         }
@@ -126,7 +128,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             // todo : metadata.
         }
 
-        public IEnumerable<FileModel> Postbuild(ImmutableArray<FileModel> models, IHostService host)
+        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             return models;
         }
