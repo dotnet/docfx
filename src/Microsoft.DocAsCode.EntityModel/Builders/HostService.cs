@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         public static readonly RelativePath RootSymbol = (RelativePath)"~/";
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
+        private readonly LruList<FileModel> _lru = LruList<FileModel>.Create(0x400, OnLruRemoving);
 
         public ImmutableList<FileModel> Models { get; private set; }
 
@@ -169,12 +170,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         {
             EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
             EventHandler<PropertyChangedEventArgs<ImmutableArray<string>>> uidsChangedHandler = HandleUidsChanged;
+            EventHandler contentAccessedHandler = ContentAccessedHandler;
             if (Models != null)
             {
                 foreach (var m in Models)
                 {
                     m.FileOrBaseDirChanged -= fileOrBaseDirChangedHandler;
                     m.UidsChanged -= uidsChangedHandler;
+                    m.ContentAccessed -= contentAccessedHandler;
                 }
             }
             Models = models.ToImmutableList();
@@ -184,6 +187,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 m.FileOrBaseDirChanged += fileOrBaseDirChangedHandler;
                 m.UidsChanged += uidsChangedHandler;
+                m.ContentAccessed += contentAccessedHandler;
                 foreach (var uid in m.Uids)
                 {
                     List<FileModel> list;
@@ -241,6 +245,16 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 return;
             }
             FileMap[m.OriginalFileAndType] = m.FileAndType;
+        }
+
+        private void ContentAccessedHandler(object sender, EventArgs e)
+        {
+            _lru.Access((FileModel)sender);
+        }
+
+        private static void OnLruRemoving(FileModel m)
+        {
+            m.Serialize();
         }
     }
 }

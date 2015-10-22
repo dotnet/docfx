@@ -131,12 +131,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void BuildArticle(IDocumentProcessor processor, HostService hostService)
         {
-            hostService.Models.RunAll(
-                m =>
-                {
-                    processor.Build(m, hostService);
-                    m.Serialize();
-                });
+            hostService.Models.RunAll(m => processor.Build(m, hostService));
         }
 
         private void Postbuild(IDocumentProcessor processor, HostService hostService)

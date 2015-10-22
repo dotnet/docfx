@@ -67,8 +67,18 @@ namespace Microsoft.DocAsCode
             {
                 var parameters = ConfigToParameter(config);
                 if (parameters.Files.Count == 0) return new ParseResult(ResultLevel.Warning, "No files found, nothing is to be generated");
-                _builder.Build(parameters);
-
+                try
+                {
+                    _builder.Build(parameters);
+                }
+                catch (AggregateDocumentException aggEx)
+                {
+                    return new ParseResult(ResultLevel.Warning, "following document error:" + Environment.NewLine + string.Join(Environment.NewLine, from ex in aggEx.InnerExceptions select ex.Message));
+                }
+                catch (DocumentException ex)
+                {
+                    return new ParseResult(ResultLevel.Warning, "document error:" + ex.Message);
+                }
                 var documentContext = DocumentBuildContext.DeserializeFrom(parameters.OutputBaseDir);
                 var assembly = typeof(Program).Assembly;
 
@@ -114,9 +124,9 @@ namespace Microsoft.DocAsCode
         private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)
         {
             if (mapping == null) yield break;
-            foreach(var file in mapping.Items)
+            foreach (var file in mapping.Items)
             {
-                foreach(var item in file.Files)
+                foreach (var item in file.Files)
                 {
                     yield return Path.Combine(file.CurrentWorkingDirectory ?? Environment.CurrentDirectory, item);
                 }
@@ -126,7 +136,7 @@ namespace Microsoft.DocAsCode
         private static FileCollection GetFileCollectionFromFileMapping(string baseDirectory, params Tuple<DocumentType, FileMapping>[] files)
         {
             var fileCollection = new FileCollection(baseDirectory);
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (file.Item2 != null)
                 {
@@ -154,7 +164,7 @@ namespace Microsoft.DocAsCode
                     Logger.Log(LogLevel.Info, $"Config file {Constants.ConfigFileName} found, start building...");
                 }
             }
-                
+
             BuildJsonConfig config;
             if (!string.IsNullOrEmpty(configFile))
             {

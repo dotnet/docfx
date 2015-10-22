@@ -18,7 +18,7 @@
 
         public static DocumentException CreateAggregate(IEnumerable<DocumentException> exceptions)
         {
-            return new AggregationDocumentException(exceptions);
+            return new AggregateDocumentException(Flat(exceptions).ToImmutableArray());
         }
 
         public static void RunAll(params Action[] actions)
@@ -48,18 +48,37 @@
                 throw CreateAggregate(exceptions);
             }
         }
+
+        private static IEnumerable<DocumentException> Flat(IEnumerable<DocumentException> exceptions)
+        {
+            foreach (var item in exceptions)
+            {
+                var agg = item as AggregateDocumentException;
+                if (agg != null)
+                {
+                    foreach (var inner in agg.InnerExceptions)
+                    {
+                        yield return inner;
+                    }
+                }
+                else
+                {
+                    yield return item;
+                }
+            }
+        }
     }
 
     [Serializable]
-    public class AggregationDocumentException : DocumentException
+    public class AggregateDocumentException : DocumentException
     {
-        public AggregationDocumentException(IEnumerable<DocumentException> exceptions)
+        public AggregateDocumentException(ImmutableArray<DocumentException> exceptions)
             : base("Multiple failures.")
         {
-            InnerExceptions = Flat(exceptions).ToImmutableArray();
+            InnerExceptions = exceptions;
         }
 
-        protected AggregationDocumentException(SerializationInfo info, StreamingContext context)
+        protected AggregateDocumentException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             InnerExceptions = ((DocumentException[])info.GetValue("InnerExceptions", typeof(DocumentException[]))).ToImmutableArray();
@@ -78,25 +97,6 @@
             return base.ToString() + $@"
 Inner exceptons:
 {string.Join(Environment.NewLine, InnerExceptions)}";
-        }
-
-        private static IEnumerable<DocumentException> Flat(IEnumerable<DocumentException> exceptions)
-        {
-            foreach (var item in exceptions)
-            {
-                var agg = item as AggregationDocumentException;
-                if (agg != null)
-                {
-                    foreach (var inner in agg.InnerExceptions)
-                    {
-                        yield return inner;
-                    }
-                }
-                else
-                {
-                    yield return item;
-                }
-            }
         }
     }
 }

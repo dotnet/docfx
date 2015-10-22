@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Tests
                     "---",
                     "# Hello World",
                     "Test XRef: @XRef1",
-                    "Test link: [link text](test/test.md)",
+                    "Test link: [link text](../documents/test.md)",
                     "<p>",
                     "test",
                 });
@@ -82,7 +82,7 @@ namespace Microsoft.DocAsCode.Tests
                     "",
                     "<h1 id=\"hello-world\">Hello World</h1>",
                     "<p>Test XRef: <xref href=\"XRef1\"></xref>",
-                    "Test link: <a href=\"documents/test/test.md\">link text</a></p>",
+                    "Test link: <a href=\"test.html\">link text</a></p>",
                     "<p><p>",
                     "test</p>",
                     ""

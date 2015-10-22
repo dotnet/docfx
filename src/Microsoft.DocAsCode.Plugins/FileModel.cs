@@ -40,6 +40,7 @@ namespace Microsoft.DocAsCode.Plugins
                 {
                     Deserialize();
                 }
+                OnContentAccessed();
                 return _content;
             }
             set
@@ -53,8 +54,8 @@ namespace Microsoft.DocAsCode.Plugins
                 {
                     _tempFile.Close();
                     _tempFile = null;
-                    Serialize();
                 }
+                OnContentAccessed();
             }
         }
 
@@ -144,6 +145,8 @@ namespace Microsoft.DocAsCode.Plugins
 
         public event EventHandler FileOrBaseDirChanged;
 
+        public event EventHandler ContentAccessed;
+
         public void Dispose()
         {
             if (_tempFile != null)
@@ -170,6 +173,15 @@ namespace Microsoft.DocAsCode.Plugins
         private void OnFileOrBaseDirChanged()
         {
             var handler = FileOrBaseDirChanged;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnContentAccessed()
+        {
+            var handler = ContentAccessed;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
