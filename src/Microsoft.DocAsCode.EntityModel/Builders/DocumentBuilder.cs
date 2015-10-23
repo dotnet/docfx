@@ -38,9 +38,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         public DocumentBuilder(IEnumerable<Assembly> assemblies)
         {
-            Logger.LogInfo("Loading plug-in...", phase: Phase);
-            GetContainer(assemblies).SatisfyImports(this);
-            Logger.LogInfo($"Plug-in loaded ({string.Join(", ", from p in Processors select p.Name)})", phase: Phase);
+            using (new LoggerPhaseScope(Phase))
+            {
+                Logger.LogInfo("Loading plug-in...");
+                GetContainer(assemblies).SatisfyImports(this);
+                Logger.LogInfo($"Plug-in loaded ({string.Join(", ", from p in Processors select p.Name)})");
+            }
         }
 
         [ImportMany]
@@ -61,39 +64,42 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 throw new ArgumentException("Source files cannot be null.", nameof(parameters) + "." + nameof(parameters.Files));
             }
 
-            Directory.CreateDirectory(parameters.OutputBaseDir);
-            var context = new DocumentBuildContext(
-                Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
-                parameters.Files.EnumerateFiles(),
-                parameters.ExternalReferencePackages);
-            Logger.LogInfo("Start building document ...", phase: Phase);
-            foreach (var item in
-                from file in parameters.Files.EnumerateFiles()
-                group file by (from processor in Processors
-                               let priority = processor.GetProcessingPriority(file)
-                               where priority != ProcessingPriority.NotSupportted
-                               orderby priority descending
-                               select processor).FirstOrDefault())
+            using (new LoggerPhaseScope(Phase))
             {
-                if (item.Key != null)
+                Directory.CreateDirectory(parameters.OutputBaseDir);
+                var context = new DocumentBuildContext(
+                    Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
+                    parameters.Files.EnumerateFiles(),
+                    parameters.ExternalReferencePackages);
+                Logger.LogInfo("Start building document ...");
+                foreach (var item in
+                    from file in parameters.Files.EnumerateFiles()
+                    group file by (from processor in Processors
+                                   let priority = processor.GetProcessingPriority(file)
+                                   where priority != ProcessingPriority.NotSupportted
+                                   orderby priority descending
+                                   select processor).FirstOrDefault())
                 {
-                    BuildCore(item.Key, item, parameters.Metadata ?? ImmutableDictionary<string, object>.Empty, context);
-                }
-                else
-                {
-                    var sb = new StringBuilder();
-                    sb.AppendLine("Cannot handle following file:");
-                    foreach (var f in item)
+                    if (item.Key != null)
                     {
-                        sb.Append("\t");
-                        sb.AppendLine(f.File);
+                        BuildCore(item.Key, item, parameters.Metadata ?? ImmutableDictionary<string, object>.Empty, context);
                     }
-                    Logger.LogWarning(sb.ToString(), phase: Phase);
+                    else
+                    {
+                        var sb = new StringBuilder();
+                        sb.AppendLine("Cannot handle following file:");
+                        foreach (var f in item)
+                        {
+                            sb.Append("\t");
+                            sb.AppendLine(f.File);
+                        }
+                        Logger.LogWarning(sb.ToString());
+                    }
                 }
-            }
 
-            context.SerializeTo(parameters.OutputBaseDir);
-            Logger.LogInfo("Building document completed.", phase: Phase);
+                context.SerializeTo(parameters.OutputBaseDir);
+                Logger.LogInfo("Building document completed.");
+            }
         }
 
         private void BuildCore(
@@ -102,20 +108,20 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             ImmutableDictionary<string, object> metadata,
             DocumentBuildContext context)
         {
-            Logger.LogInfo($"Plug-in {processor.Name}: Loading document...", phase: Phase);
+            Logger.LogInfo($"Plug-in {processor.Name}: Loading document...");
             using (var hostService = new HostService(
                 from file in files
                 select processor.Load(file, metadata)))
             {
                 hostService.SourceFiles = context.AllSourceFiles;
-                Logger.LogInfo($"Plug-in {processor.Name}: Document loaded (count = {hostService.Models.Count}).", phase: Phase);
-                Logger.LogInfo($"Plug-in {processor.Name}: Preprocessing...", phase: Phase);
+                Logger.LogInfo($"Plug-in {processor.Name}: Document loaded (count = {hostService.Models.Count}).");
+                Logger.LogInfo($"Plug-in {processor.Name}: Preprocessing...");
                 Prebuild(processor, hostService);
-                Logger.LogInfo($"Plug-in {processor.Name}: Building...", phase: Phase);
+                Logger.LogInfo($"Plug-in {processor.Name}: Building...");
                 BuildArticle(processor, hostService);
-                Logger.LogInfo($"Plug-in {processor.Name}: Postprocessing...", phase: Phase);
+                Logger.LogInfo($"Plug-in {processor.Name}: Postprocessing...");
                 Postbuild(processor, hostService);
-                Logger.LogInfo($"Plug-in {processor.Name}: Saving...", phase: Phase);
+                Logger.LogInfo($"Plug-in {processor.Name}: Saving...");
                 Save(processor, hostService, context);
             }
         }
@@ -188,7 +194,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 {
                     if (!hostService.SourceFiles.Contains(fileLink))
                     {
-                        Logger.LogError($"Invalid file link({fileLink})", phase: "Build Document", file: model.File);
+                        Logger.LogError($"Invalid file link({fileLink})", file: model.File);
                         throw new DocumentException($"Invalid file link({fileLink}) in file \"{model.File}\"");
                     }
                 });

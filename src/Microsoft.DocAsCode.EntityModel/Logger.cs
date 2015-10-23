@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 Line = line,
                 LogLevel = level,
                 Message = message,
-                Phase = phase
+                Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
             });
         }
 

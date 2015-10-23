@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     var path = (RelativePath)ft.File + (RelativePath)linkFile;
                     if (path.ParentDirectoryCount > 0)
                     {
-                        Logger.LogError($"Cannot refer path: \"{path}\" out of project.", phase: "Build Document", file: ft.File);
+                        Logger.LogError($"Cannot refer path: \"{path}\" out of project.", file: ft.File);
                         throw new DocumentException($"Cannot refer path \"{path}\" out of project in file \"{ft.File}\".");
                     }
                     var file = RootSymbol + path;
