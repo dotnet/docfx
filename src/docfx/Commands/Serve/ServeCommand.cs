@@ -45,9 +45,17 @@ namespace Microsoft.DocAsCode
                 File.Copy(Path.Combine(folder, "toc.html"), Path.Combine(folder, "index.html"));
             }
 
-            WebApp.Start(url, builder => builder.UseFileServer(fileServerOptions));
-            Console.WriteLine($"Serving \"{folder}\" on {url}");
-            Console.ReadLine();
+            try
+            {
+                WebApp.Start(url, builder => builder.UseFileServer(fileServerOptions));
+
+                Console.WriteLine($"Serving \"{folder}\" on {url}");
+                Console.ReadLine();
+            }
+            catch (System.Reflection.TargetInvocationException e)
+            {
+                Logger.LogError($"Error serving \"{folder}\" on {url}, check if the port is already being in use.");
+            }
         }
     }
 }

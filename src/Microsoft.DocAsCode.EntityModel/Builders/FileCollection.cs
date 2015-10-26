@@ -32,14 +32,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         public void Add(DocumentType type, IEnumerable<string> files)
         {
             _files.AddRange(from f in files
-                            select new FileAndType(DefaultBaseDir, ToRelative(f, DefaultBaseDir), type, DefaultBaseDir));
+                            select new FileAndType(DefaultBaseDir, ToRelative(f, DefaultBaseDir), type));
         }
 
         public void Add(DocumentType type, string baseDir, IEnumerable<string> files)
         {
             var rootedBaseDir = Path.Combine(Environment.CurrentDirectory, baseDir ?? string.Empty);
             _files.AddRange(from f in files
-                            select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type, DefaultBaseDir));
+                            select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type));
         }
 
         private string ToRelative(string file, string rootedBaseDir)

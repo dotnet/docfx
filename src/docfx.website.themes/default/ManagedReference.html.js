@@ -11,68 +11,40 @@ function transform(model, _attrs) {
   return model;
 
   function createViewModel(model, _attrs) {
-    if (!model) return null;
-    if (util.isArray(model)) return new TocViewModel(model, _attrs);
-    if (!model.items || model.items.length === 0) return null;
+    if (!model || !model.items || model.items.length === 0) return null;
 
     // Pickup the first item and display
     var item = model.items[0];
     var refs = new References(model);
     if (!item.type) return new GeneralViewModel(item, _attrs, refs);
     switch (item.type.toLowerCase()) {
-      case 'conceptual':
-        return new ConceptualViewModel(item, _attrs, refs);
       case 'namespace':
         return new NamespaceViewModel(item, _attrs, refs);
-      default:
+      case 'class':
         return new ClassViewModel(item, _attrs, refs);
+      default:
+        return new GeneralViewModel(item, _attrs, refs);
     }
 
     function GeneralViewModel(item, _attrs, refs) {
-      this._navPath = _attrs._navPath;
-      this._tocPath = _attrs._tocPath;
-      this._pageTitle = _attrs._pageTitle;
-      this._title = _attrs._title;
-      this._locales = _attrs._locales;
-      this._ext = _attrs._ext;
-      this._lang = _attrs._lang;
-      this._appName =_attrs._name;
-      this._rel = _attrs._rel;
-      this._tocRel = _attrs._tocRel;
-      this._navRel = _attrs._navRel;
-      this._description = _attrs._description;
-      this._tocTitle = _attrs._tocTitle;
+      for (var key in _attrs) {
+        if (_attrs.hasOwnProperty(key)) {
+          this[key] = _attrs[key];
+        }
+      }
       if (refs) {
         this.item = refs.getViewModel(item.uid, this._lang, util.changeExtension(this._ext));
       }
     }
 
-    function ConceptualViewModel(item, _attrs, refs) {
-      GeneralViewModel.call(this, item, _attrs, refs);
-      this.isConceptual = true;
-      this.isHtml = true;
-    }
-
     function NamespaceViewModel(item, _attrs, refs) {
       GeneralViewModel.call(this, item, _attrs, refs);
       this.isNamespace = true;
-      this.isHtml = true;
     }
 
     function ClassViewModel(item, _attrs, refs) {
       GeneralViewModel.call(this, item, _attrs, refs);
       this.isClass = true;
-      this.isHtml = true;
-    }
-
-    function TocViewModel(items, _attrs) {
-      GeneralViewModel.call(this, items, _attrs);
-      this.isToc = true;
-      var lang = this._lang;
-      var ext = this._ext;
-      this.toc = items.map(function (currentValue, index, array) {
-        return new Reference(currentValue, null).getTocViewModel(lang, util.changeExtension(ext));
-      });;
     }
 
     function References(model) {
@@ -193,7 +165,7 @@ function transform(model, _attrs) {
         }
         // if homepage is defined, override href with homepage
         if (extChanger) vm.href = extChanger(vm.homepage||vm.href);
-        vm.name = getLinkText(vm.href, vm.name);
+        // vm.name = getLinkText(vm.href, vm.name);
 
         if (vm.items) {
           vm.items = _obj.items.map(function (c) {
@@ -205,9 +177,7 @@ function transform(model, _attrs) {
       }
 
       function getReferenceViewModel(lang, extChanger){
-        var displayName = getDisplayName(lang, extChanger);
         var name = getLangSpecifiedProperty.call(_obj, "fullName", lang) || getLangSpecifiedProperty.call(_obj, "name", lang);
-        var id = getHtmlId(name);
         var vm = {};
 
         // Copy other properties and override name/id
@@ -216,8 +186,11 @@ function transform(model, _attrs) {
             vm[key] = _obj[key];
           }
         }
-        vm.name = displayName;
-        vm.id = id;
+        vm.specName = getSpecName(lang, extChanger);
+        vm.name = getLangSpecifiedProperty.call(vm, "name", lang) || getLangSpecifiedProperty.call(vm, "uid", lang); // workaround bug for dynamic
+        vm.fullName = getLangSpecifiedProperty.call(vm, "fullName", lang);
+        vm.href = extChanger(vm.href);
+        vm.id = getHtmlId(vm.name);
         vm.summary = normalize(vm.summary);
         vm.remarks = normalize(vm.remarks);
         vm.conceptual = normalize(vm.conceptual);
@@ -240,7 +213,7 @@ function transform(model, _attrs) {
         return input.replace(/\W/g, '_');
       }
 
-      function getDisplayName(lang, extChanger) {
+      function getSpecName(lang, extChanger) {
         // spec is always language specific
         var name = '';
         var spec = _obj["spec." + lang];
@@ -254,16 +227,24 @@ function transform(model, _attrs) {
           return name;
         }
 
-        return getCompositeName.call(_obj, lang, extChanger);
+        return getName.call(_obj, lang);
       }
 
       function getCompositeName(lang, extChanger) {
         // If href exists, return name with href, elsewise, return full name
         var href = this.href;
-        var fullName = getLangSpecifiedProperty.call(this, "fullName", lang) || getLangSpecifiedProperty.call(this, "name", lang);
+        var name = getLangSpecifiedProperty.call(this, "name", lang);
+        var fullName = getLangSpecifiedProperty.call(this, "fullName", lang) || name;
+        // If href does not exists, return full name
         if (!href) return util.escapeHtml(fullName);
         if (extChanger) href = extChanger(href);
-        return getLinkText(href, getLangSpecifiedProperty.call(this, "name", lang));
+        // If href exists, return name
+        return getLinkText(href, name);
+      }
+
+      function getName(lang){
+        var fullName = getLangSpecifiedProperty.call(this, "fullName", lang) || getLangSpecifiedProperty.call(this, "name", lang);
+        return fullName;
       }
 
       function getLangSpecifiedProperty(key, lang) {

@@ -6,7 +6,7 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var extension = ".html";
 var options = { encoding: 'utf8' };
-var templateName = path.basename(process.cwd());
+var templateName = "ManagedReference.html";
 var content = fs.readFileSync(templateName + '.js', options);
 var template = fs.readFileSync(templateName + '.tmpl', options);
 eval(content);
@@ -57,10 +57,10 @@ function parse(input, output, root, files, filter, callback) {
     if (!filter(file, idx)) return;
     var toc = extChanger(getClosestFile(input, file, tocFile));
     var currentFolder = path.dirname(file);
-    var navRelPath = path.relative(currentFolder, nav)
-    var tocRelPath = path.relative(currentFolder, toc);
-    var navRel = path.dirname(navRelPath);
-    var tocRel = path.dirname(tocRelPath);
+    var navRelPath = nav ? path.relative(currentFolder, nav) : '';
+    var tocRelPath = toc ? path.relative(currentFolder, toc) : '';
+    var navRel = navRelPath ? path.dirname(navRelPath) : '';
+    var tocRel = tocRelPath ? path.dirname(tocRelPath) : '';
     var outputPath = path.join(output, path.relative(input, file));
     var outputFilePath = extChanger(outputPath);
     var outputModelFilePath = srcFileExtChanger(outputPath);
@@ -80,6 +80,7 @@ function parse(input, output, root, files, filter, callback) {
     };
     fs.readFile(file, options, function (err, data) {
       if (err) return console.log(err);
+      console.log("Transforming " + file);
       var input = jsyaml.load(data);
       var model = callback(input, attrs);
       if (!model) return;
@@ -116,7 +117,7 @@ function parse(input, output, root, files, filter, callback) {
     }
     return null;
   }
-  
+
   function changeExt(e) {
     var ext = e;
     return function (path) {
@@ -124,7 +125,7 @@ function parse(input, output, root, files, filter, callback) {
       if (!path || ext === undefined) return path;
       var pathWithoutExt = path.substring(0, path.lastIndexOf('.'));
       if (ext && ext[0] !== '.') return pathWithoutExt + '.' + ext;
-  
+
       return pathWithoutExt + ext;
     }
   }

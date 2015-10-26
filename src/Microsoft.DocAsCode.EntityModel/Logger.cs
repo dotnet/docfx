@@ -209,6 +209,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public ReportLogListener(string reportPath)
         {
+            var dir = Path.GetDirectoryName(reportPath);
+            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
             _listener = new TextWriterTraceListener(reportPath);
         }
 

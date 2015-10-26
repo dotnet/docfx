@@ -194,8 +194,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 {
                     if (!hostService.SourceFiles.Contains(fileLink))
                     {
-                        Logger.LogError($"Invalid file link({fileLink})", file: model.File);
-                        throw new DocumentException($"Invalid file link({fileLink}) in file \"{model.File}\"");
+                        Logger.LogError($"Invalid file link({fileLink})", file: model.LocalPathFromRepoRoot);
+                        throw new DocumentException($"Invalid file link({fileLink}) in file \"{model.LocalPathFromRepoRoot}\"");
                     }
                 });
         }
@@ -241,9 +241,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 DocumentType = result.DocumentType,
                 ModelFile = result.ModelFile,
                 ResourceFile = result.ResourceFile,
-                // TODO: What is API doc's originalFile?
                 OriginalFile = model.OriginalFileAndType.File,
-                RelativeBaseDir = PathUtility.MakeRelativePath(model.OriginalFileAndType.RootDir, model.OriginalFileAndType.BaseDir),
+                // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
+                LocalPathFromRepoRoot = model.LocalPathFromRepoRoot
             });
         }
     }

@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 var manifestItem = new TemplateManifestItem
                 {
                     DocumentType = item.DocumentType,
-                    OriginalFile = Path.Combine(item.RelativeBaseDir ?? string.Empty, item.OriginalFile ?? string.Empty).ToNormalizedPath(),
+                    OriginalFile = item.LocalPathFromRepoRoot,
                     OutputFiles = new Dictionary<string, string>()
                 };
                 try
@@ -409,22 +409,42 @@ namespace Microsoft.DocAsCode.EntityModel
             public string Name { get; set; }
             [JsonProperty("_description")]
             public string Description { get; set; }
+
+            /// <summary>
+            /// TOC PATH from ~ ROOT
+            /// </summary>
             [JsonProperty("_tocPath")]
             public string TocPath { get; set; }
+
+            /// <summary>
+            /// ROOT TOC PATH from ~ ROOT
+            /// </summary>
             [JsonProperty("_navPath")]
             public string RootTocPath { get; set; }
+
+            /// <summary>
+            /// Current file's relative path to ROOT, e.g. file is ~/A/B.md, relative path to ROOT is ../
+            /// </summary>
             [JsonProperty("_rel")]
             public string RelativePathToRoot { get; set; }
+
+            /// <summary>
+            /// ROOT TOC file's relative path to ROOT
+            /// </summary>
             [JsonProperty("_navRel")]
             public string RootTocRelativePath { get; set; }
+
+            /// <summary>
+            /// current file's TOC file's relative path to ROOT
+            /// </summary>
             [JsonProperty("_tocRel")]
             public string TocRelativePath { get; set; }
 
             public SystemAttributes(DocumentBuildContext context, ManifestItem item)
             {
                 GetTocInfo(context, item);
-                TocPath = TocPath == null ? null : ((RelativePath)TocPath).MakeRelativeTo((RelativePath)item.ModelFile);
-                RootTocPath = RootTocPath == null ? null : ((RelativePath)RootTocPath).MakeRelativeTo((RelativePath)item.ModelFile);
+                TocRelativePath = TocPath == null ? null : ((RelativePath)TocPath).MakeRelativeTo((RelativePath)item.ModelFile);
+                RootTocRelativePath = RootTocPath == null ? null : ((RelativePath)RootTocPath).MakeRelativeTo((RelativePath)item.ModelFile);
                 RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo((RelativePath)item.ModelFile);
             }
 

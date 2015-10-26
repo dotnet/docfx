@@ -50,7 +50,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return new FileModel(
                 file,
                 content,
-                serializer: YamlFormatter<Dictionary<string, object>>.Instance);
+                serializer: YamlFormatter<Dictionary<string, object>>.Instance)
+            {
+                LocalPathFromRepoRoot = (content["remote"] as GitDetail)?.RelativePath
+            };
         }
 
         public SaveResult Save(FileModel model)

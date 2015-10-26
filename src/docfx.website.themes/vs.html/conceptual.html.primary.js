@@ -7,5 +7,6 @@ function transform(model, _attrs){
     attrs._tocPath = attrs._tocPath.substring(2);
   }
   entity._tocPath = attrs._tocPath;
+  entity._tocRel = attrs._tocRel;
   return entity;
 }

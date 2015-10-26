@@ -46,6 +46,10 @@ namespace Microsoft.DocAsCode
                 Config = GetConfigFromOptions(buildCommandOptions);
                 _context = context;
             }
+
+            if (!string.IsNullOrWhiteSpace(buildCommandOptions.Log)) Logger.RegisterListener(new ReportLogListener(buildCommandOptions.Log));
+
+            if (buildCommandOptions.LogLevel.HasValue) Logger.LogLevelThreshold = buildCommandOptions.LogLevel.Value;
         }
 
         public ParseResult Exec(RunningContext context)

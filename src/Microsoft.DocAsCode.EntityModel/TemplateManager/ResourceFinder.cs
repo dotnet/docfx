@@ -57,8 +57,8 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <summary>
         /// Search in order:
         /// 1. Inside OverrideFolder, *NOTE* sub-folders are **NOT** included
-        ///     a. ZIP file with provided name
-        ///     b. Folder with provided name
+        ///     a. Folder with provided name
+        ///     b. ZIP file with provided name
         /// 2. Inside Embedded Resources
         ///     a. ZIP file with provided name
         /// </summary>
@@ -70,19 +70,17 @@ namespace Microsoft.DocAsCode.EntityModel
 
             if (_overrideFolder != null)
             {
+                var directory = Path.Combine(_overrideFolder, name);
+                if (Directory.Exists(directory))
+                {
+                    return new FileResourceCollection(directory);
+                }
+
                 var fileName = Path.Combine(_overrideFolder, $"{name}.zip");
                 if (File.Exists(fileName))
                 {
                     Logger.Log(LogLevel.Verbose, $"Resource {name} is found in {_overrideFolder}.");
                     return new ArchiveResourceCollection(new FileStream(fileName, FileMode.Open, FileAccess.Read));
-                }
-                else
-                {
-                    var directory = Path.Combine(_overrideFolder, name);
-                    if (Directory.Exists(directory))
-                    {
-                        return new FileResourceCollection(directory);
-                    }
                 }
             }
 

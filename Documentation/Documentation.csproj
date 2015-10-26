@@ -44,6 +44,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="spec\images\docfx_workflow.png" />
     <Content Include="toc.yml" />
     <Content Include="docfx.json" />
   </ItemGroup>
@@ -61,6 +62,15 @@
     <Content Include="tutorial\docfx_getting_started.md" />
     <Content Include="NuGet.config" />
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="tutorial\docfx.sample.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="spec\docfx_design_spec.md" />
+    <Content Include="spec\docfx_flavored_markdown.md" />
+    <Content Include="spec\images\docfx_workflow.vsdx" />
+    <Content Include="tutorial\howto_create_custom_template.md" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

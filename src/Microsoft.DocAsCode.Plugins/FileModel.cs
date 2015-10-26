@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Dynamic;
     using System.IO;
@@ -69,13 +70,11 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != BaseDir)
                 {
-                    FileAndType = new FileAndType(value, File, Type, RootDir);
+                    FileAndType = new FileAndType(value, File, Type);
                     OnFileOrBaseDirChanged();
                 }
             }
         }
-
-        public string RootDir => FileAndType.RootDir;
 
         public string File
         {
@@ -87,7 +86,7 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != File)
                 {
-                    FileAndType = new FileAndType(BaseDir, value, Type, RootDir);
+                    FileAndType = new FileAndType(BaseDir, value, Type);
                     OnFileOrBaseDirChanged();
                 }
             }
@@ -96,6 +95,8 @@ namespace Microsoft.DocAsCode.Plugins
         public DocumentType Type => FileAndType.Type;
 
         public dynamic Properties { get; } = new ExpandoObject();
+
+        public string LocalPathFromRepoRoot { get; set; }
 
         public ImmutableArray<string> Uids
         {

@@ -1,25 +1,39 @@
 ﻿{
-  "projects": [
+  "metadata": [
     {
-      "name": "api",
-      "files": [
-        "**/*.csproj"
+      "src": [
+        {
+          "files": ["**/*.csproj"],
+          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "cwd": "../src"
+        }
       ],
-      "cwd": "../src",
-      "exclude": [ "_site/**", "**/bin/**", "**/obj/**" ]
+      "dest": "obj/docfx/api"
     }
   ],
-  "conceptuals": [
-    {
-      "files": [
-        "**/*.md",
-        "**/toc.yml"
+  "build": {
+    "content":
+      [
+        {
+          "files": ["**/*.yml"],
+          "cwd": "obj/docfx"
+        },
+        {
+          "files": ["tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml"]
+        },
+        {
+          "files": ["toc.yml"]
+        }
       ],
-      "exclude": [ "_site/**", "**/bin/**", "**/obj/**" ]
-    }
-  ],
-  "externalReferences": [],
-  "title": "Doc-as-code documentation",
-  "theme": "angular",
-  "output": "_site"
+    "resource": [
+        {
+          "files": ["spec/images/**"]
+        }
+    ],
+    "overwrite": "apispec/*.md",
+    "externalReference": [
+    ],
+    "dest": "_site",
+    "template": "default"
+  }
 }

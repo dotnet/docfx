@@ -42,6 +42,10 @@ namespace Microsoft.DocAsCode
                 Config = GetConfigFromOptions(metadataCommandOptions);
                 _context = context;
             }
+
+            if (!string.IsNullOrWhiteSpace(metadataCommandOptions.Log)) Logger.RegisterListener(new ReportLogListener(metadataCommandOptions.Log));
+
+            if (metadataCommandOptions.LogLevel.HasValue) Logger.LogLevelThreshold = metadataCommandOptions.LogLevel.Value;
         }
 
         public ParseResult Exec(RunningContext context)

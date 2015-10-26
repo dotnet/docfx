@@ -16,9 +16,8 @@
     <link rel="shortcut icon" href="{{_rel}}favicon.ico">
     <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{_rel}}styles/main.css">
-    <meta property="docfx:nav" content="{{_navPath}}">
-    <meta property="docfx:toc" content="{{_tocPath}}">
-    <meta property="docfx:navrel" content="{{_navRel}}">
+    <meta property="docfx:nav" content="{{_tocRel}}">
+    <meta property="docfx:toc" content="{{_tocRel}}">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -53,7 +52,7 @@
           <a class="btn toc-toggle collapse">Show / Hide Table of Contents</a>
           <div class="sidetoggle">
             <div class="sidetoc">
-              <iframe id="sidetoc" src="{{_tocPath}}"></iframe>
+              <iframe id="sidetoc" src="{{_tocRel}}"></iframe>
             </div>
           </div>
         </div>
