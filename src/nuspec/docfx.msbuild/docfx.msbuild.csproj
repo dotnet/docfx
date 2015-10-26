@@ -17,7 +17,7 @@
     <NuspecPath>$(MSBuildProjectName).nuspec</NuspecPath>
     <PackageVersion Condition=" '$(PackageVersion)'=='' ">0.0.1-alpha</PackageVersion>
     <WithSuffix Condition=" '$(WithSuffix)'=='' ">True</WithSuffix>
-    <PackageVersionWithSuffix Condition="$(WithSuffix)">$(PackageVersion)-$([System.DateTime]::Now.ToString(`yyyyMMddHHmm`))</PackageVersionWithSuffix>
+    <PackageVersionWithSuffix Condition="$(WithSuffix)">$(PackageVersion)-$([System.DateTime]::Now.ToString(`MMdd`))</PackageVersionWithSuffix>
     <PackageVersionWithSuffix Condition="!$(WithSuffix)">$(PackageVersion)</PackageVersionWithSuffix>
   </PropertyGroup>
   <ItemGroup>
@@ -64,6 +64,14 @@
       </DocfxFiles>
     </ItemGroup>
     <Copy SourceFiles="@(DocfxFiles)" DestinationFolder="$(OutputPath)\tools" />
+    <Exec Command="git log --format=&quot;&#37;&#37;h&quot; -n 1" ConsoleToMSBuild="true" IgnoreExitCode="true">
+      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
+      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
+    </Exec>
+    <PropertyGroup>
+      <PackageVersionWithSuffix Condition="'$(OutputConsoleValue)' != ''">$(PackageVersionWithSuffix)$(OutputConsoleValue)</PackageVersionWithSuffix>
+    </PropertyGroup>
+    <Message Text="$(OutputConsoleValue)" />
     <Exec Command="&quot;$(NugetPath)&quot; pack &quot;$(OutputPath)$(NuspecPath)&quot; -Version &quot;$(PackageVersionWithSuffix)&quot; -OutputDirectory &quot;bin/$(Configuration)&quot;" />
     <Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg" DestinationFolder="$(PackageOutputPath)" />
     <Message Text="Successfully created package '$(PackageOutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg'." />
