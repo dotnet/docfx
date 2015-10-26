@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private readonly string _packageFile;
         private readonly List<string> _uids;
         private readonly Dictionary<string, List<string>> _uidEntryMap;
+        private readonly Dictionary<string, List<ReferenceViewModel>> _cache;
 
         public ExternalReferencePackageReader(string packageFile)
         {
@@ -31,6 +32,7 @@ namespace Microsoft.DocAsCode.EntityModel
             _packageFile = packageFile;
             _uidEntryMap = GetUidEntryMap(packageFile);
             _uids = _uidEntryMap.Keys.OrderBy(s => s).ToList();
+            _cache = new Dictionary<string, List<ReferenceViewModel>>();
         }
 
         public static ExternalReferencePackageReader CreateNoThrow(string packageFile)
@@ -115,18 +117,22 @@ namespace Microsoft.DocAsCode.EntityModel
                 foreach (var entry in entries)
                 {
                     List<ReferenceViewModel> vms = null;
-                    using (var entryStream = zip.GetEntry(entry).Open())
-                    using (var reader = new StreamReader(entryStream))
+                    if (!_cache.TryGetValue(entry, out vms))
                     {
-                        try
+                        using (var entryStream = zip.GetEntry(entry).Open())
+                        using (var reader = new StreamReader(entryStream))
                         {
-                            vms = YamlUtility.Deserialize<List<ReferenceViewModel>>(reader);
-                        }
-                        catch (YamlException)
-                        {
-                            // Ignore non-yaml entries
+                            try
+                            {
+                                vms = _cache[entry] = YamlUtility.Deserialize<List<ReferenceViewModel>>(reader);
+                            }
+                            catch (YamlException)
+                            {
+                                // Ignore non-yaml entries
+                            }
                         }
                     }
+
                     if (vms != null)
                     {
                         yield return vms;
