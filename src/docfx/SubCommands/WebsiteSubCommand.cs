@@ -62,6 +62,11 @@
                         IndexerContext context = new IndexerContext
                         {
                             ApiIndexFiles = apiIndices,
+                            ExternalReferences = (from reader in
+                                                      from package in inputModel.ExternalReferences.AsParallel()
+                                                      select ExternalReferencePackageReader.CreateNoThrow(package)
+                                                  where reader != null
+                                                  select reader).ToList(),
                             MarkdownFileSourcePath = file,
                             CurrentWorkingDirectory = mdFile.CurrentWorkingDirectory,
                             TargetFolder = targetFolder,

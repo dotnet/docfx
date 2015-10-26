@@ -524,6 +524,27 @@ namespace Microsoft.DocAsCode.EntityModel
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((sbyte)value)));
             }
+            if (value is double)
+            {
+                return SyntaxFactory.EqualsValueClause(
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((double)value)));
+            }
+            if (value is float)
+            {
+                return SyntaxFactory.EqualsValueClause(
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((float)value)));
+            }
+            if (value is decimal)
+            {
+                return SyntaxFactory.EqualsValueClause(
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((decimal)value)));
+            }
             else if (value is char)
             {
                 return SyntaxFactory.EqualsValueClause(
@@ -538,6 +559,8 @@ namespace Microsoft.DocAsCode.EntityModel
                         SyntaxKind.StringLiteralExpression,
                         SyntaxFactory.Literal((string)value)));
             }
+
+            Debug.Fail("Unknown default value!");
             return null;
         }
 
@@ -597,7 +620,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private BaseListSyntax GetBaseTypeList(INamedTypeSymbol symbol)
         {
             IReadOnlyList<INamedTypeSymbol> baseTypeList;
-            if (symbol.TypeKind != TypeKind.Class || symbol.BaseType.GetDocumentationCommentId() == "T:System.Object")
+            if (symbol.TypeKind != TypeKind.Class || symbol.BaseType == null || symbol.BaseType.GetDocumentationCommentId() == "T:System.Object")
             {
                 baseTypeList = symbol.AllInterfaces;
             }

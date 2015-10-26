@@ -563,7 +563,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private SyntaxList<InheritsStatementSyntax> GetInheritsList(INamedTypeSymbol symbol)
         {
-            if (symbol.TypeKind == TypeKind.Class && symbol.BaseType.GetDocumentationCommentId() != "T:System.Object")
+            if (symbol.TypeKind == TypeKind.Class && symbol.BaseType != null && symbol.BaseType.GetDocumentationCommentId() != "T:System.Object")
             {
                 return SyntaxFactory.SingletonList(SyntaxFactory.InheritsStatement(GetTypeSyntax(symbol.BaseType)));
             }
@@ -783,6 +783,27 @@ namespace Microsoft.DocAsCode.EntityModel
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((sbyte)value)));
+            }
+            if (value is double)
+            {
+                return SyntaxFactory.EqualsValue(
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((double)value)));
+            }
+            if (value is float)
+            {
+                return SyntaxFactory.EqualsValue(
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((float)value)));
+            }
+            if (value is decimal)
+            {
+                return SyntaxFactory.EqualsValue(
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((decimal)value)));
             }
             if (value is char)
             {

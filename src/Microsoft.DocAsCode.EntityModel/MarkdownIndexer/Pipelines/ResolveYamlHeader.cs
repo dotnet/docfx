@@ -107,7 +107,8 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                         // Resolve references' path to relative to current yaml file
                         foreach (var referenceItem in apiMapFileSection.References)
                         {
-                            if (referenceItem.Value.Href != null)
+                            Uri absoluteUri;
+                            if (referenceItem.Value.Href != null && !Uri.TryCreate(referenceItem.Value.Href, UriKind.Absolute, out absoluteUri))
                             {
                                 var absolutePath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(markdownFilePath)), referenceItem.Value.Href);
                                 var relativeToCurrentApiYamlPath = FileExtensions.MakeRelativePath(Path.GetDirectoryName(apiYamlFilePath), absolutePath).BackSlashToForwardSlash();

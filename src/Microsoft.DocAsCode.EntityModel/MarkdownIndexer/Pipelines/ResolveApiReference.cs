@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
 {
+    using System.Collections.Generic;
     using System.IO;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
@@ -14,6 +15,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
         {
             var filePath = context.MarkdownFileTargetPath;
             var apis = context.ExternalApiIndex;
+            var externalReferences = context.ExternalReferences;
             var content = context.MarkdownContent;
             var links = LinkParser.Select(content);
             if (links == null || links.Count == 0) return new ParseResult(ResultLevel.Info, "No Api reference found for {0}", filePath);
@@ -26,16 +28,14 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
                 var apiId = matchDetail.Id;
 
                 // TODO: Support short name resolve 
-                ApiIndexItemModel api = GetApi(apis, apiId, null);
-                if (api != null)
+                string apiHref = GetApiHref(apis, externalReferences, apiId, filePath);
+                if (!string.IsNullOrEmpty(apiHref))
                 {
-                    var indexFolder = Path.GetDirectoryName(api.IndexFilePath);
-                    var apiYamlFilePath = FileExtensions.GetFullPath(indexFolder, api.Href);
                     var reference = new MapFileItemViewModel
                     {
                         Id = referenceId,
                         ReferenceKeys = matchDetail.MatchedSections,
-                        Href = FileExtensions.MakeRelativePath(Path.GetDirectoryName(filePath), apiYamlFilePath),
+                        Href = apiHref,
                         MapFileType = MapFileType.Link
                     };
 
@@ -47,23 +47,27 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
             return new ParseResult(ResultLevel.Success);
         }
 
-        private ApiIndexItemModel GetApi(ApiReferenceModel dict, string key, string currentNamespace)
+        private string GetApiHref(ApiReferenceModel dict, IEnumerable<ExternalReferencePackageReader> externalReferences, string key, string currentPath)
         {
             ApiIndexItemModel api;
             // 1. Try resolve with full name
             if (dict.TryGetValue(key, out api))
             {
-                return api;
+                var indexFolder = Path.GetDirectoryName(api.IndexFilePath);
+                var apiYamlFilePath = FileExtensions.GetFullPath(indexFolder, api.Href);
+                return FileExtensions.MakeRelativePath(Path.GetDirectoryName(currentPath), apiYamlFilePath);
             }
 
-            if (string.IsNullOrEmpty(currentNamespace)) return null;
-
-            // 2. Append current namespace
-            key = currentNamespace + "." + key;
-            if (dict.TryGetValue(key, out api))
+            // 2. Try resolve external references with full name
+            foreach (var externalReference in externalReferences)
             {
-                return api;
+                ReferenceViewModel vm;
+                if (externalReference.TryGetReference(key, out vm))
+                {
+                    return vm.Href;
+                }
             }
+
             return null;
         }
 

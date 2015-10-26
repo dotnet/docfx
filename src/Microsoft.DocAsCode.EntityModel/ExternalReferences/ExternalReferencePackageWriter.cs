@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 var name = Path.GetFileName(projectPaths[i]);
                 AddFiles(
-                    name + "/api/",
+                    "#" + name + "!api",
                     Directory.GetFiles(Path.Combine(projectPaths[i], "api"), "*.yml", SearchOption.TopDirectoryOnly));
             }
         }

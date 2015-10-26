@@ -7,7 +7,9 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
 
     public class IndexerContext
     {
-        public ApiReferenceModel ExternalApiIndex { get; set; } 
+        public ApiReferenceModel ExternalApiIndex { get; set; }
+
+        public List<ExternalReferencePackageReader> ExternalReferences { get; set; }
 
         public string[] ApiIndexFiles { get; set; }
 

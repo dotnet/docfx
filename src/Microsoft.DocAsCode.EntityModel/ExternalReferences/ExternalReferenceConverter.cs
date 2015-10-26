@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     FullNameForCSharp = item.FullNameForCSharp,
                     FullNameForVB = item.FullNameForVB,
                     Type = item.Type,
-                    Href = new Uri(baseUri, item.Href).ToString(),
+                    Href = baseUri + "/" + item.Href
                 };
             }
         }
