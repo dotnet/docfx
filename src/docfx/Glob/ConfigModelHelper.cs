@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode
             if (configModel == null || configModel.Projects == null || configModel.Projects.Count == 0)
             {
                 ParseResult.WriteToConsole(ResultLevel.Warning, "No project files are found from {0}, and no API metadata will be generated.", string.Join(",", projects ?? new List<string>()));
-                return Tuple.Create<ParseResult, ConfigModel>(ParseResult.WarningResult, null);
+                return Tuple.Create<ParseResult, ConfigModel>(ParseResult.WarningResult, configModel);
             }
 
             // If outputFolder has been set, override the output folder inside configModel

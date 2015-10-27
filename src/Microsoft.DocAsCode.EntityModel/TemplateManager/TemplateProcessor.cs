@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private static Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private string _script = null;
 
-        private string _template;
+        private Template _template;
         private ResourceCollection _resourceProvider = null;
         private string _extension;
 
@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             _resourceProvider = resourceProvider;
             _extension = extension;
-            _template = template;
+            _template = new Template(template, null);
             _script = script;
         }
 
@@ -88,9 +88,14 @@ namespace Microsoft.DocAsCode.EntityModel
         public void Process(IEnumerable<TemplateModelInfo> modelInfo, string outputDirectory)
         {
             if (string.IsNullOrEmpty(outputDirectory)) outputDirectory = Environment.CurrentDirectory;
-            
+
             // 1. Copy dependent files with path relative to the base output directory
             ProcessDependencies(outputDirectory);
+            if (_template == null)
+            {
+                ParseResult.WriteToConsole(ResultLevel.Info, "No template will be applied");
+                return;
+            }
             
             // 2. Process every model and save to output directory
             foreach (var info in modelInfo)
@@ -104,12 +109,12 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    ParseResult.WriteToConsole(ResultLevel.Info, "Model {0} is transformed to empty string, ignored.", info.RelativePath);
+                    ParseResult.WriteToConsole(ResultLevel.Verbose, "Model {0} is transformed to empty string, ignored.", info.RelativePath);
                 }
             }
         }
 
-        private string GetTemplate(string templateName)
+        private Template GetTemplate(string templateName)
         {
             if (_resourceProvider == null) return null;
 
@@ -118,7 +123,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             // Second, if resource does not exist, try getting resource with <templateName>.tmpl
             if (template == null) template = _resourceProvider.GetResource(templateName + ".tmpl");
-            return template;
+            return new Template(template, templateName);
         }
 
         private void ProcessDependencies(string outputDirectory)
@@ -131,14 +136,16 @@ namespace Microsoft.DocAsCode.EntityModel
 
             if (_template != null)
             {
-                foreach (var filePath in ExtractDependentFilePaths(_template).Distinct())
+                foreach (var resourceInfo in ExtractDependentFilePaths(_template).Distinct())
                 {
                     try
                     {
-                        var stream = _resourceProvider.GetResourceStream(filePath);
+                        var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey);
                         if (stream != null)
                         {
-                            var path = Path.Combine(outputDirectory, filePath);
+                            var path = Path.Combine(outputDirectory, resourceInfo.FilePath);
+                            var dir = Path.GetDirectoryName(path);
+                            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                             using (stream)
                             {
                                 using(var writer = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
@@ -147,16 +154,16 @@ namespace Microsoft.DocAsCode.EntityModel
                                 }
                             }
 
-                            ParseResult.WriteToConsole(ResultLevel.Info, "Saved resource {0} that template dependants on to {1}", filePath, path);
+                            ParseResult.WriteToConsole(ResultLevel.Info, "Saved resource {0} that template dependants on to {1}", resourceInfo.ResourceKey, path);
                         }
                         else
                         {
-                            ParseResult.WriteToConsole(ResultLevel.Info, "Unable to get relative resource for {0}", filePath);
+                            ParseResult.WriteToConsole(ResultLevel.Info, "Unable to get relative resource for {0}", resourceInfo.ResourceKey);
                         }
                     }
                     catch (Exception e)
                     {
-                        ParseResult.WriteToConsole(ResultLevel.Info, "Unable to get relative resource for {0}: {1}", filePath, e.Message);
+                        ParseResult.WriteToConsole(ResultLevel.Info, "Unable to get relative resource for {0}: {1}", resourceInfo.ResourceKey, e.Message);
                     }
                 }
             }
@@ -172,12 +179,12 @@ namespace Microsoft.DocAsCode.EntityModel
             if (_script == null)
             {
                 if (_template == null) return null;
-                return Render.StringToString(_template, model);
+                return Render.StringToString(_template.Content, model);
             }
             else
             {
                 var processedModel = ProcessWithJint(model);
-                return Render.StringToString(_template, processedModel);
+                return Render.StringToString(_template.Content, processedModel);
             }
         }
 
@@ -187,16 +194,44 @@ namespace Microsoft.DocAsCode.EntityModel
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
         /// <param name="template"></param>
-        private IEnumerable<string> ExtractDependentFilePaths(string template)
+        private IEnumerable<TemplateResourceInfo> ExtractDependentFilePaths(Template template)
         {
-            foreach (Match match in IncludeRegex.Matches(template))
+            foreach (Match match in IncludeRegex.Matches(template.Content))
             {
                 var filePath = match.Groups["file"].Value;
+                if (string.IsNullOrWhiteSpace(filePath)) yield break;
                 if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
-                yield return filePath;
+                yield return new TemplateResourceInfo(template.GetRelativeResourceKey(filePath), filePath);
             }
         }
 
+        private class Template
+        {
+            public string Content { get; }
+            public string Name { get; }
+            public string Type { get; }
+            public Template(string template, string templateName)
+            {
+                Name = templateName;
+                Content = template;
+            }
+
+            public string GetRelativeResourceKey(string relativePath)
+            {
+                return Path.Combine(Path.GetDirectoryName(this.Name ?? string.Empty) ?? string.Empty, relativePath).ToNormalizedPath();
+            }
+        }
+
+        private sealed class TemplateResourceInfo
+        {
+            public string ResourceKey { get; }
+            public string FilePath { get; }
+            public TemplateResourceInfo(string resourceKey, string filePath)
+            {
+                ResourceKey = resourceKey;
+                FilePath = filePath;
+            }
+        }
         private object ProcessWithJint(object model)
         {
             using (var stream = new StringWriter())

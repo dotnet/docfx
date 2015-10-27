@@ -30,30 +30,32 @@ namespace Microsoft.DocAsCode
 
         internal static ExtractMetadataInputModel ConvertToInputModel(ConfigModel configModel)
         {
-            var projects = configModel.Projects;
             var outputFolder = configModel.OutputFolder;
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel.PreserveRawInlineComments,
             };
 
-            var expandedFileMapping = GlobUtility.ExpandFileMapping(configModel.BaseDirectory, configModel.Projects, s =>
+            if (configModel.Projects != null)
             {
-                string key = string.IsNullOrWhiteSpace(s) ? Constants.DefaultMetadataOutputFolderName : s.ToValidFilePath();
-                return Path.Combine(outputFolder, key).ToNormalizedPath();
-            });
-            inputModel.Items = new Dictionary<string, List<string>>();
+                var expandedFileMapping = GlobUtility.ExpandFileMapping(configModel.BaseDirectory, configModel.Projects, s =>
+                {
+                    string key = string.IsNullOrWhiteSpace(s) ? Constants.DefaultMetadataOutputFolderName : s.ToValidFilePath();
+                    return Path.Combine(outputFolder, key).ToNormalizedPath();
+                });
+                inputModel.Items = new Dictionary<string, List<string>>();
 
-            foreach (var item in expandedFileMapping.Items)
-            {
-                List<string> existedItems;
-                if (inputModel.Items.TryGetValue(item.Name, out existedItems))
+                foreach (var item in expandedFileMapping.Items)
                 {
-                    existedItems.AddRange(item.Files);
-                }
-                else
-                {
-                    inputModel.Items.Add(item.Name, item.Files);
+                    List<string> existedItems;
+                    if (inputModel.Items.TryGetValue(item.Name, out existedItems))
+                    {
+                        existedItems.AddRange(item.Files);
+                    }
+                    else
+                    {
+                        inputModel.Items.Add(item.Name, item.Files);
+                    }
                 }
             }
 
