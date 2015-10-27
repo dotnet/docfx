@@ -175,6 +175,14 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.Equal("~/documents/test.yml", xref["XRef1"]);
                 Assert.Equal("~/documents/test/test.yml", xref["XRef2"]);
             }
+
+            {
+                // check xref spec
+                var filepath = Path.Combine(outputBaseDir, ".docfx.xrefspec");
+                Assert.True(File.Exists(filepath));
+                var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
+                Assert.Equal(0, xref.Count);
+            }
             Directory.Delete(documentsBaseDir, true);
             Directory.Delete(outputBaseDir, true);
             File.Delete(resourceMetaFile);

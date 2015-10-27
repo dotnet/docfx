@@ -14,5 +14,6 @@ namespace Microsoft.DocAsCode.Plugins
         public ImmutableArray<string> LinkToUids { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableDictionary<string, HashSet<string>> TocMap { get; set; } = ImmutableDictionary<string, HashSet<string>>.Empty;
+        public ImmutableArray<XRefSpec> XRefSpecs { get; set; } = ImmutableArray<XRefSpec>.Empty;
     }
 }

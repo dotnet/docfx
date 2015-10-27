@@ -114,6 +114,13 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 select processor.Load(file, metadata)))
             {
                 hostService.SourceFiles = context.AllSourceFiles;
+                foreach (var m in hostService.Models)
+                {
+                    if (m.LocalPathFromRepoRoot == null)
+                    {
+                        m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File);
+                    }
+                }
                 Logger.LogInfo($"Plug-in {processor.Name}: Document loaded (count = {hostService.Models.Count}).");
                 Logger.LogInfo($"Plug-in {processor.Name}: Preprocessing...");
                 Prebuild(processor, hostService);
@@ -184,6 +191,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 () => CheckFileLink(hostService, model, result),
                 () => HandleUids(context, model, result),
                 () => HandleToc(context, result),
+                () => RegisterXRefSpec(context, model, result),
                 () => RegisterManifest(context, model, result));
         }
 
@@ -194,8 +202,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 {
                     if (!hostService.SourceFiles.Contains(fileLink))
                     {
-                        Logger.LogError($"Invalid file link({fileLink})", file: model.LocalPathFromRepoRoot);
-                        throw new DocumentException($"Invalid file link({fileLink}) in file \"{model.LocalPathFromRepoRoot}\"");
+                        if (fileLink.StartsWith("~/")) fileLink = fileLink.Substring(2);
+                        var message = $"Invalid file link({fileLink}) in file \"{model.LocalPathFromRepoRoot}\"";
+                        Logger.LogError(message, file: model.LocalPathFromRepoRoot);
+                        throw new DocumentException(message);
                     }
                 });
         }
@@ -214,7 +224,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private static void HandleToc(DocumentBuildContext context, SaveResult result)
         {
-            if ((result.TocMap?.Count ?? 0) > 0)
+            if (result.TocMap?.Count > 0)
             {
                 foreach (var toc in result.TocMap)
                 {
@@ -229,6 +239,24 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     else
                     {
                         context.TocMap[toc.Key] = toc.Value;
+                    }
+                }
+            }
+        }
+
+        private void RegisterXRefSpec(DocumentBuildContext context, FileModel model, SaveResult result)
+        {
+            foreach (var spec in result.XRefSpecs)
+            {
+                if (!string.IsNullOrWhiteSpace(spec?.Uid))
+                {
+                    if (context.XRefSpecMap.ContainsKey(spec.Uid))
+                    {
+                        Logger.LogWarning($"Uid({spec.Uid}) duplicated.", file: model.LocalPathFromRepoRoot);
+                    }
+                    else
+                    {
+                        context.XRefSpecMap[spec.Uid] = spec.ToReadOnly();
                     }
                 }
             }

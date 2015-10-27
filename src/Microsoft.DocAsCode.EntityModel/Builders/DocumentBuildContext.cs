@@ -30,6 +30,8 @@
 
         public Dictionary<string, string> UidMap { get; private set; } = new Dictionary<string, string>();
 
+        public Dictionary<string, XRefSpec> XRefSpecMap { get; private set; } = new Dictionary<string, XRefSpec>();
+
         public Dictionary<string, HashSet<string>> TocMap { get; private set; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveComparer);
 
         public Dictionary<string, string> XRefMap { get; private set; } = null;
@@ -48,6 +50,7 @@
             }
 
             YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xref"), XRefMap);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xrefspec"), XRefSpecMap.Values);
             YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.toc"), TocMap);
         }
 
@@ -57,6 +60,7 @@
             context.Manifest = YamlUtility.Deserialize<List<ManifestItem>>(Path.Combine(outputBaseDir, ".docfx.manifest"));
             context.FileMap = new Dictionary<string, string>(YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, ".docfx.filemap")), FilePathComparer.OSPlatformSensitiveComparer);
             context.XRefMap = YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, ".docfx.xref"));
+            context.XRefSpecMap = YamlUtility.Deserialize<List<XRefSpec>>(Path.Combine(outputBaseDir, ".docfx.xrefspec")).ToDictionary(x => x.Uid, x => x.ToReadOnly());
             context.TocMap = new Dictionary<string, HashSet<string>>(YamlUtility.Deserialize<Dictionary<string, HashSet<string>>>(Path.Combine(outputBaseDir, ".docfx.toc")), FilePathComparer.OSPlatformSensitiveComparer);
             return context;
         }

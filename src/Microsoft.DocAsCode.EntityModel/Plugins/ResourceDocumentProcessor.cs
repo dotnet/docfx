@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
+    using Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class ResourceDocumentProcessor : IDocumentProcessor
@@ -66,9 +67,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 content = metadata.ToDictionary(p => p.Key, p => p.Value);
             }
+
+            var filePath = Path.Combine(file.BaseDir, file.File);
+            var repoDetail = GitUtility.GetGitDetail(filePath);
+
             return new FileModel(file, content)
             {
                 Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<string>.Empty : ImmutableArray<string>.Empty.Add(uid),
+                LocalPathFromRepoRoot = repoDetail?.RelativePath
             };
         }
 

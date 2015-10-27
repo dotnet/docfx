@@ -210,7 +210,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     if (j < token.Align.Length && token.Align[j] != Align.NotSpec)
                     {
                         result += "<td style=\"text-align:";
-                        result += token.Align[i].ToString().ToLower();
+                        result += token.Align[j].ToString().ToLower();
                         result += "\">";
                     }
                     else

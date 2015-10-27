@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Utility
     using System.Linq;
 
     /// <summary>
-    /// relative path for case sensitive os.
+    /// relative path
     /// </summary>
     public sealed class RelativePath : IEquatable<RelativePath>
     {
@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.Utility
             {
                 if (i >= leftParts.Length - 1)
                     break;
-                if (leftParts[i] != rightParts[i])
+                if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(leftParts[i], rightParts[i]))
                     break;
                 commonCount++;
             }
@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.Utility
             hash += _parts.Length << 16;
             for (int i = 0; i < _parts.Length; i++)
             {
-                hash ^= _parts[i].GetHashCode() << (i % 10);
+                hash ^= FilePathComparer.OSPlatformSensitiveComparer.GetHashCode(_parts[i]) << (i % 10);
             }
             return hash;
         }
@@ -186,7 +186,7 @@ namespace Microsoft.DocAsCode.Utility
             }
             for (int i = 0; i < _parts.Length; i++)
             {
-                if (_parts[i] != other._parts[i])
+                if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(_parts[i], other._parts[i]))
                 {
                     return false;
                 }

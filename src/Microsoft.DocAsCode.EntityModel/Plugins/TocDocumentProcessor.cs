@@ -37,23 +37,27 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             TocViewModel toc = null;
+            var filePath = Path.Combine(file.BaseDir, file.File);
             if ("toc.md".Equals(Path.GetFileName(file.File), StringComparison.OrdinalIgnoreCase))
             {
-                toc = MarkdownTocReader.LoadToc(File.ReadAllText(Path.Combine(file.BaseDir, file.File)), file.File);
+                toc = MarkdownTocReader.LoadToc(File.ReadAllText(filePath), file.File);
             }
             else if ("toc.yml".Equals(Path.GetFileName(file.File), StringComparison.OrdinalIgnoreCase))
             {
-                toc = YamlUtility.Deserialize<TocViewModel>(Path.Combine(file.BaseDir, file.File));
+                toc = YamlUtility.Deserialize<TocViewModel>(filePath);
             }
             if (toc == null)
             {
                 throw new NotSupportedException();
             }
 
+            var repoDetail = GitUtility.GetGitDetail(filePath);
+
             // todo : metadata.
             return new FileModel(file, toc)
             {
                 Uids = new[] { file.File }.ToImmutableArray(),
+                LocalPathFromRepoRoot = repoDetail?.RelativePath
             };
         }
 
@@ -63,9 +67,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var path = (RelativePath)model.OriginalFileAndType.File;
             var tocMap = GetTocMap(null, toc, path);
 
+            HashSet<string> links = new HashSet<string>();
             foreach (var item in toc)
             {
-                UpdateRelativePath(item, (RelativePath)model.File);
+                UpdateRelativePath(item, (RelativePath)model.File, links);
             }
 
             YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), toc);
@@ -73,18 +78,23 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 DocumentType = "Toc",
                 ModelFile = model.File,
-                TocMap = tocMap.ToImmutableDictionary()
+                TocMap = tocMap.ToImmutableDictionary(),
+                LinkToFiles = links.ToImmutableArray()
             };
         }
 
-        private void UpdateRelativePath(TocItemViewModel item, RelativePath file)
+        private void UpdateRelativePath(TocItemViewModel item, RelativePath file, HashSet<string> links)
         {
-            if (PathUtility.IsRelativePath(item.Href)) item.Href = (RelativePath)"~/" + ((RelativePath)item.Href).BasedOn(file);
+            if (PathUtility.IsRelativePath(item.Href))
+            {
+                item.Href = (RelativePath)"~/" + ((RelativePath)item.Href).BasedOn(file);
+                links.Add(item.Href);
+            }
             if (item.Items != null && item.Items.Count > 0)
             {
                 foreach (var i in item.Items)
                 {
-                    UpdateRelativePath(i, file);
+                    UpdateRelativePath(i, file, links);
                 }
             }
         }

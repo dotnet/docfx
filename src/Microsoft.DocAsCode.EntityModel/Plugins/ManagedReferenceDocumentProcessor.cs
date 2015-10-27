@@ -102,6 +102,22 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 ModelFile = model.File,
                 LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
                 LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableArray(), // todo : more uid link
+                XRefSpecs = (from item in ((PageViewModel)model.Content).Items
+                             select GetXRefInfo(item)).ToImmutableArray(),
+            };
+        }
+
+        private static XRefSpec GetXRefInfo(ItemViewModel item)
+        {
+            return new XRefSpec
+            {
+                Uid = item.Uid,
+                Name = item.Name,
+                ["fullName"] = item.FullName,
+                ["name.csharp"] = item.NameForCSharp,
+                ["name.vb"] = item.NameForVB,
+                ["fullName.csharp"] = item.FullNameForCSharp,
+                ["fullName.vb"] = item.FullNameForVB,
             };
         }
 
