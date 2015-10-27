@@ -296,7 +296,7 @@ namespace Microsoft.DocAsCode.Utility
         {
             if (string.IsNullOrEmpty(path)) return false;
             if (Uri.IsWellFormedUriString(path, UriKind.Absolute)) return false;
-
+            if (path.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) return false;
             return !Path.IsPathRooted(path);
         }
 
@@ -331,12 +331,12 @@ namespace Microsoft.DocAsCode.Utility
         }
     }
 
-
     public class FilePathComparer : IEqualityComparer<string>
     {
         private readonly static StringComparer _stringComparer = GetStringComparer();
 
-        public static FilePathComparer OSPlatformSensitiveComparer = new FilePathComparer();
+        public static readonly FilePathComparer OSPlatformSensitiveComparer = new FilePathComparer();
+        public static readonly StringComparer OSPlatformSensitiveStringComparer = GetStringComparer();
 
         public bool Equals(string x, string y)
         {

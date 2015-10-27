@@ -1,25 +1,19 @@
 ﻿{
-  "projects": [
-    {
-      "name": "api",
-      "files": [
-        "*.sln"
+  "build": {
+    "content":
+      [
+        {
+          "files": ["**/**.md"],
+        }
       ],
-      "cwd": "..",
-      "exclude": [ "_site/**", "**/bin/**", "**/obj/**" ]
+    "resource": [
+        {
+          "files": ["**/images/**"]
+        }
+    ],
+    "externalReference": [
+    ],
+    "globalMetadata": {
     }
-  ],
-  "conceptuals": [
-    {
-      "files": [
-        "**/*.md",
-        "**/toc.yml"
-      ],
-      "exclude": [ "_site/**", "**/bin/**", "**/obj/**" ]
-    }
-  ],
-  "externalReferences": [],
-  "title": "Doc-as-code documentation",
-  "theme": "IIS.default",
-  "output": "_site"
+  }
 }

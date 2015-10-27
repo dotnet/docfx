@@ -32,37 +32,18 @@
     </PropertyGroup>
   </Target>
   <Target Name="DocServe">
-    <Exec Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; serve &quot;$(PreviewOutputFolder)&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
-      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
-      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
-    </Exec>
+    <Exec Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; serve &quot;$(PreviewOutputFolder)&quot;" />
   </Target>
   <Target Name="DocPreview">
-    <Exec Condition="$(IsServing)" Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; --serve -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
-      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
-      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
-    </Exec>
-    <Exec Condition="!$(IsServing)" Command="&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
-      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
-      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
-    </Exec>
-    <Warning Condition="$(ExecExitCode) == '2'" Text="$(OutputConsoleValue)"/>
-    <Error Condition="$(ExecExitCode) == '1'" Text="$(OutputConsoleValue)"/>
+    <Exec Condition="$(IsServing)" Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; --serve -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;&quot;" />
+    <Exec Condition="!$(IsServing)" Command="&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" />
   </Target>
 
   <!-- ************************************************************************* -->
   <!-- *************************** GenerateMetadata Phase ********************** -->
   <!-- ************************************************************************* -->
   <Target Name="DocGenerateMetadata" >
-    <Exec Condition="$(RebuildDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -f -o &quot;$(OutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
-      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
-      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
-    </Exec>
-    <Exec Condition="!$(RebuildDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(OutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true">
-      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
-      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
-    </Exec>
-    <Warning Condition="$(ExecExitCode) == '2'" Text="$(OutputConsoleValue)"/>
-    <Error Condition="$(ExecExitCode) == '1'" Text="$(OutputConsoleValue)"/>
+    <Exec Condition="$(RebuildDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -f -o &quot;$(OutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" />
+    <Exec Condition="!$(RebuildDoc)" Command="&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(OutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" />
   </Target>
 </Project>

@@ -67,47 +67,40 @@ namespace Microsoft.DocAsCode
 
         private ParseResult InternalExec(BuildJsonConfig config, RunningContext context)
         {
+            var parameters = ConfigToParameter(config);
+            if (parameters.Files.Count == 0) return new ParseResult(ResultLevel.Warning, "No files found, nothing is to be generated");
             try
             {
-                var parameters = ConfigToParameter(config);
-                if (parameters.Files.Count == 0) return new ParseResult(ResultLevel.Warning, "No files found, nothing is to be generated");
-                try
-                {
-                    _builder.Build(parameters);
-                }
-                catch (AggregateDocumentException aggEx)
-                {
-                    return new ParseResult(ResultLevel.Warning, "following document error:" + Environment.NewLine + string.Join(Environment.NewLine, from ex in aggEx.InnerExceptions select ex.Message));
-                }
-                catch (DocumentException ex)
-                {
-                    return new ParseResult(ResultLevel.Warning, "document error:" + ex.Message);
-                }
-                var documentContext = DocumentBuildContext.DeserializeFrom(parameters.OutputBaseDir);
-                var assembly = typeof(Program).Assembly;
-
-                // If RootOutput folder is specified from command line, use it instead of the base directory
-                var outputFolder = Path.Combine(_context?.RootOutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
-                var templateFolder = string.IsNullOrEmpty(config.TemplateFolder) ? null : Path.Combine(config.BaseDirectory ?? string.Empty, config.TemplateFolder);
-                var themeFolder = string.IsNullOrEmpty(config.TemplateThemeFolder) ? null : Path.Combine(config.BaseDirectory ?? string.Empty, config.TemplateThemeFolder);
-                using (var manager = new TemplateManager(assembly, "Template", templateFolder, config.Template, themeFolder, config.TemplateTheme))
-                {
-                    manager.ProcessTemplateAndTheme(documentContext, outputFolder, true);
-                }
-
-                // TODO: SEARCH DATA
-
-                if (config.Serve)
-                {
-                    ServeCommand.Serve(outputFolder, config.Port);
-                }
-
-                return ParseResult.SuccessResult;
+                _builder.Build(parameters);
             }
-            catch (Exception e)
+            catch (AggregateDocumentException aggEx)
             {
-                return new ParseResult(ResultLevel.Error, e.Message);
+                return new ParseResult(ResultLevel.Warning, "following document error:" + Environment.NewLine + string.Join(Environment.NewLine, from ex in aggEx.InnerExceptions select ex.Message));
             }
+            catch (DocumentException ex)
+            {
+                return new ParseResult(ResultLevel.Warning, "document error:" + ex.Message);
+            }
+            var documentContext = DocumentBuildContext.DeserializeFrom(parameters.OutputBaseDir);
+            var assembly = typeof(Program).Assembly;
+
+            // If RootOutput folder is specified from command line, use it instead of the base directory
+            var outputFolder = Path.Combine(_context?.RootOutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
+            var templateFolder = string.IsNullOrEmpty(config.TemplateFolder) ? null : Path.Combine(config.BaseDirectory ?? string.Empty, config.TemplateFolder);
+            var themeFolder = string.IsNullOrEmpty(config.TemplateThemeFolder) ? null : Path.Combine(config.BaseDirectory ?? string.Empty, config.TemplateThemeFolder);
+            using (var manager = new TemplateManager(assembly, "Template", templateFolder, config.Template, themeFolder, config.TemplateTheme))
+            {
+                manager.ProcessTemplateAndTheme(documentContext, outputFolder, true);
+            }
+
+            // TODO: SEARCH DATA
+
+            if (config.Serve)
+            {
+                ServeCommand.Serve(outputFolder, config.Port);
+            }
+
+            return ParseResult.SuccessResult;
         }
 
         private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config)
@@ -115,7 +108,7 @@ namespace Microsoft.DocAsCode
             var parameters = new DocumentBuildParameters();
             var baseDirectory = config.BaseDirectory ?? Environment.CurrentDirectory;
 
-            parameters.OutputBaseDir = Path.GetFullPath(Path.Combine("obj", Path.GetRandomFileName()));
+            parameters.OutputBaseDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             parameters.Metadata = (config.GlobalMetadata ?? new Dictionary<string, object>()).ToImmutableDictionary();
             parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference)).ToImmutableArray();
             parameters.Files = GetFileCollectionFromFileMapping(baseDirectory,

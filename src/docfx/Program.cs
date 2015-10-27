@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode
             }
             catch (Exception e)
             {
-                return new ParseResult(ResultLevel.Error, $"Error running program: {e.Message}");
+                return new ParseResult(ResultLevel.Error, $"Error running program: {e.ToString()}");
             }
         }
     }

@@ -62,7 +62,19 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 throw new NotSupportedException();
             }
-            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), model.Content);
+
+            string path = Path.Combine(model.BaseDir, model.File);
+            try
+            {
+                YamlUtility.Serialize(path, model.Content);
+
+            }
+            catch (PathTooLongException e)
+            {
+                Logger.LogError($"Path \"{path}\": {e.Message}");
+                throw;
+            }
+
             return new SaveResult
             {
                 DocumentType = "Conceptual",
