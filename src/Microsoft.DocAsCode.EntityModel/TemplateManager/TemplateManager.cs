@@ -45,6 +45,10 @@ namespace Microsoft.DocAsCode.EntityModel
                     // js file does not exist, get the file with the same name as the template name
                     _templateProcessor = new TemplateProcessor(templateName, templateResource);
                 }
+                else
+                {
+                    ParseResult.WriteToConsole(ResultLevel.Warning, $"No template resource found for {templateName} from embedded resource {templateOverrideFolder}.");
+                }
             }
             
             if (string.IsNullOrEmpty(themeName))
@@ -54,6 +58,10 @@ namespace Microsoft.DocAsCode.EntityModel
             else
             {
                 _themeResource = new ResourceFinder(assembly, rootNamespace, themeOverrideFolder).Find(themeName);
+                if (_themeResource == null)
+                {
+                    ParseResult.WriteToConsole(ResultLevel.Warning, $"No theme resource found for {themeName} from embedded resource {themeOverrideFolder}.");
+                }
             }
         }
 
@@ -63,10 +71,6 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 ParseResult.WriteToConsole(ResultLevel.Info, "Template resource found, starting applying template.");
                 _templateProcessor.Process(modelFilePaths, baseDirectory, outputDirectory);
-            }
-            else
-            {
-                ParseResult.WriteToConsole(ResultLevel.Info, "No template resource found.");
             }
 
             if (_themeResource != null)
@@ -81,10 +85,6 @@ namespace Microsoft.DocAsCode.EntityModel
                         ParseResult.WriteToConsole(ResultLevel.Info, $"Theme resource {resourceName} copied to {outputPath}.");
                     }
                 }
-            }
-            else
-            {
-                ParseResult.WriteToConsole(ResultLevel.Info, "No theme resource found.");
             }
         }
 

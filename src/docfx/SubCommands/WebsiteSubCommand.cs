@@ -42,44 +42,49 @@
             // TODO: CONFIRM THE BEHAVIOR: BY DEFAULT USE "**/*.md"?
             var outputFolder = configModel.OutputFolder;
             var templateFolder = configModel.TemplateFolder;
-            var mdFiles = GlobUtility.ExpandFileMapping(configModel.BaseDirectory, configModel.Conceptuals, s =>
+            var conceptualFiles = GlobUtility.ExpandFileMapping(configModel.BaseDirectory, configModel.Conceptuals, s =>
             {
                 // If name is empty, use current outputFolder
                 string key = string.IsNullOrWhiteSpace(s) ? string.Empty : s.ToValidFilePath();
                 return Path.Combine(outputFolder, key).ToNormalizedPath();
             });
-            if (mdFiles != null)
+            if (conceptualFiles != null)
             {
-                var apiIndices = inputModel.Items.Select(s => Constants.GetIndexFilePathFunc(s.Key)).ToArray();
+                var indexFilesFromConceptual = (from item in conceptualFiles.Items select item.Files).SelectMany(s => s.Where(p => FilePathComparer.OSPlatformSensitiveComparer.Equals(Path.GetFileName(p), "index.yml")));
+                var apiIndices = (inputModel.Items?.Select(s => Constants.GetIndexFilePathFunc(s.Key)) ?? new string[0]).Union(indexFilesFromConceptual, FilePathComparer.OSPlatformSensitiveComparer);
                 var referenceOutputFolder = string.IsNullOrEmpty(outputFolder) ? Constants.WebsiteReferenceFolderName : Path.Combine(outputFolder, Constants.WebsiteReferenceFolderName);
-                foreach (var mdFile in mdFiles.Items)
+                foreach (var mdFile in conceptualFiles.Items)
                 {
                     var targetFolder = mdFile.Name;
                     var files = mdFile.Files;
-
-                    foreach (var file in files)
+                    var cwd = mdFile.CurrentWorkingDirectory;
+                    var mdFiles = files.Where(s => Path.GetExtension(s).Equals(".md", StringComparison.OrdinalIgnoreCase));
+                    var resourceFiles = files.Except(mdFiles);
+                    foreach (var file in mdFiles)
                     {
                         IndexerContext context = new IndexerContext
                         {
-                            ApiIndexFiles = apiIndices,
+                            ApiIndexFiles = apiIndices.ToArray(),
                             ExternalReferences = (from reader in
                                                       from package in inputModel.ExternalReferences.AsParallel()
                                                       select ExternalReferencePackageReader.CreateNoThrow(package)
                                                   where reader != null
                                                   select reader).ToList(),
                             MarkdownFileSourcePath = file,
-                            CurrentWorkingDirectory = mdFile.CurrentWorkingDirectory,
+                            CurrentWorkingDirectory = cwd,
                             TargetFolder = targetFolder,
                             ReferenceOutputFolder = referenceOutputFolder,
                         };
                         var indexerResult = MarkdownIndexer.Exec(context);
                         indexerResult.WriteToConsole();
                     }
+
+                    resourceFiles.CopyFilesToFolder(cwd, targetFolder, true, s => ParseResult.WriteToConsole(ResultLevel.Info, s), s => { ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to copy file: {0}, ignored.", s); return true; });
                 }
             }
 
             // 3. Generate default toc file
-            TemplateManager.GenerateDefaultToc(inputModel.Items.Where(s => s.Value != null && s.Value.Any()).Select(s => s.Key), mdFiles?.Items.Where(s => s.Files != null && s.Files.Any()).Select(s => s.Name), outputFolder, false);
+            TemplateManager.GenerateDefaultToc(inputModel.Items?.Where(s => s.Value != null && s.Value.Any())?.Select(s => s.Key), conceptualFiles?.Items.Where(s => s.Files != null && s.Files.Any()).Select(s => s.Name), outputFolder, false);
 
             // TODO: Integrate with zhyan's work that all the yaml files are processed and all the markdown files are transformed to yaml format
             // Current: As for a temp workaround, get all the yaml files in output folder...

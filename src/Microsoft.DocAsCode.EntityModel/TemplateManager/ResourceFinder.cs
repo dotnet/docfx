@@ -74,8 +74,6 @@ namespace Microsoft.DocAsCode.EntityModel
                         return new FileResourceCollection(directory);
                     }
                 }
-
-                ParseResult.WriteToConsole(ResultLevel.Warning, "Unable to find matching resource {0} from {1}.", name, _overrideFolder);
             }
 
             var resourceName = _embeddedResourceNames.FirstOrDefault(s => resourceNamePredicator(s, name, _resourcePrefix));
