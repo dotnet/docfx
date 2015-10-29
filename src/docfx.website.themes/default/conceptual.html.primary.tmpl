@@ -50,16 +50,20 @@
         </div>
       </header>
       <div role="main" class="container body-content">
-        <div class="sidenav">
-          <a class="btn toc-toggle collapse">Show / Hide Table of Contents</a>
-          <div class="sidetoggle">
-            <div class="sidetoc">
-              <iframe id="sidetoc" src="{{_tocRel}}"></iframe>
+          {{#_allowToc}}
+          <div class="sidenav">
+            <a class="btn toc-toggle collapse">Show / Hide Table of Contents</a>
+            <div class="sidetoggle">
+              <div class="sidetoc">
+                <iframe id="sidetoc" src="{{_tocRel}}"></iframe>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
+          <div class="article row grid-right"><div class="col-md-10">
+          {{/_allowToc}}
+          {{^_allowToc}}
+          <div class="article row grid"><div class="col-md-10">
+          {{/_allowToc}}
             <article class="content wrap" id="_content">
               {{{conceptual}}}
             </article>

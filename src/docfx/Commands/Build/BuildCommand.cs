@@ -159,6 +159,7 @@ namespace Microsoft.DocAsCode
                 else
                 {
                     Logger.Log(LogLevel.Info, $"Config file {Constants.ConfigFileName} found, start building...");
+                    configFile = Constants.ConfigFileName;
                 }
             }
 

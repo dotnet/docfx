@@ -81,46 +81,5 @@ namespace Microsoft.DocAsCode
                 return GetCommand(rootOptions.CurrentSubCommand.Value, rootOptions, null);
             }
         }
-
-        public static bool TryGetJsonConfig(List<string> inputGlobPattern, out string jsonConfig)
-        {
-            var validProjects = GlobUtility.GetFilesFromGlobPatterns(null, inputGlobPattern).ToList();
-
-            if (!validProjects.Any())
-            {
-                throw new ArgumentException($"None matching source projects or files found under root folder with glob pattern {inputGlobPattern.ToDelimitedString()}.");
-            }
-
-            jsonConfig = Constants.ConfigFileName;
-
-            // Get the first docfx.json config file
-            var configFiles = validProjects.FindAll(s => Path.GetFileName(s).Equals(Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase));
-            var otherFiles = validProjects.Except(configFiles).ToList();
-
-            // Load and ONLY load docfx.json when it exists
-            if (configFiles.Count > 0)
-            {
-                var configFile = configFiles[0];
-                var baseDirectory = Path.GetDirectoryName(configFile);
-                if (configFiles.Count > 1)
-                {
-                    Logger.Log(LogLevel.Warning, $"Multiple {Constants.ConfigFileName} files are found! The first one in {configFiles[0]} is selected, and others are ignored.");
-                }
-                else
-                {
-                    if (otherFiles.Count > 0)
-                    {
-                        Logger.Log(LogLevel.Warning, $"Config file {Constants.ConfigFileName} is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters will be ignored.");
-                    }
-                    else Logger.Log(LogLevel.Verbose, $"Config file is found in {configFile}.");
-                }
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 }

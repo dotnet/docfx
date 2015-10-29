@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode
                 Console.WriteLine($"Serving \"{folder}\" on {url}");
                 Console.ReadLine();
             }
-            catch (System.Reflection.TargetInvocationException e)
+            catch (System.Reflection.TargetInvocationException)
             {
                 Logger.LogError($"Error serving \"{folder}\" on {url}, check if the port is already being in use.");
             }

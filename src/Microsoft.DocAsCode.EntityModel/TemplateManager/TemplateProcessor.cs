@@ -89,13 +89,16 @@ namespace Microsoft.DocAsCode.EntityModel
             }
 
             //update XrefMap
-            foreach(var key in context.XRefMap.Keys.ToArray())
+            if (context.XRefMap != null)
             {
-                string ext;
-                string value = context.XRefMap[key];
-                if (extMapping.TryGetValue(value, out ext))
+                foreach (var key in context.XRefMap.Keys.ToArray())
                 {
-                    context.XRefMap[key] = Path.ChangeExtension(value, ext);
+                    string ext;
+                    string value = context.XRefMap[key];
+                    if (extMapping.TryGetValue(value, out ext))
+                    {
+                        context.XRefMap[key] = Path.ChangeExtension(value, ext);
+                    }
                 }
             }
 

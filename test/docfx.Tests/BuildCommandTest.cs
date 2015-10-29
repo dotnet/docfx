@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Tests
                 {
                     "",
                     "<h1 id=\"hello-world\">Hello World</h1>",
-                    "<p>Test XRef: <xref href=\"XRef1\"></xref>",
+                    "<p>Test XRef: XRef1",
                     "Test link: <a href=\"test.html\">link text</a></p>",
                     "<p><p>",
                     "test</p>",

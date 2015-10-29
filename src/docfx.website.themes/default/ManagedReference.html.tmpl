@@ -51,6 +51,7 @@
       </div>
     </header>
     <div role="main" class="container body-content">
+      {{#_allowToc}}
       <div class="sidenav">
         <a class="btn toc-toggle collapse">Show / Hide Table of Contents</a>
         <div class="sidetoggle">
@@ -59,8 +60,11 @@
           </div>
         </div>
       </div>
-      <div class="article row grid-right">
-        <div class="col-md-10">
+      <div class="article row grid-right"><div class="col-md-10">
+      {{/_allowToc}}
+      {{^_allowToc}}
+      <div class="article row grid"><div class="col-md-10">
+      {{/_allowToc}}
         <article class="content wrap" id="_content">
           {{! -------Start Template for Namespace--------}}
           {{#isNamespace}}
@@ -73,44 +77,14 @@
           <h1 id="{{id}}">{{type}} {{name}}
           </h1>
           <div class="markdown level0 summary">{{{summary}}}</div>
-          <div class="markdown level0 remarks">{{{remarks}}}</div>
           <div class="markdown level0 conceptual">{{{conceptual}}}</div>
+          <div class="markdown level0 remarks">{{{remarks}}}</div>
           {{#children}}
-          {{#Class.0}}
-          <h3 id="classes">Classes</h3>
-          {{/Class.0}}
-          {{#Class}}
-          <h4>{{{specName}}}</h4>
-          <section>{{{summary}}}</section>
-          {{/Class}}
-          {{#Struct.0}}
-          <h3 id="structs">Structs</h3>
-          {{/Struct.0}}
-          {{#Struct}}
-          <h4>{{{specName}}}></h4>
-          <section>{{{summary}}}</section>
-          {{/Struct}}
-          {{#Interface.0}}
-          <h3 id="interfaces">Interfaces</h3>
-          {{/Interface.0}}
-          {{#Interface}}
-          <h4>{{{specName}}}</h4>
-          <section>{{{summary}}}</section>
-          {{/Interface}}
-          {{#Enum.0}}
-          <h3 id="enums">Enums</h3>
-          {{/Enum.0}}
-          {{#Enum}}
-          <h4>{{{specName}}}</h4>
-          <section>{{{summary}}}</section>
-          {{/Enum}}
-          {{#Delegate.0}}
-          <h3 id="delegates">Delegates</h3>
-          {{/Delegate.0}}
-          {{#Delegate}}
-          <h4>{{{specName}}}</h4>
-          <section>{{{summary}}}</section>
-          {{/Delegate}}
+            <h3 id="{{id}}">{{title}}</h3>
+            {{#children}}
+              <h4>{{{specName}}}</h4>
+              <section>{{{summary}}}</section>
+            {{/children}}
           {{/children}}
           {{/isNamespace}}
           {{! -------End Template for Namespace--------}}
@@ -124,7 +98,7 @@
       </a>{{/sourceurl}}
       <h1 id="{{id}}">{{type}} {{name}}</h1>
       <div class="markdown level0 summary">{{{summary}}}</div>
-      <div class="markdown level0 remarks">{{{remarks}}}</div>
+      <div class="markdown level0 conceptual">{{{conceptual}}}</div>
       {{#inheritance.0}}
       <div class="inheritance">
         <h5>Inheritance</h5>
@@ -140,21 +114,27 @@
       <div class="codewrapper">
         <pre><code class="lang-{{_lang}} hljs">{{{syntax.content}}}</code></pre>
       </div>
-      {{#children}}
-      {{#Constructor.0}}
-      <h3 id="constructors">Constructors</h3>
-      {{/Constructor.0}}
-      {{#Constructor}}
-      {{#docurl}}<span class="small pull-right mobile-hide">
+  {{#remarks}}
+      <h5 id="{{id}}_remarks"><strong>Remarks<strong></h5>
+      <div class="markdown level0 remarks">{{{remarks}}}</div>
+  {{/remarks}}
+{{#children}}
+      <h3 id="{{id}}">{{title}}</h3>
+  {{#children}}
+      {{#docurl}}
+      <span class="small pull-right mobile-hide"><a href="{{docurl}}">Improve this Doc</a>
       <span class="divider">|</span>
-      <a href="{{docurl}}"><!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc</a>
-    </span>{{/docurl}}
-    {{#sourceurl}}<span class="small pull-right mobile-hide">
-    <a href="{{sourceurl}}"><!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>-->View Source</a>
-  </span>{{/sourceurl}}
+      </span>{{/docurl}}
+      {{#sourceurl}}<span class="small pull-right mobile-hide">
+      <a href="{{sourceurl}}">View Source</a>
+      </span>{{/sourceurl}}
   <h4 id="{{id}}">{{name}}</h4>
   <div class="markdown level1 summary">{{{summary}}}</div>
+  <div class="markdown level1 conceptual">{{{conceptual}}}</div>
+  {{#remarks}}
+  <h5 id="{{id}}_remarks">Remarks</h5>
   <div class="markdown level1 remarks">{{{remarks}}}</div>
+  {{/remarks}}
   <h5 class="decalaration">Declaration</h5>
   {{#syntax}}
   <div class="codewrapper">
@@ -183,230 +163,42 @@
     </tbody>
   </table>
   {{/parameters.0}}
+  {{#return}}
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{{type.specName}}}</td>
+        <td>{{{description}}}</td>
+      </tr>
+    </tbody>
+  </table>
+  {{/return}}
+  {{#propertyValue}}
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{{type.specName}}}</td>
+        <td>{{{description}}}</td>
+      </tr>
+    </tbody>
+  </table>
+  {{/propertyValue}}
   {{/syntax}}
-  {{/Constructor}}
-  {{#Field.0}}
-  <h3 id="fields">Fields</h3>
-  {{/Field.0}}
-  {{#Field}}
-  {{#docurl}}<span class="small pull-right mobile-hide">
-  <span class="divider">|</span>
-  <a href="{{docurl}}"><!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc</a></span>{{/docurl}}
-  {{#sourceurl}}<span class="small pull-right mobile-hide">
-  <a href="{{sourceurl}}"><!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>-->View Source</a>
-</span>{{/sourceurl}}
-<h4 id="{{id}}">{{name}}</h4>
-<div class="markdown level1 summary">{{{summary}}}</div>
-<div class="markdown level1 remarks">{{{remarks}}}</div>
-<h5 class="decalaration">Declaration</h5>
-{{#syntax}}
-<div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{{syntax.content}}}</code></pre>
-</div>
-{{/syntax}}
-{{/Field}}
-{{#Property.0}}
-<h3 id="properties">Properties</h3>
-{{/Property.0}}
-{{#Property}}
-{{#docurl}}<span class="small pull-right mobile-hide">
-<span class="divider">|</span>
-<a href="{{docurl}}"><!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc</a>
-</span>{{/docurl}}
-{{#sourceurl}}<span class="small pull-right mobile-hide">
-<a href="{{sourceurl}}"><!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>-->View Source</a>
-</span>{{/sourceurl}}
-<h4 id="{{id}}">{{name}}</h4>
-<div class="markdown level1 summary">{{{summary}}}</div>
-<div class="markdown level1 remarks">{{{remarks}}}</div>
-<h5 class="decalaration">Declaration</h5>
-{{#syntax}}
-<div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{{syntax.content}}}</code></pre>
-</div>
-{{#parameters.0}}
-<h5 class="parameters">Parameters</h5>
-<table class="table table-bordered table-striped table-condensed">
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Name</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{/parameters.0}}
-    {{#parameters}}
-    <tr>
-      <td>{{{type.specName}}}</td>
-      <td><em>{{{id}}}</em></td>
-      <td>{{{description}}}</td>
-    </tr>
-    {{/parameters}}
-    {{#parameters.0}}
-  </tbody>
-</table>
-{{/parameters.0}}
-{{#return}}
-<h5 class="returns">Property Value</h5>
-<table class="table table-bordered table-striped table-condensed">
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{{type.specName}}}</td>
-      <td>{{{description}}}</td>
-    </tr>
-  </tbody>
-</table>
-{{/return}}
-{{/syntax}}
-{{/Property}}
-{{#Method.0}}
-<h3 id="methods">Methods</h3>
-{{/Method.0}}
-{{#Method}}
-{{#docurl}}<span class="small pull-right mobile-hide">
-<span class="divider">|</span>
-<a href="{{docurl}}"><!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc</a>
-</span>{{/docurl}}
-{{#sourceurl}}<span class="small pull-right mobile-hide">
-<a href="{{sourceurl}}"><!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>-->View Source</a>
-</span>{{/sourceurl}}
-<h4 id="{{id}}">{{name}}</h4>
-<div class="markdown level1 summary">{{{summary}}}</div>
-<div class="markdown level1 remarks">{{{remarks}}}</div>
-<h5 class="decalaration">Declaration</h5>
-{{#syntax}}
-<div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{{syntax.content}}}</code></pre>
-</div>
-{{#parameters.0}}
-<h5 class="parameters">Parameters</h5>
-<table class="table table-bordered table-striped table-condensed">
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Name</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{/parameters.0}}
-    {{#parameters}}
-    <tr>
-      <td>{{{type.specName}}}</td>
-      <td><em>{{{id}}}</em></td>
-      <td>{{{description}}}</td>
-    </tr>
-    {{/parameters}}
-    {{#parameters.0}}
-  </tbody>
-</table>
-{{/parameters.0}}
-{{#return}}
-<h5 class="returns">Returns</h5>
-<table class="table table-bordered table-striped table-condensed">
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{{type.specName}}}</td>
-      <td>{{{description}}}</td>
-    </tr>
-  </tbody>
-</table>
-{{/return}}
-{{/syntax}}
-{{/Method}}
-{{#Event.0}}
-<h3 id="events">Events</h3>
-{{/Event.0}}
-{{#Event}}
-{{#docurl}}<span class="small pull-right mobile-hide">
-<span class="divider">|</span>
-<a href="{{docurl}}"><!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc</a>
-</span>{{/docurl}}
-{{#sourceurl}}<span class="small pull-right mobile-hide">
-<a href="{{sourceurl}}"><!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>-->View Source</a>
-</span>{{/sourceurl}}
-<h4 id="{{id}}">{{name}}</h4>
-<div class="markdown level1 summary">{{{summary}}}</div>
-<div class="markdown level1 remarks">{{{remarks}}}</div>
-<h5 class="decalaration">Declaration</h5>
-{{#syntax}}
-<div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{{syntax.content}}}</code></pre>
-</div>
-{{/syntax}}
-{{/Event}}
-{{#Operator.0}}
-<h3 id="operators">Operators</h3>
-{{/Operator.0}}
-{{#Operator}}
-{{#docurl}}<span class="small pull-right mobile-hide">
-<span class="divider">|</span>
-<a href="{{docurl}}"><!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc</a>
-</span>{{/docurl}}
-{{#sourceurl}}<span class="small pull-right mobile-hide">
-<a href="{{sourceurl}}"><!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>-->View Source</a>
-</span>{{/sourceurl}}
-<h4 id="{{id}}">{{name}}</h4>
-<div class="markdown level1 summary">{{{summary}}}</div>
-<div class="markdown level1 remarks">{{{remarks}}}</div>
-<h5 class="decalaration">Declaration</h5>
-{{#syntax}}
-<div class="codewrapper"><pre><code class="lang-{{_lang}} hljs">{{{syntax.content}}}</code></pre></div>
-{{#parameters.0}}
-<h5 class="parameters">Parameters</h5>
-<table class="table table-bordered table-striped table-condensed">
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Name</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{/parameters.0}}
-    {{#parameters}}
-    <tr>
-      <td>{{{type.specName}}}</td>
-      <td><em>{{{id}}}</em></td>
-      <td>{{{description}}}</td>
-    </tr>
-    {{/parameters}}
-    {{#parameters.0}}
-  </tbody>
-</table>
-{{/parameters.0}}
-{{#return}}
-<h5 class="returns">Returns</h5>
-<table class="table table-bordered table-striped table-condensed">
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{{type.specName}}}</td>
-      <td>{{{description}}}</td>
-    </tr>
-  </tbody>
-</table>
-{{/return}}
-{{/syntax}}
-{{/Operator}}
+  {{/children}}
 {{/children}}
 {{/isClass}}
 {{! -------End Template for Class--------}}

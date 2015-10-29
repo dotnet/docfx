@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode
 {
     using Microsoft.DocAsCode.EntityModel;
+    using Plugins;
     using Microsoft.DocAsCode.Utility;
     using Newtonsoft.Json.Linq;
     using System;
@@ -55,7 +56,7 @@ namespace Microsoft.DocAsCode
                 Console.WriteLine(_helpMessage);
                 return ParseResult.SuccessResult;
             }
-            Config.BaseDirectory = _context.BaseDirectory;
+            Config.BaseDirectory = _context?.BaseDirectory;
             return InternalExec(Config, context);
         }
 
@@ -109,10 +110,10 @@ namespace Microsoft.DocAsCode
         private static MetadataJsonConfig GetConfigFromOptions(MetadataCommandOptions options)
         {
             string jsonConfig;
-            if (CommandFactory.TryGetJsonConfig(options.Projects, out jsonConfig))
+            if (TryGetJsonConfig(options.Projects, out jsonConfig))
             {
                 var command = (MetadataCommand)CommandFactory.ReadConfig(jsonConfig, null).Commands.FirstOrDefault(s => s is MetadataCommand);
-                if (command == null) throw new ApplicationException($"Unable to find {SubCommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
+                if (command == null) throw new DocumentException($"Unable to find {SubCommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
                 return command.Config;
             }
 
@@ -125,6 +126,55 @@ namespace Microsoft.DocAsCode
                 Source = new FileMapping(new FileMappingItem() { Files = new FileItems(options.Projects) })
             });
             return config;
+        }
+
+        private static bool TryGetJsonConfig(List<string> inputGlobPattern, out string jsonConfig)
+        {
+            var validProjects = GlobUtility.GetFilesFromGlobPatterns(null, inputGlobPattern).ToList();
+
+            if (!validProjects.Any())
+            {
+                if (!File.Exists(Constants.ConfigFileName))
+                {
+                    throw new ArgumentException("Either provide config file or specify project files to generate metadata.");
+                }
+                else
+                {
+                    Logger.Log(LogLevel.Info, $"Config file {Constants.ConfigFileName} found, start generating metadata...");
+                    jsonConfig = Constants.ConfigFileName;
+                    return true;
+                }
+            }
+
+            // Get the first docfx.json config file
+            var configFiles = validProjects.FindAll(s => Path.GetFileName(s).Equals(Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase));
+            var otherFiles = validProjects.Except(configFiles).ToList();
+
+            // Load and ONLY load docfx.json when it exists
+            if (configFiles.Count > 0)
+            {
+                jsonConfig = configFiles[0];
+                var baseDirectory = Path.GetDirectoryName(jsonConfig);
+                if (configFiles.Count > 1)
+                {
+                    Logger.Log(LogLevel.Warning, $"Multiple {Constants.ConfigFileName} files are found! The first one in {configFiles[0]} is selected, and others are ignored.");
+                }
+                else
+                {
+                    if (otherFiles.Count > 0)
+                    {
+                        Logger.Log(LogLevel.Warning, $"Config file {Constants.ConfigFileName} is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters will be ignored.");
+                    }
+                    else Logger.Log(LogLevel.Verbose, $"Config file is found in {jsonConfig}.");
+                }
+                
+                return true;
+            }
+            else
+            {
+                jsonConfig = null;
+                return false;
+            }
         }
     }
 }

@@ -19,5 +19,10 @@ function transform(model, _attrs){
   if (vm._tocPath && vm._tocPath.indexOf("~/") == 0){
     vm._tocPath = vm._tocPath.substring(2);
   }
+  if (vm._navPath === vm._tocPath){
+    vm._allowToc = false;
+  }else{
+    vm._allowToc = true;
+  }
   return vm;
 }

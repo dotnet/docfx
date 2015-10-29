@@ -2,12 +2,77 @@
 // TODO: support multiple languages: [].concat(langs)
 function transform(model, _attrs) {
   var util = new Utility();
+  var namespaceItems = [
+    {
+      key: "Class",
+      title: "Classes",
+      id: "classes"
+    },
+    {
+      key: "Struct",
+      title: "Structs",
+      id: "structs"
+    },
+    {
+      key: "Interface",
+      title: "Interfaces",
+      id: "interfaces"
+    },
+    {
+      key: "Enum",
+      title: "Enums",
+      id: "enums"
+    },
+    {
+      key: "Delegate",
+      title: "Delegates",
+      id: "delegates"
+    }
+  ];
+  var classItems = [
+    {
+      key: "Constructor",
+      title: "Constructors",
+      id: "constructors"
+    },
+    {
+      key: "Field",
+      title: "Fields",
+      id: "fields"
+    },
+    {
+      key: "Property",
+      title: "Properties",
+      id: "properties"
+    },
+    {
+      key: "Method",
+      title: "Methods",
+      id: "methods"
+    },
+    {
+      key: "Event",
+      title: "Events",
+      id: "events"
+    },
+    {
+      key: "Operator",
+      title: "Operators",
+      id: "operators"
+    }
+  ];
   if (util.isString(model)) model = JSON.parse(model);
 
   // attrs contains additional system infomation:
   if (_attrs && util.isString(_attrs)) _attrs = JSON.parse(_attrs);
 
   model = createViewModel(model, _attrs);
+  if (_attrs._navPath === _attrs._tocPath){
+    model._allowToc = false;
+  }else{
+    model._allowToc = true;
+  }
+
   return model;
 
   function createViewModel(model, _attrs) {
@@ -21,6 +86,10 @@ function transform(model, _attrs) {
       case 'namespace':
         return new NamespaceViewModel(item, _attrs, refs);
       case 'class':
+      case 'interface':
+      case 'struct':
+      case 'delegate':
+      case 'enum':
         return new ClassViewModel(item, _attrs, refs);
       default:
         return new GeneralViewModel(item, _attrs, refs);
@@ -40,11 +109,59 @@ function transform(model, _attrs) {
     function NamespaceViewModel(item, _attrs, refs) {
       GeneralViewModel.call(this, item, _attrs, refs);
       this.isNamespace = true;
+
+      if (this.item.children) {
+        var grouped = {};
+        // group children with their type
+        this.item.children.forEach(function (c) {
+          c = refs.getViewModel(c, this._lang, util.changeExtension(this._ext));
+          var type = c.type;
+          if (!grouped[type]) grouped[type] = [];
+          grouped[type].push(c);
+        })
+        var children = [];
+        for (var i=0; i<namespaceItems.length; i++){
+          var key = namespaceItems[i];
+          var items = key.children = grouped[key.key];
+          if (items && items.length > 0){
+            children.push(key);
+          }
+        }
+
+        this.item.children = children;
+      }
     }
 
     function ClassViewModel(item, _attrs, refs) {
       GeneralViewModel.call(this, item, _attrs, refs);
       this.isClass = true;
+
+      if (this.item.children) {
+        var grouped = {};
+        // group children with their type
+        this.item.children.forEach(function (c) {
+          c = refs.getViewModel(c, this._lang, util.changeExtension(this._ext));
+          var type = c.type;
+          if (!grouped[type]) grouped[type] = [];
+
+          // special handle for property
+          if (type === "Property" && c.syntax){
+            c.syntax.propertyValue = c.syntax.return;
+            c.syntax.return = undefined;
+          }
+          grouped[type].push(c);
+        })
+        var children = [];
+        for (var i=0; i<classItems.length; i++){
+          var key = classItems[i];
+          var items = key.children = grouped[key.key];
+          if (items && items.length > 0){
+            children.push(key);
+          }
+        }
+
+        this.item.children = children;
+      }
     }
 
     function References(model) {
@@ -56,19 +173,7 @@ function transform(model, _attrs) {
         var vm = getRefvm(uid, lang, extChanger);
         vm.docurl = getImproveTheDocHref(vm);
         vm.sourceurl = getViewSourceHref(vm);
-
-        if (vm.children) {
-          var grouped = {};
-          // group children with their type
-          vm.children.forEach(function (c) {
-            c = getViewModel(c, lang, extChanger);
-            var type = c.type;
-            if (!grouped[type]) grouped[type] = [];
-            grouped[type].push(c);
-          })
-          vm.children = grouped;
-        }
-
+    
         if (vm.inheritance) {
           vm.inheritance = vm.inheritance.map(function (c, i) {
             var inhe = getRefvm(c, lang, extChanger);
@@ -125,7 +230,7 @@ function transform(model, _attrs) {
       function getViewSourceHref(item) {
         /* jshint validthis: true */
         if (!item || !item.source || !item.source.remote) return '';
-        return getRemoteUrl(item.source.remote, item.source.startLine + 1);
+        return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1);
       }
 
       function getRemoteUrl(remote, startLine) {
