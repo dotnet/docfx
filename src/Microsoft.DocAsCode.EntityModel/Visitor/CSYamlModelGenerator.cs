@@ -462,62 +462,62 @@ namespace Microsoft.DocAsCode.EntityModel
                         SyntaxKind.NullLiteralExpression,
                         SyntaxFactory.Token(SyntaxKind.NullKeyword)));
             }
-            else if (value is bool)
+            if (value is bool)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         (bool)value ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression));
             }
-            else if (value is long)
+            if (value is long)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((long)value)));
             }
-            else if (value is ulong)
+            if (value is ulong)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((ulong)value)));
             }
-            else if (value is int)
+            if (value is int)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((int)value)));
             }
-            else if (value is uint)
+            if (value is uint)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((uint)value)));
             }
-            else if (value is short)
+            if (value is short)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((short)value)));
             }
-            else if (value is ushort)
+            if (value is ushort)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((ushort)value)));
             }
-            else if (value is byte)
+            if (value is byte)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((byte)value)));
             }
-            else if (value is sbyte)
+            if (value is sbyte)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
@@ -545,21 +545,20 @@ namespace Microsoft.DocAsCode.EntityModel
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((decimal)value)));
             }
-            else if (value is char)
+            if (value is char)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.CharacterLiteralExpression,
                         SyntaxFactory.Literal((char)value)));
             }
-            else if (value is string)
+            if (value is string)
             {
                 return SyntaxFactory.EqualsValueClause(
                     SyntaxFactory.LiteralExpression(
                         SyntaxKind.StringLiteralExpression,
                         SyntaxFactory.Literal((string)value)));
             }
-
             Debug.Fail("Unknown default value!");
             return null;
         }

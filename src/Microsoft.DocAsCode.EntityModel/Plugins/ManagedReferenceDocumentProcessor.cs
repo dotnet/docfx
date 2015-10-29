@@ -83,6 +83,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     {
                         Uids = (from item in overrides
                                 select item.Uid).ToImmutableArray(),
+                        Properties =
+                        {
+                            LinkToFiles = new HashSet<string>(),
+                            LinkToUids = new HashSet<string>(),
+                        }
                     };
                 default:
                     throw new NotSupportedException();
@@ -95,30 +100,92 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 throw new NotSupportedException();
             }
-            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), model.Content);
+            var vm = (PageViewModel)model.Content;
+            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), vm);
+            var linkToUids = (HashSet<string>)model.Properties.LinkToUids;
+            linkToUids.UnionWith(GetViewModelXRef(vm));
             return new SaveResult
             {
                 DocumentType = "ManagedReference",
                 ModelFile = model.File,
                 LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
-                LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableArray(), // todo : more uid link
-                XRefSpecs = (from item in ((PageViewModel)model.Content).Items
+                LinkToUids = linkToUids.ToImmutableArray(),
+                XRefSpecs = (from item in vm.Items
                              select GetXRefInfo(item)).ToImmutableArray(),
             };
         }
 
+        private IEnumerable<string> GetViewModelXRef(PageViewModel vm)
+        {
+            foreach (var reference in vm.References)
+            {
+                if (reference.Uid.StartsWith("{") && reference.Uid.EndsWith("}"))
+                {
+                    // ignore generic type parameter.
+                    continue;
+                }
+                if (reference.SpecForCSharp == null && reference.SpecForVB == null)
+                {
+                    yield return reference.Uid;
+                }
+                else
+                {
+                    // for spec type, only return the real type:
+                    // e.g.:
+                    //  - List<string>  -->  List`1, string
+                    //  - object[]      -->  object
+                    if (reference.SpecForCSharp != null)
+                    {
+                        foreach (var specItem in reference.SpecForCSharp)
+                        {
+                            if (specItem.Uid != null)
+                            {
+                                yield return specItem.Uid;
+                            }
+                        }
+                    }
+                    if (reference.SpecForVB != null)
+                    {
+                        foreach (var specItem in reference.SpecForVB)
+                        {
+                            if (specItem.Uid != null)
+                            {
+                                yield return specItem.Uid;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private static XRefSpec GetXRefInfo(ItemViewModel item)
         {
-            return new XRefSpec
+            var result = new XRefSpec
             {
                 Uid = item.Uid,
                 Name = item.Name,
-                ["fullName"] = item.FullName,
-                ["name.csharp"] = item.NameForCSharp,
-                ["name.vb"] = item.NameForVB,
-                ["fullName.csharp"] = item.FullNameForCSharp,
-                ["fullName.vb"] = item.FullNameForVB,
             };
+            if (!string.IsNullOrEmpty(item.NameForCSharp))
+            {
+                result["name.csharp"] = item.NameForCSharp;
+            }
+            if (!string.IsNullOrEmpty(item.NameForVB))
+            {
+                result["name.vb"] = item.NameForVB;
+            }
+            if (!string.IsNullOrEmpty(item.FullName))
+            {
+                result["fullName"] = item.FullName;
+            }
+            if (!string.IsNullOrEmpty(item.FullNameForCSharp))
+            {
+                result["fullName.csharp"] = item.FullNameForCSharp;
+            }
+            if (!string.IsNullOrEmpty(item.FullNameForVB))
+            {
+                result["fullName.vb"] = item.FullNameForVB;
+            }
+            return result;
         }
 
         public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
@@ -136,8 +203,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     {
                         BuildItem(host, item, model);
                     }
+                    model.File = Path.ChangeExtension(model.File, ".yml");
                     break;
                 case DocumentType.Override:
+                    foreach (var item in (List<ItemViewModel>)model.Content)
+                    {
+                        BuildItem(host, item, model);
+                    }
                     return;
                 default:
                     throw new NotSupportedException();
@@ -182,6 +254,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             item.Summary = Markup(host, item.Summary, model);
             item.Remarks = Markup(host, item.Remarks, model);
+            item.Conceptual = Markup(host, item.Conceptual, model);
             if (item.Syntax?.Return?.Description != null)
             {
                 item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, model);

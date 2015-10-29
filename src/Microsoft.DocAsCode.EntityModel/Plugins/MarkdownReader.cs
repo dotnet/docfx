@@ -54,6 +54,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         {
                             var vm = YamlUtility.Deserialize<ItemViewModel>(sr);
                             vm.Conceptual = content.Substring(start, end - start + 1);
+                            vm.Uid = item.Id;
                             yield return vm;
                         }
                     }

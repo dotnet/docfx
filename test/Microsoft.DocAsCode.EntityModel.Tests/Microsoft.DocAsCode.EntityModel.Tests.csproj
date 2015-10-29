@@ -99,6 +99,12 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="tmpl\tmpl1.zip" />
+    <None Include="TestData\System.Console.csyml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\System.ConsoleColor.csyml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="tmpl\tmpl1\sub\file1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

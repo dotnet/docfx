@@ -35,6 +35,8 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         {
             const string documentsBaseDir = "documents";
             const string outputBaseDir = "output";
+
+            #region Prepare test data
             if (Directory.Exists(documentsBaseDir))
             {
                 Directory.Delete(documentsBaseDir, true);
@@ -86,7 +88,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
             files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, "TestData", new[] { "System.Console.csyml", "System.ConsoleColor.csyml" });
             files.Add(DocumentType.Resource, new[] { resourceFile });
+            #endregion
 
             Init();
             try
@@ -145,14 +149,18 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var filepath = Path.Combine(outputBaseDir, ".docfx.manifest");
                 Assert.True(File.Exists(filepath));
                 var manifest = YamlUtility.Deserialize<List<Dictionary<string, object>>>(filepath);
-                Assert.Equal(3, manifest.Count);
+                Assert.Equal(5, manifest.Count);
                 Assert.Equal("Conceptual", manifest[0]["type"]);
                 Assert.Equal(@"documents/test.yml", manifest[0]["model"]);
                 Assert.Equal("Conceptual", manifest[1]["type"]);
                 Assert.Equal(@"documents/test/test.yml", manifest[1]["model"]);
-                Assert.Equal("Resource", manifest[2]["type"]);
-                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.yml", manifest[2]["model"]);
-                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[2]["resource"]);
+                Assert.Equal("ManagedReference", manifest[2]["type"]);
+                Assert.Equal(@"System.Console.yml", manifest[2]["model"]);
+                Assert.Equal("ManagedReference", manifest[3]["type"]);
+                Assert.Equal(@"System.ConsoleColor.yml", manifest[3]["model"]);
+                Assert.Equal("Resource", manifest[4]["type"]);
+                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.yml", manifest[4]["model"]);
+                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[4]["resource"]);
             }
 
             {
@@ -160,9 +168,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var filepath = Path.Combine(outputBaseDir, ".docfx.filemap");
                 Assert.True(File.Exists(filepath));
                 var filemap = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
-                Assert.Equal(3, filemap.Count);
+                Assert.Equal(5, filemap.Count);
                 Assert.Equal("~/documents/test.yml", filemap["~/documents/test.md"]);
                 Assert.Equal("~/documents/test/test.yml", filemap["~/documents/test/test.md"]);
+                Assert.Equal("~/System.Console.yml", filemap["~/System.Console.csyml"]);
+                Assert.Equal("~/System.ConsoleColor.yml", filemap["~/System.ConsoleColor.csyml"]);
                 Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
             }
 
@@ -171,9 +181,10 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var filepath = Path.Combine(outputBaseDir, ".docfx.xref");
                 Assert.True(File.Exists(filepath));
                 var xref = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
-                Assert.Equal(2, xref.Count);
+                Assert.Equal(3, xref.Count);
                 Assert.Equal("~/documents/test.yml", xref["XRef1"]);
                 Assert.Equal("~/documents/test/test.yml", xref["XRef2"]);
+                Assert.Equal("~/System.ConsoleColor.yml", xref["System.ConsoleColor"]);
             }
 
             {
@@ -181,11 +192,20 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var filepath = Path.Combine(outputBaseDir, ".docfx.xrefspec");
                 Assert.True(File.Exists(filepath));
                 var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
-                Assert.Equal(0, xref.Count);
+                Assert.Equal(68, xref.Count);
+                Assert.NotNull(xref.Single(s => s.Uid == "System.Console"));
+                Assert.NotNull(xref.Single(s => s.Uid == "System.Console.BackgroundColor"));
+                Assert.NotNull(xref.Single(s => s.Uid == "System.Console.SetOut(System.IO.TextWriter)"));
+                Assert.NotNull(xref.Single(s => s.Uid == "System.Console.WriteLine(System.Int32)"));
+                Assert.NotNull(xref.Single(s => s.Uid == "System.ConsoleColor"));
+                Assert.NotNull(xref.Single(s => s.Uid == "System.ConsoleColor.Black"));
             }
+
+            #region Cleanup
             Directory.Delete(documentsBaseDir, true);
             Directory.Delete(outputBaseDir, true);
             File.Delete(resourceMetaFile);
+            #endregion
         }
 
         [Fact]

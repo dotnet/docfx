@@ -255,7 +255,7 @@ When rendering reference in markdown, they will be expanded into a link with the
 ```
 
 Will be rendered to:
-[Dictionary](@{System.Collections.Generic.Dictionary`2})<[String](@{System.String}), [String](@{System.String})>
+``[Dictionary](@{System.Collections.Generic.Dictionary`2})<[String](@{System.String}), [String](@{System.String})>``
 
 Besides *UID*, we also allow reference item using *ID* and *alias*, in markdown processor, the following algorithm **SHOULD** be implemented to resolve references:
 

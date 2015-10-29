@@ -667,9 +667,6 @@ footer {
   }
 
   .toc .level2 > li:after {
-    margin-left: -3px;
-    margin-right: 5px;
-    content: "";
-    color: #666666;
+    display: none;
   }
 }

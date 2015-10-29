@@ -48,38 +48,41 @@ $(function() {
     onTocLoaded(updateTocHref);
 
     function loadNavbar(){
-      var navbarPath = $("meta[property='docfx\\:nav'").attr("content");
-      var tocPath = $("meta[property='docfx\\:toc'").attr("content");
+      var navbarPath = $("meta[property='docfx\\:navrel'").attr("content");
+      var tocPath = $("meta[property='docfx\\:tocrel'").attr("content");
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
       // TODO: better way to handle navbar
       if (navbarPath !== tocPath) {
 
         $('#navbar').load(navbarPath+" #toc>ul", function(){
-        var navrel = getRelativePath("navrel");
-          if (navrel) {
-            $('#navbar>ul').addClass('navbar-nav');
-
-            // set active item
-            $('#navbar').find('a[href]').each(function(i, e) {
-              var href = $(e).attr("href");
-              if (isRelativePath(href)) {
-                var normalizedHref = navrel + href;
-                $(e).attr("href", normalizedHref);
-
-                // TODO: current is to trim toc.html, what about append index.html for folders?
-                // TODO: currently only support one level navbar
-                if (getAbsolutePath(normalizedHref) === getAbsolutePath(tocPath) ||
-                  (tocPath.lastIndexOf('/') > -1 && getAbsolutePath(normalizedHref) === getAbsolutePath(tocPath.substr(0, tocPath.lastIndexOf('/') + 1))))
-                  {
-                  $(e).parent().addClass(active);
-                  breadcrumb.insert({href: e.href, name: e.innerText}, 0);
-                }else{
-                  $(e).parent().removeClass(active)
-                }
-              }
-            })
+          var index = navbarPath.lastIndexOf('/');
+          if (index === -1) {
+            console.log("invalid navbar path: " + navbarPath);
+            return;
           }
+          var navrel = navbarPath.substr(0, index+1);
+          $('#navbar>ul').addClass('navbar-nav');
+
+          // set active item
+          $('#navbar').find('a[href]').each(function(i, e) {
+            var href = $(e).attr("href");
+            if (isRelativePath(href)) {
+              var normalizedHref = navrel + href;
+              $(e).attr("href", normalizedHref);
+
+              // TODO: current is to trim toc.html, what about append index.html for folders?
+              // TODO: currently only support one level navbar
+              if (getAbsolutePath(normalizedHref) === getAbsolutePath(tocPath) ||
+                (tocPath.lastIndexOf('/') > -1 && getAbsolutePath(normalizedHref) === getAbsolutePath(tocPath.substr(0, tocPath.lastIndexOf('/') + 1))))
+                {
+                $(e).parent().addClass(active);
+                breadcrumb.insert({href: e.href, name: e.innerText}, 0);
+              }else{
+                $(e).parent().removeClass(active)
+              }
+            }
+          })
         })
       }
     }

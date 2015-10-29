@@ -1,5 +1,6 @@
 ﻿namespace Microsoft.DocAsCode.EntityModel.Builders
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -11,7 +12,7 @@
 
     public sealed class DocumentBuildContext
     {
-        public DocumentBuildContext(string buildOutputFolder): this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty) { }
+        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages)
         {
@@ -74,15 +75,16 @@
                 result[uid] = UidMap[uid];
             }
             XRef.ExceptWith(common);
+            List<string> missingUids = new List<string>();
             if (XRef.Count > 0)
             {
                 if (ExternalReferencePackages.Length > 0)
                 {
-                        var externalReferences = (from reader in
-                                                      from package in ExternalReferencePackages.AsParallel()
-                                                      select ExternalReferencePackageReader.CreateNoThrow(package)
-                                                  where reader != null
-                                                  select reader).ToList();
+                    var externalReferences = (from reader in
+                                                  from package in ExternalReferencePackages.AsParallel()
+                                                  select ExternalReferencePackageReader.CreateNoThrow(package)
+                                              where reader != null
+                                              select reader).ToList();
 
                     foreach (var uid in XRef)
                     {
@@ -93,13 +95,28 @@
                         }
                         else
                         {
-                            // todo : trace xref cannot find.
+                            if (missingUids.Count < 100)
+                            {
+                                missingUids.Add(uid);
+                            }
                         }
                     }
                 }
                 else
                 {
-                    // todo : trace xref cannot find.
+                    missingUids.AddRange(XRef.Take(100));
+                }
+            }
+            if (missingUids.Count > 0)
+            {
+                var uidLines = string.Join(Environment.NewLine + "\t", missingUids);
+                if (missingUids.Count < 100)
+                {
+                    Logger.LogWarning($"Missing following definitions of xref:{Environment.NewLine}{uidLines}.");
+                }
+                else
+                {
+                    Logger.LogWarning($"Too many missing definitions of xref, following is top 100:{Environment.NewLine}{uidLines}.");
                 }
             }
             return result;

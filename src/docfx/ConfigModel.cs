@@ -84,10 +84,17 @@ namespace Microsoft.DocAsCode
                 jItems = JObject.Load(reader);
             }
 
-            foreach (var item in jItems)
+            if (jItems is JValue)
             {
-                FileMappingItem itemModel = FileModelParser.ParseItem(item);
-                model.Add(itemModel);
+                model.Add(FileModelParser.ParseItem(jItems.ToString()));
+            }
+            else
+            {
+                foreach (var item in jItems)
+                {
+                    FileMappingItem itemModel = FileModelParser.ParseItem(item);
+                    model.Add(itemModel);
+                }
             }
 
             return model;

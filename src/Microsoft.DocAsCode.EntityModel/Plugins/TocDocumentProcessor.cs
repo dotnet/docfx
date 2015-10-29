@@ -65,66 +65,62 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             var toc = (TocViewModel)model.Content;
             var path = (RelativePath)model.OriginalFileAndType.File;
-            var tocMap = GetTocMap(null, toc, path);
-
-            HashSet<string> links = new HashSet<string>();
-            foreach (var item in toc)
-            {
-                UpdateRelativePath(item, (RelativePath)model.File, links);
-            }
 
             YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), toc);
             return new SaveResult
             {
                 DocumentType = "Toc",
                 ModelFile = model.File,
-                TocMap = tocMap.ToImmutableDictionary(),
-                LinkToFiles = links.ToImmutableArray()
+                TocMap = model.Properties.TocMap,
+                LinkToFiles = model.Properties.LinkToFiles
             };
         }
 
-        private void UpdateRelativePath(TocItemViewModel item, RelativePath file, HashSet<string> links)
+        private void UpdateRelativePathAndAddTocMap(TocViewModel toc, FileModel model, HashSet<string> links, Dictionary<string, HashSet<string>> tocMap, IHostService hostService)
         {
-            if (PathUtility.IsRelativePath(item.Href))
-            {
-                item.Href = (RelativePath)"~/" + ((RelativePath)item.Href).BasedOn(file);
-                links.Add(item.Href);
-            }
-            if (item.Items != null && item.Items.Count > 0)
-            {
-                foreach (var i in item.Items)
-                {
-                    UpdateRelativePath(i, file, links);
-                }
-            }
-        }
-
-        private Dictionary<string, HashSet<string>> GetTocMap(Dictionary<string, HashSet<string>> tocMap, IList<TocItemViewModel> toc, RelativePath modelPath)
-        {
-            if (tocMap == null) tocMap = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveComparer);
+            if (toc == null) return;
+            var file = model.File;
+            var originalFile = model.OriginalFileAndType.File;
             foreach(var item in toc)
             {
                 if (PathUtility.IsRelativePath(item.Href))
                 {
-                    var path = (RelativePath)"~/" + ((RelativePath)item.Href).BasedOn(modelPath);
-                    var tocPath = modelPath;
-                    HashSet<string> value;
-                    if (tocMap.TryGetValue(path, out value))
+                    // Special handle for folder ends with '/'
+                    string fileName = Path.GetFileName(item.Href);
+                    if (string.IsNullOrEmpty(fileName))
                     {
-                        value.Add(tocPath);
+                        var href = item.Href + "toc.yml";
+                        var tocPath = (RelativePath)"~/" + (RelativePath)href;
+                        if (!hostService.SourceFiles.Contains(tocPath))
+                        {
+                            href = item.Href + "toc.md";
+                            tocPath = (RelativePath)"~/" + (RelativePath)href;
+                            if (!hostService.SourceFiles.Contains(tocPath))
+                            {
+                                Logger.LogError($"Unable to find either toc.yml or toc.md inside {item.Href}");
+                                href = item.Href + "index.md"; // TODO: what if index.html exists?
+                            }
+                        }
+
+                        item.Href = href;
+                    }
+
+                    item.Href = (RelativePath)"~/" + ((RelativePath)item.Href).BasedOn((RelativePath)file);
+                    HashSet<string> value;
+                    if (tocMap.TryGetValue(item.Href, out value))
+                    {
+                        value.Add(originalFile);
                     }
                     else
                     {
-                        tocMap[path] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocPath };
+                        tocMap[item.Href] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { originalFile };
                     }
+
+                    links.Add(item.Href);
                 }
-                if (item.Items != null && item.Items.Count > 0)
-                {
-                    GetTocMap(tocMap, item.Items, modelPath);
-                }
+
+                UpdateRelativePathAndAddTocMap(item.Items, model, links, tocMap, hostService);
             }
-            if (tocMap.Count == 0) return null;
-            return tocMap;
         }
 
         public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
@@ -135,6 +131,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         public void Build(FileModel model, IHostService host)
         {
             model.File = Path.ChangeExtension(model.File, ".yml");
+            var toc = (TocViewModel)model.Content;
+            HashSet<string> links = new HashSet<string>();
+            Dictionary<string, HashSet<string>> tocMap = new Dictionary<string, HashSet<string>>();
+            UpdateRelativePathAndAddTocMap(toc, model, links, tocMap, host);
+            model.Properties.LinkToFiles = links.ToImmutableArray();
+            model.Properties.TocMap = tocMap.ToImmutableDictionary();
             // todo : metadata.
         }
 
