@@ -40,5 +40,21 @@
     "hljs": true,
     "L": true,
     "console": true
-  }
+  },
+
+  "predef": [
+    "jasmine",
+    "describe",
+    "xdescribe",
+    "before",
+    "beforeEach",
+    "after",
+    "afterEach",
+    "it",
+    "xit",
+    "it",
+    "inject",
+    "expect",
+    "spyOn"
+  ]
 }

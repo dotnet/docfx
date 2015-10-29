@@ -320,7 +320,7 @@ module.exports = function (grunt) {
           cwd: '<%= docfx.app %>/content',
           dest: '<%= docfx.dist %>',
           src: [
-            '*.{ico,png}'
+            '*.{ico,png,tmpl}'
           ]
         }, {
           expand: true,

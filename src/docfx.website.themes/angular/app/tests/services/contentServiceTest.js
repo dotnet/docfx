@@ -5,4 +5,4 @@ describe("contentService", function(){
   angular.mock.inject(function(contentService){
     expect(contentService).not.toEqual(null);
   }));
-})
+});

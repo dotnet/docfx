@@ -3,6 +3,8 @@
 /* jshint browser: true */
 /* global importScripts, onmessage: true, postMessage, lunr */
 
+if (typeof importScripts !== 'function') return;
+
 // Load up the lunr library
 importScripts('lunr.min.js');
 

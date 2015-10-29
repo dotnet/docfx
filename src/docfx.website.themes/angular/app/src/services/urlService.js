@@ -11,9 +11,16 @@
   function provider($q, $http, docConstants, docUtility) {
     function normalizeUrl(url) {
       if (!url) return '';
+      var absoluteUrlRegExp = new RegExp('^(?:[a-z]+:)?//', 'i');
+      var match = url.match(absoluteUrlRegExp);
+      var prefix = "";
+      if (match) {
+        prefix = match[0];
+        url = url.slice(prefix.length);
+      }
       var arr = url.split(/[/|\\]/);
       var newArray = docUtility.cleanArray(arr);
-      return newArray.join('/');
+      return prefix + newArray.join('/');
     }
 
     function urlAreEqual(thisUrl, thatUrl){

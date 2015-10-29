@@ -50,8 +50,10 @@
 
         $scope.$watch(function(){return $location.path();}, function(path){
           
-          if (!path && navbar && navbar.length > 0 && navbar[0].href) 
-            $location.url(navbar[0].href);
+          if (!path && navbar && navbar.length > 0 && navbar[0].href) {
+            if (urlService.isAbsoluteUrl(navbar[0].href)) window.location = navbar[0].href;
+            else $location.url(navbar[0].href);
+          }
         
           var pathInfo = urlService.getPathInfo(path);
           if (pathInfo) {

@@ -5,4 +5,4 @@ describe("csplayService", function(){
   angular.mock.inject(function(csplayService){
     expect(csplayService).not.toEqual(null);
   }));
-})
+});

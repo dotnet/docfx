@@ -5,4 +5,4 @@ describe("markdownService", function(){
   angular.mock.inject(function(markdownService){
     expect(markdownService).not.toEqual(null);
   }));
-})
+});

@@ -27,5 +27,5 @@ describe("Test for ContainerController", function(){
   });
   it("Test getTocHref", function(){
     // expect(mockScope.filteredItems('home').filter(function(s){s.name === 'Home';})[0].hide).toEqual(false);
-  })
+  });
 });
