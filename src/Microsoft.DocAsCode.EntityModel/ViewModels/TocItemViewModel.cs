@@ -19,6 +19,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         public string NameForVB { get; set; }
         [YamlMember(Alias = "href")]
         public string Href { get; set; }
+        [YamlMember(Alias = "homepage")]
+        public string Homepage { get; set; }
         [YamlMember(Alias = "items")]
         public TocViewModel Items { get; set; }
 

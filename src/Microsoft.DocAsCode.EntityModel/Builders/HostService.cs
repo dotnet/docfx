@@ -20,11 +20,11 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         public static readonly RelativePath RootSymbol = (RelativePath)"~/";
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
-        private readonly LruList<FileModel> _lru = LruList<FileModel>.Create(0x400, OnLruRemoving);
+        private readonly LruList<FileModel> _lru = LruList<FileModel>.Create(0xC00, OnLruRemoving);
 
         public ImmutableList<FileModel> Models { get; private set; }
 
-        public ImmutableHashSet<string> SourceFiles { get; set; }
+        public ImmutableDictionary<string, FileAndType> SourceFiles { get; set; }
 
         public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();
 
@@ -88,18 +88,22 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 string linkFile;
                 string anchor = null;
-                var index = link.Value.IndexOf('#');
-                if (index == -1)
+                if (PathUtility.IsRelativePath(link.Value))
                 {
-                    linkFile = link.Value;
-                }
-                else
-                {
-                    linkFile = link.Value.Remove(index);
-                    anchor = link.Value.Substring(index);
-                }
-                if (PathUtility.IsRelativePath(linkFile))
-                {
+                    var index = link.Value.IndexOf('#');
+                    if (index == -1)
+                    {
+                        linkFile = link.Value;
+                    }
+                    else if (index == 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        linkFile = link.Value.Remove(index);
+                        anchor = link.Value.Substring(index);
+                    }
                     var path = (RelativePath)ft.File + (RelativePath)linkFile;
                     if (path.ParentDirectoryCount > 0)
                     {

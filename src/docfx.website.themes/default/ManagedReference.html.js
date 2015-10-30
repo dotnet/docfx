@@ -81,33 +81,43 @@ function transform(model, _attrs) {
     // Pickup the first item and display
     var item = model.items[0];
     var refs = new References(model);
-    if (!item.type) return new GeneralViewModel(item, _attrs, refs);
-    switch (item.type.toLowerCase()) {
-      case 'namespace':
-        return new NamespaceViewModel(item, _attrs, refs);
-      case 'class':
-      case 'interface':
-      case 'struct':
-      case 'delegate':
-      case 'enum':
-        return new ClassViewModel(item, _attrs, refs);
-      default:
-        return new GeneralViewModel(item, _attrs, refs);
+    var mta = model.metadata;
+    if (item.type){
+      switch (item.type.toLowerCase()) {
+        case 'namespace':
+          return new NamespaceViewModel(item, _attrs, refs, mta);
+        case 'class':
+        case 'interface':
+        case 'struct':
+        case 'delegate':
+        case 'enum':
+          return new ClassViewModel(item, _attrs, refs, mta);
+        default:
+          break;
+      }
     }
 
-    function GeneralViewModel(item, _attrs, refs) {
+    return new GeneralViewModel(item, _attrs, refs, mta);
+
+    function GeneralViewModel(item, _attrs, refs, mta) {
       for (var key in _attrs) {
         if (_attrs.hasOwnProperty(key)) {
           this[key] = _attrs[key];
         }
       }
+      for (var key in mta) {
+        if (mta.hasOwnProperty(key)) {
+          this[key] = mta[key];
+        }
+      }
+
       if (refs) {
         this.item = refs.getViewModel(item.uid, this._lang, util.changeExtension(this._ext));
       }
     }
 
-    function NamespaceViewModel(item, _attrs, refs) {
-      GeneralViewModel.call(this, item, _attrs, refs);
+    function NamespaceViewModel(item, _attrs, refs, mta) {
+      GeneralViewModel.call(this, item, _attrs, refs, mta);
       this.isNamespace = true;
 
       if (this.item.children) {
@@ -132,8 +142,8 @@ function transform(model, _attrs) {
       }
     }
 
-    function ClassViewModel(item, _attrs, refs) {
-      GeneralViewModel.call(this, item, _attrs, refs);
+    function ClassViewModel(item, _attrs, refs, mta) {
+      GeneralViewModel.call(this, item, _attrs, refs, mta);
       this.isClass = true;
 
       if (this.item.children) {
@@ -173,7 +183,7 @@ function transform(model, _attrs) {
         var vm = getRefvm(uid, lang, extChanger);
         vm.docurl = getImproveTheDocHref(vm);
         vm.sourceurl = getViewSourceHref(vm);
-    
+
         if (vm.inheritance) {
           vm.inheritance = vm.inheritance.map(function (c, i) {
             var inhe = getRefvm(c, lang, extChanger);

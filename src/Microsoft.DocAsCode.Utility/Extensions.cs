@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Utility
     using System.ComponentModel;
     using System.Globalization;
     using System.Collections.Generic;
+    using System.Web;
 
     public static class TypeExtension
     {
@@ -297,6 +298,8 @@ namespace Microsoft.DocAsCode.Utility
             if (string.IsNullOrEmpty(path)) return false;
             if (Uri.IsWellFormedUriString(path, UriKind.Absolute)) return false;
             if (path.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) return false;
+            // it is possible that mailto: is mangled(encoded) to prevent spammers
+            if (HttpUtility.HtmlDecode(path).StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) return false;
             return !Path.IsPathRooted(path);
         }
 

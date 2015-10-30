@@ -9,7 +9,8 @@
     "dnx451": {
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
-        "System.Core": ""
+        "System.Core": "",
+        "System.Web": ""
       }
     }
   }

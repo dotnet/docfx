@@ -16,6 +16,7 @@
 artifacts/
 target/
 /**/_site/
+.vscode/
 
 ###############
 #  temp file  #
@@ -27,7 +28,7 @@ target/
 *.suo
 *.user
 *.userprefs
-*.suo
+*.sdf
 *.sln.ide
 *.cache
 *.sln.metaproj

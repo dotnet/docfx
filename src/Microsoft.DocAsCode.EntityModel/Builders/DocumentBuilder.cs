@@ -200,7 +200,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             result.LinkToFiles.RunAll(
                 fileLink =>
                 {
-                    if (!hostService.SourceFiles.Contains(fileLink))
+                    if (!hostService.SourceFiles.ContainsKey(fileLink))
                     {
                         if (fileLink.StartsWith("~/")) fileLink = fileLink.Substring(2);
                         var message = $"Invalid file link({fileLink}) in file \"{model.LocalPathFromRepoRoot}\"";

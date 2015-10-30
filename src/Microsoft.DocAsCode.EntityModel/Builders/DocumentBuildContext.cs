@@ -17,7 +17,7 @@
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages)
         {
             BuildOutputFolder = buildOutputFolder;
-            AllSourceFiles = allSourceFiles.Select(ft => (string)(HostService.RootSymbol + (RelativePath)ft.File)).ToImmutableHashSet(FilePathComparer.OSPlatformSensitiveStringComparer);
+            AllSourceFiles = allSourceFiles.ToImmutableDictionary(ft => ((string)(HostService.RootSymbol + (RelativePath)ft.File)), FilePathComparer.OSPlatformSensitiveStringComparer);
             ExternalReferencePackages = externalReferencePackages;
         }
 
@@ -25,7 +25,7 @@
 
         public ImmutableArray<string> ExternalReferencePackages { get; }
 
-        public ImmutableHashSet<string> AllSourceFiles { get; }
+        public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
         public Dictionary<string, string> FileMap { get; private set; } = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 

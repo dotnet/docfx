@@ -15,7 +15,7 @@
     <DocfxOutputPath>$(MSBuildThisFileDirectory)..\..\..\target\$(Configuration)\docfx\</DocfxOutputPath>
     <OutputPath>bin\$(Configuration)</OutputPath>
     <NuspecPath>$(MSBuildProjectName).nuspec</NuspecPath>
-    <PackageVersion Condition=" '$(PackageVersion)'=='' ">0.3.4</PackageVersion>
+    <PackageVersion Condition=" '$(PackageVersion)'=='' ">0.3.6</PackageVersion>
     <WithSuffix Condition=" '$(WithSuffix)'=='' ">False</WithSuffix>
     <PackageVersionWithSuffix Condition="$(WithSuffix)">$(PackageVersion)-$([System.DateTime]::Now.ToString(`MMdd`))</PackageVersionWithSuffix>
     <PackageVersionWithSuffix Condition="!$(WithSuffix)">$(PackageVersion)</PackageVersionWithSuffix>

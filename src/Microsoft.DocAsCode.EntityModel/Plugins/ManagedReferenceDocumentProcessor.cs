@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     {
                         foreach (var item in metadata)
                         {
-                            if (page.Metadata.ContainsKey(item.Key))
+                            if (!page.Metadata.ContainsKey(item.Key))
                             {
                                 page.Metadata[item.Key] = item.Value;
                             }

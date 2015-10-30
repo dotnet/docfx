@@ -62,6 +62,24 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
             }
         }
+
+        public static T PreorderFirstOrDefault<T>(T current, Func<T, IEnumerable<T>> childrenGetter, Func<T, bool> predicate)
+        {
+            if (predicate(current)) return current;
+            if (childrenGetter == null) return default(T);
+            var children = childrenGetter(current);
+            if (children == null) return default(T);
+            foreach(var child in children)
+            {
+                var result = PreorderFirstOrDefault(child, childrenGetter, predicate);
+                if (!object.Equals(result, default(T)))
+                {
+                    return result;
+                }
+            }
+
+            return default(T);
+        }
     }
 
     public static class YamlViewModelExtension

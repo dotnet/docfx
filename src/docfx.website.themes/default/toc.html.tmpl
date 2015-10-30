@@ -27,7 +27,7 @@
         {{#content}}
         <li>
           {{#href}}
-          <a href="{{href}}">{{{name}}}</a>
+          <a href="{{href}}">{{name}}</a>
           {{/href}}
           {{^href}}
           <a>{{{name}}}</a>
@@ -38,10 +38,10 @@
           {{#items}}
             <li>
               {{#href}}
-              <a href="{{href}}">{{{name}}}</a>
+              <a href="{{href}}">{{name}}</a>
               {{/href}}
               {{^href}}
-              <a>{{{name}}}</a>
+              <a>{{name}}</a>
               {{/href}}
             </li>
           {{/items}}

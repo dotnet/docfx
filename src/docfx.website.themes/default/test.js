@@ -6,7 +6,7 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var extension = ".html";
 var options = { encoding: 'utf8' };
-var templateName = "ManagedReference.html";
+var templateName = process.argv.length > 2 ? process.argv[2] : "ManagedReference.html";
 var content = fs.readFileSync(templateName + '.js', options);
 var template = fs.readFileSync(templateName + '.tmpl', options);
 eval(content);
@@ -82,7 +82,7 @@ function parse(input, output, root, files, filter, callback) {
       if (err) return console.log(err);
       console.log("Transforming " + file);
       var input = jsyaml.load(data);
-      var model = callback(input, attrs);
+      var model = callback(JSON.stringify(input), JSON.stringify(attrs));
       if (!model) return;
       var output = Mustache.render(template, model);
       if (/^\s*$/.test(output)) {

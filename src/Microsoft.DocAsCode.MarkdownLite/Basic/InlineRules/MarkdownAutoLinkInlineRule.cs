@@ -58,14 +58,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             for (int i = 0; i < text.Length; i++)
             {
-                var ch = text[i].ToString();
+                var ch = text[i];
                 if ((_mangleCounter++ & 1) == 0)
                 {
-                    result = result + "&#x" + Convert.ToString(ch[0], 16) + ";";
+                    result = result + "&#x" + Convert.ToString(ch, 16) + ";";
                 }
                 else
                 {
-                    result = result + "&#" + ch + ";";
+                    result = result + "&#" + Convert.ToString(ch, 10) + ";";
                 }
             }
             return result;

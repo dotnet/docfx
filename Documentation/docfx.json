@@ -33,6 +33,9 @@
     "overwrite": "apispec/*.md",
     "externalReference": [
     ],
+    "globalMetadata": {
+      "_appTitle": "docfx website"
+    },
     "dest": "_site",
     "template": "default"
   }
