@@ -8,10 +8,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
 
-    using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Plugins;
-    using Utility;
+    using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class ConceptualDocumentProcessor : IDocumentProcessor
@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return new FileModel(
                 file,
                 content,
-                serializer: YamlFormatter<Dictionary<string, object>>.Instance)
+                serializer: new BinaryFormatter())
             {
                 LocalPathFromRepoRoot = (content["remote"] as GitDetail)?.RelativePath
             };

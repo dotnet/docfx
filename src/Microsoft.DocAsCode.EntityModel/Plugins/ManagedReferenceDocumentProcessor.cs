@@ -9,8 +9,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Composition;
     using System.Linq;
     using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
 
-    using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility.EntityMergers;
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                             }
                         }
                     }
-                    var result = new FileModel(file, page, serializer: YamlFormatter<PageViewModel>.Instance)
+                    var result = new FileModel(file, page, serializer: new BinaryFormatter())
                     {
                         Uids = (from item in page.Items select item.Uid).ToImmutableArray(),
                     };
@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     return result;
                 case DocumentType.Override:
                     var overrides = MarkdownReader.ReadMarkdownAsOverride(file.BaseDir, file.File);
-                    return new FileModel(file, overrides)
+                    return new FileModel(file, overrides, serializer: new BinaryFormatter())
                     {
                         Uids = (from item in overrides
                                 select item.Uid).ToImmutableArray(),
@@ -236,15 +236,17 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 if (od != null)
                 {
                     var ovm = ((List<ItemViewModel>)od.Content).Single(vm => vm.Uid == uid);
-                    foreach (var item in from m in ms
-                                         where m.Type == DocumentType.Article
-                                         from item in ((PageViewModel)m.Content).Items
+                    foreach (var pair in from model in ms
+                                         where model.Type == DocumentType.Article
+                                         from item in ((PageViewModel)model.Content).Items
                                          where item.Uid == uid
-                                         select item)
+                                         select new { model, item })
                     {
-                        var vm = item;
+                        var vm = pair.item;
                         // todo : fix file path
                         Merger.Merge(ref vm, ovm);
+                        ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od.Properties.LinkToUids);
+                        ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od.Properties.LinkToFiles);
                     }
                 }
             }
