@@ -18,28 +18,20 @@
             _capacity = capacity;
         }
 
-        public static LruList<T> Create(int capacity, Action<T> onRemoving, IEqualityComparer<T> comparer = null)
+        public static LruList<T> Create(int capacity, Action<T> onRemoving = null, IEqualityComparer<T> comparer = null)
         {
             if (capacity <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(capacity), "capacity should great than 0.");
-            }
-            if (onRemoving == null)
-            {
-                throw new ArgumentNullException(nameof(onRemoving));
             }
             return new LruList<T>(capacity, onRemoving, comparer ?? EqualityComparer<T>.Default);
         }
 
-        public static LruList<T> CreateSynchronized(int capacity, Action<T> onRemoving, IEqualityComparer<T> comparer = null)
+        public static LruList<T> CreateSynchronized(int capacity, Action<T> onRemoving = null, IEqualityComparer<T> comparer = null)
         {
             if (capacity <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(capacity), "capacity should great than 0.");
-            }
-            if (onRemoving == null)
-            {
-                throw new ArgumentNullException(nameof(onRemoving));
             }
             return new SynchronizedLruList(capacity, onRemoving, comparer ?? EqualityComparer<T>.Default);
         }
@@ -64,7 +56,10 @@
                     // remove LRU
                     try
                     {
-                        _onRemoving(_cache.First.Value);
+                        if (_onRemoving != null)
+                        {
+                            _onRemoving(_cache.First.Value);
+                        }
                     }
                     finally
                     {
@@ -85,6 +80,20 @@
             AccessNoCheck(item);
         }
 
+        public virtual bool TryFind(Func<T, bool> func, out T item)
+        {
+            foreach (var x in _cache)
+            {
+                if (func(x))
+                {
+                    item = x;
+                    return true;
+                }
+            }
+            item = default(T);
+            return false;
+        }
+
         private sealed class SynchronizedLruList : LruList<T>
         {
             private readonly object _syncRoot = new object();
@@ -99,6 +108,14 @@
                 lock (_syncRoot)
                 {
                     base.AccessNoCheck(item);
+                }
+            }
+
+            public override bool TryFind(Func<T, bool> func, out T item)
+            {
+                lock (_syncRoot)
+                {
+                    return base.TryFind(func, out item);
                 }
             }
         }

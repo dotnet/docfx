@@ -12,12 +12,12 @@ namespace Microsoft.DocAsCode.EntityModel
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using YamlDotNet.Core;
 
-    public class ExternalReferencePackageReader
+    public class ExternalReferencePackageReader : IDisposable
     {
         private readonly string _packageFile;
         private readonly List<string> _uids;
         private readonly Dictionary<string, List<string>> _uidEntryMap;
-        private readonly Dictionary<string, List<ReferenceViewModel>> _cache;
+        private readonly ZipArchive _zip;
 
         public ExternalReferencePackageReader(string packageFile)
         {
@@ -30,9 +30,10 @@ namespace Microsoft.DocAsCode.EntityModel
                 throw new FileNotFoundException("Package not found.", packageFile);
             }
             _packageFile = packageFile;
-            _uidEntryMap = GetUidEntryMap(packageFile);
+            var stream = new FileStream(packageFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+            _zip = new ZipArchive(stream, ZipArchiveMode.Read);
+            _uidEntryMap = GetUidEntryMap(_zip);
             _uids = _uidEntryMap.Keys.OrderBy(s => s).ToList();
-            _cache = new Dictionary<string, List<ReferenceViewModel>>();
         }
 
         public static ExternalReferencePackageReader CreateNoThrow(string packageFile)
@@ -50,46 +51,42 @@ namespace Microsoft.DocAsCode.EntityModel
         public bool TryGetReference(string uid, out ReferenceViewModel vm)
         {
             vm = null;
-            int index = SeekUidIndex(uid);
-            if (index < 0)
+            var entries = GetInternal(uid);
+            if (entries == null)
             {
                 return false;
             }
-            vm = (from vms in GetReferenceViewModels(index)
-                  from item in vms
+            vm = (from entry in entries
+                  from item in entry.Content
                   where item.Uid == uid
                   select item).FirstOrDefault();
             return vm != null;
         }
 
-        private static Dictionary<string, List<string>> GetUidEntryMap(string packageFile)
+        private static Dictionary<string, List<string>> GetUidEntryMap(ZipArchive zip)
         {
-            using (var stream = new FileStream(packageFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
+            var uidEntryMap = new Dictionary<string, List<string>>();
+            var entries = from entry in zip.Entries
+                          where !string.IsNullOrEmpty(entry.Name) && entry.Length > 0
+                          select new
+                          {
+                              Uid = Path.GetFileNameWithoutExtension(entry.Name),
+                              FullName = entry.FullName,
+                          };
+            foreach (var entry in entries)
             {
-                var uidEntryMap = new Dictionary<string, List<string>>();
-                var entries = from entry in zip.Entries
-                              where !string.IsNullOrEmpty(entry.Name) && entry.Length > 0
-                              select new
-                              {
-                                  Uid = Path.GetFileNameWithoutExtension(entry.Name),
-                                  FullName = entry.FullName,
-                              };
-                foreach (var entry in entries)
+                List<string> list;
+                if (!uidEntryMap.TryGetValue(entry.Uid, out list))
                 {
-                    List<string> list;
-                    if (!uidEntryMap.TryGetValue(entry.Uid, out list))
-                    {
-                        list = new List<string>();
-                        uidEntryMap[entry.Uid] = list;
-                    }
-                    list.Add(entry.FullName);
+                    list = new List<string>();
+                    uidEntryMap[entry.Uid] = list;
                 }
-                return uidEntryMap;
+                list.Add(entry.FullName);
             }
+            return uidEntryMap;
         }
 
-        private int SeekUidIndex(string uid)
+        protected virtual int SeekUidIndex(string uid)
         {
             var searchUid = uid;
             while (true)
@@ -108,37 +105,86 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private IEnumerable<List<ReferenceViewModel>> GetReferenceViewModels(int index)
+        private IEnumerable<PackageEntry> GetReferenceViewModels(int index)
         {
-            using (var stream = new FileStream(_packageFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
+            var entries = _uidEntryMap[_uids[index]];
+            foreach (var entry in entries)
             {
-                var entries = _uidEntryMap[_uids[index]];
-                foreach (var entry in entries)
+                List<ReferenceViewModel> vms = null;
+                using (var entryStream = _zip.GetEntry(entry).Open())
+                using (var reader = new StreamReader(entryStream))
                 {
-                    List<ReferenceViewModel> vms = null;
-                    if (!_cache.TryGetValue(entry, out vms))
+                    try
                     {
-                        using (var entryStream = zip.GetEntry(entry).Open())
-                        using (var reader = new StreamReader(entryStream))
-                        {
-                            try
-                            {
-                                vms = _cache[entry] = YamlUtility.Deserialize<List<ReferenceViewModel>>(reader);
-                            }
-                            catch (YamlException)
-                            {
-                                // Ignore non-yaml entries
-                            }
-                        }
+                        vms = YamlUtility.Deserialize<List<ReferenceViewModel>>(reader);
                     }
-
-                    if (vms != null)
+                    catch (YamlException)
                     {
-                        yield return vms;
+                        // Ignore non-yaml entries
                     }
                 }
+                if (vms != null)
+                {
+                    yield return new PackageEntry(_packageFile, entry, vms);
+                }
             }
+        }
+
+        internal IEnumerable<PackageEntry> GetInternal(string uid)
+        {
+            int index = SeekUidIndex(uid);
+            if (index < 0)
+            {
+                return null;
+            }
+            return GetReferenceViewModels(index);
+        }
+
+        #region IDisposable Support
+
+        private bool disposedValue = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _zip.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        ~ExternalReferencePackageReader()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
+
+        internal sealed class PackageEntry
+        {
+            public PackageEntry(string packageFile, string entryName, List<ReferenceViewModel> content)
+            {
+                PackageFile = packageFile;
+                EntryName = entryName;
+                Content = content;
+            }
+
+            public string PackageFile { get; }
+
+            public string EntryName { get; }
+
+            public List<ReferenceViewModel> Content { get; }
         }
     }
 }

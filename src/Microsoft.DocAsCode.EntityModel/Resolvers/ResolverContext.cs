@@ -13,6 +13,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public Dictionary<string, ReferenceItem> References { get; set; }
 
-        public List<ExternalReferencePackageReader> ExternalReferences { get; set; }
+        public ExternalReferencePackageCollection ExternalReferences { get; set; }
     }
 }

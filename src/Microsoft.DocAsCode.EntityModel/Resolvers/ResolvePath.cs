@@ -55,18 +55,13 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static string ResolveExternalLink(string name, ResolverContext context)
         {
-            if (context.ExternalReferences != null)
+            if (context.ExternalReferences == null)
             {
-                foreach (var reader in context.ExternalReferences)
-                {
-                    ReferenceViewModel vm;
-                    if (reader.TryGetReference(name, out vm))
-                    {
-                        return vm.Href;
-                    }
-                }
+                return null;
             }
-            return null;
+            ReferenceViewModel vm;
+            context.ExternalReferences.TryGetReference(name, out vm);
+            return vm?.Href;
         }
     }
 }

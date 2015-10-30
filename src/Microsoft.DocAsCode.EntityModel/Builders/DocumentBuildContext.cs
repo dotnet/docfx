@@ -32,7 +32,7 @@
         public Dictionary<string, string> UidMap { get; private set; } = new Dictionary<string, string>();
 
         public Dictionary<string, XRefSpec> XRefSpecMap { get; private set; } = new Dictionary<string, XRefSpec>();
-        
+
         public Dictionary<string, HashSet<string>> TocMap { get; private set; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public Dictionary<string, string> XRefMap { get; private set; } = null;
@@ -80,24 +80,21 @@
             {
                 if (ExternalReferencePackages.Length > 0)
                 {
-                    var externalReferences = (from reader in
-                                                  from package in ExternalReferencePackages.AsParallel()
-                                                  select ExternalReferencePackageReader.CreateNoThrow(package)
-                                              where reader != null
-                                              select reader).ToList();
-
-                    foreach (var uid in XRef)
+                    using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages))
                     {
-                        var href = GetExternalReference(externalReferences, uid);
-                        if (href != null)
+                        foreach (var uid in XRef)
                         {
-                            result[uid] = href;
-                        }
-                        else
-                        {
-                            if (missingUids.Count < 100)
+                            var href = GetExternalReference(externalReferences, uid);
+                            if (href != null)
                             {
-                                missingUids.Add(uid);
+                                result[uid] = href;
+                            }
+                            else
+                            {
+                                if (missingUids.Count < 100)
+                                {
+                                    missingUids.Add(uid);
+                                }
                             }
                         }
                     }
@@ -122,20 +119,11 @@
             return result;
         }
 
-        private static string GetExternalReference(List<ExternalReferencePackageReader> externalReferences, string uid)
+        private static string GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)
         {
-            if (externalReferences != null)
-            {
-                foreach (var reader in externalReferences)
-                {
-                    ReferenceViewModel vm;
-                    if (reader.TryGetReference(uid, out vm))
-                    {
-                        return vm.Href;
-                    }
-                }
-            }
-            return null;
+            ReferenceViewModel vm;
+            externalReferences.TryGetReference(uid, out vm);
+            return vm.Href;
         }
     }
 }
