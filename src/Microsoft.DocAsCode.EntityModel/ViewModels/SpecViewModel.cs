@@ -3,8 +3,10 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
+    using System;
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class SpecViewModel
     {
         [YamlMember(Alias = "uid")]

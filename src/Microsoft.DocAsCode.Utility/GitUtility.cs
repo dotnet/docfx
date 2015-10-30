@@ -6,12 +6,11 @@ namespace Microsoft.DocAsCode.Utility
     using System;
     using System.IO;
     using GitSharp;
-    using GitSharp.Commands;
 
     using Newtonsoft.Json;
-
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class GitDetail
     {
         /// <summary>
@@ -57,6 +56,7 @@ namespace Microsoft.DocAsCode.Utility
             return string.Format("branch: {0}, url: {1}, local: {2}, desc: {3}, file: {4}", RemoteBranch, RemoteRepositoryUrl, LocalWorkingDirectory, Description, RelativePath);
         }
     }
+
     public static class GitUtility
     {
         /// <summary>

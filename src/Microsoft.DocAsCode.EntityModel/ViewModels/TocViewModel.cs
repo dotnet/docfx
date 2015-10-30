@@ -3,10 +3,12 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
 
+    [Serializable]
     public class TocViewModel
         : List<TocItemViewModel>
     {

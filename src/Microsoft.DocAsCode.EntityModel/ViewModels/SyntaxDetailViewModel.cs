@@ -3,9 +3,11 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class SyntaxDetailViewModel
     {
         [YamlMember(Alias = "content")]

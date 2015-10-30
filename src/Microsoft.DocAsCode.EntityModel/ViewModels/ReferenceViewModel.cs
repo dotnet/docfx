@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     using System.Diagnostics;
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class ReferenceViewModel
     {
         [YamlMember(Alias = "uid")]

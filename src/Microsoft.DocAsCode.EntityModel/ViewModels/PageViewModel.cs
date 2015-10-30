@@ -3,9 +3,12 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
+    using System;
     using System.Collections.Generic;
+
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class PageViewModel
     {
         [YamlMember(Alias = "items")]

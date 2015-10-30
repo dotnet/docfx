@@ -3,10 +3,10 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
+    using System;
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class TocItemViewModel
     {
         [YamlMember(Alias = "uid")]

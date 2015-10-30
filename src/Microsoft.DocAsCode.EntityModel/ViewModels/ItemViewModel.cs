@@ -3,12 +3,14 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
+    [Serializable]
     public class ItemViewModel
     {
         [YamlMember(Alias = "uid")]

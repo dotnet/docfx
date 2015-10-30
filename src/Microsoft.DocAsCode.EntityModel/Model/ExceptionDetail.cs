@@ -3,10 +3,12 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using System;
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
+    [Serializable]
     public class CrefInfo
     {
         [YamlMember(Alias = "type")]

@@ -3,6 +3,9 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using System;
+
+    [Serializable]
     public enum MemberType
     {
         Default,
