@@ -123,8 +123,9 @@ function transform(model, _attrs) {
       if (this.item.children) {
         var grouped = {};
         // group children with their type
+        var that = this;
         this.item.children.forEach(function (c) {
-          c = refs.getViewModel(c, this._lang, util.changeExtension(this._ext));
+          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext));
           var type = c.type;
           if (!grouped[type]) grouped[type] = [];
           grouped[type].push(c);
@@ -148,9 +149,10 @@ function transform(model, _attrs) {
 
       if (this.item.children) {
         var grouped = {};
+        var that = this;
         // group children with their type
         this.item.children.forEach(function (c) {
-          c = refs.getViewModel(c, this._lang, util.changeExtension(this._ext));
+          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext));
           var type = c.type;
           if (!grouped[type]) grouped[type] = [];
 
@@ -306,22 +308,15 @@ function transform(model, _attrs) {
         vm.fullName = getLangSpecifiedProperty.call(vm, "fullName", lang);
         vm.href = extChanger(vm.href);
         vm.id = getHtmlId(vm.name);
-        vm.summary = normalize(vm.summary);
-        vm.remarks = normalize(vm.remarks);
-        vm.conceptual = normalize(vm.conceptual);
+        vm.summary = vm.summary;
+        vm.remarks = vm.remarks;
+        vm.conceptual = vm.conceptual;
 
         vm.level = vm.inheritance ? vm.inheritance.length : 0;
         if (vm.syntax) {
           vm.syntax.content = getLangSpecifiedProperty.call(vm.syntax, "content", lang);
         }
         return vm;
-      }
-
-      // Replace newline with </br> for markdown tables
-      // names such as Tuple<string, int> should already be html-encoded.
-      function normalize(content) {
-        if (!content) return content;
-        return content.replace(/\n/g, '</br>');
       }
 
       function getHtmlId(input) {

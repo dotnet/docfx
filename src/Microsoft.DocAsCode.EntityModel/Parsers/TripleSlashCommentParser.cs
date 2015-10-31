@@ -199,13 +199,13 @@ namespace Microsoft.DocAsCode.EntityModel
         private static string ResolveSeeAlsoCref(string xml, string nodeSelector, Action<string> addReference)
         {
             // Resolve <see cref> to @ syntax
-            return ResolveCrefLink(xml, nodeSelector + "/seealso", addReference);
+            return ResolveCrefLink(xml, nodeSelector + "//seealso", addReference);
         }
 
         private static string ResolveSeeCref(string xml, string nodeSelector, Action<string> addReference)
         {
             // Resolve <see cref> to @ syntax
-            return ResolveCrefLink(xml, nodeSelector + "/see", addReference);
+            return ResolveCrefLink(xml, nodeSelector + "//see", addReference);
         }
 
         private static string ResolveCrefLink(string xml, string nodeSelector, Action<string> addReference)
@@ -226,7 +226,6 @@ namespace Microsoft.DocAsCode.EntityModel
                     var node = i.SelectSingleNode("@cref");
                     if (node != null)
                     {
-                        var currentNode = i.Clone();
                         var value = node.Value;
 
                         // Strict check is needed as value could be an invalid href, 
@@ -234,9 +233,9 @@ namespace Microsoft.DocAsCode.EntityModel
                         if (LinkParser.CommentIdRegex.IsMatch(value))
                         {
                             value = value.Substring(2);
-                            currentNode.InsertAfter("@'" + value + "'");
+                            i.InsertAfter("@'" + value + "'");
 
-                            sees.Add(currentNode);
+                            sees.Add(i);
                             if (addReference != null)
                             {
                                 addReference(value);

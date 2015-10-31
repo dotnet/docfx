@@ -622,7 +622,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     item.References = new Dictionary<string, ReferenceItem>();
                 }
-                item.References.Add(id, null);
+                item.References[id] = null;
             };
         }
 

@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             foreach (var item in toc)
             {
-                var href = TreeIterator.PreorderFirstOrDefault(item, s => s.Items, s => IsValidHomepageLink(item.Href));
+                var href = TreeIterator.PreorderFirstOrDefault(item, s => s.Items, s => IsValidHomepageLink(s.Href));
                 if (href != null)
                 {
                     return href.Href;

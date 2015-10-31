@@ -90,7 +90,7 @@ function parse(input, output, root, files, filter, callback) {
       } else {
         var folder = path.dirname(outputFilePath);
         mkdirp.sync(folder);
-        fs.writeFile(outputModelFilePath, JSON.stringify(model), options, function (err) {
+        fs.writeFile(outputModelFilePath, JSON.stringify(model, null, "  "), options, function (err) {
           if (err) return console.log(err);
         })
         fs.writeFile(outputFilePath, output, options, function (err) {

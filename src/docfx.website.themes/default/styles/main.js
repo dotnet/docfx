@@ -5,24 +5,35 @@ $(function() {
   var hide = 'hide';
 
   // For TOC FILTER
-  (function(){
-    $('#toc_filter_input').on('input', function(e){
+  (function() {
+    $('#toc_filter_input').on('input', function(e) {
       var val = this.value;
       // Get leaf nodes
-      $('#toc li>a').filter(function(i,e){return $(e).siblings().length === 0}).each(function(i, anchor){
+      $('#toc li>a').filter(function(i, e) {
+        return $(e).siblings().length === 0
+      }).each(function(i, anchor) {
         var text = $(anchor).text();
         var parent = $(anchor).parent();
         var parentText = $(anchor).parents('ul').siblings('li>a').first().text();
         if (parentText) text = parentText + '.' + text;
-        if (filterNavItem(text, val)){ parent.addClass(show); parent.removeClass(hide);}
-          else{ parent.addClass(hide); parent.removeClass(show);}
+        if (filterNavItem(text, val)) {
+          parent.addClass(show);
+          parent.removeClass(hide);
+        } else {
+          parent.addClass(hide);
+          parent.removeClass(show);
+        }
       });
-      $('#toc li>a').filter(function(i, e){return $(e).siblings().length > 0}).each(function(i, anchor){
+      $('#toc li>a').filter(function(i, e) {
+        return $(e).siblings().length > 0
+      }).each(function(i, anchor) {
         var parent = $(anchor).parent();
         if (parent.find('li.show').length > 0) {
-          parent.addClass(show); parent.removeClass(hide);
-        }else{
-          parent.addClass(hide); parent.removeClass(show);
+          parent.addClass(show);
+          parent.removeClass(hide);
+        } else {
+          parent.addClass(hide);
+          parent.removeClass(show);
         }
       })
     });
@@ -35,7 +46,7 @@ $(function() {
   })();
 
   // Update href in toc
-  (function(){
+  (function() {
     $('#sidetoc').contents().find("")
   })();
 
@@ -47,103 +58,117 @@ $(function() {
     loadNavbar();
     onTocLoaded(updateTocHref);
 
-    function loadNavbar(){
+    function loadNavbar() {
       var navbarPath = $("meta[property='docfx\\:navrel'").attr("content");
       var tocPath = $("meta[property='docfx\\:tocrel'").attr("content");
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
-      $('#navbar').load(navbarPath+" #toc>ul", function(){
+      $('#navbar').load(navbarPath + " #toc>ul", function() {
         var index = navbarPath.lastIndexOf('/');
         if (index === -1) {
           console.log("invalid navbar path: " + navbarPath);
           return;
         }
-        var navrel = navbarPath.substr(0, index+1);
+        var navrel = navbarPath.substr(0, index + 1);
         $('#navbar>ul').addClass('navbar-nav');
 
         // set active item
         $('#navbar').find('a[href]').each(function(i, e) {
           var href = $(e).attr("href");
           if (isRelativePath(href)) {
-            var normalizedHref = navrel + href;
-            $(e).attr("href", normalizedHref);
+            href = navrel + href;
+            $(e).attr("href", href);
 
             // TODO: current is to trim toc.html, what about append index.html for folders?
             // TODO: currently only support one level navbar
-            if (getAbsolutePath(normalizedHref) === getAbsolutePath(tocPath) ||
-              (tocPath.lastIndexOf('/') > -1 && getAbsolutePath(normalizedHref) === getAbsolutePath(tocPath.substr(0, tocPath.lastIndexOf('/') + 1))))
-              {
+            if (getAbsolutePath(href) === getAbsolutePath(tocPath) ||
+              (tocPath.lastIndexOf('/') > -1 && getAbsolutePath(href) === getAbsolutePath(tocPath.substr(0, tocPath.lastIndexOf('/') + 1)))) {
               $(e).parent().addClass(active);
-              breadcrumb.insert({href: e.href, name: e.innerText}, 0);
-            }else{
+              breadcrumb.insert({
+                href: e.href,
+                name: e.innerText
+              }, 0);
+            } else {
               $(e).parent().removeClass(active)
             }
           }
-        })
-      })
+          if (i == 0) {
+            $(".navbar-brand").attr("href", href);
+          }
+        });
+      });
     }
 
     // $(iframe).load() is not always working
-    function onTocLoaded(callback){
+    function onTocLoaded(callback) {
       if (toc.length === 0) return;
       var iframe = $('body>*', toc.contents());
       if (iframe.length === 0) {
-        setTimeout(function(){onTocLoaded(callback);}, 100);
+        setTimeout(function() {
+          onTocLoaded(callback);
+        }, 100);
         return;
       }
       callback();
     }
 
-    function updateTocHref(){
+    function updateTocHref() {
       var currentHref = window.location.href;
       // remove hash
       var hashIndex = currentHref.indexOf('#');
       if (hashIndex > -1) currentHref = currentHref.substr(0, hashIndex);
-      toc.contents().find('a[href]').each(function(i, e){
-        if (e.href === currentHref){
+      toc.contents().find('a[href]').each(function(i, e) {
+        if (e.href === currentHref) {
           $(e).parent().addClass(active);
           var parent = $(e).parent().parents('li').children('a');
-          if (parent.length > 0){
+          if (parent.length > 0) {
             parent.addClass(active);
-            breadcrumb.push({href: parent[0].href, name: parent[0].innerText});
+            breadcrumb.push({
+              href: parent[0].href,
+              name: parent[0].innerText
+            });
           }
 
-          breadcrumb.push({href: e.href, name: e.innerText});
+          breadcrumb.push({
+            href: e.href,
+            name: e.innerText
+          });
           // Scroll to active item
           var top = 0;
-          $(e).parents('li').each(function(i, e){
+          $(e).parents('li').each(function(i, e) {
             top += $(e).position().top;
           });
           // 50 is the size of the filter box
           toc[0].contentWindow.scrollTo(0, top - 50);
-        }else{
+        } else {
           $(e).parent().removeClass(active);
           $(e).parents('li').children('a').removeClass(active);
         }
       })
     }
 
-    function Breadcrumb(){
+    function Breadcrumb() {
       var breadcrumb = [];
       this.push = pushBreadcrumb;
       this.insert = insertBreadcrumb;
-      function pushBreadcrumb(obj){
+
+      function pushBreadcrumb(obj) {
         breadcrumb.push(obj);
         setupBreadCrumb(breadcrumb);
       }
 
-      function insertBreadcrumb(obj, index){
+      function insertBreadcrumb(obj, index) {
         breadcrumb.splice(index, 0, obj);
         setupBreadCrumb(breadcrumb);
       }
 
-      function setupBreadCrumb(){
+      function setupBreadCrumb() {
         var html = formList(breadcrumb, 'breadcrumb');
         $('#breadcrumb').html(html);
       }
     }
 
-    function getAbsolutePath(href){
+    function getAbsolutePath(href) {
       if (isAbsolutePath(href)) return href;
       // Use anchor to normalize href
       return $('<a href="' + href + '"></a>')[0].pathname;
@@ -166,12 +191,12 @@ $(function() {
   })();
 
   //Setup Affix
-  (function(){
+  (function() {
     var hierarchy = getHierarchy();
-    if(hierarchy.length > 0){
+    if (hierarchy.length > 0) {
       var html = '<h5 class="title">In This Article</h5>'
-       html +=formList(hierarchy, ['nav', 'bs-docs-sidenav']);
-        $("#affix").append(html);
+      html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
+      $("#affix").append(html);
     }
 
     function getHierarchy() {
@@ -233,7 +258,7 @@ $(function() {
     }
   })();
 
-  function formList(item, classes){
+  function formList(item, classes) {
     var level = 1;
     var model = {
       items: item
@@ -264,31 +289,31 @@ $(function() {
   // For LOGO SVG
   // Replace SVG with inline SVG
   // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
-   jQuery('img.svg').each(function(){
-      var $img = jQuery(this);
-      var imgID = $img.attr('id');
-      var imgClass = $img.attr('class');
-      var imgURL = $img.attr('src');
+  jQuery('img.svg').each(function() {
+    var $img = jQuery(this);
+    var imgID = $img.attr('id');
+    var imgClass = $img.attr('class');
+    var imgURL = $img.attr('src');
 
-      jQuery.get(imgURL, function(data) {
-          // Get the SVG tag, ignore the rest
-          var $svg = jQuery(data).find('svg');
+    jQuery.get(imgURL, function(data) {
+      // Get the SVG tag, ignore the rest
+      var $svg = jQuery(data).find('svg');
 
-          // Add replaced image's ID to the new SVG
-          if(typeof imgID !== 'undefined') {
-              $svg = $svg.attr('id', imgID);
-          }
-          // Add replaced image's classes to the new SVG
-          if(typeof imgClass !== 'undefined') {
-              $svg = $svg.attr('class', imgClass+' replaced-svg');
-          }
+      // Add replaced image's ID to the new SVG
+      if (typeof imgID !== 'undefined') {
+        $svg = $svg.attr('id', imgID);
+      }
+      // Add replaced image's classes to the new SVG
+      if (typeof imgClass !== 'undefined') {
+        $svg = $svg.attr('class', imgClass + ' replaced-svg');
+      }
 
-          // Remove any invalid XML tags as per http://validator.w3.org
-          $svg = $svg.removeAttr('xmlns:a');
+      // Remove any invalid XML tags as per http://validator.w3.org
+      $svg = $svg.removeAttr('xmlns:a');
 
-          // Replace image with new SVG
-          $img.replaceWith($svg);
+      // Replace image with new SVG
+      $img.replaceWith($svg);
 
-      }, 'xml');
+    }, 'xml');
   });
 })

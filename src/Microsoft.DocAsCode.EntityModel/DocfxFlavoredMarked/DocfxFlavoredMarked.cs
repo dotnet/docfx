@@ -5,12 +5,11 @@ namespace Microsoft.DocAsCode.EntityModel
 {
 
     using MarkdownLite;
-    using System.Collections.Generic;
 
     public class DocfxFlavoredMarked
     {
-
-        private static readonly DfmEngineBuilder _builder = new DfmEngineBuilder(new Options());
+        // TODO: currently disable mangle as a quick workaround for OP Build Service compatibility
+        private static readonly DfmEngineBuilder _builder = new DfmEngineBuilder(new Options() { Mangle = false });
         private static readonly DfmRenderer _renderer = new DfmRenderer();
 
         public static string Markup(string src, string path = null)

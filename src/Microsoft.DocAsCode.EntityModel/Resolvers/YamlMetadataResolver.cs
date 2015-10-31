@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.EntityModel
             new SetParent(),
             new ResolveRelativePath(),
             new BuildIndex(),
-            new ResolveLink(),
             new ResolveGitPath(),
             new ResolveReference(),
             new ResolvePath(),

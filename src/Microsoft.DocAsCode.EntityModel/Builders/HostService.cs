@@ -67,7 +67,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             var result = new MarkupResult();
 
             // TODO: how to get TITLE
-            result.Title = doc.DocumentNode.FirstChild?.InnerText;
+            // InnerText in HtmlAgilityPack is not decoded, should be a bug
+            result.Title = StringHelper.HtmlDecode(doc.DocumentNode.FirstChild?.InnerText);
             var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
             if (node != null)
             {

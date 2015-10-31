@@ -203,6 +203,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     {
                         BuildItem(host, item, model);
                     }
+                    foreach (var reference in page.References)
+                    {
+                        BuildReference(host, reference, model);
+                    }
                     model.File = Path.ChangeExtension(model.File, ".yml");
                     break;
                 case DocumentType.Override:
@@ -269,6 +273,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     parameter.Description = Markup(host, parameter.Description, model);
                 }
             }
+        }
+
+        private void BuildReference(IHostService host, ReferenceViewModel reference, FileModel model)
+        {
+            reference.Summary = Markup(host, reference.Summary, model);
         }
 
         private string Markup(IHostService host, string markdown, FileModel model)

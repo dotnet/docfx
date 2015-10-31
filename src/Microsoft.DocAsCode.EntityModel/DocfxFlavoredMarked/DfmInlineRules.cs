@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmXrefInlineRule : IMarkdownRule
     {
-        private static readonly Regex _xrefRegex = new Regex(@"^@(?:(['""])(\s*\S+[\s\S]*?)\1|(?:([^'""][\s\S]*?))(?=[\s@]|$))", RegexOptions.Compiled);
+        private static readonly Regex _xrefRegex = new Regex(@"^@(?:(['""])(\s*?\S+?[\s\S]*?)\1|(?:([^'""][\s\S]*?))(?=[\s@]|$))", RegexOptions.Compiled);
         public string Name => "XREF";
         public virtual Regex Xref => _xrefRegex;
         public IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
