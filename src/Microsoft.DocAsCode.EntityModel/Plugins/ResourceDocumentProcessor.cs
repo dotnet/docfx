@@ -96,8 +96,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
             if (model.Content != null)
             {
-                var modelFile = model.File.TrimEnd('.') + ".yml";
-                YamlUtility.Serialize(Path.Combine(model.BaseDir, modelFile), model.Content);
+                var modelFile = model.File.TrimEnd('.') + ".json";
+                JsonUtility.Serialize(Path.Combine(model.BaseDir, modelFile), model.Content);
                 result.ModelFile = modelFile;
             }
             return result;

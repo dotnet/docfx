@@ -140,7 +140,6 @@ namespace Microsoft.DocAsCode.EntityModel
                     else
                     {
                         var modelFile = Path.Combine(baseDirectory, item.ModelFile);
-                        var model = YamlUtility.Deserialize<object>(modelFile);
                         var systemAttrs = new SystemAttributes(context, item);
                         foreach (var template in templates)
                         {
@@ -149,7 +148,7 @@ namespace Microsoft.DocAsCode.EntityModel
                             string outputPath = Path.Combine(outputDirectory ?? string.Empty, outputFile);
                             var dir = Path.GetDirectoryName(outputPath);
                             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                            var transformed = template.Transform(model, systemAttrs);
+                            var transformed = template.Transform(modelFile, systemAttrs);
                             if (!string.IsNullOrWhiteSpace(transformed))
                             {
                                 if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
@@ -535,20 +534,22 @@ namespace Microsoft.DocAsCode.EntityModel
                 return Path.Combine(Path.GetDirectoryName(this.Name ?? string.Empty) ?? string.Empty, relativePath).ToNormalizedPath();
             }
 
-            public string Transform(object model, object attrs)
+            public string Transform(string modelPath, object attrs)
             {
                 if (_script == null)
                 {
-                    return Render.StringToString(Content, model);
+                    var entity = JsonUtility.Deserialize<object>(modelPath);
+                    return Render.StringToString(Content, entity);
                 }
                 else
                 {
-                    var processedModel = ProcessWithJint(model, attrs);
+
+                    var processedModel = ProcessWithJint(File.ReadAllText(modelPath), attrs);
                     return Render.StringToString(Content, processedModel);
                 }
             }
 
-            private object ProcessWithJint(object model, object attrs)
+            private object ProcessWithJint(string model, object attrs)
             {
                 var engine = new Engine();
 
@@ -560,7 +561,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
                 // throw exception when execution fails
                 engine.Execute(_script);
-                var value = engine.Invoke("transform", JsonUtility.Serialize(model), JsonUtility.Serialize(attrs)).ToObject();
+                var value = engine.Invoke("transform", model, JsonUtility.Serialize(attrs)).ToObject();
 
                 // var value = engine.GetValue("model").ToObject();
                 // The results generated

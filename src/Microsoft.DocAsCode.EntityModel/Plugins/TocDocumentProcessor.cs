@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var toc = (TocViewModel)model.Content;
             var path = (RelativePath)model.OriginalFileAndType.File;
 
-            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), toc);
+            JsonUtility.Serialize(Path.Combine(model.BaseDir, model.File), toc);
             return new SaveResult
             {
                 DocumentType = "Toc",
@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public void Build(FileModel model, IHostService host)
         {
-            model.File = Path.ChangeExtension(model.File, ".yml");
+            model.File = Path.ChangeExtension(model.File, ".json");
             var toc = (TocViewModel)model.Content;
             HashSet<string> links = new HashSet<string>();
             Dictionary<string, HashSet<string>> tocMap = new Dictionary<string, HashSet<string>>();

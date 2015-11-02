@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -12,48 +13,63 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     public class ReferenceViewModel
     {
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid")]
         public string Uid { get; set; }
 
         [YamlMember(Alias = "parent")]
+        [JsonProperty("parent")]
         public string Parent { get; set; }
 
         [YamlMember(Alias = "definition")]
+        [JsonProperty("definition")]
         public string Definition { get; set; }
 
+        [JsonProperty("isExternal")]
         [YamlMember(Alias = "isExternal")]
         public bool? IsExternal { get; set; }
 
         [YamlMember(Alias = "href")]
+        [JsonProperty("href")]
         public string Href { get; set; }
 
         [YamlMember(Alias = "name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
         [YamlMember(Alias = "name.csharp")]
+        [JsonProperty("name.csharp")]
         public string NameForCSharp { get; set; }
 
         [YamlMember(Alias = "name.vb")]
+        [JsonProperty("name.vb")]
         public string NameForVB { get; set; }
 
         [YamlMember(Alias = "fullName")]
+        [JsonProperty("fullName")]
         public string FullName { get; set; }
 
         [YamlMember(Alias = "fullName.csharp")]
+        [JsonProperty("fullName.csharp")]
         public string FullNameForCSharp { get; set; }
 
         [YamlMember(Alias = "fullName.vb")]
+        [JsonProperty("fullName.vb")]
         public string FullNameForVB { get; set; }
 
         [YamlMember(Alias = "type")]
+        [JsonProperty("type")]
         public MemberType? Type { get; set; }
 
         [YamlMember(Alias = "summary")]
+        [JsonProperty("summary")]
         public string Summary { get; set; }
 
         [YamlMember(Alias = "spec.csharp")]
+        [JsonProperty("spec.csharp")]
         public List<SpecViewModel> SpecForCSharp { get; set; }
 
         [YamlMember(Alias = "spec.vb")]
+        [JsonProperty("spec.vb")]
         public List<SpecViewModel> SpecForVB { get; set; }
 
         public static ReferenceViewModel FromModel(KeyValuePair<string, ReferenceItem> model)

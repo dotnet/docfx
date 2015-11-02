@@ -6,18 +6,22 @@ namespace Microsoft.DocAsCode.EntityModel
     using System;
 
     using Microsoft.DocAsCode.Utility.EntityMergers;
+    using Newtonsoft.Json;
 
     [Serializable]
     public class ApiParameter
     {
         [YamlDotNet.Serialization.YamlMember(Alias = "id")]
+        [JsonProperty("id")]
         [MergeOption(MergeOption.MergeKey)]
         public string Name { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(Alias = "type")]
+        [JsonProperty("type")]
         public string Type { get; set; }
 
         [YamlDotNet.Serialization.YamlMember(Alias = "description")]
+        [JsonProperty("description")]
         public string Description { get; set; }
     }
 }

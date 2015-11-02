@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.Plugins;
     using Microsoft.DocAsCode.Plugins;
+    using Newtonsoft.Json.Linq;
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -113,8 +114,8 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
             {
                 // check conceptual.
-                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml"))));
-                var model = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".yml")));
+                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".json"))));
+                var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".json")));
                 Assert.Equal(
                     "<h1 id=\"hello-world\">Hello World</h1>\n" +
                     "<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
@@ -126,15 +127,13 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.Equal("Conceptual", model["type"]);
                 Assert.Equal("Hello world!", model["meta"]);
                 Assert.Equal("b", model["a"]);
-                Assert.IsType<Dictionary<object, object>>(model["b"]);
-                Assert.Equal("e", ((Dictionary<object, object>)model["b"])["c"]);
             }
 
             {
                 // check resource.
                 Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
-                Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".yml")));
-                var meta = YamlUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".yml"));
+                Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".json")));
+                var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + ".json"));
                 Assert.Equal(3, meta.Count);
                 Assert.True(meta.ContainsKey("meta"));
                 Assert.Equal("Hello world!", meta["meta"]);
@@ -151,15 +150,15 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var manifest = YamlUtility.Deserialize<List<Dictionary<string, object>>>(filepath);
                 Assert.Equal(5, manifest.Count);
                 Assert.Equal("Conceptual", manifest[0]["type"]);
-                Assert.Equal(@"documents/test.yml", manifest[0]["model"]);
+                Assert.Equal(@"documents/test.json", manifest[0]["model"]);
                 Assert.Equal("Conceptual", manifest[1]["type"]);
-                Assert.Equal(@"documents/test/test.yml", manifest[1]["model"]);
+                Assert.Equal(@"documents/test/test.json", manifest[1]["model"]);
                 Assert.Equal("ManagedReference", manifest[2]["type"]);
-                Assert.Equal(@"System.Console.yml", manifest[2]["model"]);
+                Assert.Equal(@"System.Console.json", manifest[2]["model"]);
                 Assert.Equal("ManagedReference", manifest[3]["type"]);
-                Assert.Equal(@"System.ConsoleColor.yml", manifest[3]["model"]);
+                Assert.Equal(@"System.ConsoleColor.json", manifest[3]["model"]);
                 Assert.Equal("Resource", manifest[4]["type"]);
-                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.yml", manifest[4]["model"]);
+                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.json", manifest[4]["model"]);
                 Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[4]["resource"]);
             }
 
@@ -169,10 +168,10 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.True(File.Exists(filepath));
                 var filemap = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
                 Assert.Equal(5, filemap.Count);
-                Assert.Equal("~/documents/test.yml", filemap["~/documents/test.md"]);
-                Assert.Equal("~/documents/test/test.yml", filemap["~/documents/test/test.md"]);
-                Assert.Equal("~/System.Console.yml", filemap["~/System.Console.csyml"]);
-                Assert.Equal("~/System.ConsoleColor.yml", filemap["~/System.ConsoleColor.csyml"]);
+                Assert.Equal("~/documents/test.json", filemap["~/documents/test.md"]);
+                Assert.Equal("~/documents/test/test.json", filemap["~/documents/test/test.md"]);
+                Assert.Equal("~/System.Console.json", filemap["~/System.Console.csyml"]);
+                Assert.Equal("~/System.ConsoleColor.json", filemap["~/System.ConsoleColor.csyml"]);
                 Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
             }
 
@@ -182,9 +181,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.True(File.Exists(filepath));
                 var xref = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
                 Assert.Equal(3, xref.Count);
-                Assert.Equal("~/documents/test.yml", xref["XRef1"]);
-                Assert.Equal("~/documents/test/test.yml", xref["XRef2"]);
-                Assert.Equal("~/System.ConsoleColor.yml", xref["System.ConsoleColor"]);
+                Assert.Equal("~/documents/test.json", xref["XRef1"]);
+                Assert.Equal("~/documents/test/test.json", xref["XRef2"]);
+                Assert.Equal("~/System.ConsoleColor.json", xref["System.ConsoleColor"]);
             }
 
             {

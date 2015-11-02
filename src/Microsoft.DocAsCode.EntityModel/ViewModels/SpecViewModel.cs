@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
+    using Newtonsoft.Json;
     using System;
     using YamlDotNet.Serialization;
 
@@ -10,18 +11,23 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     public class SpecViewModel
     {
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid")]
         public string Uid { get; set; }
 
         [YamlMember(Alias = "name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
         [YamlMember(Alias = "fullName")]
+        [JsonProperty("fullName")]
         public string FullName { get; set; }
 
         [YamlMember(Alias = "isExternal")]
+        [JsonProperty("isExternal")]
         public bool IsExternal { get; set; }
 
         [YamlMember(Alias = "href")]
+        [JsonProperty("href")]
         public string Href { get; set; }
 
         public static SpecViewModel FromModel(LinkItem model)

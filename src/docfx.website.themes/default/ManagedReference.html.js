@@ -4,59 +4,59 @@ function transform(model, _attrs) {
   var util = new Utility();
   var namespaceItems = [
     {
-      key: "Class",
+      key: "class",
       title: "Classes",
       id: "classes"
     },
     {
-      key: "Struct",
+      key: "struct",
       title: "Structs",
       id: "structs"
     },
     {
-      key: "Interface",
+      key: "interface",
       title: "Interfaces",
       id: "interfaces"
     },
     {
-      key: "Enum",
+      key: "enum",
       title: "Enums",
       id: "enums"
     },
     {
-      key: "Delegate",
+      key: "delegate",
       title: "Delegates",
       id: "delegates"
     }
   ];
   var classItems = [
     {
-      key: "Constructor",
+      key: "constructor",
       title: "Constructors",
       id: "constructors"
     },
     {
-      key: "Field",
+      key: "field",
       title: "Fields",
       id: "fields"
     },
     {
-      key: "Property",
+      key: "property",
       title: "Properties",
       id: "properties"
     },
     {
-      key: "Method",
+      key: "method",
       title: "Methods",
       id: "methods"
     },
     {
-      key: "Event",
+      key: "event",
       title: "Events",
       id: "events"
     },
     {
-      key: "Operator",
+      key: "operator",
       title: "Operators",
       id: "operators"
     }
@@ -127,15 +127,19 @@ function transform(model, _attrs) {
         this.item.children.forEach(function (c) {
           c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext));
           var type = c.type;
-          if (!grouped[type]) grouped[type] = [];
+          if (!grouped.hasOwnProperty(type)) {
+            grouped[type] = [];
+          }
           grouped[type].push(c);
         })
         var children = [];
         for (var i=0; i<namespaceItems.length; i++){
           var key = namespaceItems[i];
-          var items = key.children = grouped[key.key];
-          if (items && items.length > 0){
-            children.push(key);
+          if (grouped.hasOwnProperty(key.key)){
+            var items = key.children = grouped[key.key];
+            if (items && items.length > 0){
+              children.push(key);
+            }
           }
         }
 
@@ -152,10 +156,12 @@ function transform(model, _attrs) {
         var that = this;
         // group children with their type
         this.item.children.forEach(function (c) {
+
           c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext));
           var type = c.type;
-          if (!grouped[type]) grouped[type] = [];
-
+          if (!grouped.hasOwnProperty(type)) {
+            grouped[type] = [];
+          }
           // special handle for property
           if (type === "Property" && c.syntax){
             c.syntax.propertyValue = c.syntax.return;
@@ -166,9 +172,11 @@ function transform(model, _attrs) {
         var children = [];
         for (var i=0; i<classItems.length; i++){
           var key = classItems[i];
-          var items = key.children = grouped[key.key];
-          if (items && items.length > 0){
-            children.push(key);
+          if (grouped.hasOwnProperty(key.key)){
+            var items = key.children = grouped[key.key];
+            if (items && items.length > 0){
+              children.push(key);
+            }
           }
         }
 

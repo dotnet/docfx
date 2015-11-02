@@ -304,7 +304,7 @@ test2
             var dir = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(dir))
                 Directory.CreateDirectory(dir);
-            YamlUtility.Serialize(path, model);
+            JsonUtility.Serialize(path, model);
         }
     }
 }

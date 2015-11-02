@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode
             var parameters = new DocumentBuildParameters();
             var baseDirectory = config.BaseDirectory ?? Environment.CurrentDirectory;
 
-            parameters.OutputBaseDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            parameters.OutputBaseDir = Path.Combine(baseDirectory, "obj");
             parameters.Metadata = (config.GlobalMetadata ?? new Dictionary<string, object>()).ToImmutableDictionary();
             parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference)).ToImmutableArray();
             parameters.Files = GetFileCollectionFromFileMapping(baseDirectory,

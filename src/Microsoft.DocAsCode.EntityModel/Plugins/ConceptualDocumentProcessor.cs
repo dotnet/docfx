@@ -66,8 +66,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             string path = Path.Combine(model.BaseDir, model.File);
             try
             {
-                YamlUtility.Serialize(path, model.Content);
-
+                JsonUtility.Serialize(path, model.Content);
             }
             catch (PathTooLongException e)
             {
@@ -120,7 +119,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
             model.Properties.LinkToFiles = result.LinkToFiles;
             model.Properties.LinkToUids = result.LinkToUids;
-            model.File = Path.ChangeExtension(model.File, ".yml");
+            model.File = Path.ChangeExtension(model.File, ".json");
         }
 
         public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)

@@ -108,7 +108,7 @@
     <Compile Include="MarkdownIndexer\IIndexerPipeline.cs" />
     <Compile Include="MarkdownIndexer\MarkdownIndexer.cs" />
     <Compile Include="MarkdownIndexer\IndexerContext.cs" />
-    <Compile Include="Model\ExceptionDetail.cs" />
+    <Compile Include="Model\CrefInfo.cs" />
     <Compile Include="Model\ApiReferenceModel.cs" />
     <Compile Include="Model\ReferenceItem.cs" />
     <Compile Include="DocfxFlavoredMarked\DocfxFlavoredMarked.cs" />

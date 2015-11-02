@@ -101,7 +101,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 throw new NotSupportedException();
             }
             var vm = (PageViewModel)model.Content;
-            YamlUtility.Serialize(Path.Combine(model.BaseDir, model.File), vm);
+
+            JsonUtility.Serialize(Path.Combine(model.BaseDir, model.File), vm);
             var linkToUids = (HashSet<string>)model.Properties.LinkToUids;
             linkToUids.UnionWith(GetViewModelXRef(vm));
             return new SaveResult
@@ -207,7 +208,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     {
                         BuildReference(host, reference, model);
                     }
-                    model.File = Path.ChangeExtension(model.File, ".yml");
+
+                    model.File = Path.ChangeExtension(model.File, ".json");
                     break;
                 case DocumentType.Override:
                     foreach (var item in (List<ItemViewModel>)model.Content)

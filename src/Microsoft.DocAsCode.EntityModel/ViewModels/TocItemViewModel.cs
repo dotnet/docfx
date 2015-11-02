@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
+    using Newtonsoft.Json;
     using System;
     using YamlDotNet.Serialization;
 
@@ -10,18 +11,25 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     public class TocItemViewModel
     {
         [YamlMember(Alias = "uid")]
+        [JsonProperty("uid")]
         public string Uid { get; set; }
         [YamlMember(Alias = "name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
         [YamlMember(Alias = "name.csharp")]
+        [JsonProperty("name.csharp")]
         public string NameForCSharp { get; set; }
         [YamlMember(Alias = "name.vb")]
+        [JsonProperty("name.vb")]
         public string NameForVB { get; set; }
         [YamlMember(Alias = "href")]
+        [JsonProperty("href")]
         public string Href { get; set; }
         [YamlMember(Alias = "homepage")]
+        [JsonProperty("homepage")]
         public string Homepage { get; set; }
         [YamlMember(Alias = "items")]
+        [JsonProperty("items")]
         public TocViewModel Items { get; set; }
 
         public static TocItemViewModel FromModel(MetadataItem item)

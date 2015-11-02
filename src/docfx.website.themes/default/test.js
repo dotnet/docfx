@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var fs = require('fs');
 var Mustache = require('mustache');
-var jsyaml = require('js-yaml');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var extension = ".html";
@@ -13,11 +12,11 @@ eval(content);
 var dir = "sample";
 var output = "dist";
 var root = "./";
-var tocFile = 'toc.yml';
+var tocFile = 'toc.json';
 walk(dir, function (err, files) {
   if (err) return console.log(err);
   parse(dir, output, root, files, function (file, index) {
-    if (path.extname(file) === '.yml') return true;
+    if (path.extname(file) === '.json') return true;
     return false;
   }, transform);
 });
@@ -81,8 +80,7 @@ function parse(input, output, root, files, filter, callback) {
     fs.readFile(file, options, function (err, data) {
       if (err) return console.log(err);
       console.log("Transforming " + file);
-      var input = jsyaml.load(data);
-      var model = callback(JSON.stringify(input), JSON.stringify(attrs));
+      var model = callback(data, JSON.stringify(attrs));
       if (!model) return;
       var output = Mustache.render(template, model);
       if (/^\s*$/.test(output)) {
