@@ -145,7 +145,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
             {
                 // check manifest file.
-                var filepath = Path.Combine(outputBaseDir, ".docfx.manifest");
+                var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.ManifestFileName);
                 Assert.True(File.Exists(filepath));
                 var manifest = YamlUtility.Deserialize<List<Dictionary<string, object>>>(filepath);
                 Assert.Equal(5, manifest.Count);
@@ -164,7 +164,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
             {
                 // check file map
-                var filepath = Path.Combine(outputBaseDir, ".docfx.filemap");
+                var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.FileMapFileName);
                 Assert.True(File.Exists(filepath));
                 var filemap = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
                 Assert.Equal(5, filemap.Count);
@@ -176,19 +176,16 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             }
 
             {
-                // check xref
-                var filepath = Path.Combine(outputBaseDir, ".docfx.xref");
+                // check external xref spec
+                var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.ExternalXRefSpecFileName);
                 Assert.True(File.Exists(filepath));
-                var xref = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
-                Assert.Equal(3, xref.Count);
-                Assert.Equal("~/documents/test.json", xref["XRef1"]);
-                Assert.Equal("~/documents/test/test.json", xref["XRef2"]);
-                Assert.Equal("~/System.ConsoleColor.json", xref["System.ConsoleColor"]);
+                var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
+                Assert.Equal(0, xref.Count);
             }
 
             {
-                // check xref spec
-                var filepath = Path.Combine(outputBaseDir, ".docfx.xrefspec");
+                // check internal xref spec
+                var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.InternalXRefSpecFileName);
                 Assert.True(File.Exists(filepath));
                 var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
                 Assert.Equal(68, xref.Count);

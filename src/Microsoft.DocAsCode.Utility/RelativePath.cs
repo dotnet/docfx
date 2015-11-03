@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Utility
         #region Consts/Fields
         private const string ParentDirectory = "../";
         public static readonly RelativePath Empty = new RelativePath(0, new string[] { string.Empty });
+        public static readonly RelativePath WorkingFolder = new RelativePath(0, new string[] { "~", string.Empty });
 
         private readonly int _parentDirectoryCount;
         private readonly string[] _parts;
@@ -150,13 +151,39 @@ namespace Microsoft.DocAsCode.Utility
             return (from + this) - to;
         }
 
+        public bool IsFromWorkingFolder()
+        {
+            return _parentDirectoryCount == 0 && _parts.Length > 1 && _parts[0] == "~";
+        }
+
+        public RelativePath GetPathFromWorkingFolder()
+        {
+            if (_parentDirectoryCount > 0)
+            {
+                throw new InvalidOperationException();
+            }
+            if (IsFromWorkingFolder())
+            {
+                return this;
+            }
+            return WorkingFolder + this;
+        }
+
+        public RelativePath RemoveWorkingFolder()
+        {
+            if (!IsFromWorkingFolder())
+            {
+                return this - WorkingFolder;
+            }
+            return this;
+        }
         public override int GetHashCode()
         {
             var hash = _parentDirectoryCount;
             hash += _parts.Length << 16;
             for (int i = 0; i < _parts.Length; i++)
             {
-                hash ^= FilePathComparer.OSPlatformSensitiveComparer.GetHashCode(_parts[i]) << (i % 10);
+                hash ^= FilePathComparer.OSPlatformSensitiveStringComparer.GetHashCode(_parts[i]) << (i % 10);
             }
             return hash;
         }
@@ -186,7 +213,7 @@ namespace Microsoft.DocAsCode.Utility
             }
             for (int i = 0; i < _parts.Length; i++)
             {
-                if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(_parts[i], other._parts[i]))
+                if (!FilePathComparer.OSPlatformSensitiveStringComparer.Equals(_parts[i], other._parts[i]))
                 {
                     return false;
                 }

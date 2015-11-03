@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     [Export(typeof(IHostService))]
     internal sealed class HostService : IHostService, IDisposable
     {
-        public static readonly RelativePath RootSymbol = (RelativePath)"~/";
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
         private readonly LruList<FileModel> _lru = LruList<FileModel>.Create(0xC00, OnLruRemoving);
 
@@ -111,7 +110,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         Logger.LogError($"Cannot refer path: \"{path}\" out of project.", file: ft.File);
                         throw new DocumentException($"Cannot refer path \"{path}\" out of project in file \"{ft.File}\".");
                     }
-                    var file = RootSymbol + path;
+                    var file = path.GetPathFromWorkingFolder();
                     link.Value = file + anchor;
                     linkToFiles.Add(file);
                 }

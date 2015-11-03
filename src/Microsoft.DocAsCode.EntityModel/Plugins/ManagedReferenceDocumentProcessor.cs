@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(typeof(IDocumentProcessor))]
@@ -103,16 +104,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var vm = (PageViewModel)model.Content;
 
             JsonUtility.Serialize(Path.Combine(model.BaseDir, model.File), vm);
-            var linkToUids = (HashSet<string>)model.Properties.LinkToUids;
-            linkToUids.UnionWith(GetViewModelXRef(vm));
             return new SaveResult
             {
                 DocumentType = "ManagedReference",
                 ModelFile = model.File,
                 LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
-                LinkToUids = linkToUids.ToImmutableArray(),
+                LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableArray(),
                 XRefSpecs = (from item in vm.Items
-                             select GetXRefInfo(item)).ToImmutableArray(),
+                             select GetXRefInfo(item, model.OriginalFileAndType.File)).ToImmutableArray(),
             };
         }
 
@@ -159,12 +158,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
         }
 
-        private static XRefSpec GetXRefInfo(ItemViewModel item)
+        private static XRefSpec GetXRefInfo(ItemViewModel item, string href)
         {
             var result = new XRefSpec
             {
                 Uid = item.Uid,
                 Name = item.Name,
+                Href = ((RelativePath)href).GetPathFromWorkingFolder(),
             };
             if (!string.IsNullOrEmpty(item.NameForCSharp))
             {

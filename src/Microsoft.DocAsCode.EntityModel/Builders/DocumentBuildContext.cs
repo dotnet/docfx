@@ -12,12 +12,18 @@
 
     public sealed class DocumentBuildContext
     {
+        public const string ManifestFileName = ".docfx.manifest";
+        public const string FileMapFileName = ".docfx.filemap";
+        public const string ExternalXRefSpecFileName = ".docfx.xref.external";
+        public const string InternalXRefSpecFileName = ".docfx.xref.internal";
+        public const string TocFileName = ".docfx.toc";
+
         public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages)
         {
             BuildOutputFolder = buildOutputFolder;
-            AllSourceFiles = allSourceFiles.ToImmutableDictionary(ft => ((string)(HostService.RootSymbol + (RelativePath)ft.File)), FilePathComparer.OSPlatformSensitiveStringComparer);
+            AllSourceFiles = allSourceFiles.ToImmutableDictionary(ft => ((RelativePath)ft.File).GetPathFromWorkingFolder(), FilePathComparer.OSPlatformSensitiveStringComparer);
             ExternalReferencePackages = externalReferencePackages;
         }
 
@@ -35,7 +41,7 @@
 
         public Dictionary<string, HashSet<string>> TocMap { get; private set; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-        public Dictionary<string, string> XRefMap { get; private set; } = null;
+        public Dictionary<string, XRefSpec> ExternalXRefSpec { get; private set; }
 
         public List<ManifestItem> Manifest { get; private set; } = new List<ManifestItem>();
 
@@ -43,66 +49,66 @@
 
         public void SerializeTo(string outputBaseDir)
         {
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.manifest"), Manifest);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.filemap"), FileMap);
-            if (XRefMap == null)
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ManifestFileName), Manifest);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, FileMapFileName), FileMap);
+            if (ExternalXRefSpec == null)
             {
-                XRefMap = GetXRef();
+                ExternalXRefSpec = GetExternalXRefSpec();
             }
 
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xref"), XRefMap);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.xrefspec"), XRefSpecMap.Values);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ".docfx.toc"), TocMap);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, ExternalXRefSpecFileName), ExternalXRefSpec.Values);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, InternalXRefSpecFileName), XRefSpecMap.Values);
+            YamlUtility.Serialize(Path.Combine(outputBaseDir, TocFileName), TocMap);
         }
 
         public static DocumentBuildContext DeserializeFrom(string outputBaseDir)
         {
             var context = new DocumentBuildContext(outputBaseDir);
-            context.Manifest = YamlUtility.Deserialize<List<ManifestItem>>(Path.Combine(outputBaseDir, ".docfx.manifest"));
-            context.FileMap = new Dictionary<string, string>(YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, ".docfx.filemap")), FilePathComparer.OSPlatformSensitiveStringComparer);
-            context.XRefMap = YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, ".docfx.xref"));
-            context.XRefSpecMap = YamlUtility.Deserialize<List<XRefSpec>>(Path.Combine(outputBaseDir, ".docfx.xrefspec")).ToDictionary(x => x.Uid, x => x.ToReadOnly());
-            context.TocMap = new Dictionary<string, HashSet<string>>(YamlUtility.Deserialize<Dictionary<string, HashSet<string>>>(Path.Combine(outputBaseDir, ".docfx.toc")), FilePathComparer.OSPlatformSensitiveStringComparer);
+            context.Manifest = YamlUtility.Deserialize<List<ManifestItem>>(Path.Combine(outputBaseDir, ManifestFileName));
+            context.FileMap = new Dictionary<string, string>(YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, FileMapFileName)), FilePathComparer.OSPlatformSensitiveStringComparer);
+            context.ExternalXRefSpec = YamlUtility.Deserialize<List<XRefSpec>>(Path.Combine(outputBaseDir, ExternalXRefSpecFileName)).ToDictionary(x => x.Uid, x => x.ToReadOnly());
+            context.XRefSpecMap = YamlUtility.Deserialize<List<XRefSpec>>(Path.Combine(outputBaseDir, InternalXRefSpecFileName)).ToDictionary(x => x.Uid, x => x.ToReadOnly());
+            context.TocMap = new Dictionary<string, HashSet<string>>(YamlUtility.Deserialize<Dictionary<string, HashSet<string>>>(Path.Combine(outputBaseDir, TocFileName)), FilePathComparer.OSPlatformSensitiveStringComparer);
             return context;
         }
 
-        private Dictionary<string, string> GetXRef()
+        private Dictionary<string, XRefSpec> GetExternalXRefSpec()
         {
-            var common = UidMap.Keys.Intersect(XRef).ToList();
-            var result = new Dictionary<string, string>(XRef.Count);
-            foreach (var uid in common)
+            var result = new Dictionary<string, XRefSpec>();
+
+            // remove internal xref.
+            XRef.ExceptWith(UidMap.Keys);
+
+            if (XRef.Count == 0)
             {
-                result[uid] = UidMap[uid];
+                return result;
             }
-            XRef.ExceptWith(common);
-            List<string> missingUids = new List<string>();
-            if (XRef.Count > 0)
+
+            var missingUids = new List<string>();
+            if (ExternalReferencePackages.Length > 0)
             {
-                if (ExternalReferencePackages.Length > 0)
+                using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages))
                 {
-                    using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages))
+                    foreach (var uid in XRef)
                     {
-                        foreach (var uid in XRef)
+                        var spec = GetExternalReference(externalReferences, uid);
+                        if (spec != null)
                         {
-                            var href = GetExternalReference(externalReferences, uid);
-                            if (href != null)
+                            result[uid] = spec;
+                        }
+                        else
+                        {
+                            if (missingUids.Count < 100)
                             {
-                                result[uid] = href;
-                            }
-                            else
-                            {
-                                if (missingUids.Count < 100)
-                                {
-                                    missingUids.Add(uid);
-                                }
+                                missingUids.Add(uid);
                             }
                         }
                     }
                 }
-                else
-                {
-                    missingUids.AddRange(XRef.Take(100));
-                }
+            }
+            else
+            {
+                missingUids.AddRange(XRef.Take(100));
             }
             if (missingUids.Count > 0)
             {
@@ -119,11 +125,21 @@
             return result;
         }
 
-        private static string GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)
+        private static XRefSpec GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)
         {
             ReferenceViewModel vm;
-            externalReferences.TryGetReference(uid, out vm);
-            return vm.Href;
+            if (!externalReferences.TryGetReference(uid, out vm))
+            {
+                return null;
+            }
+            using (var sw = new StringWriter())
+            {
+                YamlUtility.Serialize(sw, vm);
+                using (var sr = new StringReader(sw.ToString()))
+                {
+                    return YamlUtility.Deserialize<XRefSpec>(sr);
+                }
+            }
         }
     }
 }

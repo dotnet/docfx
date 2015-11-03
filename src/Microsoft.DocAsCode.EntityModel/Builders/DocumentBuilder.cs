@@ -19,7 +19,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     public class DocumentBuilder
     {
         private const string Phase = "Build Document";
-        private static readonly RelativePath Root = (RelativePath)"~/";
 
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
         {
@@ -186,7 +185,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             FileModel model,
             SaveResult result)
         {
-            context.FileMap[Root + (RelativePath)model.OriginalFileAndType.File] = Root + (RelativePath)model.File;
+            context.FileMap[((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder()] = ((RelativePath)model.File).GetPathFromWorkingFolder();
             DocumentException.RunAll(
                 () => CheckFileLink(hostService, model, result),
                 () => HandleUids(context, model, result),
@@ -202,7 +201,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 {
                     if (!hostService.SourceFiles.ContainsKey(fileLink))
                     {
-                        if (fileLink.StartsWith("~/")) fileLink = fileLink.Substring(2);
                         var message = $"Invalid file link({fileLink}) in file \"{model.LocalPathFromRepoRoot}\"";
                         Logger.LogError(message, file: model.LocalPathFromRepoRoot);
                         throw new DocumentException(message);
@@ -214,7 +212,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         {
             foreach (var uid in model.Uids)
             {
-                context.UidMap[uid] = Root + (RelativePath)model.File;
+                context.UidMap[uid] = ((RelativePath)model.File).GetPathFromWorkingFolder();
             }
             if (result.LinkToUids.Length > 0)
             {

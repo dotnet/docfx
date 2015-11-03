@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
-    using Utility;
+    using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class TocDocumentProcessor : IDocumentProcessor
@@ -102,13 +102,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     if (string.IsNullOrEmpty(fileName))
                     {
                         var href = item.Href + "toc.yml";
-                        var absHref = ((RelativePath)href).BasedOn((RelativePath)file);
-                        var tocPath = (RelativePath)"~/" + absHref;
+                        var absHref = (RelativePath)file + (RelativePath)href;
+                        string tocPath = absHref.GetPathFromWorkingFolder();
                         if (!hostService.SourceFiles.TryGetValue(tocPath, out originalTocFile))
                         {
                             href = item.Href + "toc.md";
-                            absHref = ((RelativePath)href).BasedOn((RelativePath)file);
-                            tocPath = (RelativePath)"~/" + absHref;
+                            absHref = (RelativePath)file + (RelativePath)href;
+                            tocPath = absHref.GetPathFromWorkingFolder();
                             if (!hostService.SourceFiles.TryGetValue(tocPath, out originalTocFile))
                             {
                                 var error = $"Unable to find either toc.yml or toc.md inside {item.Href}";
@@ -122,7 +122,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     }
 
                     // Add toc.yml to tocMap before change item.Href to home page
-                    item.Href = (RelativePath)"~/" + ((RelativePath)item.Href).BasedOn((RelativePath)file);
+                    item.Href = ((RelativePath)file + (RelativePath)item.Href).GetPathFromWorkingFolder();
                     HashSet<string> value;
                     if (tocMap.TryGetValue(item.Href, out value))
                     {
@@ -147,7 +147,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 if (PathUtility.IsRelativePath(item.Homepage))
                 {
-                    item.Href = (RelativePath)"~/" + ((RelativePath)item.Homepage).BasedOn((RelativePath)model.File);
+                    item.Href = ((RelativePath)model.File + (RelativePath)item.Homepage).GetPathFromWorkingFolder();
                 }
                 else
                 {
@@ -194,7 +194,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         /// </summary>
         /// <param name="href"></param>
         /// <returns></returns>
-        private bool IsValidHomepageLink(string href) {
+        private bool IsValidHomepageLink(string href)
+        {
             return PathUtility.IsRelativePath(href) && !string.IsNullOrEmpty(Path.GetFileName(href));
         }
 

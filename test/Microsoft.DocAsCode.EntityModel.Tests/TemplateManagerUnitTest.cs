@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         {
             if (Directory.Exists(OutputFolder))
             {
-               Directory.Delete(OutputFolder, true);
+                Directory.Delete(OutputFolder, true);
             }
         }
     }
@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                }
             };
             var modelFileName = "TestTemplateProcessor_NoScript.yml";
-            var item = new ManifestItem { DocumentType = string.Empty, ModelFile = modelFileName, ResourceFile = modelFileName };
+            var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.tmpl", template));
 
             var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
@@ -126,10 +126,10 @@ test2
                }
             };
             var templateName = "NoTemplate";
-            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty };
+            var item = new ManifestItem { ModelFile = modelFileName, OriginalFile = modelFileName, DocumentType = string.Empty };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
             Assert.True(!File.Exists(modelFile));
-            item = new ManifestItem { ModelFile = modelFileName, ResourceFile = modelFileName, DocumentType = string.Empty };
+            item = new ManifestItem { ModelFile = modelFileName, OriginalFile = modelFileName, ResourceFile = modelFileName, DocumentType = string.Empty };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
             Assert.True(File.Exists(modelFile));
         }
@@ -180,9 +180,9 @@ function transform(text){
 
             var modelFileName = "TestTemplateProcessor_WithIncludes.yml";
             string inputFolder = null;
-            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, OriginalFile = modelFileName};
-            ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder, 
-                Tuple.Create("default.html.tmpl", template), 
+            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, OriginalFile = modelFileName };
+            ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
+                Tuple.Create("default.html.tmpl", template),
                 Tuple.Create("default.html.js", script),
                 Tuple.Create("reference1.html", string.Empty),
                 Tuple.Create("reference2.html", string.Empty)
@@ -230,8 +230,8 @@ function transform(text){
             };
 
             string inputFolder = null;
-            var item1 = new ManifestItem { ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType1.yml", DocumentType = "Conceptual" };
-            var item2 = new ManifestItem { DocumentType = string.Empty, ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType2.yml" };
+            var item1 = new ManifestItem { ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType1.yml", OriginalFile = "x.yml", DocumentType = "Conceptual" };
+            var item2 = new ManifestItem { DocumentType = string.Empty, ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType2.yml", OriginalFile = "y.yml" };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", defaultTemplate),
                 Tuple.Create($"{templateName}/conceptual.md.tmpl", conceptualTemplate),
@@ -271,7 +271,7 @@ test2
             if (Directory.Exists(templateFolder))
                 Directory.Delete(templateFolder, true);
             WriteTemplate(templateFolder, templateFiles);
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 var modelPath = Path.Combine(inputFolder ?? string.Empty, item.ModelFile);
                 WriteModel(modelPath, model);
