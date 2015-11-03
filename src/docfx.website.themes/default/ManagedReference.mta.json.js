@@ -29,7 +29,7 @@ function transform(model, _attrs) {
     model._allowToc = true;
   }
 
-  return model;
+  return {content: JSON.stringify(model, null, '  ')};
 
   function createViewModel(model, _attrs) {
     if (!model || !model.items || model.items.length === 0) return null;

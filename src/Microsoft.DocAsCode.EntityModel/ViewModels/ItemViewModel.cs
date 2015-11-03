@@ -65,12 +65,10 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         public MemberType? Type { get; set; }
 
         [YamlMember(Alias = "source")]
-        [MergeOption(MergeOption.Ignore)]
         [JsonProperty("source")]
         public SourceDetail Source { get; set; }
 
         [YamlMember(Alias = "documentation")]
-        [MergeOption(MergeOption.Ignore)]
         [JsonProperty("documentation")]
         public SourceDetail Documentation { get; set; }
 

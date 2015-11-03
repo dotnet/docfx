@@ -20,11 +20,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
         {
             var filePath = Path.Combine(baseDir, file);
+            var repoInfo = GitUtility.GetGitDetail(filePath);
             return new Dictionary<string, object>
             {
                 ["conceptual"] = File.ReadAllText(filePath),
                 ["type"] = "Conceptual",
-                ["remote"] = GitUtility.GetGitDetail(filePath),
+                ["source"] = new SourceDetail() { Remote = repoInfo },
                 ["path"] = file,
             };
         }
@@ -32,6 +33,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         private static IEnumerable<ItemViewModel> ReadMarkDownCore(string file)
         {
             var content = File.ReadAllText(file);
+            var repoInfo = GitUtility.GetGitDetail(file);
             var lineIndex = GetLineIndex(content).ToList();
             var yamlDetails = YamlHeaderParser.Select(content);
             var sections = from detail in yamlDetails
@@ -54,6 +56,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         {
                             var vm = YamlUtility.Deserialize<ItemViewModel>(sr);
                             vm.Conceptual = content.Substring(start, end - start + 1);
+                            vm.Documentation = new SourceDetail { Remote = repoInfo, StartLine = item.Location.EndLocation.Line, EndLine = currentEnd.Line };
                             vm.Uid = item.Id;
                             yield return vm;
                         }

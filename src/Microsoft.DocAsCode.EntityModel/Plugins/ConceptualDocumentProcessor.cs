@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 content,
                 serializer: new BinaryFormatter())
             {
-                LocalPathFromRepoRoot = (content["remote"] as GitDetail)?.RelativePath
+                LocalPathFromRepoRoot = (content["source"] as SourceDetail)?.Remote?.RelativePath
             };
         }
 
