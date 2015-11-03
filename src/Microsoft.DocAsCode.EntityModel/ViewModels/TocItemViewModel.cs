@@ -25,6 +25,9 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [YamlMember(Alias = "href")]
         [JsonProperty("href")]
         public string Href { get; set; }
+        [YamlMember(Alias = "originalHref")]
+        [JsonProperty("originalHref")]
+        public string OriginalHref { get; set; }
         [YamlMember(Alias = "homepage")]
         [JsonProperty("homepage")]
         public string Homepage { get; set; }

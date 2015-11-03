@@ -71,7 +71,7 @@ $(function() {
         }
         var navrel = navbarPath.substr(0, index + 1);
         $('#navbar>ul').addClass('navbar-nav');
-
+        var currentAbsPath = getAbsolutePath(window.location.pathname);
         // set active item
         $('#navbar').find('a[href]').each(function(i, e) {
           var href = $(e).attr("href");
@@ -79,10 +79,19 @@ $(function() {
             href = navrel + href;
             $(e).attr("href", href);
 
-            // TODO: current is to trim toc.html, what about append index.html for folders?
             // TODO: currently only support one level navbar
-            if (getAbsolutePath(href) === getAbsolutePath(tocPath) ||
-              (tocPath.lastIndexOf('/') > -1 && getAbsolutePath(href) === getAbsolutePath(tocPath.substr(0, tocPath.lastIndexOf('/') + 1)))) {
+            var isActive = false;
+            var originalHref = e.name;
+            if (originalHref){
+              if ('/' + getDirectory(originalHref) === getDirectory(getAbsolutePath(tocPath))) {
+                isActive = true;
+              }
+            } else {
+              if (getAbsolutePath(href) === currentAbsPath) {
+                isActive = true;
+              }
+            }
+            if (isActive) {
               $(e).parent().addClass(active);
               breadcrumb.insert({
                 href: e.href,
@@ -180,6 +189,15 @@ $(function() {
 
     function isAbsolutePath(href) {
       return (/^(?:[a-z]+:)?\/\//i).test(href);
+    }
+
+    function getDirectory(href) {
+      if (!href) return '';
+      var index = href.lastIndexOf('/');
+      if (index == -1) return '';
+      if (index > -1) {
+        return href.substr(0, index);
+      }
     }
 
     function getRelativePath(key) {

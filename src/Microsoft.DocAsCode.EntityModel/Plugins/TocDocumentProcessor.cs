@@ -119,6 +119,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
                         Logger.LogInfo($"TOC file {href} inside {item.Href} is used", file: model.LocalPathFromRepoRoot);
                         item.Href = href;
+                        item.OriginalHref = item.Href;
                     }
 
                     // Add toc.yml to tocMap before change item.Href to home page
