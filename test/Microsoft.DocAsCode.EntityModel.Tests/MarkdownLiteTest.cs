@@ -121,6 +121,12 @@ by a blank line.</p>
 </li>
 </ul>
 ")]
+        [InlineData(@"a
+```
+code
+```", @"<p>a</p>
+<pre><code>code
+</code></pre>")]
         public void Parse(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
