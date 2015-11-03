@@ -77,7 +77,6 @@
     <Compile Include="Builders\DocumentBuilder.cs" />
     <Compile Include="Builders\DocumentBuildParameters.cs" />
     <Compile Include="Builders\ManifestItem.cs" />
-    <Compile Include="Builders\YamlFormatter.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmBlockRules.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmRenderer.cs" />
