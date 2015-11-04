@@ -98,7 +98,14 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public static T Deserialize<T>(TextReader reader)
         {
-            return deserializer.Value.Deserialize<T>(reader);
+            // YamlDotNet is slow in deserialize into strong typed model.
+            // Use JSON.NET to convert from dictionary to object model instead.
+            var dict = deserializer.Value.Deserialize(reader);
+            var json = JsonUtility.Serialize(dict);
+            using (var stringReader = new StringReader(json))
+            {
+                return JsonUtility.Deserialize<T>(stringReader);
+            }
         }
 
         public static T Deserialize<T>(string path)

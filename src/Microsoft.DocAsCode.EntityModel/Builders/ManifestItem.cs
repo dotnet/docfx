@@ -3,19 +3,25 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Builders
 {
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
     public class ManifestItem
     {
         [YamlMember(Alias = "type")]
+        [JsonProperty("type")]
         public string DocumentType { get; set; }
         [YamlMember(Alias = "model")]
+        [JsonProperty("model")]
         public string ModelFile { get; set; }
         [YamlMember(Alias = "pathFromRoot")]
+        [JsonProperty("pathFromRoot")]
         public string LocalPathFromRepoRoot { get; set; }
         [YamlMember(Alias = "original")]
+        [JsonProperty("original")]
         public string OriginalFile { get; set; }
         [YamlMember(Alias = "resource")]
+        [JsonProperty("resource")]
         public string ResourceFile { get; set; }
     }
 }
