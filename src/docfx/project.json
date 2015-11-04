@@ -32,5 +32,6 @@
   },
   "commands": {
     "docfx": "docfx"
-  }
+  },
+  "resources": "Template/**.zip"
 }

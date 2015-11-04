@@ -4,7 +4,7 @@
       "src": [
         {
           "files": ["**/*.csproj"],
-          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `cwd`
+          "exclude": [ "**/bin/**", "**/obj/**" ], 
           "cwd": "../src"
         }
       ],
@@ -17,10 +17,10 @@
           "cwd": "../src"
         }
       ],
-      "dest": "obj/docfx/api/js" // throw error when dest is not unique
+      "dest": "obj/docfx/api/js" 
     }
   ],
-  "build": { // input could be YAML or MARKDOWN files, outputs are Final-YAML files
+  "build": {
     "content":
       [
         {
@@ -43,9 +43,11 @@
     "externalReference": [
       "external/*.yml.zip"
     ],
+    "globalMetadata" : {
+      "_appTitle": "Doc-as-code documentation"
+    },
     "dest": "_site",
-    "template": "default",
-    "theme": "happy",
-    "title": "Doc-as-code documentation"
+    "template": ["default", "override"],
+    "theme": "happy"
   }
 }
