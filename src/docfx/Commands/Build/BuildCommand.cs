@@ -86,9 +86,7 @@ namespace Microsoft.DocAsCode
 
             // If RootOutput folder is specified from command line, use it instead of the base directory
             var outputFolder = Path.Combine(_context?.RootOutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
-            var templateFolder = string.IsNullOrEmpty(config.TemplateFolder) ? null : Path.Combine(config.BaseDirectory ?? string.Empty, config.TemplateFolder);
-            var themeFolder = string.IsNullOrEmpty(config.TemplateThemeFolder) ? null : Path.Combine(config.BaseDirectory ?? string.Empty, config.TemplateThemeFolder);
-            using (var manager = new TemplateManager(assembly, "Template", templateFolder, config.Template, themeFolder, config.TemplateTheme))
+            using (var manager = new TemplateManager(assembly, "Template", config.Templates, config.Themes))
             {
                 manager.ProcessTemplateAndTheme(documentContext, outputFolder, true);
             }
@@ -178,11 +176,9 @@ namespace Microsoft.DocAsCode
 
             string optionsBaseDirectory = Environment.CurrentDirectory;
             // Override config file with options from command line
-            if (!string.IsNullOrEmpty(options.Template)) config.Template = options.Template;
-            if (!string.IsNullOrEmpty(options.TemplateFolder)) config.TemplateFolder = Path.GetFullPath(options.TemplateFolder);
+            if (options.Templates != null && options.Templates.Count > 0) config.Templates = new ListWithStringFallback(options.Templates);
 
-            if (!string.IsNullOrEmpty(options.TemplateTheme)) config.TemplateTheme = options.TemplateTheme;
-            if (!string.IsNullOrEmpty(options.TemplateThemeFolder)) config.TemplateThemeFolder = Path.GetFullPath(options.TemplateThemeFolder);
+            if (options.Themes != null && options.Themes.Count > 0) config.Themes = new ListWithStringFallback(options.Themes);
             if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
             if (options.Content != null)
             {

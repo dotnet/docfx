@@ -8,12 +8,10 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.IO.Compression;
     
     public class ResourceFinder
     {
         private IEnumerable<string> _embeddedResourceNames;
-        private string _overrideFolder = null;
         private string _resourcePrefix;
         private Assembly _assembly;
         private static Func<string, string, string, bool> resourceNamePredicator = (resourceName, name, prefix) => Path.GetFileNameWithoutExtension(resourceName).Substring(prefix.Length).Equals(name, StringComparison.OrdinalIgnoreCase);
@@ -33,27 +31,6 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        public ResourceFinder(string folder) : this(null, null, folder) { }
-
-        public ResourceFinder(Assembly assembly, string rootNamespace, string overrideFolder) : this(assembly, rootNamespace)
-        {
-            if (string.IsNullOrEmpty(overrideFolder))
-            {
-                _overrideFolder = Environment.CurrentDirectory;
-            }
-            else
-            {
-                if (!Directory.Exists(overrideFolder))
-                {
-                    Logger.Log(LogLevel.Warning, $"Folder {overrideFolder} does not exist");
-                }
-                else
-                {
-                    _overrideFolder = overrideFolder;
-                }
-            }
-        }
-
         /// <summary>
         /// Search in order:
         /// 1. Inside OverrideFolder, *NOTE* sub-folders are **NOT** included
@@ -68,32 +45,30 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (string.IsNullOrEmpty(name)) return null;
 
-            if (_overrideFolder != null)
+            var directory = Path.Combine(Environment.CurrentDirectory, name);
+            if (Directory.Exists(directory))
             {
-                var directory = Path.Combine(_overrideFolder, name);
-                if (Directory.Exists(directory))
-                {
-                    return new FileResourceCollection(directory);
-                }
+                Logger.LogVerbose($"Resource {name} is found from {directory}.");
+                return new FileResourceCollection(directory);
+            }
 
-                var fileName = Path.Combine(_overrideFolder, $"{name}.zip");
-                if (File.Exists(fileName))
-                {
-                    Logger.Log(LogLevel.Verbose, $"Resource {name} is found in {_overrideFolder}.");
-                    return new ArchiveResourceCollection(new FileStream(fileName, FileMode.Open, FileAccess.Read));
-                }
+            var fileName = Path.Combine(Environment.CurrentDirectory, $"{name}.zip");
+            if (File.Exists(fileName))
+            {
+                Logger.LogVerbose($"Resource {name} is found from {fileName}.");
+                return new ArchiveResourceCollection(new FileStream(fileName, FileMode.Open, FileAccess.Read), fileName);
             }
 
             var resourceName = _embeddedResourceNames.FirstOrDefault(s => resourceNamePredicator(s, name, _resourcePrefix));
             if (resourceName == null)
             {
-                Logger.Log(LogLevel.Warning, $"Unable to find matching resource {name}.");
+                Logger.LogWarning($"Unable to find matching resource {name}.");
                 return null;
             }
             else
             {
-                Logger.Log(LogLevel.Verbose, $"Resource {name} is found in embedded resources.");
-                return new ArchiveResourceCollection(_assembly.GetManifestResourceStream(resourceName));
+                Logger.LogVerbose($"Resource {name} is found in embedded resources.");
+                return new ArchiveResourceCollection(_assembly.GetManifestResourceStream(resourceName), $"embedded resource {resourceName}");
             }
         }
     }

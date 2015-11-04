@@ -15,11 +15,13 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private ZipArchive _zipped = null;
         private bool disposed = false;
+        public override string Name { get; }
+        public override IEnumerable<string> Names { get; }
 
-        public ArchiveResourceCollection(Stream stream)
+        public ArchiveResourceCollection(Stream stream, string name)
         {
             _zipped = new ZipArchive(stream);
-
+            Name = name;
             // When Name is empty, entry is folder, ignore
             Names = _zipped.Entries.Where(s => !string.IsNullOrEmpty(s.Name)).Select(s => s.FullName);
         }
@@ -49,11 +51,14 @@ namespace Microsoft.DocAsCode.EntityModel
         // keep comparer to be case sensitive as to be consistent with zip entries
         private static StringComparer ResourceComparer = StringComparer.Ordinal;
         private string _directory = null;
+        public override string Name { get; }
+        public override IEnumerable<string> Names { get; }
 
         public FileResourceCollection(string directory)
         {
             if (string.IsNullOrEmpty(directory)) _directory = Environment.CurrentDirectory;
             else _directory = directory;
+            Name = _directory;
             Names = Directory.GetFiles(_directory, "*", SearchOption.AllDirectories).Select(s => PathUtility.MakeRelativePath(_directory, s));
         }
 
@@ -69,11 +74,55 @@ namespace Microsoft.DocAsCode.EntityModel
         }
     }
 
+    public sealed class CompositeResourceCollectionWithOverridden : ResourceCollection
+    {
+        private ResourceCollection[] _collectionsInOverriddenOrder;
+        private bool disposed = false;
+        public override string Name => "Composite";
+        public override IEnumerable<string> Names { get; }
+
+        public CompositeResourceCollectionWithOverridden(ResourceCollection[] collectionsInOverriddenOrder)
+        {
+            if (collectionsInOverriddenOrder == null) throw new ArgumentNullException(nameof(collectionsInOverriddenOrder));
+            _collectionsInOverriddenOrder = collectionsInOverriddenOrder;
+            Names = _collectionsInOverriddenOrder.SelectMany(s => s.Names).Distinct();
+        }
+
+        public override Stream GetResourceStream(string name)
+        {
+            for (int i = _collectionsInOverriddenOrder.Length - 1; i > -1; i--)
+            {
+                var stream = _collectionsInOverriddenOrder[i].GetResourceStream(name);
+                if (stream != null)
+                {
+                    Logger.LogVerbose($"Resource \"{name}\" is found from \"{_collectionsInOverriddenOrder[i].Name}\"");
+                    return stream;
+                }
+            }
+
+            return null;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposed) return;
+            for(int i = 0; i< _collectionsInOverriddenOrder.Length; i++)
+            {
+                _collectionsInOverriddenOrder[i].Dispose();
+                _collectionsInOverriddenOrder[i] = null;
+            }
+
+            _collectionsInOverriddenOrder = null;
+
+            base.Dispose(disposing);
+        }
+    }
+
     public abstract class ResourceCollection : IDisposable
     {
-        private bool disposed = false;
+        public abstract string Name { get; }
 
-        public IEnumerable<string> Names { get; set; }
+        public abstract IEnumerable<string> Names { get; }
 
         public string GetResource(string name)
         {
@@ -111,15 +160,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposed) return;
-            if (disposing)
-            {
-                // Free any other managed objects here.
-                Names = null;
-            }
-
-            // Free any unmangaed objects here.
-            disposed = true;
         }
 
         /// <summary>

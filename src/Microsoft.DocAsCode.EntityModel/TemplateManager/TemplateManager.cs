@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using Utility;
 
@@ -30,37 +31,40 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private ResourceCollection _themeResource = null;
 
-        public TemplateManager(Assembly assembly, string rootNamespace, string templateOverrideFolder, string templateName, string themeOverrideFolder, string themeName)
+        public TemplateManager(Assembly assembly, string rootNamespace, List<string> templates, List<string> themes)
         {
-            if (string.IsNullOrEmpty(templateName))
+            var resourceFinder = new ResourceFinder(assembly, rootNamespace);
+            if (templates == null || templates.Count == 0)
             {
                 Logger.Log(LogLevel.Info, "Template is not specified.");
             }
             else
             {
-                var templateResource = new ResourceFinder(assembly, rootNamespace, templateOverrideFolder).Find(templateName);
-
-                if (templateResource != null)
+                var templateResources = templates.Select(s => resourceFinder.Find(s)).Where(s => s != null).ToArray();
+                if (templateResources.Length == 0)
                 {
-                    // js file does not exist, get the file with the same name as the template name
-                    _templateProcessor = new TemplateProcessor(templateName, templateResource);
+                    Logger.Log(LogLevel.Warning, $"No template resource found for [{templates.ToDelimitedString()}].");
                 }
                 else
                 {
-                    Logger.Log(LogLevel.Warning, $"No template resource found for {templateName}.");
+                    _templateProcessor = new TemplateProcessor(new CompositeResourceCollectionWithOverridden(templateResources));
                 }
             }
             
-            if (string.IsNullOrEmpty(themeName))
+            if (themes == null || themes.Count == 0)
             {
                 Logger.Log(LogLevel.Info, "Theme is not specified.");
             }
             else
             {
-                _themeResource = new ResourceFinder(assembly, rootNamespace, themeOverrideFolder).Find(themeName);
-                if (_themeResource == null)
+                var themeResources = themes.Select(s => resourceFinder.Find(s)).Where(s => s != null).ToArray();
+                if (themeResources.Length == 0)
                 {
-                    Logger.Log(LogLevel.Warning, $"No theme resource found for {themeName}.");
+                    Logger.Log(LogLevel.Warning, $"No theme resource found for [{themes.ToDelimitedString()}].");
+                }
+                else
+                {
+                    _themeResource = new CompositeResourceCollectionWithOverridden(themeResources);
                 }
             }
         }

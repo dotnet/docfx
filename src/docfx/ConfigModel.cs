@@ -27,16 +27,10 @@ namespace Microsoft.DocAsCode
         public string Title { get; set; }
 
         [JsonProperty("template")]
-        public string Template { get; set; }
-
-        [JsonProperty("templateFolder")]
-        public string TemplateFolder { get; set; }
+        public List<string> Templates { get; set; }
 
         [JsonProperty("theme")]
-        public string TemplateTheme { get; set; }
-
-        [JsonProperty("themeFolder")]
-        public string TemplateThemeFolder { get; set; }
+        public List<string> Themes { get; set; }
 
         [JsonProperty("output")]
         public string OutputFolder { get; set; }

@@ -61,22 +61,23 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
         [Trait("Related", "ResourceFinder")]
         [Fact]
-        public void TestResourceFinder_FromOverrideFolder()
+        public void TestTemplateManager_MutipleThemes()
         {
             // If the same resource name exists in the override folder, use the overriden one
-            var testFinder = new ResourceFinder(this.GetType().Assembly, "tmpl", "tmpl");
-
-            // 1. Support tmpl1.zip
-            using (var result = testFinder.Find("tmpl1"))
+            var themes = new List<string> { "tmpl1", "tmpl/tmpl1" };
+            using (var manager = new TemplateManager(this.GetType().Assembly, "tmpl", null, themes))
             {
-                Assert.NotNull(result);
-                Assert.Equal(2, result.Names.Count());
-                var item = result.GetResource("tmpl1.dot.$");
-                Assert.Equal("Override: This is file with complex filename characters", item);
+                var outputFolder = Path.Combine(_outputFolder, "TestTemplateManager_MutipleThemes");
+                manager.ProcessTemplateAndTheme(null, outputFolder, true);
+                // 1. Support tmpl1.zip
+                var file1 = Path.Combine(outputFolder, "tmpl1.dot.$");
+                Assert.True(File.Exists(file1));
+                Assert.Equal("Override: This is file with complex filename characters", File.ReadAllText(file1));
 
                 // backslash is also supported
-                item = result.GetResource(@"sub/file1");
-                Assert.Equal("Override: This is file inside a subfolder", item);
+                var file2 = Path.Combine(outputFolder, "sub/file1");
+                Assert.True(File.Exists(file2));
+                Assert.Equal("Override: This is file inside a subfolder", File.ReadAllText(file2));
             }
         }
 
@@ -106,6 +107,57 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
             Assert.True(File.Exists(outputFile));
             Assert.Equal(@"
+test1
+test2
+", File.ReadAllText(outputFile));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Fact]
+        public void TestTemplateProcessor_SingleTemplateWithNoScriptWithPartial()
+        {
+            // 1. Prepare template
+            var templateName = "NoScriptWithPartial";
+            string template = @"
+{{#model}}
+{{name}}
+{{/model}}
+{{>partial1}}
+";
+            string partial1 = @"partial 1:
+{{>partial2}}";
+            string partial2 = @"partial 2:
+{{#model}}
+{{name}}
+{{/model}}
+";
+            var model = new
+            {
+                model = new[]
+               {
+                   new {name = "test1"},
+                   new {name = "test2"},
+               }
+            };
+            var modelFileName = "TestTemplateProcessor_NoScriptWithPartial.yml";
+            var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
+            ProcessTemplate(
+                templateName,
+                null,
+                new[] { item },
+                model,
+                _outputFolder,
+                Tuple.Create("default.tmpl", template),
+                Tuple.Create("partial1.tmpl.partial", partial1),
+                Tuple.Create("partial2.tmpl.partial", partial2));
+
+            var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
+            Assert.True(File.Exists(outputFile));
+            Assert.Equal(@"
+test1
+test2
+partial 1:
+partial 2:
 test1
 test2
 ", File.ReadAllText(outputFile));
@@ -277,9 +329,9 @@ test2
                 WriteModel(modelPath, model);
             }
 
-            using (var resource = new ResourceFinder(rootTemplateFolder).Find(templateName))
+            using (var resource = new ResourceFinder(null, null).Find(templateFolder))
             {
-                var processor = new TemplateProcessor(templateName, resource);
+                var processor = new TemplateProcessor(resource);
                 var context = new DocumentBuildContext(inputFolder);
                 context.Manifest.AddRange(items);
                 processor.Process(context, outputFolder);

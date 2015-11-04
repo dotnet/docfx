@@ -98,12 +98,13 @@ namespace Microsoft.DocAsCode
                      Hints.Empty,
                  }
             },
-            new SingleChoiceQuestion(
-                "Which documentation template to use?", (s, m) => m.Build.Template = s,
-                "default", "op.html", "msdn.html", "vs.html", "angular") {
+            new MultiAnswerQuestion(
+                "What documentation templates to use?", (s, m) => { if (s != null) m.Build.Templates.AddRange(s); },
+                new string[] { "default" }) {
                  Descriptions = new string[]
                  {
-                     "You can choose different themes incase you want to host in different platforms.",
+                     "You can define multiple templates in order, latter one will override former one if name collides",
+                     "There are several predefined templates in docfx: default, op.html, msdn.html, angular",
                      Hints.Tab,
                      Hints.Empty,
                  }

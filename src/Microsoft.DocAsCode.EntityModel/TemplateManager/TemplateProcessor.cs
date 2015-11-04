@@ -22,9 +22,11 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private static Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private const string ManifestFileName = ".manifest";
+        private const string PartialTemplateExtension = ".tmpl.partial";
+        private const string Language = "csharp"; // TODO: how to handle multi-language
         private TemplateCollection _templates;
         private ResourceCollection _resourceProvider = null;
-        private const string Language = "csharp"; // TODO: how to handle multi-language
+        private ResourceTemplateLocator _resourceTemplateLocator;
 
         /// <summary>
         /// TemplateName can be either file or folder
@@ -33,10 +35,11 @@ namespace Microsoft.DocAsCode.EntityModel
         /// </summary>
         /// <param name="templateName"></param>
         /// <param name="resourceProvider"></param>
-        public TemplateProcessor(string templateName, ResourceCollection resourceProvider)
+        public TemplateProcessor(ResourceCollection resourceProvider)
         {
             _resourceProvider = resourceProvider;
-            _templates = new TemplateCollection(templateName, resourceProvider);
+            _templates = new TemplateCollection(resourceProvider);
+            _resourceTemplateLocator = new ResourceTemplateLocator(resourceProvider);
         }
 
         public void Process(DocumentBuildContext context, string outputDirectory)
@@ -149,7 +152,7 @@ namespace Microsoft.DocAsCode.EntityModel
                             string outputPath = Path.Combine(outputDirectory ?? string.Empty, outputFile);
                             var dir = Path.GetDirectoryName(outputPath);
                             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                            var transformed = template.Transform(modelFile, systemAttrs);
+                            var transformed = template.Transform(modelFile, systemAttrs, _resourceTemplateLocator.GetTemplate);
                             if (!string.IsNullOrWhiteSpace(transformed))
                             {
                                 if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
@@ -539,6 +542,29 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
+        private sealed class ResourceTemplateLocator
+        {
+            private ResourceCollection _resourceProvider;
+            public ResourceTemplateLocator(ResourceCollection resourceProvider)
+            {
+                _resourceProvider = resourceProvider;
+            }
+
+            public Nustache.Core.Template GetTemplate(string name)
+            {
+                if (_resourceProvider == null) return null;
+                var resourceName = name + PartialTemplateExtension;
+                using (var stream = _resourceProvider.GetResourceStream(resourceName))
+                {
+                    if (stream == null) return null;
+                    var template = new Nustache.Core.Template(name);
+                    using (StreamReader reader = new StreamReader(stream))
+                        template.Load(reader);
+                    return template;
+                }
+            }
+        }
+
         private class Template
         {
             private string _script = null;
@@ -564,18 +590,18 @@ namespace Microsoft.DocAsCode.EntityModel
                 return Path.Combine(Path.GetDirectoryName(this.Name ?? string.Empty) ?? string.Empty, relativePath).ToNormalizedPath();
             }
 
-            public string Transform(string modelPath, object attrs)
+            public string Transform(string modelPath, object attrs, TemplateLocator templateLocator)
             {
                 if (_script == null)
                 {
                     var entity = JsonUtility.Deserialize<object>(modelPath);
-                    return Render.StringToString(Content, entity);
+                    return Render.StringToString(Content, entity, templateLocator);
                 }
                 else
                 {
 
                     var processedModel = ProcessWithJint(File.ReadAllText(modelPath), attrs);
-                    return Render.StringToString(Content, processedModel);
+                    return Render.StringToString(Content, processedModel, templateLocator);
                 }
             }
 
@@ -617,8 +643,6 @@ namespace Microsoft.DocAsCode.EntityModel
         }
         private class TemplateCollection : Dictionary<string, List<Template>>
         {
-            private ResourceCollection _resourceProvider;
-            private string _templateName;
             private List<Template> _defaultTemplate = null;
 
             public new List<Template> this[string key]
@@ -639,16 +663,12 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
             }
 
-            public TemplateCollection(string templateName, ResourceCollection provider) : base(ReadTemplate(templateName, provider), StringComparer.OrdinalIgnoreCase)
+            public TemplateCollection(ResourceCollection provider) : base(ReadTemplate(provider), StringComparer.OrdinalIgnoreCase)
             {
-                if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
-                _resourceProvider = provider;
-                _templateName = templateName;
-
                 base.TryGetValue("default", out _defaultTemplate);
             }
 
-            private static Dictionary<string, List<Template>> ReadTemplate(string templateName, ResourceCollection resource)
+            private static Dictionary<string, List<Template>> ReadTemplate(ResourceCollection resource)
             {
                 // type <=> list of template with different extension
                 var dict = new Dictionary<string, List<Template>>(StringComparer.OrdinalIgnoreCase);

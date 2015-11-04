@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Tests
                 {
                     Content = new List<string> { conceptualFile },
                     OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
-                    TemplateFolder = templateDir
+                    Templates = new List<string> { Path.Combine(templateDir, "default") }
                 }
             }
             , null).Exec(null);

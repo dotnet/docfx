@@ -4,6 +4,8 @@
 namespace Microsoft.DocAsCode
 {
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+    using System;
     using System.Collections.Generic;
 
     public class BuildJsonConfig
@@ -33,21 +35,78 @@ namespace Microsoft.DocAsCode
         public string Title { get; set; }
 
         [JsonProperty("template")]
-        public string Template { get; set; } = Constants.DefaultTemplateName;
-
-        [JsonProperty("templateFolder")]
-        public string TemplateFolder { get; set; }
+        public ListWithStringFallback Templates { get; set; } = new ListWithStringFallback { Constants.DefaultTemplateName };
 
         [JsonProperty("theme")]
-        public string TemplateTheme { get; set; }
-
-        [JsonProperty("themeFolder")]
-        public string TemplateThemeFolder { get; set; }
+        public ListWithStringFallback Themes { get; set; }
 
         [JsonProperty("serve")]
         public bool Serve { get; set; }
 
         [JsonProperty("port")]
         public string Port { get; set; }
+    }
+
+
+    public class ListWithStringFallbackConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(FileMapping);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var model = new ListWithStringFallback();
+            var value = reader.Value;
+            IEnumerable<JToken> jItems;
+            if (reader.TokenType == JsonToken.StartArray)
+            {
+                jItems = JArray.Load(reader);
+            }
+            else if (reader.TokenType == JsonToken.StartObject)
+            {
+                jItems = JContainer.Load(reader);
+            }
+            else if (reader.TokenType == JsonToken.String)
+            {
+                jItems = JRaw.Load(reader);
+            }
+            else
+            {
+                jItems = JObject.Load(reader);
+            }
+
+            if (jItems is JValue)
+            {
+                model.Add(jItems.ToString());
+            }
+            else
+            {
+                foreach (var item in jItems)
+                {
+                    model.Add(item.ToString());
+                }
+            }
+
+            return model;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, ((FileMapping)value).Items);
+        }
+    }
+
+    [JsonConverter(typeof(ListWithStringFallbackConverter))]
+    public class ListWithStringFallback : List<string>
+    {
+        public ListWithStringFallback() : base()
+        {
+        }
+
+        public ListWithStringFallback(IEnumerable<string> list) : base(list)
+        {
+        }
     }
 }

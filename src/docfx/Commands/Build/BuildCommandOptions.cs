@@ -40,16 +40,10 @@ namespace Microsoft.DocAsCode
         public List<string> ExternalReference { get; set; }
 
         [Option('t', "template", HelpText = "Specifies the template name to apply to. If not specified, output YAML file will not be transformed.")]
-        public string Template { get; set; }
-
-        [Option("templateFolder", HelpText = "If specified, this folder will be searched first to get the matching template.")]
-        public string TemplateFolder { get; set; }
+        public List<string> Templates { get; set; }
 
         [Option("theme", HelpText = "Specifies which theme to use. By default 'default' theme is offered.")]
-        public string TemplateTheme { get; set; }
-
-        [Option("themeFolder", HelpText = "If specified, this folder will be searched first to get the matching theme.")]
-        public string TemplateThemeFolder { get; set; }
+        public List<string> Themes { get; set; }
 
         [Option('s', "serve", HelpText = "Host the generated documentation to a website")]
         public bool Serve { get; set; }
