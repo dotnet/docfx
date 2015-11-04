@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
+    using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
     public class MarkdownRenderer
@@ -92,8 +93,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownListItemBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = "<li>";
+            content += RenderListItem(engine, token.Tokens, context);
+            return content + "</li>\n";
+        }
+
+        private StringBuffer RenderListItem(MarkdownEngine engine, ImmutableArray<IMarkdownToken> tokens, MarkdownBlockContext context, bool wrapParagraph = false, IMarkdownRule rule = null)
+        {
+            var content = StringBuffer.Empty;
             var textContent = StringBuffer.Empty;
-            foreach (var t in token.Tokens)
+            foreach (var t in tokens)
             {
                 var text = t as MarkdownTextToken;
                 if (text != null)
@@ -111,13 +119,28 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
                 if (textContent != StringBuffer.Empty)
                 {
-                    content += ApplyInline(engine, textContent, context);
+                    content += RenderTextInListItem(engine, context, wrapParagraph, rule, textContent);
                     textContent = StringBuffer.Empty;
                 }
                 content += engine.Render(t, context);
             }
-            content += ApplyInline(engine, textContent, context);
-            return content + "</li>\n";
+            if (textContent != StringBuffer.Empty)
+            {
+                content += RenderTextInListItem(engine, context, wrapParagraph, rule, textContent);
+            }
+            return content;
+        }
+
+        private StringBuffer RenderTextInListItem(MarkdownEngine engine, MarkdownBlockContext context, bool wrapParagraph, IMarkdownRule rule, StringBuffer textContent)
+        {
+            if (wrapParagraph)
+            {
+                return Render(engine, new MarkdownParagraphBlockToken(rule, textContent), context);
+            }
+            else
+            {
+                return ApplyInline(engine, textContent, context);
+            }
         }
 
         protected virtual StringBuffer ApplyInline(MarkdownEngine engine, StringBuffer content, MarkdownBlockContext context)
@@ -135,10 +158,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownLooseItemBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = "<li>";
-            foreach (var t in token.Tokens)
-            {
-                content += engine.Render(t, context);
-            }
+            content += RenderListItem(engine, token.Tokens, context, true, token.Rule);
             return content + "</li>\n";
         }
 

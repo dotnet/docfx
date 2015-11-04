@@ -127,6 +127,60 @@ code
 ```", @"<p>a</p>
 <pre><code>code
 </code></pre>")]
+        [InlineData(@"1. asdf
+2. sdfa
+3. adsf
+       - j
+       - j
+
+           ![](a)", @"<ol>
+<li>asdf</li>
+<li>sdfa</li>
+<li><p>adsf</p>
+<pre><code>- j
+- j
+
+    ![](a)
+</code></pre></li>
+</ol>
+")]
+        [InlineData(@"1. asdf
+2. sdfa
+3. adsf
+   - j
+   - j
+
+         ![](a)", @"<ol>
+<li>asdf</li>
+<li>sdfa</li>
+<li><p>adsf</p>
+<ul>
+<li>j</li>
+<li><p>j</p>
+<pre><code>![](a)
+</code></pre></li>
+</ul>
+</li>
+</ol>
+")]
+        [InlineData(@"1. asdf
+2. sdfa
+3. adsf
+   - j
+   - j
+
+   ![](a)", @"<ol>
+<li>asdf</li>
+<li>sdfa</li>
+<li><p>adsf</p>
+<ul>
+<li>j</li>
+<li>j</li>
+</ul>
+<p><img src=""a"" alt=""""></p>
+</li>
+</ol>
+")]
         public void Parse(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
