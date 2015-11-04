@@ -167,7 +167,7 @@ namespace Microsoft.DocAsCode
             if (!string.IsNullOrEmpty(configFile))
             {
                 var command = (BuildCommand)CommandFactory.ReadConfig(configFile, null).Commands.FirstOrDefault(s => s is BuildCommand);
-                if (command == null) throw new ApplicationException($"Unable to find {SubCommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
+                if (command == null) throw new ApplicationException($"Unable to find {CommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
                 config = command.Config;
                 config.BaseDirectory = Path.GetDirectoryName(configFile);
             }

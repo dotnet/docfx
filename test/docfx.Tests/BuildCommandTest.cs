@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Tests
 
             ParseResult result = new BuildCommand(new Options
             {
-                CurrentSubCommand = SubCommandType.Build,
+                CurrentSubCommand = CommandType.Build,
                 BuildCommand = new BuildCommandOptions
                 {
                     Content = new List<string> { conceptualFile },

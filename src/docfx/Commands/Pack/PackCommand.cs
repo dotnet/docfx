@@ -3,30 +3,42 @@
 
 namespace Microsoft.DocAsCode
 {
+    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Utility;
     using System;
     using System.IO;
     using System.Linq;
 
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.Utility;
-
-    class PackSubCommand : ISubCommand
+    /// <summary>
+    /// TODO: NOT SURE IF IT IS WORKING NOW, simply migrate from old sub command and have not done any E2E test
+    /// </summary>
+    internal class PackCommand : ICommand
     {
-        public ParseResult Exec(Options options)
+        private CommandContext _context;
+        public PackCommandOptions _options { get; }
+        public Options _rootOptions { get; }
+        public PackCommand(Options options, CommandContext context)
         {
-            var outputFile = Path.Combine(options.PackVerb.OutputFolder ?? Environment.CurrentDirectory, options.PackVerb.Name ?? "externalreference.rpk");
+            _options = options.PackCommand;
+            _context = context;
+            _rootOptions = options;
+        }
+
+        public ParseResult Exec(RunningContext context)
+        {
+            var outputFile = Path.Combine(_options.OutputFolder ?? Environment.CurrentDirectory, _options.Name ?? "externalreference.rpk");
             try
             {
-                var baseUri = new Uri(options.PackVerb.BaseUrl);
+                var baseUri = new Uri(_options.BaseUrl);
                 if (!baseUri.IsAbsoluteUri)
                 {
                     return new ParseResult(ResultLevel.Error, "BaseUrl should be absolute url.");
                 }
-                var source = options.PackVerb.Source.TrimEnd('/', '\\');
-                using (var package = options.PackVerb.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
+                var source = _options.Source.TrimEnd('/', '\\');
+                using (var package = _options.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
                 {
-                    var files = GlobPathHelper.GetFiles(source, options.PackVerb.Glob).ToList();
-                    if (options.PackVerb.FlatMode)
+                    var files = GlobPathHelper.GetFiles(source, _options.Glob).ToList();
+                    if (_options.FlatMode)
                     {
                         package.AddFiles(string.Empty, files);
                     }

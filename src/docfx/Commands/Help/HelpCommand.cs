@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode
         public ParseResult Exec(RunningContext context)
         {
             string text = HelpTextGenerator.GetHelpMessage(_rootOptions, _options.Command);
-            _rootOptions.CurrentSubCommand = SubCommandType.Help;
+            _rootOptions.CurrentSubCommand = CommandType.Help;
             Console.WriteLine(text);
             return ParseResult.SuccessResult;
         }

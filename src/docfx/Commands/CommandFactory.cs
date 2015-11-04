@@ -29,32 +29,36 @@ namespace Microsoft.DocAsCode
         }
 
         // TODO: use reflection to load commands?
-        public static ICommand GetCommand(SubCommandType command, Options value, CommandContext context)
+        public static ICommand GetCommand(CommandType command, Options value, CommandContext context)
         {
             switch (command)
             {
-                case SubCommandType.Metadata:
+                case CommandType.Metadata:
                     return new MetadataCommand(value, context);
-                case SubCommandType.Build:
+                case CommandType.Build:
                     return new BuildCommand(value, context);
-                case SubCommandType.Help:
+                case CommandType.Help:
                     return new HelpCommand(value, context);
-                case SubCommandType.Init:
+                case CommandType.Init:
                     return new InitCommand(value, context);
-                case SubCommandType.Serve:
+                case CommandType.Serve:
                     return new ServeCommand(value, context);
+                case CommandType.Export:
+                    return new ExportCommand(value, context);
+                case CommandType.Pack:
+                    return new PackCommand(value, context);
                 default:
                     throw new NotSupportedException($"{command} is not registered");
             }
         }
 
-        public static ICommand GetCommand(SubCommandType command, JToken value, CommandContext context)
+        public static ICommand GetCommand(CommandType command, JToken value, CommandContext context)
         {
             switch (command)
             {
-                case SubCommandType.Metadata:
+                case CommandType.Metadata:
                     return new MetadataCommand(value, context);
-                case SubCommandType.Build:
+                case CommandType.Build:
                     return new BuildCommand(value, context);
                 default:
                     throw new NotSupportedException($"{command} is not registered");

@@ -21,6 +21,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public List<string> ExternalReferences { get; set; }
 
+        public bool ForceRebuild { get; set; }
+
         public override string ToString()
         {
             using(StringWriter writer = new StringWriter())

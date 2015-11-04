@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode
             {
                 try
                 {
-                    options.CurrentSubCommand = (SubCommandType)Enum.Parse(typeof(SubCommandType), invokedVerb, true);
+                    options.CurrentSubCommand = (CommandType)Enum.Parse(typeof(CommandType), invokedVerb, true);
                 }
                 catch
                 {

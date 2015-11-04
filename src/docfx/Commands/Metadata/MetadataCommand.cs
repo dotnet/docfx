@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode
         private CommandContext _context;
         private string _helpMessage = null;
         public MetadataJsonConfig Config { get; }
+        public IEnumerable<ExtractMetadataInputModel> InputModels { get; }
         public MetadataCommand(CommandContext context) : this(new MetadataJsonConfig(), context)
         {
         }
@@ -29,6 +30,7 @@ namespace Microsoft.DocAsCode
         {
             _context = context;
             Config = config;
+            InputModels = GetInputModels(Config, context);
         }
 
         public MetadataCommand(Options options, CommandContext context)
@@ -56,14 +58,14 @@ namespace Microsoft.DocAsCode
                 Console.WriteLine(_helpMessage);
                 return ParseResult.SuccessResult;
             }
-            Config.BaseDirectory = _context?.BaseDirectory;
-            return InternalExec(Config, context);
+
+            return InternalExec(context);
         }
 
-        private ParseResult InternalExec(MetadataJsonConfig config, RunningContext context)
+        private ParseResult InternalExec(RunningContext context)
         {
             // TODO: can we do it parallelly?
-            return CompositeCommand.AggregateParseResult(YieldExec(config, context));
+            return CompositeCommand.AggregateParseResult(YieldExec(context));
         }
 
         /// <summary>
@@ -72,19 +74,22 @@ namespace Microsoft.DocAsCode
         /// <param name="configs"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        private IEnumerable<ParseResult> YieldExec(MetadataJsonConfig configs, RunningContext context)
+        private IEnumerable<ParseResult> YieldExec(RunningContext context)
+        {
+            foreach (var inputModel in InputModels)
+            {
+                // TODO: Use plugin to generate metadata for files with different extension?
+                var worker = new ExtractMetadataWorker(inputModel, inputModel.ForceRebuild);
+
+                yield return worker.ExtractMetadataAsync().Result;
+            }
+        }
+
+        private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs, CommandContext context)
         {
             foreach (var config in configs)
             {
-                var forceRebuild = config.Force;
-
-                var inputModel = ConvertToInputModel(config, configs.BaseDirectory);
-
-                // TODO: Use plugin to generate metadata for files with different extension?
-                var worker = new ExtractMetadataWorker(inputModel, forceRebuild);
-
-                yield return worker.ExtractMetadataAsync().Result;
-
+                yield return ConvertToInputModel(config, context?.BaseDirectory);
             }
         }
 
@@ -96,6 +101,7 @@ namespace Microsoft.DocAsCode
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel.Raw,
+                ForceRebuild = configModel.Force,
             };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(baseDirectory, projects);
@@ -113,7 +119,7 @@ namespace Microsoft.DocAsCode
             if (TryGetJsonConfig(options.Projects, out jsonConfig))
             {
                 var command = (MetadataCommand)CommandFactory.ReadConfig(jsonConfig, null).Commands.FirstOrDefault(s => s is MetadataCommand);
-                if (command == null) throw new DocumentException($"Unable to find {SubCommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
+                if (command == null) throw new DocumentException($"Unable to find {CommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
                 return command.Config;
             }
 

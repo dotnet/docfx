@@ -18,10 +18,10 @@ namespace Microsoft.DocAsCode
 
         public CompositeCommand(CommandContext context, Dictionary<string, JToken> commands)
         {
-            var dictionary = new SortedDictionary<SubCommandType, JToken>();
+            var dictionary = new SortedDictionary<CommandType, JToken>();
             foreach (var pair in commands)
             {
-                SubCommandType subCommandType;
+                CommandType subCommandType;
                 if (Enum.TryParse(pair.Key, true, out subCommandType))
                 {
                     if (dictionary.ContainsKey(subCommandType))
