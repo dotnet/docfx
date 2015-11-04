@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
+    using MarkdownLite;
 
     public class TemplateProcessor : IDisposable
     {
@@ -313,16 +314,23 @@ namespace Microsoft.DocAsCode.EntityModel
             string attribute = "href";
             var key = xref.GetAttributeValue(attribute, null);
             var name = xref.GetAttributeValue("name", null);
+            var htmlId = GetHtmlId(key);
             var displayName = name ?? key;
             XRefSpec spec = null;
             if (internalXRefMap.TryGetValue(key, out spec))
             {
                 xref.Name = "a";
                 spec.Href = updater(spec.Href);
+                if (!string.IsNullOrEmpty(htmlId))
+                {
+                    // TODO: What if href is not html?
+                    spec.Href = spec.Href + "#" + htmlId;
+                }
+
                 displayName = GetLanguageSpecificAttribute(spec, language, displayName, "name");
 
                 xref.SetAttributeValue(attribute, spec.Href);
-                xref.AppendChild(HtmlAgilityPack.HtmlNode.CreateNode(displayName));
+                xref.AppendChild(HtmlAgilityPack.HtmlNode.CreateNode(StringHelper.HtmlEncode(displayName)));
                 return;
             }
 
@@ -333,7 +341,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     xref.Name = "a";
                     displayName = GetLanguageSpecificAttribute(spec, language, displayName, "name");
                     xref.SetAttributeValue(attribute, spec.Href);
-                    xref.AppendChild(HtmlAgilityPack.HtmlNode.CreateNode(displayName));
+                    xref.AppendChild(HtmlAgilityPack.HtmlNode.CreateNode(StringHelper.HtmlEncode(displayName)));
                     return;
                 }
             }
@@ -343,7 +351,19 @@ namespace Microsoft.DocAsCode.EntityModel
                 displayName = GetLanguageSpecificAttribute(spec, language, displayName, "fullName", "name");
             }
 
-            xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(displayName), xref);
+            xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(StringHelper.HtmlEncode(displayName)), xref);
+        }
+
+        /// <summary>
+        /// Must be consistent with template input.replace(/\W/g, '_');
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private static Regex HtmlEncodeRegex = new Regex(@"\W", RegexOptions.Compiled);
+        private static string GetHtmlId(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            return HtmlEncodeRegex.Replace(id, "_");
         }
 
         private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, string defaultValue, params string[] keyInFallbackOrder)

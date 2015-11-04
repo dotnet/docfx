@@ -27,22 +27,22 @@ namespace Microsoft.DocAsCode
         [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
         public LogLevel? LogLevel { get; set; }
 
-        [Option("content", HelpText = "Specifies content files for generating documentation.")]
+        [OptionList("content", HelpText = "Specifies content files for generating documentation.")]
         public List<string> Content { get; set; }
 
-        [Option("resource", HelpText = "Specifies resources used by content files.")]
+        [OptionList("resource", HelpText = "Specifies resources used by content files.")]
         public List<string> Resource { get; set; }
 
-        [Option("overwrite", HelpText = "Specifies overwrite files used by content files.")]
+        [OptionList("overwrite", HelpText = "Specifies overwrite files used by content files.")]
         public List<string> Overwrite { get; set; }
 
-        [Option("externalReference", HelpText = "Specifies external reference files used by content files.")]
+        [OptionList("externalReference", HelpText = "Specifies external reference files used by content files.")]
         public List<string> ExternalReference { get; set; }
 
-        [Option('t', "template", HelpText = "Specifies the template name to apply to. If not specified, output YAML file will not be transformed.")]
+        [OptionList('t', "template", HelpText = "Specifies the template name to apply to. If not specified, output YAML file will not be transformed.")]
         public List<string> Templates { get; set; }
 
-        [Option("theme", HelpText = "Specifies which theme to use. By default 'default' theme is offered.")]
+        [OptionList("theme", HelpText = "Specifies which theme to use. By default 'default' theme is offered.")]
         public List<string> Themes { get; set; }
 
         [Option('s', "serve", HelpText = "Host the generated documentation to a website")]

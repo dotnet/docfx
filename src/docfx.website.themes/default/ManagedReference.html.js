@@ -271,10 +271,10 @@ function transform(model, _attrs) {
           }
         }
         vm.specName = getSpecName(lang, extChanger);
-        vm.name = getLangSpecifiedProperty.call(vm, "name", lang) || getLangSpecifiedProperty.call(vm, "uid", lang); // workaround bug for dynamic
+        vm.name = getLangSpecifiedProperty.call(vm, "name", lang) || vm.uid; // workaround bug for dynamic
         vm.fullName = getLangSpecifiedProperty.call(vm, "fullName", lang);
         vm.href = extChanger(vm.href);
-        vm.id = getHtmlId(vm.name);
+        vm.id = getHtmlId(vm.uid);
         vm.summary = vm.summary;
         vm.remarks = vm.remarks;
         vm.conceptual = vm.conceptual;
