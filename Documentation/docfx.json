@@ -19,15 +19,15 @@
           "cwd": "obj/docfx"
         },
         {
-          "files": ["tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml"]
+          "files": ["tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml", "index.md"]
         },
         {
-          "files": ["toc.yml"]
+          "files": ["toc.yml", "tutorial/toc.yml"]
         }
       ],
     "resource": [
         {
-          "files": ["spec/images/**"]
+          "files": ["spec/images/**", "tutorial/artifacts/**"]
         }
     ],
     "overwrite": "apispec/*.md",

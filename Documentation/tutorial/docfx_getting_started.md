@@ -11,32 +11,9 @@ Getting Started
 * `docfx` can be used within Visual Studio seamlessly. **NOTE** offical `docfx.msbuild` nuget package is now in pre-release version. You can also build your own with source code and use it locally.
 * We support **Docfx Flavored Markdown(DFM)** for writing conceptual files. DFM is **100%** compatible with *Github Flavored Markdown(GFM)* and add several new features including *file inclusion*, *cross reference*, and *yaml header*. For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
-Use `docfx` under Visual Studio IDE
----------------
-As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use `docfx` in IDE.
-### Quick Start
-**Step1.** Open Visual Studio and create a .csproj as your documenation project. You can use the **ASP.NET website project template** as it has built-in *PREVIEW* feature which we could leverage to preview the generated website easily.
-
-**Step2.** Install Nuget Package `docfx.msbuild` prerelease version under *Package Manager Console*:
-```
-Install-Package docfx.msbuild -Pre
-```
-**Step3.** You will notice that *docfx.json* and *toc.yml* are automatically added to your project. Modify *docfx.json* to include projects and conceptual files that you want to generate documentations. For detailed syntax about *docfx.json*, please refer to [docfx.exe User Mannual](docfx.exe_user_manual.md).
-
-**Step4.** Right click on the website project, and click **Preview**, navigate to `/_site` sub url, and start navigating through web pages!
-
-### Build from source code
-**Step1.** `git clone` to get the latest code.
-
-**Step2.** Run `build.cmd` under root folder
-
-**Step3.** Add `artifacts` folder to nuget source by in IDE:
-  > Tools > Nuget Package Manager > Package Manager Settings > Package Sources
-  
-**Step4.** Follow **Step1**~**Step4** in above **Quick Start** section to generate your documentation! 
-
-## Use `docfx.exe` directly
-When `docfx.msbuild` package is installed, `docfx.exe` is actually downloaded and located in the `<docfx.msbuild package folder>/tools/` folder. You can definitely run `docfx.exe` directly!
+Use `docfx.exe` directly
+-----------------------
+Download and unzip [docfx.zip](artifacts/docfx.zip) to run `docfx.exe` directly!
 
 ### Quick Start
 **Step1** Run 
@@ -53,6 +30,30 @@ and `docfx.exe` will automatically read the `docfx.json` in current folder and g
 
 
 **TODO**: we are on the way to publish `docfx.exe` independently into our on-building website!
+
+Use `docfx` under Visual Studio IDE
+---------------
+As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use `docfx` in IDE.
+### Quick Start
+**Step1.** Open Visual Studio and create a .csproj as your documenation project. You can use the **ASP.NET website project template** as it has built-in *PREVIEW* feature which we could leverage to preview the generated website easily.
+
+**Step2.** Install Nuget Package `docfx.msbuild` prerelease version under *Package Manager Console*:
+```
+Install-Package docfx.msbuild -Pre
+```
+**Step3.** You will notice that *docfx.json* and *toc.yml* are automatically added to your project. Modify *docfx.json* to include projects and conceptual files that you want to generate documentations. For detailed syntax about *docfx.json*, please refer to [docfx.exe User Mannual](docfx.exe_user_manual.md).
+
+**Step4.** Right click on the website project, and click View => **View in browser**, navigate to `/_site/tutorial/docfx_getting_started.html` sub url, and start navigating through web pages!
+
+### Build from source code
+**Step1.** `git clone` to get the latest code.
+
+**Step2.** Run `build.cmd` under root folder
+
+**Step3.** Add `artifacts` folder to nuget source by in IDE:
+  > Tools > Nuget Package Manager > Package Manager Settings > Package Sources
+  
+**Step4.** Follow **Step1**~**Step4** in above **Quick Start** section to generate your documentation! 
 
 Use `docfx` under DNX
 ----------------

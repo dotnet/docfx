@@ -1,0 +1,7 @@
+﻿
+- name: Getting Started
+  href: docfx_getting_started.md
+- name: User Manual
+  href: docfx.exe_user_manual.md
+- name: How To Create Custom Template
+  href: howto_create_custom_template.md

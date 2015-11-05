@@ -54,7 +54,6 @@
   <ItemGroup>
     <Content Include="apispec\YamlUtility.md" />
     <Content Include="spec\docfx_incremental.md" />
-    <Content Include="spec\mapfile_format_spec.md" />
     <Content Include="spec\metadata_dotnet_spec.md" />
     <Content Include="spec\metadata_format_spec.md" />
     <Content Include="spec\toc.yml" />
