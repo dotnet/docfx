@@ -54,8 +54,8 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownIndexer
             if (dict.TryGetValue(key, out api))
             {
                 var indexFolder = Path.GetDirectoryName(api.IndexFilePath);
-                var apiYamlFilePath = FileExtensions.GetFullPath(indexFolder, api.Href);
-                return FileExtensions.MakeRelativePath(Path.GetDirectoryName(currentPath), apiYamlFilePath);
+                var apiYamlFilePath = PathUtility.GetFullPath(indexFolder, api.Href);
+                return PathUtility.MakeRelativePath(Path.GetDirectoryName(currentPath), apiYamlFilePath);
             }
 
             // 2. Try resolve external references with full name
