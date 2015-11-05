@@ -2,7 +2,7 @@ How-to: Create Custom Templates
 ===============================
 Custom Templates are organized to be a zip package or a folder. The name of the zip package or the folder is considered as the template name. 
 
-Currently `docfx` supports [Mustache](http://mustache.github.io) syntax as the templating language. Template files end with `.tmpl` extension, and multiple template files are allowed. The default template file is named to `default[.<extension>].tmpl`, `[.<extension>]` defines the extension of the transformed file, and could be omitted if the transformed file has no extension. The naming convention of the template file is `<type>[.<extension>].tmpl`, `<type>` defines the *Type* of the model the template file is defined to transform. If no matching *Type* is found, `docfx` fallbacks to use the `default[.<extension>].tmpl. If none of the files exists, `docfx` will not do the transformation.
+Currently `docfx` supports [Mustache](http://mustache.github.io) syntax as the templating language. Template files end with `.tmpl` extension, and multiple template files are allowed. Partial templates are also supported, and partial templates **MUST** end with `.tmpl.partial`. The default template file is named to `default[.<extension>].tmpl`, `[.<extension>]` defines the extension of the transformed file, and could be omitted if the transformed file has no extension. The naming convention of the template file is `<type>[.<extension>].tmpl`, `<type>` defines the *Type* of the model the template file is defined to transform. If no matching *Type* is found, `docfx` fallbacks to use the `default[.<extension>].tmpl. If none of the files exists, `docfx` will not do the transformation.
 
 By default, `docfx` uses the template file and applies model to generate output files. Model can also be preprocessed before applying template as described in detail in Section 3.
 
@@ -40,3 +40,5 @@ Resource files can be included in the template with the following syntax:
 {{!include('<file name>')}}
 ```
 `docfx` will copy these dependencies to output folder preserving its relative path to the template file.
+
+### 5. TOBEADDED: HOW TO USE the DEFAULT template?

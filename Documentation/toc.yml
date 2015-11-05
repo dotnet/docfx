@@ -3,7 +3,7 @@
   href: index.md
 - name: Tutorials
   href: tutorial/
-  homepage: tutorial/docfx.exe_user_manual.md
+  homepage: tutorial/docfx_getting_started.md
 - name: Specifications
   href: spec/
   homepage: spec/metadata_format_spec.md

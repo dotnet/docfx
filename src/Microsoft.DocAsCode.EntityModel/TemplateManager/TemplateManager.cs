@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var resourceFinder = new ResourceFinder(assembly, rootNamespace);
             if (templates == null || templates.Count == 0)
             {
-                Logger.Log(LogLevel.Info, "Template is not specified.");
+                Logger.Log(LogLevel.Info, "Template is not specified, files will not be transformed.");
             }
             else
             {
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.EntityModel
             
             if (themes == null || themes.Count == 0)
             {
-                Logger.Log(LogLevel.Info, "Theme is not specified.");
+                Logger.Log(LogLevel.Info, "Theme is not specified, no additional theme will be applied to the documentation.");
             }
             else
             {

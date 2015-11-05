@@ -1,0 +1,10 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+<div class="sidenav">
+  <a class="btn toc-toggle collapse">Show / Hide Table of Contents</a>
+  <div class="sidetoggle">
+    <div class="sidetoc">
+      <iframe id="sidetoc" src="{{_tocRel}}"></iframe>
+    </div>
+  </div>
+</div>

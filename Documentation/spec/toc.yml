@@ -4,3 +4,5 @@
   href: metadata_dotnet_spec.md
 - name: DocFx Flavored Markdown
   href: docfx_flavored_markdown.md
+- name: Design Spec
+  href: docfx_design_spec.md

@@ -101,8 +101,8 @@ function transform(model, _attrs) {
 
         this.item.children = children;
       }
-
       this.item.type = "Namespace";
+      this.title = this.item.type + " " + this.item.name;
     }
 
     function ClassViewModel(item, _attrs, refs, mta) {
@@ -141,6 +141,7 @@ function transform(model, _attrs) {
         this.item.children = children;
       }
       this.item.type = namespaceItems[this.item.type].name;
+      this.title = this.item.type + " " + this.item.name;
     }
 
     function References(model) {

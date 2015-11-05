@@ -3,6 +3,7 @@
 {{!include(styles/main.js)}}
 {{!include(favicon.ico)}}
 {{!include(logo.svg)}}
+{{#item}}
 <!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
@@ -19,9 +20,13 @@
         <div class="article row grid">
       {{/_allowToc}}
           <div class="col-md-10">
-            <a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
             <article class="content wrap" id="_content">
-              {{{conceptual}}}
+            {{#isNamespace}}
+              {{>partials/namespace}}
+            {{/isNamespace}}
+            {{#isClass}}
+              {{>partials/class}}
+            {{/isClass}}
             </article>
           </div>
           {{>partials/affix}}
@@ -32,3 +37,4 @@
     {{>partials/scripts}}
   </body>
 </html>
+{{/item}}

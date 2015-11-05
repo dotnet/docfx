@@ -27,22 +27,22 @@ namespace Microsoft.DocAsCode
         [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
         public LogLevel? LogLevel { get; set; }
 
-        [OptionList("content", HelpText = "Specifies content files for generating documentation.")]
+        [OptionList("content", Separator = ',', HelpText = "Specifies content files for generating documentation.")]
         public List<string> Content { get; set; }
 
-        [OptionList("resource", HelpText = "Specifies resources used by content files.")]
+        [OptionList("resource", Separator = ',', HelpText = "Specifies resources used by content files.")]
         public List<string> Resource { get; set; }
 
-        [OptionList("overwrite", HelpText = "Specifies overwrite files used by content files.")]
+        [OptionList("overwrite", Separator = ',', HelpText = "Specifies overwrite files used by content files.")]
         public List<string> Overwrite { get; set; }
 
-        [OptionList("externalReference", HelpText = "Specifies external reference files used by content files.")]
+        [OptionList("externalReference", Separator = ',', HelpText = "Specifies external reference files used by content files.")]
         public List<string> ExternalReference { get; set; }
 
-        [OptionList('t', "template", HelpText = "Specifies the template name to apply to. If not specified, output YAML file will not be transformed.")]
+        [OptionList('t', "template", Separator = ',', HelpText = "Specifies the template name to apply to. If not specified, output YAML file will not be transformed.")]
         public List<string> Templates { get; set; }
 
-        [OptionList("theme", HelpText = "Specifies which theme to use. By default 'default' theme is offered.")]
+        [OptionList("theme", Separator = ',', HelpText = "Specifies which theme to use. By default 'default' theme is offered.")]
         public List<string> Themes { get; set; }
 
         [Option('s', "serve", HelpText = "Host the generated documentation to a website")]
