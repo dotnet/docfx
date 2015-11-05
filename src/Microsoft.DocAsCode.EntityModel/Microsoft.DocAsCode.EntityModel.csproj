@@ -97,16 +97,6 @@
     <Compile Include="ExtractMetadata\ExtractMetadataInputModel.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LoggerPhaseScope.cs" />
-    <Compile Include="MarkdownIndexer\Pipelines\LoadApiIndex.cs" />
-    <Compile Include="MarkdownIndexer\Pipelines\LoadMarkdownFile.cs" />
-    <Compile Include="MarkdownIndexer\Pipelines\Save.cs" />
-    <Compile Include="MarkdownIndexer\Pipelines\GenerateFullTextIndex.cs" />
-    <Compile Include="MarkdownIndexer\Pipelines\ResolveApiReference.cs" />
-    <Compile Include="MarkdownIndexer\Pipelines\ResolveCodeSnippet.cs" />
-    <Compile Include="MarkdownIndexer\Pipelines\ResolveYamlHeader.cs" />
-    <Compile Include="MarkdownIndexer\IIndexerPipeline.cs" />
-    <Compile Include="MarkdownIndexer\MarkdownIndexer.cs" />
-    <Compile Include="MarkdownIndexer\IndexerContext.cs" />
     <Compile Include="Model\CrefInfo.cs" />
     <Compile Include="Model\ApiReferenceModel.cs" />
     <Compile Include="Model\ReferenceItem.cs" />
