@@ -70,10 +70,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = "<blockquote>\n";
-            foreach (var t in token.Tokens)
-            {
-                content += engine.Render(t, context);
-            }
+            content += RenderTokens(engine, token.Tokens, context, true, token.Rule);
             return content + "</blockquote>\n";
         }
 
@@ -93,11 +90,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownListItemBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = "<li>";
-            content += RenderListItem(engine, token.Tokens, context);
+            content += RenderTokens(engine, token.Tokens, context, token.Loose, token.Rule);
             return content + "</li>\n";
         }
 
-        private StringBuffer RenderListItem(MarkdownEngine engine, ImmutableArray<IMarkdownToken> tokens, MarkdownBlockContext context, bool wrapParagraph = false, IMarkdownRule rule = null)
+        private StringBuffer RenderTokens(MarkdownEngine engine, ImmutableArray<IMarkdownToken> tokens, MarkdownBlockContext context, bool wrapParagraph = false, IMarkdownRule rule = null)
         {
             var content = StringBuffer.Empty;
             var textContent = StringBuffer.Empty;
@@ -119,19 +116,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
                 if (textContent != StringBuffer.Empty)
                 {
-                    content += RenderTextInListItem(engine, context, wrapParagraph, rule, textContent);
+                    content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent);
                     textContent = StringBuffer.Empty;
                 }
                 content += engine.Render(t, context);
             }
             if (textContent != StringBuffer.Empty)
             {
-                content += RenderTextInListItem(engine, context, wrapParagraph, rule, textContent);
+                content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent);
             }
             return content;
         }
 
-        private StringBuffer RenderTextInListItem(MarkdownEngine engine, MarkdownBlockContext context, bool wrapParagraph, IMarkdownRule rule, StringBuffer textContent)
+        private StringBuffer RenderTextInTokens(MarkdownEngine engine, MarkdownBlockContext context, bool wrapParagraph, IMarkdownRule rule, StringBuffer textContent)
         {
             if (wrapParagraph)
             {
@@ -153,13 +150,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var result = engine.Mark(content.ToString());
             engine.SwitchContext(c);
             return result;
-        }
-
-        public virtual StringBuffer Render(MarkdownEngine engine, MarkdownLooseItemBlockToken token, MarkdownBlockContext context)
-        {
-            StringBuffer content = "<li>";
-            content += RenderListItem(engine, token.Tokens, context, true, token.Rule);
-            return content + "</li>\n";
         }
 
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownHtmlBlockToken token, MarkdownBlockContext context)

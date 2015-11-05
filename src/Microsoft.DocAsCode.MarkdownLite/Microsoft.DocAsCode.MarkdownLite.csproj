@@ -79,7 +79,6 @@
     <Compile Include="Basic\BlockTokens\MarkdownHtmlBlockToken.cs" />
     <Compile Include="Basic\BlockTokens\MarkdownListBlockToken.cs" />
     <Compile Include="Basic\BlockTokens\MarkdownListItemBlockToken.cs" />
-    <Compile Include="Basic\BlockTokens\MarkdownLooseItemBlockToken.cs" />
     <Compile Include="Basic\BlockTokens\MarkdownNewLineBlockToken.cs" />
     <Compile Include="Basic\BlockTokens\MarkdownParagraphBlockToken.cs" />
     <Compile Include="Basic\MarkdownTextToken.cs" />

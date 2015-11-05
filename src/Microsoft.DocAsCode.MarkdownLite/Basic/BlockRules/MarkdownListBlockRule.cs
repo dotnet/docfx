@@ -77,14 +77,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
 
                 var c = engine.SwitchContext(MarkdownBlockContext.IsTop, false);
-                if (loose)
-                {
-                    tokens.Add(new MarkdownLooseItemBlockToken(this, engine.Tokenize(item)));
-                }
-                else
-                {
-                    tokens.Add(new MarkdownListItemBlockToken(this, engine.Tokenize(item)));
-                }
+                tokens.Add(new MarkdownListItemBlockToken(this, engine.Tokenize(item), loose));
                 engine.SwitchContext(c);
             }
 
