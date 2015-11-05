@@ -565,10 +565,10 @@ namespace Microsoft.DocAsCode.EntityModel
 
             YamlUtility.Serialize(tocFilePath, tocViewModel);
 
-            // 2. generate index.yml
+            // 2. generate manifest file
             outputFiles.Add(indexFileName);
             string indexFilePath = Path.Combine(folder, indexFileName);
-            YamlUtility.Serialize(indexFilePath, model.Indexer.ToViewModel());
+            JsonUtility.Serialize(indexFilePath, model.Indexer.ToViewModel());
 
             // 3. generate each item's yaml
             var members = model.Members;

@@ -25,6 +25,7 @@ namespace Microsoft.DocAsCode.Utility
     {
         public static string ForwardSlashCombine(this string baseAddress, string relativeAddress)
         {
+            if (string.IsNullOrEmpty(baseAddress)) return relativeAddress;
             return baseAddress + "/" + relativeAddress;
         }
 

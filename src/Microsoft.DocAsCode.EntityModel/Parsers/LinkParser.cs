@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using MarkdownLite;
 
     public static class LinkParser
     {
@@ -19,15 +20,12 @@ namespace Microsoft.DocAsCode.EntityModel
         // self written link should be ended with a whitespace
         public static Regex LinkFromSelfWrittenRegex = new Regex(@"@(?<quote>[""']?)(?<content>(" + idSelector + @")\k<quote>", RegexOptions.Compiled);
 
-        public static string ResolveToMarkdownLink(Func<string, ApiIndexItemModel> finder, string input, Func<ApiIndexItemModel, string> hrefGetter)
+        public static string ResolveToXref(string input)
         {
-            return ResolveText(finder, input, s =>
-                 {
-                     string href;
-                     if (hrefGetter == null) return s.Name;
-                     else href = hrefGetter(s);
-                     return string.Format("[{0}]({1})", s.Name, href);
-                 }, s => string.Format("[{0}]()", s)
+            return ResolveText(
+                s => s, input,
+                s => $"<xref href=\"{StringHelper.HtmlEncode(s)}\"></xref>",
+                s => $"<xref href=\"{StringHelper.HtmlEncode(s)}\"></xref>"
                 );
         }
 

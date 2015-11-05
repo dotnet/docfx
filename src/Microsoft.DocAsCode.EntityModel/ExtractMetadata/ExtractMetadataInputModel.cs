@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public string TocFileName { get; set; } = "toc.yml";
 
-        public string IndexFileName { get; set; } = "index.yml";
+        public string IndexFileName { get; set; } = ".manifest";
 
         public bool PreserveRawInlineComments { get; set; }
 

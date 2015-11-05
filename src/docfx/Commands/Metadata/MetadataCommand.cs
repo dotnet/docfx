@@ -43,6 +43,7 @@ namespace Microsoft.DocAsCode
             else
             {
                 Config = GetConfigFromOptions(metadataCommandOptions);
+                InputModels = GetInputModels(Config, context);
                 _context = context;
             }
 
@@ -102,6 +103,7 @@ namespace Microsoft.DocAsCode
             {
                 PreserveRawInlineComments = configModel.Raw,
                 ForceRebuild = configModel.Force,
+                ApiFolderName = string.Empty,
             };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(baseDirectory, projects);
