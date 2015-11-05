@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                             tocPath = absHref.GetPathFromWorkingFolder();
                             if (!hostService.SourceFiles.TryGetValue(tocPath, out originalTocFile))
                             {
-                                var error = $"Unable to find either toc.yml or toc.md inside {item.Href}";
+                                var error = $"Unable to find either toc.yml or toc.md inside {item.Href}. Make sure the file is included in config file docfx.json!";
                                 Logger.LogError(error, file: model.LocalPathFromRepoRoot);
                                 throw new DocumentException(error);
                             }
@@ -124,6 +124,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
                     // Add toc.yml to tocMap before change item.Href to home page
                     item.Href = ((RelativePath)file + (RelativePath)item.Href).GetPathFromWorkingFolder();
+                    if (item.OriginalHref != null) item.OriginalHref = (RelativePath)file + (RelativePath)item.OriginalHref;
+
                     HashSet<string> value;
                     if (tocMap.TryGetValue(item.Href, out value))
                     {

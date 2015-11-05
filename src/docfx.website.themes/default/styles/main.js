@@ -65,11 +65,11 @@ $(function() {
       if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
       $('#navbar').load(navbarPath + " #toc>ul", function() {
         var index = navbarPath.lastIndexOf('/');
-        if (index === -1) {
-          console.log("invalid navbar path: " + navbarPath);
-          return;
+        var navrel = '';
+        if (index > -1) {
+          navrel = navbarPath.substr(0, index + 1);
         }
-        var navrel = navbarPath.substr(0, index + 1);
+
         $('#navbar>ul').addClass('navbar-nav');
         var currentAbsPath = getAbsolutePath(window.location.pathname);
         // set active item
@@ -83,7 +83,8 @@ $(function() {
             var isActive = false;
             var originalHref = e.name;
             if (originalHref){
-              if ('/' + getDirectory(originalHref) === getDirectory(getAbsolutePath(tocPath))) {
+              originalHref = navrel + originalHref;
+              if (getDirectory(getAbsolutePath(originalHref)) === getDirectory(getAbsolutePath(tocPath))) {
                 isActive = true;
               }
             } else {

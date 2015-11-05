@@ -17,6 +17,7 @@ artifacts/
 target/
 /**/_site/
 .vscode/
+.vs/
 
 ###############
 #  temp file  #
