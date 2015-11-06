@@ -17,6 +17,8 @@ function transform(model, _attrs){
       for (var i = 0; i<length; i++) {
         transformItem(item.items[i], level+1);
       };
+    } else {
+      item.items = [];
     }
   }
 }
