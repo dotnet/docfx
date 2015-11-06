@@ -195,6 +195,11 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 return assemblySymbol.MetadataName;
             }
+            var dynamicSymbol = symbol as IDynamicTypeSymbol;
+            if (dynamicSymbol!= null)
+            {
+                return typeof(object).FullName;
+            }
             string str = symbol.GetDocumentationCommentId();
             if (string.IsNullOrEmpty(str))
             {

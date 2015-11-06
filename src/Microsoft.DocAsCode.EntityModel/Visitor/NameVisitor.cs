@@ -367,6 +367,22 @@ namespace Microsoft.DocAsCode.EntityModel
             symbol.Type.Accept(this);
         }
 
+        public override void VisitDynamicType(IDynamicTypeSymbol symbol)
+        {
+            if ((Options & NameOptions.UseAlias) == NameOptions.UseAlias)
+            {
+                Append("dynamic");
+            }
+            else if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            {
+                Append(typeof(object).FullName);
+            }
+            else
+            {
+                Append(typeof(object).Name);
+            }
+        }
+
         private bool TrySpecialType(INamedTypeSymbol symbol)
         {
             switch (symbol.SpecialType)
@@ -675,6 +691,18 @@ namespace Microsoft.DocAsCode.EntityModel
                 Append("ByRef ");
             }
             symbol.Type.Accept(this);
+        }
+
+        public override void VisitDynamicType(IDynamicTypeSymbol symbol)
+        {
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            {
+                Append(typeof(object).FullName);
+            }
+            else
+            {
+                Append(typeof(object).Name);
+            }
         }
 
         private bool TrySpecialType(INamedTypeSymbol symbol)

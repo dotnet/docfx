@@ -1900,6 +1900,78 @@ namespace Test1
             }
         }
 
+        [Trait("Related", "Dynamic")]
+        [Trait("Related", "Multilanguage")]
+        [Fact]
+        public void TestGenereateMetadata_Dynamic()
+        {
+            string code = @"
+namespace Test1
+{
+    public abstract class Foo
+    {
+        public dynamic F = 1;
+        public dynamic M(dynamic arg) => null;
+        public dynamic P { get; protected set; } = "";
+        public dynamic this[dynamic index] { get; } => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            {
+                var field = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(field);
+                Assert.Equal("F", field.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("F", field.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.F", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.F", field.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.F", field.Name);
+                Assert.Equal("public dynamic F", field.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("Public F As Object", field.Syntax.Content[SyntaxLanguage.VB]);
+            }
+            {
+                var method = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(method);
+                Assert.Equal("M(Object)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("M(Object)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.M(System.Object)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.M(System.Object)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.M(System.Object)", method.Name);
+                Assert.Equal("public dynamic M(dynamic arg)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("Public Function M(arg As Object) As Object", method.Syntax.Content[SyntaxLanguage.VB]);
+            }
+            {
+                var method = output.Items[0].Items[0].Items[2];
+                Assert.NotNull(method);
+                Assert.Equal("P", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("P", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.P", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.P", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.P", method.Name);
+                Assert.Equal(@"public dynamic P
+{
+    get;
+    protected set;
+}", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"Public Property P As Object", method.Syntax.Content[SyntaxLanguage.VB]);
+            }
+            {
+                var method = output.Items[0].Items[0].Items[3];
+                Assert.NotNull(method);
+                Assert.Equal("Item[Object]", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Item(Object)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.Item[System.Object]", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.Item(System.Object)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.Item(System.Object)", method.Name);
+                Assert.Equal(@"public dynamic this[dynamic index]
+{
+    get;
+}", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"Public ReadOnly Property Item(index As Object) As Object", method.Syntax.Content[SyntaxLanguage.VB]);
+            }
+        }
+
         [Fact]
         [Trait("Related", "Generic")]
         public void TestGenereateMetadataAsync_NestedGeneric()
