@@ -34,7 +34,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityMergers\IMergeContext.cs" />
+    <Compile Include="EntityMergers\IMergeHandler.cs" />
+    <Compile Include="EntityMergers\IMerger.cs" />
     <Compile Include="EntityMergers\MergeBehaviorOption.cs" />
+    <Compile Include="EntityMergers\MergeContext.cs" />
     <Compile Include="EntityMergers\MergeOptionAttribute.cs" />
     <Compile Include="Glob\Glob.cs" />
     <Compile Include="Glob\GlobPathHelper.cs" />

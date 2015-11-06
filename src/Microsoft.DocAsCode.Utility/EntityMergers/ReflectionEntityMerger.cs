@@ -10,19 +10,19 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
     using System.Linq;
     using System.Reflection;
 
-    public class ReflectionEntityMerger
+    public class ReflectionEntityMerger : IMerger
     {
         private readonly ConcurrentDictionary<Type, PropertyMergerImpl> _cache =
             new ConcurrentDictionary<Type, PropertyMergerImpl>();
 
-        public void Merge<T>(ref T source, T overrides) where T : class
+        public void Merge<T>(ref T source, T overrides, IReadOnlyDictionary<string, object> data = null) where T : class
         {
             object s = source;
-            Merge(ref s, overrides, typeof(T), new MergeContext(this));
+            Merge(ref s, overrides, typeof(T), new MergeContext(this, data));
             source = (T)s;
         }
 
-        private void Merge(ref object source, object overrides, Type type, MergeContext context)
+        private void Merge(ref object source, object overrides, Type type, IMergeContext context)
         {
             if (source == null)
             {
@@ -61,7 +61,12 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
             _cache.GetOrAdd(type, key => new PropertyMergerImpl(key)).Merge(ref source, overrides, context);
         }
 
-        private bool TestKey(object source, object overrides, Type type, MergeContext context)
+        void IMerger.Merge(ref object source, object overrides, Type type, IMergeContext context)
+        {
+            Merge(ref source, overrides, type, context);
+        }
+
+        bool IMerger.TestKey(object source, object overrides, Type type, IMergeContext context)
         {
             if (object.Equals(source, overrides))
             {
@@ -70,27 +75,13 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
             return _cache.GetOrAdd(type, key => new PropertyMergerImpl(key)).TestKey(source, overrides, context);
         }
 
-        private sealed class MergeContext
-        {
-            public MergeContext(ReflectionEntityMerger rootMerger)
-            {
-                RootMerger = rootMerger;
-            }
-
-            public ReflectionEntityMerger RootMerger { get; }
-        }
-
         private sealed class PropInfo
         {
-            public PropInfo(PropertyInfo prop, MergeOption option)
-            {
-                Prop = prop;
-                Option = option;
-            }
-
             public PropertyInfo Prop { get; set; }
 
             public MergeOption Option { get; set; }
+
+            public IMergeHandler Handler { get; set; }
         }
 
         private sealed class PropertyMergerImpl
@@ -103,12 +94,17 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
                          where prop.GetGetMethod() != null
                          where prop.GetSetMethod() != null
                          where prop.GetIndexParameters().Length == 0
-                         let option = prop.GetCustomAttribute<MergeOptionAttribute>()?.Option ?? MergeOption.Merge
-                         where option != MergeOption.Ignore
-                         select new PropInfo(prop, option)).ToArray();
+                         let attr = prop.GetCustomAttribute<MergeOptionAttribute>()
+                         where attr?.Option != MergeOption.Ignore
+                         select new PropInfo
+                         {
+                             Prop = prop,
+                             Option = attr?.Option ?? MergeOption.Merge,
+                             Handler = attr?.Handler,
+                         }).ToArray();
             }
 
-            public void Merge(ref object source, object overrides, MergeContext context)
+            public void Merge(ref object source, object overrides, IMergeContext context)
             {
                 if (overrides == null)
                 {
@@ -143,9 +139,13 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
                                 {
                                     s = o;
                                 }
+                                else if (prop.Handler != null)
+                                {
+                                    prop.Handler.Merge(ref s, o, context);
+                                }
                                 else
                                 {
-                                    context.RootMerger.Merge(ref s, o, prop.Prop.PropertyType, context);
+                                    context.Merger.Merge(ref s, o, prop.Prop.PropertyType, context);
                                 }
                                 if (!object.ReferenceEquals(s, oldS))
                                 {
@@ -182,7 +182,7 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
                 }
             }
 
-            public bool TestKey(object source, object overrides, MergeContext context)
+            public bool TestKey(object source, object overrides, IMergeContext context)
             {
                 if (overrides == null)
                 {
@@ -207,7 +207,7 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
                 ElementType = elementType;
             }
 
-            public void Merge(IEnumerable source, IEnumerable overrides, MergeContext context)
+            public void Merge(IEnumerable source, IEnumerable overrides, IMergeContext context)
             {
                 foreach (var oi in overrides)
                 {
@@ -221,10 +221,10 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
                         {
                             continue;
                         }
-                        if (context.RootMerger.TestKey(si, oi, ElementType, context))
+                        if (context.Merger.TestKey(si, oi, ElementType, context))
                         {
                             object s = si;
-                            context.RootMerger.Merge(ref s, oi, ElementType, context);
+                            context.Merger.Merge(ref s, oi, ElementType, context);
                         }
                     }
                 }

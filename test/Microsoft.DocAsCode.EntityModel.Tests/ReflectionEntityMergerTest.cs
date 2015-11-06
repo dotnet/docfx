@@ -125,10 +125,13 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 new ListItemSample { Key1 = "asd", Key2 = 1, Text = "N2" },
                 new ListItemSample { Key1 = "asd", Key2 = 2, Text = "N3" },
             };
-            new ReflectionEntityMerger().Merge(ref sample, overrides);
+            new ReflectionEntityMerger().Merge(
+                ref sample,
+                overrides,
+                new Dictionary<string, object> { { "separator", "->" }, });
             Assert.Equal("O1", sample[0].Text);
-            Assert.Equal("N2", sample[1].Text);
-            Assert.Equal("N3", sample[2].Text);
+            Assert.Equal("O2->N2", sample[1].Text);
+            Assert.Equal("O3->N3", sample[2].Text);
         }
 
         public class ListItemSample
@@ -137,7 +140,18 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             public string Key1 { get; set; }
             [MergeOption(MergeOption.MergeKey)]
             public int Key2 { get; set; }
+            [MergeOption(typeof(StringMergeHandler))]
             public string Text { get; set; }
+        }
+
+        public class StringMergeHandler : IMergeHandler
+        {
+            public void Merge(ref object source, object overrides, IMergeContext context)
+            {
+                var s = (string)source;
+                var o = (string)overrides;
+                source = s + context["separator"] + o;
+            }
         }
     }
 }
