@@ -658,6 +658,15 @@ footer {
   .breadcrumb {
     white-space: inherit;
   }
+
+  /* workaround for #hashtag url is no longer needed*/
+  h1:before,
+  h2:before,
+  h3:before,
+  h4:before {
+      content: '';
+      display: none;
+  }
 }
 
 /* For toc iframe */
