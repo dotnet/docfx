@@ -84,6 +84,11 @@ namespace Microsoft.DocAsCode
             var documentContext = DocumentBuildContext.DeserializeFrom(parameters.OutputBaseDir);
             var assembly = typeof(Program).Assembly;
 
+            if (config.Templates == null || config.Templates.Count == 0)
+            {
+                config.Templates = new ListWithStringFallback { Constants.DefaultTemplateName };
+            }
+
             // If RootOutput folder is specified from command line, use it instead of the base directory
             var outputFolder = Path.Combine(_context?.RootOutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
             using (var manager = new TemplateManager(assembly, "Template", config.Templates, config.Themes))

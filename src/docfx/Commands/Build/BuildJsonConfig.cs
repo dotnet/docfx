@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode
         public string Title { get; set; }
 
         [JsonProperty("template")]
-        public ListWithStringFallback Templates { get; set; } = new ListWithStringFallback { Constants.DefaultTemplateName };
+        public ListWithStringFallback Templates { get; set; } = new ListWithStringFallback();
 
         [JsonProperty("theme")]
         public ListWithStringFallback Themes { get; set; }
@@ -94,7 +94,12 @@ namespace Microsoft.DocAsCode
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((FileMapping)value).Items);
+            writer.WriteStartArray();
+            foreach(var item in (ListWithStringFallback)value)
+            {
+                serializer.Serialize(writer, item);
+            }
+            writer.WriteEndArray();
         }
     }
 

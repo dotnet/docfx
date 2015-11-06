@@ -1,0 +1,39 @@
+{
+  "name": "docfx",
+  "version": "1.0.3",
+  "description": "A standalone tool to generate documentation from .NET source code and markdown files",
+  "main": "docfx",
+  "bin": {
+    "docfx": "docfx/docfxjs"
+  },
+  "files": [
+    "docfx"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aspnet/docfx.git"
+  },
+  "keywords": [
+    "docfx"
+  ],
+  "author": {
+    "name": "Microsoft Docascode"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aspnet/docfx/issues"
+  },
+  "homepage": "https://github.com/aspnet/docfx",
+  "maintainers": [
+    {
+      "name": "docascode",
+      "email": "docascode@microsoft.com"
+    }
+  ],
+  "directories": {},
+  "readme": "Please refer to [docfx homepage](http://aspnet.github.io/docfx/index.html) for detailed information about docfx."
+}
