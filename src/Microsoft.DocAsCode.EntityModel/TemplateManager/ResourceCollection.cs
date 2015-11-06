@@ -54,12 +54,12 @@ namespace Microsoft.DocAsCode.EntityModel
         public override string Name { get; }
         public override IEnumerable<string> Names { get; }
 
-        public FileResourceCollection(string directory)
+        public FileResourceCollection(string directory, int maxSearchLevel = 3)
         {
             if (string.IsNullOrEmpty(directory)) _directory = Environment.CurrentDirectory;
             else _directory = directory;
             Name = _directory;
-            Names = Directory.GetFiles(_directory, "*", SearchOption.AllDirectories).Select(s => PathUtility.MakeRelativePath(_directory, s));
+            Names = GetFiles(_directory, "*", maxSearchLevel).Select(s => PathUtility.MakeRelativePath(_directory, s)).Where(s => s != null);
         }
 
         public override Stream GetResourceStream(string name)
@@ -71,6 +71,20 @@ namespace Microsoft.DocAsCode.EntityModel
             if (!Names.Contains(name.ToNormalizedPath(), ResourceComparer)) return null;
             var filePath = Path.Combine(_directory, name);
             return new FileStream(filePath, FileMode.Open, FileAccess.Read);
+        }
+
+        private IEnumerable<string> GetFiles(string directory, string searchPattern, int searchLevel)
+        {
+            if (searchLevel < 1) return Enumerable.Empty<string>();
+            var files = Directory.GetFiles(directory, searchPattern, SearchOption.TopDirectoryOnly);
+            if (searchLevel == 1) return files;
+            var dirs = Directory.GetDirectories(directory);
+            List<string> allFiles = new List<string>(files);
+            foreach(var dir in dirs)
+            {
+                allFiles.AddRange(GetFiles(dir, searchPattern, searchLevel - 1));
+            }
+            return allFiles;
         }
     }
 
@@ -132,25 +146,20 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public IEnumerable<KeyValuePair<string, string>> GetResources(string selector)
         {
-            foreach(var tuple in GetResourceStreams(selector))
+            var regex = new Regex(selector, RegexOptions.IgnoreCase);
+            foreach (var name in Names)
             {
-                using (tuple.Value)
-                    yield return new KeyValuePair<string, string>(tuple.Key, GetString(tuple.Value));
+                if (regex.IsMatch(name))
+                {
+                    using (var stream = GetResourceStream(name))
+                    {
+                        yield return new KeyValuePair<string, string>(name, GetString(stream));
+                    }
+                }
             }
         }
 
         public abstract Stream GetResourceStream(string name);
-
-        public IEnumerable<KeyValuePair<string,Stream>> GetResourceStreams(string regex)
-        {
-            foreach(var name in Names)
-            {
-                if (new Regex(regex, RegexOptions.IgnoreCase).IsMatch(name))
-                {
-                    yield return new KeyValuePair<string, Stream>(name, GetResourceStream(name));
-                }
-            }
-        }
 
         public void Dispose()
         {

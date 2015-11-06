@@ -16,6 +16,7 @@ function transform(model, _attrs){
     transformItem(entity[i], level);
   };
   vm.content = entity;
+  vm.title = "Table of Content";
   return vm;
 
   function transformItem(item, level){

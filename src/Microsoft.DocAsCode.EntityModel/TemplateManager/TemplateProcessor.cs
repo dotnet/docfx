@@ -21,7 +21,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class TemplateProcessor : IDisposable
     {
-        private static Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex IsRegexPatternRegex = new Regex("^/(.*)/$", RegexOptions.Compiled);
         private const string ManifestFileName = ".manifest";
         private const string PartialTemplateExtension = ".tmpl.partial";
         private const string Language = "csharp"; // TODO: how to handle multi-language
@@ -242,36 +243,57 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 foreach (var resourceInfo in ExtractDependentFilePaths(_templates).Distinct())
                 {
-                    var filePath = resourceInfo.FilePath;
                     try
                     {
-                        var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey);
-                        if (stream != null)
+                        // TODO: support glob pattern
+                        if (resourceInfo.IsRegexPattern)
                         {
-                            var path = Path.Combine(outputDirectory, filePath);
-                            var dir = Path.GetDirectoryName(path);
-                            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-
-                            using (stream)
+                            var regex = new Regex(resourceInfo.ResourceKey, RegexOptions.IgnoreCase);
+                            foreach (var name in _resourceProvider.Names)
                             {
-                                using (var writer = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
+                                if (regex.IsMatch(name))
                                 {
-                                    stream.CopyTo(writer);
+                                    using (var stream = _resourceProvider.GetResourceStream(name))
+                                    {
+                                        ProcessSingleDependency(stream, outputDirectory, name);
+                                    }
                                 }
                             }
-
-                            Logger.Log(LogLevel.Verbose, $"Saved resource {filePath} that template dependants on to {path}");
                         }
                         else
                         {
-                            Logger.Log(LogLevel.Info, $"Unable to get relative resource for {filePath}");
+                            using (var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey))
+                            {
+                                ProcessSingleDependency(stream, outputDirectory, resourceInfo.FilePath);
+                            }
                         }
                     }
                     catch (Exception e)
                     {
-                        Logger.Log(LogLevel.Info, $"Unable to get relative resource for {filePath}: {e.Message}");
+                        Logger.Log(LogLevel.Info, $"Unable to get relative resource for {resourceInfo.FilePath}: {e.Message}");
                     }
                 }
+            }
+        }
+
+        private void ProcessSingleDependency(Stream stream, string outputDirectory, string filePath)
+        {
+            if (stream != null)
+            {
+                var path = Path.Combine(outputDirectory, filePath);
+                var dir = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+
+                using (var writer = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    stream.CopyTo(writer);
+                }
+
+                Logger.Log(LogLevel.Verbose, $"Saved resource {filePath} that template dependants on to {path}");
+            }
+            else
+            {
+                Logger.Log(LogLevel.Info, $"Unable to get relative resource for {filePath}");
             }
         }
 
@@ -292,7 +314,16 @@ namespace Microsoft.DocAsCode.EntityModel
                         var filePath = match.Groups["file"].Value;
                         if (string.IsNullOrWhiteSpace(filePath)) yield break;
                         if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
-                        yield return new TemplateResourceInfo(template.GetRelativeResourceKey(filePath), filePath);
+                        var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
+                        if (regexPatternMatch.Groups.Count > 1)
+                        {
+                            filePath = regexPatternMatch.Groups[1].Value;
+                            yield return new TemplateResourceInfo(template.GetRelativeResourceKey(filePath), filePath, true);
+                        }
+                        else
+                        {
+                            yield return new TemplateResourceInfo(template.GetRelativeResourceKey(filePath), filePath, false);
+                        }
                     }
                 }
             }
@@ -302,10 +333,12 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             public string ResourceKey { get; }
             public string FilePath { get; }
-            public TemplateResourceInfo(string resourceKey, string filePath)
+            public bool IsRegexPattern { get; }
+            public TemplateResourceInfo(string resourceKey, string filePath, bool isRegexPattern)
             {
                 ResourceKey = resourceKey;
                 FilePath = filePath;
+                IsRegexPattern = isRegexPattern;
             }
         }
 
@@ -314,15 +347,16 @@ namespace Microsoft.DocAsCode.EntityModel
             string attribute = "href";
             var key = xref.GetAttributeValue(attribute, null);
             var name = xref.GetAttributeValue("name", null);
-            var htmlId = GetHtmlId(key);
             var displayName = name ?? key;
             XRefSpec spec = null;
             if (internalXRefMap.TryGetValue(key, out spec))
             {
                 xref.Name = "a";
                 spec.Href = updater(spec.Href);
-                if (!string.IsNullOrEmpty(htmlId))
+                var hashtagIndex = spec.Href.IndexOf('#');
+                if (hashtagIndex == -1)
                 {
+                    var htmlId = GetHtmlId(key);
                     // TODO: What if href is not html?
                     spec.Href = spec.Href + "#" + htmlId;
                 }
@@ -596,6 +630,7 @@ namespace Microsoft.DocAsCode.EntityModel
             public bool IsPrimary { get; }
             public Template(string template, string templateName, string script)
             {
+                if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
                 Name = templateName;
                 Content = template;
                 var typeAndExtension = GetTemplateTypeAndExtension(templateName);
@@ -607,7 +642,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
             public string GetRelativeResourceKey(string relativePath)
             {
-                return Path.Combine(Path.GetDirectoryName(this.Name ?? string.Empty) ?? string.Empty, relativePath).ToNormalizedPath();
+                // Make sure resource keys are combined using '/'
+                return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
             }
 
             public string Transform(string modelPath, object attrs, TemplateLocator templateLocator)

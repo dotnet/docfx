@@ -1,0 +1,28 @@
+{
+  "name": "default.html",
+  "description": "This is a docfx template to generate static website",
+  "main": "test.js",
+  "authors": [
+    "docfx"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "docfx",
+    "template"
+  ],
+  "homepage": "https://github.com/aspnet/docfx",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "highlightjs": "~8.8.0",
+    "jquery": "~2.1.4"
+  }
+}

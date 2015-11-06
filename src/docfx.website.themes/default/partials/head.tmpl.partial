@@ -8,7 +8,7 @@
   <meta name="title" content="{{title}} | {{_appTitle}}">
   {{#_description}}<meta name="description" content="{{_description}}">{{/_description}}
   <link rel="shortcut icon" href="{{_rel}}favicon.ico">
-  <link rel="stylesheet" href="http://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{_rel}}styles/vendor.css">
   <link rel="stylesheet" href="{{_rel}}styles/main.css">
   <meta property="docfx:nav" content="{{_navPath}}">
   <meta property="docfx:toc" content="{{_tocPath}}">
