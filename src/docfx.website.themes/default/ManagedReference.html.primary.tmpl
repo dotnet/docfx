@@ -10,7 +10,10 @@
   {{>partials/head}}
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
-      {{>partials/navbar}}
+      <header>
+        {{>partials/navbar}}
+        {{>partials/breadcrumb}}
+      </header>
       <div role="main" class="container body-content">
       {{#_allowToc}}
         {{>partials/toc}}
@@ -19,7 +22,12 @@
       {{^_allowToc}}
         <div class="article row grid">
       {{/_allowToc}}
+          {{#_allowAffix}}
           <div class="col-md-10">
+          {{/_allowAffix}}
+          {{^_allowAffix}}
+          <div class="col-md-12">
+          {{/_allowAffix}}
             <article class="content wrap" id="_content">
             {{#isNamespace}}
               {{>partials/namespace}}
@@ -29,7 +37,9 @@
             {{/isClass}}
             </article>
           </div>
+          {{#_allowAffix}}
           {{>partials/affix}}
+          {{/_allowAffix}}
         </div>
       </div>
       {{>partials/footer}}

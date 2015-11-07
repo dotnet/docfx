@@ -1,0 +1,13 @@
+﻿{
+  "build": {
+    "content":
+      [
+        {
+          "files": ["**/*Markdown*.yml"],
+          "cwd": "obj/docfx"
+        }
+      ],
+    "dest": "_site",
+    "template": "default"
+  }
+}

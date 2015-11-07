@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     public class ConceptualDocumentProcessor : IDocumentProcessor
     {
         private const string ConceputalKey = "conceptual";
+        private const string DocumentTypeKey = "documentType";
 
         public string Name => nameof(ConceptualDocumentProcessor);
 
@@ -76,7 +77,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
             return new SaveResult
             {
-                DocumentType = "Conceptual",
+                DocumentType = model.DocumentType ?? "Conceptual",
                 ModelFile = model.File,
                 LinkToFiles = model.Properties.LinkToFiles,
                 LinkToUids = model.Properties.LinkToUids,
@@ -114,6 +115,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     else
                     {
                         content[item.Key] = item.Value;
+                        if (item.Key == DocumentTypeKey)
+                        {
+                            model.DocumentType = item.Value as string;
+                        }
                     }
                 }
             }

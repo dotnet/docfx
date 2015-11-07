@@ -98,6 +98,8 @@ namespace Microsoft.DocAsCode.Plugins
 
         public string LocalPathFromRepoRoot { get; set; }
 
+        public string DocumentType { get; set; }
+
         public ImmutableArray<string> Uids
         {
             get { return _uids; }
