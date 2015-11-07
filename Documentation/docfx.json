@@ -36,6 +36,13 @@
     "globalMetadata": {
       "_appTitle": "docfx website"
     },
-    "dest": "_site"
+    "dest": "_site",
+    "theme": [
+      "theme"
+    ],
+    "template": [
+      "default",
+      "template"
+    ]
   }
 }

@@ -29,6 +29,12 @@ function transform(model, _attrs) {
     model._allowToc = true;
   }
 
+  if (!model.hasOwnProperty("_allowAffix")) {
+    model._allowAffix = true;
+  } else {
+    // parse from string to bool
+    model._allowAffix = model._allowAffix === "true"
+  }
   return model;
 
   function createViewModel(model, _attrs) {

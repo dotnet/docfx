@@ -9,7 +9,10 @@
   {{>partials/head}}
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
-      {{>partials/navbar}}
+      <header>
+        {{>partials/navbar}}
+        {{>partials/breadcrumb}}
+      </header>
       <div role="main" class="container body-content">
       {{#_allowToc}}
         {{>partials/toc}}
@@ -17,14 +20,21 @@
       {{/_allowToc}}
       {{^_allowToc}}
         <div class="article row grid">
-      {{/_allowToc}}
+        {{/_allowToc}}
+          {{#_allowAffix}}
           <div class="col-md-10">
-            <a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+          {{/_allowAffix}}
+          {{^_allowAffix}}
+          <div class="col-md-12">
+          {{/_allowAffix}}
             <article class="content wrap" id="_content">
+              <a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               {{{conceptual}}}
             </article>
           </div>
+          {{#_allowAffix}}
           {{>partials/affix}}
+          {{/_allowAffix}}
         </div>
       </div>
       {{>partials/footer}}
