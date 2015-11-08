@@ -59,8 +59,8 @@ $(function() {
     onTocLoaded(updateTocHref);
 
     function loadNavbar() {
-      var navbarPath = $("meta[property='docfx\\:navrel'").attr("content");
-      var tocPath = $("meta[property='docfx\\:tocrel'").attr("content");
+      var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
+      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
       $('#navbar').load(navbarPath + " #toc>ul", function() {
