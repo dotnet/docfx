@@ -663,8 +663,16 @@ footer {
   .article {
     margin-top: 30px !important;
   }
-  header {
+  header, footer, body {
     position: static;
+  }
+  .hero {
+    height: 500px;
+    margin-top: 0px;
+  }
+  .hero .button {
+    display: block;
+    margin: 12px;
   }
   .topnav {
     text-align: center;
