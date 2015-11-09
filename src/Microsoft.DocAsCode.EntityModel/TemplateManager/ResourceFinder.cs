@@ -15,9 +15,11 @@ namespace Microsoft.DocAsCode.EntityModel
         private string _resourcePrefix;
         private Assembly _assembly;
         private static Func<string, string, string, bool> resourceNamePredicator = (resourceName, name, prefix) => Path.GetFileNameWithoutExtension(resourceName).Substring(prefix.Length).Equals(name, StringComparison.OrdinalIgnoreCase);
+        private string _baseDirectory;
 
-        public ResourceFinder(Assembly assembly, string rootNamespace)
+        public ResourceFinder(Assembly assembly, string rootNamespace, string baseDirectory = null)
         {
+            _baseDirectory = baseDirectory ?? Environment.CurrentDirectory;
             _assembly = assembly;
             if (assembly != null)
             {
@@ -45,14 +47,14 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (string.IsNullOrEmpty(name)) return null;
 
-            var directory = Path.Combine(Environment.CurrentDirectory, name);
+            var directory = Path.Combine(_baseDirectory, name);
             if (Directory.Exists(directory))
             {
                 Logger.LogVerbose($"Resource {name} is found from {directory}.");
                 return new FileResourceCollection(directory);
             }
 
-            var fileName = Path.Combine(Environment.CurrentDirectory, $"{name}.zip");
+            var fileName = Path.Combine(_baseDirectory, $"{name}.zip");
             if (File.Exists(fileName))
             {
                 Logger.LogVerbose($"Resource {name} is found from {fileName}.");

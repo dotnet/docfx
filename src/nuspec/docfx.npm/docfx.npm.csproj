@@ -14,4 +14,7 @@
   <Target Name="Build">
     <MSBuild Projects="..\..\docfx\docfx.csproj" Properties="Configuration=Release;OutputPath=$(MSBuildThisFileDirectory)/docfx/bin" />
   </Target>
+  <Target Name="Rebuild">
+    <MSBuild Projects="..\..\docfx\docfx.csproj" Targets="Rebuild" Properties="Configuration=Release;OutputPath=$(MSBuildThisFileDirectory)/docfx/bin" />
+  </Target>
 </Project>

@@ -1,6 +1,6 @@
 {
   "name": "docfx",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "A standalone tool to generate documentation from .NET source code and markdown files",
   "main": "docfx",
   "bin": {

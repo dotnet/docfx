@@ -65,7 +65,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         {
             // If the same resource name exists in the override folder, use the overriden one
             var themes = new List<string> { "tmpl1", "tmpl/tmpl1" };
-            using (var manager = new TemplateManager(this.GetType().Assembly, "tmpl", null, themes))
+            using (var manager = new TemplateManager(this.GetType().Assembly, "tmpl", null, themes, null))
             {
                 var outputFolder = Path.Combine(_outputFolder, "TestTemplateManager_MutipleThemes");
                 manager.ProcessTemplateAndTheme(null, outputFolder, true);

@@ -31,9 +31,9 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private ResourceCollection _themeResource = null;
 
-        public TemplateManager(Assembly assembly, string rootNamespace, List<string> templates, List<string> themes)
+        public TemplateManager(Assembly assembly, string rootNamespace, List<string> templates, List<string> themes, string baseDirectory)
         {
-            var resourceFinder = new ResourceFinder(assembly, rootNamespace);
+            var resourceFinder = new ResourceFinder(assembly, rootNamespace, baseDirectory);
             if (templates == null || templates.Count == 0)
             {
                 Logger.Log(LogLevel.Info, "Template is not specified, files will not be transformed.");

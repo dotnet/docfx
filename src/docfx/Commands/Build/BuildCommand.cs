@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode
 
             // If RootOutput folder is specified from command line, use it instead of the base directory
             var outputFolder = Path.Combine(_context?.RootOutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
-            using (var manager = new TemplateManager(assembly, "Template", config.Templates, config.Themes))
+            using (var manager = new TemplateManager(assembly, "Template", config.Templates, config.Themes, config.BaseDirectory))
             {
                 manager.ProcessTemplateAndTheme(documentContext, outputFolder, true);
             }
