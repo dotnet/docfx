@@ -180,6 +180,7 @@ header .navbar {
 }
 
 .inheritance h5{
+  padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
 }
 
