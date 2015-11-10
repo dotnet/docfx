@@ -14,13 +14,11 @@ namespace Microsoft.DocAsCode
     /// </summary>
     internal class PackCommand : ICommand
     {
-        private CommandContext _context;
         public PackCommandOptions _options { get; }
         public Options _rootOptions { get; }
-        public PackCommand(Options options, CommandContext context)
+        public PackCommand(Options options)
         {
             _options = options.PackCommand;
-            _context = context;
             _rootOptions = options;
         }
 
