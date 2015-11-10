@@ -13,6 +13,9 @@ namespace Microsoft.DocAsCode
         [JsonIgnore]
         public string BaseDirectory { get; set; }
 
+        [JsonIgnore]
+        public string RootOutputFolder { get; set; }
+
         [JsonProperty("content")]
         public FileMapping Content { get; set; }
 

@@ -69,8 +69,7 @@ namespace Microsoft.DocAsCode.Tests
                     OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
                     Templates = new List<string> { Path.Combine(templateDir, "default") }
                 }
-            }
-            , null).Exec(null);
+            }).Exec(null);
 
             Assert.Equal(ResultLevel.Success, result.ResultLevel);
             var file = Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".html"));

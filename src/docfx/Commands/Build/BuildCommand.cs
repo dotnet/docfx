@@ -16,25 +16,23 @@ namespace Microsoft.DocAsCode
     class BuildCommand : ICommand
     {
         private DocumentBuilder _builder = new DocumentBuilder();
-        private CommandContext _context;
         private string _helpMessage = null;
         public BuildJsonConfig Config { get; }
 
-        public BuildCommand(CommandContext context) : this(new BuildJsonConfig(), context)
+        public BuildCommand() : this(new BuildJsonConfig())
         {
         }
 
-        public BuildCommand(JToken value, CommandContext context) : this(CommandFactory.ConvertJTokenTo<BuildJsonConfig>(value), context)
+        public BuildCommand(JToken value) : this(CommandFactory.ConvertJTokenTo<BuildJsonConfig>(value))
         {
         }
 
-        public BuildCommand(BuildJsonConfig config, CommandContext context)
+        public BuildCommand(BuildJsonConfig config)
         {
-            _context = context;
             Config = config;
         }
 
-        public BuildCommand(Options options, CommandContext context)
+        public BuildCommand(Options options)
         {
             var buildCommandOptions = options.BuildCommand;
             if (buildCommandOptions.IsHelp)
@@ -43,8 +41,7 @@ namespace Microsoft.DocAsCode
             }
             else
             {
-                Config = GetConfigFromOptions(buildCommandOptions);
-                _context = context;
+                Config = GetConfigFromOptions(buildCommandOptions, options.RootOutputFolder);
             }
 
             if (!string.IsNullOrWhiteSpace(buildCommandOptions.Log)) Logger.RegisterListener(new ReportLogListener(buildCommandOptions.Log));
@@ -59,8 +56,6 @@ namespace Microsoft.DocAsCode
                 Console.WriteLine(_helpMessage);
                 return ParseResult.SuccessResult;
             }
-            if (_context?.BaseDirectory != null)
-                Config.BaseDirectory = _context?.BaseDirectory;
 
             return InternalExec(Config, context);
         }
@@ -90,7 +85,7 @@ namespace Microsoft.DocAsCode
             }
 
             // If RootOutput folder is specified from command line, use it instead of the base directory
-            var outputFolder = Path.Combine(_context?.RootOutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
+            var outputFolder = Path.Combine(config.RootOutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
             using (var manager = new TemplateManager(assembly, "Template", config.Templates, config.Themes))
             {
                 manager.ProcessTemplateAndTheme(documentContext, outputFolder, true);
@@ -150,7 +145,7 @@ namespace Microsoft.DocAsCode
             return fileCollection;
         }
 
-        private static BuildJsonConfig GetConfigFromOptions(BuildCommandOptions options)
+        private static BuildJsonConfig GetConfigFromOptions(BuildCommandOptions options, string rootOutputFolder)
         {
             string configFile = options.ConfigFile;
             if (string.IsNullOrEmpty(configFile) && options.Content == null && options.Resource == null)
@@ -173,12 +168,14 @@ namespace Microsoft.DocAsCode
                 if (command == null) throw new ApplicationException($"Unable to find {CommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
                 config = command.Config;
                 config.BaseDirectory = Path.GetDirectoryName(configFile);
+                config.RootOutputFolder = rootOutputFolder;
             }
             else
             {
                 config = new BuildJsonConfig();
             }
 
+            config.RootOutputFolder = rootOutputFolder;
             string optionsBaseDirectory = Environment.CurrentDirectory;
             // Override config file with options from command line
             if (options.Templates != null && options.Templates.Count > 0) config.Templates = new ListWithStringFallback(options.Templates);

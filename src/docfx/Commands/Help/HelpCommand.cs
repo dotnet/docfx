@@ -13,13 +13,11 @@ namespace Microsoft.DocAsCode
 
     internal class HelpCommand : ICommand
     {
-        private CommandContext _context;
         public HelpCommandOptions _options { get; }
         public Options _rootOptions { get; }
-        public HelpCommand(Options options, CommandContext context)
+        public HelpCommand(Options options)
         {
             _options = options.HelpCommand;
-            _context = context;
             _rootOptions = options;
         }
 

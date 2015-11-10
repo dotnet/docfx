@@ -8,8 +8,12 @@ namespace Microsoft.DocAsCode
 
     public class MetadataJsonConfig : List<MetadataJsonItemConfig>
     {
+        [JsonIgnore]
         public string BaseDirectory { get; set; }
-        
+
+        [JsonIgnore]
+        public string RootOutputFolder { get; set; }
+
         public MetadataJsonConfig(IEnumerable<MetadataJsonItemConfig> configs) : base(configs) { }
 
         public MetadataJsonConfig(params MetadataJsonItemConfig[] configs) : base(configs)

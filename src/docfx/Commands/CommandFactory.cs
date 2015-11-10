@@ -19,47 +19,41 @@ namespace Microsoft.DocAsCode
             if (!File.Exists(path)) throw new FileNotFoundException($"Config file {path} does not exist!");
 
             var result = JsonUtility.Deserialize<Dictionary<string, JToken>>(path);
-            var context = new CommandContext
-            {
-                BaseDirectory = Path.GetDirectoryName(path),
-                ForceRebuild = rootOptions?.ForceRebuild ?? false,
-                RootOutputFolder = rootOptions?.RootOutputFolder
-            };
-            return new CompositeCommand(context, result);
+            return new CompositeCommand(result);
         }
 
         // TODO: use reflection to load commands?
-        public static ICommand GetCommand(CommandType command, Options value, CommandContext context)
+        public static ICommand GetCommand(CommandType command, Options value)
         {
             switch (command)
             {
                 case CommandType.Metadata:
-                    return new MetadataCommand(value, context);
+                    return new MetadataCommand(value);
                 case CommandType.Build:
-                    return new BuildCommand(value, context);
+                    return new BuildCommand(value);
                 case CommandType.Help:
-                    return new HelpCommand(value, context);
+                    return new HelpCommand(value);
                 case CommandType.Init:
-                    return new InitCommand(value, context);
+                    return new InitCommand(value);
                 case CommandType.Serve:
-                    return new ServeCommand(value, context);
+                    return new ServeCommand(value);
                 case CommandType.Export:
-                    return new ExportCommand(value, context);
+                    return new ExportCommand(value);
                 case CommandType.Pack:
-                    return new PackCommand(value, context);
+                    return new PackCommand(value);
                 default:
                     throw new NotSupportedException($"{command} is not registered");
             }
         }
 
-        public static ICommand GetCommand(CommandType command, JToken value, CommandContext context)
+        public static ICommand GetCommand(CommandType command, JToken value)
         {
             switch (command)
             {
                 case CommandType.Metadata:
-                    return new MetadataCommand(value, context);
+                    return new MetadataCommand(value);
                 case CommandType.Build:
-                    return new BuildCommand(value, context);
+                    return new BuildCommand(value);
                 default:
                     throw new NotSupportedException($"{command} is not registered");
             }
@@ -82,7 +76,7 @@ namespace Microsoft.DocAsCode
             }
             else
             {
-                return GetCommand(rootOptions.CurrentSubCommand.Value, rootOptions, null);
+                return GetCommand(rootOptions.CurrentSubCommand.Value, rootOptions);
             }
         }
     }

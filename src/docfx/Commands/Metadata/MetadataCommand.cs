@@ -14,26 +14,24 @@ namespace Microsoft.DocAsCode
 
     internal class MetadataCommand : ICommand
     {
-        private CommandContext _context;
         private string _helpMessage = null;
         public MetadataJsonConfig Config { get; }
         public IEnumerable<ExtractMetadataInputModel> InputModels { get; }
-        public MetadataCommand(CommandContext context) : this(new MetadataJsonConfig(), context)
+        public MetadataCommand() : this(new MetadataJsonConfig())
         {
         }
 
-        public MetadataCommand(JToken value, CommandContext context) : this(CommandFactory.ConvertJTokenTo<MetadataJsonConfig>(value), context)
+        public MetadataCommand(JToken value) : this(CommandFactory.ConvertJTokenTo<MetadataJsonConfig>(value))
         {
         }
 
-        public MetadataCommand(MetadataJsonConfig config, CommandContext context)
+        public MetadataCommand(MetadataJsonConfig config)
         {
-            _context = context;
             Config = config;
-            InputModels = GetInputModels(Config, context);
+            InputModels = GetInputModels(Config);
         }
 
-        public MetadataCommand(Options options, CommandContext context)
+        public MetadataCommand(Options options)
         {
             var metadataCommandOptions = options.MetadataCommand;
             if (metadataCommandOptions.IsHelp)
@@ -42,9 +40,8 @@ namespace Microsoft.DocAsCode
             }
             else
             {
-                Config = GetConfigFromOptions(metadataCommandOptions);
-                InputModels = GetInputModels(Config, context);
-                _context = context;
+                Config = GetConfigFromOptions(metadataCommandOptions, options.RootOutputFolder);
+                InputModels = GetInputModels(Config);
             }
 
             if (!string.IsNullOrWhiteSpace(metadataCommandOptions.Log)) Logger.RegisterListener(new ReportLogListener(metadataCommandOptions.Log));
@@ -86,11 +83,11 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs, CommandContext context)
+        private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs)
         {
             foreach (var config in configs)
             {
-                yield return ConvertToInputModel(config, context?.BaseDirectory);
+                yield return ConvertToInputModel(config, configs.BaseDirectory);
             }
         }
 
@@ -98,7 +95,7 @@ namespace Microsoft.DocAsCode
         {
             var projects = configModel.Source;
             // If Root Output folder is specified from command line, use it instead of the base directory
-            var outputFolder = Path.Combine(_context?.RootOutputFolder ?? baseDirectory ?? string.Empty, configModel.Destination ?? Constants.DefaultRootOutputFolderPath);
+            var outputFolder = Path.Combine(Config.RootOutputFolder ?? baseDirectory ?? string.Empty, configModel.Destination ?? Constants.DefaultRootOutputFolderPath);
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel.Raw,
@@ -115,24 +112,35 @@ namespace Microsoft.DocAsCode
             return inputModel;
         }
 
-        private static MetadataJsonConfig GetConfigFromOptions(MetadataCommandOptions options)
+        private static MetadataJsonConfig GetConfigFromOptions(MetadataCommandOptions options, string rootOutputFolder)
         {
             string jsonConfig;
+            MetadataJsonConfig config;
             if (TryGetJsonConfig(options.Projects, out jsonConfig))
             {
                 var command = (MetadataCommand)CommandFactory.ReadConfig(jsonConfig, null).Commands.FirstOrDefault(s => s is MetadataCommand);
                 if (command == null) throw new DocumentException($"Unable to find {CommandType.Build} subcommand config in file '{Constants.ConfigFileName}'.");
-                return command.Config;
+                config = command.Config;
+                config.BaseDirectory = Path.GetDirectoryName(jsonConfig);
+                config.RootOutputFolder = rootOutputFolder ?? options.OutputFolder;
+                foreach (var item in config)
+                {
+                    item.Force |= options.ForceRebuild;
+                    item.Raw |= options.PreserveRawInlineComments;
+                }
+            }
+            else
+            {
+                config = new MetadataJsonConfig();
+                config.Add(new MetadataJsonItemConfig
+                {
+                    Force = options.ForceRebuild,
+                    Destination = rootOutputFolder ?? options.OutputFolder,
+                    Raw = options.PreserveRawInlineComments,
+                    Source = new FileMapping(new FileMappingItem() { Files = new FileItems(options.Projects) })
+                });
             }
 
-            var config = new MetadataJsonConfig();
-            config.Add(new MetadataJsonItemConfig
-            {
-                Force = options.ForceRebuild,
-                Destination = options.OutputFolder,
-                Raw = options.PreserveRawInlineComments,
-                Source = new FileMapping(new FileMappingItem() { Files = new FileItems(options.Projects) })
-            });
             return config;
         }
 

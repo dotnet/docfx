@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode
     {
         static int Main(string[] args)
         {
+            Debug.Assert(false);
             try
             {
                 Logger.RegisterListener(new ConsoleLogListener());
