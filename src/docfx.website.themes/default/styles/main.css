@@ -666,6 +666,10 @@ footer {
 
 /* For toc iframe */
 @media (max-width: 260px)  {
+  #sidetoggle.collapse {
+    display: block;
+  }
+
   .toc .level2 > li {
     display: block;
   }

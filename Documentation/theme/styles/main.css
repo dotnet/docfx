@@ -640,6 +640,9 @@ footer {
   padding: 15px 0;
 }
 @media (min-width: 768px) {
+  #sidetoggle.collapse {
+    display: block;
+  }
   .topnav .navbar-nav {
     float: none;
     white-space: nowrap;
