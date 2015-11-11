@@ -7,7 +7,7 @@ button, a, .btn-primary {
 .btn-primary:hover, .btn-primary:focus, button:hover, button:focus, a:hover, a:focus, .toc .nav > li.active > a:hover, .toc .nav > li.active > a:focus, .toc .nav > li > a:hover, .toc .nav > li > a:focus {
   color: #6E8B60;
 }
-.btn-primary.disable, .btn-primary.disable:hover, a.disable, a.disable:hover{ 
+.btn-primary.disable, .btn-primary.disable:hover, a.disable, a.disable:hover{
   color: #90ABB9;
 }
 .hero {
@@ -88,13 +88,7 @@ h4:before {
     margin-top: -100px;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-td {
+h1, h2, h3, h4, h5, h6, span.xref {
     word-wrap: break-word;
     word-break: break-all;
 }

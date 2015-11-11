@@ -11,7 +11,7 @@
 {{#inheritance}}
     <div class="level{{index}}">{{{specName}}}</div>
 {{/inheritance}}
-    <div class="level{{item.level}}">{{item.fullName}}</div>
+    <div class="level{{item.level}}"><span class="xref">{{item.name}}</span></div>
 </div>
 {{/inheritance.0}}
 <h6><strong>Namespace</strong>:{{namespace}}</h6>

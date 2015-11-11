@@ -37,17 +37,7 @@ h4:before {
     margin-top: -100px;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    word-wrap: break-word;
-    word-break: break-all;
-}
-
-span.xref {
+h1, h2, h3, h4, h5, h6, span.xref {
     word-wrap: break-word;
     word-break: break-all;
 }

@@ -521,6 +521,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static bool IsMappedPath(string path)
         {
+            if (!PathUtility.IsRelativePath(path)) return false;
             return ((RelativePath)path).IsFromWorkingFolder();
         }
 
