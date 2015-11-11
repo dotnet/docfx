@@ -344,14 +344,17 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static void UpdateXref(HtmlAgilityPack.HtmlNode xref, Dictionary<string, XRefSpec> internalXRefMap, Dictionary<string, XRefSpec> externalXRefMap, Func<string, string> updater, string language)
         {
-            string attribute = "href";
-            var key = xref.GetAttributeValue(attribute, null);
+            var key = xref.GetAttributeValue("href", null);
+            // If name | fullName exists, use the one from xref because spec name is different from name for generic types
+            // e.g. return type: IEnumerable<T>, spec name should be IEnumerable
             var name = xref.GetAttributeValue("name", null);
-            var displayName = name ?? key;
+            var fullName = xref.GetAttributeValue("fullName", null);
+            string displayName;
+            string href = null;
+
             XRefSpec spec = null;
             if (internalXRefMap.TryGetValue(key, out spec))
             {
-                xref.Name = "a";
                 spec.Href = updater(spec.Href);
                 var hashtagIndex = spec.Href.IndexOf('#');
                 if (hashtagIndex == -1)
@@ -361,31 +364,47 @@ namespace Microsoft.DocAsCode.EntityModel
                     spec.Href = spec.Href + "#" + htmlId;
                 }
 
-                displayName = GetLanguageSpecificAttribute(spec, language, displayName, "name");
-
-                xref.SetAttributeValue(attribute, spec.Href);
-                xref.AppendChild(HtmlAgilityPack.HtmlNode.CreateNode(StringHelper.HtmlEncode(displayName)));
-                return;
+                href = spec.Href;
+            }
+            else if (externalXRefMap.TryGetValue(key, out spec) && !string.IsNullOrEmpty(spec.Href))
+            {
+                href = spec.Href;
             }
 
-            if (externalXRefMap.TryGetValue(key, out spec))
+            // If href is not null, use name
+            if (href != null)
             {
-                if (!string.IsNullOrEmpty(spec.Href))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    xref.Name = "a";
-                    displayName = GetLanguageSpecificAttribute(spec, language, displayName, "name");
-                    xref.SetAttributeValue(attribute, spec.Href);
-                    xref.AppendChild(HtmlAgilityPack.HtmlNode.CreateNode(StringHelper.HtmlEncode(displayName)));
-                    return;
+                    displayName = name;
                 }
-            }
+                else
+                {
+                    displayName = string.IsNullOrEmpty(fullName) ? key : fullName;
+                    if (spec != null)
+                        displayName = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(spec, language, displayName, "name"));
+                }
 
-            if (spec != null)
+                var anchorNode = $"<a class=\"xref\" href=\"{href}\">{displayName}</a>";
+                xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(anchorNode), xref);
+            }
+            else
             {
-                displayName = GetLanguageSpecificAttribute(spec, language, displayName, "fullName", "name");
-            }
+                // If href is null, use fullName
+                if (!string.IsNullOrEmpty(fullName))
+                {
+                    displayName = fullName;
+                }
+                else
+                {
+                    displayName = string.IsNullOrEmpty(name) ? key : name;
+                    if (spec != null)
+                        displayName = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(spec, language, displayName, "fullName", "name"));
+                }
 
-            xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(StringHelper.HtmlEncode(displayName)), xref);
+                var spanNode = $"<span class=\"xref\">{displayName}</span>";
+                xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(spanNode), xref);
+            }
         }
 
         /// <summary>

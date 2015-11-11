@@ -14,11 +14,11 @@
     <div class="level{{item.level}}">{{item.fullName}}</div>
 </div>
 {{/inheritance.0}}
-<h6><strong>Namespace</strong>:{{{namespace}}}</h6>
-<h6><strong>Assembly</strong>:{{{assemblies.0}}}.dll</h6>
+<h6><strong>Namespace</strong>:{{namespace}}</h6>
+<h6><strong>Assembly</strong>:{{assemblies.0}}.dll</h6>
 <h5 id="{{id}}_syntax">Syntax</h5>
 <div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{{syntax.content}}}</code></pre>
+  <pre><code class="lang-{{_lang}} hljs">{{syntax.content}}</code></pre>
 </div>
 {{#remarks}}
 <h5 id="{{id}}_remarks"><strong>Remarks<strong></h5>
@@ -46,7 +46,7 @@
 <h5 class="decalaration">Declaration</h5>
 {{#syntax}}
 <div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{{syntax.content}}}</code></pre>
+  <pre><code class="lang-{{_lang}} hljs">{{syntax.content}}</code></pre>
 </div>
 {{#parameters.0}}
 <h5 class="parameters">Parameters</h5>

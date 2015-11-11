@@ -311,7 +311,7 @@ function transform(model, _attrs) {
           return name;
         }
 
-        return getXref(_obj.uid, _obj.fullName);
+        return getXref(_obj.uid, _obj.fullName, _obj.name);
       }
 
       function getCompositeName(lang, extChanger) {
@@ -321,7 +321,7 @@ function transform(model, _attrs) {
         var fullName = getLangSpecifiedProperty.call(this, "fullName", lang) || name;
         // If href does not exists, return full name
         if (!this.uid) { return util.escapeHtml(fullName); }
-        return getXref(this.uid, fullName);
+        return getXref(this.uid, fullName, name);
       }
 
       function getName(lang) {
@@ -337,8 +337,8 @@ function transform(model, _attrs) {
         return '<a href="' + href + '">' + util.escapeHtml(name) + '</a>';
       }
 
-      function getXref(uid, name) {
-        return '<xref href="' + util.escapeHtml(uid) + '" name="' + util.escapeHtml(name) + '"/>';
+      function getXref(uid, fullName, name) {
+        return '<xref href="' + util.escapeHtml(uid) + '" fullName="' + util.escapeHtml(fullName) + '" name="' + util.escapeHtml(name) + '"/>';
       }
     }
   }
