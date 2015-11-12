@@ -1,0 +1,96 @@
+/* Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
+/* Colors */
+button, a, .btn-primary {
+  color: #47A7A0;
+}
+.btn-primary:hover, .btn-primary:focus, button:hover, button:focus, a:hover, a:focus, .toc .nav > li.active > a:hover, .toc .nav > li.active > a:focus, .toc .nav > li > a:hover, .toc .nav > li > a:focus {
+  color: #6E8B60;
+}
+.btn-primary.disable, .btn-primary.disable:hover, a.disable, a.disable:hover{
+  color: #90ABB9;
+}
+.hero {
+    background: #385361;
+    color: #C1D38B;
+}
+.hero strong {
+    color: #e7e7e7;
+}
+.buttons-unit .button {
+    color: #fff;
+    background: #6E8B60;
+}
+.buttons-unit .button:active {
+    background: #A27865;
+}
+.toc .nav > li.active > a, .affix ul > li.active > a, .affix ul > li.active > a:before {
+  color: #6E8B60
+}
+.btn-primary {
+    background: #385361;
+    color: #8BFEB4;
+}
+
+.affix ul > li > a:before {
+  color: #cccccc;
+}
+.toc .nav > li > a, .affix ul > li > a, .affix ul > li > a:hover {
+  color: #666666;
+}
+
+svg:hover path {
+    fill: #ffffff;
+}
+
+/* End Colors */
+
+.value-prop-heading {
+  font-size: 24px;
+}
+
+#vp-container{
+  margin-top: 30px;
+}
+
+.hero {
+    height: 300px;
+    margin-top: 50px;
+    padding-top: 50px;
+    font-weight: 300;
+}
+.hero strong {
+    font-weight: 400;
+}
+.hero .text {
+    font-size: 64px;
+    text-align: center;
+}
+.hero .minitext {
+    font-size: 16px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.buttons-unit {
+    margin-top: 60px;
+    text-align: center;
+}
+.hero .button {
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin: 0 12px;
+    box-shadow: 1px 3px 3px rgba(0,0,0,0.3);
+}
+.buttons-unit .button {
+    font-size: 24px;
+}
+
+@media only screen and (max-width: 768px) {
+  .hero {
+    height: 500px;
+    margin-top: 0px;
+  }
+  .hero .button {
+    display: block;
+    margin: 12px;
+  }
+}

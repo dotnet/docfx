@@ -578,6 +578,9 @@ footer {
   padding: 15px 0;
 }
 @media (min-width: 768px) {
+  #sidetoggle.collapse {
+    display: block;
+  }
   .topnav .navbar-nav {
     float: none;
     white-space: nowrap;
@@ -665,11 +668,7 @@ footer {
 }
 
 /* For toc iframe */
-@media (max-width: 260px)  {
-  #sidetoggle.collapse {
-    display: block;
-  }
-
+@media (max-width: 260px) {
   .toc .level2 > li {
     display: block;
   }
