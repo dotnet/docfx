@@ -13,13 +13,11 @@ namespace Microsoft.DocAsCode
 
     internal class ServeCommand : ICommand
     {
-        private CommandContext _context;
         public ServeCommandOptions _options { get; }
         public Options _rootOptions { get; }
         public ServeCommand(Options options, CommandContext context)
         {
             _options = options.ServeCommand;
-            _context = context;
             _rootOptions = options;
         }
 

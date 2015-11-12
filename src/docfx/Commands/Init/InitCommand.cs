@@ -111,13 +111,11 @@ namespace Microsoft.DocAsCode
             }
         };
 
-        private CommandContext _context;
         public InitCommandOptions _options { get; }
         public Options _rootOptions { get; }
         public InitCommand(Options options, CommandContext context)
         {
             _options = options.InitCommand;
-            _context = context;
             _rootOptions = options;
         }
 

@@ -102,9 +102,6 @@ $(function() {
               $(e).parent().removeClass(active)
             }
           }
-          if (i == 0) {
-            $(".navbar-brand").attr("href", href);
-          }
         });
       });
     }

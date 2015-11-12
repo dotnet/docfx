@@ -16,9 +16,15 @@ namespace Microsoft.DocAsCode
     class BuildCommand : ICommand
     {
         private DocumentBuilder _builder = new DocumentBuilder();
-        private CommandContext _context;
         private string _helpMessage = null;
         public BuildJsonConfig Config { get; }
+
+        private BuildJsonConfig MergeConfig(BuildJsonConfig config, CommandContext context)
+        {
+            config.BaseDirectory = context?.BaseDirectory ?? config.BaseDirectory;
+            config.OutputFolder = context?.RootOutputFolder ?? config.OutputFolder;
+            return config;
+        }
 
         public BuildCommand(CommandContext context) : this(new BuildJsonConfig(), context)
         {
@@ -30,8 +36,7 @@ namespace Microsoft.DocAsCode
 
         public BuildCommand(BuildJsonConfig config, CommandContext context)
         {
-            _context = context;
-            Config = config;
+            Config = MergeConfig(config, context);
         }
 
         public BuildCommand(Options options, CommandContext context)
@@ -43,8 +48,7 @@ namespace Microsoft.DocAsCode
             }
             else
             {
-                Config = GetConfigFromOptions(buildCommandOptions);
-                _context = context;
+                Config = MergeConfig(GetConfigFromOptions(buildCommandOptions), context);
             }
 
             if (!string.IsNullOrWhiteSpace(buildCommandOptions.Log)) Logger.RegisterListener(new ReportLogListener(buildCommandOptions.Log));
@@ -59,8 +63,6 @@ namespace Microsoft.DocAsCode
                 Console.WriteLine(_helpMessage);
                 return ParseResult.SuccessResult;
             }
-            if (_context?.BaseDirectory != null)
-                Config.BaseDirectory = _context?.BaseDirectory;
 
             return InternalExec(Config, context);
         }
@@ -90,7 +92,7 @@ namespace Microsoft.DocAsCode
             }
 
             // If RootOutput folder is specified from command line, use it instead of the base directory
-            var outputFolder = Path.Combine(_context?.RootOutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
+            var outputFolder = Path.Combine(config.OutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
             using (var manager = new TemplateManager(assembly, "Template", config.Templates, config.Themes, config.BaseDirectory))
             {
                 manager.ProcessTemplateAndTheme(documentContext, outputFolder, true);
@@ -179,6 +181,7 @@ namespace Microsoft.DocAsCode
                 config = new BuildJsonConfig();
             }
 
+            config.OutputFolder = options.OutputFolder;
             string optionsBaseDirectory = Environment.CurrentDirectory;
             // Override config file with options from command line
             if (options.Templates != null && options.Templates.Count > 0) config.Templates = new ListWithStringFallback(options.Templates);

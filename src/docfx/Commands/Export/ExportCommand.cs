@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode
     /// </summary>
     internal class ExportCommand : ICommand
     {
-        private CommandContext _context;
         private string _helpMessage = null;
         private MetadataCommand _metadataCommand;
         public ExportCommandOptions _options { get; }
@@ -32,7 +31,6 @@ namespace Microsoft.DocAsCode
             {
                 options.MetadataCommand = _options;
                 _metadataCommand = new MetadataCommand(options, context);
-                _context = context;
             }
         }
 
