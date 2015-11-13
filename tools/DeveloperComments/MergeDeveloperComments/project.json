@@ -1,0 +1,20 @@
+{
+    "version": "1.0.0-*",
+    "dependencies": {
+        "Microsoft.DocAsCode.EntityModel": "",
+        "Microsoft.DocAsCode.Utility": ""
+    },
+    "frameworks": {
+        "dnx451": {
+            "frameworkAssemblies": {
+                "Microsoft.CSharp": "",
+                "System.Core": "",
+                "System.Xml": "",
+                "System.Xml.Linq": ""
+            }
+        }
+    },
+    "commands": {
+        "mergeDeveloperComments": "mergeDeveloperComments"
+    }
+}

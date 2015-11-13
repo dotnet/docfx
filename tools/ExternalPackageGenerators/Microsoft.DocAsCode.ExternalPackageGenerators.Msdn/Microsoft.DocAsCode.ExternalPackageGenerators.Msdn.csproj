@@ -35,6 +35,7 @@
     <Compile Include="Cache.cs" />
     <Compile Include="Entities.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="HttpClientExtensions.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>

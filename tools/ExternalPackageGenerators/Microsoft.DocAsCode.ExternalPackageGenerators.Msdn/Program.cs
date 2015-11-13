@@ -3,9 +3,6 @@
 
 namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 {
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
-    using Microsoft.DocAsCode.Utility;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -21,6 +18,10 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
     using System.Threading;
     using System.Threading.Tasks;
     using System.Xml;
+
+    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Microsoft.DocAsCode.Utility;
 
     internal sealed class Program
     {
@@ -65,7 +66,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             if (args.Length != 4)
             {
                 PrintUsage();
-                return 1;
+                return 2;
             }
             try
             {
@@ -79,7 +80,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             catch (Exception ex)
             {
                 Console.Error.WriteLine(ex);
-                return 2;
+                return 1;
             }
         }
 

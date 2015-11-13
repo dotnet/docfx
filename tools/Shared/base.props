@@ -2,7 +2,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-
+    <ProjectLockFile>donotuse_project.lock.json</ProjectLockFile>
     <VersionCSPath>TEMP\</VersionCSPath>
     <CurrentVersion>1.0.0.0</CurrentVersion>
     <!-- Note: by convention assembly should be named after the root namespace -->
