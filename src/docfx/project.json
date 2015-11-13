@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0-*",
+  "version": "0.3.10-*",
   "dependencies": {
     "CommandLineParser": "1.9.71",
     "Newtonsoft.Json": "6.0.8",
-    "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.0.0-*",
-    "Microsoft.DocAsCode.EntityModel": "1.0.0-*",
-    "Microsoft.DocAsCode.Plugins": "1.0.0-*",
-    "Microsoft.DocAsCode.Utility": "1.0.0-*",
+    "Microsoft.CodeAnalysis.Workspaces.Dnx": "",
+    "Microsoft.DocAsCode.EntityModel": "",
+    "Microsoft.DocAsCode.Plugins": "",
+    "Microsoft.DocAsCode.Utility": "",
     "Microsoft.CodeAnalysis.Common": "1.1.0",
     "Microsoft.CodeAnalysis.VisualBasic": "1.1.0",
     "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.1.0",
