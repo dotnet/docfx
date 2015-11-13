@@ -7,16 +7,16 @@ Getting Started
 `docfx` is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphnix. It has the ability to extract triple slash comments out from your source code. What's more, it has syntax to link additional files to API to add additional remarks. `docfx` will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. `docfx` provides the flexibility for you to customize the website through templates. We currently have several embeded templates, including websites containing pure static html pages and also website managed by AngularJS. Of cause, if you are interested in creating your own website with your own styles, you can follow [how to create custom template](howto_create_custom_template.md) to create custom templates.
 
 * Click "View Source" for an API to route to the source code in GitHub (your API must be pushed to GitHub)
-* `docfx` provide DNX version for cross platform use. 
+* `docfx` provide DNX version for cross platform use.
 * `docfx` can be used within Visual Studio seamlessly. **NOTE** offical `docfx.msbuild` nuget package is now in pre-release version. You can also build your own with source code and use it locally.
 * We support **Docfx Flavored Markdown(DFM)** for writing conceptual files. DFM is **100%** compatible with *Github Flavored Markdown(GFM)* and add several new features including *file inclusion*, *cross reference*, and *yaml header*. For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
 Use `docfx.exe` directly
 -----------------------
-Download and unzip [docfx.zip](artifacts/docfx.zip) to run `docfx.exe` directly!
+Download and unzip [docfx.zip](artifacts/docfx.v0.3.10.zip) to run `docfx.exe` directly!
 
 ### Quick Start
-**Step1** Run 
+**Step1** Run
 ```
 docfx.exe init
 ```
@@ -26,7 +26,7 @@ and follow the instructions to generate a `docfx.json` config file.
 ```
 docfx.exe
 ```
-and `docfx.exe` will automatically read the `docfx.json` in current folder and generate a documentation website for you in `output folder` which you defined in `init` phase. By default, the website is under `_site` folder. 
+and `docfx.exe` will automatically read the `docfx.json` in current folder and generate a documentation website for you in `output folder` which you defined in `init` phase. By default, the website is under `_site` folder.
 
 
 **TODO**: we are on the way to publish `docfx.exe` independently into our on-building website!
@@ -52,8 +52,8 @@ Install-Package docfx.msbuild -Pre
 
 **Step3.** Add `artifacts` folder to nuget source by in IDE:
   > Tools > Nuget Package Manager > Package Manager Settings > Package Sources
-  
-**Step4.** Follow **Step1**~**Step4** in above **Quick Start** section to generate your documentation! 
+
+**Step4.** Follow **Step1**~**Step4** in above **Quick Start** section to generate your documentation!
 
 Use `docfx` under DNX
 ----------------
