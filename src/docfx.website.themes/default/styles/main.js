@@ -96,7 +96,7 @@ $(function() {
               $(e).parent().addClass(active);
               breadcrumb.insert({
                 href: e.href,
-                name: e.innerText
+                name: e.innerHTML
               }, 0);
             } else {
               $(e).parent().removeClass(active)
@@ -132,13 +132,13 @@ $(function() {
             parent.addClass(active);
             breadcrumb.push({
               href: parent[0].href,
-              name: parent[0].innerText
+              name: parent[0].innerHTML
             });
           }
 
           breadcrumb.push({
             href: e.href,
-            name: e.innerText
+            name: e.innerHTML
           });
           // Scroll to active item
           var top = 0;
@@ -246,7 +246,7 @@ $(function() {
           var id = e.id;
           if (!id) continue; // For affix, id is a must-have
           var item = {
-            name: e.innerText,
+            name: e.innerHTML,
             href: "#" + id,
             items: []
           };
@@ -257,7 +257,7 @@ $(function() {
             $(header[j]).siblings(currentSelector).each(function(index, e) {
               if (e.id) {
                 item.items.push({
-                  name: e.innerText,
+                  name: e.innerHTML, // innerText decodes text while innerHTML not
                   href: "#" + e.id
 
                 })

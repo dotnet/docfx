@@ -13,7 +13,7 @@ documentType: index
       </div>
       <div class="buttons-unit">
         <a href="tutorial/docfx_getting_started.md" class="button">Get Started</a>
-        <a href="tutorial/artifacts/docfx.zip" class="button">Download DOCFX.zip v1.0.0</a>
+        <a href="tutorial/artifacts/docfx.v0.3.10.zip" class="button">Download docfx.v0.3.10.zip</a>
       </div>
     </div>
   </div>
@@ -25,7 +25,7 @@ documentType: index
           <strong class="value-prop-heading">API-Documentation</strong>
           <p>Able to generate API documentation from triple-slash-comments for .NET source code directly!</p>
         </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4 text-center  animated fadeIn">
+        <div class="col-lg-4 text-center animated fadeIn">
           <strong class="value-prop-heading">Markdown-Documentation</strong>
           <p>Able to generate HTML from markdown files supporting DFM syntax.</p>
         </div><!-- /.col-lg-4 -->
