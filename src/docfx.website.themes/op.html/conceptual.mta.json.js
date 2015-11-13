@@ -7,6 +7,7 @@ function transform(model, _attrs){
   entity.remote = undefined;
   entity.path = undefined;
   entity.type = undefined;
+  entity.source = undefined;
 
   // If toc is not defined in model, read it from _attrs
   if (attrs._tocPath && attrs._tocPath.indexOf("~/") == 0){
