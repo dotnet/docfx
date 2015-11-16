@@ -393,7 +393,9 @@ body .toc{
   color: #666666;
   display: inline;
   padding: 0;
-  margin-left: 12px;
+}
+.toc .nav > li > .expand-stub + a {
+  margin-left: 10px;
 }
 .toc .nav > li > a:hover,
 .toc .nav > li > a:focus {
