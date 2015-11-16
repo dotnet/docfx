@@ -381,6 +381,9 @@ body .toc{
 #toc {
   margin: 40px 0 0 5px;
 }
+.expand-stub {
+  position: absolute;
+}
 .toc .nav > li > a.sidetoc-expand {
   position: absolute;
   top: 0;
@@ -389,9 +392,7 @@ body .toc{
 .toc .nav > li > a {
   color: #666666;
   display: inline;
-  padding: 0;
-  word-break: break-all;
-  word-wrap: break-word;
+  padding: 0 0 0 15px;
 }
 .toc .nav > li > a:hover,
 .toc .nav > li > a:focus {
