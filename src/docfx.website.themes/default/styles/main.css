@@ -392,6 +392,7 @@ body .toc{
 .toc .nav > li > a {
   color: #666666;
   display: inline;
+  padding: 0;
   margin-left: 12px;
 }
 .toc .nav > li > a:hover,
