@@ -392,7 +392,7 @@ body .toc{
 .toc .nav > li > a {
   color: #666666;
   display: inline;
-  padding: 0 0 0 15px;
+  margin-left: 12px;
 }
 .toc .nav > li > a:hover,
 .toc .nav > li > a:focus {
