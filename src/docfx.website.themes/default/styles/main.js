@@ -1,21 +1,43 @@
-$(function() {
+$(function () {
   var active = 'active';
-  var expanded = 'expanded';
+  var expanded = 'in';
+  var collapsed = 'collapsed';
+  var filtered = 'filtered';
   var show = 'show';
   var hide = 'hide';
+  $('.toc .nav > li > .expand-stub').click(function (e) {
+    var a = $(e.toElement).parent();
+    if (a.hasClass(expanded)) {
+      a.removeClass(expanded);
+    } else {
+      a.addClass(expanded);
+    }
+  });
 
   // For TOC FILTER
-  (function() {
-    $('#toc_filter_input').on('input', function(e) {
+  (function () {
+    $('#toc_filter_input').on('input', function (e) {
       var val = this.value;
+      if (val === '') {
+        // Clear 'filtered' class
+        $('#toc li').each(function (i, anchor) {
+          $(anchor).removeClass(filtered);
+          $(anchor).removeClass(hide);
+        })
+        return;
+      }
+
       // Get leaf nodes
-      $('#toc li>a').filter(function(i, e) {
+      $('#toc li>a').filter(function (i, e) {
         return $(e).siblings().length === 0
-      }).each(function(i, anchor) {
+      }).each(function (i, anchor) {
         var text = $(anchor).text();
         var parent = $(anchor).parent();
-        var parentText = $(anchor).parents('ul').siblings('li>a').first().text();
-        if (parentText) text = parentText + '.' + text;
+        var parentNodes = parent.parents('ul>li');
+        for (var i = 0; i < parentNodes.length; i++) {
+          var parentText = $(parentNodes[i]).children('a').text();
+          if (parentText) text = parentText + '.' + text;
+        };
         if (filterNavItem(text, val)) {
           parent.addClass(show);
           parent.removeClass(hide);
@@ -24,16 +46,18 @@ $(function() {
           parent.removeClass(show);
         }
       });
-      $('#toc li>a').filter(function(i, e) {
+      $('#toc li>a').filter(function (i, e) {
         return $(e).siblings().length > 0
-      }).each(function(i, anchor) {
+      }).each(function (i, anchor) {
         var parent = $(anchor).parent();
         if (parent.find('li.show').length > 0) {
           parent.addClass(show);
+          parent.addClass(filtered);
           parent.removeClass(hide);
         } else {
           parent.addClass(hide);
           parent.removeClass(show);
+          parent.removeClass(filtered);
         }
       })
     });
@@ -45,13 +69,8 @@ $(function() {
     }
   })();
 
-  // Update href in toc
-  (function() {
-    $('#sidetoc').contents().find("")
-  })();
-
   // Update href in navbar
-  (function() {
+  (function () {
     var toc = $('#sidetoc');
     var breadcrumb = new Breadcrumb();
     console.log("hello");
@@ -63,7 +82,7 @@ $(function() {
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
-      $('#navbar').load(navbarPath + " #toc>ul", function() {
+      $('#navbar').load(navbarPath + " #toc>ul", function () {
         var index = navbarPath.lastIndexOf('/');
         var navrel = '';
         if (index > -1) {
@@ -73,7 +92,7 @@ $(function() {
         $('#navbar>ul').addClass('navbar-nav');
         var currentAbsPath = getAbsolutePath(window.location.pathname);
         // set active item
-        $('#navbar').find('a[href]').each(function(i, e) {
+        $('#navbar').find('a[href]').each(function (i, e) {
           var href = $(e).attr("href");
           if (isRelativePath(href)) {
             href = navrel + href;
@@ -82,7 +101,7 @@ $(function() {
             // TODO: currently only support one level navbar
             var isActive = false;
             var originalHref = e.name;
-            if (originalHref){
+            if (originalHref) {
               originalHref = navrel + originalHref;
               if (getDirectory(getAbsolutePath(originalHref)) === getDirectory(getAbsolutePath(tocPath))) {
                 isActive = true;
@@ -111,7 +130,7 @@ $(function() {
       if (toc.length === 0) return;
       var iframe = $('body>*', toc.contents());
       if (iframe.length === 0) {
-        setTimeout(function() {
+        setTimeout(function () {
           onTocLoaded(callback);
         }, 100);
         return;
@@ -124,7 +143,7 @@ $(function() {
       // remove hash
       var hashIndex = currentHref.indexOf('#');
       if (hashIndex > -1) currentHref = currentHref.substr(0, hashIndex);
-      toc.contents().find('a[href]').each(function(i, e) {
+      toc.contents().find('a[href]').each(function (i, e) {
         if (e.href === currentHref) {
           $(e).parent().addClass(active);
           var parent = $(e).parent().parents('li').children('a');
@@ -135,6 +154,8 @@ $(function() {
               name: parent[0].innerHTML
             });
           }
+          // for active li, expand it
+          $(e).parents('ul.nav>li').addClass(expanded);
 
           breadcrumb.push({
             href: e.href,
@@ -142,7 +163,7 @@ $(function() {
           });
           // Scroll to active item
           var top = 0;
-          $(e).parents('li').each(function(i, e) {
+          $(e).parents('li').each(function (i, e) {
             top += $(e).position().top;
           });
           // 50 is the size of the filter box
@@ -207,7 +228,7 @@ $(function() {
   })();
 
   //Setup Affix
-  (function() {
+  (function () {
     var hierarchy = getHierarchy();
     if (hierarchy.length > 0) {
       var html = '<h5 class="title">In This Article</h5>'
@@ -254,7 +275,7 @@ $(function() {
             var selector = '#' + id + "~" + nextLevelSelector;
             var currentSelector = selector;
             if (prevSelector) currentSelector += ":not(" + prevSelector + ")";
-            $(header[j]).siblings(currentSelector).each(function(index, e) {
+            $(header[j]).siblings(currentSelector).each(function (index, e) {
               if (e.id) {
                 item.items.push({
                   name: e.innerHTML, // innerText decodes text while innerHTML not
@@ -305,13 +326,13 @@ $(function() {
   // For LOGO SVG
   // Replace SVG with inline SVG
   // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
-  jQuery('img.svg').each(function() {
+  jQuery('img.svg').each(function () {
     var $img = jQuery(this);
     var imgID = $img.attr('id');
     var imgClass = $img.attr('class');
     var imgURL = $img.attr('src');
 
-    jQuery.get(imgURL, function(data) {
+    jQuery.get(imgURL, function (data) {
       // Get the SVG tag, ignore the rest
       var $svg = jQuery(data).find('svg');
 
