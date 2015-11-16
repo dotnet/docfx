@@ -390,6 +390,8 @@ body .toc{
   color: #666666;
   display: inline;
   padding: 0;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .toc .nav > li > a:hover,
 .toc .nav > li > a:focus {
