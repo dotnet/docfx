@@ -378,6 +378,9 @@ body .toc{
   font-weight: 500;
 }
 
+#toc {
+  margin: 40px 0 0 5px;
+}
 .toc .nav > li > a.sidetoc-expand {
   position: absolute;
   top: 0;
@@ -387,6 +390,8 @@ body .toc{
   color: #666666;
   display: inline;
   padding: 0;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .toc .nav > li > a:hover,
 .toc .nav > li > a:focus {
@@ -401,6 +406,32 @@ body .toc{
 .toc .nav > li.active > a:focus {
   color: #23527c;
 }
+
+.toc .nav > li.active > .expand-stub::before,
+.toc .nav > li.in > .expand-stub::before,
+.toc .nav > li.in.active > .expand-stub::before,
+.toc .nav > li.filtered > .expand-stub::before {
+    content: "-";
+    margin-right: 3px;
+    cursor: pointer;
+}
+
+.toc .nav > li > .expand-stub::before,
+.toc .nav > li.active > .expand-stub::before {
+    content: "+";
+    margin-right: 3px;
+    cursor: pointer;
+}
+
+.toc .nav > li.filtered > ul,
+.toc .nav > li.in > ul {
+  display: block;
+}
+
+.toc .nav > li > ul {
+  display: none;
+}
+
 .toc .level1 > li {
   font-weight: bold;
   margin-top: 10px;
@@ -410,6 +441,10 @@ body .toc{
   font-weight: normal;
   margin-top: 5px;
   margin-left: 10px;
+  font-size: 14px;
+}
+.toc .level3 {
+  font-size: 12px;
 }
 .toc-toggle {
   display: none;
