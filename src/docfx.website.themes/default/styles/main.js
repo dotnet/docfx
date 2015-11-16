@@ -6,12 +6,7 @@ $(function () {
   var show = 'show';
   var hide = 'hide';
   $('.toc .nav > li > .expand-stub').click(function (e) {
-    var a = $(e.toElement).parent();
-    if (a.hasClass(expanded)) {
-      a.removeClass(expanded);
-    } else {
-      a.addClass(expanded);
-    }
+    $(e.toElement).parent().toggleClass(expanded);
   });
 
   // For TOC FILTER
@@ -20,10 +15,7 @@ $(function () {
       var val = this.value;
       if (val === '') {
         // Clear 'filtered' class
-        $('#toc li').each(function (i, anchor) {
-          $(anchor).removeClass(filtered);
-          $(anchor).removeClass(hide);
-        })
+        $('#toc li').removeClass(filtered).removeClass(hide);
         return;
       }
 
