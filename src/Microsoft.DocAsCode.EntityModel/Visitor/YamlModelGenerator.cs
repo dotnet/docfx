@@ -40,23 +40,22 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             var id = VisitorHelper.GetId(symbol);
 
-            ReferenceItem reference;
-            if (!references.TryGetValue(id, out reference))
-            {
-                reference = new ReferenceItem();
-                references[id] = reference;
-            }
-
+            ReferenceItem reference = new ReferenceItem();
             reference.Type = type;
             reference.Summary = summary;
+            reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
+            reference.IsDefinition = symbol.IsDefinition;
+            GenerateReferenceInternal(symbol, reference, adapter);
 
-            if (reference.Parts == null)
+            if (!references.ContainsKey(id))
             {
-                reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
-                GenerateReferenceInternal(symbol, reference, adapter);
+                references[id] = reference;
+            }
+            else
+            {
+                references[id].Merge(reference);
             }
 
-            reference.IsDefinition = symbol.IsDefinition;
             return id;
         }
 
@@ -80,32 +79,27 @@ namespace Microsoft.DocAsCode.EntityModel
             SymbolVisitorAdapter adapter)
         {
             var id = SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
-            ReferenceItem reference;
+            ReferenceItem reference = new ReferenceItem();
+            reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
+            GenerateReferenceInternal(symbol, reference, adapter);
+            reference.IsDefinition = symbol.IsDefinition;
 
-            if (!references.TryGetValue(id, out reference))
+            if (!symbol.IsDefinition)
             {
-                reference = new ReferenceItem();
+                var def = symbol.OriginalDefinition;
+                var typeParameters = def.Accept(TypeGenericParameterNameVisitor.Instance);
+                reference.Definition = AddSpecReference(def, typeParameters, null, references, adapter);
+            }
+
+            reference.Parent = GetReferenceParent(symbol, typeGenericParameters, methodGenericParameters, references, adapter);
+
+            if (!references.ContainsKey(id))
+            {
                 references[id] = reference;
             }
-
-            if (reference.Parts == null)
+            else
             {
-                reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
-                GenerateReferenceInternal(symbol, reference, adapter);
-            }
-
-            if (reference.IsDefinition == null)
-            {
-                reference.IsDefinition = symbol.IsDefinition;
-
-                if (!symbol.IsDefinition)
-                {
-                    var def = symbol.OriginalDefinition;
-                    var typeParameters = def.Accept(TypeGenericParameterNameVisitor.Instance);
-                    reference.Definition = AddSpecReference(def, typeParameters, null, references, adapter);
-                }
-
-                reference.Parent = GetReferenceParent(symbol, typeGenericParameters, methodGenericParameters, references, adapter);
+                references[id].Merge(reference);
             }
 
             return id;

@@ -275,6 +275,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     parameter.Description = Markup(host, parameter.Description, model);
                 }
             }
+            if (item.Exceptions != null)
+            {
+                foreach (var exception in item.Exceptions)
+                {
+                    exception.Description = Markup(host, exception.Description, model);
+                }
+            }
         }
 
         private void BuildReference(IHostService host, ReferenceViewModel reference, FileModel model)

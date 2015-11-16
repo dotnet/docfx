@@ -180,6 +180,13 @@ function transform(model, _attrs) {
             syntax.return.type = getRefvm(syntax.return.type, lang, extChanger);
           }
         }
+
+        if (vm.exceptions) {
+          vm.exceptions.forEach(function(i) {
+            i.type = getRefvm(i.type, lang, extChanger);
+          });
+        }
+
         return vm;
       }
 

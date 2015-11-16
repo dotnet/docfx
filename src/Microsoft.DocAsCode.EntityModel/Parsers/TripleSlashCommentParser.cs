@@ -178,40 +178,12 @@ namespace Microsoft.DocAsCode.EntityModel
         private static string ResolveInternalTags(string xml, string selector, ITripleSlashCommentParserContext context)
         {
             if (string.IsNullOrEmpty(xml) || context == null || context.PreserveRawInlineComments) return xml;
-            xml = ResolveSeeCref(xml, selector, context.AddReferenceDelegate);
-            xml = ResolveSeeAlsoCref(xml, selector, context.AddReferenceDelegate);
-            return xml;
+            return ResolveInternalTags(xml, selector, context.AddReferenceDelegate);
         }
 
         private static string ResolveInternalTags(string xml, string selector, Action<string> addReference)
         {
             if (string.IsNullOrEmpty(xml)) return xml;
-            xml = ResolveSeeCref(xml, selector, addReference);
-            xml = ResolveSeeAlsoCref(xml, selector, addReference);
-            return xml;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="nodeSelector"></param>
-        /// <returns></returns>
-        private static string ResolveSeeAlsoCref(string xml, string nodeSelector, Action<string> addReference)
-        {
-            // Resolve <see cref> to @ syntax
-            return ResolveCrefLink(xml, nodeSelector + "//seealso", addReference);
-        }
-
-        private static string ResolveSeeCref(string xml, string nodeSelector, Action<string> addReference)
-        {
-            // Resolve <see cref> to @ syntax
-            return ResolveCrefLink(xml, nodeSelector + "//see", addReference);
-        }
-
-        private static string ResolveCrefLink(string xml, string nodeSelector, Action<string> addReference)
-        {
-            if (string.IsNullOrEmpty(xml) || string.IsNullOrEmpty(nodeSelector)) return xml;
-
             // Quick turnaround for badly formed XML comment
             if (xml.StartsWith("<!-- Badly formed XML comment ignored for member ")) return xml;
             try
@@ -219,6 +191,56 @@ namespace Microsoft.DocAsCode.EntityModel
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(xml);
                 var nav = doc.CreateNavigator();
+                ResolveSeeCref(nav, selector, addReference);
+                ResolveSeeAlsoCref(nav, selector, addReference);
+                ResolveParameterRef(nav);
+                xml = doc.InnerXml;
+            } catch {}
+            return xml;
+        }
+
+        private static void ResolveParameterRef(XPathNavigator nav)
+        {
+            var paramRefs = nav.Select("//paramref").OfType<XPathNavigator>().ToArray();
+            foreach (var paramRef in paramRefs)
+            {
+                var name = paramRef.SelectSingleNode("@name");
+                if (name != null)
+                {
+                    // Convert paramref to italic
+                    paramRef.InsertAfter("*" + name.Value + "*");
+                }
+            }
+
+            foreach (var paramRef in paramRefs)
+            {
+                paramRef.DeleteSelf();
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="nav"></param>
+        /// <param name="nodeSelector"></param>
+        /// <returns></returns>
+        private static void ResolveSeeAlsoCref(XPathNavigator nav, string nodeSelector, Action<string> addReference)
+        {
+            // Resolve <see cref> to @ syntax
+            ResolveCrefLink(nav, nodeSelector + "//seealso", addReference);
+        }
+
+        private static void ResolveSeeCref(XPathNavigator nav, string nodeSelector, Action<string> addReference)
+        {
+            // Resolve <see cref> to @ syntax
+            ResolveCrefLink(nav, nodeSelector + "//see", addReference);
+        }
+
+        private static void ResolveCrefLink(XPathNavigator nav, string nodeSelector, Action<string> addReference)
+        {
+            if (nav == null || string.IsNullOrEmpty(nodeSelector)) return;
+
+            try
+            {
                 var iter = nav.Select(nodeSelector + "[@cref]");
                 List<XPathNavigator> sees = new List<XPathNavigator>();
                 foreach (XPathNavigator i in iter)
@@ -253,19 +275,16 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     i.DeleteSelf();
                 }
-
-                xml = doc.InnerXml;
             }
             catch
             {
             }
-
-            return xml;
         }
 
         private static IEnumerable<CrefInfo> GetMulitpleCrefInfo(string xml, string selector, ITripleSlashCommentParserContext context)
         {
             if (string.IsNullOrEmpty(xml) || string.IsNullOrEmpty(selector) || context == null) yield break;
+            xml = ResolveInternalTags(xml, selector, context);
 
             var iterator = SelectNodes(xml, selector);
             if (iterator == null) yield break;
@@ -281,7 +300,6 @@ namespace Microsoft.DocAsCode.EntityModel
                     if (LinkParser.CommentIdRegex.IsMatch(exceptionType))
                     {
                         exceptionType = exceptionType.Substring(2);
-                        description = ResolveInternalTags(description, selector, context);
                         if (string.IsNullOrEmpty(description)) description = null;
                         yield return new CrefInfo { Description = description, Type = exceptionType };
                     }

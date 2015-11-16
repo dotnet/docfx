@@ -705,6 +705,10 @@ namespace Microsoft.DocAsCode.EntityModel
                         {
                             result[pair.Key] = pair.Value;
                         }
+                        else
+                        {
+                            result[pair.Key].Merge(pair.Value);
+                        }
                     }
                 }
             }

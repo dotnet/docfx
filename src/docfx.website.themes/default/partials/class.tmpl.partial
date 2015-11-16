@@ -106,5 +106,26 @@
 </table>
 {{/propertyValue}}
 {{/syntax}}
+{{#exceptions.0}}
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+{{/exceptions.0}}
+{{#exceptions}}
+    <tr>
+      <td>{{{type.specName}}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+{{/exceptions}}
+{{#exceptions.0}}
+  </tbody>
+</table>
+{{/exceptions.0}}
 {{/children}}
 {{/children}}

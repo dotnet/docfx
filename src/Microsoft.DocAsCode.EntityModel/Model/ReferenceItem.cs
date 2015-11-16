@@ -4,7 +4,9 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using Newtonsoft.Json;
+    using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using YamlDotNet.Serialization;
 
@@ -48,6 +50,58 @@ namespace Microsoft.DocAsCode.EntityModel
             }
 
             return result;
+        }
+
+        private static T? Merge<T>(T? source, T? target) where T : struct
+        {
+            Debug.Assert(source == null || target == null || Nullable.Equals(source, target));
+            return source ?? target;
+        }
+
+        private static T Merge<T>(T source, T target) where T : class
+        {
+            Debug.Assert(source == null || target == null || object.Equals(source, target));
+            return source ?? target;
+        }
+
+        public void Merge(ReferenceItem other)
+        {
+            if (other == null) throw new ArgumentNullException(nameof(other));
+
+            Type = Merge(other.Type, Type);
+            Summary = Summary ?? other.Summary;
+            IsDefinition = Merge(other.IsDefinition, IsDefinition);
+            Definition = Merge(other.Definition, Definition);
+            Parent = Merge(other.Parent, Parent);
+
+            if (other.Parts != null && Parts != null)
+            {
+                foreach (var pair in other.Parts)
+                {
+                    var sourceParts = pair.Value;
+                    List<LinkItem> targetParts;
+                    if (Parts.TryGetValue(pair.Key, out targetParts))
+                    {
+                        Debug.Assert(sourceParts.Count == targetParts.Count);
+                        for (int i = 0; i < sourceParts.Count; i++)
+                        {
+                            Debug.Assert(sourceParts[i].Name == targetParts[i].Name);
+                            Debug.Assert(sourceParts[i].DisplayName == targetParts[i].DisplayName);
+                            Debug.Assert(sourceParts[i].DisplayQualifiedNames == targetParts[i].DisplayQualifiedNames);
+                            targetParts[i].IsExternalPath &= sourceParts[i].IsExternalPath;
+                            targetParts[i].Href = targetParts[i].Href ?? sourceParts[i].Href;
+                        }
+                    }
+                    else
+                    {
+                        Parts.Add(pair.Key, pair.Value);
+                    }
+                }
+            }
+            else
+            {
+                Parts = Parts ?? other.Parts;
+            }
         }
     }
 

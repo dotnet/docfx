@@ -47,7 +47,9 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
             {
                 using (var p = new Program(args[0], args[1]))
                 {
+                    p.CheckParameters();
                     p.PatchDeveloperComments();
+                    p.RebuildReference();
                 }
                 return 0;
             }
@@ -80,7 +82,6 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
 
         private void PatchDeveloperComments()
         {
-            CheckParameters();
             new Thread(ProduceDeveloperComments).Start();
             for (int i = 0; i < ConsumerCount; i++)
             {
@@ -98,6 +99,95 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
             {
                 throw new AggregateException(_exceptions);
             }
+        }
+
+        private void RebuildReference()
+        {
+            var references = GetReferences();
+            foreach (var model in GetViewModels())
+            {
+                bool dirty = false;
+                // Add references for exceptions
+                var types = from i in model.Item2.Items
+                            where i.Exceptions != null
+                            from e in i.Exceptions
+                            select e.Type;
+                HashSet<string> set = new HashSet<string>(model.Item2.References.Select(r => r.Uid));
+                foreach (var type in types)
+                {
+                    if (set.Add(type))
+                    {
+                        ReferenceViewModel reference;
+                        if (!references.TryGetValue(type, out reference))
+                        {
+                            reference = references[type] = new ReferenceViewModel() { Uid = type };
+                        }
+
+                        model.Item2.References.Add(reference);
+                        dirty = true;
+                    }
+                }
+
+                // Add summary for classes in namespace
+                if (model.Item2.Items[0].Type == MemberType.Namespace)
+                {
+                    foreach (var reference in model.Item2.References)
+                    {
+                        if (reference.Type == MemberType.Class || reference.Type == MemberType.Delegate || reference.Type == MemberType.Enum || reference.Type == MemberType.Interface || reference.Type == MemberType.Struct)
+                        {
+                            ReferenceViewModel refWithSummary;
+                            if (references.TryGetValue(reference.Uid, out refWithSummary))
+                            {
+                                reference.Summary = refWithSummary.Summary;
+                                dirty = true;
+                            }
+                        }
+                    }
+                }
+
+                if (dirty)
+                {
+                    Console.WriteLine($"Rebuilding references: {model.Item1}");
+                    YamlUtility.Serialize(model.Item1, model.Item2);
+                }
+            }
+        }
+
+        private IEnumerable<Tuple<string, PageViewModel>> GetViewModels()
+        {
+            foreach (var yaml in Directory.GetFiles(_yamlDirectory, "*.yml", SearchOption.AllDirectories))
+            {
+                if (Path.GetFileName(yaml) == "toc.yml") continue;
+                yield return Tuple.Create(yaml, YamlUtility.Deserialize<PageViewModel>(yaml));
+            }
+        }
+
+        private Dictionary<string, ReferenceViewModel> GetReferences()
+        {
+            Dictionary<string, ReferenceViewModel> references = new Dictionary<string, ReferenceViewModel>();
+            Dictionary<string, string> summary = new Dictionary<string, string>();
+            foreach (var model in GetViewModels())
+            {
+                foreach (var item in model.Item2.Items)
+                {
+                    summary[item.Uid] = item.Summary;
+                }
+                foreach (var reference in model.Item2.References)
+                {
+                    references[reference.Uid] = reference;
+                }
+            }
+
+            foreach (var reference in references)
+            {
+                string content;
+                if (summary.TryGetValue(reference.Key, out content))
+                {
+                    reference.Value.Summary = content;
+                }
+            }
+
+            return references;
         }
 
         private void CheckParameters()
@@ -312,10 +402,10 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
                     Console.WriteLine($"Cannot find {uidAndComment.Uid} in file {yamlFile}.");
                     continue;
                 }
-                Console.WriteLine($"Patching yaml: {yamlFile}");
                 PatchViewModel(item, uidAndComment.Comment);
-                YamlUtility.Serialize(path, pageVM);
             }
+            Console.WriteLine($"Patching yaml: {yamlFile}");
+            YamlUtility.Serialize(path, pageVM);
         }
 
         private void PatchViewModel(ItemViewModel item, string comment)
@@ -349,6 +439,28 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
             if (!string.IsNullOrEmpty(example))
             {
                 item.Example = example;
+            }
+            if (item.Syntax != null)
+            {
+                if (item.Syntax.Parameters != null)
+                {
+                    foreach (var p in item.Syntax.Parameters)
+                    {
+                        var description = TripleSlashCommentParser.GetParam(comment, p.Name, TripleSlashCommentParserContext.Instance);
+                        if (!string.IsNullOrEmpty(description))
+                        {
+                            p.Description = description;
+                        }
+                    }
+                }
+                if (item.Syntax.Return != null)
+                {
+                    var returns = TripleSlashCommentParser.GetReturns(comment, TripleSlashCommentParserContext.Instance);
+                    if (!string.IsNullOrEmpty(returns))
+                    {
+                        item.Syntax.Return.Description = returns;
+                    }
+                }
             }
             // todo more.
         }

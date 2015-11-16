@@ -1,6 +1,6 @@
 {
   "sdk": {
-    "version": "1.0.0-beta6",
+    "version": "1.0.0-rc1-16147",
     "runtime": "clr",
     "architecture": "x86"
   },
