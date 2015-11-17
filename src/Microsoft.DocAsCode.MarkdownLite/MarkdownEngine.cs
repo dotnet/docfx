@@ -11,6 +11,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownEngine : ICloneable
     {
+        private const string IndentLevelOne = "  ";
+        private const string IndentLevelTwo = "    ";
+        private const string ThreeDot = "...";
+
         public MarkdownEngine(IMarkdownContext context, object renderer, Options options)
             : this(context, renderer, options, new Dictionary<string, LinkObj>())
         {
@@ -107,11 +111,81 @@ namespace Microsoft.DocAsCode.MarkdownLite
                              select r.TryMatch(this, ref current)).FirstOrDefault(t => t != null);
                 if (token == null)
                 {
-                    throw new InvalidOperationException($"Cannot parse: {current.Split('\n')[0]}.");
+                    var nextLine = current.Split('\n')[0];
+                    var lineNumber = markdown.Take(markdown.Length - current.Length).Count(c => c == '\n');
+                    throw new InvalidOperationException($"Cannot parse: {nextLine}{Environment.NewLine}{GetMarkdownContext(markdown, lineNumber)}{GetRuleContextMessage()}.");
                 }
                 tokens.Add(token);
             }
             return tokens;
+        }
+
+        private static string GetMarkdownContext(string markdown, int lineNumber)
+        {
+            var lines = markdown.Split('\n');
+            StringBuffer sb = IndentLevelOne;
+            sb += "markdown context:";
+            if (lineNumber > 0)
+            {
+                if (lineNumber > 1)
+                {
+                    sb += IndentLevelTwo;
+                    sb += ThreeDot;
+                    sb += Environment.NewLine;
+                }
+                sb += IndentLevelTwo;
+                sb += lines[lineNumber - 1];
+                sb += Environment.NewLine;
+            }
+            sb += IndentLevelTwo;
+            sb += lines[lineNumber];
+            sb += Environment.NewLine;
+            if (lineNumber + 1 < lines.Length)
+            {
+                sb += IndentLevelTwo;
+                sb += lines[lineNumber + 1];
+                sb += Environment.NewLine;
+                if (lineNumber + 2 < lines.Length)
+                {
+                    sb += IndentLevelTwo;
+                    sb += ThreeDot;
+                    sb += Environment.NewLine;
+                }
+            }
+            return sb.ToString();
+        }
+
+        private string GetRuleContextMessage()
+        {
+            StringBuffer sb = IndentLevelOne;
+            sb += "rule context: ";
+            sb += Context.GetType().Name;
+            if (Context.Variables?.Count > 0)
+            {
+                sb += Environment.NewLine;
+                sb += IndentLevelOne;
+                sb += "{";
+                foreach (var item in Context.Variables)
+                {
+                    sb += Environment.NewLine;
+                    sb += IndentLevelTwo;
+                    sb += item.Key;
+                    sb += " = ";
+                    if (item.Value == null)
+                    {
+                        sb += "(null)";
+                    }
+                    else
+                    {
+                        sb += item.Value.ToString();
+                    }
+                    sb += ";";
+                }
+                sb += Environment.NewLine;
+                sb += IndentLevelOne;
+                sb += "}";
+            }
+            return sb.ToString();
         }
 
         public virtual object Clone()

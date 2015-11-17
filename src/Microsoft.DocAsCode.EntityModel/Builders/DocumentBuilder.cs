@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             Logger.LogInfo($"Plug-in {processor.Name}: Loading document...");
             using (var hostService = new HostService(
                 from file in files
-                select processor.Load(file, metadata)))
+                select Load(processor, metadata, file)))
             {
                 hostService.SourceFiles = context.AllSourceFiles;
                 foreach (var m in hostService.Models)
@@ -132,6 +132,15 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
         }
 
+        private static FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileAndType file)
+        {
+            using (new LoggerFileScope(file.File))
+            {
+                Logger.LogVerbose($"Plug-in {processor.Name}: Loading...");
+                return processor.Load(file, metadata);
+            }
+        }
+
         private void Prebuild(IDocumentProcessor processor, HostService hostService)
         {
             var models = processor.Prebuild(hostService.Models, hostService);
@@ -143,7 +152,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void BuildArticle(IDocumentProcessor processor, HostService hostService)
         {
-            hostService.Models.RunAll(m => processor.Build(m, hostService));
+            hostService.Models.RunAll(m =>
+            {
+                using (new LoggerFileScope(m.OriginalFileAndType.File))
+                {
+                    Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
+                    processor.Build(m, hostService);
+                }
+            });
         }
 
         private void Postbuild(IDocumentProcessor processor, HostService hostService)
@@ -151,6 +167,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             var models = processor.Postbuild(hostService.Models, hostService);
             if (!object.ReferenceEquals(models, hostService.Models))
             {
+                Logger.LogVerbose($"Plug-in {processor.Name}: Reloading models...");
                 hostService.Reload(models);
             }
         }
@@ -164,11 +181,15 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     {
                         if (m.Type != DocumentType.Override)
                         {
-                            m.BaseDir = context.BuildOutputFolder;
-                            var result = processor.Save(m);
-                            if (result != null)
+                            using (new LoggerFileScope(m.OriginalFileAndType.File))
                             {
-                                HandleSaveResult(context, hostService, m, result);
+                                Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
+                                m.BaseDir = context.BuildOutputFolder;
+                                var result = processor.Save(m);
+                                if (result != null)
+                                {
+                                    HandleSaveResult(context, hostService, m, result);
+                                }
                             }
                         }
                     }

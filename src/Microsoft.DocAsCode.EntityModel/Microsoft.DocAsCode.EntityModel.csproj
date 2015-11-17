@@ -96,6 +96,7 @@
     <Compile Include="Incremental\IncrementalCheck.cs" />
     <Compile Include="ExtractMetadata\ExtractMetadataInputModel.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="LoggerFileScope.cs" />
     <Compile Include="LoggerPhaseScope.cs" />
     <Compile Include="Model\CrefInfo.cs" />
     <Compile Include="Model\ApiReferenceModel.cs" />

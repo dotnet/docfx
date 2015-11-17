@@ -10,10 +10,11 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.IO;
     using System.Linq;
 
+    using HtmlAgilityPack;
+
+    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
-    using HtmlAgilityPack;
-    using MarkdownLite;
 
     [Export(typeof(IHostService))]
     internal sealed class HostService : IHostService, IDisposable
@@ -59,6 +60,20 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         }
 
         public MarkupResult Markup(string markdown, FileAndType ft)
+        {
+            try
+            {
+                return MarkupCore(markdown, ft);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.Fail("Markup failed!");
+                Logger.LogWarning($"Markup failed:{Environment.NewLine}  Markdown: {markdown}{Environment.NewLine}  Details:{ex.ToString()}");
+                return new MarkupResult { Html = markdown, Title = "Markup failed." };
+            }
+        }
+
+        public MarkupResult MarkupCore(string markdown, FileAndType ft)
         {
             var html = DocfxFlavoredMarked.Markup(markdown, Path.Combine(ft.BaseDir, ft.File));
             var doc = new HtmlDocument();

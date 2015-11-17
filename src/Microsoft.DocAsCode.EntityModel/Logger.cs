@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             Log(new LogItem
             {
-                File = file,
+                File = file ?? LoggerFileScope.GetFileName(),
                 Line = line,
                 LogLevel = level,
                 Message = message,
