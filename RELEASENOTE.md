@@ -1,3 +1,5 @@
+Current Version: 0.3.10
+
 Version Notes
 =============
 
