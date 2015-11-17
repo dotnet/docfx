@@ -24,6 +24,7 @@
     <OutputPath Condition="'$(OutputPath)'==''">$(MSBuildThisFileDirectory)..\..\target\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
     <TaskToolPath>$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll</TaskToolPath>
     <TaskToolPath Condition="'$(MSBuildToolsVersion)' == '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</TaskToolPath>
+    <VersionFilePath Condition="'$(VersionFilePath)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.txt</VersionFilePath>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -39,59 +40,84 @@
 
   <UsingTask TaskName="GenerateVersionCSFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(TaskToolPath)">
     <ParameterGroup>
-      <GitVersion ParameterType="System.String" Required="true" />
+      <CurrentVersion ParameterType="System.String" Required="true" />
       <VersionCSPath ParameterType="System.String" Required="true" />
-      <CurrentVersion ParameterType="System.String" Output="true" />
     </ParameterGroup>
     <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Linq" />
       <Code Type="Fragment" Language="cs">
         <![CDATA[
-var gitVersion = GitVersion.Trim().Split('-');
-string[] version = new string[4];
-version[3] = "0";
-version[2] = gitVersion.Length > 1 ? gitVersion[1] : "0";
-version[1] = gitVersion[0].Split('.')[1];
-version[0] = gitVersion[0].Split('.')[0].Substring(1);
-string updatedVersion = string.Join(".", version);
-CurrentVersion = updatedVersion;
-string strOutputFilePath = System.IO.Path.Combine(VersionCSPath, "version.cs");
-string strOutputFileContent = string.Format(
-"using System.Reflection;\n\n" +
-"[assembly: AssemblyVersion(\"{0}\")]\n" +
-"[assembly: AssemblyFileVersion(\"{1}\")]\n\n" +
-"[assembly: AssemblyCompanyAttribute(\"Microsoft DocAsCode\")]\n" +
-"[assembly: AssemblyDescriptionAttribute(\"Microsoft DocAsCode Package\")]",
-updatedVersion, updatedVersion);
-if(System.IO.File.Exists(strOutputFilePath))
-{
-    if(System.IO.File.ReadAllText(strOutputFilePath) == strOutputFileContent)
-    {
-        return true;
-    }
-}
+            // Version format similar to 0.4.8-alpha-g0a0259d
+            var parts = CurrentVersion.Split('-');
+            var version = string.Format("{0}.{1}", parts[0], 0);
+            var revision = DateTime.Now.ToString("yyMMdd").Substring(1);
+            var fileVersion = string.Format("{0}.{1}", parts[0], revision);
+            string versionFilePath = Path.Combine(VersionCSPath, "version.cs");
+            string content = string.Format(@"
+using System.Reflection;
 
-try {
-  System.IO.File.WriteAllText(strOutputFilePath, strOutputFileContent);
-} catch {
-  // Race conditions may take place when multiple projects are built at the same time
-  // Ignore exceptions
-}
+[assembly: AssemblyVersion(""{0}"")]
+[assembly: AssemblyFileVersion(""{1}"")]
+
+[assembly: AssemblyCompanyAttribute(""Microsoft"")]
+[assembly: AssemblyDescriptionAttribute(""A tool created by Microsoft Visual Studio China team to generate documentation from source code and markdown files."")]", version, fileVersion);
+            if (File.Exists(versionFilePath))
+            {
+                if (File.ReadAllText(versionFilePath) == content)
+                {
+                    return true;
+                }
+            }
+
+            try
+            {
+                File.WriteAllText(versionFilePath, content);
+            }
+            catch
+            {
+                // Race conditions may take place when multiple projects are built at the same time
+                // Ignore exceptions
+            }
 ]]>
       </Code>
     </Task>
   </UsingTask>
 
+  <UsingTask TaskName="GetSourceVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(TaskToolPath)">
+    <ParameterGroup>
+      <VersionFilePath ParameterType="System.String" Required="true" />
+      <CurrentVersion ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            CurrentVersion = "1.0.0";
+            if (File.Exists(VersionFilePath))
+            {
+              try
+              {
+                var firstLine = File.ReadLines(VersionFilePath).FirstOrDefault();
+                if (!string.IsNullOrEmpty(firstLine))
+                {
+                  CurrentVersion =  firstLine.Trim('v');
+                }
+              } catch (FileNotFoundException) { }
+            }
+]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  
   <!-- Version information is mandatory -->
   <Target Name="GenerateVersionInfo" BeforeTargets="PrepareForBuild">
     <Exec Command='md "$(VersionCSPath)"' Condition="!Exists($(VersionCSPath))" />
-    <Exec Command="git.exe describe" ConsoleToMSBuild="true" IgnoreExitCode="true">
-      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
-      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
-    </Exec>
-    <GenerateVersionCSFile Condition="$(ExecExitCode) == '0'" GitVersion="$(OutputConsoleValue)" VersionCSPath="$(VersionCSPath)">
+    <GetSourceVersion VersionFilePath="$(VersionFilePath)">
       <Output PropertyName="CurrentVersion" TaskParameter="CurrentVersion"/>
-    </GenerateVersionCSFile>
-    <GenerateVersionCSFile Condition="$(ExecExitCode) != '0'" GitVersion="'$(CurrentVersion)'" VersionCSPath="$(VersionCSPath)"/>
+    </GetSourceVersion>
+    <GenerateVersionCSFile CurrentVersion="$(CurrentVersion)" VersionCSPath="$(VersionCSPath)"/>
+    <Message Text="Read current version $(CurrentVersion) from '$(VersionFilePath)'" />
   </Target>
   <ItemGroup>
     <Compile Include="$(VersionCSPath)version.cs" />

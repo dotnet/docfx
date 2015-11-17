@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = function(grunt) {
   'use strict';
   var configKey = 'Configuration';
@@ -7,7 +9,15 @@ module.exports = function(grunt) {
 
   // Generate version
   var suffix = getDateTime();
-  var version = (grunt.option("version") || '0.1.0-alpha') + "-" + suffix;
+  var versionFromOption = grunt.option("uv");
+  if (versionFromOption){
+    var index = versionFromOption.indexOf('v');
+    if ( index > -1) {
+      versionFromOption = versionFromOption.substr(index + 1);
+    }
+  }
+  console.log("Use version from option: " + versionFromOption);
+  var nugetPackageVersion = versionFromOption || ('0.1.0-alpha-' + suffix);
 
   // load all grunt tasks matching the `grunt-*` pattern
   require('load-grunt-tasks')(grunt);
@@ -33,14 +43,14 @@ module.exports = function(grunt) {
         src: docfxSrc + "/docfx.msbuild.nuspec",
         dest: docfxDest,
         options: {
-          version: version
+          version: nugetPackageVersion
         }
       },
       'msdn.4.5.2': {
         src: '../src/nuspec/msdn.4.5.2/msdn.4.5.2.nuspec',
         dest: '../artifacts/msdn.4.5.2/' + conf,
         options: {
-          version: version
+          version: nugetPackageVersion
         }
       }
     },
@@ -90,11 +100,54 @@ module.exports = function(grunt) {
  Licensed under the MIT License. See License.txt in the project root for license information. */\n"
         }
       }
-    }
+    },
+  updateVersion: {
+    // All project.json
+    projectJson : { src:'../src/**/project.json', options: {
+      type: 'json'
+    }}
+  }
   });
 
-
   grunt.config.set('conf', conf);
+  grunt.registerMultiTask('updateVersion', function(){
+    var type = this.options().type;
+    var version = versionFromOption;
+    if (!version) {
+      return grunt.util.error("version must be provided by --uv=<version>!");
+    }
+
+    if (type === 'json'){
+      var projects = {};
+      this.files.forEach(function(filePair){
+        filePair.src.forEach(function(src){
+          if (grunt.file.isFile(src)){
+            // Get DNX project name
+            var project = path.basename(path.dirname(src));
+            projects[project] = src;
+          }
+        });
+        for (var key in projects) {
+          if (projects.hasOwnProperty(key)) {
+            var src = projects[key];
+            var json = grunt.file.readJSON(src);
+            if (json.version !== version){
+              json.version = version;
+              var deps = json.dependencies;
+              if (deps) {
+                for (var key in deps) {
+                  if (deps.hasOwnProperty(key) && projects.hasOwnProperty(key)) {
+                    deps[key] = version;
+                  }
+                }
+              }
+              grunt.file.write(src, JSON.stringify(json, null, 2), {encoding: "UTF8"});
+            }
+          }
+        }
+      })
+    }
+  });
   grunt.registerMultiTask('header', function(){
     var header = this.options().content;
     this.files.forEach(function(filePair){

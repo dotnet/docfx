@@ -22,6 +22,12 @@ SET Configuration=%1
 IF '%Configuration%'=='' (
     SET Configuration=Release
 )
+SET Environment=%2
+IF '%Environment%'=='PROD' (
+    ECHO Updating version for PROD environment
+    CALL UpdateVersion.cmd
+)
+
 SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
 :: node.js nuget wrapper requires nuget.exe path in %PATH%
@@ -30,13 +36,13 @@ SET PATH=%PATH%;%LocalAppData%\NuGet
 :: Check if DNU exists globally
 :: DNU is OPTIONAL
 SET BuildDnxProjects=1
-WHERE dnvm
+WHERE dnvm >NUL
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO WARNING: DNU is not installed globally, DNX related projects will not be built!
     SET BuildDnxProjects=0
     SET BuildProj=%~dp0NonDnx.sln
 ) ELSE (
-  WHERE dnu
+  WHERE dnu >NUL
   IF NOT '!ERRORLEVEL!'=='0' (
     ECHO WARNING: DNU is correctly set, please manually select DNU by running `dnvm list` and `dnvm use`
     SET BuildDnxProjects=0
@@ -45,7 +51,7 @@ IF NOT '%ERRORLEVEL%'=='0' (
 )
 
 :: Check if node exists globally
-WHERE node
+WHERE node >NUL
 
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO ERROR: build.cmd requires node installed gloablly.
@@ -117,12 +123,12 @@ IF '%NugetErrorLevel%'=='1' (
 GOTO :Exit
 
 :Build
-%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix% 
+%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%"; %BuildPostfix%
 SET BuildErrorLevel=%ERRORLEVEL%
 EXIT /B %BuildErrorLevel%
 
 :BuildDocs
-%BuildPrefix% msbuild "%DocsProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %BuildPostfix% 
+%BuildPrefix% msbuild "%DocsProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=diag;LogFile="%BuildLog%";Append %BuildPostfix%
 SET DocsErrorLevel=%ERRORLEVEL%
 EXIT /B %DocsErrorLevel%
 

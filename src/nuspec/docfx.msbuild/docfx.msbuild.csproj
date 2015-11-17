@@ -1,24 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\..\Shared\base.props" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1A7FD832-EBE9-47B2-AB59-718CB18DCA44}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>docfx.msbuild</RootNamespace>
     <AssemblyName>docfx.msbuild</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <PackageOutputPath Condition=" '$(PackageOutputPath)'=='' ">$(MSBuildThisFileDirectory)..\..\..\artifacts\$(MSBuildProjectName)\$(Configuration)</PackageOutputPath>
+    <PackageOutputPath Condition=" '$(PackageOutputPath)'=='' ">$(MSBuildThisFileDirectory)..\..\..\artifacts\$(Configuration)\</PackageOutputPath>
     <NugetPath Condition=" '$(NugetPath)'=='' ">$(LocalAppData)\NuGet\NuGet.exe</NugetPath>
     <DocfxOutputPath>$(MSBuildThisFileDirectory)..\..\..\target\$(Configuration)\docfx\</DocfxOutputPath>
     <OutputPath>bin\$(Configuration)</OutputPath>
     <NuspecPath>$(MSBuildProjectName).nuspec</NuspecPath>
-    <PackageVersion Condition=" '$(PackageVersion)'=='' ">0.3.10</PackageVersion>
-    <WithSuffix Condition=" '$(WithSuffix)'=='' ">False</WithSuffix>
-    <PackageVersionWithSuffix Condition="$(WithSuffix)">$(PackageVersion)-$([System.DateTime]::Now.ToString(`MMdd`))</PackageVersionWithSuffix>
-    <PackageVersionWithSuffix Condition="!$(WithSuffix)">$(PackageVersion)</PackageVersionWithSuffix>
   </PropertyGroup>
   <ItemGroup>
     <None Include="build\docfx.msbuild.targets">
@@ -57,6 +49,9 @@
     <CallTarget Targets="BuildNugetPackage" Condition="Exists($(NugetPath))" />
   </Target>
   <Target Name="BuildNugetPackage">
+    <PropertyGroup>
+      <PackageVersion Condition=" '$(PackageVersion)'=='' ">$(CurrentVersion)</PackageVersion>
+    </PropertyGroup>
     <ItemGroup>
       <DocfxFiles Include="$(DocfxOutputPath)\**\*.dll">
       </DocfxFiles>
@@ -64,16 +59,8 @@
       </DocfxFiles>
     </ItemGroup>
     <Copy SourceFiles="@(DocfxFiles)" DestinationFolder="$(OutputPath)\tools" />
-    <Exec Command="git log --format=&quot;&#37;&#37;h&quot; -n 1" ConsoleToMSBuild="true" IgnoreExitCode="true">
-      <Output PropertyName="OutputConsoleValue" TaskParameter="ConsoleOutput"/>
-      <Output PropertyName="ExecExitCode" TaskParameter="ExitCode"/>
-    </Exec>
-    <PropertyGroup>
-      <PackageVersionWithSuffix Condition="'$(OutputConsoleValue)' != '' and $(WithSuffix)">$(PackageVersionWithSuffix)$(OutputConsoleValue)</PackageVersionWithSuffix>
-    </PropertyGroup>
-    <Message Text="$(OutputConsoleValue)" />
-    <Exec Command="&quot;$(NugetPath)&quot; pack &quot;$(OutputPath)$(NuspecPath)&quot; -Version &quot;$(PackageVersionWithSuffix)&quot; -OutputDirectory &quot;bin/$(Configuration)&quot;" />
-    <Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg" DestinationFolder="$(PackageOutputPath)" />
-    <Message Text="Successfully created package '$(PackageOutputPath)$(MSBuildProjectName).$(PackageVersionWithSuffix).nupkg'." />
+    <Exec Command="&quot;$(NugetPath)&quot; pack &quot;$(OutputPath)$(NuspecPath)&quot; -Version &quot;$(PackageVersion)&quot; -OutputDirectory &quot;bin/$(Configuration)&quot;" />
+    <Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).$(PackageVersion).nupkg" DestinationFolder="$(PackageOutputPath)" />
+    <Message Text="Successfully created package '$(PackageOutputPath)$(MSBuildProjectName).$(PackageVersion).nupkg'." />
   </Target>
 </Project>
