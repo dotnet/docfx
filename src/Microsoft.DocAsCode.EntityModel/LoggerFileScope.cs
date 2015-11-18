@@ -26,12 +26,12 @@
 
         public void Dispose()
         {
-            CallContext.LogicalSetData(nameof(LoggerPhaseScope), _originFileName);
+            CallContext.LogicalSetData(nameof(LoggerFileScope), _originFileName);
         }
 
         internal static string GetFileName()
         {
-            return CallContext.LogicalGetData(nameof(LoggerPhaseScope)) as string;
+            return CallContext.LogicalGetData(nameof(LoggerFileScope)) as string;
         }
     }
 }
