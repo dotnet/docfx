@@ -20,11 +20,11 @@ gulp.task('concat', function () {
     .pipe(rename({
         suffix: '.min'
     }))
-    .pipe(concat('_docfx_vendor.css'))
+    .pipe(concat('docfx.vendor.css'))
     .pipe(gulp.dest('./styles/'))
   ;
   gulp.src(vendor.js)
-    .pipe(concat('_docfx_vendor.js'))
+    .pipe(concat('docfx.vendor.js'))
     .pipe(gulp.dest('./styles/'))
   ;
 });

@@ -8,8 +8,8 @@
   <meta name="title" content="{{title}} | {{_appTitle}}">
   {{#_description}}<meta name="description" content="{{_description}}">{{/_description}}
   <link rel="shortcut icon" href="{{_rel}}favicon.ico">
-  <link rel="stylesheet" href="{{_rel}}styles/_docfx_vendor.css">
-  <link rel="stylesheet" href="{{_rel}}styles/_docfx_main.css">
+  <link rel="stylesheet" href="{{_rel}}styles/docfx.vendor.css">
+  <link rel="stylesheet" href="{{_rel}}styles/docfx.css">
   <meta property="docfx:navrel" content="{{_navRel}}">
   <meta property="docfx:tocrel" content="{{_tocRel}}">
 </head>
