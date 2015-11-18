@@ -6,7 +6,7 @@
   'use strict';
 
   (function(){
-    var tocPath = $("meta[property='docfx\\:toc'").attr("content");
+    var tocPath = $("meta[property='docfx\\:toc']").attr("content");
     if (tocPath){
       tocPath = tocPath.replace(/\\/g, '/');
       var tocRel = "";
@@ -56,7 +56,8 @@
     function getAbsolutePath(href){
       if (isAbsolutePath(href)) return href;
       // Use anchor to normalize href
-      return $('<a href="' + href + '"></a>')[0].pathname;
+      var abshref = $('<a href="' + href + '"></a>')[0].href;
+      return $('<a href="' + abshref + '"></a>')[0].pathname; // remove hashtag
     }
 
     function isRelativePath(href) {

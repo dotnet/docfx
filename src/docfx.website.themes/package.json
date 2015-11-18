@@ -1,0 +1,12 @@
+{
+  "name": "themes",
+  "version": "1.0.0",
+  "private" : true,
+  "author": "docfx",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-zip": "^3.0.2",
+    "minimist": "^1.2.0"
+  }
+}

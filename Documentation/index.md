@@ -13,7 +13,7 @@ documentType: index
       </div>
       <div class="buttons-unit">
         <a href="tutorial/docfx_getting_started.md" class="button">Get Started</a>
-        <a href="tutorial/artifacts/docfx.v0.3.10.zip" class="button">Download docfx.v0.3.10.zip</a>
+        <a href="tutorial/artifacts/docfx.zip" class="button">Download Latest Docfx!</a>
       </div>
     </div>
   </div>

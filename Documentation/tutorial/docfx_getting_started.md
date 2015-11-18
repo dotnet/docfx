@@ -13,7 +13,7 @@ Getting Started
 
 Use `docfx.exe` directly
 -----------------------
-Download and unzip [docfx.zip](artifacts/docfx.v0.3.10.zip) to run `docfx.exe` directly!
+Download and unzip [docfx.zip](artifacts/docfx.zip) to run `docfx.exe` directly!
 
 ### Quick Start
 **Step1** Run
@@ -59,7 +59,27 @@ Use `docfx` under DNX
 ----------------
 As a prerequisite, you will need to install [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm) and [DNX](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx).
 ###Quick Start
+* `SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/` as we depends on the release version of aspnet 1.0.0-rc1.
 * `dnvm upgrade` to get the latest dnvm.
+* Add feed https://www.myget.org/F/aspnetrelease/api/v2/ to Nuget.config
+  > For Windows, the nuget config file is  **%AppData%\NuGet\NuGet.config**.
+
+  > For Linux/OSX, the nuget config file is **~/.config/NuGet/NuGet.config**.
+  
+  Sample nuget.config
+  ```xml
+  <?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="myget.release" value="https://www.myget.org/F/aspnetrelease/api/v2/" />
+    <add key="nuget.org" value="https://www.nuget.org/api/v2/" />
+  </packageSources>
+  <disabledPackageSources />
+  <activePackageSource>
+    <add key="nuget.org" value="https://www.nuget.org/api/v2/" />
+  </activePackageSource>
+</configuration>
+  ```
 * `dnu commands install docfx` to install `docfx` as a command
 * `docfx Documentation/docfx.json` to build generate `docfx` project into a website under `_site` folder!
 
