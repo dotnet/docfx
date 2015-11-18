@@ -82,6 +82,10 @@ namespace Microsoft.DocAsCode.EntityModel
                     List<LinkItem> targetParts;
                     if (Parts.TryGetValue(pair.Key, out targetParts))
                     {
+                        if (sourceParts.Count == 0)
+                        {
+                            continue;
+                        }
                         Debug.Assert(sourceParts.Count == targetParts.Count);
                         for (int i = 0; i < sourceParts.Count; i++)
                         {
