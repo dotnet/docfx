@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode
         {
             var assembly = Assembly.GetAssembly(typeof(HelpTextGenerator));
             var version = assembly.GetName()?.Version?.ToString();
-            if (version != null) HelpText.Heading = new HeadingInfo("docfx.exe", version);
+            if (version != null) HelpText.Heading = new HeadingInfo("docfx", version);
 
             var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
             if (copyright != null) HelpText.Copyright = new CopyrightInfo(copyright, DateTime.Now.Year);

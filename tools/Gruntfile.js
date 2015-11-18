@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 
   // Generate version
   var suffix = getDateTime();
-  var version = (grunt.option("version") || '0.1.0-alpha') + "-" + suffix;
+  var nugetPackageVersion = grunt.option("uv") || ('0.1.0-alpha-' + suffix);
 
   // load all grunt tasks matching the `grunt-*` pattern
   require('load-grunt-tasks')(grunt);
@@ -33,14 +33,14 @@ module.exports = function(grunt) {
         src: docfxSrc + "/docfx.msbuild.nuspec",
         dest: docfxDest,
         options: {
-          version: version
+          version: nugetPackageVersion
         }
       },
       'msdn.4.5.2': {
         src: '../src/nuspec/msdn.4.5.2/msdn.4.5.2.nuspec',
         dest: '../artifacts/msdn.4.5.2/' + conf,
         options: {
-          version: version
+          version: nugetPackageVersion
         }
       }
     },
@@ -90,11 +90,56 @@ module.exports = function(grunt) {
  Licensed under the MIT License. See License.txt in the project root for license information. */\n"
         }
       }
-    }
+    },
+  updateVersion: {
+    // All project.json
+    // docfx.msbuild.csproj
+    projectJson : { src:'../src/**/project.json', options: {
+      type: 'json'
+    }},
+    md: {src: '../RELEASENOTE.md', options: {
+      type: 'md'
+    }}
+  }
   });
 
 
   grunt.config.set('conf', conf);
+  grunt.registerMultiTask('updateVersion', function(){
+    var type = this.options().type;
+    var version = grunt.option("uv");
+    if (type === 'json'){
+      this.files.forEach(function(filePair){
+        filePair.src.forEach(function(src){
+          if (grunt.file.isFile(src)){
+            var json = grunt.file.readJSON(src);
+            if (json.version !== version){
+              json.version = version;
+              grunt.file.write(src, JSON.stringify(json, null, 2), {encoding: "UTF8"});
+            }
+          }
+        })
+      })
+    }
+    else if (type === 'md'){
+      var versionLine = "Current Version: " + version;
+      this.files.forEach(function(filePair){
+        filePair.src.forEach(function(src){
+          if (grunt.file.isFile(src)){
+            var md = grunt.file.read(src);
+            var lines = md.split('\n');
+            if (lines.length > 0) {
+              lines[0] = versionLine;
+            } else {
+              lines.push(versionLine);
+            }
+            grunt.file.write(src, lines.join('\n'), {encoding: "UTF8"});
+          }
+        })
+      })
+    }
+
+  });
   grunt.registerMultiTask('header', function(){
     var header = this.options().content;
     this.files.forEach(function(filePair){
