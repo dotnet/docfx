@@ -37,4 +37,28 @@ Block file inclusion must be in a single line and with no prefix characters befo
 [!inc[<title>](<filepath>)]
 ```
 
+### Section definition
+User may need to define section. Mostly used for code table. Give an example below. The attributes you write in BEGINSECTION comments will be the div tag's attributes. Currently we only allow 3 attributes, namely class, id, data-resources
+
+    <!-- BEGINSECTION class="tabbedCodeSnippets" data-resources="OutlookServices.Calendar" -->
+    ```cs-i
+    var outlookClient = await CreateOutlookClientAsync("Calendar");
+    var events = await outlookClient.Me.Events.Take(10).ExecuteAsync();
+    foreach (var calendarEvent in events.CurrentPage)
+    {
+        System.Diagnostics.Debug.WriteLine("Event '{0}'.", calendarEvent.Subject);
+    }
+    ```
+    ```javascript-i
+    outlookClient.me.events.getEvents().fetch().then(function(result) {
+        result.currentPage.forEach(function(event) {
+        console.log('Event "' + event.subject + '"')
+        });
+    }, function(error)
+    {
+        console.log(error);
+    });
+    ```
+    <!-- ENDSECTION -->
+
 ### TOBEADDED: CODE SNIPPET
