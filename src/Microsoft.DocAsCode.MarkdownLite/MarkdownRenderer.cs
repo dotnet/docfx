@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     textContent += text.Content;
                     continue;
                 }
-                if (t is MarkdownNewLineBlockToken)
+                if (!wrapParagraph && t is MarkdownNewLineBlockToken)
                 {
                     continue;
                 }

@@ -181,6 +181,20 @@ code
 </li>
 </ol>
 ")]
+        [InlineData(@"* X
+  > a
+
+  > b
+* Y", @"<ul>
+<li><p>X</p>
+<blockquote>
+<p>a</p>
+<p>b</p>
+</blockquote>
+</li>
+<li>Y</li>
+</ul>
+")]
         public void Parse(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
