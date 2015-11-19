@@ -31,6 +31,7 @@
         "System.Reflection": "",
         "System.Threading.Tasks": "",
         "System.Xml": "",
+        "System.Web": "",
         "System.Runtime.Caching": "",
         "System.Runtime": ""
       }
