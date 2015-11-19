@@ -1,5 +1,5 @@
 {
-  "version": "0.3.10-*",
+  "version": "0.3.10",
   "dependencies": {
     "GitSharp": "0.3.0",
     "Newtonsoft.Json": "6.0.8",

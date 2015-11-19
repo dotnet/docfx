@@ -1,8 +1,8 @@
 {
     "version": "1.0.0-*",
     "dependencies": {
-        "Microsoft.DocAsCode.EntityModel": "",
-        "Microsoft.DocAsCode.Utility": ""
+        "Microsoft.DocAsCode.EntityModel": "0.3.10",
+        "Microsoft.DocAsCode.Utility": "0.3.10"
     },
     "frameworks": {
         "dnx451": {
