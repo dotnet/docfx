@@ -3,9 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Tests
 {
-    using MarkdownLite;
-    using System;
-    using System.Diagnostics;
+    using System.Xml;
     using System.IO;
     using Xunit;
 
@@ -107,6 +105,46 @@ Inline [!inc[ref3](ref3.md ""This is root"")]
 
             var marked = DocfxFlavoredMarked.Markup(root, "root.md");
             Assert.Equal("<p>Inline <!-- BEGIN INC: Include content from &quot;ref1.md&quot; --><!-- BEGIN INC: Include content from &quot;ref2.md&quot; -->## Inline inclusion do not parse header <!-- BEGIN ERROR INC: Unable to resolve [!inc[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!inc[root](root.md \"This is root\")]<!--END ERROR INC --><!--END INC --><!--END INC -->\nInline <!-- BEGIN INC: Include content from &quot;ref3.md&quot; --><strong>Hello</strong><!--END INC --></p>\n", marked);
+        }
+
+        [Theory]
+        [Trait("Related", "DfmMarkdown")]
+        [InlineData(@"<!-- BEGINSECTION class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar"" -->
+
+```cs-i
+    var outlookClient = await CreateOutlookClientAsync(""Calendar"");
+    var events = await outlookClient.Me.Events.Take(10).ExecuteAsync();
+            foreach (var calendarEvent in events.CurrentPage)
+            {
+                System.Diagnostics.Debug.WriteLine(""Event '{0}'."", calendarEvent.Subject);
+            }
+```
+
+```javascript-i
+outlookClient.me.events.getEvents().fetch().then(function(result) {
+        result.currentPage.forEach(function(event) {
+        console.log('Event ""' + event.subject + '""')
+    });
+}, function(error)
+    {
+        console.log(error);
+    });
+```
+
+<!-- ENDSECTION -->")]
+        public void TestSectionBlockLevel(string source)
+        {
+            var content = DocfxFlavoredMarked.Markup(source);
+
+            // assert
+            XmlDocument xdoc = new XmlDocument();
+            xdoc.LoadXml(content);
+            var tabbedCodeNode = xdoc.SelectSingleNode("//div[@class='tabbedCodeSnippets' and @data-resources='OutlookServices.Calendar']");
+            Assert.True(tabbedCodeNode != null);
+            var csNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-cs-i']");
+            Assert.True(csNode != null);
+            var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
+            Assert.True(jsNode != null);
         }
     }
 }

@@ -37,6 +37,16 @@ namespace Microsoft.DocAsCode.EntityModel
             var content = token.Content == null ? string.Empty : StringHelper.HtmlEncode(token.Content);
             return $"<yamlheader>{content}</yamlheader>";
         }
+
+        public virtual StringBuffer Render(MarkdownEngine engine, DfmSectionBeginBlockToken token, MarkdownBlockContext context)
+        {
+            return $"<div{token.Attributes}>";
+        }
+
+        public virtual StringBuffer Render(MarkdownEngine engine, DfmSectionEndBlockToken token, MarkdownBlockContext context)
+        {
+            return $"</div>";
+        }
     }
 
     public class DfmYamlHeaderBlockToken : IMarkdownToken

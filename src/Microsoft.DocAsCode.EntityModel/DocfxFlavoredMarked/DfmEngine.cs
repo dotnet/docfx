@@ -53,6 +53,11 @@ namespace Microsoft.DocAsCode.EntityModel
             if (index < 0) throw new ArgumentException("MarkdownNewLineBlockRule should exist!");
             blockRules.Insert(index + 1, new DfmIncludeBlockRule());
             blockRules.Insert(index + 2, new DfmYamlHeaderBlockRule());
+            blockRules.Insert(index + 3, new DfmSectionBeginBlockRule());
+            blockRules.Insert(index + 4, new DfmSectionEndBlockRule());
+
+            var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
+            blockRules[gfmIndex] = new DfmParagraphBlockRule();
 
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
