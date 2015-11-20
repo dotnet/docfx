@@ -195,6 +195,13 @@ code
 <li>Y</li>
 </ul>
 ")]
+        [InlineData(@"a
+```
+c
+```",
+            @"<p>a</p>
+<pre><code>c
+</code></pre>")]
         public void Parse(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());

@@ -26,6 +26,8 @@ b:
         [InlineData(@"# Hello @CrossLink1 @'CrossLink2'dummy 
 @World",
             "<h1 id=\"hello-crosslink1-crosslink2-dummy\">Hello <xref href=\"CrossLink1\"></xref> <xref href=\"CrossLink2\"></xref>dummy</h1>\n<p><xref href=\"World\"></xref></p>\n")]
+        [InlineData("a\n```\nc\n```",
+            "<p>a</p>\n<pre><code>c\n</code></pre>")]
         public void Parse(string source, string expected)
         {
             Assert.Equal(expected, DocfxFlavoredMarked.Markup(source));
