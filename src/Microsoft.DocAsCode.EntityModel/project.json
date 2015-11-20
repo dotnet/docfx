@@ -1,10 +1,10 @@
 {
-  "version": "0.3.10",
+  "version": "1.0.0",
   "dependencies": {
-    "Microsoft.CodeAnalysis.Workspaces.Dnx": "0.3.10",
-    "Microsoft.DocAsCode.Utility": "0.3.10",
-    "Microsoft.DocAsCode.MarkdownLite": "0.3.10",
-    "Microsoft.DocAsCode.Plugins": "0.3.10",
+    "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.0.0",
+    "Microsoft.DocAsCode.Utility": "1.0.0",
+    "Microsoft.DocAsCode.MarkdownLite": "1.0.0",
+    "Microsoft.DocAsCode.Plugins": "1.0.0",
     "Microsoft.CodeAnalysis.Common": "1.1.0",
     "Microsoft.CodeAnalysis.VisualBasic": "1.1.0",
     "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.1.0",
