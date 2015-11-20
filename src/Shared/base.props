@@ -101,7 +101,7 @@ using System.Reflection;
                 var firstLine = File.ReadLines(VersionFilePath).FirstOrDefault();
                 if (!string.IsNullOrEmpty(firstLine))
                 {
-                  CurrentVersion =  firstLine.Trim('v');
+                  CurrentVersion =  firstLine.Trim('v', ' ');
                 }
               } catch (FileNotFoundException) { }
             }
@@ -109,7 +109,7 @@ using System.Reflection;
       </Code>
     </Task>
   </UsingTask>
-  
+
   <!-- Version information is mandatory -->
   <Target Name="GenerateVersionInfo" BeforeTargets="PrepareForBuild">
     <Exec Command='md "$(VersionCSPath)"' Condition="!Exists($(VersionCSPath))" />
