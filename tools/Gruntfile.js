@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = function(grunt) {
   'use strict';
   var configKey = 'Configuration';
@@ -7,7 +9,15 @@ module.exports = function(grunt) {
 
   // Generate version
   var suffix = getDateTime();
-  var nugetPackageVersion = grunt.option("uv") || ('0.1.0-alpha-' + suffix);
+  var versionFromOption = grunt.option("uv");
+  if (versionFromOption){
+    var index = versionFromOption.indexOf('v');
+    if ( index > -1) {
+      versionFromOption = versionFromOption.substr(index + 1);
+    }
+  }
+  console.log("Use version from option: " + versionFromOption);
+  var nugetPackageVersion = versionFromOption || ('0.1.0-alpha-' + suffix);
 
   // load all grunt tasks matching the `grunt-*` pattern
   require('load-grunt-tasks')(grunt);
@@ -93,7 +103,6 @@ module.exports = function(grunt) {
     },
   updateVersion: {
     // All project.json
-    // docfx.msbuild.csproj
     projectJson : { src:'../src/**/project.json', options: {
       type: 'json'
     }},
@@ -103,26 +112,46 @@ module.exports = function(grunt) {
   }
   });
 
-
   grunt.config.set('conf', conf);
   grunt.registerMultiTask('updateVersion', function(){
     var type = this.options().type;
-    var version = grunt.option("uv");
+    var version = versionFromOption;
+    if (!version) {
+      return grunt.util.error("version must be provided by --uv=<version>!");
+    }
+
     if (type === 'json'){
+      var projects = {};
       this.files.forEach(function(filePair){
         filePair.src.forEach(function(src){
           if (grunt.file.isFile(src)){
+            // Get DNX project name
+            var project = path.basename(path.dirname(src));
+            projects[project] = src;
+          }
+        });
+        for (var key in projects) {
+          if (projects.hasOwnProperty(key)) {
+            var src = projects[key];
             var json = grunt.file.readJSON(src);
             if (json.version !== version){
               json.version = version;
+              var deps = json.dependencies;
+              if (deps) {
+                for (var key in deps) {
+                  if (deps.hasOwnProperty(key) && projects.hasOwnProperty(key)) {
+                    deps[key] = version;
+                  }
+                }
+              }
               grunt.file.write(src, JSON.stringify(json, null, 2), {encoding: "UTF8"});
             }
           }
-        })
+        }
       })
     }
     else if (type === 'md'){
-      var versionLine = "Current Version: " + version;
+      var versionLine = "Version Notes (Current Version: v" + version + ")";
       this.files.forEach(function(filePair){
         filePair.src.forEach(function(src){
           if (grunt.file.isFile(src)){

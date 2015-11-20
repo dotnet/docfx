@@ -48,36 +48,42 @@
       <Using Namespace="System.Linq" />
       <Code Type="Fragment" Language="cs">
         <![CDATA[
-System.Console.WriteLine(CurrentVersion);
-List<string> version = new List<string>(CurrentVersion.Split('.'));
-if (version.Count < 4)
-{
-    version.AddRange(Enumerable.Repeat("0", 4 - version.Count));
-}
-version.Take(4);
-string updatedVersion = string.Join(".", version);
-string strOutputFilePath = Path.Combine(VersionCSPath, "version.cs");
-string strOutputFileContent = string.Format(
-"using System.Reflection;\n\n" +
-"[assembly: AssemblyVersion(\"{0}\")]\n" +
-"[assembly: AssemblyFileVersion(\"{1}\")]\n\n" +
-"[assembly: AssemblyCompanyAttribute(\"Microsoft DocAsCode\")]\n" +
-"[assembly: AssemblyDescriptionAttribute(\"Microsoft DocAsCode Package\")]",
-updatedVersion, updatedVersion);
-if(File.Exists(strOutputFilePath))
-{
-    if(File.ReadAllText(strOutputFilePath) == strOutputFileContent)
-    {
-        return true;
-    }
-}
+            var parts = CurrentVersion.Split('-');
+            var versions = parts[0].Split('.');
+            var majorVersion = versions[0].StartsWith("v") ? versions[0].Substring(1) : versions[0];
+            var minorVersion = versions.Length > 1 ? versions[1] : "0";
+            var buildVersion = parts.Length > 1 ? parts[1] : "0";
+            var version = string.Format("{0}.{1}.{2}.{3}", majorVersion, minorVersion, buildVersion, 0);
+            var revision = DateTime.Now.ToString("yyMMdd").Substring(1);
+            Console.WriteLine(revision);
+            var fileVersion = string.Format("{0}.{1}.{2}.{3}", majorVersion, minorVersion, buildVersion, revision);
+            Console.WriteLine(fileVersion);
+            string versionFilePath = Path.Combine(VersionCSPath, "version.cs");
+            string content = string.Format(@"
+using System.Reflection;
 
-try {
-  File.WriteAllText(strOutputFilePath, strOutputFileContent);
-} catch {
-  // Race conditions may take place when multiple projects are built at the same time
-  // Ignore exceptions
-}
+[assembly: AssemblyVersion(""{0}"")]
+[assembly: AssemblyFileVersion(""{1}"")]
+
+[assembly: AssemblyCompanyAttribute(""Microsoft DocAsCode"")]
+[assembly: AssemblyDescriptionAttribute(""Microsoft DocAsCode Package"")]", version, fileVersion);
+            if (File.Exists(versionFilePath))
+            {
+                if (File.ReadAllText(versionFilePath) == content)
+                {
+                    return true;
+                }
+            }
+
+            try
+            {
+                File.WriteAllText(versionFilePath, content);
+            }
+            catch
+            {
+                // Race conditions may take place when multiple projects are built at the same time
+                // Ignore exceptions
+            }
 ]]>
       </Code>
     </Task>
@@ -92,17 +98,17 @@ try {
       <Using Namespace="System.IO" />
       <Code Type="Fragment" Language="cs">
         <![CDATA[
-CurrentVersion = "1.0.0";
-if (File.Exists(VersionFilePath))
-{
-    var firstLine = File.ReadLines(VersionFilePath).First();
-    var prefix = "Current Version:";
-    var index = firstLine.IndexOf(prefix);
-    if (index > -1)
-    {
-        CurrentVersion =  firstLine.Substring(index + prefix.Length).Trim();
-    }
-}
+            CurrentVersion = "1.0.0";
+            if (File.Exists(VersionFilePath))
+            {
+                var firstLine = File.ReadLines(VersionFilePath).First();
+                var prefix = "Current Version:";
+                var index = firstLine.IndexOf(prefix);
+                if (index > -1)
+                {
+                    CurrentVersion =  firstLine.Substring(index + prefix.Length).Trim(' ', ')', 'v');
+                }
+            }
 ]]>
       </Code>
     </Task>

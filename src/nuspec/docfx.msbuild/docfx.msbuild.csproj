@@ -11,7 +11,6 @@
     <DocfxOutputPath>$(MSBuildThisFileDirectory)..\..\..\target\$(Configuration)\docfx\</DocfxOutputPath>
     <OutputPath>bin\$(Configuration)</OutputPath>
     <NuspecPath>$(MSBuildProjectName).nuspec</NuspecPath>
-    <WithSuffix Condition=" '$(WithSuffix)'=='' ">False</WithSuffix>
   </PropertyGroup>
   <ItemGroup>
     <None Include="build\docfx.msbuild.targets">
@@ -52,8 +51,6 @@
   <Target Name="BuildNugetPackage">
     <PropertyGroup>
       <PackageVersion Condition=" '$(PackageVersion)'=='' ">$(CurrentVersion)</PackageVersion>
-      <PackageVersion Condition="$(WithSuffix)">$(PackageVersion)-$([System.DateTime]::Now.ToString(`MMdd`))</PackageVersion>
-      <PackageVersion Condition="!$(WithSuffix)">$(PackageVersion)</PackageVersion>
     </PropertyGroup>
     <ItemGroup>
       <DocfxFiles Include="$(DocfxOutputPath)\**\*.dll">
