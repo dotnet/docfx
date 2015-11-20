@@ -40,6 +40,7 @@ IF NOT DEFINED MainVersion (
 :GetGitVersion
 IF '%BRANCH%'=='master' (
     ECHO For master branch, use release version
+    SET VERSION=!MainVersion!.0
     FOR /F "tokens=4 delims=.-" %%i in ('git describe') DO (
         SET VERSION=!MainVersion!.%%i
         ECHO CURRENT VERSION: !VERSION!
@@ -47,6 +48,7 @@ IF '%BRANCH%'=='master' (
 
 ) ELSE (
     ECHO For branch other than master, use alpha version
+    SET VERSION=!MainVersion!.0-alpha
     FOR /F "tokens=4,5 delims=.-" %%i in ('git describe') DO (
         SET VERSION=!MainVersion!.%%i-alpha-%%j
         ECHO CURRENT VERSION:!VERSION!
