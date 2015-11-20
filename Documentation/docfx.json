@@ -19,7 +19,7 @@
           "cwd": "obj/docfx"
         },
         {
-          "files": ["tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml", "index.md"]
+          "files": ["tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml", "index.md", "guideline/**/*.md"]
         },
         {
           "files": ["toc.yml", "tutorial/toc.yml"]

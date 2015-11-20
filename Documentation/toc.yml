@@ -4,6 +4,9 @@
 - name: Tutorials
   href: tutorial/
   homepage: tutorial/docfx_getting_started.md
+- name: Guidelines
+  href: guideline/
+  homepage: guideline/engineering_guidelines.md
 - name: Specifications
   href: spec/
   homepage: spec/metadata_format_spec.md
