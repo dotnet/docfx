@@ -60,8 +60,8 @@ using System.Reflection;
 [assembly: AssemblyVersion(""{0}"")]
 [assembly: AssemblyFileVersion(""{1}"")]
 
-[assembly: AssemblyCompanyAttribute(""Microsoft DocAsCode"")]
-[assembly: AssemblyDescriptionAttribute(""Microsoft DocAsCode Package"")]", version, fileVersion);
+[assembly: AssemblyCompanyAttribute(""Microsoft"")]
+[assembly: AssemblyDescriptionAttribute(""Tool from Microsoft Visual Studio China team to generate documentation from source code and markdown files."")]", version, fileVersion);
             if (File.Exists(versionFilePath))
             {
                 if (File.ReadAllText(versionFilePath) == content)

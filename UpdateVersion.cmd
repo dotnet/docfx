@@ -4,22 +4,17 @@ PUSHD %~dp0
 SETLOCAL
 SETLOCAL ENABLEDELAYEDEXPANSION
 
-SET Environment=%1
-IF '%Environment%'=='' (
-    SET Environment=Release
-)
-
 :: Check if node exists globally
 WHERE node >NUL
 IF NOT '%ERRORLEVEL%'=='0' (
-    ECHO ERROR: UpdateVersion.cmd requires node installed gloablly.
+    ECHO ERROR: UpdateVersion.cmd requires node installed globally.
     GOTO :Exit
 )
 
 :: Check if git exists globally
 WHERE git >NUL
 IF NOT '%ERRORLEVEL%'=='0' (
-    ECHO ERROR: UpdateVersion.cmd requires git installed gloablly.
+    ECHO ERROR: UpdateVersion.cmd requires git installed globally.
     GOTO :Exit
 )
 
