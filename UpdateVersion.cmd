@@ -31,17 +31,29 @@ FOR /F %%i in ('git rev-parse --abbrev-ref HEAD') DO (
 )
 
 :GetVersion
+SET MainVersion=
+FOR /F "tokens=5 delims=:) " %%i in (RELEASENOTE.md) DO (
+    SET MainVersion=%%i
+    GOTO :GetGitVersion
+)
+
+IF NOT DEFINED MainVersion (
+    ECHO ERROR: Unable to get main version from release note
+    GOTO :Exit
+)
+
+:GetGitVersion
 IF '%BRANCH%'=='master' (
     ECHO For master branch, use release version
-    FOR /F "tokens=1,2,4,5 delims=.-" %%i in ('git describe') DO (
-        SET VERSION=%%i.%%j.%%k
+    FOR /F "tokens=4 delims=.-" %%i in ('git describe') DO (
+        SET VERSION=!MainVersion!.%%i
         ECHO CURRENT VERSION: !VERSION!
     )
 
 ) ELSE (
     ECHO For branch other than master, use alpha version
-    FOR /F "tokens=1,2,4,5 delims=.-" %%i in ('git describe') DO (
-        SET VERSION=%%i.%%j.%%k-alpha-%%l
+    FOR /F "tokens=4,5 delims=.-" %%i in ('git describe') DO (
+        SET VERSION=!MainVersion!.%%i-alpha-%%j
         ECHO CURRENT VERSION:!VERSION!
     )
 )
@@ -51,8 +63,9 @@ IF NOT '%ERRORLEVEL%'=='0' (
     GOTO :Exit
 )
 
-
 :UpdateVersion
+mkdir TEMP 2>NUL
+ECHO %VERSION% > TEMP\version.txt
 PUSHD tools
 :: Install npm packages
 CALL npm install

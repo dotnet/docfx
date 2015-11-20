@@ -24,7 +24,7 @@
     <OutputPath Condition="'$(OutputPath)'==''">$(MSBuildThisFileDirectory)..\..\target\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
     <TaskToolPath>$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll</TaskToolPath>
     <TaskToolPath Condition="'$(MSBuildToolsVersion)' == '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</TaskToolPath>
-    <VersionFilePath Condition="'$(VersionFilePath)' == ''">$(MSBuildThisFileDirectory)..\..\RELEASENOTE.md</VersionFilePath>
+    <VersionFilePath Condition="'$(VersionFilePath)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.txt</VersionFilePath>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -48,16 +48,11 @@
       <Using Namespace="System.Linq" />
       <Code Type="Fragment" Language="cs">
         <![CDATA[
+            // Version format similar to 0.4.8-alpha-g0a0259d
             var parts = CurrentVersion.Split('-');
-            var versions = parts[0].Split('.');
-            var majorVersion = versions[0].StartsWith("v") ? versions[0].Substring(1) : versions[0];
-            var minorVersion = versions.Length > 1 ? versions[1] : "0";
-            var buildVersion = parts.Length > 1 ? parts[1] : "0";
-            var version = string.Format("{0}.{1}.{2}.{3}", majorVersion, minorVersion, buildVersion, 0);
+            var version = string.Format("{0}.{1}", parts[0], 0);
             var revision = DateTime.Now.ToString("yyMMdd").Substring(1);
-            Console.WriteLine(revision);
-            var fileVersion = string.Format("{0}.{1}.{2}.{3}", majorVersion, minorVersion, buildVersion, revision);
-            Console.WriteLine(fileVersion);
+            var fileVersion = string.Format("{0}.{1}", parts[0], revision);
             string versionFilePath = Path.Combine(VersionCSPath, "version.cs");
             string content = string.Format(@"
 using System.Reflection;
@@ -101,13 +96,14 @@ using System.Reflection;
             CurrentVersion = "1.0.0";
             if (File.Exists(VersionFilePath))
             {
-                var firstLine = File.ReadLines(VersionFilePath).First();
-                var prefix = "Current Version:";
-                var index = firstLine.IndexOf(prefix);
-                if (index > -1)
+              try
+              {
+                var firstLine = File.ReadLines(VersionFilePath).FirstOrDefault();
+                if (!string.IsNullOrEmpty(firstLine))
                 {
-                    CurrentVersion =  firstLine.Substring(index + prefix.Length).Trim(' ', ')', 'v');
+                  CurrentVersion =  firstLine.Trim('v');
                 }
+              } catch (FileNotFoundException) { }
             }
 ]]>
       </Code>

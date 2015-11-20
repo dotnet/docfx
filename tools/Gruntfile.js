@@ -105,9 +105,6 @@ module.exports = function(grunt) {
     // All project.json
     projectJson : { src:'../src/**/project.json', options: {
       type: 'json'
-    }},
-    md: {src: '../RELEASENOTE.md', options: {
-      type: 'md'
     }}
   }
   });
@@ -150,24 +147,6 @@ module.exports = function(grunt) {
         }
       })
     }
-    else if (type === 'md'){
-      var versionLine = "Version Notes (Current Version: v" + version + ")";
-      this.files.forEach(function(filePair){
-        filePair.src.forEach(function(src){
-          if (grunt.file.isFile(src)){
-            var md = grunt.file.read(src);
-            var lines = md.split('\n');
-            if (lines.length > 0) {
-              lines[0] = versionLine;
-            } else {
-              lines.push(versionLine);
-            }
-            grunt.file.write(src, lines.join('\n'), {encoding: "UTF8"});
-          }
-        })
-      })
-    }
-
   });
   grunt.registerMultiTask('header', function(){
     var header = this.options().content;

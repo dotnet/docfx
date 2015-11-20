@@ -22,6 +22,12 @@ SET Configuration=%1
 IF '%Configuration%'=='' (
     SET Configuration=Release
 )
+SET Environment=%2
+IF '%Environment%'=='PROD' (
+    ECHO Updating version for PROD environment
+    CALL UpdateVersion.cmd
+)
+
 SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
 
 :: node.js nuget wrapper requires nuget.exe path in %PATH%
