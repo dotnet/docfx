@@ -4,8 +4,8 @@
 namespace Microsoft.DocAsCode
 {
     using Microsoft.DocAsCode.EntityModel;
-    using Plugins;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Glob;
+    using Microsoft.DocAsCode.Plugins;
     using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
@@ -153,7 +153,7 @@ namespace Microsoft.DocAsCode
 
         private static bool TryGetJsonConfig(List<string> inputGlobPattern, out string jsonConfig)
         {
-            var validProjects = GlobUtility.GetFilesFromGlobPatterns(null, inputGlobPattern).ToList();
+            var validProjects = FileGlob.GetFiles(string.Empty, inputGlobPattern, null).ToList();
 
             if (!validProjects.Any())
             {

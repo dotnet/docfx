@@ -4,7 +4,7 @@
 namespace Microsoft.DocAsCode
 {
     using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Glob;
     using System;
     using System.IO;
     using System.Linq;
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode
                 var source = _options.Source.TrimEnd('/', '\\');
                 using (var package = _options.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
                 {
-                    var files = GlobPathHelper.GetFiles(source, _options.Glob).ToList();
+                    var files = FileGlob.GetFiles(source, new string[] { _options.Glob }, null).ToList();
                     if (_options.FlatMode)
                     {
                         package.AddFiles(string.Empty, files);
