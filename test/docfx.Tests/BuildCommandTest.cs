@@ -43,7 +43,10 @@ namespace Microsoft.DocAsCode.Tests
             Directory.CreateDirectory(documentsBaseDir);
             Directory.CreateDirectory(outputBaseDir);
             File.WriteAllText(Path.Combine(templateDir, "default", "Conceptual.html.tmpl"), defaultTemplate);
-            var conceptualFile = Path.Combine(documentsBaseDir, "test.md");
+
+            // use `/` as it will be used in glob pattern
+            // In glob pattern, `/` is considered as file separator while `\` is considered as escape character
+            var conceptualFile = documentsBaseDir + "/test.md";
             File.WriteAllLines(
                 conceptualFile,
                 new[]
