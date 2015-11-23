@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.Composition;
     using System.IO;
     using System.Linq;
+    using System.Web;
 
     using HtmlAgilityPack;
 
@@ -129,7 +130,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     }
                     var file = path.GetPathFromWorkingFolder();
                     link.Value = file + anchor;
-                    linkToFiles.Add(file);
+                    linkToFiles.Add(HttpUtility.UrlDecode(file));
                 }
             }
             result.LinkToFiles = linkToFiles.ToImmutableArray();
