@@ -148,5 +148,30 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
             Assert.True(jsNode != null);
         }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmFencesBlockLevel()
+        {
+            var root = @"
+[!code-FakeREST[REST](api.json)]
+[!Code-FakeREST-i[REST-i](api.json ""This is root"")]
+[!CODE[No Language](api.json)]
+[!code-js[empty](api.json)]
+";
+
+            var apiJsonContent = @"
+{
+   ""method"": ""GET"",
+   ""resourceFormat"": ""https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End"",
+   ""requestUrl"": ""https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End"",
+   ""requestHeaders"": {
+                ""Accept"": ""application/json""
+   }
+}";
+            File.WriteAllText("api.json", apiJsonContent);
+            var marked = DocfxFlavoredMarked.Markup(root, Path.GetFullPath("api.json"));
+            Assert.Equal("<pre><code class=\"language-FakeREST\" name=\"REST\">\r\n{\r\n   &quot;method&quot;: &quot;GET&quot;,\r\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestHeaders&quot;: {\r\n                &quot;Accept&quot;: &quot;application/json&quot;\r\n   }\r\n}\n</code></pre><pre><code class=\"language-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\r\n{\r\n   &quot;method&quot;: &quot;GET&quot;,\r\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestHeaders&quot;: {\r\n                &quot;Accept&quot;: &quot;application/json&quot;\r\n   }\r\n}\n</code></pre><pre><code name=\"No Language\">\r\n{\r\n   &quot;method&quot;: &quot;GET&quot;,\r\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestHeaders&quot;: {\r\n                &quot;Accept&quot;: &quot;application/json&quot;\r\n   }\r\n}\n</code></pre><pre><code class=\"language-js\" name=\"empty\">\r\n{\r\n   &quot;method&quot;: &quot;GET&quot;,\r\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestHeaders&quot;: {\r\n                &quot;Accept&quot;: &quot;application/json&quot;\r\n   }\r\n}\n</code></pre>", marked);
+        }
     }
 }

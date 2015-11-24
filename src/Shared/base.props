@@ -17,6 +17,7 @@
     <OutputType Condition=" '$(OutputType)' == '' ">Library</OutputType>
     <Prefer32Bit>false</Prefer32Bit>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RestorePackages Condition=" '$(RestorePackages)' == '' ">true</RestorePackages>
 
     <!-- Note: get rid of vshost.exe since we don't gain much benefits -->
     <UseVSHostingProcess>false</UseVSHostingProcess>

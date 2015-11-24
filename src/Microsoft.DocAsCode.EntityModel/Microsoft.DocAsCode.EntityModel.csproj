@@ -84,6 +84,8 @@
     <Compile Include="DocfxFlavoredMarked\DfmRenderer.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmInlineRules.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmEngine.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmFencesBlockRule.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmFencesBlockToken.cs" />
     <Compile Include="DocfxFlavoredMarked\FileCacheLite.cs" />
     <Compile Include="DocfxFlavoredMarked\DocfxFlavoredIncHelper.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmSectionBeginBlockRule.cs" />

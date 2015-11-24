@@ -16,15 +16,15 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         public string Name => "Section";
 
-        public static readonly Regex SectionBegin = new Regex(@"^<!--(\s*)((?i)BEGINSECTION)(\s*)(?<attributes>.*?)(\s*)-->(\s*)(?:\n+|$)", RegexOptions.Compiled);
+        public static readonly Regex _sectionBegin = new Regex(@"^<!--(\s*)((?i)BEGINSECTION)(\s*)(?<attributes>.*?)(\s*)-->(\s*)(?:\n+|$)", RegexOptions.Compiled);
 
-        private static readonly IReadOnlyList<string> ValidAttributes = new List<string>() { "class", "id", "data-resources" };
+        private static readonly IReadOnlyList<string> _validAttributes = new List<string>() { "class", "id", "data-resources" };
 
         private const string SectionReplacementHtmlTag = "div";
 
         public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
         {
-            var match = SectionBegin.Match(source);
+            var match = _sectionBegin.Match(source);
             if (match.Length == 0)
             {
                 return null;
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             foreach (XmlAttribute attr in attributes)
             {
-                if (ValidAttributes.Contains(attr.Name))
+                if (_validAttributes.Contains(attr.Name))
                 {
                     attributesToReturn.Append($@" {attr.Name}=""{HttpUtility.HtmlEncode(attr.Value)}""");
                 }

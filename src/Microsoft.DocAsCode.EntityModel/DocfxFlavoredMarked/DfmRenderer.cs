@@ -3,7 +3,12 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using System;
+    using System.IO;
+
+    using DocAsCode.Plugins;
     using MarkdownLite;
+    using Utility;
 
     public class DfmRenderer : MarkdownRenderer
     {
@@ -46,6 +51,33 @@ namespace Microsoft.DocAsCode.EntityModel
         public virtual StringBuffer Render(MarkdownEngine engine, DfmSectionEndBlockToken token, MarkdownBlockContext context)
         {
             return $"</div>";
+        }
+
+        public virtual StringBuffer Render(DfmEngine engine, DfmFencesBlockToken token, MarkdownBlockContext context)
+        {
+            var lang = string.IsNullOrEmpty(token.Lang) ? null : $" class=\"language-{token.Lang}\"";
+            var name = string.IsNullOrEmpty(token.Name) ? null : $" name=\"{StringHelper.HtmlEncode(token.Name)}\"";
+            var title = string.IsNullOrEmpty(token.Title) ? null : $" title=\"{StringHelper.HtmlEncode(token.Title)}\"";
+            if (!PathUtility.IsRelativePath(token.Path))
+            {
+                string errorMessage = $"Code absolute path: {token.Path} is not supported in file {engine.Parents.Peek()}";
+                Logger.LogError(errorMessage);
+                return $"<!-- {StringHelper.HtmlEncode(errorMessage)} -->";
+            }
+
+            try
+            {
+                // TODO: Valid REST and REST-i script.
+                var fencesPath = ((RelativePath)token.Path).BasedOn((RelativePath)engine.Parents.Peek());
+                var fencesCode = File.ReadAllText(fencesPath);
+                return $"<pre><code{lang}{name}{title}>{StringHelper.HtmlEncode(fencesCode)}\n</code></pre>";
+            }
+            catch(FileNotFoundException)
+            {
+                string errorMessage = $"Can not find reference {token.Path}";
+                Logger.LogError(errorMessage);
+                return $"<!-- {StringHelper.HtmlEncode(errorMessage)} -->";
+            }
         }
     }
 
