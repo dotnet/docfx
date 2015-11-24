@@ -6,7 +6,9 @@ namespace Microsoft.DocAsCode.EntityModel
     using Microsoft.DocAsCode.Utility;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
+    #if DNX46
     using Microsoft.CodeAnalysis.Workspaces.Dnx;
+    #endif
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -25,7 +27,11 @@ namespace Microsoft.DocAsCode.EntityModel
         private static readonly Lazy<MSBuildWorkspace> Workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
         private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
         private static string[] SupportedSolutionExtensions = { ".sln" };
+        #if DNX46
         private static string[] SupportedProjectName = { "project.json" };
+        #else
+        private static string[] SupportedProjectName = { };
+        #endif
         private static string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
         private static string[] SupportedSourceFileExtensions = { ".cs", ".vb" };
         private static string[] SupportedVBSourceFileExtensions = { ".vb" };
@@ -778,11 +784,13 @@ namespace Microsoft.DocAsCode.EntityModel
             try
             {
                 string name = Path.GetFileName(path);
+                #if DNX46
                 if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase))
                 {
                     var workspace = new ProjectJsonWorkspace(path);
                     return workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
                 }
+                #endif
 
                 return await Workspace.Value.OpenProjectAsync(path);
             }

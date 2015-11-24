@@ -1,11 +1,11 @@
 {
-    "version": "1.0.0-*",
+    "version": "1.0.0",
     "dependencies": {
-        "Microsoft.DocAsCode.EntityModel": "0.3.10",
-        "Microsoft.DocAsCode.Utility": "0.3.10"
+        "Microsoft.DocAsCode.EntityModel": "1.0.0",
+        "Microsoft.DocAsCode.Utility": "1.0.0"
     },
     "frameworks": {
-        "dnx451": {
+        "dnx46": {
             "frameworkAssemblies": {
                 "Microsoft.CSharp": "",
                 "System.Core": "",

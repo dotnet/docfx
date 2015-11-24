@@ -3,16 +3,16 @@
   "dependencies": {
     "CommandLineParser": "1.9.71",
     "Newtonsoft.Json": "6.0.8",
-    "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.0.0",
+    "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.1.0-*",
     "Microsoft.DocAsCode.EntityModel": "1.0.0",
     "Microsoft.DocAsCode.Plugins": "1.0.0",
     "Microsoft.DocAsCode.Utility": "1.0.0",
-    "Microsoft.CodeAnalysis.Common": "1.1.0",
-    "Microsoft.CodeAnalysis.VisualBasic": "1.1.0",
-    "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.1.0",
-    "Microsoft.CodeAnalysis.CSharp": "1.1.0",
-    "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.1.0",
-    "Microsoft.CodeAnalysis.Workspaces.Common": "1.1.0",
+    "Microsoft.CodeAnalysis.Common": "1.1.0-*",
+    "Microsoft.CodeAnalysis.VisualBasic": "1.1.0-*",
+    "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.1.0-*",
+    "Microsoft.CodeAnalysis.CSharp": "1.1.0-*",
+    "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.1.0-*",
+    "Microsoft.CodeAnalysis.Workspaces.Common": "1.1.0-*",
     "Owin": "1.0.0",
     "Microsoft.Owin": "3.0.1",
     "Microsoft.Owin.FileSystems": "3.0.1",
@@ -22,13 +22,7 @@
     "Microsoft.Owin.StaticFiles": "3.0.1"
   },
   "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System.Configuration": ""
-      }
-    }
+    "dnx46": {}
   },
   "commands": {
     "docfx": "docfx"

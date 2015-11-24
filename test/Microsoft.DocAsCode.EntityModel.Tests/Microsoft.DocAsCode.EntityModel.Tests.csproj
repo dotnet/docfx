@@ -121,10 +121,6 @@
       <Project>{ab97bedf-d207-42e9-a56f-c9dd395bfcdd}</Project>
       <Name>docfx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.CodeAnalysis.Workspaces.Dnx\Microsoft.CodeAnalysis.Workspaces.Dnx.csproj">
-      <Project>{5a876ec5-d4d2-4160-9a03-aa0245c322f4}</Project>
-      <Name>Microsoft.CodeAnalysis.Workspaces.Dnx</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
       <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
       <Name>Microsoft.DocAsCode.EntityModel</Name>
