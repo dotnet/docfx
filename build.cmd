@@ -26,6 +26,11 @@ SET Environment=%2
 IF '%Environment%'=='PROD' (
     ECHO Updating version for PROD environment
     CALL UpdateVersion.cmd
+
+    IF NOT '!ERRORLEVEL!'=='0' (
+        ECHO ERROR: Error occurs when updating version
+        GOTO :Exit
+    )
 )
 
 SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
