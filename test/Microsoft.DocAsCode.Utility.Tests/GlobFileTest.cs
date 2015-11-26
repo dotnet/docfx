@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Tests
             result = FileGlob.GetFiles(
                  _workingDirectory + "/Root",
                  new string[] { "[EJ]/*.{md,cs,csproj}" },
-                 new string[] { "**.md" }).ToArray();
+                 new string[] { "**.cs" }).ToArray();
             Assert.Equal(2, result.Length);
         }
 
