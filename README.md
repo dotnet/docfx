@@ -2,9 +2,11 @@
 
 ![Appveyor]()
 
+
 ##What is it?
 DocFX makes it extremely easy to generate your developer hub, complete with API reference, landing page, and how-to.
 There are currently two versions of the tool:
+
 * Windows specific IDE version which uses .NET Framework and works with [VS 2015 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx)
 * Cross platform console version which uses .NET Core and DNX
 
