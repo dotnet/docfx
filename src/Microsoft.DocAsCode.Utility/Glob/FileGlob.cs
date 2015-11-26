@@ -38,24 +38,15 @@ namespace Microsoft.DocAsCode.Glob
             foreach (var file in Directory.GetFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
                 var relativePath = PathUtility.MakeRelativePath(cwd, file);
-                foreach(var exclude in excludeGlobs)
+                if (IsFileMatch(relativePath, globs, excludeGlobs))
                 {
-                    if (exclude.Match(relativePath, false)) yield break;
-                }
-
-                foreach(var glob in globs)
-                {
-                    if (glob.Match(relativePath, false))
-                    {
-                        yield return file;
-                        break;
-                    }
+                    yield return file;
                 }
             }
 
             foreach (var dir in Directory.GetDirectories(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                var relativePath = PathUtility.MakeRelativePath(cwd, dir);
+                var relativePath = PathUtility.MakeRelativePath(cwd, dir) + "/";
 
                 // For folder, exclude glob matches folder means nothing, e.g. **/a matches b/a folder, however, **/a does not match b/a/c file
                 foreach (var glob in globs)
@@ -71,6 +62,19 @@ namespace Microsoft.DocAsCode.Glob
                     }
                 }
             }
+        }
+
+        private static bool IsFileMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
+        {
+            foreach (var exclude in excludeGlobs)
+            {
+                if (exclude.Match(path, false)) return false;
+            }
+            foreach (var glob in globs)
+            {
+                if (glob.Match(path, false)) return true;
+            }
+            return false;
         }
     }
 }

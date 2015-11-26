@@ -29,6 +29,7 @@ namespace Microsoft.DocAsCode.Tests
         [InlineData(@"a\{b,c\}d", new string[] { "a{b,c}d" })]
         [InlineData("a{b,c}d", new string[] { "abd", "acd" })]
         [InlineData("a{b,c,d}e{d}{}", new string[] { "abed", "aced", "aded" })]
+        [InlineData("{{a,b}}", new string[] { "a", "b" })]
         [InlineData("z{a,b{,c}d", new string[] { } )]
         [InlineData(@"a\{b,c}d", new string[] { })]
         public void TestGroupedGlobShouldExpand(string source, string[] expected)
@@ -42,6 +43,11 @@ namespace Microsoft.DocAsCode.Tests
         [InlineData("", new string[]
         {
             ""
+        }, true)]
+
+        [InlineData("\\a", new string[]
+        {
+            "a"
         }, true)]
         [InlineData("a*", new string[] 
         {
@@ -65,6 +71,10 @@ namespace Microsoft.DocAsCode.Tests
             "a", "b", "abc", "bdir/cfile"
         }, true)]
 
+        [InlineData("A/**", new string[]
+        {
+            "A/"
+        }, false)]
         // ** is a shortcut for **/*
         [InlineData("**/*", new string[]
         {
@@ -106,7 +116,7 @@ namespace Microsoft.DocAsCode.Tests
         {
             "a*b/ooo"
         }, true)]
-        [InlineData("a[\\b]c", new string[]
+        [InlineData("a[\\\\b]c", new string[]
         {
             "abc"
         }, true)]
@@ -142,9 +152,9 @@ namespace Microsoft.DocAsCode.Tests
         {
             "abc", "a/b/c"
         }, true)]
-        [InlineData("[[]", new string[]
+        [InlineData("[a[]", new string[]
         {
-            "["
+            "[", "a"
         }, true)]
         [InlineData("[(]", new string[]
         {
@@ -157,6 +167,18 @@ namespace Microsoft.DocAsCode.Tests
         [InlineData("[", new string[]
         {
             "["
+        }, true)]
+        [InlineData("[abc[]]a", new string[]
+        {
+            "a]a", "b]a", "[]a"
+        }, true)]
+        [InlineData("[\\w]a", new string[]
+        {
+            "aa", "ba"
+        }, true)]
+        [InlineData("[abc[]]a", new string[]
+        {
+            "]"
         }, false)]
         [InlineData(@"\[*", new string[]
         {
@@ -205,6 +227,14 @@ namespace Microsoft.DocAsCode.Tests
         {
             ".a/.a"
         }, true)]
+        [InlineData("**J/**", new string[]
+        {
+            "M", "M/JA", "a/b/c", "a/b/c.csproj"
+        }, false)]
+        [InlineData("**/A/**", new string[]
+        {
+            "A/B/C"
+        }, true)]
         public void TestGlobMatchWithDotMatchShouldMatchDotFiles(string pattern, string[] files, bool expected)
         {
             var glob = new GlobMatcher(pattern, GlobMatcherOptions.AllowDotMatch);
@@ -215,18 +245,34 @@ namespace Microsoft.DocAsCode.Tests
             }
         }
 
+        [Theory]
         [InlineData("**", new string[]
         {
             ".a/.a"
         }, true)]
         [InlineData("**.csproj", new string[]
         {
-            ".a/.a", ".a/", ".a", "a", "a/", "a/a", "a/a/", "a/.a", "a/.a/"
+            ".a/", "a/", "a/a/", "a/.a/"
         }, true)]
-
+        [InlineData("E/*.md", new string[]
+        {
+            "E/"
+        }, true)]
         [InlineData("*.cs", new string[]
         {
             "a", "a.c"
+        }, false)]
+        [InlineData("**.md", new string[]
+        {
+            "Root/"
+        }, true)]
+        [InlineData("**", new string[]
+        {
+            "Root/"
+        }, true)]
+        // partial match must match folder ends with "/"
+        [InlineData("**.md", new string[] {
+            "a", "a/b"
         }, false)]
         public void TestGlobPartialMatchShouldMatchFolder(string pattern, string[] folders, bool expected)
         {
@@ -236,29 +282,6 @@ namespace Microsoft.DocAsCode.Tests
                 var match = glob.Match(file, true);
                 Assert.Equal(expected, match);
             }
-        }
-
-        [Fact]
-        public void TestGlobGetFilesShouldAbleToGetFiles()
-        {
-            // - Root/
-            //   |- A.cs
-            //   |- B.cs
-            //   |- C/
-            //   |  |- D.cs
-            //   |- E/
-            //   |  |- F.cs
-            //   |  |- G.csproj
-            //   |  |- H/
-            //   |  |   |- I.jpg
-            //   |- J/
-            //   |  |- K.md
-            //   |- M/
-            //      |- N.md
-            //      |- L/
-            //         |- O.md
-            // - .Hidden/
-            var files = FileGlob.GetFiles(@"E:\Repo1\docfx\src", new string[] { "**.csproj" }, new string[] { "**{nuspec,docfx}/**" }).ToArray();
         }
     }
 }

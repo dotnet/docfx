@@ -21,9 +21,9 @@ namespace Microsoft.DocAsCode.Glob
         private static readonly Regex UnescapeGlobRegex = new Regex(@"\\(?<replacer>.)", RegexOptions.Compiled);
 
         /// <summary>
-        /// start with * and has more than one * and followed by anything
+        /// start with * and has more than one * and followed by anything except * or /
         /// </summary>
-        private static readonly Regex ExpandGlobStarRegex = new Regex(@"^\*{2,}(?=.)", RegexOptions.Compiled);
+        private static readonly Regex ExpandGlobStarRegex = new Regex(@"^\*{2,}(?=[^/*])", RegexOptions.Compiled);
         // Never match .abc file unless AllowDotMatch option is set
         private const string PatternStartWithDotAllowed = @"(?!(?:^|\/)\.{1,2}(?:$|\/))";
         private const string PatternStartWithoutDotAllowed = @"(?!\.)";
@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Glob
         /// </summary>
         private const string SingleStarToRegex = "[^/]*?";
 
-        private static readonly Regex GlobStarRegex = new Regex(@"^\*{2,}$", RegexOptions.Compiled);
+        private static readonly Regex GlobStarRegex = new Regex(@"^\*{2,}/?$", RegexOptions.Compiled);
 
         private GlobRegexItem[][] _items;
         private bool _negate = false;
@@ -88,11 +88,11 @@ namespace Microsoft.DocAsCode.Glob
         public bool Match(string file, bool partial = false)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
-            var fileParts = file.Split(new char[] { '/', '\\' });
+            var fileParts = Split(file, '/', '\\').ToArray(); // file.Split(new char[] { '/', '\\' });
             bool isMatch = false;
             foreach(var glob in _items)
             {
-                if (MatchOne(fileParts, glob, partial, 0, 0))
+                if (MatchOne(fileParts, glob, partial))
                 {
                     isMatch = true;
                     break;
@@ -119,14 +119,37 @@ namespace Microsoft.DocAsCode.Glob
 
             // **.cs is a shortcut for **/*.cs
             var items = globs
-                .Select(glob => ExpandGlobStarShortcut(glob.Split('/')).Select(s => ConvertSingleGlobPart(s)).ToArray());
+                .Select(glob => ExpandGlobStarShortcut(Split(glob, '/')).Select(s => ConvertSingleGlobPart(s)).ToArray());
             return items;
+        }
+
+        private IEnumerable<string> Split(string path, params char[] splitter)
+        {
+            var parts = path.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length > 1)
+            {
+                for (int i = 0; i < parts.Length - 1; i++)
+                {
+                    yield return parts[i] + "/";
+                }
+
+                yield return path.EndsWith("/") ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
+            }
+            else
+            {
+                yield return path;
+            }
         }
 
         private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
         {
             var items = regexItems.Select(s => GlobRegexItemToRegex(s));
             return string.Join(@"\/", items);
+        }
+
+        private bool IsFolderPath(string path)
+        {
+            return path.EndsWith("/");
         }
 
         /// <summary>
@@ -139,8 +162,9 @@ namespace Microsoft.DocAsCode.Glob
             // Return GlobStar for **
             if (!Options.HasFlag(GlobMatcherOptions.DisableGlobStar) && GlobStarRegex.IsMatch(globPart))
             {
-                return GlobRegexItem.GlobStar;
+                return IsFolderPath(globPart) ? GlobRegexItem.GlobStar : GlobRegexItem.GlobStarForFileOnly;
             }
+
             StringBuilder builder = new StringBuilder();
             bool escaping = false;
             bool disableEscape = Options.HasFlag(GlobMatcherOptions.DisableEscape);
@@ -154,37 +178,34 @@ namespace Microsoft.DocAsCode.Glob
                 patternStart = Options.HasFlag(GlobMatcherOptions.AllowDotMatch) ? PatternStartWithDotAllowed : PatternStartWithoutDotAllowed;
             }
 
-            foreach (var c in globPart)
+            for (int i = 0; i < globPart.Length; i++)
             {
-                if (escaping && NeedEscapeCharactersInRegex.Contains(c))
-                {
-                    builder.Append('\\');
-                    builder.Append(c);
-                    escaping = false;
-                    continue;
-                }
-                // if current character is after the start of char class [
-                if (currentCharClass != null)
-                {
-                    // meet the first ]
-                    if (c == ']')
-                    {
-                        builder.Append(currentCharClass.ToString());
-                        currentCharClass = null;
-                    }
-                    else
-                    {
-                        currentCharClass.Add(c);
-                    }
-                    continue;
-                }
-
+                var c = globPart[i];
                 switch (c)
                 {
-                    case '/':
-                        throw new ArgumentException("Should not have / in this stage, should already be splitted now.");
                     case '\\':
-                        if (!disableEscape) escaping = true;
+                        if (!disableEscape)
+                        {
+                            i++;
+                            if (i == globPart.Length)
+                            {
+                                // \ at the end of path part, invalid, not possible for file path, invalid
+                                return GlobRegexItem.Empty;
+                            }
+                            else
+                            {
+                                c = globPart[i];
+                                if (NeedEscapeCharactersInRegex.Contains(c))
+                                {
+                                    builder.Append('\\');
+                                }
+                                builder.Append(c);
+                            }
+                        }
+                        else
+                        {
+                            builder.Append("\\\\");
+                        }
                         break;
                     case '?':
                         builder.Append(QuestionMarkToRegex);
@@ -195,25 +216,46 @@ namespace Microsoft.DocAsCode.Glob
                         hasMagic = true;
                         break;
                     case '[':
+                        escaping = false;
                         currentCharClass = new CharClass();
-                        hasMagic = true;
+                        int cur = i + 1;
+                        while (cur < globPart.Length)
+                        {
+                            c = globPart[cur];
+                            if (c == '\\') escaping = true;
+                            else if (c == ']' && !escaping)
+                            {
+                                // current char class ends when meeting the first non-escaping ]
+                                builder.Append(currentCharClass.ToString());
+                                currentCharClass = null;
+                                break;
+                            }
+
+                            // simply keeps what it is inside char class
+                            currentCharClass.Add(c);
+                            if (c != '\\') escaping = false;
+                            cur++;
+                        }
+                        if (currentCharClass != null)
+                        {
+                            // no closing ] is found, fallback to no char class
+                            builder.Append("\\[");
+                        }
+                        else
+                        {
+                            i = cur;
+                            hasMagic = true;
+                        }
                         break;
                     default:
-                        if (NeedEscapeCharactersInRegex.Contains(c) && currentCharClass == null)
+                        if (NeedEscapeCharactersInRegex.Contains(c))
                         {
-                            // Escape current character if it is not in a char class []
                             builder.Append('\\');
                         }
 
                         builder.Append(c);
                         break;
                 }
-            }
-
-            if (currentCharClass != null)
-            {
-                // Has unclosed [], consider it as invalid and return an empty string
-                return new GlobRegexItem(string.Empty, null, GlobRegexItemType.PlainText, _ignoreCase, _negate);
             }
 
             if (hasMagic)
@@ -225,19 +267,23 @@ namespace Microsoft.DocAsCode.Glob
                     // regex: if followed by anything
                     regexContent = "(?=.)" + regexContent;
                 }
+                else
+                {
+                    return GlobRegexItem.Empty;
+                }
 
                 if (RegexCharactersWithDotPossible.Contains(regexContent[0]))
                 {
                     regexContent = patternStart + regexContent;
                 }
-                return new GlobRegexItem(regexContent, null, GlobRegexItemType.Regex, _ignoreCase, _negate);
+                return new GlobRegexItem(regexContent, null, GlobRegexItemType.Regex, _ignoreCase);
             }
             else
             {
                 // If does not contain any regex character, use the original string for regex
                 // use escaped string as the string to be matched
                 string plainText = UnescapeGlob(globPart);
-                return new GlobRegexItem(globPart, plainText, GlobRegexItemType.PlainText, _ignoreCase, _negate);
+                return new GlobRegexItem(globPart, plainText, GlobRegexItemType.PlainText, _ignoreCase);
             }
         }
 
@@ -246,6 +292,7 @@ namespace Microsoft.DocAsCode.Glob
             switch (item.ItemType)
             {
                 case GlobRegexItemType.GlobStar:
+                case GlobRegexItemType.GlobStarForFileOnly:
                     // If globstar is disabled
                     if (Options.HasFlag(GlobMatcherOptions.DisableGlobStar))
                     {
@@ -253,7 +300,7 @@ namespace Microsoft.DocAsCode.Glob
                     }
                     if (Options.HasFlag(GlobMatcherOptions.AllowDotMatch))
                     {
-                        // ** when dots are allowed, allowes anything except .. and .
+                        // ** when dots are allowed, allows anything except .. and .
                         // not (^ or / followed by one or two dots followed by $ or /)
                         return @"(?:(?!(?:\/|^)(?:\.{1,2})($|\/)).)*?";
                     }
@@ -284,7 +331,7 @@ namespace Microsoft.DocAsCode.Glob
             {
                 if (ExpandGlobStarRegex.IsMatch(part))
                 {
-                    yield return GlobStar;
+                    yield return GlobStar + "/";
                     yield return ExpandGlobStarRegex.Replace(part, "*");
                 }
                 else
@@ -294,114 +341,72 @@ namespace Microsoft.DocAsCode.Glob
             }
         }
 
-        /// <summary>
-        /// glob parts seperated by /
-        /// file parts seperated by /(Linux/OSX) or \(windows)
-        /// glob: a/*/b/**/c
-        /// file: a/b/b/c/
-        /// for **
-        /// a/**/b matches the following:
-        ///   a/b
-        ///   a/x/y/b
-        ///   a/b/x/y/b
-        /// Implementation: (from minimatch https://github.com/isaacs/minimatch/blob/master/minimatch.js#L704)
-        /// Take the reset part after **, check if it matches the file remainder
-        /// If not, ** **swallows** a segment and retry
-        /// </summary>
-        /// <param name="fileParts"></param>
-        /// <param name="globParts"></param>
-        /// <param name="matchPartialGlob">Will be useful when recursively matching files</param>
-        /// <param name="filePartsIndex"></param>
-        /// <param name="globPartsIndex"></param>
-        /// <returns></returns>
-        private bool MatchOne(string[] fileParts, GlobRegexItem[] globParts, bool matchPartialGlob, int filePartsIndex, int globPartsIndex)
+        private bool MatchOne(string[] fileParts, GlobRegexItem[] globParts, bool matchPartialGlob)
         {
-            int filePointer = filePartsIndex;
-            int globPointer = globPartsIndex;
-            while (filePointer < fileParts.Length && globPointer < globParts.Length)
+            bool[,] status = new bool[2, globParts.Length + 1];
+            int prev = 0;
+            int cur = 1;
+            status[0, 0] = true;
+            for (int j = 0; j < globParts.Length; j++)
             {
-                var filePart = fileParts[filePointer];
-                var globPart = globParts[globPointer];
-                switch (globPart.ItemType)
+                if (matchPartialGlob)
                 {
-                    case GlobRegexItemType.GlobStar:
-                        globPointer++;
-                        // if ** is the end, matches everything left except
-                        // . and .. and .files when AllowDotMatch is false
-                        if (globPointer == globParts.Length)
-                        {
-                            for (var i = filePointer; i < fileParts.Length; i++)
-                            {
-                                if (DisallowedMatchExists(fileParts[i]))
-                                {
-                                    return false;
-                                }
-                            }
+                    status[0, j + 1] = true;
+                }
+                else
+                {
+                    var globPart = globParts[globParts.Length - j - 1];
+                    if (globPart.ItemType == GlobRegexItemType.GlobStar) status[0, j + 1] = status[0, j];
+                    else status[0, j + 1] = false;
+                }
+            }
 
-                            return true;
-                        }
-
-                        while (filePointer < fileParts.Length)
-                        {
-                            if (MatchOne(fileParts, globParts, matchPartialGlob, filePointer, globPointer))
-                            {
-                                return true;
-                            }
+            for(int i = 0; i < fileParts.Length; i++)
+            {
+                for (int j = 0; j < globParts.Length; j++)
+                {
+                    var filePart = fileParts[fileParts.Length - i - 1];
+                    var globPart = globParts[globParts.Length - j - 1];
+                    switch (globPart.ItemType)
+                    {
+                        case GlobRegexItemType.GlobStar:
+                            if (DisallowedMatchExists(filePart)) status[cur, j + 1] = false;
                             else
                             {
-                                if (DisallowedMatchExists(fileParts[filePointer]))
-                                {
-                                    break;
-                                }
-
-                                filePointer++;
+                                var isFolderPath = IsFolderPath(filePart);
+                                status[cur, j + 1] = (status[prev, j + 1] && isFolderPath) || (status[prev, j] && isFolderPath || status[cur, j]);
                             }
-                        }
-
-                        // For partial match, if there is more pattern left, should match. e.g. **/*.csproj partial matches afolder/
-                        if (matchPartialGlob)
-                        {
-                            if (filePointer == fileParts.Length) return true;
-                        }
-                        return false;
-                    case GlobRegexItemType.PlainText:
-                        StringComparison comparison = StringComparison.Ordinal;
-                        if (Options.HasFlag(GlobMatcherOptions.IgnoreCase))
-                        {
-                            comparison = StringComparison.OrdinalIgnoreCase;
-                        }
-                        if (!string.Equals(filePart, globPart.PlainText, comparison)) return false;
-                        break;
-                    case GlobRegexItemType.Regex:
-                        if (!globPart.Regex.IsMatch(filePart)) return false;
-                        break;
-                    default:
-                        throw new NotSupportedException($"{globPart.ItemType} is not supported!");
+                            break;
+                        case GlobRegexItemType.GlobStarForFileOnly:
+                            if (DisallowedMatchExists(filePart)) status[cur, j + 1] = false;
+                            else
+                            {
+                                var isFolderPath = IsFolderPath(filePart);
+                                status[cur, j + 1] = status[prev, j + 1] || (status[prev, j] && !isFolderPath);
+                            }
+                            break;
+                        case GlobRegexItemType.PlainText:
+                            StringComparison comparison = StringComparison.Ordinal;
+                            if (Options.HasFlag(GlobMatcherOptions.IgnoreCase))
+                            {
+                                comparison = StringComparison.OrdinalIgnoreCase;
+                            }
+                            status[cur, j + 1] = string.Equals(filePart, globPart.PlainText, comparison) && status[prev, j];
+                            break;
+                        case GlobRegexItemType.Regex:
+                            status[cur, j + 1] = globPart.Regex.IsMatch(filePart) && status[prev, j];
+                            break;
+                    }
                 }
 
-                filePointer++;
-                globPointer++;
+                prev ^= 1;
+                cur ^= 1;
+                status[cur, 0] = matchPartialGlob;
             }
 
-            if (filePointer == fileParts.Length && globPointer == globParts.Length)
-            {
-                // exact match
-                return true;
-            }
-            else if (filePointer == fileParts.Length)
-            {
-                // still have glob pattern left
-                if (matchPartialGlob) return true;
-                return false;
-            }
-            else // if (globPointer == globParts.Length)
-            {
-                // a/*/ matches a/b/
-                // a/* should not match a/b/
-                return false;
-            }
+            return status[prev, globParts.Length];
         }
-
+        
         private bool DisallowedMatchExists(string filePart)
         {
             if (filePart == "."
@@ -437,22 +442,16 @@ namespace Microsoft.DocAsCode.Glob
             }
 
             bool negate = false;
-            var negateOffset = -1;
-            for (int i = 0; i < pattern.Length; i++)
+            int i = 0;
+            while (i < pattern.Length && pattern[i] == NegateChar)
             {
-                if (pattern[i] == NegateChar)
-                {
-                    negate = !negate;
-                    negateOffset = i;
-                }
-                else
-                {
-                    break;
-                }
+                negate = !negate;
+                i++;
             }
-            if (negateOffset > -1)
+
+            if (i <= pattern.Length)
             {
-                pattern = pattern.Substring(negateOffset + 1);
+                pattern = pattern.Substring(i);
             }
 
             return negate;
@@ -589,8 +588,7 @@ namespace Microsoft.DocAsCode.Glob
                 }
                 public override GlobNode AddGroup()
                 {
-                    AddChar('\0');
-                    return this;
+                    return AddChar('\0');
                 }
                 public override GlobNode FinishLevel()
                 {
@@ -714,11 +712,6 @@ namespace Microsoft.DocAsCode.Glob
             private readonly StringBuilder _chars = new StringBuilder();
             public void Add(char c)
             {
-                if (c == ']' || c == '[' || c == '\\')
-                {
-                    // escape
-                    _chars.Append('\\');
-                }
                 _chars.Append(c);
             }
 
@@ -732,28 +725,29 @@ namespace Microsoft.DocAsCode.Glob
                 {
                     _chars.Insert(0, "\\");
                 }
-                _chars.Insert(0, "[");
-                _chars.Append(']');
-                return _chars.ToString();
+                return $"[{_chars.ToString()}]";
             }
         }
 
         private sealed class GlobRegexItem
         {
             public static readonly GlobRegexItem GlobStar = new GlobRegexItem(GlobRegexItemType.GlobStar);
+            public static readonly GlobRegexItem GlobStarForFileOnly = new GlobRegexItem(GlobRegexItemType.GlobStarForFileOnly);
+            public static readonly GlobRegexItem Empty = new GlobRegexItem(string.Empty, string.Empty, GlobRegexItemType.PlainText);
             public GlobRegexItemType ItemType { get; }
-            public bool IsNegate { get; }
             public string RegexContent { get; }
             public string PlainText { get; }
             public Regex Regex { get; }
-            public GlobRegexItem(string content, string plainText, GlobRegexItemType type, bool ignoreCase, bool isNegate = false)
+            public GlobRegexItem(string content, string plainText, GlobRegexItemType type, bool ignoreCase = true)
             {
-                IsNegate = isNegate;
                 RegexContent = content;
                 ItemType = type;
                 PlainText = plainText;
-                var regexSegment = $"^{RegexContent}$";
-                Regex = ignoreCase ? new Regex(regexSegment, RegexOptions.IgnoreCase) : new Regex(regexSegment);
+                if (type == GlobRegexItemType.Regex)
+                {
+                    var regexSegment = $"^{RegexContent}$";
+                    Regex = ignoreCase ? new Regex(regexSegment, RegexOptions.IgnoreCase) : new Regex(regexSegment);
+                }
             }
 
             private GlobRegexItem(GlobRegexItemType itemType)
@@ -764,7 +758,8 @@ namespace Microsoft.DocAsCode.Glob
 
         private enum GlobRegexItemType
         {
-            GlobStar,
+            GlobStarForFileOnly, // ** to match files only
+            GlobStar, // **/ to match files or folders
             PlainText,
             Regex,
         }
