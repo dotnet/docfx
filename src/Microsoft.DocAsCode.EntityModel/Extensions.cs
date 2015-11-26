@@ -6,14 +6,13 @@
 /// </summary>
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading;
 
     using Newtonsoft.Json;
 
     using YamlDotNet.Serialization;
-    
     public static class JsonUtility
     {
         private static readonly ThreadLocal<JsonSerializer> serializer = new ThreadLocal<JsonSerializer>(
@@ -98,6 +97,12 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public static T Deserialize<T>(TextReader reader)
         {
+            // For weak type, directly deserialize using yamldotnet
+            if (typeof(T) == typeof(Dictionary<string, object>))
+            {
+                return deserializer.Value.Deserialize<T>(reader);
+            }
+
             // YamlDotNet is slow in deserialize into strong typed model.
             // Use JSON.NET to convert from dictionary to object model instead.
             var dict = deserializer.Value.Deserialize(reader);
