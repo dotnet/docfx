@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             // YamlDotNet is slow in deserialize into strong typed model.
             // Use JSON.NET to convert from dictionary to object model instead.
-                var dict = deserializer.Value.Deserialize(reader);
+            var dict = deserializer.Value.Deserialize(reader);
             var json = JsonUtility.Serialize(dict);
             using (var stringReader = new StringReader(json))
             {
