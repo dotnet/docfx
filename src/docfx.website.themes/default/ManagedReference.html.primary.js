@@ -196,6 +196,11 @@ function transform(model, _attrs) {
           return uid;
         }
 
+        if (references[uid] === undefined) {
+          return {
+            specName: getXref(uid)
+          }
+        };
         return new Reference(references[uid], this).getReferenceViewModel(lang, extChanger);
       }
 
@@ -246,6 +251,14 @@ function transform(model, _attrs) {
           return '';
         }
       }
+    }
+
+    function getXref(uid, fullName, name) {
+      var xref = '<xref href="' + util.escapeHtml(uid) + '"';
+      if (fullName) xref += ' fullName="' + util.escapeHtml(fullName) + '"';
+      if (name) xref += '" name="' + util.escapeHtml(name) + '"';
+      xref += '/>';
+      return xref;
     }
 
     function Reference(obj, refs) {
@@ -342,10 +355,6 @@ function transform(model, _attrs) {
 
       function getLinkText(href, name) {
         return '<a href="' + href + '">' + util.escapeHtml(name) + '</a>';
-      }
-
-      function getXref(uid, fullName, name) {
-        return '<xref href="' + util.escapeHtml(uid) + '" fullName="' + util.escapeHtml(fullName) + '" name="' + util.escapeHtml(name) + '"/>';
       }
     }
   }
