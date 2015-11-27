@@ -357,6 +357,7 @@ namespace Microsoft.DocAsCode.Glob
 
             for(int i = 0; i < fileParts.Length; i++)
             {
+                status[cur, 0] = false;
                 for (int j = 0; j < globParts.Length; j++)
                 {
                     var filePart = fileParts[fileParts.Length - i - 1];
@@ -395,7 +396,6 @@ namespace Microsoft.DocAsCode.Glob
 
                 prev ^= 1;
                 cur ^= 1;
-                status[cur, 0] = false;
             }
 
             return status[prev, globParts.Length];
