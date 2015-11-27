@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Tests
         {
             "a*b/ooo"
         }, true)]
-        [InlineData("a[\\b]c", new string[]
+        [InlineData("a[\\\\b]c", new string[]
         {
             "abc"
         }, true)]
@@ -167,6 +167,18 @@ namespace Microsoft.DocAsCode.Tests
         [InlineData("[", new string[]
         {
             "["
+        }, true)]
+        [InlineData("[abc[]]a", new string[]
+        {
+            "a]a", "b]a", "[]a"
+        }, true)]
+        [InlineData("[\\w]a", new string[]
+        {
+            "aa", "ba"
+        }, true)]
+        [InlineData("[abc[]]a", new string[]
+        {
+            "]"
         }, false)]
         [InlineData(@"\[*", new string[]
         {
