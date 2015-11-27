@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Glob
         public bool Match(string file, bool partial = false)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
-            var fileParts = Split(file, '/', '\\').ToArray(); // file.Split(new char[] { '/', '\\' });
+            var fileParts = Split(file, '/', '\\').ToArray();
             bool isMatch = false;
             foreach(var glob in _items)
             {
@@ -126,19 +126,13 @@ namespace Microsoft.DocAsCode.Glob
         private IEnumerable<string> Split(string path, params char[] splitter)
         {
             var parts = path.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length > 1)
+            if (parts.Length == 0) yield break;
+            for (int i = 0; i < parts.Length - 1; i++)
             {
-                for (int i = 0; i < parts.Length - 1; i++)
-                {
-                    yield return parts[i] + "/";
-                }
+                yield return parts[i] + "/";
+            }
 
-                yield return path.EndsWith("/") ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
-            }
-            else
-            {
-                yield return path;
-            }
+            yield return path.EndsWith("/") ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
         }
 
         private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
@@ -401,7 +395,7 @@ namespace Microsoft.DocAsCode.Glob
 
                 prev ^= 1;
                 cur ^= 1;
-                status[cur, 0] = matchPartialGlob;
+                status[cur, 0] = false;
             }
 
             return status[prev, globParts.Length];

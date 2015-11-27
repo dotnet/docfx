@@ -274,6 +274,11 @@ namespace Microsoft.DocAsCode.Tests
         [InlineData("**.md", new string[] {
             "a", "a/b"
         }, false)]
+
+        // partial match must match folder ends with "/"
+        [InlineData("b/", new string[] {
+            "b/c/a"
+        }, false)]
         public void TestGlobPartialMatchShouldMatchFolder(string pattern, string[] folders, bool expected)
         {
             var glob = new GlobMatcher(pattern, GlobMatcherOptions.AllowDotMatch);
