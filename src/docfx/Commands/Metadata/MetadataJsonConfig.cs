@@ -14,6 +14,12 @@ namespace Microsoft.DocAsCode
         [JsonIgnore]
         public string OutputFolder { get; set; }
 
+        [JsonIgnore]
+        public bool Force { get; set; }
+
+        [JsonIgnore]
+        public bool Raw { get; set; }
+
         public MetadataJsonConfig(IEnumerable<MetadataJsonItemConfig> configs) : base(configs) { }
 
         public MetadataJsonConfig(params MetadataJsonItemConfig[] configs) : base(configs)

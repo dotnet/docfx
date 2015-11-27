@@ -19,11 +19,9 @@ namespace Microsoft.DocAsCode
             if (!File.Exists(path)) throw new FileNotFoundException($"Config file {path} does not exist!");
 
             var result = JsonUtility.Deserialize<Dictionary<string, JToken>>(path);
-            var context = new CommandContext
+            var context = new CommandContext(rootOptions)
             {
                 BaseDirectory = Path.GetDirectoryName(path),
-                ForceRebuild = rootOptions?.ForceRebuild ?? false,
-                RootOutputFolder = rootOptions?.RootOutputFolder
             };
             return new CompositeCommand(context, result);
         }
