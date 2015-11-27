@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Glob
 
             foreach (var dir in Directory.GetDirectories(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                var relativePath = PathUtility.MakeRelativePath(cwd, dir);
+                var relativePath = PathUtility.MakeRelativePath(cwd, dir) + "/";
 
                 // For folder, exclude glob matches folder means nothing, e.g. **/a matches b/a folder, however, **/a does not match b/a/c file
                 foreach (var glob in globs)

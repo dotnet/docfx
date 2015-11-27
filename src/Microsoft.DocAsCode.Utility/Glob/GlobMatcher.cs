@@ -21,9 +21,9 @@ namespace Microsoft.DocAsCode.Glob
         private static readonly Regex UnescapeGlobRegex = new Regex(@"\\(?<replacer>.)", RegexOptions.Compiled);
 
         /// <summary>
-        /// start with * and has more than one * and followed by anything
+        /// start with * and has more than one * and followed by anything except * or /
         /// </summary>
-        private static readonly Regex ExpandGlobStarRegex = new Regex(@"^\*{2,}(?=.)", RegexOptions.Compiled);
+        private static readonly Regex ExpandGlobStarRegex = new Regex(@"^\*{2,}(?=[^/*])", RegexOptions.Compiled);
         // Never match .abc file unless AllowDotMatch option is set
         private const string PatternStartWithDotAllowed = @"(?!(?:^|\/)\.{1,2}(?:$|\/))";
         private const string PatternStartWithoutDotAllowed = @"(?!\.)";
@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Glob
         /// </summary>
         private const string SingleStarToRegex = "[^/]*?";
 
-        private static readonly Regex GlobStarRegex = new Regex(@"^\*{2,}$", RegexOptions.Compiled);
+        private static readonly Regex GlobStarRegex = new Regex(@"^\*{2,}/?$", RegexOptions.Compiled);
 
         private GlobRegexItem[][] _items;
         private bool _negate = false;
@@ -88,11 +88,11 @@ namespace Microsoft.DocAsCode.Glob
         public bool Match(string file, bool partial = false)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
-            var fileParts = file.Split(new char[] { '/', '\\' });
+            var fileParts = Split(file, '/', '\\').ToArray(); // file.Split(new char[] { '/', '\\' });
             bool isMatch = false;
             foreach(var glob in _items)
             {
-                if (MatchOne(fileParts, glob, partial, 0, 0))
+                if (MatchOne(fileParts, glob, partial))
                 {
                     isMatch = true;
                     break;
@@ -119,8 +119,26 @@ namespace Microsoft.DocAsCode.Glob
 
             // **.cs is a shortcut for **/*.cs
             var items = globs
-                .Select(glob => ExpandGlobStarShortcut(glob.Split('/')).Select(s => ConvertSingleGlobPart(s)).ToArray());
+                .Select(glob => ExpandGlobStarShortcut(Split(glob, '/')).Select(s => ConvertSingleGlobPart(s)).ToArray());
             return items;
+        }
+
+        private IEnumerable<string> Split(string path, params char[] splitter)
+        {
+            var parts = path.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length > 1)
+            {
+                for (int i = 0; i < parts.Length - 1; i++)
+                {
+                    yield return parts[i] + "/";
+                }
+
+                yield return path.EndsWith("/") ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
+            }
+            else
+            {
+                yield return path;
+            }
         }
 
         private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
@@ -139,7 +157,7 @@ namespace Microsoft.DocAsCode.Glob
             // Return GlobStar for **
             if (!Options.HasFlag(GlobMatcherOptions.DisableGlobStar) && GlobStarRegex.IsMatch(globPart))
             {
-                return GlobRegexItem.GlobStar;
+                return new GlobRegexItem(globPart, globPart, GlobRegexItemType.GlobStar, _ignoreCase, _negate);
             }
             StringBuilder builder = new StringBuilder();
             bool escaping = false;
@@ -156,9 +174,12 @@ namespace Microsoft.DocAsCode.Glob
 
             foreach (var c in globPart)
             {
-                if (escaping && NeedEscapeCharactersInRegex.Contains(c))
+                if (escaping)
                 {
-                    builder.Append('\\');
+                    if (NeedEscapeCharactersInRegex.Contains(c))
+                    {
+                        builder.Append('\\');
+                    }
                     builder.Append(c);
                     escaping = false;
                     continue;
@@ -181,10 +202,14 @@ namespace Microsoft.DocAsCode.Glob
 
                 switch (c)
                 {
-                    case '/':
-                        throw new ArgumentException("Should not have / in this stage, should already be splitted now.");
+                    //case '/':
+                    //    throw new ArgumentException("Should not have / in this stage, should already be splitted now.");
                     case '\\':
                         if (!disableEscape) escaping = true;
+                        else
+                        {
+                            builder.Append("\\\\");
+                        }
                         break;
                     case '?':
                         builder.Append(QuestionMarkToRegex);
@@ -210,15 +235,15 @@ namespace Microsoft.DocAsCode.Glob
                 }
             }
 
-            if (currentCharClass != null)
+            var regexContent = builder.ToString();
+            if (currentCharClass != null || escaping == true || string.IsNullOrEmpty(regexContent))
             {
                 // Has unclosed [], consider it as invalid and return an empty string
-                return new GlobRegexItem(string.Empty, null, GlobRegexItemType.PlainText, _ignoreCase, _negate);
+                return new GlobRegexItem(string.Empty, string.Empty, GlobRegexItemType.PlainText, _ignoreCase, _negate);
             }
 
             if (hasMagic)
             {
-                var regexContent = builder.ToString();
                 if (!string.IsNullOrEmpty(regexContent))
                 {
                     // when regex is not empty, make sure it does not match against empty path, e.g. a/* should not match a/
@@ -253,7 +278,7 @@ namespace Microsoft.DocAsCode.Glob
                     }
                     if (Options.HasFlag(GlobMatcherOptions.AllowDotMatch))
                     {
-                        // ** when dots are allowed, allowes anything except .. and .
+                        // ** when dots are allowed, allows anything except .. and .
                         // not (^ or / followed by one or two dots followed by $ or /)
                         return @"(?:(?!(?:\/|^)(?:\.{1,2})($|\/)).)*?";
                     }
@@ -284,7 +309,7 @@ namespace Microsoft.DocAsCode.Glob
             {
                 if (ExpandGlobStarRegex.IsMatch(part))
                 {
-                    yield return GlobStar;
+                    yield return GlobStar + "/";
                     yield return ExpandGlobStarRegex.Replace(part, "*");
                 }
                 else
@@ -292,6 +317,71 @@ namespace Microsoft.DocAsCode.Glob
                     yield return part;
                 }
             }
+        }
+
+        private bool MatchOne(string[] fileParts, GlobRegexItem[] globParts, bool matchPartialGlob)
+        {
+            bool[,] status = new bool[2, globParts.Length + 1];
+            int prev = 0;
+            int cur = 1;
+            status[0, 0] = true;
+            for (int j = 0; j < globParts.Length; j++)
+            {
+                if (matchPartialGlob)
+                {
+                    status[0, j + 1] = true;
+                }
+                else
+                {
+                    var globPart = globParts[globParts.Length - j - 1];
+                    if (globPart.ItemType == GlobRegexItemType.GlobStar && globPart.PlainText.EndsWith("/")) status[0, j + 1] = status[0, j];
+                    else status[0, j + 1] = false;
+                }
+            }
+
+            for(int i = 0; i < fileParts.Length; i++)
+            {
+                for (int j = 0; j < globParts.Length; j++)
+                {
+                    var filePart = fileParts[fileParts.Length - i - 1];
+                    var globPart = globParts[globParts.Length - j - 1];
+                    switch (globPart.ItemType)
+                    {
+                        case GlobRegexItemType.GlobStar:
+                            if (DisallowedMatchExists(filePart)) status[cur, j + 1] = false;
+                            else
+                            {
+                                if (!globPart.PlainText.EndsWith("/"))
+                                {
+                                    status[cur, j + 1] = status[prev, j + 1] || (status[prev, j] && !filePart.EndsWith("/"));
+                                }
+                                else
+                                {
+                                    status[cur, j + 1] = (status[prev, j + 1] && filePart.EndsWith("/")) || status[cur, j] || (status[prev, j] && filePart.EndsWith("/"));
+                                }
+                            }
+                            break;
+                        case GlobRegexItemType.PlainText:
+                            StringComparison comparison = StringComparison.Ordinal;
+                            if (Options.HasFlag(GlobMatcherOptions.IgnoreCase))
+                            {
+                                comparison = StringComparison.OrdinalIgnoreCase;
+                            }
+                            status[cur, j + 1] = string.Equals(filePart, globPart.PlainText, comparison) && status[prev, j];
+                            break;
+                        case GlobRegexItemType.Regex:
+                            status[cur, j + 1] = globPart.Regex.IsMatch(filePart) && status[prev, j];
+                            break;
+                    }
+                }
+
+                int temp = prev;
+                prev = cur;
+                cur = temp;
+                status[cur, 0] = matchPartialGlob;
+            }
+
+            return status[prev, globParts.Length];
         }
 
         /// <summary>
@@ -437,22 +527,16 @@ namespace Microsoft.DocAsCode.Glob
             }
 
             bool negate = false;
-            var negateOffset = -1;
-            for (int i = 0; i < pattern.Length; i++)
+            int i = 0;
+            while (i < pattern.Length && pattern[i] == NegateChar)
             {
-                if (pattern[i] == NegateChar)
-                {
-                    negate = !negate;
-                    negateOffset = i;
-                }
-                else
-                {
-                    break;
-                }
+                negate = !negate;
+                i++;
             }
-            if (negateOffset > -1)
+
+            if (i <= pattern.Length)
             {
-                pattern = pattern.Substring(negateOffset + 1);
+                pattern = pattern.Substring(i);
             }
 
             return negate;
@@ -589,8 +673,7 @@ namespace Microsoft.DocAsCode.Glob
                 }
                 public override GlobNode AddGroup()
                 {
-                    AddChar('\0');
-                    return this;
+                    return AddChar('\0');
                 }
                 public override GlobNode FinishLevel()
                 {
@@ -752,8 +835,11 @@ namespace Microsoft.DocAsCode.Glob
                 RegexContent = content;
                 ItemType = type;
                 PlainText = plainText;
-                var regexSegment = $"^{RegexContent}$";
-                Regex = ignoreCase ? new Regex(regexSegment, RegexOptions.IgnoreCase) : new Regex(regexSegment);
+                if (type == GlobRegexItemType.Regex)
+                {
+                    var regexSegment = $"^{RegexContent}$";
+                    Regex = ignoreCase ? new Regex(regexSegment, RegexOptions.IgnoreCase) : new Regex(regexSegment);
+                }
             }
 
             private GlobRegexItem(GlobRegexItemType itemType)
