@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.Glob;
     using Microsoft.DocAsCode.Plugins;
+    using Utility;
     using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
@@ -18,13 +19,6 @@ namespace Microsoft.DocAsCode
         public MetadataJsonConfig Config { get; }
         public IEnumerable<ExtractMetadataInputModel> InputModels { get; }
 
-        private MetadataJsonConfig MergeConfig(MetadataJsonConfig config, CommandContext context)
-        {
-            config.BaseDirectory = context?.BaseDirectory ?? config.BaseDirectory;
-            config.OutputFolder = context?.RootOutputFolder ?? config.OutputFolder;
-            return config;
-        }
-
         public MetadataCommand(CommandContext context) : this(new MetadataJsonConfig(), context)
         {
         }
@@ -36,7 +30,7 @@ namespace Microsoft.DocAsCode
         public MetadataCommand(MetadataJsonConfig config, CommandContext context)
         {
             Config = MergeConfig(config, context);
-            InputModels = GetInputModels(Config, context);
+            InputModels = GetInputModels(Config);
         }
 
         public MetadataCommand(Options options, CommandContext context)
@@ -49,7 +43,7 @@ namespace Microsoft.DocAsCode
             else
             {
                 Config = MergeConfig(GetConfigFromOptions(metadataCommandOptions), context);
-                InputModels = GetInputModels(Config, context);
+                InputModels = GetInputModels(Config);
             }
 
             if (!string.IsNullOrWhiteSpace(metadataCommandOptions.Log)) Logger.RegisterListener(new ReportLogListener(metadataCommandOptions.Log));
@@ -91,10 +85,24 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs, CommandContext context)
+        private MetadataJsonConfig MergeConfig(MetadataJsonConfig config, CommandContext context)
+        {
+            config.BaseDirectory = context?.BaseDirectory ?? config.BaseDirectory;
+            if (context?.SharedOptions != null)
+            {
+                config.OutputFolder = context.SharedOptions.RootOutputFolder ?? config.OutputFolder;
+                config.Force = context.SharedOptions.ForceRebuild;
+                config.Raw = context.SharedOptions.PreserveRawInlineComments;
+            }
+            return config;
+        }
+
+        private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs)
         {
             foreach (var config in configs)
             {
+                config.Raw = configs.Raw;
+                config.Force = configs.Force;
                 yield return ConvertToInputModel(config);
             }
         }
@@ -123,6 +131,7 @@ namespace Microsoft.DocAsCode
         private static MetadataJsonConfig GetConfigFromOptions(MetadataCommandOptions options)
         {
             string jsonConfig;
+            // Glob pattern is not allowed for command line options
             if (TryGetJsonConfig(options.Projects, out jsonConfig))
             {
                 var command = (MetadataCommand)CommandFactory.ReadConfig(jsonConfig, null).Commands.FirstOrDefault(s => s is MetadataCommand);
@@ -145,17 +154,15 @@ namespace Microsoft.DocAsCode
                     Force = options.ForceRebuild,
                     Destination = options.OutputFolder,
                     Raw = options.PreserveRawInlineComments,
-                    Source = new FileMapping(new FileMappingItem() { Files = new FileItems(options.Projects) })
+                    Source = new FileMapping(new FileMappingItem() { Files = new FileItems(options.Projects) }) { Expanded = true }
                 });
                 return config;
             }
         }
 
-        private static bool TryGetJsonConfig(List<string> inputGlobPattern, out string jsonConfig)
+        private static bool TryGetJsonConfig(List<string> projects, out string jsonConfig)
         {
-            var validProjects = FileGlob.GetFiles(string.Empty, inputGlobPattern, null).ToList();
-
-            if (!validProjects.Any())
+            if (!projects.Any())
             {
                 if (!File.Exists(Constants.ConfigFileName))
                 {
@@ -170,8 +177,8 @@ namespace Microsoft.DocAsCode
             }
 
             // Get the first docfx.json config file
-            var configFiles = validProjects.FindAll(s => Path.GetFileName(s).Equals(Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase));
-            var otherFiles = validProjects.Except(configFiles).ToList();
+            var configFiles = projects.FindAll(s => Path.GetFileName(s).Equals(Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase));
+            var otherFiles = projects.Except(configFiles).ToList();
 
             // Load and ONLY load docfx.json when it exists
             if (configFiles.Count > 0)

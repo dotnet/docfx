@@ -40,14 +40,6 @@ namespace Microsoft.DocAsCode
                 }
             },
             new SingleAnswerQuestion(
-                "What is the title of your documentation?", (s, m) => m.Build.Title = s,
-                "Doc-as-code documentation") {
-                 Descriptions = new string[]
-                 {
-                     Hints.Enter,
-                 }
-            },
-            new SingleAnswerQuestion(
                 "Where to save the generated documenation?", (s, m) => m.Build.Destination = s,
                 "_site") {
                  Descriptions = new string[]

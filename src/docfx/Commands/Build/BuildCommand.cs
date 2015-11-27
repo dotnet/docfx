@@ -19,13 +19,6 @@ namespace Microsoft.DocAsCode
         private string _helpMessage = null;
         public BuildJsonConfig Config { get; }
 
-        private BuildJsonConfig MergeConfig(BuildJsonConfig config, CommandContext context)
-        {
-            config.BaseDirectory = context?.BaseDirectory ?? config.BaseDirectory;
-            config.OutputFolder = context?.RootOutputFolder ?? config.OutputFolder;
-            return config;
-        }
-
         public BuildCommand(CommandContext context) : this(new BuildJsonConfig(), context)
         {
         }
@@ -106,6 +99,23 @@ namespace Microsoft.DocAsCode
             }
 
             return ParseResult.SuccessResult;
+        }
+
+        private BuildJsonConfig MergeConfig(BuildJsonConfig config, CommandContext context)
+        {
+            config.BaseDirectory = context?.BaseDirectory ?? config.BaseDirectory;
+            if (context?.SharedOptions != null)
+            {
+                config.OutputFolder = context.SharedOptions.RootOutputFolder ?? config.OutputFolder;
+                var templates = context.SharedOptions.Templates;
+                if (templates != null) config.Templates = new ListWithStringFallback(templates);
+                var themes = context.SharedOptions.Themes;
+                if (themes != null) config.Themes = new ListWithStringFallback(themes);
+                config.Force = context.SharedOptions.ForceRebuild;
+                config.Serve = context.SharedOptions.Serve;
+                config.Port = context.SharedOptions.Port?.ToString() ?? null;
+            }
+            return config;
         }
 
         private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config)

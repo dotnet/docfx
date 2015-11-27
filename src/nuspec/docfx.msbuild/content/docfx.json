@@ -1,19 +1,37 @@
 ﻿{
-  "build": {
-    "content":
-      [
+  "metadata": [
+    {
+      "src": [
         {
-          "files": ["**/**.md"],
+          "files": [ "**/*.csproj" ],
+          "exclude": [ "**/bin/**", "**/obj/**" ]
         }
       ],
+      "dest": "obj/api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [ "**/*.yml" ],
+        "cwd": "obj/"
+      },
+      {
+        "files": [ "**.md", "toc.yml" ]
+      }
+    ],
     "resource": [
-        {
-          "files": ["**/images/**"]
-        }
+      {
+        "files": [ "**/images/**" ]
+      }
     ],
     "externalReference": [
     ],
     "globalMetadata": {
-    }
+    },
+    "template": [
+      "default"
+    ],
+    "dest" : "_site"
   }
 }

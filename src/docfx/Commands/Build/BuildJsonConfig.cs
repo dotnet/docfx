@@ -19,6 +19,9 @@ namespace Microsoft.DocAsCode
         [JsonIgnore]
         public string OutputFolder { get; set; }
 
+        [JsonProperty("force")]
+        public bool Force { get; set; }
+
         [JsonProperty("content")]
         public FileMapping Content { get; set; }
 
@@ -46,9 +49,6 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("fileMetadata")]
         public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
-
-        [JsonProperty("title")]
-        public string Title { get; set; }
 
         [JsonProperty("template")]
         public ListWithStringFallback Templates { get; set; } = new ListWithStringFallback();
