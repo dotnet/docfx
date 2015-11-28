@@ -3,7 +3,7 @@
     {
       "src": [
         {
-          "files": ["**/*.csproj"],
+          "files": [ "**/*.csproj" ],
           "exclude": [ "**/bin/**", "**/obj/**" ],
           "cwd": "../src"
         }
@@ -12,29 +12,41 @@
     }
   ],
   "build": {
-    "content":
-      [
-        {
-          "files": ["**/*.yml"],
-          "cwd": "obj/docfx"
-        },
-        {
-          "files": ["tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml", "index.md", "guideline/**/*.md"]
-        },
-        {
-          "files": ["toc.yml", "tutorial/toc.yml"]
-        }
-      ],
+    "content": [
+      {
+        "files": [ "**/*.yml" ],
+        "cwd": "obj/docfx"
+      },
+      {
+        "files": [ "tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml", "index.md", "guideline/**/*.md" ]
+      },
+      {
+        "files": [ "toc.yml", "tutorial/toc.yml" ]
+      }
+    ],
     "resource": [
-        {
-          "files": ["spec/images/**", "tutorial/artifacts/**"]
-        }
+      {
+        "files": [ "spec/images/**", "tutorial/artifacts/**" ]
+      }
     ],
     "overwrite": "apispec/*.md",
     "externalReference": [
     ],
     "globalMetadata": {
       "_appTitle": "docfx website"
+    },
+    "fileMetadata": {
+      "priority": {
+        "obj/docfx/**": 1.0,
+        "**.md": 2.5,
+        "spec/**.md": 3,
+        "tutorial/**.md": 1.2
+      },
+      "keywords": {
+      	"obj/docfx/**": ["API", "Reference"],
+      	"spec/**.md": ["Spec", "Conceptual"],
+      	"**/*markdown.md": ["DFM", "Spec"]
+      }
     },
     "dest": "_site",
     "template": [

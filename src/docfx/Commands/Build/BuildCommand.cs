@@ -114,13 +114,30 @@ namespace Microsoft.DocAsCode
             var baseDirectory = config.BaseDirectory ?? Environment.CurrentDirectory;
 
             parameters.OutputBaseDir = Path.Combine(baseDirectory, "obj");
-            parameters.Metadata = (config.GlobalMetadata ?? new Dictionary<string, object>()).ToImmutableDictionary();
+            if (config.GlobalMetadata != null) parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
+            if (config.FileMetadata != null) parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
             parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference)).ToImmutableArray();
             parameters.Files = GetFileCollectionFromFileMapping(baseDirectory,
                Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
                Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
                Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
             return parameters;
+        }
+
+        private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
+        {
+            var result = new Dictionary<string, ImmutableArray<FileMetadataItem>>();
+            foreach (var item in fileMetadata)
+            {
+                var list = new List<FileMetadataItem>();
+                foreach(var pair in item.Value.Items)
+                {
+                    list.Add(new FileMetadataItem(pair.Glob, item.Key, pair.Value));
+                }
+                result.Add(item.Key, list.ToImmutableArray());
+            }
+
+            return new FileMetadata(baseDirectory, result);
         }
 
         private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)

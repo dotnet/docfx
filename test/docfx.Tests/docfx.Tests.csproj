@@ -44,12 +44,17 @@
       <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
       <Name>Microsoft.DocAsCode.EntityModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
+      <Project>{619EC13D-8939-4F23-B7DC-7A98964BB9A4}</Project>
+      <Name>Microsoft.DocAsCode.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildCommandTest.cs" />
+    <Compile Include="JsonConverterTest.cs" />
     <Compile Include="GetConfigTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

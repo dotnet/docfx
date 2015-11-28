@@ -62,6 +62,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 throw new ArgumentException("Source files cannot be null.", nameof(parameters) + "." + nameof(parameters.Files));
             }
+            if (parameters.Metadata == null)
+            {
+                parameters.Metadata = ImmutableDictionary<string, object>.Empty;
+            }
 
             using (new LoggerPhaseScope(Phase))
             {
@@ -81,7 +85,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 {
                     if (item.Key != null)
                     {
-                        BuildCore(item.Key, item, parameters.Metadata ?? ImmutableDictionary<string, object>.Empty, context);
+                        BuildCore(item.Key, item, parameters.Metadata, parameters.FileMetadata, context);
                     }
                     else
                     {
@@ -105,12 +109,13 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             IDocumentProcessor processor,
             IEnumerable<FileAndType> files,
             ImmutableDictionary<string, object> metadata,
+            FileMetadata fileMetadata,
             DocumentBuildContext context)
         {
             Logger.LogInfo($"Plug-in {processor.Name}: Loading document...");
             using (var hostService = new HostService(
                 from file in files
-                select Load(processor, metadata, file)))
+                select Load(processor, metadata, fileMetadata, file)))
             {
                 hostService.SourceFiles = context.AllSourceFiles;
                 foreach (var m in hostService.Models)
@@ -132,13 +137,46 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
         }
 
-        private static FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileAndType file)
+        private static FileModel Load(
+            IDocumentProcessor processor,
+            ImmutableDictionary<string, object> metadata,
+            FileMetadata fileMetadata,
+            FileAndType file)
         {
             using (new LoggerFileScope(file.File))
             {
                 Logger.LogVerbose($"Plug-in {processor.Name}: Loading...");
+
+                var path = Path.Combine(file.BaseDir, file.File);
+                metadata = ApplyFileMetadata(path, metadata, fileMetadata);
                 return processor.Load(file, metadata);
             }
+        }
+
+        private static ImmutableDictionary<string, object> ApplyFileMetadata(
+            string file,
+            ImmutableDictionary<string, object> metadata,
+            FileMetadata fileMetadata)
+        {
+            if (fileMetadata == null || fileMetadata.Count == 0) return metadata;
+            var result = new Dictionary<string, object>(metadata);
+            var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Environment.CurrentDirectory : fileMetadata.BaseDir;
+            var relativePath = PathUtility.MakeRelativePath(baseDir, file);
+            foreach(var item in fileMetadata)
+            {
+                // As the latter one overrides the former one, match the pattern from latter to former
+                for (int i = item.Value.Length - 1; i >= 0; i--)
+                {
+                    if (item.Value[i].Glob.Match(relativePath))
+                    {
+                        // override global metadata if metadata is defined in file metadata
+                        result[item.Value[i].Key] = item.Value[i].Value;
+                        Logger.LogVerbose($"{relativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
+                        break;
+                    }
+                }
+            }
+            return result.ToImmutableDictionary();
         }
 
         private void Prebuild(IDocumentProcessor processor, HostService hostService)
