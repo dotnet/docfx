@@ -47,12 +47,12 @@ namespace Microsoft.DocAsCode.Glob
 
         public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
         public GlobMatcherOptions Options { get; }
-
+        public string Raw { get; }
         public GlobMatcher(string pattern, GlobMatcherOptions options = DefaultOptions)
         {
             if (pattern == null) throw new ArgumentNullException(nameof(pattern));
             Options = options;
-
+            Raw = pattern;
             _ignoreCase = Options.HasFlag(GlobMatcherOptions.IgnoreCase);
             _negate = ParseNegate(ref pattern, Options);
             _items = Compile(pattern).ToArray();
