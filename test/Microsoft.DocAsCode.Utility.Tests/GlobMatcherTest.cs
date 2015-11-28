@@ -237,7 +237,7 @@ namespace Microsoft.DocAsCode.Tests
         }, true)]
         public void TestGlobMatchWithDotMatchShouldMatchDotFiles(string pattern, string[] files, bool expected)
         {
-            var glob = new GlobMatcher(pattern, GlobMatcherOptions.AllowDotMatch);
+            var glob = new GlobMatcher(pattern, GlobMatcher.DefaultOptions | GlobMatcherOptions.AllowDotMatch);
             foreach (var file in files)
             {
                 var match = glob.Match(file);
@@ -281,7 +281,7 @@ namespace Microsoft.DocAsCode.Tests
         }, false)]
         public void TestGlobPartialMatchShouldMatchFolder(string pattern, string[] folders, bool expected)
         {
-            var glob = new GlobMatcher(pattern, GlobMatcherOptions.AllowDotMatch);
+            var glob = new GlobMatcher(pattern, GlobMatcher.DefaultOptions | GlobMatcherOptions.AllowDotMatch);
             foreach (var file in folders)
             {
                 var match = glob.Match(file, true);

@@ -45,9 +45,10 @@ namespace Microsoft.DocAsCode.Glob
         private bool _ignoreCase = false;
         #endregion
 
+        public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
         public GlobMatcherOptions Options { get; }
 
-        public GlobMatcher(string pattern, GlobMatcherOptions options = GlobMatcherOptions.IgnoreCase)
+        public GlobMatcher(string pattern, GlobMatcherOptions options = DefaultOptions)
         {
             if (pattern == null) throw new ArgumentNullException(nameof(pattern));
             Options = options;
@@ -107,7 +108,7 @@ namespace Microsoft.DocAsCode.Glob
         {
             string[] globs;
 
-            if (!Options.HasFlag(GlobMatcherOptions.DisableExpand))
+            if (Options.HasFlag(GlobMatcherOptions.AllowExpand))
             {
                 globs = ExpandGroup(pattern, Options);
                 if (globs.Length == 0) return Enumerable.Empty<GlobRegexItem[]>();
@@ -154,14 +155,14 @@ namespace Microsoft.DocAsCode.Glob
         private GlobRegexItem ConvertSingleGlobPart(string globPart)
         {
             // Return GlobStar for **
-            if (!Options.HasFlag(GlobMatcherOptions.DisableGlobStar) && GlobStarRegex.IsMatch(globPart))
+            if (Options.HasFlag(GlobMatcherOptions.AllowGlobStar) && GlobStarRegex.IsMatch(globPart))
             {
                 return IsFolderPath(globPart) ? GlobRegexItem.GlobStar : GlobRegexItem.GlobStarForFileOnly;
             }
 
             StringBuilder builder = new StringBuilder();
             bool escaping = false;
-            bool disableEscape = Options.HasFlag(GlobMatcherOptions.DisableEscape);
+            bool disableEscape = !Options.HasFlag(GlobMatcherOptions.AllowEscape);
             bool hasMagic = false;
             CharClass currentCharClass = null;
             string patternStart = string.Empty;
@@ -288,7 +289,7 @@ namespace Microsoft.DocAsCode.Glob
                 case GlobRegexItemType.GlobStar:
                 case GlobRegexItemType.GlobStarForFileOnly:
                     // If globstar is disabled
-                    if (Options.HasFlag(GlobMatcherOptions.DisableGlobStar))
+                    if (!Options.HasFlag(GlobMatcherOptions.AllowGlobStar))
                     {
                         return SingleStarToRegex;
                     }
@@ -428,9 +429,9 @@ namespace Microsoft.DocAsCode.Glob
         }
         #endregion
 
-        internal static bool ParseNegate(ref string pattern, GlobMatcherOptions options = GlobMatcherOptions.IgnoreCase)
+        internal static bool ParseNegate(ref string pattern, GlobMatcherOptions options = DefaultOptions)
         {
-            if (options.HasFlag(GlobMatcherOptions.DisableNegate))
+            if (!options.HasFlag(GlobMatcherOptions.AllowNegate))
             {
                 return false;
             }
@@ -456,11 +457,11 @@ namespace Microsoft.DocAsCode.Glob
         /// </summary>
         /// <param name="pattern"></param>
         /// <returns></returns>
-        internal static string[] ExpandGroup(string pattern, GlobMatcherOptions options = GlobMatcherOptions.IgnoreCase)
+        internal static string[] ExpandGroup(string pattern, GlobMatcherOptions options = DefaultOptions)
         {
             GlobUngrouper ungrouper = new GlobUngrouper();
             bool escaping = false;
-            bool disableEscape = options.HasFlag(GlobMatcherOptions.DisableEscape);
+            bool disableEscape = !options.HasFlag(GlobMatcherOptions.AllowEscape);
             foreach (char c in pattern)
             {
                 if (escaping)
@@ -763,13 +764,12 @@ namespace Microsoft.DocAsCode.Glob
     [Flags]
     public enum GlobMatcherOptions
     {
-        IgnoreCase = 0x0,
-        CaseSensitive = 0x1,
-        DisableNegate = 0x2,
-        DisableExpand = 0x4,
-        DisableEscape = 0x8,
-        DisableGlobStar = 0x10,
-
+        None = 0x0,
+        IgnoreCase = 0x1,
+        AllowNegate = 0x2,
+        AllowExpand = 0x4,
+        AllowEscape = 0x8,
+        AllowGlobStar = 0x10,
         /// <summary>
         /// Allow patterns to match filenames starting with a period even if the pattern does not explicitly have a period.
         /// By default disabled: a/**/b will **not** match a/.c/d, unless `AllowDotMatch` is set

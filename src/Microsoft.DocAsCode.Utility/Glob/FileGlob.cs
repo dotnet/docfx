@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Glob
 
     public class FileGlob
     {
-        public static IEnumerable<string> GetFiles(string cwd, IEnumerable<string> patterns, IEnumerable<string> excludePatterns, GlobMatcherOptions options = GlobMatcherOptions.IgnoreCase)
+        public static IEnumerable<string> GetFiles(string cwd, IEnumerable<string> patterns, IEnumerable<string> excludePatterns, GlobMatcherOptions options = GlobMatcher.DefaultOptions)
         {
             // If there is no pattern, nothing will be included
             if (patterns == null) return Enumerable.Empty<string>();
