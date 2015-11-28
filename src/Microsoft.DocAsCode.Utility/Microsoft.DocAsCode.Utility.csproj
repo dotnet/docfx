@@ -19,6 +19,7 @@
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="Tamir.SharpSSH, Version=1.1.1.13, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
@@ -40,10 +41,13 @@
     <Compile Include="EntityMergers\MergeBehaviorOption.cs" />
     <Compile Include="EntityMergers\MergeContext.cs" />
     <Compile Include="EntityMergers\MergeOptionAttribute.cs" />
+    <Compile Include="Glob\FileGlob.cs" />
     <Compile Include="Glob\Glob.cs" />
-    <Compile Include="Glob\GlobPathHelper.cs" />
+    <Compile Include="Glob\GlobMatcher.cs" />
     <Compile Include="EntityMergers\ReflectionEntityMerger.cs" />
+    <Compile Include="Glob\GlobPathHelper.cs" />
     <Compile Include="LruList.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelativePath.cs" />
     <Compile Include="TaskUtility.cs" />
     <Compile Include="Extensions.cs" />

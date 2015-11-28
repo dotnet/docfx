@@ -91,8 +91,11 @@ namespace Microsoft.DocAsCode
 
     public class CommandContext
     {
+        public CascadableOptions SharedOptions { get; }
         public string BaseDirectory { get; set; }
-        public string RootOutputFolder { get; set; }
-        public bool ForceRebuild { get; set; }
+        public CommandContext(CascadableOptions options)
+        {
+            SharedOptions = options;
+        }
     }
 }

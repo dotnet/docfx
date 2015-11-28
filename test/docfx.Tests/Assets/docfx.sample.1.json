@@ -42,6 +42,15 @@
     "globalMetadata": {
       "key": "value"
     },
+    "fileMetadata": {
+      "key": {
+        "filepattern1": "string",
+        "filePattern2": 2,
+        "filePattern3": true,
+        "filePattern4": [ ],
+        "filePattern5": { }
+      }
+    },
     "overwrite": "apispec/*.md",
     "externalReference": [
       "external/*.yml.zip"

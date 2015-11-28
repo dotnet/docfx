@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Builders
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     public sealed class DocumentBuildParameters
@@ -11,5 +12,32 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         public string OutputBaseDir { get; set; }
         public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
+        public FileMetadata FileMetadata { get; set; }
+    }
+
+    public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>
+    {
+        public string BaseDir { get; }
+        public FileMetadata(string baseDir) : base()
+        {
+            BaseDir = baseDir;
+        }
+        public FileMetadata(string baseDir, IDictionary<string, ImmutableArray<FileMetadataItem>> dictionary) : base(dictionary)
+        {
+            BaseDir = baseDir;
+        }
+    }
+
+    public sealed class FileMetadataItem
+    {
+        public Glob.GlobMatcher Glob { get; set; }
+        public object Value { get; set; }
+        public string Key { get; set; }
+        public FileMetadataItem(Glob.GlobMatcher glob, string key, object value)
+        {
+            Glob = glob;
+            Key = key;
+            Value = value;
+        }
     }
 }

@@ -2,13 +2,11 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\Shared\test.base.props" />
   <PropertyGroup>
-    <ProjectGuid>{F84BB644-A042-4364-AD2D-BF9D5BBD44BC}</ProjectGuid>
+    <ProjectGuid>{F84BB644-A042-4364-AD2D-BF9D5BBD44AC}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
-    <RootNamespace>Microsoft.DocAsCode.Tests</RootNamespace>
+    <RootNamespace>Microsoft.DocAsCode.Utility.Tests</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -30,32 +28,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\docfx.sample.1.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\docfx\docfx.csproj">
-      <Project>{ab97bedf-d207-42e9-a56f-c9dd395bfcdd}</Project>
-      <Name>docfx</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
-      <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
-      <Name>Microsoft.DocAsCode.EntityModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619EC13D-8939-4F23-B7DC-7A98964BB9A4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobFileTest.cs" />
+    <Compile Include="GlobMatcherTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuildCommandTest.cs" />
-    <Compile Include="JsonConverterTest.cs" />
-    <Compile Include="GetConfigTest.cs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

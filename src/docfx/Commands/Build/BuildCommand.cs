@@ -19,13 +19,6 @@ namespace Microsoft.DocAsCode
         private string _helpMessage = null;
         public BuildJsonConfig Config { get; }
 
-        private BuildJsonConfig MergeConfig(BuildJsonConfig config, CommandContext context)
-        {
-            config.BaseDirectory = context?.BaseDirectory ?? config.BaseDirectory;
-            config.OutputFolder = context?.RootOutputFolder ?? config.OutputFolder;
-            return config;
-        }
-
         public BuildCommand(CommandContext context) : this(new BuildJsonConfig(), context)
         {
         }
@@ -108,19 +101,53 @@ namespace Microsoft.DocAsCode
             return ParseResult.SuccessResult;
         }
 
+        private BuildJsonConfig MergeConfig(BuildJsonConfig config, CommandContext context)
+        {
+            config.BaseDirectory = context?.BaseDirectory ?? config.BaseDirectory;
+            if (context?.SharedOptions != null)
+            {
+                config.OutputFolder = context.SharedOptions.RootOutputFolder ?? config.OutputFolder;
+                var templates = context.SharedOptions.Templates;
+                if (templates != null) config.Templates = new ListWithStringFallback(templates);
+                var themes = context.SharedOptions.Themes;
+                if (themes != null) config.Themes = new ListWithStringFallback(themes);
+                config.Force |= context.SharedOptions.ForceRebuild;
+                config.Serve |= context.SharedOptions.Serve;
+                config.Port = context.SharedOptions.Port?.ToString();
+            }
+            return config;
+        }
+
         private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config)
         {
             var parameters = new DocumentBuildParameters();
             var baseDirectory = config.BaseDirectory ?? Environment.CurrentDirectory;
 
             parameters.OutputBaseDir = Path.Combine(baseDirectory, "obj");
-            parameters.Metadata = (config.GlobalMetadata ?? new Dictionary<string, object>()).ToImmutableDictionary();
+            if (config.GlobalMetadata != null) parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
+            if (config.FileMetadata != null) parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
             parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference)).ToImmutableArray();
             parameters.Files = GetFileCollectionFromFileMapping(baseDirectory,
                Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
                Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
                Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
             return parameters;
+        }
+
+        private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
+        {
+            var result = new Dictionary<string, ImmutableArray<FileMetadataItem>>();
+            foreach (var item in fileMetadata)
+            {
+                var list = new List<FileMetadataItem>();
+                foreach(var pair in item.Value.Items)
+                {
+                    list.Add(new FileMetadataItem(pair.Glob, item.Key, pair.Value));
+                }
+                result.Add(item.Key, list.ToImmutableArray());
+            }
+
+            return new FileMetadata(baseDirectory, result);
         }
 
         private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)
