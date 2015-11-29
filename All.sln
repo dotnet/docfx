@@ -358,6 +358,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MergeSourceInfo", "MergeSourceInfo", "{EB3337F2-D7A5-4C43-B3DF-DDFEC814DB7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeSourceInfo", "tools\MergeSourceInfo\MergeSourceInfo.csproj", "{A0E3D6A0-8539-412F-855A-3AEEA40A9CE2}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Utility.Tests", "test\Microsoft.DocAsCode.Utility.Tests\Microsoft.DocAsCode.Utility.Tests.csproj", "{F84BB644-A042-4364-AD2D-BF9D5BBD44AC}"
 EndProject
 Global
