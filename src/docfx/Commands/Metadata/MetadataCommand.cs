@@ -105,8 +105,8 @@ namespace Microsoft.DocAsCode
         {
             foreach (var config in configs)
             {
-                config.Raw = configs.Raw;
-                config.Force = configs.Force;
+                config.Raw |= configs.Raw;
+                config.Force |= configs.Force;
                 yield return ConvertToInputModel(config);
             }
         }
