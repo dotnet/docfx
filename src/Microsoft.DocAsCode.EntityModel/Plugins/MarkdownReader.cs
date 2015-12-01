@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Linq;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
-    using Utility;
+    using Microsoft.DocAsCode.Utility;
 
     public class MarkdownReader
     {
@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 if (!string.IsNullOrEmpty(item.Id))
                 {
                     int start = lineIndex[item.Location.EndLocation.Line] + item.Location.EndLocation.Column + 1;
-                    int end = lineIndex[currentEnd.Line] + currentEnd.Column;
+                    int end = lineIndex[currentEnd.Line] + currentEnd.Column + 1;
                     using (var sw = new StringWriter())
                     {
                         YamlUtility.Serialize(sw, item.Detail.Properties);
