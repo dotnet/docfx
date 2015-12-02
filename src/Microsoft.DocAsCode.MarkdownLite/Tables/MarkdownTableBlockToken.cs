@@ -20,5 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public Align[] Align { get; }
 
         public string[][] Cells { get; }
+
+        public string SourceMarkdown { get; set; }
     }
 }

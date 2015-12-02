@@ -85,6 +85,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         public IMarkdownRule Rule { get; }
         public string Content { get; }
+        public string SourceMarkdown { get; set; }
         public DfmYamlHeaderBlockToken(IMarkdownRule rule, string content)
         {
             Rule = rule;
@@ -98,6 +99,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public string Href { get; }
         public string Name { get; }
         public string Title { get; }
+        public string SourceMarkdown { get; set; }
 
         public DfmXrefInlineToken(IMarkdownRule rule, string href, string name, string title)
         {
@@ -115,6 +117,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public string Name { get; }
         public string Title { get; }
         public string Raw { get; }
+        public string SourceMarkdown { get; set; }
 
         public DfmIncludeBlockToken(IMarkdownRule rule, string src, string name, string title, string raw)
         {
@@ -133,6 +136,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public string Name { get; }
         public string Title { get; }
         public string Raw { get; }
+        public string SourceMarkdown { get; set; }
 
         public DfmIncludeInlineToken(IMarkdownRule rule, string src, string name, string title, string raw)
         {

@@ -17,5 +17,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public string Content { get; }
 
         public int Depth { get; }
+
+        public string SourceMarkdown { get; set; }
     }
 }

@@ -11,5 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         }
 
         public IMarkdownRule Rule { get; }
+
+        public string SourceMarkdown { get; set; }
     }
 }

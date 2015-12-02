@@ -23,5 +23,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public string Text { get; }
 
         public bool ShouldApplyInlineRule { get; set; }
+
+        public string SourceMarkdown { get; set; }
     }
 }

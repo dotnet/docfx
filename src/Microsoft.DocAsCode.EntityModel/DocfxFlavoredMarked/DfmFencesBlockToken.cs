@@ -22,5 +22,7 @@
         public string Name { get; }
 
         public string Title { get; }
+
+        public string SourceMarkdown { get; set; }
     }
 }
