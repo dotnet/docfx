@@ -133,7 +133,11 @@
     <Compile Include="Resolvers\SetParent.cs" />
     <Compile Include="TemplateManager\ResourceFinder.cs" />
     <Compile Include="TemplateManager\ResourceCollection.cs" />
+    <Compile Include="TemplateManager\SystemAttributes.cs" />
+    <Compile Include="TemplateManager\ResourceTemplateLocator.cs" />
+    <Compile Include="TemplateManager\Template.cs" />
     <Compile Include="TemplateManager\TemplateManifestItem.cs" />
+    <Compile Include="TemplateManager\TemplateCollection.cs" />
     <Compile Include="TemplateManager\TemplateProcessor.cs" />
     <Compile Include="TemplateManager\TemplateManager.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
