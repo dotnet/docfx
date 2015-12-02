@@ -86,7 +86,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" /> 
     <None Include="Assets\docfx.sample.1.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
