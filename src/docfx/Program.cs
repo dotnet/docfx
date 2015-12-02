@@ -3,10 +3,13 @@
 
 namespace Microsoft.DocAsCode
 {
-    using CommandLine;
-    using Microsoft.DocAsCode.EntityModel;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
+
+    using CommandLine;
+
+    using Microsoft.DocAsCode.EntityModel;
 
     internal class Program
     {
@@ -14,23 +17,46 @@ namespace Microsoft.DocAsCode
         {
             try
             {
-                Logger.RegisterListener(new ConsoleLogListener());
+                var replayListener = new ReplayLogListener(LogLevel.Warning);
+                replayListener.AddListener(new ConsoleLogListener());
+                Logger.RegisterListener(replayListener);
                 Options options;
                 var result = TryGetOptions(args, out options);
 
-                if (!string.IsNullOrWhiteSpace(options.Log)) Logger.RegisterListener(new ReportLogListener(options.Log));
+                if (!string.IsNullOrWhiteSpace(options.Log))
+                {
+                    Logger.RegisterListener(new ReportLogListener(options.Log));
+                }
 
-                if (options.LogLevel.HasValue) Logger.LogLevelThreshold = options.LogLevel.Value;
+                if (options.LogLevel.HasValue)
+                {
+                    Logger.LogLevelThreshold = options.LogLevel.Value;
+                }
 
-                if (!string.IsNullOrEmpty(result.Message)) Logger.Log(result);
-                if (result.ResultLevel == ResultLevel.Error) return 1;
+                if (!string.IsNullOrEmpty(result.Message))
+                {
+                    Logger.Log(result);
+                }
+                if (result.ResultLevel == ResultLevel.Error)
+                {
+                    return 1;
+                }
 
                 var context = new RunningContext();
                 result = Exec(options, context);
-                if (!string.IsNullOrEmpty(result.Message)) Logger.Log(result);
+                if (!string.IsNullOrEmpty(result.Message))
+                {
+                    Logger.Log(result);
+                }
 
-                if (result.ResultLevel == ResultLevel.Error) return 1;
-                if (result.ResultLevel == ResultLevel.Warning) return 2;
+                if (result.ResultLevel == ResultLevel.Error)
+                {
+                    return 1;
+                }
+                if (result.ResultLevel == ResultLevel.Warning)
+                {
+                    return 2;
+                }
                 return 0;
             }
             finally
