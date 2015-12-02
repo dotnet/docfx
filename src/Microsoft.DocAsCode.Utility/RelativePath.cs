@@ -171,12 +171,13 @@ namespace Microsoft.DocAsCode.Utility
 
         public RelativePath RemoveWorkingFolder()
         {
-            if (!IsFromWorkingFolder())
+            if (IsFromWorkingFolder())
             {
                 return this - WorkingFolder;
             }
             return this;
         }
+
         public override int GetHashCode()
         {
             var hash = _parentDirectoryCount;

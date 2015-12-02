@@ -10,10 +10,6 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Text;
     using System.Text.RegularExpressions;
 
-    using Jint;
-    using Newtonsoft.Json;
-    using Nustache.Core;
-
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -24,7 +20,6 @@ namespace Microsoft.DocAsCode.EntityModel
         private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex IsRegexPatternRegex = new Regex("^/(.*)/$", RegexOptions.Compiled);
         private const string ManifestFileName = ".manifest";
-        private const string PartialTemplateExtension = ".tmpl.partial";
         private const string Language = "csharp"; // TODO: how to handle multi-language
         private TemplateCollection _templates;
         private ResourceCollection _resourceProvider = null;
@@ -146,7 +141,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     else
                     {
                         var modelFile = Path.Combine(baseDirectory, item.ModelFile);
-                        var systemAttrs = new SystemAttributes(context, item);
+                        var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
                         foreach (var template in templates)
                         {
                             var extension = template.Extension;
@@ -329,19 +324,6 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private sealed class TemplateResourceInfo
-        {
-            public string ResourceKey { get; }
-            public string FilePath { get; }
-            public bool IsRegexPattern { get; }
-            public TemplateResourceInfo(string resourceKey, string filePath, bool isRegexPattern)
-            {
-                ResourceKey = resourceKey;
-                FilePath = filePath;
-                IsRegexPattern = isRegexPattern;
-            }
-        }
-
         private static void UpdateXref(HtmlAgilityPack.HtmlNode xref, Dictionary<string, XRefSpec> internalXRefMap, Dictionary<string, XRefSpec> externalXRefMap, Func<string, string> updater, string language)
         {
             var key = xref.GetAttributeValue("href", null);
@@ -446,7 +428,7 @@ namespace Microsoft.DocAsCode.EntityModel
             string attribute = "href";
             var key = link.GetAttributeValue(attribute, null);
             string path;
-            if (TryGetPathToRoot(key, out path))
+            if (PathUtility.TryGetPathFromWorkingFolder(key, out path))
             {
                 string href;
                 // For href, # may be appended, remove # before search file from map
@@ -480,7 +462,7 @@ namespace Microsoft.DocAsCode.EntityModel
             string attribute = "src";
             var key = link.GetAttributeValue(attribute, null);
             string path;
-            if (TryGetPathToRoot(key, out path))
+            if (PathUtility.TryGetPathFromWorkingFolder(key, out path))
             {
                 string xrefValue;
                 if (map.TryGetValue(key, out xrefValue))
@@ -501,28 +483,11 @@ namespace Microsoft.DocAsCode.EntityModel
         private static string UpdateFilePath(string path, string modelFilePathToRoot)
         {
             string pathToRoot;
-            if (TryGetPathToRoot(path, out pathToRoot))
+            if (PathUtility.TryGetPathFromWorkingFolder(path, out pathToRoot))
             {
                 return ((RelativePath)pathToRoot).MakeRelativeTo((RelativePath)modelFilePathToRoot);
             }
             return path;
-        }
-
-        private static bool TryGetPathToRoot(string path, out string pathToRoot)
-        {
-            if (!string.IsNullOrEmpty(path) && IsMappedPath(path))
-            {
-                pathToRoot = path.Substring(2);
-                return true;
-            }
-            pathToRoot = path;
-            return false;
-        }
-
-        private static bool IsMappedPath(string path)
-        {
-            if (!PathUtility.IsRelativePath(path)) return false;
-            return ((RelativePath)path).IsFromWorkingFolder();
         }
 
         public void Dispose()
@@ -530,265 +495,16 @@ namespace Microsoft.DocAsCode.EntityModel
             _resourceProvider?.Dispose();
         }
 
-        private sealed class SystemAttributes
+        private sealed class TemplateResourceInfo
         {
-            [JsonProperty("_lang")]
-            public string Language { get; set; }
-            [JsonProperty("_title")]
-            public string Title { get; set; }
-            [JsonProperty("_tocTitle")]
-            public string TocTitle { get; set; }
-            [JsonProperty("_name")]
-            public string Name { get; set; }
-            [JsonProperty("_description")]
-            public string Description { get; set; }
-
-            /// <summary>
-            /// TOC PATH from ~ ROOT
-            /// </summary>
-            [JsonProperty("_tocPath")]
-            public string TocPath { get; set; }
-
-            /// <summary>
-            /// ROOT TOC PATH from ~ ROOT
-            /// </summary>
-            [JsonProperty("_navPath")]
-            public string RootTocPath { get; set; }
-
-            /// <summary>
-            /// Current file's relative path to ROOT, e.g. file is ~/A/B.md, relative path to ROOT is ../
-            /// </summary>
-            [JsonProperty("_rel")]
-            public string RelativePathToRoot { get; set; }
-
-            /// <summary>
-            /// ROOT TOC file's relative path to ROOT
-            /// </summary>
-            [JsonProperty("_navRel")]
-            public string RootTocRelativePath { get; set; }
-
-            /// <summary>
-            /// current file's TOC file's relative path to ROOT
-            /// </summary>
-            [JsonProperty("_tocRel")]
-            public string TocRelativePath { get; set; }
-
-            public SystemAttributes(DocumentBuildContext context, ManifestItem item)
+            public string ResourceKey { get; }
+            public string FilePath { get; }
+            public bool IsRegexPattern { get; }
+            public TemplateResourceInfo(string resourceKey, string filePath, bool isRegexPattern)
             {
-                Language = TemplateProcessor.Language;
-                GetTocInfo(context, item);
-                TocRelativePath = TocPath == null ? null : ((RelativePath)TocPath).MakeRelativeTo((RelativePath)item.ModelFile);
-                RootTocRelativePath = RootTocPath == null ? null : ((RelativePath)RootTocPath).MakeRelativeTo((RelativePath)item.ModelFile);
-                RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo((RelativePath)item.ModelFile);
-            }
-
-            private void GetTocInfo(DocumentBuildContext context, ManifestItem item)
-            {
-                string relativePath = item.OriginalFile;
-                var tocMap = context.TocMap;
-                var fileMap = context.FileMap;
-                HashSet<string> parentTocs;
-                string parentToc = null;
-                string rootToc = null;
-                string currentPath = ((RelativePath)relativePath).GetPathFromWorkingFolder();
-                while (tocMap.TryGetValue(currentPath, out parentTocs) && parentTocs.Count > 0)
-                {
-                    // Get the first toc only
-                    currentPath = parentTocs.First();
-                    rootToc = currentPath;
-                    if (parentToc == null) parentToc = currentPath;
-                    currentPath = ((RelativePath)currentPath).GetPathFromWorkingFolder();
-                }
-                if (rootToc != null)
-                {
-                    rootToc = fileMap[((RelativePath)rootToc).GetPathFromWorkingFolder()];
-                    TryGetPathToRoot(rootToc, out rootToc);
-                    RootTocPath = rootToc;
-                }
-
-                if (parentToc == null) TocPath = RootTocPath;
-                else
-                {
-                    parentToc = fileMap[((RelativePath)parentToc).GetPathFromWorkingFolder()];
-                    TryGetPathToRoot(parentToc, out parentToc);
-                    TocPath = parentToc;
-                }
-            }
-        }
-
-        private sealed class ResourceTemplateLocator
-        {
-            private ResourceCollection _resourceProvider;
-            public ResourceTemplateLocator(ResourceCollection resourceProvider)
-            {
-                _resourceProvider = resourceProvider;
-            }
-
-            public Nustache.Core.Template GetTemplate(string name)
-            {
-                if (_resourceProvider == null) return null;
-                var resourceName = name + PartialTemplateExtension;
-                using (var stream = _resourceProvider.GetResourceStream(resourceName))
-                {
-                    if (stream == null) return null;
-                    var template = new Nustache.Core.Template(name);
-                    using (StreamReader reader = new StreamReader(stream))
-                        template.Load(reader);
-                    return template;
-                }
-            }
-        }
-
-        private class Template
-        {
-            private string _script = null;
-
-            public string Content { get; }
-            public string Name { get; }
-            public string Extension { get; }
-            public string Type { get; }
-            public bool IsPrimary { get; }
-            public Template(string template, string templateName, string script)
-            {
-                if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
-                Name = templateName;
-                Content = template;
-                var typeAndExtension = GetTemplateTypeAndExtension(templateName);
-                Extension = typeAndExtension.Item2;
-                Type = typeAndExtension.Item1;
-                IsPrimary = typeAndExtension.Item3;
-                _script = script;
-            }
-
-            public string GetRelativeResourceKey(string relativePath)
-            {
-                // Make sure resource keys are combined using '/'
-                return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
-            }
-
-            public string Transform(string modelPath, object attrs, TemplateLocator templateLocator)
-            {
-                if (_script == null)
-                {
-                    var entity = JsonUtility.Deserialize<object>(modelPath);
-                    return Render.StringToString(Content, entity, templateLocator);
-                }
-                else
-                {
-
-                    var processedModel = ProcessWithJint(File.ReadAllText(modelPath), attrs);
-                    return Render.StringToString(Content, processedModel, templateLocator);
-                }
-            }
-
-            private object ProcessWithJint(string model, object attrs)
-            {
-                var engine = new Engine();
-
-                // engine.SetValue("model", stream.ToString());
-                engine.SetValue("console", new
-                {
-                    log = new Action<object>(Logger.Log)
-                });
-
-                // throw exception when execution fails
-                engine.Execute(_script);
-                var value = engine.Invoke("transform", model, JsonUtility.Serialize(attrs)).ToObject();
-
-                // var value = engine.GetValue("model").ToObject();
-                // The results generated
-                return value;
-            }
-
-            private static Tuple<string, string, bool> GetTemplateTypeAndExtension(string templateName)
-            {
-                // Remove folder and .tmpl
-                templateName = Path.GetFileNameWithoutExtension(templateName);
-                var splitterIndex = templateName.IndexOf('.');
-                if (splitterIndex < 0) return Tuple.Create(templateName, string.Empty, false);
-                var type = templateName.Substring(0, splitterIndex);
-                var extension = templateName.Substring(splitterIndex);
-                var isPrimary = false;
-                if (extension.EndsWith(".primary"))
-                {
-                    isPrimary = true;
-                    extension = extension.Substring(0, extension.Length - 8);
-                }
-                return Tuple.Create(type, extension, isPrimary);
-            }
-        }
-        private class TemplateCollection : Dictionary<string, List<Template>>
-        {
-            private List<Template> _defaultTemplate = null;
-
-            public new List<Template> this[string key]
-            {
-                get
-                {
-                    List<Template> template;
-                    if (key != null && this.TryGetValue(key, out template))
-                    {
-                        return template;
-                    }
-
-                    return _defaultTemplate;
-                }
-                set
-                {
-                    this[key] = value;
-                }
-            }
-
-            public TemplateCollection(ResourceCollection provider) : base(ReadTemplate(provider), StringComparer.OrdinalIgnoreCase)
-            {
-                base.TryGetValue("default", out _defaultTemplate);
-            }
-
-            private static Dictionary<string, List<Template>> ReadTemplate(ResourceCollection resource)
-            {
-                // type <=> list of template with different extension
-                var dict = new Dictionary<string, List<Template>>(StringComparer.OrdinalIgnoreCase);
-                if (resource == null) return dict;
-                // Template file ends with .tmpl
-                // Template file naming convention: {template file name}.{file extension}.tmpl
-                var templates = resource.GetResources(@".*\.(tmpl|js)$").ToList();
-                if (templates != null)
-                {
-                    foreach (var group in templates.GroupBy(s => Path.GetFileNameWithoutExtension(s.Key), StringComparer.OrdinalIgnoreCase))
-                    {
-                        var currentTemplates = group.Where(s => Path.GetExtension(s.Key).Equals(".tmpl", StringComparison.OrdinalIgnoreCase)).ToArray();
-                        var currentScripts = group.Where(s => Path.GetExtension(s.Key).Equals(".js", StringComparison.OrdinalIgnoreCase)).ToArray();
-                        var currentTemplate = currentTemplates.FirstOrDefault();
-                        var currentScript = currentScripts.FirstOrDefault();
-                        if (currentTemplates.Length > 1)
-                        {
-                            Logger.Log(LogLevel.Warning, $"Multiple templates for type '{group.Key}'(case insensitive) are found, the one from '{currentTemplates[0].Key}' is taken.");
-                        }
-                        else if (currentTemplates.Length == 0)
-                        {
-                            // If template does not exist, ignore
-                            continue;
-                        }
-
-                        if (currentScripts.Length > 1)
-                        {
-                            Logger.Log(LogLevel.Warning, $"Multiple template scripts for type '{group.Key}'(case insensitive) are found, the one from '{currentScripts[0].Key}' is taken.");
-                        }
-
-                        var template = new Template(currentTemplate.Value, currentTemplate.Key, currentScript.Value);
-                        List<Template> templateList;
-                        if (dict.TryGetValue(template.Type, out templateList))
-                        {
-                            templateList.Add(template);
-                        }
-                        else
-                        {
-                            dict[template.Type] = new List<Template> { template };
-                        }
-                    }
-                }
-
-                return dict;
+                ResourceKey = resourceKey;
+                FilePath = filePath;
+                IsRegexPattern = isRegexPattern;
             }
         }
     }

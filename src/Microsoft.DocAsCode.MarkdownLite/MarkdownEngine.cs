@@ -55,12 +55,37 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 throw new ArgumentNullException(nameof(variableKey));
             }
-            var result = Context;
-            Context = Context.CreateContext(Context.Variables.SetItem(variableKey, value));
-            return result;
+            return SwitchContextCore(
+                Context.CreateContext(
+                    Context.Variables.SetItem(variableKey, value)));
+        }
+
+        public IMarkdownContext SwitchContext(IReadOnlyDictionary<string, object> variables)
+        {
+            if (variables == null)
+            {
+                throw new ArgumentNullException(nameof(variables));
+            }
+            var builder = Context.Variables.ToBuilder();
+            foreach (var pair in variables)
+            {
+                builder[pair.Key] = pair.Value;
+            }
+            return SwitchContextCore(
+                Context.CreateContext(
+                    builder.ToImmutable()));
         }
 
         public IMarkdownContext SwitchContext(IMarkdownContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return SwitchContextCore(context);
+        }
+
+        private IMarkdownContext SwitchContextCore(IMarkdownContext context)
         {
             var result = Context;
             Context = context;
