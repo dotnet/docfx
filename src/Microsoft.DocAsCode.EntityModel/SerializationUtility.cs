@@ -11,8 +11,8 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Threading;
 
     using Newtonsoft.Json;
-
     using YamlDotNet.Serialization;
+
     public static class JsonUtility
     {
         private static readonly ThreadLocal<JsonSerializer> serializer = new ThreadLocal<JsonSerializer>(
