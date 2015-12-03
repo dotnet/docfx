@@ -17,9 +17,8 @@ namespace Microsoft.DocAsCode
         {
             try
             {
-                var replayListener = new ReplayLogListener(LogLevel.Warning);
-                replayListener.AddListener(new ConsoleLogListener());
-                Logger.RegisterListener(replayListener);
+                var consoleLogListener = new ConsoleLogListener();
+                Logger.RegisterListener(consoleLogListener);
                 Options options;
                 var result = TryGetOptions(args, out options);
 
@@ -41,6 +40,11 @@ namespace Microsoft.DocAsCode
                 {
                     return 1;
                 }
+
+                var replayListener = new ReplayLogListener();
+                replayListener.AddListener(consoleLogListener);
+                Logger.RegisterListener(replayListener);
+                Logger.UnregisterListener(consoleLogListener);
 
                 var context = new RunningContext();
                 result = Exec(options, context);

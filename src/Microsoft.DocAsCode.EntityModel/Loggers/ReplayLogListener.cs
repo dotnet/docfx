@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private ImmutableArray<ILoggerListener> _listeners =
             ImmutableArray<ILoggerListener>.Empty;
 
-        public ReplayLogListener(LogLevel replayLevel)
+        public ReplayLogListener(LogLevel replayLevel = LogLevel.Warning)
         {
             _replayLevel = replayLevel;
             _replayList = new SortedList<LogLevel, List<ILogItem>>();
