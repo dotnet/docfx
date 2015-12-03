@@ -22,7 +22,7 @@
     "Microsoft.Owin.StaticFiles": "3.0.1"
   },
   "frameworks": {
-    "dnx46": {}
+    "dnx451": {}
   },
   "commands": {
     "docfx": "docfx"

@@ -1,15 +1,15 @@
 {
   "version": "1.0.0",
+  "dependencies": {
+    "System.Collections.Immutable": "1.1.37"
+  },
   "frameworks": {
-    "dnx46": {
+    "dnx451": {
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
         "System.Runtime": ""
       }
     }
-  },
-  "dependencies": {
-    "System.Collections.Immutable": "1.1.37"
   }
 }

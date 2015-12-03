@@ -84,7 +84,7 @@ namespace Microsoft.Extensions.ProjectModel.Utilities
             }
 
             StringComparison compare;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 compare = StringComparison.OrdinalIgnoreCase;
                 // check if paths are on the same volume

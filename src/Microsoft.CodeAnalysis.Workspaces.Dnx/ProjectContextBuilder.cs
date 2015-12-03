@@ -313,7 +313,7 @@ namespace Microsoft.Extensions.ProjectModel
                 return referenceAssembliesPath;
             }
 
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
             {
                 // There is no reference assemblies path outside of windows
                 // The enviorment variable can be used to specify one

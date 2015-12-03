@@ -20,7 +20,7 @@
     "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.0.0"
   },
   "frameworks": {
-    "dnx46": {
+    "dnx451": {
       "frameworkAssemblies": {
         "System.Collections": "",
         "System.Threading.Tasks": "",

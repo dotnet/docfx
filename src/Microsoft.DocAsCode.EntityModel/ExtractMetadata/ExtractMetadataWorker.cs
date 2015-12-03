@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using Microsoft.DocAsCode.Utility;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
-    #if DNX46
+    #if DNX451
     using Microsoft.CodeAnalysis.Workspaces.Dnx;
     #endif
     using System;
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private readonly MSBuildWorkspace _workspace;
         private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
         private static string[] SupportedSolutionExtensions = { ".sln" };
-        #if DNX46
+        #if DNX451
         private static string[] SupportedProjectName = { "project.json" };
         #else
         private static string[] SupportedProjectName = { };
@@ -785,7 +785,7 @@ namespace Microsoft.DocAsCode.EntityModel
             try
             {
                 string name = Path.GetFileName(path);
-                #if DNX46
+                #if DNX451
                 if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase))
                 {
                     var workspace = new ProjectJsonWorkspace(path);

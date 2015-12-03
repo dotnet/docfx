@@ -213,7 +213,7 @@ namespace Microsoft.CodeAnalysis.Workspaces.Dnx
             {
                 keyFile = Path.GetFullPath(Path.Combine(projectDirectory, compilerOptions.KeyFile));
 
-                if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || useOssSigning)
+                if (Environment.OSVersion.Platform != PlatformID.Win32NT || useOssSigning)
                 {
                     return options.WithCryptoPublicKey(
                         SnkUtils.ExtractPublicKey(File.ReadAllBytes(keyFile)));

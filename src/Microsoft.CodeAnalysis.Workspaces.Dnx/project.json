@@ -2,33 +2,22 @@
   "version": "1.0.0",
   "description": "Types to model a .NET Project",
   "dependencies": {
-    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-beta-23516",
     "System.Runtime.Loader": "4.0.0-beta-23516",
     "NuGet.Packaging": "3.2.0",
     "Microsoft.Extensions.FileSystemGlobbing": "1.0.0-rc1-final",
-    "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.1.0-*",
+    "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.1.0",
     "Microsoft.Extensions.JsonParser.Sources": {
       "type": "build",
-      "version": "1.0.0-rc1-*"
+      "version": "1.0.0-rc1-final"
     },
     "Microsoft.Extensions.HashCodeCombiner.Sources": {
       "type": "build",
-      "version": "1.0.0-rc1-*"
+      "version": "1.0.0-rc1-final"
     }
   },
 
   "frameworks": {
-    "dnxcore50": {
-      "dependencies": {
-        "Microsoft.CSharp": "4.0.1-beta-23516",
-        "System.Collections": "4.0.11-beta-23516",
-        "System.Linq": "4.0.1-beta-23516",
-        "System.Threading.Thread": "4.0.0-beta-23516",
-        "System.Dynamic.Runtime": "4.0.11-beta-23516",
-        "System.Security.Cryptography.Algorithms": "4.0.0-beta-23516"
-      }
-    },
-    "dnx46": {
+    "dnx451": {
       "frameworkAssemblies": {
         "System.Runtime": "",
         "System.Reflection": "",
