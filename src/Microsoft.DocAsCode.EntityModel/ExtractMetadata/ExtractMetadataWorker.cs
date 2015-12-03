@@ -22,9 +22,9 @@ namespace Microsoft.DocAsCode.EntityModel
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
 
-    public class ExtractMetadataWorker
+    public sealed class ExtractMetadataWorker : IDisposable
     {
-        private static readonly Lazy<MSBuildWorkspace> Workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
+        private readonly MSBuildWorkspace _workspace;
         private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
         private static string[] SupportedSolutionExtensions = { ".sln" };
         #if DNX46
@@ -55,6 +55,7 @@ namespace Microsoft.DocAsCode.EntityModel
             _validInput = ValidateInput(input);
             _rebuild = rebuild;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
+            _workspace = MSBuildWorkspace.Create();
         }
 
         public async Task<ParseResult> ExtractMetadataAsync()
@@ -766,11 +767,11 @@ namespace Microsoft.DocAsCode.EntityModel
             return input.Substring(0, length) + "...";
         }
 
-        private static async Task<Solution> GetSolutionAsync(string path)
+        private async Task<Solution> GetSolutionAsync(string path)
         {
             try
             {
-                return await Workspace.Value.OpenSolutionAsync(path);
+                return await _workspace.OpenSolutionAsync(path);
             }
             catch (Exception e)
             {
@@ -779,7 +780,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static async Task<Project> GetProjectAsync(string path)
+        private async Task<Project> GetProjectAsync(string path)
         {
             try
             {
@@ -792,13 +793,18 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 #endif
 
-                return await Workspace.Value.OpenProjectAsync(path);
+                return await _workspace.OpenProjectAsync(path);
             }
             catch (Exception e)
             {
                 Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
                 return null;
             }
+        }
+
+        public void Dispose()
+        {
+            _workspace.Dispose();
         }
 
         #endregion

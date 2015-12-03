@@ -79,9 +79,10 @@ namespace Microsoft.DocAsCode
             foreach (var inputModel in InputModels)
             {
                 // TODO: Use plugin to generate metadata for files with different extension?
-                var worker = new ExtractMetadataWorker(inputModel, inputModel.ForceRebuild);
-
-                yield return worker.ExtractMetadataAsync().Result;
+                using (var worker = new ExtractMetadataWorker(inputModel, inputModel.ForceRebuild))
+                {
+                    yield return worker.ExtractMetadataAsync().Result;
+                }
             }
         }
 
