@@ -57,51 +57,13 @@ namespace Microsoft.DocAsCode.EntityModel
             if (_script == null)
             {
                 model = JsonUtility.Deserialize<object>(modelPath);
-                model = ConvertJObjectToObject(model);
             }
             else
             {
-                var dynamicObject = (IDictionary<string, object>)ProcessWithJint(File.ReadAllText(modelPath), attrs);
-                
-                model = ConvertExpandoObjectToObject(dynamicObject);
+                model = ProcessWithJint(File.ReadAllText(modelPath), attrs);
             }
 
             return renderer.Render(model);
-        }
-
-        private static object ConvertExpandoObjectToObject(object raw)
-        {
-            if (raw is ExpandoObject)
-            {
-                Dictionary<string, object> model = new Dictionary<string, object>();
-                foreach(var prop in (IDictionary<string, object>)raw)
-                {
-                    model.Add(prop.Key, ConvertExpandoObjectToObject(prop.Value));
-                }
-                return model;
-            }
-            if (raw is IEnumerable<object>)
-            {
-                return ((IEnumerable<object>)raw).Select(s => ConvertExpandoObjectToObject(s)).ToArray();
-            }
-            return raw;
-        }
-
-        private static object ConvertJObjectToObject(object raw)
-        {
-            var jValue = raw as JValue;
-            if (jValue != null) { return jValue.Value; }
-            var jArray = raw as JArray;
-            if (jArray != null)
-            {
-                return jArray.Select(s => ConvertJObjectToObject(s)).ToArray();
-            }
-            var jObject = raw as JObject;
-            if (jObject != null)
-            {
-                return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
-            }
-            return raw;
         }
 
         private string GetRelativeResourceKey(string relativePath)
