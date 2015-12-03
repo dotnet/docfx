@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         Logger.Log(LogLevel.Warning, $"Multiple template scripts for type '{group.Key}'(case insensitive) are found, the one from '{currentScripts[0].Key}' is taken.");
                     }
 
-                    var template = new Template(currentTemplate.Value, currentTemplate.Key, currentScript.Value);
+                    var template = new Template(currentTemplate.Value, currentTemplate.Key, currentScript.Value, resource);
                     List<Template> templateList;
                     if (dict.TryGetValue(template.Type, out templateList))
                     {

@@ -17,13 +17,10 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class TemplateProcessor : IDisposable
     {
-        private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex IsRegexPatternRegex = new Regex("^/(.*)/$", RegexOptions.Compiled);
         private const string ManifestFileName = ".manifest";
         private const string Language = "csharp"; // TODO: how to handle multi-language
         private TemplateCollection _templates;
         private ResourceCollection _resourceProvider = null;
-        private ResourceTemplateLocator _resourceTemplateLocator;
 
         /// <summary>
         /// TemplateName can be either file or folder
@@ -36,7 +33,6 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             _resourceProvider = resourceProvider;
             _templates = new TemplateCollection(resourceProvider);
-            _resourceTemplateLocator = new ResourceTemplateLocator(resourceProvider);
         }
 
         public void Process(DocumentBuildContext context, string outputDirectory)
@@ -149,7 +145,7 @@ namespace Microsoft.DocAsCode.EntityModel
                             string outputPath = Path.Combine(outputDirectory ?? string.Empty, outputFile);
                             var dir = Path.GetDirectoryName(outputPath);
                             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                            var transformed = template.Transform(modelFile, systemAttrs, _resourceTemplateLocator.GetTemplate);
+                            var transformed = template.Transform(modelFile, systemAttrs);
                             if (!string.IsNullOrWhiteSpace(transformed))
                             {
                                 if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
@@ -271,6 +267,11 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
+        private IEnumerable<TemplateResourceInfo> ExtractDependentFilePaths(TemplateCollection templates)
+        {
+            return templates.Values.SelectMany(s => s).SelectMany(s => s.Resources);
+        }
+
         private void ProcessSingleDependency(Stream stream, string outputDirectory, string filePath)
         {
             if (stream != null)
@@ -289,38 +290,6 @@ namespace Microsoft.DocAsCode.EntityModel
             else
             {
                 Logger.Log(LogLevel.Info, $"Unable to get relative resource for {filePath}");
-            }
-        }
-
-        /// <summary>
-        /// Dependent files are defined in following syntax in Mustache template leveraging Mustache Comments
-        /// {{! include('file') }}
-        /// file path can be wrapped by quote ' or double quote " or none
-        /// </summary>
-        /// <param name="template"></param>
-        private IEnumerable<TemplateResourceInfo> ExtractDependentFilePaths(TemplateCollection templates)
-        {
-            foreach (var templateList in templates.Values)
-            {
-                foreach (var template in templateList)
-                {
-                    foreach (Match match in IncludeRegex.Matches(template.Content))
-                    {
-                        var filePath = match.Groups["file"].Value;
-                        if (string.IsNullOrWhiteSpace(filePath)) yield break;
-                        if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
-                        var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
-                        if (regexPatternMatch.Groups.Count > 1)
-                        {
-                            filePath = regexPatternMatch.Groups[1].Value;
-                            yield return new TemplateResourceInfo(template.GetRelativeResourceKey(filePath), filePath, true);
-                        }
-                        else
-                        {
-                            yield return new TemplateResourceInfo(template.GetRelativeResourceKey(filePath), filePath, false);
-                        }
-                    }
-                }
             }
         }
 
@@ -493,19 +462,6 @@ namespace Microsoft.DocAsCode.EntityModel
         public void Dispose()
         {
             _resourceProvider?.Dispose();
-        }
-
-        private sealed class TemplateResourceInfo
-        {
-            public string ResourceKey { get; }
-            public string FilePath { get; }
-            public bool IsRegexPattern { get; }
-            public TemplateResourceInfo(string resourceKey, string filePath, bool isRegexPattern)
-            {
-                ResourceKey = resourceKey;
-                FilePath = filePath;
-                IsRegexPattern = isRegexPattern;
-            }
         }
     }
 }

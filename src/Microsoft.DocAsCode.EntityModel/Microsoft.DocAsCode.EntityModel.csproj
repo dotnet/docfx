@@ -131,10 +131,13 @@
     <Compile Include="Plugins\MarkdownTocReader.cs" />
     <Compile Include="Resolvers\ResolveReference.cs" />
     <Compile Include="Resolvers\SetParent.cs" />
+    <Compile Include="TemplateManager\Renderer\MustacheTemplateRenderer.cs" />
     <Compile Include="TemplateManager\ResourceFinder.cs" />
     <Compile Include="TemplateManager\ResourceCollection.cs" />
     <Compile Include="TemplateManager\SystemAttributes.cs" />
     <Compile Include="TemplateManager\ResourceTemplateLocator.cs" />
+    <Compile Include="TemplateManager\Renderer\IRenderer.cs" />
+    <Compile Include="TemplateManager\TemplateResourceInfo.cs" />
     <Compile Include="TemplateManager\Template.cs" />
     <Compile Include="TemplateManager\TemplateManifestItem.cs" />
     <Compile Include="TemplateManager\TemplateCollection.cs" />

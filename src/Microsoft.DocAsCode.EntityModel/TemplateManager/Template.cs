@@ -8,50 +8,54 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
 
     using Jint;
-    using Nustache.Core;
 
     using Microsoft.DocAsCode.Utility;
+    using System.Text.RegularExpressions;
 
     internal class Template
     {
+        private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex IsRegexPatternRegex = new Regex("^/(.*)/$", RegexOptions.Compiled);
         private string _script = null;
-
-        public string Content { get; }
+        private IRenderer renderer;
         public string Name { get; }
         public string Extension { get; }
         public string Type { get; }
         public bool IsPrimary { get; }
-        public Template(string template, string templateName, string script)
+        public IEnumerable<TemplateResourceInfo> Resources { get; }
+        public Template(string template, string templateName, string script, ResourceCollection resourceProvider)
         {
             if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
+            if (string.IsNullOrEmpty(template)) throw new ArgumentNullException(nameof(template));
             Name = templateName;
-            Content = template;
             var typeAndExtension = GetTemplateTypeAndExtension(templateName);
             Extension = typeAndExtension.Item2;
             Type = typeAndExtension.Item1;
             IsPrimary = typeAndExtension.Item3;
             _script = script;
+            renderer = new MustacheTemplateRenderer(resourceProvider, template);
+            Resources = ExtractDependentFilePaths(template);
         }
 
-        public string GetRelativeResourceKey(string relativePath)
+        public string Transform(string modelPath, object attrs)
         {
-            // Make sure resource keys are combined using '/'
-            return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
-        }
-
-        public string Transform(string modelPath, object attrs, TemplateLocator templateLocator)
-        {
+            object model;
             if (_script == null)
             {
-                var entity = JsonUtility.Deserialize<object>(modelPath);
-                return Render.StringToString(Content, entity, templateLocator);
+                model = JsonUtility.Deserialize<object>(modelPath);
             }
             else
             {
-
-                var processedModel = ProcessWithJint(File.ReadAllText(modelPath), attrs);
-                return Render.StringToString(Content, processedModel, templateLocator);
+                model = ProcessWithJint(File.ReadAllText(modelPath), attrs);
             }
+
+            return renderer.Render(model);
+        }
+
+        private string GetRelativeResourceKey(string relativePath)
+        {
+            // Make sure resource keys are combined using '/'
+            return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
         }
 
         private object ProcessWithJint(string model, object attrs)
@@ -88,6 +92,33 @@ namespace Microsoft.DocAsCode.EntityModel
                 extension = extension.Substring(0, extension.Length - 8);
             }
             return Tuple.Create(type, extension, isPrimary);
+        }
+
+
+        /// <summary>
+        /// Dependent files are defined in following syntax in Mustache template leveraging Mustache Comments
+        /// {{! include('file') }}
+        /// file path can be wrapped by quote ' or double quote " or none
+        /// </summary>
+        /// <param name="template"></param>
+        private IEnumerable<TemplateResourceInfo> ExtractDependentFilePaths(string template)
+        {
+            foreach (Match match in IncludeRegex.Matches(template))
+            {
+                var filePath = match.Groups["file"].Value;
+                if (string.IsNullOrWhiteSpace(filePath)) yield break;
+                if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
+                var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
+                if (regexPatternMatch.Groups.Count > 1)
+                {
+                    filePath = regexPatternMatch.Groups[1].Value;
+                    yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, true);
+                }
+                else
+                {
+                    yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, false);
+                }
+            }
         }
     }
 }
