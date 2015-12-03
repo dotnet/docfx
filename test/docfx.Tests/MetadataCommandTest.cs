@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Tests
             _projectFolder = fixture.ProjectFolder;
         }
 
+        [Fact]
         [Trait("Related", "docfx")]
         [Trait("Language", "CSharp")]
         public void TestMetadataCommand_FromCSProject()
@@ -98,6 +99,7 @@ namespace Microsoft.DocAsCode.Tests
         }
 
 
+        [Fact]
         [Trait("Related", "docfx")]
         [Trait("Language", "VB")]
         public void TestMetadataCommand_FromVBProject()
