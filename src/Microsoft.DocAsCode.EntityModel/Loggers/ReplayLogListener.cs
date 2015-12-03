@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             _replayLevel = replayLevel;
             _replayList = new SortedList<LogLevel, List<ILogItem>>();
-            for (LogLevel level = replayLevel; level < LogLevel.Error; level++)
+            for (LogLevel level = replayLevel; level <= LogLevel.Error; level++)
             {
                 _replayList.Add(level, new List<ILogItem>());
             }
