@@ -17,6 +17,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public ImmutableArray<IMarkdownToken> Tokens { get; }
 
-        public string SourceMarkdown { get; set; }
+        public string RawMarkdown { get; set; }
     }
 }

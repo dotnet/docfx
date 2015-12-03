@@ -19,6 +19,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public string Attributes { get; }
 
-        public string SourceMarkdown { get; set; }
+        public string RawMarkdown { get; set; }
     }
 }

@@ -21,6 +21,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public string Text { get; }
 
-        public string SourceMarkdown { get; set; }
+        public string RawMarkdown { get; set; }
     }
 }

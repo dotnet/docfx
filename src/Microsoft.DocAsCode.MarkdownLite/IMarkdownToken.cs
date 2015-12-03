@@ -7,6 +7,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         IMarkdownRule Rule { get; }
 
-        string SourceMarkdown { get; set; }
+        string RawMarkdown { get; set; }
     }
 }

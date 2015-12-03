@@ -20,6 +20,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool Ordered { get; }
 
-        public string SourceMarkdown { get; set; }
+        public string RawMarkdown { get; set; }
     }
 }

@@ -23,6 +23,6 @@
 
         public string Title { get; }
 
-        public string SourceMarkdown { get; set; }
+        public string RawMarkdown { get; set; }
     }
 }

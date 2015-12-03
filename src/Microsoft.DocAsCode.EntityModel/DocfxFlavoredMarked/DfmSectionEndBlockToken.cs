@@ -14,6 +14,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public IMarkdownRule Rule { get; }
 
-        public string SourceMarkdown { get; set; }
+        public string RawMarkdown { get; set; }
     }
 }
