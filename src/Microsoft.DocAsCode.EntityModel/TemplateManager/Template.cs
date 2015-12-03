@@ -11,13 +11,15 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Microsoft.DocAsCode.Utility;
     using System.Text.RegularExpressions;
+    using Newtonsoft.Json.Linq;
+    using System.Linq;
+    using System.Dynamic;
 
     internal class Template
     {
-        private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex IsRegexPatternRegex = new Regex("^/(.*)/$", RegexOptions.Compiled);
+        private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
         private string _script = null;
-        private IRenderer renderer;
+        private IRenderer renderer  = null;
         public string Name { get; }
         public string Extension { get; }
         public string Type { get; }
@@ -33,23 +35,73 @@ namespace Microsoft.DocAsCode.EntityModel
             Type = typeAndExtension.Item1;
             IsPrimary = typeAndExtension.Item3;
             _script = script;
-            renderer = new MustacheTemplateRenderer(resourceProvider, template);
+            if (resourceProvider != null)
+            {
+                if (Path.GetExtension(templateName) == ".liquid")
+                {
+                    renderer = new LiquidTemplateRenderer(resourceProvider, template);
+                }
+                else
+                {
+                    renderer = new MustacheTemplateRenderer(resourceProvider, template);
+                }
+            }
+
             Resources = ExtractDependentFilePaths(template);
         }
 
         public string Transform(string modelPath, object attrs)
         {
+            if (renderer == null) return null;
             object model;
             if (_script == null)
             {
                 model = JsonUtility.Deserialize<object>(modelPath);
+                model = ConvertJObjectToObject(model);
             }
             else
             {
-                model = ProcessWithJint(File.ReadAllText(modelPath), attrs);
+                var dynamicObject = (IDictionary<string, object>)ProcessWithJint(File.ReadAllText(modelPath), attrs);
+                
+                model = ConvertExpandoObjectToObject(dynamicObject);
             }
 
             return renderer.Render(model);
+        }
+
+        private static object ConvertExpandoObjectToObject(object raw)
+        {
+            if (raw is ExpandoObject)
+            {
+                Dictionary<string, object> model = new Dictionary<string, object>();
+                foreach(var prop in (IDictionary<string, object>)raw)
+                {
+                    model.Add(prop.Key, ConvertExpandoObjectToObject(prop.Value));
+                }
+                return model;
+            }
+            if (raw is IEnumerable<object>)
+            {
+                return ((IEnumerable<object>)raw).Select(s => ConvertExpandoObjectToObject(s)).ToArray();
+            }
+            return raw;
+        }
+
+        private static object ConvertJObjectToObject(object raw)
+        {
+            var jValue = raw as JValue;
+            if (jValue != null) { return jValue.Value; }
+            var jArray = raw as JArray;
+            if (jArray != null)
+            {
+                return jArray.Select(s => ConvertJObjectToObject(s)).ToArray();
+            }
+            var jObject = raw as JObject;
+            if (jObject != null)
+            {
+                return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
+            }
+            return raw;
         }
 
         private string GetRelativeResourceKey(string relativePath)
@@ -103,9 +155,10 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <param name="template"></param>
         private IEnumerable<TemplateResourceInfo> ExtractDependentFilePaths(string template)
         {
-            foreach (Match match in IncludeRegex.Matches(template))
+            if (renderer == null || renderer.Dependencies == null) yield break;
+            foreach (var dependency in renderer.Dependencies)
             {
-                var filePath = match.Groups["file"].Value;
+                string filePath = dependency;
                 if (string.IsNullOrWhiteSpace(filePath)) yield break;
                 if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
                 var regexPatternMatch = IsRegexPatternRegex.Match(filePath);

@@ -7,6 +7,10 @@
     <NuGetPackageImportStamp>4dff0804</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotLiquid, Version=1.8.0.0, Culture=neutral, PublicKeyToken=82e46016ecf9f07c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DotLiquid.1.8.0\lib\NET45\DotLiquid.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -131,11 +135,12 @@
     <Compile Include="Plugins\MarkdownTocReader.cs" />
     <Compile Include="Resolvers\ResolveReference.cs" />
     <Compile Include="Resolvers\SetParent.cs" />
+    <Compile Include="TemplateManager\Renderer\LiquidTemplateRenderer.cs" />
     <Compile Include="TemplateManager\Renderer\MustacheTemplateRenderer.cs" />
     <Compile Include="TemplateManager\ResourceFinder.cs" />
     <Compile Include="TemplateManager\ResourceCollection.cs" />
     <Compile Include="TemplateManager\SystemAttributes.cs" />
-    <Compile Include="TemplateManager\ResourceTemplateLocator.cs" />
+    <Compile Include="TemplateManager\Renderer\ResourceTemplateLocator.cs" />
     <Compile Include="TemplateManager\Renderer\IRenderer.cs" />
     <Compile Include="TemplateManager\TemplateResourceInfo.cs" />
     <Compile Include="TemplateManager\Template.cs" />
@@ -205,6 +210,10 @@
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

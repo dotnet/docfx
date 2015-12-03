@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (_zipped == null) return null;
             // zip entry is case sensitive
             // incase relative path is combined by backslash \
-            return _zipped.GetEntry(name.ToNormalizedPath())?.Open();
+            return _zipped.GetEntry(name.Trim().ToNormalizedPath())?.Open();
         }
 
         protected override void Dispose(bool disposing)
@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (_directory == null) return null;
 
             // incase relative path is combined by backslash \
-            if (!Names.Contains(name.ToNormalizedPath(), ResourceComparer)) return null;
+            if (!Names.Contains(name.Trim().ToNormalizedPath(), ResourceComparer)) return null;
             var filePath = Path.Combine(_directory, name);
             return new FileStream(filePath, FileMode.Open, FileAccess.Read);
         }
