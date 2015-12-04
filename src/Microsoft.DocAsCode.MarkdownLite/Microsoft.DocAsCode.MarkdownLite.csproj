@@ -36,6 +36,8 @@
     <Compile Include="MarkdownEngineByOptionsBuilder.cs" />
     <Compile Include="MarkdownEngineBuilder.cs" />
     <Compile Include="MarkdownRenderer.cs" />
+    <Compile Include="Rewriters\MarkdownCompositeRewriter.cs" />
+    <Compile Include="Rewriters\IMarkdownRewriter.cs" />
     <Compile Include="RegexExtentions.cs" />
     <Compile Include="Basic\BlockRules\MarkdownBlockquoteBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownCodeBlockRule.cs" />
@@ -43,6 +45,10 @@
     <Compile Include="Basic\BlockRules\MarkdownHeadingBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownHrBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownHtmlBlockRule.cs" />
+    <Compile Include="Rewriters\MarkdownLambdaRewriter.cs" />
+    <Compile Include="Rewriters\MarkdownNullRewriter.cs" />
+    <Compile Include="Rewriters\MarkdownLoopRewriter.cs" />
+    <Compile Include="Rewriters\MarkdownRewriterFactory.cs" />
     <Compile Include="Tables\MarkdownNpTableBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownParagraphBlockRule.cs" />
     <Compile Include="Tables\MarkdownTableBlockRule.cs" />

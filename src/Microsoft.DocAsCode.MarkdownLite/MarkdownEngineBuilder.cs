@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public ImmutableList<IMarkdownRule> InlineRules { get; set; } = ImmutableList<IMarkdownRule>.Empty;
 
+        public IMarkdownRewriter Rewriter { get; set; }
+
         protected virtual IMarkdownContext CreateParseContext()
         {
             return new MarkdownBlockContext(BlockRules, new MarkdownInlineContext(InlineRules));
@@ -25,7 +27,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual MarkdownEngine CreateEngine(object renderer)
         {
-            return new MarkdownEngine(CreateParseContext(), renderer, Options);
+            return new MarkdownEngine(CreateParseContext(), Rewriter, renderer, Options);
         }
     }
 }

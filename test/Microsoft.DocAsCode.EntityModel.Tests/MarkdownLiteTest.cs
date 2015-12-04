@@ -3,7 +3,10 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Tests
 {
-    using MarkdownLite;
+    using System;
+
+    using Microsoft.DocAsCode.MarkdownLite;
+
     using Xunit;
 
     public class MarkdownLiteTest
@@ -209,5 +212,96 @@ c
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void ParseWithRewrite()
+        {
+            const string source = @"
+Heading
+=======
+ 
+Sub-heading
+-----------
+  
+### Another deeper heading
+  
+Paragraphs are separated
+by a blank line.
+ 
+Leave 2 spaces at the end of a line to do a  
+line break
+ 
+Text attributes *italic*, **bold**, 
+`monospace`, ~~strikethrough~~ .
+ 
+A [link](http://example.com).
+
+Shopping list:
+ 
+* apples
+* oranges
+* pears
+ 
+Numbered list:
+ 
+1. apples
+2. oranges
+3. pears
+";
+            const string expected = @"<p>Paragraphs are separated
+by a blank line.</p>
+<p>Leave 2 spaces at the end of a line to do a<br>line break</p>
+<p>Text attributes <em>italic</em>, <strong>bold</strong>, 
+<code>monospace</code>, <del>strikethrough</del> .</p>
+<p>A <a href=""http://example.com"">link</a>.</p>
+<p>Shopping list:</p>
+<ul>
+<li>apples</li>
+<li>oranges</li>
+<li>pears</li>
+</ul>
+<p>Numbered list:</p>
+<ol>
+<li>apples</li>
+<li>oranges</li>
+<li>pears</li>
+</ol>
+";
+
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownRewriterFactory.FromLambda(
+                    (MarkdownEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule) // ignore all heading
+                );
+            var engine = builder.CreateEngine(new MarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void ParseWithBadRewrite()
+        {
+            const string source = @"
+# Heading
+";
+
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownRewriterFactory.Loop(
+                    MarkdownRewriterFactory.Composite(
+                        MarkdownRewriterFactory.FromLambda(
+                            (MarkdownEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Content)
+                        ),
+                        MarkdownRewriterFactory.FromLambda(
+                            (MarkdownEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Content, 1)
+                        )
+                    ),
+                10);
+            var engine = builder.CreateEngine(new MarkdownRenderer());
+            Assert.Throws<InvalidOperationException>(() => engine.Markup(source));
+        }
+
     }
 }

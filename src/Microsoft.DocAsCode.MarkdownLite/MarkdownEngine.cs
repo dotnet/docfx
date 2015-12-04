@@ -16,13 +16,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
         private const string ThreeDot = "...";
 
         public MarkdownEngine(IMarkdownContext context, object renderer, Options options)
-            : this(context, renderer, options, new Dictionary<string, LinkObj>())
+            : this(context, null, renderer, options, new Dictionary<string, LinkObj>())
         {
         }
 
-        protected MarkdownEngine(IMarkdownContext context, object renderer, Options options, Dictionary<string, LinkObj> links)
+        public MarkdownEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options)
+            : this(context, rewriter, renderer, options, new Dictionary<string, LinkObj>())
+        {
+        }
+
+        protected MarkdownEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options, Dictionary<string, LinkObj> links)
         {
             Context = context;
+            Rewriter = rewriter ?? MarkdownRewriterFactory.Null;
             Renderer = renderer;
             Options = options;
             Links = links;
@@ -34,19 +40,33 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownContext Context { get; private set; }
 
+        public IMarkdownRewriter Rewriter { get; }
+
         public Dictionary<string, LinkObj> Links { get; }
 
         public StringBuffer Render(IMarkdownToken token, IMarkdownContext context)
         {
+            var rewrittenToken = RewriteToken(token);
             try
             {
                 // double dispatch.
-                return ((dynamic)Renderer).Render((dynamic)this, (dynamic)token, (dynamic)context);
+                return ((dynamic)Renderer).Render((dynamic)this, (dynamic)rewrittenToken, (dynamic)context);
             }
             catch (RuntimeBinderException ex)
             {
-                throw new InvalidOperationException($"Unable to handle token: {token.GetType().Name}, rule: {token.Rule.Name}", ex);
+                throw new InvalidOperationException($"Unable to handle token: {rewrittenToken.GetType().Name}, rule: {token.Rule.Name}", ex);
             }
+        }
+
+        private IMarkdownToken RewriteToken(IMarkdownToken token)
+        {
+            var rewritedToken = token;
+            var newToken = Rewriter.Rewrite(this, rewritedToken);
+            if (newToken != null)
+            {
+                rewritedToken = newToken;
+            }
+            return rewritedToken;
         }
 
         public IMarkdownContext SwitchContext(string variableKey, object value)
