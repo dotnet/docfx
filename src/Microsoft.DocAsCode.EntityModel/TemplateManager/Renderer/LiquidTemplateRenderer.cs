@@ -5,35 +5,39 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using Newtonsoft.Json.Linq;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Dynamic;
-    using System.IO;
     using System.Linq;
 
-    internal class LiquidTemplateRenderer : IRenderer
+    internal class LiquidTemplateRenderer : ITemplateRenderer
     {
         private static object locker = new object();
-        DotLiquid.Template _template;
-        public LiquidTemplateRenderer(ResourceCollection resourceProvider, string template)
+        public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, string template)
         {
             if (template == null) throw new ArgumentNullException(nameof(template));
-            DotLiquid.Template.FileSystem = new ResourceFileSystem(resourceProvider);
-            DotLiquid.Template.RegisterTag<Dependency>("ref");
             lock (locker)
             {
-                Dependency.PopDependenciesWithNoLock();
-                _template = DotLiquid.Template.Parse(template);
-                Dependencies = Dependency.PopDependenciesWithNoLock();
+                DotLiquid.Template.FileSystem = new ResourceFileSystem(resourceProvider);
+                DotLiquid.Template.RegisterTag<Dependency>("ref");
+                Dependency.PopDependencies();
+                var liquidTemplate = DotLiquid.Template.Parse(template);
+                var dependencies = Dependency.PopDependencies();
+                return new LiquidTemplateRenderer(liquidTemplate, template, dependencies);
             }
+        }
 
+        DotLiquid.Template _template = null;
+        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, IEnumerable<string> dependencies)
+        {
+            _template = liquidTemplate;
             Raw = template;
+            Dependencies = dependencies;
         }
 
         public string Raw { get; }
 
-        public IEnumerable<string> Dependencies { get; private set; }
+        public IEnumerable<string> Dependencies { get; }
 
         public string Render(object model)
         {
@@ -54,14 +58,20 @@ namespace Microsoft.DocAsCode.EntityModel
             public override void Initialize(string tagName, string markup, List<string> tokens)
             {
                 base.Initialize(tagName, markup, tokens);
-                SharedDependencies.Add(markup);
+                lock (locker)
+                {
+                    SharedDependencies.Add(markup);
+                }
             }
 
-            public static ImmutableArray<string> PopDependenciesWithNoLock()
+            public static ImmutableArray<string> PopDependencies()
             {
-                var array = SharedDependencies.ToImmutableArray();
-                SharedDependencies.Clear();
-                return array;
+                lock (locker)
+                {
+                    var array = SharedDependencies.ToImmutableArray();
+                    SharedDependencies.Clear();
+                    return array;
+                }
             }
         }
 

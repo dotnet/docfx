@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.Text.RegularExpressions;
 
-    internal class MustacheTemplateRenderer : IRenderer
+    internal class MustacheTemplateRenderer : ITemplateRenderer
     {
         private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private ResourceTemplateLocator _resourceTemplateLocator;

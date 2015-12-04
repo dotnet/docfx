@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Collections.Generic;
 
-    internal interface IRenderer
+    internal interface ITemplateRenderer
     {
         string Render(object model);
         IEnumerable<string> Dependencies { get; }

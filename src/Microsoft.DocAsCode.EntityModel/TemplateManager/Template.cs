@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
         private string _script = null;
-        private IRenderer renderer  = null;
+        private ITemplateRenderer renderer  = null;
         public string Name { get; }
         public string Extension { get; }
         public string Type { get; }
@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 if (Path.GetExtension(templateName) == ".liquid")
                 {
-                    renderer = new LiquidTemplateRenderer(resourceProvider, template);
+                    renderer = LiquidTemplateRenderer.Create(resourceProvider, template);
                 }
                 else
                 {
