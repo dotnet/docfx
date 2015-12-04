@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Tests
     using System.IO;
     using Xunit;
 
+    [Collection("docfx STA")]
     public class BuildCommandTest
     {
         /// <summary>

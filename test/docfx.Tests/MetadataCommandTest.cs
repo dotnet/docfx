@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Tests
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
 
+    [Collection("docfx STA")]
     public class MetadataCommandTest : IClassFixture<MetadataCommandFixture>
     {
         /// <summary>
