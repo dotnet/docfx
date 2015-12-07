@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System;
     using System.Text.RegularExpressions;
 
     public class GfmUrlInlineRule : IMarkdownRule
@@ -22,9 +23,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-
             var text = StringHelper.Escape(match.Groups[1].Value);
+            if (!Uri.IsWellFormedUriString(text, UriKind.RelativeOrAbsolute))
+            {
+                return null;
+            }
+
+            source = source.Substring(match.Length);
             return new MarkdownLinkInlineToken(this, text, null, text);
         }
     }
