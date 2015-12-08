@@ -175,6 +175,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (!string.IsNullOrEmpty(item.RawComment))
             {
                 var commentModel = TripleSlashCommentModel.CreateModel(item.RawComment, context);
+                if (commentModel == null) return;
                 item.Summary = commentModel.Summary;
                 item.Remarks = commentModel.Summary;
                 item.Exceptions = commentModel.Exceptions;
