@@ -156,7 +156,6 @@
     <Compile Include="Model\MetadataItem.cs" />
     <Compile Include="Resolvers\NormalizeSyntax.cs" />
     <Compile Include="Resolvers\ResolveGitPath.cs" />
-    <Compile Include="Resolvers\ResolveLink.cs" />
     <Compile Include="Resolvers\ResolvePath.cs" />
     <Compile Include="Resolvers\ResolveRelativePath.cs" />
     <Compile Include="Resolvers\LayoutCheckAndCleanup.cs" />

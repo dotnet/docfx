@@ -410,35 +410,36 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
 
         private void PatchViewModel(ItemViewModel item, string comment)
         {
-            var summary = TripleSlashCommentParser.GetSummary(comment, TripleSlashCommentParserContext.Instance);
+            var commentModel = TripleSlashCommentModel.CreateModel(comment, TripleSlashCommentParserContext.Instance);
+            var summary = commentModel.Summary;
             if (!string.IsNullOrEmpty(summary))
             {
                 item.Summary = summary;
             }
-            var remarks = TripleSlashCommentParser.GetRemarks(comment, TripleSlashCommentParserContext.Instance);
+            var remarks = commentModel.Remarks;
             if (!string.IsNullOrEmpty(remarks))
             {
                 item.Remarks = remarks;
             }
-            var exceptions = TripleSlashCommentParser.GetExceptions(comment, TripleSlashCommentParserContext.Instance);
+            var exceptions = commentModel.Exceptions;
             if (exceptions != null && exceptions.Count > 0)
             {
                 item.Exceptions = exceptions;
             }
-            var sees = TripleSlashCommentParser.GetSees(comment, TripleSlashCommentParserContext.Instance);
+            var sees = commentModel.Sees;
             if (sees != null && sees.Count > 0)
             {
                 item.Sees = sees;
             }
-            var seeAlsos = TripleSlashCommentParser.GetSeeAlsos(comment, TripleSlashCommentParserContext.Instance);
+            var seeAlsos = commentModel.SeeAlsos;
             if (seeAlsos != null && seeAlsos.Count > 0)
             {
                 item.SeeAlsos = seeAlsos;
             }
-            var example = TripleSlashCommentParser.GetExample(comment, TripleSlashCommentParserContext.Instance);
-            if (!string.IsNullOrEmpty(example))
+            var examples = commentModel.Examples;
+            if (examples != null && examples.Count > 0)
             {
-                item.Example = example;
+                item.Examples = examples;
             }
             if (item.Syntax != null)
             {
@@ -446,7 +447,7 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
                 {
                     foreach (var p in item.Syntax.Parameters)
                     {
-                        var description = TripleSlashCommentParser.GetParam(comment, p.Name, TripleSlashCommentParserContext.Instance);
+                        var description = commentModel.GetParameter(p.Name);
                         if (!string.IsNullOrEmpty(description))
                         {
                             p.Description = description;
@@ -455,7 +456,7 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
                 }
                 if (item.Syntax.Return != null)
                 {
-                    var returns = TripleSlashCommentParser.GetReturns(comment, TripleSlashCommentParserContext.Instance);
+                    var returns = commentModel.Returns;
                     if (!string.IsNullOrEmpty(returns))
                     {
                         item.Syntax.Return.Description = returns;

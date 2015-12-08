@@ -115,7 +115,7 @@ namespace Microsoft.DocAsCode
         {
             var projects = configModel.Source;
             // If Root Output folder is specified from command line, use it instead of the base directory
-            var outputFolder = Path.Combine(Config.OutputFolder ?? Config.BaseDirectory ?? string.Empty, configModel.Destination ?? Constants.DefaultRootOutputFolderPath);
+            var outputFolder = Path.Combine(Config.OutputFolder ?? Config.BaseDirectory ?? string.Empty, configModel.Destination ?? Constants.DefaultMetadataOutputFolderName);
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel.Raw,

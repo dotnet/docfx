@@ -29,23 +29,95 @@ namespace Microsoft.DocAsCode.EntityModel
 
     }
 
-    public static class TripleSlashCommentParser
+    public class TripleSlashCommentModel
     {
+        public string Summary { get; private set; }
+        public string Remarks { get; private set; }
+        public string Returns { get; private set; }
+        public List<CrefInfo> Exceptions { get; private set; }
+        public List<CrefInfo> Sees { get; private set; }
+        public List<CrefInfo> SeeAlsos { get; private set; }
+        public List<string> Examples { get; private set; }
+        public Dictionary<string, string> Parameters { get; private set; }
+        public Dictionary<string, string> TypeParameters { get; private set; }
+
+        private TripleSlashCommentModel() { }
+
+        public static TripleSlashCommentModel CreateModel(string xml, ITripleSlashCommentParserContext context)
+        {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (string.IsNullOrEmpty(xml)) return null;
+            // Quick turnaround for badly formed XML comment
+            if (xml.StartsWith("<!-- Badly formed XML comment ignored for member ")) return null;
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(xml);
+                var nav = doc.CreateNavigator();
+                if (!context.PreserveRawInlineComments)
+                {
+                    ResolveSeeCref(nav, string.Empty, context.AddReferenceDelegate);
+                    ResolveSeeAlsoCref(nav, string.Empty, context.AddReferenceDelegate);
+                    ResolveParameterRef(nav);
+                }
+
+                var model = new TripleSlashCommentModel();
+                model.Summary = GetSummary(nav, context);
+                model.Remarks = GetRemarks(nav, context);
+                model.Returns = GetReturns(nav, context);
+
+                model.Exceptions = GetExceptions(nav, context);
+                model.Sees = GetSees(nav, context);
+                model.SeeAlsos = GetSeeAlsos(nav, context);
+                model.Examples = GetExamples(nav, context);
+                model.Parameters = GetParameters(nav, context);
+                model.TypeParameters = GetTypeParameters(nav, context);
+                return model;
+            }
+            catch (XmlException)
+            {
+                return null;
+            }
+        }
+
+        public string GetParameter(string name)
+        {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+            return GetValue(name, Parameters);
+        }
+
+        public string GetTypeParameter(string name)
+        {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+            return GetValue(name, TypeParameters);
+        }
+
+        private static string GetValue(string name, Dictionary<string, string> dictionary)
+        {
+            if (dictionary == null) return null;
+            string description;
+            if (dictionary.TryGetValue(name, out description))
+            {
+                return description;
+            }
+            return null;
+        }
+
         /// <summary>
         /// Get summary node out from triple slash comments
         /// </summary>
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-        public static string GetSummary(string xml, ITripleSlashCommentParserContext context)
+        /// <example>
+        /// <code> <see cref="Hello"/></code>
+        /// </example>
+        private static string GetSummary(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             string selector = "/member/summary";
-
-            // Trim each line as a temp workaround
-            var summary = GetSingleNode(xml, selector, context, (e) => null);
-            return summary;
+            return GetSingleNodeValue(nav, selector, context.Normalize);
         }
 
         /// <summary>
@@ -57,12 +129,18 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-        public static string GetRemarks(string xml, ITripleSlashCommentParserContext context)
+        private static string GetRemarks(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/remarks";
-            // Trim each line as a temp workaround
-            var remarks = GetSingleNode(xml, selector, context, (e) => null);
-            return remarks;
+            return GetSingleNodeValue(nav, selector, context.Normalize);
+        }
+
+        private static string GetReturns(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        {
+            // Resolve <see cref> to @ syntax
+            // Also support <seealso cref>
+            string selector = "/member/returns";
+            return GetSingleNodeValue(nav, selector, context.Normalize);
         }
 
         /// <summary>
@@ -72,10 +150,10 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-        public static List<CrefInfo> GetExceptions(string xml, ITripleSlashCommentParserContext context)
+        private static List<CrefInfo> GetExceptions(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/exception";
-            var result = GetMulitpleCrefInfo(xml, selector, context).ToList();
+            var result = GetMulitpleCrefInfo(nav, selector, context.Normalize).ToList();
             if (result.Count == 0) return null;
             return result;
         }
@@ -88,9 +166,9 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <returns></returns>
         /// <see cref="SpecIdHelper"/>
         /// <see cref="SourceSwitch"/>
-        public static List<CrefInfo> GetSees(string xml, ITripleSlashCommentParserContext context)
+        private static List<CrefInfo> GetSees(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
-            var result = GetMulitpleCrefInfo(xml, "/member/see", context).ToList();
+            var result = GetMulitpleCrefInfo(nav, "/member/see", context.Normalize).ToList();
             if (result.Count == 0) return null;
             return result;
         }
@@ -103,9 +181,9 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <returns></returns>
         /// <seealso cref="WaitForChangedResult"/>
         /// <seealso cref="http://google.com">ABCS</seealso>
-        public static List<CrefInfo> GetSeeAlsos(string xml, ITripleSlashCommentParserContext context)
+        private static List<CrefInfo> GetSeeAlsos(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
-            var result = GetMulitpleCrefInfo(xml, "/member/seealso", context).ToList();
+            var result = GetMulitpleCrefInfo(nav, "/member/seealso", context.Normalize).ToList();
             if (result.Count == 0) return null;
             return result;
         }
@@ -128,75 +206,43 @@ namespace Microsoft.DocAsCode.EntityModel
         /// } 
         /// </code> 
         /// </example>
-        public static string GetExample(string xml, ITripleSlashCommentParserContext context)
+        private static List<string> GetExamples(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
-            return GetSingleNode(xml, "/member/example", context, (e) => null);
+            return GetMultipleExampleNodes(nav, "/member/example", context.Normalize).ToList();
         }
 
-        public static string GetReturns(string xml, ITripleSlashCommentParserContext context)
+        private static Dictionary<string, string> GetParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
         {
-            // Resolve <see cref> to @ syntax
-            // Also support <seealso cref>
-            string selector = "/member/returns";
-            return GetSingleNode(xml, selector, context, (e) => null);
-        }
-
-        public static string GetParam(string xml, string param, ITripleSlashCommentParserContext context)
-        {
-            if (string.IsNullOrEmpty(xml)) return null;
-            Debug.Assert(!string.IsNullOrEmpty(param));
-            if (string.IsNullOrEmpty(param))
+            var iterator = navigator.Select("/member/param");
+            var result = new Dictionary<string, string>();
+            if (iterator == null) return result;
+            foreach (XPathNavigator nav in iterator)
             {
-                return null;
+                string name = nav.GetAttribute("name", string.Empty);
+                string description = nav.Value;
+                if (context.Normalize) description = NormalizeContentFromTripleSlashComment(description);
+                if (!string.IsNullOrEmpty(name)) result.Add(name, description);
             }
 
-            // Resolve <see cref> to @ syntax
-            // Also support <seealso cref>
-            string selector = "/member/param[@name='" + param + "']";
-
-            return GetSingleNode(xml, selector, context, (e) => null);
+            return result;
         }
 
-        public static string GetTypeParameter(string xml, string name, ITripleSlashCommentParserContext context)
-
+        public static Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
         {
-            if (string.IsNullOrEmpty(xml)) return null;
-            Debug.Assert(!string.IsNullOrEmpty(name));
-            if (string.IsNullOrEmpty(name))
+            var iterator = navigator.Select("/member/typeparam");
+            var result = new Dictionary<string, string>();
+            if (iterator == null) return result;
+            foreach (XPathNavigator nav in iterator)
             {
-                return null;
+                string name = nav.GetAttribute("name", string.Empty);
+                string description = nav.Value;
+                if (context.Normalize) description = NormalizeContentFromTripleSlashComment(description);
+                if (!string.IsNullOrEmpty(name)) result.Add(name, description);
             }
 
-            // Resolve <see cref> to @ syntax
-            // Also support <seealso cref>
-            string selector = "/member/typeparam[@name='" + name + "']";
-            return GetSingleNode(xml, selector, context, (e) => null);
-        }
-
-        private static string ResolveInternalTags(string xml, string selector, ITripleSlashCommentParserContext context)
-        {
-            if (string.IsNullOrEmpty(xml) || context == null || context.PreserveRawInlineComments) return xml;
-            return ResolveInternalTags(xml, selector, context.AddReferenceDelegate);
-        }
-
-        private static string ResolveInternalTags(string xml, string selector, Action<string> addReference)
-        {
-            if (string.IsNullOrEmpty(xml)) return xml;
-            // Quick turnaround for badly formed XML comment
-            if (xml.StartsWith("<!-- Badly formed XML comment ignored for member ")) return xml;
-            try
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(xml);
-                var nav = doc.CreateNavigator();
-                ResolveSeeCref(nav, selector, addReference);
-                ResolveSeeAlsoCref(nav, selector, addReference);
-                ResolveParameterRef(nav);
-                xml = doc.InnerXml;
-            } catch {}
-            return xml;
+            return result;
         }
 
         private static void ResolveParameterRef(XPathNavigator nav)
@@ -281,86 +327,58 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static IEnumerable<CrefInfo> GetMulitpleCrefInfo(string xml, string selector, ITripleSlashCommentParserContext context)
+        private static IEnumerable<string> GetMultipleExampleNodes(XPathNavigator navigator, string selector, bool normalize)
         {
-            if (string.IsNullOrEmpty(xml) || string.IsNullOrEmpty(selector) || context == null) yield break;
-            xml = ResolveInternalTags(xml, selector, context);
+            var iterator = navigator.Select(selector);
+            if (iterator == null) yield break;
+            foreach (XPathNavigator nav in iterator)
+            {
+                // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes
+                string description = nav.InnerXml;
+                if (normalize) description = NormalizeContentFromTripleSlashComment(description);
+                yield return description;
+            }
+        }
 
-            var iterator = SelectNodes(xml, selector);
+        private static IEnumerable<CrefInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector, bool normalize)
+        {
+            var iterator = navigator.Clone().Select(selector);
             if (iterator == null) yield break;
             foreach (XPathNavigator nav in iterator)
             {
                 string description = nav.Value;
-                if (context?.Normalize ?? true) description = NormalizeContentFromTripleSlashComment(description);
+                if (normalize) description = NormalizeContentFromTripleSlashComment(description);
 
-                string exceptionType = nav.GetAttribute("cref", string.Empty);
-                if (!string.IsNullOrEmpty(exceptionType))
+                string type = nav.GetAttribute("cref", string.Empty);
+                if (!string.IsNullOrEmpty(type))
                 {
                     // Check if exception type is valid and trim prefix
-                    if (LinkParser.CommentIdRegex.IsMatch(exceptionType))
+                    if (LinkParser.CommentIdRegex.IsMatch(type))
                     {
-                        exceptionType = exceptionType.Substring(2);
+                        type = type.Substring(2);
                         if (string.IsNullOrEmpty(description)) description = null;
-                        yield return new CrefInfo { Description = description, Type = exceptionType };
+                        yield return new CrefInfo { Description = description, Type = type };
                     }
                 }
             }
         }
 
-        private static XPathNodeIterator SelectNodes(string xml, string selector)
+        private static string GetSingleNodeValue(XPathNavigator nav, string selector, bool normalize)
         {
-            if (string.IsNullOrEmpty(xml) || string.IsNullOrEmpty(selector)) return null;
-            try
+            var node = nav.Clone().SelectSingleNode(selector);
+            if (node == null)
             {
-                using (StringReader reader = new StringReader(xml))
-                {
-                    XPathDocument doc = new XPathDocument(reader);
-                    var nav = doc.CreateNavigator();
-                    return nav.Select(selector);
-                }
-            } catch (XmlException)
-            {
+                // throw new ArgumentException(selector + " is not found");
                 return null;
             }
-        }
-
-        private static string GetSingleNode(string xml, string selector, ITripleSlashCommentParserContext context, Func<Exception, string> errorHandler)
-        {
-            xml = ResolveInternalTags(xml, selector, context);
-            if (string.IsNullOrEmpty(xml) || string.IsNullOrEmpty(selector)) return xml;
-            try
+            else
             {
-                using (StringReader reader = new StringReader(xml))
-                {
-                    XPathDocument doc = new XPathDocument(reader);
-                    var nav = doc.CreateNavigator();
-                    var node = nav.SelectSingleNode(selector);
-                    if (node == null)
-                    {
-                        // throw new ArgumentException(selector + " is not found");
-                        return null;
-                    }
-                    else
-                    {
-                        // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
-                        // e.g.
-                        // <remarks><para>Value</para></remarks>
-                        var output = node.InnerXml;
-                        if (context?.Normalize ?? false) output = NormalizeContentFromTripleSlashComment(output);
-                        return output;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                if (errorHandler != null)
-                {
-                    return errorHandler(e);
-                }
-                else
-                {
-                    throw;
-                }
+                // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
+                // e.g.
+                // <remarks><para>Value</para></remarks>
+                var output = node.InnerXml;
+                if (normalize) output = NormalizeContentFromTripleSlashComment(output);
+                return output;
             }
         }
 

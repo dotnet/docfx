@@ -47,6 +47,9 @@ namespace Microsoft.DocAsCode.BackEnd.Tests
             </code> 
             </example>
 
+            <example>
+            This is another example
+            </example>
             <see cref=""T:Microsoft.DocAsCode.EntityModel.SpecIdHelper""/>
             <see cref=""T:System.Diagnostics.SourceSwitch""/>
             <seealso cref=""T:System.IO.WaitForChangedResult""/>
@@ -60,38 +63,33 @@ namespace Microsoft.DocAsCode.BackEnd.Tests
                 PreserveRawInlineComments = false,
             };
 
-            var summary = TripleSlashCommentParser.GetSummary(input, context);
+
+            var commentModel = TripleSlashCommentModel.CreateModel(input, context);
+
+            var summary = commentModel.Summary;
             Assert.Equal("Parital classes @'System.AccessViolationException'@'System.AccessViolationException'can not cross assemblies, ```Classes in assemblies are by definition complete.```", summary);
 
-            var returns = TripleSlashCommentParser.GetReturns(input, context);
+            var returns = commentModel.Returns;
             Assert.Equal("Task@'System.AccessViolationException' returns", returns);
 
-            var paramInput = TripleSlashCommentParser.GetParam(input, "input", context);
+            var paramInput = commentModel.Parameters["input"];
             Assert.Equal("This is @'System.AccessViolationException'the input", paramInput);
 
-            var invalidParam = TripleSlashCommentParser.GetParam(input, "invalid", context);
-            Assert.Null(invalidParam);
-
-            var remarks = TripleSlashCommentParser.GetRemarks(input, context);
+            var remarks = commentModel.Remarks;
             Assert.Equal("<para>This is a sample of exception node</para>", remarks);
 
-            var exceptions = TripleSlashCommentParser.GetExceptions(input, context);
+            var exceptions = commentModel.Exceptions;
             Assert.Equal(1, exceptions.Count);
             Assert.Equal("System.Xml.XmlException", exceptions[0].Type);
             Assert.Equal("This is a sample of exception node", exceptions[0].Description);
 
-            var sees = TripleSlashCommentParser.GetSees(input, context);
-            Assert.Equal(2, sees.Count);
-            Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].Type);
-            Assert.Null(sees[0].Description);
+            // If not preserving raw comments, sees & seeAlsos are both transformed to cross reference now
+            Assert.Null(commentModel.Sees);
+            Assert.Null(commentModel.SeeAlsos);
 
-            var seeAlsos = TripleSlashCommentParser.GetSeeAlsos(input, context);
-            Assert.Equal(1, seeAlsos.Count);
-            Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].Type);
-            Assert.Null(seeAlsos[0].Description);
-
-            var example = TripleSlashCommentParser.GetExample(input, context);
-            Assert.Equal(@"This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)"" /> method.
+            var example = commentModel.Examples;
+            Assert.Equal(new List<string> {
+@"This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)"" /> method.
 <code>
 class TestClass
 {
@@ -100,7 +98,22 @@ static int Main()
 return GetExceptions(null, null).Count();
 }
 }
-</code>", example);
+</code>",
+"This is another example"
+            }, example);
+
+            context.PreserveRawInlineComments = true;
+            commentModel = TripleSlashCommentModel.CreateModel(input, context);
+
+            var sees = commentModel.Sees;
+            Assert.Equal(2, sees.Count);
+            Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].Type);
+            Assert.Null(sees[0].Description);
+
+            var seeAlsos = commentModel.SeeAlsos;
+            Assert.Equal(1, seeAlsos.Count);
+            Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].Type);
+            Assert.Null(seeAlsos[0].Description);
         }
 
         [Trait("Related", "YamlHeader")]
