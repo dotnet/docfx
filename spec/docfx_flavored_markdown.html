@@ -83,10 +83,10 @@ This is a markdown file
 There are two types of file inclusion: inline one and block one, as similar to inline code span and block code.</p>
 <h4 id="inline">Inline</h4>
 <p>Inline file inclusion is in the following syntax, in which <code>&lt;title&gt;</code> stands for the title of the included file, and <code>&lt;filepath&gt;</code> stands for the file path of the included file, file path can be either absolute file path or relative file path.<code>&lt;filepath&gt;</code> can be wrapped by <code>&#39;</code> or <code>&quot;</code>. <em>NOTE</em> that for inline file inclusion, the file included will be considered as containing only inline tags, e.g. <code>###header</code> inside the file will not be transformed as <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will be transformed to <code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> as <code>&lt;a&gt;</code> is an inline tag.</p>
-<pre><code>...Other inline contents... [!inc[&lt;title&gt;](&lt;filepath&gt;)]
+<pre><code>...Other inline contents... [!include[&lt;title&gt;](&lt;filepath&gt;)]
 </code></pre><h4 id="block">Block</h4>
 <p>Block file inclusion must be in a single line and with no prefix characters before the start <code>[</code>. Content inside the included file will be transformed using DFM syntax.</p>
-<pre><code>[!inc[&lt;title&gt;](&lt;filepath&gt;)]
+<pre><code>[!include[&lt;title&gt;](&lt;filepath&gt;)]
 </code></pre><h3 id="section-definition">Section definition</h3>
 <p>User may need to define section. Mostly used for code table. Give an example below. The attributes you write in BEGINSECTION comments will be the div tag&#39;s attributes. Currently we only allow 3 attributes, namely class, id, data-resources</p>
 <pre><code>&lt;!-- BEGINSECTION class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot; --&gt;

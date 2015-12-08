@@ -131,6 +131,16 @@ a. ZIP file with provided name</li>
 </ol>
 </div>
               <div class="markdown level1 conceptual"></div>
+              <h5 id="Microsoft_DocAsCode_EntityModel_ResourceFinder_Find_System_String__remarks">Remarks</h5>
+              <div class="markdown level1 remarks"><p>Search in order:</p>
+<ol>
+<li>Inside OverrideFolder, <em>NOTE</em> sub-folders are <strong>NOT</strong> included
+a. Folder with provided name
+b. ZIP file with provided name</li>
+<li>Inside Embedded Resources
+a. ZIP file with provided name</li>
+</ol>
+</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public ResourceCollection Find(string name)</code></pre>

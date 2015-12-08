@@ -78,7 +78,7 @@
                 <pre><code class="lang-csharp hljs">public class AsyncConcurrentCache&lt;TKey, TValue&gt;</code></pre>
               </div>
               <h5 id="Microsoft_DocAsCode_Utility_AsyncConcurrentCache_2_remarks"><strong>Remarks<strong></strong></strong></h5>
-              <div class="markdown level0 remarks"><p>Implementation copied from http://msdn.microsoft.com/en-us/library/hh873173(v=vs.110).aspx, AsyncCache</p>
+              <div class="markdown level0 remarks"><p>An asynchronous wrapper over concurrent dictionary</p>
 </div>
               <h3 id="constructors">Constructors</h3>
               
@@ -145,6 +145,9 @@
               <div class="markdown level1 summary"><p>Adds a key/value pair to the <a class="xref" href="Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.html#Microsoft_DocAsCode_Utility_AsyncConcurrentCache_2">AsyncConcurrentCache&lt;TKey, TValue&gt;</a> by using the specified function, if the key does not already exist.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
+              <h5 id="Microsoft_DocAsCode_Utility_AsyncConcurrentCache_2_GetOrAdd__0_System_Func__0_System_Threading_Tasks_Task__1___System_Boolean__remarks">Remarks</h5>
+              <div class="markdown level1 remarks"><p>Adds a key/value pair to the <a class="xref" href="Microsoft.DocAsCode.Utility.AsyncConcurrentCache`2.html#Microsoft_DocAsCode_Utility_AsyncConcurrentCache_2">AsyncConcurrentCache&lt;TKey, TValue&gt;</a> by using the specified function, if the key does not already exist.</p>
+</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public Task&lt;TValue&gt; GetOrAdd(TKey key, Func&lt;TKey, Task&lt;TValue&gt;&gt; valueFactory, bool removeKeyOnFaulted = true)</code></pre>

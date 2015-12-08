@@ -85,6 +85,9 @@
               <div class="markdown level1 summary"><p>A completed task</p>
 </div>
               <div class="markdown level1 conceptual"></div>
+              <h5 id="Microsoft_DocAsCode_Utility_TaskHelper_Completed_remarks">Remarks</h5>
+              <div class="markdown level1 remarks"><p>A completed task</p>
+</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public static readonly Task Completed</code></pre>
@@ -195,7 +198,7 @@
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 id="Microsoft_DocAsCode_Utility_TaskHelper_ForEachInParallelAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task___remarks">Remarks</h5>
-              <div class="markdown level1 remarks"><p>The max parallelism is 64.</p>
+              <div class="markdown level1 remarks"><p>Provide parallel version for ForEach</p>
 </div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
@@ -249,6 +252,9 @@
               <div class="markdown level1 summary"><p>Provide parallel version for ForEach</p>
 </div>
               <div class="markdown level1 conceptual"></div>
+              <h5 id="Microsoft_DocAsCode_Utility_TaskHelper_ForEachInParallelAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32__remarks">Remarks</h5>
+              <div class="markdown level1 remarks"><p>Provide parallel version for ForEach</p>
+</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public static Task ForEachInParallelAsync&lt;T&gt;(IEnumerable&lt;T&gt; source, Func&lt;T, Task&gt; body, int maxParallelism)</code></pre>
@@ -308,7 +314,7 @@
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 id="Microsoft_DocAsCode_Utility_TaskHelper_SelectInParallelAsync__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task___1____remarks">Remarks</h5>
-              <div class="markdown level1 remarks"><p>The max parallelism is 64.</p>
+              <div class="markdown level1 remarks"><p>Provide parallel version for Select that each element will map to a result</p>
 </div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
@@ -362,6 +368,9 @@
               <div class="markdown level1 summary"><p>Provide parallel version for Select that each element will map to a result</p>
 </div>
               <div class="markdown level1 conceptual"></div>
+              <h5 id="Microsoft_DocAsCode_Utility_TaskHelper_SelectInParallelAsync__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task___1___System_Int32__remarks">Remarks</h5>
+              <div class="markdown level1 remarks"><p>Provide parallel version for Select that each element will map to a result</p>
+</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public static Task&lt;IReadOnlyList&lt;TResult&gt;&gt; SelectInParallelAsync&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt; source, Func&lt;TSource, Task&lt;TResult&gt;&gt; body, int maxParallelism)</code></pre>
@@ -526,6 +535,9 @@
               <div class="markdown level1 summary"><p>Task.WhenAll, and re-throw AggregateException containing exceptions from all failed tasks</p>
 </div>
               <div class="markdown level1 conceptual"></div>
+              <h5 id="Microsoft_DocAsCode_Utility_TaskHelper_WhenAllAndThrowAggregateExceptionOnErrorAsync__1_System_Collections_Generic_IEnumerable_System_Threading_Tasks_Task___0____remarks">Remarks</h5>
+              <div class="markdown level1 remarks"><p>Task.WhenAll, and re-throw AggregateException containing exceptions from all failed tasks</p>
+</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public static Task&lt;TResult[]&gt; WhenAllAndThrowAggregateExceptionOnErrorAsync&lt;TResult&gt;(IEnumerable&lt;Task&lt;TResult&gt;&gt; tasks)</code></pre>
