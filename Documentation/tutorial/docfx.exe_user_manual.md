@@ -60,7 +60,7 @@ docfx metadata [<projects>] [-o:<output_path>]
 
 1. From a supported project file or project file list
 Supported project file extensions include `.csproj`, `.vbproj`, and `.sln`.
-Files can be combined using `,` as seperator, e.g. `docfx metadata a.csproj,b.sln`. Also, *search pattern* is supported, e.g. `docfx metadata *.csproj` will search all the `.csproj` files in current folder; `docfx metadata **/*.csproj` will search `.csproj` files in all the subfolders. 
+Files can be combined using `,` as seperator, e.g. `docfx metadata a.csproj,b.sln`.
 
 2. From a supported source code file or source code file list
 Supported source code file extensions include `.cs` and `.vb`.
