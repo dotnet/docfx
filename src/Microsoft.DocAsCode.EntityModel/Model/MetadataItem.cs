@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
-        public string Example { get; set; }
+        public List<string> Examples { get; set; }
 
         [YamlMember(Alias = "syntax")]
         [JsonProperty("syntax")]
@@ -115,6 +115,10 @@ namespace Microsoft.DocAsCode.EntityModel
         [YamlMember(Alias = "references")]
         [JsonProperty("references")]
         public Dictionary<string, ReferenceItem> References { get; set; }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public TripleSlashCommentModel CommentModel { get; set; }
 
         public override string ToString()
         {

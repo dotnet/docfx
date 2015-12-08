@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode
         public const string ConfigFileName = "docfx.json";
         public const string WebsiteReferenceFolderName = "_ref_"; // Current OutputFolder
         public const string DefaultRootOutputFolderPath = "_site";
-        public const string DefaultMetadataOutputFolderName = "_api_";
+        public const string DefaultMetadataOutputFolderName = "_api";
         public const string DefaultConceputalOutputFolderName = ""; // Current OutputFolder
         public const string DefaultTemplateName = "default";
     }

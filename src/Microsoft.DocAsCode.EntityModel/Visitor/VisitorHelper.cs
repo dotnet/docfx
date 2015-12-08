@@ -174,12 +174,14 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (!string.IsNullOrEmpty(item.RawComment))
             {
-                item.Summary = TripleSlashCommentParser.GetSummary(item.RawComment, context);
-                item.Remarks = TripleSlashCommentParser.GetRemarks(item.RawComment, context);
-                item.Exceptions = TripleSlashCommentParser.GetExceptions(item.RawComment, context);
-                item.Sees = TripleSlashCommentParser.GetSees(item.RawComment, context);
-                item.SeeAlsos = TripleSlashCommentParser.GetSeeAlsos(item.RawComment, context);
-                item.Example = TripleSlashCommentParser.GetExample(item.RawComment, context);
+                var commentModel = TripleSlashCommentModel.CreateModel(item.RawComment, context);
+                item.Summary = commentModel.Summary;
+                item.Remarks = commentModel.Summary;
+                item.Exceptions = commentModel.Exceptions;
+                item.Sees = commentModel.Sees;
+                item.SeeAlsos = commentModel.SeeAlsos;
+                item.Examples = commentModel.Examples;
+                item.CommentModel = commentModel;
             }
         }
 
@@ -212,11 +214,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, ITripleSlashCommentParserContext context)
         {
-            string raw = item.RawComment;
-
-            string comment = isReturn ?
-                TripleSlashCommentParser.GetReturns(raw, context) :
-                TripleSlashCommentParser.GetParam(raw, symbol.Name, context);
+            string comment = isReturn ? item.CommentModel?.Returns : item.CommentModel?.GetParameter(symbol.Name);
             return new ApiParameter
             {
                 Name = isReturn ? null : symbol.Name,
@@ -227,7 +225,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, ITripleSlashCommentParserContext context)
         {
-            string comment = TripleSlashCommentParser.GetTypeParameter(item.RawComment, symbol.Name, context);
+            string comment = item.CommentModel?.GetTypeParameter(symbol.Name);
             return new ApiParameter
             {
                 Name = symbol.Name,

@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
 
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
-        public string Example { get; set; }
+        public List<string> Examples { get; set; }
 
         [YamlMember(Alias = "syntax")]
         [JsonProperty("syntax")]
@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
                 NamespaceName = model.NamespaceName,
                 Summary = model.Summary,
                 Remarks = model.Remarks,
-                Example = model.Example,
+                Examples = model.Examples,
                 Syntax = SyntaxDetailViewModel.FromModel(model.Syntax),
                 Overridden = model.Overridden,
                 Exceptions = model.Exceptions,
