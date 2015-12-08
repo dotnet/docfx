@@ -3,12 +3,11 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Dynamic;
-    using System.Linq;
+
+    using Microsoft.DocAsCode.Utility;
 
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {
@@ -41,8 +40,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public string Render(object model)
         {
-            model = ConvertJObjectToObject(model);
-            model = ConvertExpandoObjectToObject(model);
+            model = ConvertToObjectHelper.ConvertJObjectToObject(model);
+            model = ConvertToObjectHelper.ConvertExpandoObjectToObject(model);
             if (model is IDictionary<string, object>)
             {
                 return _template.Render(DotLiquid.Hash.FromDictionary((IDictionary<string, object>)model));
@@ -104,36 +103,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
                 return _resourceProvider.GetResource(resourceName);
             }
-        }
-
-        private static object ConvertExpandoObjectToObject(object raw)
-        {
-            if (raw is ExpandoObject)
-            {
-                return ((IDictionary<string, object>)raw).ToDictionary(s => s.Key, s => ConvertExpandoObjectToObject(s.Value));
-            }
-            if (raw is IEnumerable<object>)
-            {
-                return ((IEnumerable<object>)raw).Select(s => ConvertExpandoObjectToObject(s)).ToArray();
-            }
-            return raw;
-        }
-
-        private static object ConvertJObjectToObject(object raw)
-        {
-            var jValue = raw as JValue;
-            if (jValue != null) { return jValue.Value; }
-            var jArray = raw as JArray;
-            if (jArray != null)
-            {
-                return jArray.Select(s => ConvertJObjectToObject(s)).ToArray();
-            }
-            var jObject = raw as JObject;
-            if (jObject != null)
-            {
-                return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
-            }
-            return raw;
         }
     }
 }

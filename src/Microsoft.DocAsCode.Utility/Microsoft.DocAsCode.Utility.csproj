@@ -35,6 +35,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConvertToObjectHelper.cs" />
     <Compile Include="EntityMergers\IMergeContext.cs" />
     <Compile Include="EntityMergers\IMergeHandler.cs" />
     <Compile Include="EntityMergers\IMerger.cs" />

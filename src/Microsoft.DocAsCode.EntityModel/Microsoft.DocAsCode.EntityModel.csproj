@@ -96,7 +96,7 @@
     <Compile Include="DocfxFlavoredMarked\DfmSectionBeginBlockToken.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmSectionEndBlockRule.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmSectionEndBlockToken.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="SerializationUtility.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageCollection.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageWriter.cs" />
