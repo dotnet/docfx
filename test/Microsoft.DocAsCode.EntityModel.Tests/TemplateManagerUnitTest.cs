@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
         [Trait("Related", "ResourceFinder")]
         [Fact]
-        public void TestResourceFinder_FromAssembly()
+        public void TestResourceFinderFromAssembly()
         {
             var testFinder = new ResourceFinder(this.GetType().Assembly, "tmpl");
 
@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
         [Trait("Related", "ResourceFinder")]
         [Fact]
-        public void TestTemplateManager_MutipleThemes()
+        public void TestTemplateManagerWithMutipleThemesShouldWork()
         {
             // If the same resource name exists in the override folder, use the overriden one
             var themes = new List<string> { "tmpl1", "tmpl/tmpl1" };
@@ -81,9 +81,12 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             }
         }
 
+        #region Mustache template processor test
+
         [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
         [Fact]
-        public void TestTemplateProcessor_SingleTemplateWithNoScript()
+        public void TestMustacheTemplateProcessSingleTemplateWithNoScriptShouldWork()
         {
             // 1. Prepare template
             var templateName = "NoScript";
@@ -113,8 +116,9 @@ test2
         }
 
         [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
         [Fact]
-        public void TestTemplateProcessor_SingleTemplateWithNoScriptWithPartial()
+        public void TestMustacheTemplateProcessSingleTemplateWithNoScriptWithPartialShouldWork()
         {
             // 1. Prepare template
             var templateName = "NoScriptWithPartial";
@@ -164,8 +168,9 @@ test2
         }
 
         [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
         [Fact]
-        public void TestTemplateProcessor_NoTemplate()
+        public void TestMustacheTemplateProcessNoTemplateShouldFail()
         {
             var modelFileName = "TestTemplateProcessor_NoTemplate.yml";
             var modelFile = Path.Combine(_outputFolder, modelFileName);
@@ -187,8 +192,9 @@ test2
         }
 
         [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
         [Fact]
-        public void TestTemplateProcessor_InvalidTemplate()
+        public void TestMustacheTemplateProcessInvalidTemplateShouldFail()
         {
             var templateName = "InvalidTemplate.html";
             string inputFolder = null;
@@ -203,8 +209,9 @@ test2
         }
 
         [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
         [Fact]
-        public void TestTemplateProcessor_SingleTemplateWithIncludes()
+        public void TestMustacheTemplateProcessSingleTemplateWithIncludesShouldWork()
         {
             var templateName = "WithIncludes.html";
 
@@ -250,8 +257,9 @@ test2
         }
 
         [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
         [Fact]
-        public void TestTemplateProcessor_TemplateFolderWithDifferentType()
+        public void TestMustacheTemplateProcessTemplateFolderWithDifferentTypeShouldWork()
         {
             var templateName = "TemplateFolder.html";
             string defaultTemplate = @"
@@ -306,9 +314,234 @@ test2
 ", File.ReadAllText(outputFilePath2));
         }
 
+        #endregion
+
+        #region Liquid template processor test
+
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Liquid")]
+        [Fact]
+        public void TestLiquidTemplateProcessSingleTemplateWithNoScriptShouldWork()
+        {
+            // 1. Prepare template
+            var templateName = "NoScript.liquid";
+            string template = @"
+{% for item in model -%}
+{{ item.name }}
+{% endfor -%}
+";
+            var model = new
+            {
+                model = new[]
+               {
+                   new {name = "test1"},
+                   new {name = "test2"},
+               }
+            };
+            var modelFileName = "TestLiquidTemplateProcessor_NoScript.yml";
+            var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
+            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.liquid", template));
+
+            var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
+            Assert.True(File.Exists(outputFile));
+            Assert.Equal(@"
+test1
+test2
+", File.ReadAllText(outputFile));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Liquid")]
+        [Fact]
+        public void TestLiquidTemplateProcessSingleTemplateWithNoScriptWithIncludeShouldWork()
+        {
+            // 1. Prepare template
+            var templateName = "NoScriptWithInclude.liquid";
+            string template = @"
+{% for item in model -%}
+{{ item.name }}
+{% endfor -%}
+{% include partial1 -%}
+";
+            string partial1 = @"partial 1:
+{% include partial2 -%}";
+            string partial2 = @"partial 2:
+{% for item in model -%}
+{{ item.name }}
+{% endfor -%}
+";
+            var model = new
+            {
+                model = new[]
+               {
+                   new {name = "test1"},
+                   new {name = "test2"},
+               }
+            };
+            var modelFileName = "TestLiquidTemplateProcessor_NoScriptWithPartial.yml";
+            var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
+            ProcessTemplate(
+                templateName,
+                null,
+                new[] { item },
+                model,
+                _outputFolder,
+                Tuple.Create("default.liquid", template),
+                Tuple.Create("_partial1.liquid", partial1),
+                Tuple.Create("_partial2.liquid", partial2));
+
+            var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
+            Assert.True(File.Exists(outputFile));
+            Assert.Equal(@"
+test1
+test2
+partial 1:
+partial 2:
+test1
+test2
+", File.ReadAllText(outputFile));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Liquid")]
+        [Fact]
+        public void TestLiquidTemplateProcessNoTemplateShouldFail()
+        {
+            var modelFileName = "TestLiquidTemplateProcessor_NoTemplate.yml";
+            var modelFile = Path.Combine(_outputFolder, modelFileName);
+            var model = new
+            {
+                model = new List<dynamic>
+               {
+                   new {name = "test1"},
+                   new {name = "test2"},
+               }
+            };
+            var templateName = "NoTemplate.liquid";
+            var item = new ManifestItem { ModelFile = modelFileName, OriginalFile = modelFileName, DocumentType = string.Empty };
+            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
+            Assert.True(!File.Exists(modelFile));
+            item = new ManifestItem { ModelFile = modelFileName, OriginalFile = modelFileName, ResourceFile = modelFileName, DocumentType = string.Empty };
+            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
+            Assert.True(File.Exists(modelFile));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Liquid")]
+        [Fact]
+        public void TestLiquidTemplateProcessSingleTemplateWithDependenciesShouldWork()
+        {
+            var templateName = "WithIncludes.liquid";
+
+            string template = @"
+{% ref reference1.html -%}
+{% ref reference2.html -%}
+{% for item in model -%}
+{{ item.name }}
+{% endfor -%}
+";
+            string script = @"
+function transform(text){
+    var model = JSON.parse(text);
+    model.model.push({name:'test2'});
+    return model;
+}";
+
+            var model = new
+            {
+                model = new List<object>
+               {
+                   new {name = "test1"},
+               }
+            };
+
+            var modelFileName = "TestLiquidTemplateProcessor_WithIncludes.yml";
+            string inputFolder = null;
+            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, OriginalFile = modelFileName };
+            ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
+                Tuple.Create("default.html.liquid", template),
+                Tuple.Create("default.html.js", script),
+                Tuple.Create("reference1.html", string.Empty),
+                Tuple.Create("reference2.html", string.Empty)
+                );
+            var outputFilePath = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, "html"));
+            Assert.True(File.Exists(outputFilePath));
+            Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
+            Assert.True(File.Exists(Path.Combine(_outputFolder, "reference2.html")));
+            Assert.Equal(@"
+test1
+test2
+", File.ReadAllText(outputFilePath));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Liquid")]
+        [Fact]
+        public void TestLiquidTemplateProcessTemplateFolderWithDifferentTypeShouldWork()
+        {
+            var templateName = "TemplateFolder.liquid";
+            string defaultTemplate = @"
+default:
+{% for item in model -%}
+{{ item.name }}
+{% endfor -%}
+";
+            string conceptualTemplate = @"
+conceptual:
+{% for item in model -%}
+{{ item.name }}
+{% endfor -%}
+";
+            string script = @"
+function transform(text){
+    var model = JSON.parse(text);
+    model.model.push({name:'test2'});
+    return model;
+}";
+
+            var model = new
+            {
+                model = new List<object>
+               {
+                   new {name = "test1"},
+               },
+                another = new Dictionary<string, object>
+                {
+                    ["key1"] = new { name = "test3" },
+                    ["key2"] = new { name = "test4" }
+                }
+            };
+
+            string inputFolder = null;
+            var item1 = new ManifestItem { ModelFile = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1.yml", OriginalFile = "x.yml", DocumentType = "Conceptual" };
+            var item2 = new ManifestItem { DocumentType = string.Empty, ModelFile = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2.yml", OriginalFile = "y.yml" };
+            ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
+                Tuple.Create("default.html.liquid", defaultTemplate),
+                Tuple.Create($"{templateName}/conceptual.md.liquid", conceptualTemplate),
+                Tuple.Create("default.html.js", script),
+                Tuple.Create("conceptual.md.js", script)
+                );
+            var outputFilePath1 = Path.Combine(_outputFolder, "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1.md");
+            Assert.True(File.Exists(outputFilePath1));
+            Assert.Equal(@"
+conceptual:
+test1
+test2
+", File.ReadAllText(outputFilePath1));
+            var outputFilePath2 = Path.Combine(_outputFolder, "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2.html");
+            Assert.True(File.Exists(outputFilePath2));
+            Assert.Equal(@"
+default:
+test1
+test2
+", File.ReadAllText(outputFilePath2));
+        }
+
+        #endregion
+
         [Trait("Related", "GenerateDefaultToc")]
         [Fact]
-        public void TestGenerateDefaultToc()
+        public void TestGenerateDefaultTocShouldWork()
         {
             TemplateManager.GenerateDefaultToc(null, null, null, true);
             Assert.True(File.Exists(TemplateManager.DefaultTocEntry));

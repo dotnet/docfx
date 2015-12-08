@@ -6,52 +6,67 @@ namespace Microsoft.DocAsCode.EntityModel
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text.RegularExpressions;
 
     using Jint;
-    using Nustache.Core;
 
     using Microsoft.DocAsCode.Utility;
 
     internal class Template
     {
+        private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
         private string _script = null;
-
-        public string Content { get; }
+        private ITemplateRenderer _renderer  = null;
         public string Name { get; }
         public string Extension { get; }
         public string Type { get; }
         public bool IsPrimary { get; }
-        public Template(string template, string templateName, string script)
+        public IEnumerable<TemplateResourceInfo> Resources { get; }
+        public Template(string template, string templateName, string script, ResourceCollection resourceProvider)
         {
             if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
+            if (string.IsNullOrEmpty(template)) throw new ArgumentNullException(nameof(template));
             Name = templateName;
-            Content = template;
             var typeAndExtension = GetTemplateTypeAndExtension(templateName);
             Extension = typeAndExtension.Item2;
             Type = typeAndExtension.Item1;
             IsPrimary = typeAndExtension.Item3;
             _script = script;
+            if (resourceProvider != null)
+            {
+                if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
+                {
+                    _renderer = LiquidTemplateRenderer.Create(resourceProvider, template);
+                }
+                else
+                {
+                    _renderer = new MustacheTemplateRenderer(resourceProvider, template);
+                }
+            }
+
+            Resources = ExtractDependentResources();
         }
 
-        public string GetRelativeResourceKey(string relativePath)
+        public string Transform(string modelPath, object attrs)
         {
-            // Make sure resource keys are combined using '/'
-            return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
-        }
-
-        public string Transform(string modelPath, object attrs, TemplateLocator templateLocator)
-        {
+            if (_renderer == null) return null;
+            object model;
             if (_script == null)
             {
-                var entity = JsonUtility.Deserialize<object>(modelPath);
-                return Render.StringToString(Content, entity, templateLocator);
+                model = JsonUtility.Deserialize<object>(modelPath);
             }
             else
             {
-
-                var processedModel = ProcessWithJint(File.ReadAllText(modelPath), attrs);
-                return Render.StringToString(Content, processedModel, templateLocator);
+                model = ProcessWithJint(File.ReadAllText(modelPath), attrs);
             }
+
+            return _renderer.Render(model);
+        }
+
+        private string GetRelativeResourceKey(string relativePath)
+        {
+            // Make sure resource keys are combined using '/'
+            return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
         }
 
         private object ProcessWithJint(string model, object attrs)
@@ -88,6 +103,34 @@ namespace Microsoft.DocAsCode.EntityModel
                 extension = extension.Substring(0, extension.Length - 8);
             }
             return Tuple.Create(type, extension, isPrimary);
+        }
+
+
+        /// <summary>
+        /// Dependent files are defined in following syntax in Mustache template leveraging Mustache Comments
+        /// {{! include('file') }}
+        /// file path can be wrapped by quote ' or double quote " or none
+        /// </summary>
+        /// <param name="template"></param>
+        private IEnumerable<TemplateResourceInfo> ExtractDependentResources()
+        {
+            if (_renderer == null || _renderer.Dependencies == null) yield break;
+            foreach (var dependency in _renderer.Dependencies)
+            {
+                string filePath = dependency;
+                if (string.IsNullOrWhiteSpace(filePath)) continue;
+                if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
+                var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
+                if (regexPatternMatch.Groups.Count > 1)
+                {
+                    filePath = regexPatternMatch.Groups[1].Value;
+                    yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, true);
+                }
+                else
+                {
+                    yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, false);
+                }
+            }
         }
     }
 }

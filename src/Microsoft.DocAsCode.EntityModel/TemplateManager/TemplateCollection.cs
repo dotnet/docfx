@@ -41,14 +41,14 @@ namespace Microsoft.DocAsCode.EntityModel
             // type <=> list of template with different extension
             var dict = new Dictionary<string, List<Template>>(StringComparer.OrdinalIgnoreCase);
             if (resource == null) return dict;
-            // Template file ends with .tmpl
-            // Template file naming convention: {template file name}.{file extension}.tmpl
-            var templates = resource.GetResources(@".*\.(tmpl|js)$").ToList();
+            // Template file ends with .tmpl(Mustache) or .liquid(Liquid)
+            // Template file naming convention: {template file name}.{file extension}.(tmpl|liquid)
+            var templates = resource.GetResources(@".*\.(tmpl|liquid|js)$").ToList();
             if (templates != null)
             {
                 foreach (var group in templates.GroupBy(s => Path.GetFileNameWithoutExtension(s.Key), StringComparer.OrdinalIgnoreCase))
                 {
-                    var currentTemplates = group.Where(s => Path.GetExtension(s.Key).Equals(".tmpl", StringComparison.OrdinalIgnoreCase)).ToArray();
+                    var currentTemplates = group.Where(s => Path.GetExtension(s.Key).Equals(".tmpl", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(s.Key).Equals(".liquid", StringComparison.OrdinalIgnoreCase)).ToArray();
                     var currentScripts = group.Where(s => Path.GetExtension(s.Key).Equals(".js", StringComparison.OrdinalIgnoreCase)).ToArray();
                     var currentTemplate = currentTemplates.FirstOrDefault();
                     var currentScript = currentScripts.FirstOrDefault();
@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         Logger.Log(LogLevel.Warning, $"Multiple template scripts for type '{group.Key}'(case insensitive) are found, the one from '{currentScripts[0].Key}' is taken.");
                     }
 
-                    var template = new Template(currentTemplate.Value, currentTemplate.Key, currentScript.Value);
+                    var template = new Template(currentTemplate.Value, currentTemplate.Key, currentScript.Value, resource);
                     List<Template> templateList;
                     if (dict.TryGetValue(template.Type, out templateList))
                     {
