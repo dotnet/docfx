@@ -29,9 +29,9 @@ namespace Microsoft.DocAsCode.EntityModel
         }
     }
 
-    public class DfmIncludeInlineRule: IMarkdownRule
+    public class DfmIncludeInlineRule : IMarkdownRule
     {
-        public string Name => "INC";
+        public string Name => "INCLUDE";
         private static readonly Regex _inlineIncludeRegex = new Regex(DocfxFlavoredIncHelper.InlineIncRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public virtual Regex Include => _inlineIncludeRegex;
 
@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             source = source.Substring(match.Length);
 
-            // [!inc[title](path "optionalTitle")]
+            // [!include[title](path "optionalTitle")]
             // 1. Get include file path 
             var path = match.Groups[2].Value;
 

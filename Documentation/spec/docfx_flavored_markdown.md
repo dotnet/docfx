@@ -29,12 +29,12 @@ There are two types of file inclusion: inline one and block one, as similar to i
 #### Inline
 Inline file inclusion is in the following syntax, in which `<title>` stands for the title of the included file, and `<filepath>` stands for the file path of the included file, file path can be either absolute file path or relative file path.`<filepath>` can be wrapped by `'` or `"`. *NOTE* that for inline file inclusion, the file included will be considered as containing only inline tags, e.g. `###header` inside the file will not be transformed as `<h3>` is a block tag, while `[a](b)` will be transformed to `<a href='b'>a</a>` as `<a>` is an inline tag.
 ```
-...Other inline contents... [!inc[<title>](<filepath>)]
+...Other inline contents... [!include[<title>](<filepath>)]
 ```
 #### Block
 Block file inclusion must be in a single line and with no prefix characters before the start `[`. Content inside the included file will be transformed using DFM syntax.
 ```
-[!inc[<title>](<filepath>)]
+[!include[<title>](<filepath>)]
 ```
 
 ### Section definition

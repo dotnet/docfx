@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private readonly FileCacheLite _cache;
 
-        public static readonly string InlineIncRegexString = @"^\[!INC\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]";
+        public static readonly string InlineIncRegexString = @"^\[!INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]";
 
         public DocfxFlavoredIncHelper()
         {
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 if (!Path.IsPathRooted(currentPath))
                 {
-                    return GenerateNodeWithCommentWrapper("ERROR INC", $"Absolute path \"{currentPath}\" is not supported.", raw);
+                    return GenerateNodeWithCommentWrapper("ERROR INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw);
                 }
                 else
                     currentPath = PathUtility.MakeRelativePath(Environment.CurrentDirectory, currentPath);
@@ -53,11 +53,11 @@ namespace Microsoft.DocAsCode.EntityModel
 
             if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
             {
-                return GenerateNodeWithCommentWrapper("ERROR INC", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
+                return GenerateNodeWithCommentWrapper("ERROR INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
             }
 
             string result = string.Empty;
-            
+
             // Add current file path to chain when entering recursion
             parents.Push(currentPath);
             try
@@ -77,12 +77,12 @@ namespace Microsoft.DocAsCode.EntityModel
                         UpdateHref(node, originalPath);
 
                     result = node.WriteTo();
-                    result = GenerateNodeWithCommentWrapper("INC", $"Include content from \"{currentPath}\"", result);
+                    result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
                 }
             }
             catch (Exception e)
             {
-                result = GenerateNodeWithCommentWrapper("ERROR INC", $"Unable to resolve {raw}:{e.Message}", raw);
+                result = GenerateNodeWithCommentWrapper("ERROR INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw);
             }
 
             _cache.Add(currentPath, result);

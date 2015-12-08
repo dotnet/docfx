@@ -54,20 +54,20 @@ b:
             //     |- md
             //         |- c.md
             var root = @"
-[!inc[linkAndRefRoot](b/linkAndRefRoot.md)]
-[!inc[refc](a/refc.md ""This is root"")]
-[!inc[refc_using_cache](a/refc.md)]
-[!inc[empty](empty.md)]
-[!inc[external](http://microsoft.com/a.md)]";
+[!include[linkAndRefRoot](b/linkAndRefRoot.md)]
+[!include[refc](a/refc.md ""This is root"")]
+[!include[refc_using_cache](a/refc.md)]
+[!include[empty](empty.md)]
+[!include[external](http://microsoft.com/a.md)]";
 
             var linkAndRefRoot = @"
 Paragraph1
 [link](a.md)
-[!inc[link2](../link/link2.md)]
+[!include[link2](../link/link2.md)]
 ![Image](img/img.jpg)
-[!inc[root](../root.md)]";
+[!include[root](../root.md)]";
             var link2 = @"[link](md/c.md)";
-            var refc = @"[!inc[c](../c/c.md ""This is root"")]";
+            var refc = @"[!include[c](../c/c.md ""This is root"")]";
             var c = @"**Hello**";
             WriteToFile("r/root.md", root);
 
@@ -77,7 +77,7 @@ Paragraph1
             WriteToFile("r/c/c.md", c);
             WriteToFile("r/empty.md", string.Empty);
             var marked = DocfxFlavoredMarked.Markup(root, Path.GetFullPath("r/root.md"));
-            Assert.Equal("<!-- BEGIN INC: Include content from &quot;r/b/linkAndRefRoot.md&quot; --><p>Paragraph1\n<a href=\"b/a.md\">link</a>\n<!-- BEGIN INC: Include content from &quot;r/link/link2.md&quot; --><a href=\"link/md/c.md\">link</a><!--END INC -->\n<img src=\"b/img/img.jpg\" alt=\"Image\">\n<!-- BEGIN ERROR INC: Unable to resolve [!inc[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!inc[root](../root.md)]<!--END ERROR INC --></p>\n<!--END INC --><!-- BEGIN INC: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INC: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>\n<!--END INC --><!--END INC --><!-- BEGIN INC: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INC: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>\n<!--END INC --><!--END INC --><!-- BEGIN INC: Include content from &quot;r/empty.md&quot; --><!--END INC --><!-- BEGIN ERROR INC: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!inc[external](http://microsoft.com/a.md)]<!--END ERROR INC -->", marked);
+            Assert.Equal("<!-- BEGIN INCLUDE: Include content from &quot;r/b/linkAndRefRoot.md&quot; --><p>Paragraph1\n<a href=\"b/a.md\">link</a>\n<!-- BEGIN INCLUDE: Include content from &quot;r/link/link2.md&quot; --><a href=\"link/md/c.md\">link</a><!--END INCLUDE -->\n<img src=\"b/img/img.jpg\" alt=\"Image\">\n<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include[root](../root.md)]<!--END ERROR INCLUDE --></p>\n<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>\n<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>\n<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/empty.md&quot; --><!--END INCLUDE --><!-- BEGIN ERROR INCLUDE: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->", marked);
         }
 
         private static void WriteToFile(string file, string content)
@@ -93,12 +93,12 @@ Paragraph1
         {
             // 1. Prepare data
             var root = @"
-Inline [!inc[ref1](ref1.md ""This is root"")]
-Inline [!inc[ref3](ref3.md ""This is root"")]
+Inline [!include[ref1](ref1.md ""This is root"")]
+Inline [!include[ref3](ref3.md ""This is root"")]
 ";
 
-            var ref1 = @"[!inc[ref2](ref2.md ""This is root"")]";
-            var ref2 = @"## Inline inclusion do not parse header [!inc[root](root.md ""This is root"")]";
+            var ref1 = @"[!include[ref2](ref2.md ""This is root"")]";
+            var ref2 = @"## Inline inclusion do not parse header [!include[root](root.md ""This is root"")]";
             var ref3 = @"**Hello**";
             File.WriteAllText("root.md", root);
             File.WriteAllText("ref1.md", ref1);
@@ -106,7 +106,7 @@ Inline [!inc[ref3](ref3.md ""This is root"")]
             File.WriteAllText("ref3.md", ref3);
 
             var marked = DocfxFlavoredMarked.Markup(root, "root.md");
-            Assert.Equal("<p>Inline <!-- BEGIN INC: Include content from &quot;ref1.md&quot; --><!-- BEGIN INC: Include content from &quot;ref2.md&quot; -->## Inline inclusion do not parse header <!-- BEGIN ERROR INC: Unable to resolve [!inc[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!inc[root](root.md \"This is root\")]<!--END ERROR INC --><!--END INC --><!--END INC -->\nInline <!-- BEGIN INC: Include content from &quot;ref3.md&quot; --><strong>Hello</strong><!--END INC --></p>\n", marked);
+            Assert.Equal("<p>Inline <!-- BEGIN INCLUDE: Include content from &quot;ref1.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;ref2.md&quot; -->## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md \"This is root\")]<!--END ERROR INCLUDE --><!--END INCLUDE --><!--END INCLUDE -->\nInline <!-- BEGIN INCLUDE: Include content from &quot;ref3.md&quot; --><strong>Hello</strong><!--END INCLUDE --></p>\n", marked);
         }
 
         [Theory]
@@ -171,7 +171,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
 }";
             File.WriteAllText("api.json", apiJsonContent);
             var marked = DocfxFlavoredMarked.Markup(root, Path.GetFullPath("api.json"));
-            Assert.Equal("<pre><code class=\"language-FakeREST\" name=\"REST\">\r\n{\r\n   &quot;method&quot;: &quot;GET&quot;,\r\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestHeaders&quot;: {\r\n                &quot;Accept&quot;: &quot;application/json&quot;\r\n   }\r\n}\n</code></pre><pre><code class=\"language-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\r\n{\r\n   &quot;method&quot;: &quot;GET&quot;,\r\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestHeaders&quot;: {\r\n                &quot;Accept&quot;: &quot;application/json&quot;\r\n   }\r\n}\n</code></pre><pre><code name=\"No Language\">\r\n{\r\n   &quot;method&quot;: &quot;GET&quot;,\r\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestHeaders&quot;: {\r\n                &quot;Accept&quot;: &quot;application/json&quot;\r\n   }\r\n}\n</code></pre><pre><code class=\"language-js\" name=\"empty\">\r\n{\r\n   &quot;method&quot;: &quot;GET&quot;,\r\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\r\n   &quot;requestHeaders&quot;: {\r\n                &quot;Accept&quot;: &quot;application/json&quot;\r\n   }\r\n}\n</code></pre>", marked);
+            Assert.Equal("<pre><code class=\"language-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"language-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"language-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre>", marked);
         }
     }
 }

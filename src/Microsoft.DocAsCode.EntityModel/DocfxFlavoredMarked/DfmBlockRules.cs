@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel
     public class DfmIncludeBlockRule : IMarkdownRule
     {
         private static readonly Regex _incRegex = new Regex($"{DocfxFlavoredIncHelper.InlineIncRegexString}\\s*(\\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        public string Name => "INC";
+        public string Name => "INCLUDE";
         public virtual Regex Include => _incRegex;
         public IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
         {
@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             source = source.Substring(match.Length);
 
-            // [!inc[title](path "optionalTitle")]
+            // [!include[title](path "optionalTitle")]
             // 1. Get include file path 
             var path = match.Groups[2].Value;
 
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel
         }
     }
 
-    public class DfmYamlHeaderBlockRule: IMarkdownRule
+    public class DfmYamlHeaderBlockRule : IMarkdownRule
     {
         public static readonly Regex _yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline);
         public string Name => "YamlHeader";

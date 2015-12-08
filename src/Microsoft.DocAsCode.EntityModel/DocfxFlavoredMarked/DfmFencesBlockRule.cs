@@ -8,7 +8,7 @@
     {
         public string Name => "RestApiFences";
 
-        public static readonly Regex _dfmFencesRegex = new Regex(@"^\[!((?i)code(-(?<lang>(\w|-)+))?)\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[\s\S]*?)>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled);
+        public static readonly Regex _dfmFencesRegex = new Regex(@"^\[!((?i)code(-(?<lang>(\w|-)+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[\s\S]*?)>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled);
 
         public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
         {
