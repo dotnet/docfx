@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class FileMetadataPairsConverter | docfx website</title>
+    <title>Class MarkdownRewriterFactory | docfx website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class FileMetadataPairsConverter | docfx website">
+    <meta name="title" content="Class MarkdownRewriterFactory | docfx website">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -61,33 +61,44 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/docfx/Commands/Build/BuildJsonConfig.cs/#L121" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_FileMetadataPairsConverter">Class FileMetadataPairsConverter</h1>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownRewriterFactory.cs/#L10" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownRewriterFactory">Class MarkdownRewriterFactory</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
                 <h5>Inheritance</h5>
                   <div class="level0"><span class="xref">System.Object</span></div>
-                  <div class="level1"><span class="xref">Newtonsoft.Json.JsonConverter</span></div>
-                  <div class="level2"><span class="xref">FileMetadataPairsConverter</span></div>
+                  <div class="level1"><span class="xref">MarkdownRewriterFactory</span></div>
               </div>
-              <h6><strong>Namespace</strong>:Microsoft.DocAsCode</h6>
-              <h6><strong>Assembly</strong>:docfx.dll</h6>
-              <h5 id="Microsoft_DocAsCode_FileMetadataPairsConverter_syntax">Syntax</h5>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.MarkdownLite</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.MarkdownLite.dll</h6>
+              <h5 id="Microsoft_DocAsCode_MarkdownLite_MarkdownRewriterFactory_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class FileMetadataPairsConverter : JsonConverter</code></pre>
+                <pre><code class="lang-csharp hljs">public class MarkdownRewriterFactory</code></pre>
+              </div>
+              <h3 id="fields">Fields</h3>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownRewriterFactory.cs/#L12">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownRewriterFactory_Null">Microsoft.DocAsCode.MarkdownLite.MarkdownRewriterFactory.Null</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public static readonly IMarkdownRewriter Null</code></pre>
               </div>
               <h3 id="methods">Methods</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/docfx/Commands/Build/BuildJsonConfig.cs/#L123">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownRewriterFactory.cs/#L26">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_FileMetadataPairsConverter_CanConvert_System_Type_">CanConvert(Type)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownRewriterFactory_Composite_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter___">Composite(IMarkdownRewriter[])</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public override bool CanConvert(Type objectType)</code></pre>
+                <pre><code class="lang-csharp hljs">public static IMarkdownRewriter Composite(params IMarkdownRewriter[] rewriters)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -100,8 +111,8 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.Type</span></td>
-                    <td><em>objectType</em></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a>[]</td>
+                    <td><em>rewriters</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -116,21 +127,21 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.Boolean</span></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/docfx/Commands/Build/BuildJsonConfig.cs/#L128">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownRewriterFactory.cs/#L31">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_FileMetadataPairsConverter_ReadJson_Newtonsoft_Json_JsonReader_System_Type_System_Object_Newtonsoft_Json_JsonSerializer_">ReadJson(JsonReader, Type, Object, JsonSerializer)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownRewriterFactory_Composite_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter__">Composite(IEnumerable&lt;IMarkdownRewriter&gt;)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)</code></pre>
+                <pre><code class="lang-csharp hljs">public static IMarkdownRewriter Composite(IEnumerable&lt;IMarkdownRewriter&gt; rewriters)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -143,23 +154,8 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">Newtonsoft.Json.JsonReader</span></td>
-                    <td><em>reader</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><span class="xref">System.Type</span></td>
-                    <td><em>objectType</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><span class="xref">System.Object</span></td>
-                    <td><em>existingValue</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><span class="xref">Newtonsoft.Json.JsonSerializer</span></td>
-                    <td><em>serializer</em></td>
+                    <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a>&gt;</td>
+                    <td><em>rewriters</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -174,21 +170,21 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.Object</span></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/docfx/Commands/Build/BuildJsonConfig.cs/#L140">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownRewriterFactory.cs/#L14">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_FileMetadataPairsConverter_WriteJson_Newtonsoft_Json_JsonWriter_System_Object_Newtonsoft_Json_JsonSerializer_">WriteJson(JsonWriter, Object, JsonSerializer)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownRewriterFactory_FromLambda__2_System_Func___0___1_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken__">FromLambda&lt;TEngine, TToken&gt;(Func&lt;TEngine, TToken, IMarkdownToken&gt;)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)</code></pre>
+                <pre><code class="lang-csharp hljs">public static IMarkdownRewriter FromLambda&lt;TEngine, TToken&gt;(Func&lt;TEngine, TToken, IMarkdownToken&gt; rewriteFunc)where TEngine : MarkdownEngine where TToken : class, IMarkdownToken</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -201,18 +197,71 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">Newtonsoft.Json.JsonWriter</span></td>
-                    <td><em>writer</em></td>
+                    <td><span class="xref">System.Func</span>&lt;TEngine, TToken, <a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">IMarkdownToken</a>&gt;</td>
+                    <td><em>rewriteFunc</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownRewriterFactory.cs/#L40">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownRewriterFactory_Loop_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter_System_Int32_">Loop(IMarkdownRewriter, Int32)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public static IMarkdownRewriter Loop(IMarkdownRewriter rewriter, int maxLoopCount)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
+                    <td><em>rewriter</em></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><span class="xref">System.Object</span></td>
-                    <td><em>value</em></td>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>maxLoopCount</em></td>
                     <td></td>
                   </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
                   <tr>
-                    <td><span class="xref">Newtonsoft.Json.JsonSerializer</span></td>
-                    <td><em>serializer</em></td>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
                     <td></td>
                   </tr>
                 </tbody>
