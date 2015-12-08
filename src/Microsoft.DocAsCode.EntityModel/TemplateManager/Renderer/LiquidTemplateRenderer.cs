@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.EntityModel
             public override void Initialize(string tagName, string markup, List<string> tokens)
             {
                 base.Initialize(tagName, markup, tokens);
-                lock (locker)
+                lock (_locker)
                 {
                     SharedDependencies.Add(markup);
                 }
@@ -110,12 +110,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (raw is ExpandoObject)
             {
-                Dictionary<string, object> model = new Dictionary<string, object>();
-                foreach (var prop in (IDictionary<string, object>)raw)
-                {
-                    model.Add(prop.Key, ConvertExpandoObjectToObject(prop.Value));
-                }
-                return model;
+                return ((IDictionary<string, object>)raw).ToDictionary(s => s.Key, s => ConvertExpandoObjectToObject(s.Value));
             }
             if (raw is IEnumerable<object>)
             {

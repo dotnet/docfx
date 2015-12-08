@@ -6,20 +6,17 @@ namespace Microsoft.DocAsCode.EntityModel
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text.RegularExpressions;
 
     using Jint;
 
     using Microsoft.DocAsCode.Utility;
-    using System.Text.RegularExpressions;
-    using Newtonsoft.Json.Linq;
-    using System.Linq;
-    using System.Dynamic;
 
     internal class Template
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
         private string _script = null;
-        private ITemplateRenderer renderer  = null;
+        private ITemplateRenderer _renderer  = null;
         public string Name { get; }
         public string Extension { get; }
         public string Type { get; }
@@ -37,22 +34,22 @@ namespace Microsoft.DocAsCode.EntityModel
             _script = script;
             if (resourceProvider != null)
             {
-                if (Path.GetExtension(templateName) == ".liquid")
+                if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
                 {
-                    renderer = LiquidTemplateRenderer.Create(resourceProvider, template);
+                    _renderer = LiquidTemplateRenderer.Create(resourceProvider, template);
                 }
                 else
                 {
-                    renderer = new MustacheTemplateRenderer(resourceProvider, template);
+                    _renderer = new MustacheTemplateRenderer(resourceProvider, template);
                 }
             }
 
-            Resources = ExtractDependentFilePaths(template);
+            Resources = ExtractDependentResources();
         }
 
         public string Transform(string modelPath, object attrs)
         {
-            if (renderer == null) return null;
+            if (_renderer == null) return null;
             object model;
             if (_script == null)
             {
@@ -63,7 +60,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 model = ProcessWithJint(File.ReadAllText(modelPath), attrs);
             }
 
-            return renderer.Render(model);
+            return _renderer.Render(model);
         }
 
         private string GetRelativeResourceKey(string relativePath)
@@ -115,10 +112,10 @@ namespace Microsoft.DocAsCode.EntityModel
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
         /// <param name="template"></param>
-        private IEnumerable<TemplateResourceInfo> ExtractDependentFilePaths(string template)
+        private IEnumerable<TemplateResourceInfo> ExtractDependentResources()
         {
-            if (renderer == null || renderer.Dependencies == null) yield break;
-            foreach (var dependency in renderer.Dependencies)
+            if (_renderer == null || _renderer.Dependencies == null) yield break;
+            foreach (var dependency in _renderer.Dependencies)
             {
                 string filePath = dependency;
                 if (string.IsNullOrWhiteSpace(filePath)) continue;

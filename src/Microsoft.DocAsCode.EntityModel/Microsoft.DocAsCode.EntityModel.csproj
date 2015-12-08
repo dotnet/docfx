@@ -141,7 +141,7 @@
     <Compile Include="TemplateManager\ResourceCollection.cs" />
     <Compile Include="TemplateManager\SystemAttributes.cs" />
     <Compile Include="TemplateManager\Renderer\ResourceTemplateLocator.cs" />
-    <Compile Include="TemplateManager\Renderer\IRenderer.cs" />
+    <Compile Include="TemplateManager\Renderer\ITemplateRenderer.cs" />
     <Compile Include="TemplateManager\TemplateResourceInfo.cs" />
     <Compile Include="TemplateManager\Template.cs" />
     <Compile Include="TemplateManager\TemplateManifestItem.cs" />
