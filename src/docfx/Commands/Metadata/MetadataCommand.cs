@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     internal class MetadataCommand : ICommand
     {
@@ -81,7 +82,9 @@ namespace Microsoft.DocAsCode
                 // TODO: Use plugin to generate metadata for files with different extension?
                 using (var worker = new ExtractMetadataWorker(inputModel, inputModel.ForceRebuild))
                 {
-                    yield return worker.ExtractMetadataAsync().Result;
+                    // Use task.run to get rid of current context (causing deadlock in xunit)
+                    var task = Task.Run(worker.ExtractMetadataAsync);
+                    yield return task.Result;
                 }
             }
         }
