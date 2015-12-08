@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode.EntityModel
             foreach (var dependency in renderer.Dependencies)
             {
                 string filePath = dependency;
-                if (string.IsNullOrWhiteSpace(filePath)) yield break;
+                if (string.IsNullOrWhiteSpace(filePath)) continue;
                 if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
                 var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
                 if (regexPatternMatch.Groups.Count > 1)

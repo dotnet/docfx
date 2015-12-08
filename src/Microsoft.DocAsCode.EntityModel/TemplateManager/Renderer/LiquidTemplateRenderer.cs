@@ -12,22 +12,22 @@ namespace Microsoft.DocAsCode.EntityModel
 
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {
-        private static object locker = new object();
+        private static object _locker = new object();
+        private DotLiquid.Template _template = null;
         public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, string template)
         {
             if (template == null) throw new ArgumentNullException(nameof(template));
-            lock (locker)
+            lock (_locker)
             {
-                DotLiquid.Template.FileSystem = new ResourceFileSystem(resourceProvider);
                 DotLiquid.Template.RegisterTag<Dependency>("ref");
                 Dependency.PopDependencies();
                 var liquidTemplate = DotLiquid.Template.Parse(template);
+                liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
                 var dependencies = Dependency.PopDependencies();
                 return new LiquidTemplateRenderer(liquidTemplate, template, dependencies);
             }
         }
 
-        DotLiquid.Template _template = null;
         private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, IEnumerable<string> dependencies)
         {
             _template = liquidTemplate;
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private class Dependency : DotLiquid.Tag
         {
             private static readonly HashSet<string> SharedDependencies = new HashSet<string>();
-            private static object locker = new object();
+            private static object _locker = new object();
             public override void Initialize(string tagName, string markup, List<string> tokens)
             {
                 base.Initialize(tagName, markup, tokens);
@@ -66,7 +66,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             public static ImmutableArray<string> PopDependencies()
             {
-                lock (locker)
+                lock (_locker)
                 {
                     var array = SharedDependencies.ToImmutableArray();
                     SharedDependencies.Clear();

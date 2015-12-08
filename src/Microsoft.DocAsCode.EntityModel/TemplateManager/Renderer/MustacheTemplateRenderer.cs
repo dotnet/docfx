@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.EntityModel
             foreach (Match match in IncludeRegex.Matches(template))
             {
                 var filePath = match.Groups["file"].Value;
-                if (string.IsNullOrWhiteSpace(filePath)) yield break;
+                if (string.IsNullOrWhiteSpace(filePath)) continue;
                 yield return filePath;
             }
         }
