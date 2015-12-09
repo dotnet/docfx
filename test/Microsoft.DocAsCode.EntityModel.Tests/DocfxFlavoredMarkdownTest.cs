@@ -113,6 +113,90 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
         [Theory]
         [Trait("Related", "DfmMarkdown")]
+        [InlineData(@"the following is note type
+  > [!NOTE]
+  > note text 1-1
+  > note text 1-2  
+  > note text 2-1
+This is also note  
+This is also note with br
+
+Skip the note
+", @"<p>the following is note type</p>
+<blockquote class=""NOTE""><p>note text 1-1
+note text 1-2<br>note text 2-1
+This is also note<br>This is also note with br</p>
+</blockquote><p>Skip the note</p>
+")]
+        [InlineData(@"the following is not note type
+  > no-note text 1-1
+  > [!NOTE]
+  > no-note text 1-2  
+  > no-note text 2-1
+", @"<p>the following is not note type</p>
+<blockquote>
+<p>no-note text 1-1
+[!NOTE]
+no-note text 1-2<br>no-note text 2-1</p>
+</blockquote>
+")]
+        [InlineData(@"the following is not note type
+  > no-note text 1-1
+  >
+  > [!NOTE]
+  > no-note text 2-1  
+  > no-note text 2-2
+", @"<p>the following is not note type</p>
+<blockquote>
+<p>no-note text 1-1</p>
+<p>[!NOTE]
+</p>
+<p>no-note text 2-1<br>no-note text 2-2</p>
+</blockquote>
+")]
+        [InlineData(@"the following is code
+    > code text 1-1
+    > [!NOTE]
+    > code text 1-2  
+    > code text 2-1
+", @"<p>the following is code</p>
+<pre><code>&gt; code text 1-1
+&gt; [!NOTE]
+&gt; code text 1-2  
+&gt; code text 2-1
+</code></pre>")]
+        public void TestSectionNoteInBlockQuote(string source, string expected)
+        {
+            var markedContent = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), markedContent);
+        }
+
+
+        [Theory]
+        [Trait("Related", "DfmMarkdown")]
+        [InlineData(@"<!-- BEGINSECTION class=""All"" id=""All"" -->
+
+<!-- BEGINSECTION class=""A"" id=""A"" -->
+
+this is A
+
+<!-- ENDSECTION -->
+
+<!-- BEGINSECTION class=""B"" id=""B"" -->
+
+this is B
+
+<!-- ENDSECTION -->
+
+<!-- ENDSECTION -->")]
+        public void TestSectionBlockLevelRecusive(string source)
+        {
+            var markedContent = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal("<div class=\"All\" id=\"All\"><div class=\"A\" id=\"A\"><p>this is A</p>\n</div><div class=\"B\" id=\"B\"><p>this is B</p>\n</div></div>", markedContent);
+        }
+
+        [Theory]
+        [Trait("Related", "DfmMarkdown")]
         [InlineData(@"<!-- BEGINSECTION class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar"" -->
 
 ```cs-i

@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return content + "</li>\n";
         }
 
-        private StringBuffer RenderTokens(MarkdownEngine engine, ImmutableArray<IMarkdownToken> tokens, MarkdownBlockContext context, bool wrapParagraph = false, IMarkdownRule rule = null)
+        protected StringBuffer RenderTokens(MarkdownEngine engine, ImmutableArray<IMarkdownToken> tokens, MarkdownBlockContext context, bool wrapParagraph = false, IMarkdownRule rule = null)
         {
             var content = StringBuffer.Empty;
             var textContent = StringBuffer.Empty;

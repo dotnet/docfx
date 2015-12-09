@@ -7,9 +7,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownBlockquoteBlockRule : IMarkdownRule
     {
-        public string Name => "Blockquote";
+        public virtual string Name => "Blockquote";
 
         public virtual Regex Blockquote => Regexes.Block.Blockquote;
+
+        public virtual Regex LeadingBlockquote => Regexes.Lexers.LeadingBlockquote;
 
         public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
         {
@@ -19,7 +21,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            var capStr = Regexes.Lexers.LeadingBlockquote.Replace(match.Value, string.Empty);
+            var capStr = LeadingBlockquote.Replace(match.Value, string.Empty);
             return new MarkdownBlockquoteBlockToken(this, engine.Tokenize(capStr));
         }
     }

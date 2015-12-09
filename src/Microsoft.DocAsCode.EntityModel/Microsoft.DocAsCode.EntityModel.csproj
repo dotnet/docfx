@@ -83,7 +83,11 @@
     <Compile Include="Builders\DocumentBuildParameters.cs" />
     <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmBlockquoteBlockRule.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmBlockquoteBlockToken.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmBlockRules.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmNoteBlockRule.cs" />
+    <Compile Include="DocfxFlavoredMarked\DfmNoteBlockToken.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmParagraphBlockRule.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmRenderer.cs" />
     <Compile Include="DocfxFlavoredMarked\DfmInlineRules.cs" />

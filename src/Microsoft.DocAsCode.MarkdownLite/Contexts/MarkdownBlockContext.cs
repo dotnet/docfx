@@ -9,6 +9,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         public const string IsTop = "IsTop";
 
+        public const string IsBlockQuote = "IsBlockQuote";
+
         public MarkdownBlockContext(ImmutableList<IMarkdownRule> rules, IMarkdownContext inlineContext)
             : this (rules, inlineContext, ImmutableDictionary<string, object>.Empty.Add(IsTop, true))
         {

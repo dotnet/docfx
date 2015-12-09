@@ -3,11 +3,10 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System;
     using System.IO;
 
-    using DocAsCode.Plugins;
     using MarkdownLite;
+
     using Utility;
 
     public class DfmRenderer : MarkdownRenderer
@@ -41,6 +40,20 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             var content = token.Content == null ? string.Empty : StringHelper.HtmlEncode(token.Content);
             return $"<yamlheader>{content}</yamlheader>";
+        }
+
+        public override StringBuffer Render(MarkdownEngine engine, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
+        {
+            if (token.Tokens.Length > 0)
+            {
+                var ft = token.Tokens[0] as DfmNoteBlockToken;
+                if (ft != null)
+                {
+                    return $"<blockquote class=\"{ft.NoteType}\">" + RenderTokens(engine, token.Tokens.RemoveAt(0), context, true, token.Rule) + "</blockquote>";
+                }
+            }
+
+            return base.Render(engine, token, context);
         }
 
         public virtual StringBuffer Render(MarkdownEngine engine, DfmSectionBeginBlockToken token, MarkdownBlockContext context)
