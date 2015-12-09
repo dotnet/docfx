@@ -29,7 +29,6 @@ documentType: index
     </div>
   </div>
 </div>
-
 <!-- BEGINSECTION class="container content" -->
 <div id="vp-container">
   <div id="initial-vps">
@@ -50,11 +49,7 @@ documentType: index
   </div>
 </div>
 <hr/>
-
 <!-- BEGINSECTION class="row" id="note"-->
-
 [!include[VersionNotes](../ReleaseNote.md)]
-
 <!-- ENDSECTION -->
-
 <!-- ENDSECTION -->
