@@ -31,10 +31,10 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public LogLevel LogLevel => GetLogLevel(ResultLevel);
 
-        public ParseResult(ResultLevel resultLevel, string message, params string[] arg)
+        public ParseResult(ResultLevel resultLevel, string message)
         {
             ResultLevel = resultLevel;
-            Message = string.Format(message, arg);
+            Message = message;
         }
 
         public ParseResult(ResultLevel resultLevel)

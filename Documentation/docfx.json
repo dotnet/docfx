@@ -22,6 +22,10 @@
       },
       {
         "files": [ "toc.yml", "tutorial/toc.yml" ]
+      },
+      {
+        "files": [ "ReleaseNote.md" ],
+        "cwd": ".."
       }
     ],
     "resource": [
@@ -43,9 +47,9 @@
         "tutorial/**.md": 1.2
       },
       "keywords": {
-      	"obj/docfx/**": ["API", "Reference"],
-      	"spec/**.md": ["Spec", "Conceptual"],
-      	"**/*markdown.md": ["DFM", "Spec"]
+        "obj/docfx/**": ["API", "Reference"],
+        "spec/**.md": ["Spec", "Conceptual"],
+        "**/*markdown.md": ["DFM", "Spec"]
       }
     },
     "dest": "_site",

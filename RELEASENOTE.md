@@ -1,5 +1,11 @@
-Version Notes (Current Version: v1.1)
+Version Notes (Current Version: v1.2)
 =======================================
+v1.2
+------------
+1. Support Liquid template, templates ending with `.liquid` are considered as using liquid templating language. Liquid contains `include` tag to support partials, we follow the ruby partials naming convention to have `_<partialName>.liquid` as partial template. A custom tag `ref`, e.g. `{% ref file1 %}` is introduced to specify the resource files that current template depends on.
+2. DFM include syntax is updated to use `[!include[<title>](<filepath>)]` syntax
+3. Disable glob pattern in `docfx metadata` command line option as it is to some extent confusing, consider using a `-g` option later to re-enable it.
+
 v1.1
 -------------
 1. Rewrite Glob

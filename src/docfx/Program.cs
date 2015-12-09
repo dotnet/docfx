@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode
                 }
                 catch
                 {
-                    return new ParseResult(ResultLevel.Error, "{0} subcommand is not currently supported.", invokedVerb);
+                    return new ParseResult(ResultLevel.Error, $"{invokedVerb} subcommand is not currently supported.");
                 }
             }
 

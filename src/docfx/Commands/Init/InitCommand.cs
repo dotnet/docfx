@@ -146,11 +146,11 @@ namespace Microsoft.DocAsCode
                 path = string.IsNullOrEmpty(_options.OutputFolder) ? name : Path.Combine(_options.OutputFolder, name);
 
                 JsonUtility.Serialize(path, config, Formatting.Indented);
-                return new ParseResult(ResultLevel.Success, "Generated {0} to {1}", name, path);
+                return new ParseResult(ResultLevel.Success, $"Generated {name} to {path}");
             }
             catch (Exception e)
             {
-                return new ParseResult(ResultLevel.Error, "Error init {0}: {1}", name ?? ConfigName, e.Message);
+                return new ParseResult(ResultLevel.Error, $"Error init { name ?? ConfigName}: {e.Message}");
             }
         }
 

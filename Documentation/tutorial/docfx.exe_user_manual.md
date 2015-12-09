@@ -169,7 +169,7 @@ Top level `docfx.json` structure is key-value pair. `key` is the name of the sub
 
 ```
 
-###3.2 Properties for `metadata`
+###3.2 Properties for `build`
 
 Key                | Description
 -------------------|-----------------------------

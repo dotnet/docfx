@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var validInput = _validInput;
             if (validInput == null)
             {
-                var result = new ParseResult(ResultLevel.Warning, "No valid file is found from input {0}. Exiting...", _rawInput.ToString());
+                var result = new ParseResult(ResultLevel.Warning, $"No valid file is found from input {_rawInput}. Exiting...");
                 return result;
             }
 
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             catch (Exception e)
             {
-                var result = new ParseResult(ResultLevel.Error, "Error extracting metadata for {0}: {1}", _rawInput.ToString(), e.ToString());
+                var result = new ParseResult(ResultLevel.Error, $"Error extracting metadata for {_rawInput}: {e}");
                 return result;
             }
 
