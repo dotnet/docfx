@@ -27,7 +27,7 @@ Here's a few things you should always do when making changes to the code base:
 
 **Engineering guidelines**
 
-The coding, style, and general engineering guidelines are published on the [Engineering guidelines](https://github.com/aspnet/Home/wiki/Engineering-guidelines) page.
+The coding, style, and general engineering guidelines are published on the [Engineering guidelines](http://dotnet.github.io/docfx/guideline/engineering_guidelines.html) page.
 
 **Commit/Pull Request Format**
 
