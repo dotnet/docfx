@@ -1,6 +1,9 @@
 #Generate your API documentation with DocFX
 
-![Appveyor]()
+Branch | Platform  | Status
+------ | --------- | ------
+master | Windows   | ![masterstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCi_Master)/statusIcon)
+dev    | Windows   | ![devstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCi_DocfxCiForDevBranch)/statusIcon)
 
 
 ##What is it?
