@@ -4,6 +4,9 @@ title: Welcome to Docfx website!
 documentType: index
 ---
 <style type="text/css">
+#note {
+  margin-bottom: 100px;
+}
 #note h1{
   font-size: 24px;
 }
