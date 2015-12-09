@@ -25,4 +25,4 @@ docfx
 ```
 
 ## Furthur reference
-Please refer to [docfx homepage](http://aspnet.github.io/docfx/index.html) for detailed information about docfx.
+Please refer to [docfx homepage](http://dotnet.github.io/docfx/index.html) for detailed information about docfx.
