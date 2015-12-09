@@ -13,7 +13,7 @@ There are currently two versions of the tool:
 We currently support C# and VB projects. 
 
 ##How do I get started?
-Please refer to [Getting Started](http://aspnet.github.io/docfx/#/tutorial/docfx_getting_started.md) to play with `docfx`!
+Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html) to play with `docfx`!
 
 ##What's included?
 File/Folder     | Description 
