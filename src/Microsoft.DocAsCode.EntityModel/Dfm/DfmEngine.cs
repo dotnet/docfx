@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         public Stack<string> Parents { get; set; } = new Stack<string>();
 
-        public DfmEngine(IMarkdownContext context, object renderer, Options options) : base(context, renderer, options)
+        public DfmEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options) : base(context, rewriter, renderer, options)
         {
         }
 
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public string InternalMarkup(string src, Stack<string> parents)
         {
-            DfmEngine engine = new DfmEngine(Context, Renderer, Options);
+            DfmEngine engine = new DfmEngine(Context, Rewriter, Renderer, Options);
             engine.Parents = parents;
             return engine.Markup(src);
         }
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public new DfmEngine CreateEngine(object renderer)
         {
-            return new DfmEngine(CreateParseContext(), renderer, Options);
+            return new DfmEngine(CreateParseContext(), Rewriter, renderer, Options);
         }
     }
 }

@@ -101,6 +101,7 @@
     <Compile Include="RelativePathTest.cs" />
     <Compile Include="DocumentBuilderTest.cs" />
     <Compile Include="WordCounterUnitTest.cs" />
+    <Compile Include="TestLoggerListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

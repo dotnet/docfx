@@ -3,11 +3,15 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Tests
 {
-    using System.Xml;
+    using System.Collections.Generic;
     using System.IO;
     using System.Text.RegularExpressions;
+    using System.Linq;
+    using System.Xml;
 
     using Xunit;
+
+    using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
 
     public class DocfxFlavoredMarkdownTest
     {
@@ -233,6 +237,38 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             Assert.True(csNode != null);
             var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
             Assert.True(jsNode != null);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmTagValidate()
+        {
+            var builder = new DfmEngineBuilder(new MarkdownLite.Options() { Mangle = false });
+            var mrb = new MarkdownRewriterBuilder(null);
+            mrb.AddValidators(
+                new MarkdownTagValidationRule
+                {
+                    TagNames = new List<string> { "em", "div" },
+                    MessageFormatter = "Invalid tag({0})!",
+                    Behavior = TagRewriteBehavior.Error,
+                    OpeningTagOnly = true,
+                },
+                new MarkdownTagValidationRule
+                {
+                    TagNames = new List<string> { "h1" },
+                    MessageFormatter = "Invalid tag({0}), Removed!",
+                    Behavior = TagRewriteBehavior.ErrorAndRemove,
+                });
+            builder.Rewriter = mrb.Create();
+
+            var engine = builder.CreateEngine(new DfmRenderer());
+            var listener = new TestLoggerListener();
+            Logger.RegisterListener(listener);
+            var result = engine.Markup(@"<div><i>x</i><EM>y</EM><h1>z</h1></div>", "test");
+            Logger.UnregisterListener(listener);
+            Assert.Equal("<div><i>x</i><EM>y</EM>z</div>", result);
+            Assert.Equal(4, listener.Items.Count);
+            Assert.Equal(new[] { "Invalid tag(div)!", "Invalid tag(EM)!", "Invalid tag(h1), Removed!", "Invalid tag(h1), Removed!" }, from item in listener.Items select item.Message);
         }
 
         [Fact]

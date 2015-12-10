@@ -121,6 +121,9 @@
     <Compile Include="Loggers\LogLevel.cs" />
     <Compile Include="Loggers\ReplayLogListener.cs" />
     <Compile Include="Loggers\ReportLogListener.cs" />
+    <Compile Include="MarkdownValidators\MarkdownRewriterBuilder.cs" />
+    <Compile Include="MarkdownValidators\MarkdownTagValidationRule.cs" />
+    <Compile Include="MarkdownValidators\TagRewriteBehavior.cs" />
     <Compile Include="Model\CrefInfo.cs" />
     <Compile Include="Model\ApiReferenceModel.cs" />
     <Compile Include="Model\ReferenceItem.cs" />
