@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Runtime.Serialization.Formatters.Binary;
 
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class ConceptualDocumentProcessor : IDocumentProcessor
@@ -100,6 +99,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var result = host.Markup(markdown, model.FileAndType);
             content[ConceputalKey] = result.Html;
             content["title"] = result.Title;
+            content["word_count"] = WordCounter.CountWord(result.Html);
             if (result.YamlHeader != null && result.YamlHeader.Count > 0)
             {
                 foreach (var item in result.YamlHeader)

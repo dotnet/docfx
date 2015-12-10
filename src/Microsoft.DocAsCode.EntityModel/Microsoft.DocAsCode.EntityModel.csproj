@@ -100,6 +100,7 @@
     <Compile Include="Dfm\DfmSectionBeginBlockToken.cs" />
     <Compile Include="Dfm\DfmSectionEndBlockRule.cs" />
     <Compile Include="Dfm\DfmSectionEndBlockToken.cs" />
+    <Compile Include="Plugins\WordCounter.cs" />
     <Compile Include="SerializationUtility.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageCollection.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
