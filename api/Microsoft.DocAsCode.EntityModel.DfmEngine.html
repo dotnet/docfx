@@ -82,12 +82,12 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmEngine.cs/#L18">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_">DfmEngine(IMarkdownContext, Object, Options)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_">DfmEngine(IMarkdownContext, IMarkdownRewriter, Object, Options)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public DfmEngine(IMarkdownContext context, object renderer, Options options)</code></pre>
+                <pre><code class="lang-csharp hljs">public DfmEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -102,6 +102,11 @@
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
                     <td><em>context</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
+                    <td><em>rewriter</em></td>
                     <td></td>
                   </tr>
                   <tr>
