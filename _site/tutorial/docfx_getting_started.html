@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Getting Started with docfx | docfx website</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Getting Started with docfx | docfx website">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="../">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content">
+        
+        <div class="sidenav">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div class="sidetoc">
+              <iframe id="sidetoc" src="toc.html"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content">
+              <a href="" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <h1 id="getting-started-with-docfx-">Getting Started with <code>docfx</code></h1>
+<h2 id="getting-started">Getting Started</h2>
+<p><code>docfx</code> is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphnix. It has the ability to extract triple slash comments out from your source code. What&#39;s more, it has syntax to link additional files to API to add additional remarks. <code>docfx</code> will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. <code>docfx</code> provides the flexibility for you to customize the website through templates. We currently have several embeded templates, including websites containing pure static html pages and also website managed by AngularJS. Of cause, if you are interested in creating your own website with your own styles, you can follow <a href="howto_create_custom_template.html">how to create custom template</a> to create custom templates.</p>
+<ul>
+<li>Click &quot;View Source&quot; for an API to route to the source code in GitHub (your API must be pushed to GitHub)</li>
+<li><code>docfx</code> provide DNX version for cross platform use.</li>
+<li><code>docfx</code> can be used within Visual Studio seamlessly. <strong>NOTE</strong> offical <code>docfx.msbuild</code> nuget package is now in pre-release version. You can also build your own with source code and use it locally.</li>
+<li>We support <strong>Docfx Flavored Markdown(DFM)</strong> for writing conceptual files. DFM is <strong>100%</strong> compatible with <em>Github Flavored Markdown(GFM)</em> and add several new features including <em>file inclusion</em>, <em>cross reference</em>, and <em>yaml header</em>. For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html">DFM</a>.</li>
+</ul>
+<h2 id="use-docfx-exe-directly">Use <code>docfx.exe</code> directly</h2>
+<p>Download and unzip <a href="artifacts/docfx.zip">docfx.zip</a> to run <code>docfx.exe</code> directly!</p>
+<h3 id="quick-start">Quick Start</h3>
+<p><strong>Step1</strong> Run</p>
+<pre><code>docfx.exe init
+</code></pre><p>and follow the instructions to generate a <code>docfx.json</code> config file.</p>
+<p><strong>Step2.</strong> Run</p>
+<pre><code>docfx.exe
+</code></pre><p>and <code>docfx.exe</code> will automatically read the <code>docfx.json</code> in current folder and generate a documentation website for you in <code>output folder</code> which you defined in <code>init</code> phase. By default, the website is under <code>_site</code> folder.</p>
+<p><strong>TODO</strong>: we are on the way to publish <code>docfx.exe</code> independently into our on-building website!</p>
+<h2 id="use-docfx-under-visual-studio-ide">Use <code>docfx</code> under Visual Studio IDE</h2>
+<p>As a prerequisite, you will need <a href="https://www.visualstudio.com/downloads/download-visual-studio-vs">Visual Studio 2015</a> to use <code>docfx</code> in IDE.</p>
+<h3 id="quick-start">Quick Start</h3>
+<p><strong>Step1.</strong> Open Visual Studio and create a .csproj as your documenation project. You can use the <strong>ASP.NET website project template</strong> as it has built-in <em>PREVIEW</em> feature which we could leverage to preview the generated website easily.</p>
+<p><strong>Step2.</strong> Install Nuget Package <code>docfx.msbuild</code> prerelease version under <em>Package Manager Console</em>:</p>
+<pre><code>Install-Package docfx.msbuild -Pre
+</code></pre><p><strong>Step3.</strong> You will notice that <em>docfx.json</em> and <em>toc.yml</em> are automatically added to your project. Modify <em>docfx.json</em> to include projects and conceptual files that you want to generate documentations. For detailed syntax about <em>docfx.json</em>, please refer to <a href="docfx.exe_user_manual.html">docfx.exe User Mannual</a>.</p>
+<p><strong>Step4.</strong> Right click on the website project, and click View =&gt; <strong>View in browser</strong>, navigate to <code>/_site/tutorial/docfx_getting_started.html</code> sub url, and start navigating through web pages!</p>
+<h3 id="build-from-source-code">Build from source code</h3>
+<p><strong>Step1.</strong> <code>git clone</code> to get the latest code.</p>
+<p><strong>Step2.</strong> Run <code>build.cmd</code> under root folder</p>
+<p><strong>Step3.</strong> Add <code>artifacts</code> folder to nuget source by in IDE:</p>
+<blockquote>
+<p>Tools &gt; Nuget Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
+</blockquote>
+<p><strong>Step4.</strong> Follow <strong>Step1</strong>~<strong>Step4</strong> in above <strong>Quick Start</strong> section to generate your documentation!</p>
+<h2 id="use-docfx-under-dnx">Use <code>docfx</code> under DNX</h2>
+<p>As a prerequisite, you will need to install <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm">DNVM</a> and <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx">DNX</a>.</p>
+<h3 id="quick-start">Quick Start</h3>
+<ul>
+<li><code>SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/</code> as we depends on the release version of aspnet 1.0.0-rc1.</li>
+<li><code>dnvm upgrade</code> to get the latest dnvm.</li>
+<li><p>Add feed https://www.myget.org/F/aspnetrelease/api/v2/ to Nuget.config</p>
+<blockquote>
+<p>For Windows, the nuget config file is  <strong>%AppData%\NuGet\NuGet.config</strong>.</p>
+<p>For Linux/OSX, the nuget config file is <strong>~/.config/NuGet/NuGet.config</strong>.</p>
+</blockquote>
+<p>Sample nuget.config</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;configuration&gt;
+&lt;packageSources&gt;
+  &lt;add key=&quot;myget.release&quot; value=&quot;https://www.myget.org/F/aspnetrelease/api/v2/&quot; /&gt;
+  &lt;add key=&quot;nuget.org&quot; value=&quot;https://www.nuget.org/api/v2/&quot; /&gt;
+&lt;/packageSources&gt;
+&lt;disabledPackageSources /&gt;
+&lt;activePackageSource&gt;
+  &lt;add key=&quot;nuget.org&quot; value=&quot;https://www.nuget.org/api/v2/&quot; /&gt;
+&lt;/activePackageSource&gt;
+&lt;/configuration&gt;
+</code></pre>
+</li>
+<li><code>dnu commands install docfx</code> to install <code>docfx</code> as a command</li>
+<li><code>docfx Documentation/docfx.json</code> to build generate <code>docfx</code> project into a website under <code>_site</code> folder!</li>
+</ul>
+<p>Please refer to <a href="docfx.exe_user_manual.html"><code>docfx</code> User Manual</a> for detailed description of the usage of <em>docfx.json</em>.</p>
+<h2 id="adding-conceptual-content">Adding conceptual content</h2>
+<p>The layout of the project file structure you care about now are as follows:</p>
+<pre><code>|- api/
+|- article/
+|    |- about.md
+|    |- index.md
+|- toc.yml
+</code></pre><ul>
+<li>api/ is reserved for your API section. <em>Note that the api names are the property names specified in <code>xdoc.json</code>, <code>projects</code> section.</em></li>
+<li>article/ is where you put the self-authored topics, which we call <code>conceptual</code> topics.</li>
+<li><code>toc.yml</code> is the main table of contents file that generates the navbar you will see on the top. It looks like this:</li>
+</ul>
+<pre><code>- name  : Home
+  href: articles/index.md
+- name  : About
+  href: articles/about.md
+- name  : Api Documentation
+  href: api/
+</code></pre><p>Say I want to add another tutorial section, here&#39;s how I would go about it:</p>
+<ul>
+<li>Create another folder under article called tutorial, and some additional markdown files as well as another toc.yml file like so:</li>
+</ul>
+<pre><code>|- api/
+|- article/
+|-   |- tutorial/
+|-   |-    |- overview.md
+|-   |-    |- getting_started.md
+|-   |-    |- lessons.md
+|-   |-    |- creating_your_first_website.md
+|-   |-    |- adding_your_own_content.md
+|-   |-    |- incorporating_code_snippets.md
+|-   |-    |- publishing_to_github_pages.md
+|-   |-    |- toc.yml
+|-   |- about.md
+|-   |- index.md
+|- toc.yml
+</code></pre><ul>
+<li>The root toc.yml file will have an additional entry for the tutorial section, and the system will know it&#39;s a section because there&#39;s a toc.yml in the tutorial folder.</li>
+</ul>
+<pre><code>- uid  : Home
+  href: articles/index.md
+- uid  : About
+  href: articles/about.md
+- uid  : Tutorial
+  href: articles/tutorial/
+  homepage: articles/tutorial/lessons.md
+- uid  : Api Documentation
+  href: api/
+</code></pre><blockquote>
+<p>NOTE that <em>homegage</em> is the default page of sections. And <strong>folder</strong> must be ended with <code>/</code>.</p>
+</blockquote>
+<ul>
+<li>In the tutorial section&#39;s toc.yml file I have the following:</li>
+</ul>
+<pre><code>- uid  : Overview
+  href: overview.md
+- uid  : Getting Started
+  href: getting_started.md
+- uid  : Lessons
+  href: lessons.md
+  items:
+    - uid  : Creating Your First Website
+      href: creating_your_first_website.md
+    - uid  : Adding Your Own Content
+      href: adding_your_own_content.md
+    - uid  : Incorporating Code Snippets
+      href: incorporating_code_snippets.md
+    - uid  : Publishing to GitHub Pages
+      href: publishing_to_github_pages.md
+</code></pre><p>That&#39;s it, preview your website and you should see the newly created tutorial section.</p>
+<p>A couple of additional details:</p>
+<ul>
+<li>You can use an external link for href.</li>
+</ul>
+<h2 id="adding-markdown-to-api-reference">Adding markdown to API reference</h2>
+<p>To make authoring your API reference section easier we allow you to directly add a markdown section to any of your APIs. Create a markdown file and add the following header:</p>
+<pre><code>---
+uid: system.string
+---
+your markdown goes here.
+</code></pre><p>Where &quot;uid&quot; is the fully qualified name of your API.</p>
+<blockquote>
+<p><em>NOTE</em>: a valid YAML header <strong>MUST</strong> be started by a blank line, YAML content <strong>MUST</strong> be wrapped by three dashes <code>---</code>, and YAML content <strong>MUST</strong> start with <code>uid:</code>.</p>
+</blockquote>
+<p>When you build the project again, we will add the markdown section you just created into the reference content of the API. It will be added to the location right after summary and before declarations.</p>
+<p>We recommend that all of your API reference markdown files go in the api/ folder, although technically you can put the markdown file anywhere.</p>
+<h3 id="linking-to-another-api">Linking to another API</h3>
+<p>Currently for linking to another API you simply add an &quot;@&quot; followed by the fully qualified name of your API. Currently we will need to preprocess this syntax so adding this will require a rebuild.</p>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+            </nav>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>

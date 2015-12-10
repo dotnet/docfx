@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Enum MergeOption | docfx website</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Enum MergeOption | docfx website">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="../">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content">
+        
+        <div class="sidenav">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div class="sidetoc">
+              <iframe id="sidetoc" src="toc.html"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content">
+              
+              
+              
+              <h1 id="Microsoft_DocAsCode_Utility_EntityMergers_MergeOption">Enum MergeOption</h1>
+              <div class="markdown level0 summary"></div>
+              <div class="markdown level0 conceptual"></div>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Utility.EntityMergers</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Utility.dll</h6>
+              <h5 id="Microsoft_DocAsCode_Utility_EntityMergers_MergeOption_syntax">Syntax</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public enum MergeOption</code></pre>
+              </div>
+              <h3 id="fields">Fields</h3>
+              
+              
+              <h4 id="Microsoft_DocAsCode_Utility_EntityMergers_MergeOption_Ignore">Ignore</h4>
+              <div class="markdown level1 summary"><p>Do not merge this property.</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">Ignore = -1</code></pre>
+              </div>
+              
+              
+              <h4 id="Microsoft_DocAsCode_Utility_EntityMergers_MergeOption_Merge">Merge</h4>
+              <div class="markdown level1 summary"><p>Standard merge(default behavior):</p>
+<list><item>for list, merge the items in the list by the merge key.</item><item>for string or any value type, replace it when it is not null or default value in override entity.</item><item>for other type, merge each property.</item></list></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">Merge = 0</code></pre>
+              </div>
+              
+              
+              <h4 id="Microsoft_DocAsCode_Utility_EntityMergers_MergeOption_MergeKey">MergeKey</h4>
+              <div class="markdown level1 summary"><p>Identify merge item in list.</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">MergeKey = -2</code></pre>
+              </div>
+              
+              
+              <h4 id="Microsoft_DocAsCode_Utility_EntityMergers_MergeOption_MergeNullOrDefault">MergeNullOrDefault</h4>
+              <div class="markdown level1 summary"><p>When it is not null or default value in override entity, it is same with merge.
+When it is null or default value in override entity, it will replace the property to null or default value.</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">MergeNullOrDefault = 1</code></pre>
+              </div>
+              
+              
+              <h4 id="Microsoft_DocAsCode_Utility_EntityMergers_MergeOption_Replace">Replace</h4>
+              <div class="markdown level1 summary"><p>Replace it when it is not null or default value in override entity.</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">Replace = 2</code></pre>
+              </div>
+              
+              
+              <h4 id="Microsoft_DocAsCode_Utility_EntityMergers_MergeOption_ReplaceNullOrDefault">ReplaceNullOrDefault</h4>
+              <div class="markdown level1 summary"><p>Always replace.</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">ReplaceNullOrDefault = 3</code></pre>
+              </div>
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+            </nav>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
