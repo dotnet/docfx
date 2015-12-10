@@ -7,8 +7,16 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 {
     public class TestLoggerListener : ILoggerListener
     {
+        public string Phase { get; }
+
         public List<ILogItem> Items { get; } = new List<ILogItem>();
+
         public LogLevel LogLevelThreshold { get; set; }
+
+        public TestLoggerListener(string phase)
+        {
+            Phase = phase;
+        }
 
         public void Dispose()
         {
@@ -20,7 +28,10 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
         public void WriteLine(ILogItem item)
         {
-            Items.Add(item);
+            if (item.Phase == Phase)
+            {
+                Items.Add(item);
+            }
         }
     }
 }

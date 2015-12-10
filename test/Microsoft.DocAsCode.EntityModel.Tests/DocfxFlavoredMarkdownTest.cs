@@ -262,9 +262,13 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             builder.Rewriter = mrb.Create();
 
             var engine = builder.CreateEngine(new DfmRenderer());
-            var listener = new TestLoggerListener();
+            var listener = new TestLoggerListener("test!!!!");
             Logger.RegisterListener(listener);
-            var result = engine.Markup(@"<div><i>x</i><EM>y</EM><h1>z</h1></div>", "test");
+            string result;
+            using (new LoggerPhaseScope("test!!!!"))
+            {
+                result = engine.Markup(@"<div><i>x</i><EM>y</EM><h1>z</h1></div>", "test");
+            }
             Logger.UnregisterListener(listener);
             Assert.Equal("<div><i>x</i><EM>y</EM>z</div>", result);
             Assert.Equal(4, listener.Items.Count);
