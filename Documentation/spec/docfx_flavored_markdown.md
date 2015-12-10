@@ -61,4 +61,24 @@ User may need to define section. Mostly used for code table. Give an example bel
     ```
     <!-- ENDSECTION -->
 
-### TOBEADDED: CODE SNIPPET
+### CODE SNIPPET
+Allow you to insert code with code language specified. The content of specified code path will be expanded.
+
+```
+[!code-<language>[<name>](<codepath> "<title>")]
+```
+
+
+### Note(Warning/Tip/Important)
+Using specific syntax at the beginning of block quote to indicate the following content is Note.
+
+```
+The following text is a note types in block quote
+
+> [!NOTE]
+> <notecontent>
+> <notecontent>
+<notecontent>
+
+This line is not inside the note
+```
