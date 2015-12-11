@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>C# Coding Standards | docfx website</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="C# Coding Standards | docfx website">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="../">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content">
+        
+        <div class="sidenav">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div class="sidetoc">
+              <iframe id="sidetoc" src="toc.html"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content">
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/Documentation/guideline/csharp_coding_standards.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <h1 id="c-coding-standards">C# Coding Standards</h1>
+<h2 id="introduction">Introduction</h2>
+<p>The coding standard will be used in conjunction with customized version of <em>StyleCop</em> and <em>FxCop</em> [<strong>TODO</strong>] during both development and build process. This will help ensure that the standard is followed by all developers on the team in a consistent manner.</p>
+<blockquote>
+<p>&quot;Any fool can write code that a computer can understand. Good programmers write code that humans understand&quot;.</p>
+<p>Martin Fowler. <em>Refactoring: Improving the design of existing code.</em></p>
+</blockquote>
+<h3 id="purpose">Purpose</h3>
+<p>The aim of this section is to define a set of C# coding standards to be used by CAPS build team to guarantee maximum legibility, reliability, re-usability and homogeneity of our code. Each section is marked <em>Mandatory</em> or <em>Recommended</em>. <em>Mandatory</em> sections, will be enforced during code reviews as well as tools like <em>StyleCop</em> and <em>FxCop</em>, and code will not be considered complete until it is compliant.</p>
+<h3 id="scope">Scope</h3>
+<p>This section contains general C# coding standards which can be applied to any type of application developed in C#, based on <em><a href="http://msdn.microsoft.com/en-us/library/ms229042.aspx">Framework Design Guidelines</a></em>. </p>
+<p>It does not pretend to be a tutorial on C#. It only includes a set of limitations and recommendations focused on clarifying the development.</p>
+<h2 id="tools">Tools</h2>
+<ul>
+<li><a href="http://www.jetbrains.com/resharper/">Resharper</a> is a great 3rd party code cleanup and style tool.</li>
+<li><a href="http://stylecop.codeplex.com/">StyleCop</a> analyzes C# srouce code to enforce a set of style and consistency rules and has been integrated into many 3rd party development tools such as Resharper.</li>
+<li><a href="http://codebox/SDLFxCop">FxCop</a> is an application that analyzes managed code assemblies (code that targets the .NET Framework common language runtime) and reports information about the assemblies, such as possible design, localization, performance, and security improvements.</li>
+<li><a href="http://toolbox/22561">C# Stylizer</a> does many of the style rules automatically</li>
+</ul>
+<h2 id="highlights-of-coding-standards">Highlights of Coding Standards</h2>
+<p>This section is not intended to give a summary of all the coding standards that enabled by our customized StyleCop, but to give a highlight of some rules one will possibly meet in daily coding life. It also provides some recommended however not mandatory(which means not enabled in StyleCop) coding standards.</p>
+<h3 id="file-layout-recommended-">File Layout (Recommended)</h3>
+<p>Only one public class is allowed per file.</p>
+<p>The file name is derived from the class name.</p>
+<pre><code>    Class   : Observer
+    Filename: Observer.cs
+</code></pre><h3 id="class-definition-order-mandatory-">Class Definition Order (Mandatory)</h3>
+<p>The class definition contains class members in the following order, from <em>less</em> restricted scope (public) to <em>more</em> restrictive (private):</p>
+<ul>
+<li>Nested types, e.g. classes, enum, struct, etc.</li>
+<li>Field members, e.g. member variables, const, etc.</li>
+<li>Member functions<ul>
+<li>Constructors</li>
+<li>Finalizer (Do not use unless absolutely necessary)</li>
+<li>Methods (Properties, Events, Operations, Overridables, Static)</li>
+<li>Private nested types</li>
+</ul>
+</li>
+</ul>
+<h3 id="naming-mandatory-">Naming (Mandatory)</h3>
+<ul>
+<li><p><strong>DO</strong> use PascalCasing for all public member, type, and namespace names consisting of multiple words.</p>
+<pre><code>  PropertyDescriptor
+  HtmlTag
+  IOStream
+</code></pre><p><strong>NOTE</strong>: A special case is made for two-letter acronyms in which both letters are capitalized, e.g. <em>IOStream</em></p>
+</li>
+<li><p><strong>DO</strong> use camelCasing for parameter names.</p>
+<pre><code>  propertyDescriptor
+  htmlTag
+  ioStream
+</code></pre></li>
+<li><p><strong>DO</strong> start with underscore for private fields</p>
+<pre><code>  private readonly Guid _userId = Guid.NewGuid();
+</code></pre></li>
+<li><p><strong>DO</strong> start static readonly fields, constants with capitalized case</p>
+<pre><code>  private static readonly IEntityAccessor EntityAccessor = null;
+  private const string MetadataName = &quot;MetadataName&quot;;
+</code></pre></li>
+<li><p><strong>DO NOT</strong> capitalize each word in so-called <a href="http://msdn.microsoft.com/en-us/library/ms229043.aspx">closed-form compound words</a>.</p>
+</li>
+<li><p><strong>DO</strong> have <strong>&quot;Async&quot;</strong> explicitly in the Async method name to notice people how to use it properly</p>
+</li>
+</ul>
+<h3 id="formatting-mandatory-">Formatting (Mandatory)</h3>
+<ul>
+<li><strong>DO</strong> use spaces over tabs, and always show all spaces/tabs in IDE</li>
+</ul>
+<blockquote>
+<p><strong>Tips</strong></p>
+<p>Visual Studio &gt; TOOLS &gt; Options &gt; Text Editor &gt; C# &gt; Tabs &gt; Insert spaces (Tab size: 4)</p>
+<p>Visual Studio &gt; Edit &gt; Advanced &gt; View White Space</p>
+</blockquote>
+<ul>
+<li><p><strong>DO</strong> add <em>using</em> inside <em>namespace</em> declaration</p>
+<pre><code>  namespace Microsoft.Content.Build.BuildWorker.UnitTest
+  {
+      using System;
+  }
+</code></pre></li>
+<li><p><strong>DO</strong> add a space when:</p>
+<ol>
+<li><code>for (var i = 0; i &lt; 1; i++)</code></li>
+<li><code>if (a == b)</code></li>
+</ol>
+</li>
+</ul>
+<h3 id="cross-platform-coding">Cross-platform coding</h3>
+<p>Our code should supports multiple operating systems. Don&#39;t assume we only run (and develop) on Windows. Code should be sensitvie to the differences between OS&#39;s. Here are some specifics to consider.</p>
+<ul>
+<li><strong>DO</strong> use <code>Enviroment.NewLine</code> instead of hard-coding the line break instead of <code>\r\n</code>, as Windows uses <code>\r\n</code> and OSX/Linux uses <code>\n</code>.</li>
+</ul>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Be aware that thes line-endings may cause problems in code when using <code>@&quot;&quot;</code> text blocks with line breaks.</p>
+</blockquote>
+<ul>
+<li><strong>DO</strong> Use <code>Path.Combine()</code> or <code>Path.DirectorySeparatorChar</code> to separate directories. If this is not possible (such as in scripting), use a forward slash <code>/</code>. Windows is more forgiving than Linux in this regard.</li>
+</ul>
+<h3 id="unit-tests-and-functional-tests">Unit tests and functional tests</h3>
+<h4 id="assembly-naming">Assembly naming</h4>
+<p>The unit tests for the <code>Microsoft.Foo</code> assembly live in the <code>Microsoft.Foo.Tests</code> assembly.</p>
+<p>The functional tests for the <code>Microsoft.Foo</code> assmebly live in the <code>Microsoft.Foo.FunctionalTests</code> assmebly.</p>
+<p>In general there should be exactly one unit test assebmly for each product runtime assembly. In general there should be one functional test assembly per repo. Exceptions can be made for both.</p>
+<h4 id="unit-test-class-naming">Unit test class naming</h4>
+<p>Test class names end with <code>Test</code> and live in the same namespace as the class being tested. For example, the unit tests for the <code>Microsoft.Foo.Boo</code> class would be in a <code>Microsoft.Foo.Boo</code> class in the test assembly.</p>
+<h4 id="unit-test-method-naming">Unit test method naming</h4>
+<p>Unit test method names must be descriptive about <em>what is being tested, under what conditions, and what the expectations are</em>. Pascal casing and underscores can be used to improve readability. The following test names are correct:</p>
+<pre><code class="lang-cs">PublicApiArgumentsShouldHaveNotNullAnnotation
+Public_api_arguments_should_have_not_null_annotation
+</code></pre>
+<p>The following test names are incorrect:</p>
+<pre><code class="lang-cs">Test1
+Constructor
+FormatString
+GetData
+</code></pre>
+<h4 id="unit-test-structure">Unit test structure</h4>
+<p>The contents of every unit test should be split into three distinct stages, optionally separated by these comments:</p>
+<pre><code class="lang-cs">// Arrange
+// Act
+// Assert
+</code></pre>
+<p>The crucial thing here is the <code>Act</code> stage is exactly one statement. That one statement is nothing more than a call to the one method that you are trying to test. keeping that one statement as simple as possible is also very important. For example, this is not ideal:</p>
+<pre><code class="lang-cs">int result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexParam3());
+</code></pre>
+<p>This style is not recomended because way too many things can go wrong in this one statement. All the <code>GetComplexParamN()</code> calls can throw for a variety of reasons unrelated to the test itself. It is thus unclear to someone running into a problem why the failure occured.</p>
+<p>The ideal pattern is to move the complex parameter building into the `Arrange section:</p>
+<pre><code class="lang-cs">// Arrange
+P1 p1 = GetComplexParam1();
+P2 p2 = GetComplexParam2();
+P3 p3 = GetComplexParam3();
+
+// Act
+int result = myObj.CallSomeMethod(p1, p2, p3);
+
+// Assert
+Assert.AreEqual(1234, result);
+</code></pre>
+<p>Now the only reason the line with <code>CallSomeMethod()</code> can fail is if the method itself blew up.</p>
+<h4 id="testing-exception-messages">Testing exception messages</h4>
+<p>In general testing the specific exception message in a unit test is important. This ensures that the exact desired exception is what is being tested rather than a different exception of the same type. In order to verify the exact exception it is important to verify the message.</p>
+<pre><code class="lang-cs">var ex = Assert.Throws&lt;InvalidOperationException&gt;(
+    () =&gt; fruitBasket.GetBananaById(1234));
+Assert.Equal(
+    &quot;1234&quot;,
+    ex.Message);
+</code></pre>
+<h4 id="use-xunit-net-s-plethora-of-built-in-assertions">Use xUnit.net&#39;s plethora of built-in assertions</h4>
+<p>xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This will make the tests a lot more readable and also allow the test runner report the best possible errors (whether it&#39;s local or the CI machine). For example, these are bad:</p>
+<pre><code class="lang-cs">Assert.Equal(true, someBool);
+
+Assert.True(&quot;abc123&quot; == someString);
+
+Assert.True(list1.Length == list2.Length);
+
+for (int i = 0; i &lt; list1.Length; i++) {
+    Assert.True(
+        String.Equals
+            list1[i],
+            list2[i],
+            StringComparison.OrdinalIgnoreCase));
+}
+</code></pre>
+<p>These are good:</p>
+<pre><code class="lang-cs">Assert.True(someBool);
+
+Assert.Equal(&quot;abc123&quot;, someString);
+
+// built-in collection assertions!
+Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
+</code></pre>
+<h4 id="parallel-tests">Parallel tests</h4>
+<p>By default all unit test assemblies should run in parallel mode, which is the default. Unit tests shouldn&#39;t depend on any shared state, and so should generally be runnable in parallel. If the tests fail in parallel, the first thing to do is to figure out why; do not just disable parallel tests!</p>
+<p>For functional tests it is reasonable to disable parallel tests.</p>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+            </nav>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
