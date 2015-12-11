@@ -34,6 +34,11 @@ b:
             "<h1 id=\"hello-crosslink1-crosslink2-dummy\">Hello <xref href=\"CrossLink1\"></xref> <xref href=\"CrossLink2\"></xref>dummy</h1>\n<p><xref href=\"World\"></xref></p>\n")]
         [InlineData("a\n```\nc\n```",
             "<p>a</p>\n<pre><code>c\n</code></pre>")]
+        [InlineData(@"* Unordered list item 1
+* Unordered list item 2
+1. This Is Heading, Not Ordered List
+-------------------------------------
+", "<ul>\n<li>Unordered list item 1</li>\n<li>Unordered list item 2</li>\n</ul>\n<h2 id=\"1-this-is-heading-not-ordered-list\">1. This Is Heading, Not Ordered List</h2>\n")]
         public void Parse(string source, string expected)
         {
             Assert.Equal(expected, DocfxFlavoredMarked.Markup(source));
