@@ -14,10 +14,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
         {
-            if (!(bool)engine.Context.Variables[MarkdownBlockContext.IsTop])
-            {
-                return null;
-            }
             var match = Table.Match(source);
             if (match.Length == 0)
             {

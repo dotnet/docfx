@@ -205,6 +205,64 @@ c
             @"<p>a</p>
 <pre><code>c
 </code></pre>")]
+        [InlineData(@"* First
+  |  | Header1 | Header2 |
+  ------- | ------- | --------
+  | Row1 | Cell11 | Cell12 |
+* Second", @"<ul>
+<li>First<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>Header1</th>
+<th>Header2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>Row1</td>
+<td>Cell11</td>
+<td>Cell12</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>Second</li>
+</ul>
+")]
+        [InlineData(@"1. First
+
+  |  | Header1 | Header2 |
+  ------- | ------- | --------
+  | Row1 | Cell11 | Cell12 |
+2. Second", @"<ol>
+<li><p>First</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>Header1</th>
+<th>Header2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>Row1</td>
+<td>Cell11</td>
+<td>Cell12</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>Second</li>
+</ol>
+")]
         public void Parse(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
