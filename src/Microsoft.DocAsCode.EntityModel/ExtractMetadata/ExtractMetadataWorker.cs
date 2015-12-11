@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
-        private readonly MSBuildWorkspace _workspace;
+        private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
         private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
         private static string[] SupportedSolutionExtensions = { ".sln" };
         #if DNX451
@@ -55,7 +55,6 @@ namespace Microsoft.DocAsCode.EntityModel
             _validInput = ValidateInput(input);
             _rebuild = rebuild;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
-            _workspace = MSBuildWorkspace.Create();
         }
 
         public async Task<ParseResult> ExtractMetadataAsync()
@@ -771,7 +770,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             try
             {
-                return await _workspace.OpenSolutionAsync(path);
+                return await _workspace.Value.OpenSolutionAsync(path);
             }
             catch (Exception e)
             {
@@ -793,7 +792,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 #endif
 
-                return await _workspace.OpenProjectAsync(path);
+                return await _workspace.Value.OpenProjectAsync(path);
             }
             catch (Exception e)
             {
@@ -804,7 +803,10 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public void Dispose()
         {
-            _workspace.Dispose();
+            if (_workspace.IsValueCreated)
+            {
+                _workspace.Value.Dispose();
+            }
         }
 
         #endregion
