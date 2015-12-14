@@ -207,7 +207,7 @@ namespace Microsoft.DocAsCode.YamlSerializations.ObjectGraphTraversalStrategies
             il.Emit(OpCodes.Ldarg_2);
             il.Emit(OpCodes.Ldarg_3);
             il.Emit(OpCodes.Ldarg_S, (byte)4);
-            il.Emit(OpCodes.Call, TraverseGenericDictionaryHelperMethod);
+            il.Emit(OpCodes.Call, TraverseGenericDictionaryHelperMethod.MakeGenericMethod(tkey, tvalue));
             il.Emit(OpCodes.Ret);
             return (Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention>)dm.CreateDelegate(typeof(Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention>));
         }

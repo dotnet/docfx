@@ -1,9 +1,10 @@
 {
   "version": "1.0.0",
   "dependencies": {
-    "Microsoft.DocAsCode.Utility": "1.0.0",
     "Microsoft.DocAsCode.MarkdownLite": "1.0.0",
     "Microsoft.DocAsCode.Plugins": "1.0.0",
+    "Microsoft.DocAsCode.Utility": "1.0.0",
+    "Microsoft.DocAsCode.YamlSerializations": "1.0.0",
     "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.0.0",
     "Microsoft.CodeAnalysis.Common": "1.1.0-*",
     "Microsoft.CodeAnalysis.VisualBasic": "1.1.0-*",

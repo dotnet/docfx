@@ -101,7 +101,8 @@
     <Compile Include="Dfm\DfmSectionEndBlockRule.cs" />
     <Compile Include="Dfm\DfmSectionEndBlockToken.cs" />
     <Compile Include="Plugins\WordCounter.cs" />
-    <Compile Include="SerializationUtility.cs" />
+    <Compile Include="JsonUtility.cs" />
+    <Compile Include="YamlUtility.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageCollection.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageWriter.cs" />
@@ -216,6 +217,10 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerializations\Microsoft.DocAsCode.YamlSerializations.csproj">
+      <Project>{87efc656-3081-442e-902b-822714514768}</Project>
+      <Name>Microsoft.DocAsCode.YamlSerializations</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
