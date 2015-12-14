@@ -3,13 +3,14 @@
   "dependencies": {
     "GitSharp": "0.3.0",
     "Newtonsoft.Json": "6.0.8",
-    "YamlDotNet.Signed": "3.5.1"
+    "YamlDotNet.Signed": "3.7.0"
   },
   "frameworks": {
     "dnx451": {
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
+        "System.Runtime": "",
         "System.Web": ""
       }
     }

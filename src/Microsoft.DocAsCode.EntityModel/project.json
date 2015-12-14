@@ -12,7 +12,7 @@
     "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.1.0-*",
     "Microsoft.CodeAnalysis.Workspaces.Common": "1.1.0-*",
     "Newtonsoft.Json": "6.0.8",
-    "YamlDotNet.Signed": "3.5.1",
+    "YamlDotNet.Signed": "3.7.0",
     "Jint": "2.5.0",
     "Nustache": "1.15.3.5",
     "Microsoft.Composition": "1.0.27",

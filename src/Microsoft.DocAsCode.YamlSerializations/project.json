@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "dependencies": {
+    "YamlDotNet.Signed": "3.7.0"
+  },
+  "frameworks": {
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Core": ""
+      }
+    }
+  }
+}
