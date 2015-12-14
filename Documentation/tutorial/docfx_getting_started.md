@@ -1,22 +1,22 @@
 Getting Started with `docfx`
 ===============
 
-Getting Started
+1. Getting Started
 ---------------
 
-`docfx` is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphnix. It has the ability to extract triple slash comments out from your source code. What's more, it has syntax to link additional files to API to add additional remarks. `docfx` will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. `docfx` provides the flexibility for you to customize the website through templates. We currently have several embeded templates, including websites containing pure static html pages and also website managed by AngularJS. Of cause, if you are interested in creating your own website with your own styles, you can follow [how to create custom template](howto_create_custom_template.md) to create custom templates.
+`docfx` is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphinx. It has the ability to extract triple slash comments out from your source code. What's more, it has syntax to link additional files to API to add additional remarks. `docfx` will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. `docfx` provides the flexibility for you to customize the website through templates. We currently have several embedded templates, including websites containing pure static html pages and also website managed by AngularJS. Of cause, if you are interested in creating your own website with your own styles, you can follow [how to create custom template](howto_create_custom_template.md) to create custom templates.
 
 * Click "View Source" for an API to route to the source code in GitHub (your API must be pushed to GitHub)
 * `docfx` provide DNX version for cross platform use.
-* `docfx` can be used within Visual Studio seamlessly. **NOTE** offical `docfx.msbuild` nuget package is now in pre-release version. You can also build your own with source code and use it locally.
+* `docfx` can be used within Visual Studio seamlessly. **NOTE** official `docfx.msbuild` nuget package is now in pre-release version. You can also build your own with source code and use it locally.
 * We support **Docfx Flavored Markdown(DFM)** for writing conceptual files. DFM is **100%** compatible with *Github Flavored Markdown(GFM)* and add several new features including *file inclusion*, *cross reference*, and *yaml header*. For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
-Use `docfx.exe` directly
+2. Use `docfx.exe` directly
 -----------------------
 Download and unzip [docfx.zip](artifacts/docfx.zip) to run `docfx.exe` directly!
 
-### Quick Start
-**Step1** Run
+### 2.1 Quick Start
+**Step1.** Run
 ```
 docfx.exe init
 ```
@@ -31,11 +31,11 @@ and `docfx.exe` will automatically read the `docfx.json` in current folder and g
 
 **TODO**: we are on the way to publish `docfx.exe` independently into our on-building website!
 
-Use `docfx` under Visual Studio IDE
+3. Use `docfx` under Visual Studio IDE
 ---------------
 As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use `docfx` in IDE.
-### Quick Start
-**Step1.** Open Visual Studio and create a .csproj as your documenation project. You can use the **ASP.NET website project template** as it has built-in *PREVIEW* feature which we could leverage to preview the generated website easily.
+### 3.1 Quick Start
+**Step1.** Open Visual Studio and create a .csproj as your documentation project. You can use the **ASP.NET website project template** as it has built-in *PREVIEW* feature which we could leverage to preview the generated website easily.
 
 **Step2.** Install Nuget Package `docfx.msbuild` prerelease version under *Package Manager Console*:
 ```
@@ -45,7 +45,7 @@ Install-Package docfx.msbuild -Pre
 
 **Step4.** Right click on the website project, and click View => **View in browser**, navigate to `/_site/tutorial/docfx_getting_started.html` sub url, and start navigating through web pages!
 
-### Build from source code
+### 3.2 Build from source code
 **Step1.** `git clone` to get the latest code.
 
 **Step2.** Run `build.cmd` under root folder
@@ -55,10 +55,10 @@ Install-Package docfx.msbuild -Pre
 
 **Step4.** Follow **Step1**~**Step4** in above **Quick Start** section to generate your documentation!
 
-Use `docfx` under DNX
+4. Use `docfx` under DNX
 ----------------
 As a prerequisite, you will need to install [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm) and [DNX](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx).
-###Quick Start
+### 4.1 Quick Start
 * `SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/` as we depends on the release version of aspnet 1.0.0-rc1.
 * `dnvm upgrade` to get the latest dnvm.
 * Add feed https://www.myget.org/F/aspnetrelease/api/v2/ to Nuget.config
@@ -85,7 +85,7 @@ As a prerequisite, you will need to install [DNVM](http://docs.asp.net/en/latest
 
 Please refer to [`docfx` User Manual](docfx.exe_user_manual.md) for detailed description of the usage of *docfx.json*.
 
-Adding conceptual content
+5. Adding conceptual content
 -------------------------
 The layout of the project file structure you care about now are as follows:
 ```
@@ -167,7 +167,7 @@ That's it, preview your website and you should see the newly created tutorial se
 A couple of additional details:
 * You can use an external link for href.
 
-Adding markdown to API reference
+6. Adding markdown to API reference
 --------------------------------
 To make authoring your API reference section easier we allow you to directly add a markdown section to any of your APIs. Create a markdown file and add the following header:
 
@@ -184,5 +184,5 @@ When you build the project again, we will add the markdown section you just crea
 
 We recommend that all of your API reference markdown files go in the api/ folder, although technically you can put the markdown file anywhere.
 
-###Linking to another API
+### 6.1 Linking to another API
 Currently for linking to another API you simply add an "@" followed by the fully qualified name of your API. Currently we will need to preprocess this syntax so adding this will require a rebuild.
