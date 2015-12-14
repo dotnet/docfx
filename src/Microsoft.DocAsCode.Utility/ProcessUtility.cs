@@ -4,26 +4,10 @@
 namespace Microsoft.DocAsCode.Utility
 {
     using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Diagnostics;
-    using System.ComponentModel;
-
-    public class ProcessDetail
-    {
-        public string ExecutorPath { get; set; }
-        public string Arguments { get; set; }
-        public string WorkingDirectory { get; set; }
-        public string StandardOutput { get; set; }
-        public string StandardError { get; set; }
-        public int ExitCode { get; set; }
-        public int ProcessId { get; set; }
-
-       /* public override string ToString()
-        {
-            return new JsonSerializer().
-        }*/
-    }
 
     public static class ProcessUtility
     {
@@ -90,6 +74,7 @@ namespace Microsoft.DocAsCode.Utility
                         {
                             processName = process.ProcessName;
                             process.Kill();
+                            process.WaitForExit();
                         }
                         catch (InvalidOperationException e)
                         {

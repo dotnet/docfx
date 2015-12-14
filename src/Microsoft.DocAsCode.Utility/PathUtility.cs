@@ -1,113 +1,13 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-/// <summary>
-/// The utility class for docascode project
-/// </summary>
 namespace Microsoft.DocAsCode.Utility
 {
     using System;
-    using System.Linq;
-    using System.IO;
-    using System.ComponentModel;
-    using System.Globalization;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
     using System.Web;
-
-    public static class TypeExtension
-    {
-        public static bool IsA(this Type thisType, Type targetType)
-        {
-            return targetType.IsAssignableFrom(thisType);
-        }
-    }
-    public static class StringExtension
-    {
-        public static string ForwardSlashCombine(this string baseAddress, string relativeAddress)
-        {
-            if (string.IsNullOrEmpty(baseAddress)) return relativeAddress;
-            return baseAddress + "/" + relativeAddress;
-        }
-
-        public static string BackSlashToForwardSlash(this string input)
-        {
-            if (string.IsNullOrEmpty(input)) return null;
-            return input.Replace('\\', '/');
-        }
-
-        public static string[] ToArray(this string input, StringSplitOptions option, params char[] delimiter)
-        {
-            if (input == null)
-            {
-                return null;
-            }
-
-            return input.Split(delimiter, option);
-        }
-    
-        public static string ToDelimitedString(this IEnumerable<string> input, string delimiter = ",")
-        {
-            if (input == null)
-            {
-                return null;
-            }
-
-            return string.Join(delimiter, input);
-        }
-
-        public static string GetNormalizedFullPathKey(this IEnumerable<string> list)
-        {
-            if (list == null) return null;
-
-            // make sure the order consistent
-            var nomalizedPaths = GetNormalizedFullPathList(list);
-            return nomalizedPaths.ToDelimitedString();
-        }
-
-        public static IEnumerable<string> GetNormalizedFullPathList(this IEnumerable<string> paths)
-        {
-            if (paths == null) return null;
-            return (from p in paths
-                    where !string.IsNullOrEmpty(p)
-                    select ToNormalizedFullPath(p)).Distinct().OrderBy(s => s);
-        }
-
-        public static IEnumerable<string> GetNormalizedPathList(this IEnumerable<string> paths)
-        {
-            if (paths == null) return null;
-            return (from p in paths
-                    where !string.IsNullOrEmpty(p)
-                    select ToNormalizedPath(p)).Distinct().OrderBy(s => s);
-        }
-
-        /// <summary>
-        /// Should not convert path to lower case as under Linux/Unix, path is case sensitive
-        /// Also, Website URL should be case sensitive consider the server might be running under Linux/Unix
-        /// So we could even not lower the path under Windows as the generated YAML should be ideally OS irrelevant
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static string ToNormalizedFullPath(this string path)
-        {
-            if (string.IsNullOrEmpty(path)) return null;
-            return Path.GetFullPath(path).BackSlashToForwardSlash().TrimEnd('/');
-        }
-
-        public static string ToNormalizedPath(this string path)
-        {
-            if (string.IsNullOrEmpty(path)) return null;
-            return path.BackSlashToForwardSlash().TrimEnd('/');
-        }
-
-        public static string CoalesceNullOrEmpty(this string value, string defaultValue)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return defaultValue;
-            }
-            return value;
-        }
-    }
 
     /// <summary>
     /// 
@@ -123,7 +23,7 @@ namespace Microsoft.DocAsCode.Utility
             }
 
             string validPath = new string(input.Select(s => InvalidFilePathChars.Contains(s) ? '_' : s).ToArray());
-            
+
             return validPath;
         }
 
@@ -349,38 +249,6 @@ namespace Microsoft.DocAsCode.Utility
             }
             pathFromWorkingFolder = path;
             return false;
-        }
-    }
-
-    public class FilePathComparer : IEqualityComparer<string>
-    {
-        private readonly static StringComparer _stringComparer = GetStringComparer();
-
-        public static readonly FilePathComparer OSPlatformSensitiveComparer = new FilePathComparer();
-        public static readonly StringComparer OSPlatformSensitiveStringComparer = GetStringComparer();
-
-        public bool Equals(string x, string y)
-        {
-            return _stringComparer.Equals(x.ToNormalizedFullPath(), y.ToNormalizedFullPath());
-        }
-
-        public int GetHashCode(string obj)
-        {
-            string path = obj.ToNormalizedFullPath();
-            
-            return _stringComparer.GetHashCode(obj);
-        }
-
-        private static StringComparer GetStringComparer()
-        {
-            if (Environment.OSVersion.Platform < PlatformID.Unix)
-            {
-                return StringComparer.OrdinalIgnoreCase;
-            }
-            else
-            {
-                return StringComparer.Ordinal;
-            }
         }
     }
 }

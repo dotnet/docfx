@@ -35,6 +35,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncConcurrentCache.cs" />
     <Compile Include="ConvertToObjectHelper.cs" />
     <Compile Include="EntityMergers\IMergeContext.cs" />
     <Compile Include="EntityMergers\IMergeHandler.cs" />
@@ -42,16 +43,20 @@
     <Compile Include="EntityMergers\MergeBehaviorOption.cs" />
     <Compile Include="EntityMergers\MergeContext.cs" />
     <Compile Include="EntityMergers\MergeOptionAttribute.cs" />
+    <Compile Include="FilePathComparer.cs" />
+    <Compile Include="GitDetail.cs" />
     <Compile Include="Glob\FileGlob.cs" />
     <Compile Include="Glob\Glob.cs" />
     <Compile Include="Glob\GlobMatcher.cs" />
     <Compile Include="EntityMergers\ReflectionEntityMerger.cs" />
     <Compile Include="Glob\GlobPathHelper.cs" />
     <Compile Include="LruList.cs" />
+    <Compile Include="PathUtility.cs" />
+    <Compile Include="ProcessDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelativePath.cs" />
-    <Compile Include="TaskUtility.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="StringExtension.cs" />
+    <Compile Include="TaskHelper.cs" />
     <Compile Include="GitUtility.cs" />
     <Compile Include="ProcessUtility.cs" />
   </ItemGroup>
