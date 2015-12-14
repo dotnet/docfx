@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
                 // for discount behavior.
                 var loose = next || Regex.IsMatch(item, @"\n\n(?!\s*$)");
-                if (i != l - 1)
+                if (i != l - 1 && item.Length != 0)
                 {
                     next = item[item.Length - 1] == '\n';
                     if (!loose) loose = next;
