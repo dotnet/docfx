@@ -61,33 +61,33 @@
             <article class="content wrap" id="_content">
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/Documentation/tutorial/docfx_getting_started.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="getting-started-with-docfx-">Getting Started with <code>docfx</code></h1>
-<h2 id="getting-started">Getting Started</h2>
-<p><code>docfx</code> is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphnix. It has the ability to extract triple slash comments out from your source code. What&#39;s more, it has syntax to link additional files to API to add additional remarks. <code>docfx</code> will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. <code>docfx</code> provides the flexibility for you to customize the website through templates. We currently have several embeded templates, including websites containing pure static html pages and also website managed by AngularJS. Of cause, if you are interested in creating your own website with your own styles, you can follow <a href="howto_create_custom_template.html">how to create custom template</a> to create custom templates.</p>
+<h2 id="1-getting-started">1. Getting Started</h2>
+<p><code>docfx</code> is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphinx. It has the ability to extract triple slash comments out from your source code. What&#39;s more, it has syntax to link additional files to API to add additional remarks. <code>docfx</code> will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. <code>docfx</code> provides the flexibility for you to customize the website through templates. We currently have several embedded templates, including websites containing pure static html pages and also website managed by AngularJS. Of cause, if you are interested in creating your own website with your own styles, you can follow <a href="howto_create_custom_template.html">how to create custom template</a> to create custom templates.</p>
 <ul>
 <li>Click &quot;View Source&quot; for an API to route to the source code in GitHub (your API must be pushed to GitHub)</li>
 <li><code>docfx</code> provide DNX version for cross platform use.</li>
-<li><code>docfx</code> can be used within Visual Studio seamlessly. <strong>NOTE</strong> offical <code>docfx.msbuild</code> nuget package is now in pre-release version. You can also build your own with source code and use it locally.</li>
+<li><code>docfx</code> can be used within Visual Studio seamlessly. <strong>NOTE</strong> official <code>docfx.msbuild</code> nuget package is now in pre-release version. You can also build your own with source code and use it locally.</li>
 <li>We support <strong>Docfx Flavored Markdown(DFM)</strong> for writing conceptual files. DFM is <strong>100%</strong> compatible with <em>Github Flavored Markdown(GFM)</em> and add several new features including <em>file inclusion</em>, <em>cross reference</em>, and <em>yaml header</em>. For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html">DFM</a>.</li>
 </ul>
-<h2 id="use-docfx-exe-directly">Use <code>docfx.exe</code> directly</h2>
+<h2 id="2-use-docfx-exe-directly">2. Use <code>docfx.exe</code> directly</h2>
 <p>Download and unzip <a href="artifacts/docfx.zip">docfx.zip</a> to run <code>docfx.exe</code> directly!</p>
-<h3 id="quick-start">Quick Start</h3>
-<p><strong>Step1</strong> Run</p>
+<h3 id="2-1-quick-start">2.1 Quick Start</h3>
+<p><strong>Step1.</strong> Run</p>
 <pre><code>docfx.exe init
 </code></pre><p>and follow the instructions to generate a <code>docfx.json</code> config file.</p>
 <p><strong>Step2.</strong> Run</p>
 <pre><code>docfx.exe
 </code></pre><p>and <code>docfx.exe</code> will automatically read the <code>docfx.json</code> in current folder and generate a documentation website for you in <code>output folder</code> which you defined in <code>init</code> phase. By default, the website is under <code>_site</code> folder.</p>
 <p><strong>TODO</strong>: we are on the way to publish <code>docfx.exe</code> independently into our on-building website!</p>
-<h2 id="use-docfx-under-visual-studio-ide">Use <code>docfx</code> under Visual Studio IDE</h2>
+<h2 id="3-use-docfx-under-visual-studio-ide">3. Use <code>docfx</code> under Visual Studio IDE</h2>
 <p>As a prerequisite, you will need <a href="https://www.visualstudio.com/downloads/download-visual-studio-vs">Visual Studio 2015</a> to use <code>docfx</code> in IDE.</p>
-<h3 id="quick-start">Quick Start</h3>
-<p><strong>Step1.</strong> Open Visual Studio and create a .csproj as your documenation project. You can use the <strong>ASP.NET website project template</strong> as it has built-in <em>PREVIEW</em> feature which we could leverage to preview the generated website easily.</p>
+<h3 id="3-1-quick-start">3.1 Quick Start</h3>
+<p><strong>Step1.</strong> Open Visual Studio and create a .csproj as your documentation project. You can use the <strong>ASP.NET website project template</strong> as it has built-in <em>PREVIEW</em> feature which we could leverage to preview the generated website easily.</p>
 <p><strong>Step2.</strong> Install Nuget Package <code>docfx.msbuild</code> prerelease version under <em>Package Manager Console</em>:</p>
 <pre><code>Install-Package docfx.msbuild -Pre
 </code></pre><p><strong>Step3.</strong> You will notice that <em>docfx.json</em> and <em>toc.yml</em> are automatically added to your project. Modify <em>docfx.json</em> to include projects and conceptual files that you want to generate documentations. For detailed syntax about <em>docfx.json</em>, please refer to <a href="docfx.exe_user_manual.html">docfx.exe User Mannual</a>.</p>
 <p><strong>Step4.</strong> Right click on the website project, and click View =&gt; <strong>View in browser</strong>, navigate to <code>/_site/tutorial/docfx_getting_started.html</code> sub url, and start navigating through web pages!</p>
-<h3 id="build-from-source-code">Build from source code</h3>
+<h3 id="3-2-build-from-source-code">3.2 Build from source code</h3>
 <p><strong>Step1.</strong> <code>git clone</code> to get the latest code.</p>
 <p><strong>Step2.</strong> Run <code>build.cmd</code> under root folder</p>
 <p><strong>Step3.</strong> Add <code>artifacts</code> folder to nuget source by in IDE:</p>
@@ -95,9 +95,9 @@
 <p>Tools &gt; Nuget Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
 </blockquote>
 <p><strong>Step4.</strong> Follow <strong>Step1</strong>~<strong>Step4</strong> in above <strong>Quick Start</strong> section to generate your documentation!</p>
-<h2 id="use-docfx-under-dnx">Use <code>docfx</code> under DNX</h2>
+<h2 id="4-use-docfx-under-dnx">4. Use <code>docfx</code> under DNX</h2>
 <p>As a prerequisite, you will need to install <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm">DNVM</a> and <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx">DNX</a>.</p>
-<h3 id="quick-start">Quick Start</h3>
+<h3 id="4-1-quick-start">4.1 Quick Start</h3>
 <ul>
 <li><code>SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/</code> as we depends on the release version of aspnet 1.0.0-rc1.</li>
 <li><code>dnvm upgrade</code> to get the latest dnvm.</li>
@@ -124,7 +124,7 @@
 <li><code>docfx Documentation/docfx.json</code> to build generate <code>docfx</code> project into a website under <code>_site</code> folder!</li>
 </ul>
 <p>Please refer to <a href="docfx.exe_user_manual.html"><code>docfx</code> User Manual</a> for detailed description of the usage of <em>docfx.json</em>.</p>
-<h2 id="adding-conceptual-content">Adding conceptual content</h2>
+<h2 id="5-adding-conceptual-content">5. Adding conceptual content</h2>
 <p>The layout of the project file structure you care about now are as follows:</p>
 <pre><code>|- api/
 |- article/
@@ -198,7 +198,7 @@
 <ul>
 <li>You can use an external link for href.</li>
 </ul>
-<h2 id="adding-markdown-to-api-reference">Adding markdown to API reference</h2>
+<h2 id="6-adding-markdown-to-api-reference">6. Adding markdown to API reference</h2>
 <p>To make authoring your API reference section easier we allow you to directly add a markdown section to any of your APIs. Create a markdown file and add the following header:</p>
 <pre><code>---
 uid: system.string
@@ -210,7 +210,7 @@ your markdown goes here.
 </blockquote>
 <p>When you build the project again, we will add the markdown section you just created into the reference content of the API. It will be added to the location right after summary and before declarations.</p>
 <p>We recommend that all of your API reference markdown files go in the api/ folder, although technically you can put the markdown file anywhere.</p>
-<h3 id="linking-to-another-api">Linking to another API</h3>
+<h3 id="6-1-linking-to-another-api">6.1 Linking to another API</h3>
 <p>Currently for linking to another API you simply add an &quot;@&quot; followed by the fully qualified name of your API. Currently we will need to preprocess this syntax so adding this will require a rebuild.</p>
 
             </article>
