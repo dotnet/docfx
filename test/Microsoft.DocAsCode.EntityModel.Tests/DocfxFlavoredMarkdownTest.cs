@@ -39,6 +39,10 @@ b:
 1. This Is Heading, Not Ordered List
 -------------------------------------
 ", "<ul>\n<li>Unordered list item 1</li>\n<li>Unordered list item 2</li>\n</ul>\n<h2 id=\"1-this-is-heading-not-ordered-list\">1. This Is Heading, Not Ordered List</h2>\n")]
+        [InlineData(@" @api__1",
+            "<p> <xref href=\"api__1\"></xref></p>\n")]
+        [InlineData(@"@api1 @api__1 @api!1 @api@a abc@api.com a.b.c@api.com @'a p ';@""a!pi"",@api...@api",
+            "<p><xref href=\"api1\"></xref> <xref href=\"api__1\"></xref> <xref href=\"api!1\"></xref> <xref href=\"api@a\"></xref> abc@api.com a.b.c@api.com <xref href=\"a p \"></xref>;<xref href=\"a!pi\"></xref>,<xref href=\"api\"></xref>...<xref href=\"api\"></xref></p>\n")]
         public void Parse(string source, string expected)
         {
             Assert.Equal(expected, DocfxFlavoredMarked.Markup(source));

@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Text.RegularExpressions;
     using System.Xml;
     using System.Xml.XPath;
 
@@ -31,6 +32,9 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class TripleSlashCommentModel
     {
+        private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
+        private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+
         public string Summary { get; private set; }
         public string Remarks { get; private set; }
         public string Returns { get; private set; }
@@ -298,7 +302,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
                         // Strict check is needed as value could be an invalid href, 
                         // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                        if (LinkParser.CommentIdRegex.IsMatch(value))
+                        if (CommentIdRegex.IsMatch(value))
                         {
                             value = value.Substring(2);
                             i.InsertAfter("@'" + value + "'");
@@ -353,7 +357,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 if (!string.IsNullOrEmpty(type))
                 {
                     // Check if exception type is valid and trim prefix
-                    if (LinkParser.CommentIdRegex.IsMatch(type))
+                    if (CommentIdRegex.IsMatch(type))
                     {
                         type = type.Substring(2);
                         if (string.IsNullOrEmpty(description)) description = null;

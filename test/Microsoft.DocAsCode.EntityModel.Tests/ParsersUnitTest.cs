@@ -169,31 +169,5 @@ return GetExceptions(null, null).Count();
             codeSnippet = CodeSnippetParser.Select(input);
             Assert.Equal(0, codeSnippet.Count());
         }
-
-        [Trait("Related", "Link")]
-        [Fact]
-        public void TestLinkParser()
-        {
-            Dictionary<string, string> index = new Dictionary<string, string>
-            {
-                {"link", "href" },
-            };
-            string input = "a@'link'@invalid";
-            string output = LinkParser.ResolveText((s) =>
-            {
-                string item;
-                if (index.TryGetValue(s, out item)) { return item; }
-                return null;
-            }, input, s => s);
-            Assert.Equal("ahref@invalid", output);
-            input = @"a@link @'link' @""link""";
-            output = LinkParser.ResolveText((s) =>
-            {
-                string item;
-                if (index.TryGetValue(s, out item)) { return item; }
-                return null;
-            }, input, s => "[link](" + s + ")");
-            Assert.Equal("a[link](href) [link](href) [link](href)", output);
-        }
     }
 }

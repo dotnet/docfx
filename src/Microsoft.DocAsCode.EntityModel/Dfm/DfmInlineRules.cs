@@ -10,8 +10,18 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmXrefInlineRule : IMarkdownRule
     {
-        private static readonly Regex _xrefRegex = new Regex(@"^@(?:(['""])(\s*?\S+?[\s\S]*?)\1|(?:([^'""][\s\S]*?))(?=[\s@]|$))", RegexOptions.Compiled);
+        private static readonly Regex _xrefRegex = new Regex(@"^@(?:(['""])(\s*?\S+?[\s\S]*?)\1|(?:([^'""][\S]*?))(?=[.,;:!?~\s]{2,}|[.,;:!?~]*$|\s))", RegexOptions.Compiled);
         public string Name => "XREF";
+
+        /// <summary>
+        /// XREF regex:
+        ///     1. If content after `@` is wrapped by `'` or `"`,  it contains any character including white space
+        ///     2. If content after `@` is not wrapped by `'` or `"`, it ends when
+        ///         a. line ends
+        ///         b. meets whitespaces
+        ///         c. line ends with `.`, `,`, `;`, `:`, `!`, `?` and `~`
+        ///         d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
+        /// </summary>
         public virtual Regex Xref => _xrefRegex;
         public IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
         {
@@ -59,7 +69,12 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmTextInlineRule : MarkdownTextInlineRule
     {
-        private static readonly Regex _inlineTextRegex = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`@]| {2,}\n|$)", RegexOptions.Compiled);
+        private static readonly Regex _inlineTextRegex = new Regex(@"^(?:[\s\S]*?(?:[.,;:!?~\s])(?=@)|[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$))", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Override the one in MarkdownLite, difference is:
+        /// If there is a `@` following `.`, `,`, `;`, `:`, `!`, `?` or whitespace, exclude it as it is a xref
+        /// </summary>
         public override Regex Text => _inlineTextRegex;
     }
 }
