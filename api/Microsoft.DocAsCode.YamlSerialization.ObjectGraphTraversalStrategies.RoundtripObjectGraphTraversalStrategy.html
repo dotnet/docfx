@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class YamlSerializer | docfx website</title>
+    <title>Class RoundtripObjectGraphTraversalStrategy | docfx website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class YamlSerializer | docfx website">
+    <meta name="title" content="Class RoundtripObjectGraphTraversalStrategy | docfx website">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -61,32 +61,36 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerializations/YamlSerializer.cs/#L24" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_YamlSerializations_YamlSerializer">Class YamlSerializer</h1>
-              <div class="markdown level0 summary"></div>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerialization/ObjectGraphTraversalStrategies/RoundtripObjectGraphTraversalStrategy.cs/#L19" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_RoundtripObjectGraphTraversalStrategy">Class RoundtripObjectGraphTraversalStrategy</h1>
+              <div class="markdown level0 summary"><p>An implementation of <span class="xref">YamlDotNet.Serialization.IObjectGraphTraversalStrategy</span> that traverses
+properties that are read/write, collections and dictionaries, while ensuring that
+the graph can be regenerated from the resulting document.</p>
+</div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
                 <h5>Inheritance</h5>
                   <div class="level0"><span class="xref">System.Object</span></div>
-                  <div class="level1"><span class="xref">YamlSerializer</span></div>
+                  <div class="level1"><a class="xref" href="Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy">FullObjectGraphTraversalStrategy</a></div>
+                  <div class="level2"><span class="xref">RoundtripObjectGraphTraversalStrategy</span></div>
               </div>
-              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.YamlSerializations</h6>
-              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.YamlSerializations.dll</h6>
-              <h5 id="Microsoft_DocAsCode_YamlSerializations_YamlSerializer_syntax">Syntax</h5>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.YamlSerialization.dll</h6>
+              <h5 id="Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_RoundtripObjectGraphTraversalStrategy_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class YamlSerializer</code></pre>
+                <pre><code class="lang-csharp hljs">public class RoundtripObjectGraphTraversalStrategy : FullObjectGraphTraversalStrategy, IObjectGraphTraversalStrategy</code></pre>
               </div>
               <h3 id="constructors">Constructors</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerializations/YamlSerializer.cs/#L31">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerialization/ObjectGraphTraversalStrategies/RoundtripObjectGraphTraversalStrategy.cs/#L21">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerializations_YamlSerializer__ctor_YamlDotNet_Serialization_SerializationOptions_YamlDotNet_Serialization_INamingConvention_">YamlSerializer(SerializationOptions, INamingConvention)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_RoundtripObjectGraphTraversalStrategy__ctor_Microsoft_DocAsCode_YamlSerialization_YamlSerializer_YamlDotNet_Serialization_ITypeInspector_YamlDotNet_Serialization_ITypeResolver_System_Int32_">RoundtripObjectGraphTraversalStrategy(YamlSerializer, ITypeInspector, ITypeResolver, Int32)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public YamlSerializer(SerializationOptions options = 0, INamingConvention namingConvention = null)</code></pre>
+                <pre><code class="lang-csharp hljs">public RoundtripObjectGraphTraversalStrategy(YamlSerializer serializer, ITypeInspector typeDescriptor, ITypeResolver typeResolver, int maxRecursion)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -99,13 +103,23 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">YamlDotNet.Serialization.SerializationOptions</span></td>
-                    <td><em>options</em></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.YamlSerialization.YamlSerializer.html#Microsoft_DocAsCode_YamlSerialization_YamlSerializer">YamlSerializer</a></td>
+                    <td><em>serializer</em></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><span class="xref">YamlDotNet.Serialization.INamingConvention</span></td>
-                    <td><em>namingConvention</em></td>
+                    <td><span class="xref">YamlDotNet.Serialization.ITypeInspector</span></td>
+                    <td><em>typeDescriptor</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.ITypeResolver</span></td>
+                    <td><em>typeResolver</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>maxRecursion</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -113,14 +127,14 @@
               <h3 id="methods">Methods</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerializations/YamlSerializer.cs/#L52">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerialization/ObjectGraphTraversalStrategies/RoundtripObjectGraphTraversalStrategy.cs/#L26">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerializations_YamlSerializer_Serialize_System_IO_TextWriter_System_Object_">Serialize(TextWriter, Object)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_RoundtripObjectGraphTraversalStrategy_TraverseProperties_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">TraverseProperties(IObjectDescriptor, IObjectGraphVisitor, Int32)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public void Serialize(TextWriter writer, object graph)</code></pre>
+                <pre><code class="lang-csharp hljs">protected override void TraverseProperties(IObjectDescriptor value, IObjectGraphVisitor visitor, int currentDepth)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -133,46 +147,18 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.IO.TextWriter</span></td>
-                    <td><em>writer</em></td>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectDescriptor</span></td>
+                    <td><em>value</em></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><span class="xref">System.Object</span></td>
-                    <td><em>graph</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerializations/YamlSerializer.cs/#L57">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerializations_YamlSerializer_Serialize_YamlDotNet_Core_IEmitter_System_Object_">Serialize(IEmitter, Object)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public void Serialize(IEmitter emitter, object graph)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">YamlDotNet.Core.IEmitter</span></td>
-                    <td><em>emitter</em></td>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectGraphVisitor</span></td>
+                    <td><em>visitor</em></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><span class="xref">System.Object</span></td>
-                    <td><em>graph</em></td>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>currentDepth</em></td>
                     <td></td>
                   </tr>
                 </tbody>

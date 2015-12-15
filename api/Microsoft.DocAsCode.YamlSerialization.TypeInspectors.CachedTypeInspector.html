@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class EmitTypeInspector | docfx website</title>
+    <title>Class CachedTypeInspector | docfx website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class EmitTypeInspector | docfx website">
+    <meta name="title" content="Class CachedTypeInspector | docfx website">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -61,33 +61,34 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerializations/TypeInspectors/EmitTypeInspector.cs/#L19" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_YamlSerializations_TypeInspectors_EmitTypeInspector">Class EmitTypeInspector</h1>
-              <div class="markdown level0 summary"></div>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerialization/TypeInspectors/CachedTypeInspector.cs/#L15" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_YamlSerialization_TypeInspectors_CachedTypeInspector">Class CachedTypeInspector</h1>
+              <div class="markdown level0 summary"><p>Wraps another <span class="xref">YamlDotNet.Serialization.ITypeInspector</span> and applies caching.</p>
+</div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
                 <h5>Inheritance</h5>
                   <div class="level0"><span class="xref">System.Object</span></div>
                   <div class="level1"><span class="xref">YamlDotNet.Serialization.TypeInspectors.TypeInspectorSkeleton</span></div>
-                  <div class="level2"><span class="xref">EmitTypeInspector</span></div>
+                  <div class="level2"><span class="xref">CachedTypeInspector</span></div>
               </div>
-              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.YamlSerializations.TypeInspectors</h6>
-              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.YamlSerializations.dll</h6>
-              <h5 id="Microsoft_DocAsCode_YamlSerializations_TypeInspectors_EmitTypeInspector_syntax">Syntax</h5>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.YamlSerialization.TypeInspectors</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.YamlSerialization.dll</h6>
+              <h5 id="Microsoft_DocAsCode_YamlSerialization_TypeInspectors_CachedTypeInspector_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class EmitTypeInspector : TypeInspectorSkeleton, ITypeInspector</code></pre>
+                <pre><code class="lang-csharp hljs">public sealed class CachedTypeInspector : TypeInspectorSkeleton, ITypeInspector</code></pre>
               </div>
               <h3 id="constructors">Constructors</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerializations/TypeInspectors/EmitTypeInspector.cs/#L25">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerialization/TypeInspectors/CachedTypeInspector.cs/#L21">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerializations_TypeInspectors_EmitTypeInspector__ctor_YamlDotNet_Serialization_ITypeResolver_">EmitTypeInspector(ITypeResolver)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_TypeInspectors_CachedTypeInspector__ctor_YamlDotNet_Serialization_ITypeInspector_">CachedTypeInspector(ITypeInspector)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public EmitTypeInspector(ITypeResolver resolver)</code></pre>
+                <pre><code class="lang-csharp hljs">public CachedTypeInspector(ITypeInspector innerTypeDescriptor)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -100,8 +101,8 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">YamlDotNet.Serialization.ITypeResolver</span></td>
-                    <td><em>resolver</em></td>
+                    <td><span class="xref">YamlDotNet.Serialization.ITypeInspector</span></td>
+                    <td><em>innerTypeDescriptor</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -109,9 +110,9 @@
               <h3 id="methods">Methods</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerializations/TypeInspectors/EmitTypeInspector.cs/#L30">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.YamlSerialization/TypeInspectors/CachedTypeInspector.cs/#L30">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerializations_TypeInspectors_EmitTypeInspector_GetProperties_System_Type_System_Object_">GetProperties(Type, Object)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_TypeInspectors_CachedTypeInspector_GetProperties_System_Type_System_Object_">GetProperties(Type, Object)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
