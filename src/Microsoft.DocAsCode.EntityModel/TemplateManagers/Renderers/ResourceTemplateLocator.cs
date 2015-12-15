@@ -3,12 +3,14 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using System.Collections.Generic;
     using System.IO;
 
     internal sealed class ResourceTemplateLocator
     {
         private const string PartialTemplateExtension = ".tmpl.partial";
-        private ResourceCollection _resourceProvider;
+        private readonly Dictionary<string, Nustache.Core.Template> _templateCache = new Dictionary<string, Nustache.Core.Template>();
+        private readonly ResourceCollection _resourceProvider;
         public ResourceTemplateLocator(ResourceCollection resourceProvider)
         {
             _resourceProvider = resourceProvider;
@@ -18,14 +20,27 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (_resourceProvider == null) return null;
             var resourceName = name + PartialTemplateExtension;
-            using (var stream = _resourceProvider.GetResourceStream(resourceName))
+            Nustache.Core.Template template;
+            if (!_templateCache.TryGetValue(resourceName, out template))
             {
-                if (stream == null) return null;
-                var template = new Nustache.Core.Template(name);
-                using (StreamReader reader = new StreamReader(stream))
-                    template.Load(reader);
-                return template;
+                using (var stream = _resourceProvider.GetResourceStream(resourceName))
+                {
+                    if (stream == null)
+                    {
+                        return null;
+                    }
+
+                    template = new Nustache.Core.Template(name);
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        template.Load(reader);
+                    }
+
+                    _templateCache[resourceName] = template;
+                }
             }
+
+            return template;
         }
     }
 }

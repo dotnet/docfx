@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {
         private static object _locker = new object();
-        private DotLiquid.Template _template = null;
+        private readonly DotLiquid.Template _template = null;
         public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, string template)
         {
             if (template == null) throw new ArgumentNullException(nameof(template));
@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.EntityModel
             return _template.Render(DotLiquid.Hash.FromAnonymousObject(model));
         }
 
-        private class Dependency : DotLiquid.Tag
+        private sealed class Dependency : DotLiquid.Tag
         {
             private static readonly HashSet<string> SharedDependencies = new HashSet<string>();
             private static object _locker = new object();
@@ -79,29 +79,40 @@ namespace Microsoft.DocAsCode.EntityModel
         /// ie. with the template name prefixed with an underscore. The extension ".liquid" is also added.
         /// e.g. dir/partial => dir/_partial.liquid
         /// </summary>
-        private class ResourceFileSystem : DotLiquid.FileSystems.IFileSystem
+        private sealed class ResourceFileSystem : DotLiquid.FileSystems.IFileSystem
         {
-            private ResourceCollection _resourceProvider;
+            private readonly Dictionary<string, string> _templateCache = new Dictionary<string, string>();
+            private readonly ResourceCollection _resourceProvider;
+
             public ResourceFileSystem(ResourceCollection resourceProvider)
             {
                 _resourceProvider = resourceProvider;
             }
+
             public string ReadTemplateFile(DotLiquid.Context context, string templateName)
             {
                 if (_resourceProvider == null) return null;
-                string resourceName;
-                var slashIndex = templateName.LastIndexOf('/');
-                if (slashIndex > -1)
+                string template;
+                if (!_templateCache.TryGetValue(templateName, out template))
                 {
-                    var fileName = templateName.Substring(slashIndex + 1);
-                    resourceName = $"{templateName.Substring(0, slashIndex)}/_{fileName}.liquid";
-                }
-                else
-                {
-                    resourceName = $"_{templateName}.liquid";
+
+                    string resourceName;
+                    var slashIndex = templateName.LastIndexOf('/');
+                    if (slashIndex > -1)
+                    {
+                        var fileName = templateName.Substring(slashIndex + 1);
+                        resourceName = $"{templateName.Substring(0, slashIndex)}/_{fileName}.liquid";
+                    }
+                    else
+                    {
+                        resourceName = $"_{templateName}.liquid";
+                    }
+
+                    template = _resourceProvider.GetResource(resourceName);
+                    _templateCache[templateName] = template;
                 }
 
-                return _resourceProvider.GetResource(resourceName);
+                return template;
             }
         }
     }

@@ -11,8 +11,8 @@ namespace Microsoft.DocAsCode.EntityModel
     internal class MustacheTemplateRenderer : ITemplateRenderer
     {
         private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private ResourceTemplateLocator _resourceTemplateLocator;
-        private Nustache.Core.Template _template = null;
+        private readonly ResourceTemplateLocator _resourceTemplateLocator;
+        private readonly Nustache.Core.Template _template = null;
         public MustacheTemplateRenderer(ResourceCollection resourceProvider, string template)
         {
             if (template == null) throw new ArgumentNullException(nameof(template));
