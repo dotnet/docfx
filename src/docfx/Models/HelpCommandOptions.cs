@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
-    class HelpCommandOptions
+    internal class HelpCommandOptions
     {
         [ValueOption(0)]
         public string Command { get; set; }

@@ -3,11 +3,12 @@
 
 namespace Microsoft.DocAsCode
 {
-    using CommandLine;
-    using EntityModel;
     using System.Collections.Generic;
 
-    class MetadataCommandOptions
+    using CommandLine;
+    using Microsoft.DocAsCode.EntityModel;
+
+    internal class MetadataCommandOptions
     {
         [Option('f', "force", HelpText = "Force re-generate all the metadata")]
         public bool ForceRebuild { get; set; }

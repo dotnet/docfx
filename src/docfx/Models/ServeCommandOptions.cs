@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
-    class ServeCommandOptions
+    internal class ServeCommandOptions
     {
         [ValueOption(0)]
         public string Folder { get; set; }

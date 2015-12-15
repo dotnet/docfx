@@ -3,8 +3,9 @@
 
 namespace Microsoft.DocAsCode
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
+
+    using Newtonsoft.Json;
 
     public class MetadataJsonConfig : List<MetadataJsonItemConfig>
     {
@@ -26,20 +27,4 @@ namespace Microsoft.DocAsCode
         {
         }
     }
-
-    public class MetadataJsonItemConfig
-    {
-        [JsonProperty("src")]
-        public FileMapping Source { get; set; }
-
-        [JsonProperty("dest")]
-        public string Destination { get; set; }
-
-        [JsonProperty("force")]
-        public bool Force { get; set; }
-
-        [JsonProperty("raw")]
-        public bool Raw { get; set; }
-    }
-
 }

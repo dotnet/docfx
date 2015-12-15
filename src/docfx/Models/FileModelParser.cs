@@ -10,27 +10,6 @@ namespace Microsoft.DocAsCode
 
     internal static class FileModelParser
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        /// <exception cref="JsonReaderException"></exception>
-        public static FileMapping Parse(string input, string key)
-        {
-            FileMapping model = new FileMapping();
-
-            var value = JObject.Parse(input)[key];
-            foreach (var item in value)
-            {
-                var itemModel = ParseItem(item);
-                model.Add(itemModel);
-            }
-
-            return model;
-        }
-
         public static FileMappingItem ParseItem(JToken item)
         {
             if (item.Type == JTokenType.Object)

@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
-    class InitCommandOptions
+    internal class InitCommandOptions
     {
         [Option('q', "quiet", HelpText = "Quietly generate the default docfx.json")]
         public bool Quiet { get; set; }

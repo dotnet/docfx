@@ -3,14 +3,12 @@
 
 namespace Microsoft.DocAsCode
 {
-    using CommandLine;
-    using EntityModel;
     using System.Collections.Generic;
 
-    /// <summary>
-    /// TODO: support input Conceptual files in Website sub commands, e.g. -c "**/*.md" "**/*.png"?
-    /// </summary>
-    class BuildCommandOptions
+    using CommandLine;
+    using Microsoft.DocAsCode.EntityModel;
+
+    internal class BuildCommandOptions
     {
         [Option('o', "output")]
         public string OutputFolder { get; set; }

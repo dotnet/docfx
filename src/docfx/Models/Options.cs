@@ -4,8 +4,6 @@
 namespace Microsoft.DocAsCode
 {
     using CommandLine;
-    using EntityModel;
-    using System.Collections.Generic;
 
     internal class Options : CascadableOptions
     {

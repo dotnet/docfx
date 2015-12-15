@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
-    class PackCommandOptions
+    internal class PackCommandOptions
     {
         [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]
         public string BaseUrl { get; set; }
