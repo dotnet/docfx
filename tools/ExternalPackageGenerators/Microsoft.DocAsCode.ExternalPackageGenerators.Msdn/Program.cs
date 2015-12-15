@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Glob;
 
     internal sealed class Program
     {
@@ -550,7 +551,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         private List<string> GetAllFiles()
         {
             // just guess: the bigger files contains more apis/types.
-            var files = (from file in GlobPathHelper.GetFiles(_baseDirectory, _globPattern)
+            var files = (from file in FileGlob.GetFiles(_baseDirectory, new string[] { _globPattern }, null)
                          let fi = new FileInfo(file)
                          orderby fi.Length
                          select file).ToList();

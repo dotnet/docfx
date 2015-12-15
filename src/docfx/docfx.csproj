@@ -128,12 +128,17 @@
     <Compile Include="Commands\Metadata\MetadataCommandOptions.cs" />
     <Compile Include="Commands\Metadata\MetadataJsonConfig.cs" />
     <Compile Include="ConsoleExtension.cs" />
-    <Compile Include="ConfigModel.cs" />
+    <Compile Include="Models\FileModelParser.cs" />
+    <Compile Include="Models\FileItems.cs" />
+    <Compile Include="Models\FileMappingItem.cs" />
+    <Compile Include="Models\FileMappingConverter.cs" />
+    <Compile Include="Models\FileMapping.cs" />
     <Compile Include="Commands\CompositeCommand.cs" />
     <Compile Include="Glob\GlobUtility.cs" />
     <Compile Include="HelpTextGenerator.cs" />
+    <Compile Include="Models\CascadableOptions.cs" />
     <Compile Include="OptionsAttributes.cs" />
-    <Compile Include="Options.cs" />
+    <Compile Include="Models\Options.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -168,6 +173,10 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
       <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
       <Name>Microsoft.DocAsCode.EntityModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj">
+      <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
+      <Name>Microsoft.DocAsCode.Glob</Name>
     </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
       <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>

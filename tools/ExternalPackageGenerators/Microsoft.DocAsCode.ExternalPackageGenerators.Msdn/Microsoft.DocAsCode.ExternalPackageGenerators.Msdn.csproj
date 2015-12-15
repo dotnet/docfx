@@ -47,6 +47,10 @@
       <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
       <Name>Microsoft.DocAsCode.EntityModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj">
+      <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
+      <Name>Microsoft.DocAsCode.Glob</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Utility.Tests
+namespace Microsoft.DocAsCode.Glob.Tests
 {
     using Glob;
     using System;

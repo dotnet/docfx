@@ -207,6 +207,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj">
+      <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
+      <Name>Microsoft.DocAsCode.Glob</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
       <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
       <Name>Microsoft.DocAsCode.Plugins</Name>

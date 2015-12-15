@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Glob
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Utility;
 
     public class FileGlob
     {
@@ -29,7 +28,7 @@ namespace Microsoft.DocAsCode.Glob
             if (!Directory.Exists(cwd)) yield break;
             foreach (var file in GetFilesFromSubfolder(cwd, cwd, globs, excludeGlobs))
             {
-                yield return file.ToNormalizedFullPath();
+                yield return NormalizePath(file);
             }
         }
 
@@ -37,7 +36,7 @@ namespace Microsoft.DocAsCode.Glob
         {
             foreach (var file in Directory.GetFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                var relativePath = PathUtility.MakeRelativePath(cwd, file);
+                var relativePath = GetRelativeFilePath(cwd, file);
                 if (IsFileMatch(relativePath, globs, excludeGlobs))
                 {
                     yield return file;
@@ -46,7 +45,7 @@ namespace Microsoft.DocAsCode.Glob
 
             foreach (var dir in Directory.GetDirectories(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                var relativePath = PathUtility.MakeRelativePath(cwd, dir) + "/";
+                var relativePath = GetRelativeDirectoryPath(cwd, dir);
 
                 // For folder, exclude glob matches folder means nothing, e.g. **/a matches b/a folder, however, **/a does not match b/a/c file
                 foreach (var glob in globs)
@@ -62,6 +61,22 @@ namespace Microsoft.DocAsCode.Glob
                     }
                 }
             }
+        }
+
+        private static string GetRelativeFilePath(string directory, string file)
+        {
+            return file.Substring(directory.Length + 1);
+        }
+
+        private static string GetRelativeDirectoryPath(string parentDirectory, string directory)
+        {
+            var relativeDirectory = GetRelativeFilePath(parentDirectory, directory);
+            return relativeDirectory.TrimEnd('\\', '/') + "/";
+        }
+
+        private static string NormalizePath(string path)
+        {
+            return path.Replace('\\', '/');
         }
 
         private static bool IsFileMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)

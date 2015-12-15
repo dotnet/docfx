@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "dependencies": {
+  },
+  "frameworks": {
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System": ""
+      }
+    }
+  }
+}

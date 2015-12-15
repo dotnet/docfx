@@ -19,6 +19,10 @@
       <Project>{efaa7a53-d047-422e-a3fb-ecc834944ce6}</Project>
       <Name>Microsoft.DocAsCode.EntityModel.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Glob.Tests\Microsoft.DocAsCode.Glob.Tests.csproj">
+      <Project>{957b06b4-fd5b-473f-a118-d1ea5ebf64bc}</Project>
+      <Name>Microsoft.DocAsCode.Glob.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite.Tests\Microsoft.DocAsCode.MarkdownLite.Tests.csproj">
       <Project>{f94bb644-a042-4364-ad2d-bf9d5bbd44ac}</Project>
       <Name>Microsoft.DocAsCode.MarkdownLite.Tests</Name>

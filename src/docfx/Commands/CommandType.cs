@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode
 {
-    enum CommandType
+    internal enum CommandType
     {
         Init,
         Help,

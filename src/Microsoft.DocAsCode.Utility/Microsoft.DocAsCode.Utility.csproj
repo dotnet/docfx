@@ -45,11 +45,7 @@
     <Compile Include="EntityMergers\MergeOptionAttribute.cs" />
     <Compile Include="FilePathComparer.cs" />
     <Compile Include="GitDetail.cs" />
-    <Compile Include="Glob\FileGlob.cs" />
-    <Compile Include="Glob\Glob.cs" />
-    <Compile Include="Glob\GlobMatcher.cs" />
     <Compile Include="EntityMergers\ReflectionEntityMerger.cs" />
-    <Compile Include="Glob\GlobPathHelper.cs" />
     <Compile Include="LruList.cs" />
     <Compile Include="PathUtility.cs" />
     <Compile Include="ProcessDetail.cs" />

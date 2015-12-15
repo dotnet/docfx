@@ -4,15 +4,12 @@
 namespace Microsoft.DocAsCode
 {
     using EntityModel;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    using Microsoft.DocAsCode.Utility;
-    using System.Linq;
     using System.IO;
     using Newtonsoft.Json.Linq;
 
-    class CommandFactory
+    internal static class CommandFactory
     {
         public static CompositeCommand ReadConfig(string path, Options rootOptions)
         {
