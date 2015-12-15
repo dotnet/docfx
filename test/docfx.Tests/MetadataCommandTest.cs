@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Tests
         [Fact]
         [Trait("Related", "docfx")]
         [Trait("Language", "CSharp")]
-        public void TestMetadataCommand_FromCSProject()
+        public void TestMetadataCommandFromCSProject()
         {
             // Create default project
             var projectFile = Path.Combine(_projectFolder, "test.csproj");
@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.Tests
         [Fact]
         [Trait("Related", "docfx")]
         [Trait("Language", "VB")]
-        public void TestMetadataCommand_FromVBProject()
+        public void TestMetadataCommandFromVBProject()
         {
             // Create default project
             var projectFile = Path.Combine(_projectFolder, "test.vbproj");

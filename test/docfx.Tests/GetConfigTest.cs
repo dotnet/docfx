@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Tests
         /// </summary>
         [Fact]
         [Trait("Related", "docfx")]
-        public void TestGetConfig_WithNoInputAndDocfxJsonExists()
+        public void TestGetConfigWithNoInputAndDocfxJsonExists()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
-        public void TestGetConfig_WithNoInputAndDocfxJsonNotExists()
+        public void TestGetConfigWithNoInputAndDocfxJsonNotExists()
         {
             Assert.Throws(typeof(FileNotFoundException), () => CommandFactory.GetCommand(new Options()));
         }

@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Tests
     using EntityModel;
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using Xunit;
 
@@ -18,7 +17,7 @@ namespace Microsoft.DocAsCode.Tests
         /// </summary>
         [Fact]
         [Trait("Related", "docfx")]
-        public void TestGetConfig_WithNoInputAndDocfxJsonExists()
+        public void TestGetConfigWithNoInputAndDocfxJsonExists()
         {
             const string documentsBaseDir = "documents";
             const string outputBaseDir = "output";
