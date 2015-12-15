@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Glob
             if (!Directory.Exists(cwd)) yield break;
             foreach (var file in GetFilesFromSubfolder(cwd, cwd, globs, excludeGlobs))
             {
-                yield return NormalizePath(file);
+                yield return NormalizeToFullPath(file);
             }
         }
 
@@ -74,9 +74,9 @@ namespace Microsoft.DocAsCode.Glob
             return relativeDirectory.TrimEnd('\\', '/') + "/";
         }
 
-        private static string NormalizePath(string path)
+        private static string NormalizeToFullPath(string path)
         {
-            return path.Replace('\\', '/');
+            return Path.GetFullPath(path).Replace('\\', '/');
         }
 
         private static bool IsFileMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
