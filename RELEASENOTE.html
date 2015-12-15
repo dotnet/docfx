@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v1.2) | docfx website</title>
+    <title>Version Notes (Current Version: v1.3) | docfx website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v1.2) | docfx website">
+    <meta name="title" content="Version Notes (Current Version: v1.3) | docfx website">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -51,7 +51,8 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content">
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/RELEASENOTE.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <h1 id="version-notes-current-version-v1-2-">Version Notes (Current Version: v1.2)</h1>
+              <h1 id="version-notes-current-version-v1-3-">Version Notes (Current Version: v1.3)</h1>
+<h2 id="v1-3-pre-release-">v1.3 (Pre-release)</h2>
 <h2 id="v1-2">v1.2</h2>
 <ol>
 <li>Support Liquid template, templates ending with <code>.liquid</code> are considered as using liquid templating language. Liquid contains <code>include</code> tag to support partials, we follow the ruby partials naming convention to have <code>_&lt;partialName&gt;.liquid</code> as partial template. A custom tag <code>ref</code>, e.g. <code>{% ref file1 %}</code> is introduced to specify the resource files that current template depends on.</li>
@@ -62,13 +63,13 @@
 <ol>
 <li>Rewrite Glob
  The syntax of glob is:<ol>
-<li><code>**</code> is called globstar, it matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part. </li>
+<li><code>**</code> is called globstar, it matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part.</li>
 <li>If <code>**</code> is right behind <code>/</code>, it is a shortcut for <code>**/*</code>.</li>
 <li><code>*</code> matches any number of characters, but not <code>/</code></li>
 <li><code>?</code> matches 1 characters, but not <code>/</code></li>
 <li><code>{}</code> allows for a comma-separated list of &quot;or&quot; expressions, e.g. <code>{a,b}</code> =&gt; <code>a</code> and <code>b</code></li>
 <li><code>!</code> at the beginning of a pattern will negate the match</li>
-<li><code>[...]</code> matches a range of characters, similar to a RegExp range </li>
+<li><code>[...]</code> matches a range of characters, similar to a RegExp range</li>
 <li><code>/</code> is considered as path separator, while <code>\</code> is considered as escape character</li>
 </ol>
 </li>
