@@ -4,7 +4,7 @@ C# Coding Standards
 Introduction
 ----------------
 The coding standard will be used in conjunction with customized version of *StyleCop* and *FxCop* [**TODO**] during both development and build process. This will help ensure that the standard is followed by all developers on the team in a consistent manner.
-  
+
 >"Any fool can write code that a computer can understand. Good programmers write code that humans understand".
 >
 > Martin Fowler. *Refactoring: Improving the design of existing code.*
@@ -15,7 +15,7 @@ The aim of this section is to define a set of C# coding standards to be used by 
 
 ### Scope
 
-This section contains general C# coding standards which can be applied to any type of application developed in C#, based on *[Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx)*. 
+This section contains general C# coding standards which can be applied to any type of application developed in C#, based on *[Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx)*.
 
 It does not pretend to be a tutorial on C#. It only includes a set of limitations and recommendations focused on clarifying the development.
 
@@ -37,41 +37,43 @@ Only one public class is allowed per file.
 
 The file name is derived from the class name.
 
-		Class   : Observer
-		Filename: Observer.cs
+    Class   : Observer
+    Filename: Observer.cs
 
 ### Class Definition Order (Mandatory)
 
 The class definition contains class members in the following order, from *less* restricted scope (public) to *more* restrictive (private):
 
-* Nested types, e.g. classes, enum, struct, etc.
+* ~~~ Nested types, e.g. classes, enum, struct, etc.~~~ Non-private nested types are not allowed.
 * Field members, e.g. member variables, const, etc.
 * Member functions
-	* Constructors
-	* Finalizer (Do not use unless absolutely necessary)
-	* Methods (Properties, Events, Operations, Overridables, Static)
-	* Private nested types
+  * Constructors
+  * Finalizer (Do not use unless absolutely necessary)
+  * Methods (Properties, Events, Operations, Overridables, Static)
+  * Private nested types
+
 
 ### Naming (Mandatory)
+* **DO** use plural form for namespaces
 * **DO** use PascalCasing for all public member, type, and namespace names consisting of multiple words.
 
-		PropertyDescriptor
-		HtmlTag
-		IOStream
+    PropertyDescriptor
+    HtmlTag
+    IOStream
 **NOTE**: A special case is made for two-letter acronyms in which both letters are capitalized, e.g. *IOStream*
 * **DO** use camelCasing for parameter names.
 
-		propertyDescriptor
-		htmlTag
-		ioStream
+    propertyDescriptor
+    htmlTag
+    ioStream
 
 * **DO** start with underscore for private fields
 
-		private readonly Guid _userId = Guid.NewGuid();
+    private readonly Guid _userId = Guid.NewGuid();
 
 * **DO** start static readonly fields, constants with capitalized case
-		
-		private static readonly IEntityAccessor EntityAccessor = null;
+
+    private static readonly IEntityAccessor EntityAccessor = null;
         private const string MetadataName = "MetadataName";
 
 * **DO NOT** capitalize each word in so-called [closed-form compound words](http://msdn.microsoft.com/en-us/library/ms229043.aspx).
@@ -82,21 +84,27 @@ The class definition contains class members in the following order, from *less* 
 * **DO** use spaces over tabs, and always show all spaces/tabs in IDE
 
 > **Tips**
-> 
+>
 > Visual Studio > TOOLS > Options > Text Editor > C# > Tabs > Insert spaces (Tab size: 4)
-> 
+>
 > Visual Studio > Edit > Advanced > View White Space
 
 * **DO** add *using* inside *namespace* declaration
 
-		namespace Microsoft.Content.Build.BuildWorker.UnitTest
-		{
-			using System;
-		}
+    namespace Microsoft.Content.Build.BuildWorker.UnitTest
+    {
+      using System;
+    }
 
 * **DO** add a space when:
-	1. `for (var i = 0; i < 1; i++)`
-	2. `if (a == b)`
+  1. `for (var i = 0; i < 1; i++)`
+  2. `if (a == b)`
+
+### Performace Consideration
+* **DO** use `sealed` for private classes if it is not to be inherited.
+* **DO** add `readonly` to fields if they are not tend to be changed.
+* **DO** use `static` methods if it is not instance relavant.
+* **DO** use `RegexOptions.Compiled` for `readonly` `Regex`.
 
 ### Cross-platform coding
 Our code should supports multiple operating systems. Don't assume we only run (and develop) on Windows. Code should be sensitvie to the differences between OS's. Here are some specifics to consider.
@@ -104,7 +112,7 @@ Our code should supports multiple operating systems. Don't assume we only run (a
 * **DO** use `Enviroment.NewLine` instead of hard-coding the line break instead of `\r\n`, as Windows uses `\r\n` and OSX/Linux uses `\n`.
 
 > **Note**
-> 
+>
 > Be aware that thes line-endings may cause problems in code when using `@""` text blocks with line breaks.
 
 * **DO** Use `Path.Combine()` or `Path.DirectorySeparatorChar` to separate directories. If this is not possible (such as in scripting), use a forward slash `/`. Windows is more forgiving than Linux in this regard.
