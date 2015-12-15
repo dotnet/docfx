@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.YamlSerializations.NodeDeserializers
+namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
 {
     using System;
     using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.YamlSerializations.NodeDeserializers
     using YamlDotNet.Core.Events;
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.YamlSerializations.Helpers;
+    using Microsoft.DocAsCode.YamlSerialization.Helpers;
 
     public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
     {

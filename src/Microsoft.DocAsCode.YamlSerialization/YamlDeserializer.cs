@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.YamlSerializations
+namespace Microsoft.DocAsCode.YamlSerialization
 {
     using System;
     using System.Collections.Generic;
@@ -18,11 +18,11 @@ namespace Microsoft.DocAsCode.YamlSerializations
     using YamlDotNet.Serialization.Utilities;
     using YamlDotNet.Serialization.ValueDeserializers;
 
-    using Microsoft.DocAsCode.YamlSerializations.Helpers;
-    using Microsoft.DocAsCode.YamlSerializations.NodeDeserializers;
-    using Microsoft.DocAsCode.YamlSerializations.NodeTypeResolvers;
-    using Microsoft.DocAsCode.YamlSerializations.ObjectFactories;
-    using Microsoft.DocAsCode.YamlSerializations.TypeInspectors;
+    using Microsoft.DocAsCode.YamlSerialization.Helpers;
+    using Microsoft.DocAsCode.YamlSerialization.NodeDeserializers;
+    using Microsoft.DocAsCode.YamlSerialization.NodeTypeResolvers;
+    using Microsoft.DocAsCode.YamlSerialization.ObjectFactories;
+    using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
 
     /// <summary>
     /// A façade for the YAML library with the standard configuration.

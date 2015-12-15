@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.Threading;
 
-    using Microsoft.DocAsCode.YamlSerializations;
+    using Microsoft.DocAsCode.YamlSerialization;
 
     public static class YamlUtility
     {

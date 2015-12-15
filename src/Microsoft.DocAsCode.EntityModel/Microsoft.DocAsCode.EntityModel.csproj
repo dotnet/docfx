@@ -219,9 +219,9 @@
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerializations\Microsoft.DocAsCode.YamlSerializations.csproj">
+    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj">
       <Project>{87efc656-3081-442e-902b-822714514768}</Project>
-      <Name>Microsoft.DocAsCode.YamlSerializations</Name>
+      <Name>Microsoft.DocAsCode.YamlSerialization</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

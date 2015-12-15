@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.YamlSerializations.TypeInspectors
+namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 {
     using System;
     using System.Collections.Concurrent;
@@ -13,8 +13,8 @@ namespace Microsoft.DocAsCode.YamlSerializations.TypeInspectors
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.TypeInspectors;
 
-    using Microsoft.DocAsCode.YamlSerializations.Helpers;
-    using Microsoft.DocAsCode.YamlSerializations.ObjectDescriptors;
+    using Microsoft.DocAsCode.YamlSerialization.Helpers;
+    using Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors;
 
     public class EmitTypeInspector : TypeInspectorSkeleton
     {

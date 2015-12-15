@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24730.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -361,9 +361,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeSourceInfo", "tools\Me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Utility.Tests", "test\Microsoft.DocAsCode.Utility.Tests\Microsoft.DocAsCode.Utility.Tests.csproj", "{F84BB644-A042-4364-AD2D-BF9D5BBD44AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.YamlSerializations", "src\Microsoft.DocAsCode.YamlSerializations\Microsoft.DocAsCode.YamlSerializations.csproj", "{87EFC656-3081-442E-902B-822714514768}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.YamlSerialization", "src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj", "{87EFC656-3081-442E-902B-822714514768}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.YamlSerializations", "src\Microsoft.DocAsCode.YamlSerializations\Microsoft.DocAsCode.YamlSerializations.xproj", "{EA319525-1EE9-43E0-8D0E-817EE4C72EFE}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.YamlSerialization", "src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.xproj", "{EA319525-1EE9-43E0-8D0E-817EE4C72EFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.MarkdownLite.Tests", "test\Microsoft.DocAsCode.MarkdownLite.Tests\Microsoft.DocAsCode.MarkdownLite.Tests.csproj", "{F94BB644-A042-4364-AD2D-BF9D5BBD44AC}"
 EndProject

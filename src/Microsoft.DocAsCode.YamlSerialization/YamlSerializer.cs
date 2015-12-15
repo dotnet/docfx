@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.YamlSerializations
+namespace Microsoft.DocAsCode.YamlSerialization
 {
     using System;
     using System.Collections.Generic;
@@ -16,10 +16,10 @@ namespace Microsoft.DocAsCode.YamlSerializations
     using YamlDotNet.Serialization.TypeInspectors;
     using YamlDotNet.Serialization.TypeResolvers;
 
-    using Microsoft.DocAsCode.YamlSerializations.Helpers;
-    using Microsoft.DocAsCode.YamlSerializations.ObjectDescriptors;
-    using Microsoft.DocAsCode.YamlSerializations.ObjectGraphTraversalStrategies;
-    using Microsoft.DocAsCode.YamlSerializations.TypeInspectors;
+    using Microsoft.DocAsCode.YamlSerialization.Helpers;
+    using Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors;
+    using Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies;
+    using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
 
     public class YamlSerializer
     {
