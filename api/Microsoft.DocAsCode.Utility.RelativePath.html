@@ -77,9 +77,6 @@
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public sealed class RelativePath : IEquatable&lt;RelativePath&gt;</code></pre>
               </div>
-              <h5 id="Microsoft_DocAsCode_Utility_RelativePath_remarks"><strong>Remarks<strong></strong></strong></h5>
-              <div class="markdown level0 remarks"><p>relative path</p>
-</div>
               <h3 id="fields">Fields</h3>
               
               <span class="small pull-right mobile-hide">
@@ -197,15 +194,6 @@ e.g.:
 {../e.txt}.BasedOn({../c.txt}) = {../../e.txt}</p>
 </div>
               <div class="markdown level1 conceptual"></div>
-              <h5 id="Microsoft_DocAsCode_Utility_RelativePath_BasedOn_Microsoft_DocAsCode_Utility_RelativePath__remarks">Remarks</h5>
-              <div class="markdown level1 remarks"><p>Concat two relative path
-e.g.:
-{d/e.txt}.BasedOn({a/b/c/}) = {a/b/c/d/e.txt}
-{../d/e.txt}.BasedOn({a/b/c/}) = {a/b/d/e.txt}
-{d/e.txt}.BasedOn({a/b/c.txt}) = {a/b/d/e.txt}
-{../e.txt}.BasedOn({a/b/c.txt}) = {a/e.txt}
-{../e.txt}.BasedOn({../c.txt}) = {../../e.txt}</p>
-</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public RelativePath BasedOn(RelativePath path)</code></pre>
@@ -420,15 +408,6 @@ e.g.:
 {a.txt}.MakeRelativeTo({../b.txt}) = Oop...</p>
 </div>
               <div class="markdown level1 conceptual"></div>
-              <h5 id="Microsoft_DocAsCode_Utility_RelativePath_MakeRelativeTo_Microsoft_DocAsCode_Utility_RelativePath__remarks">Remarks</h5>
-              <div class="markdown level1 remarks"><p>Get relative path from right relative path to left relative path
-e.g.:
-{a/b/c.txt}.MakeRelativeTo({d/e.txt}) = {../a/b/c.txt}
-{a/b/c.txt}.MakeRelativeTo({a/d.txt}) = {b/c.txt}
-{../../a.txt}.MakeRelativeTo({../b.txt}) = {../a.txt}
-{../../a.txt}.MakeRelativeTo({../b/c.txt}) = {../../a.txt}
-{a.txt}.MakeRelativeTo({../b.txt}) = Oop...</p>
-</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public RelativePath MakeRelativeTo(RelativePath relativeTo)</code></pre>
@@ -516,9 +495,6 @@ e.g.:
               <div class="markdown level1 summary"><p>Rebase the relative path</p>
 </div>
               <div class="markdown level1 conceptual"></div>
-              <h5 id="Microsoft_DocAsCode_Utility_RelativePath_Rebase_Microsoft_DocAsCode_Utility_RelativePath_Microsoft_DocAsCode_Utility_RelativePath__remarks">Remarks</h5>
-              <div class="markdown level1 remarks"><p>Rebase the relative path</p>
-</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public RelativePath Rebase(RelativePath from, RelativePath to)</code></pre>
@@ -630,15 +606,6 @@ a/b/c.txt + ../e.txt = a/e.txt
 ../c.txt + ../e.txt = ../../e.txt</p>
 </div>
               <div class="markdown level1 conceptual"></div>
-              <h5 id="Microsoft_DocAsCode_Utility_RelativePath_op_Addition_Microsoft_DocAsCode_Utility_RelativePath_Microsoft_DocAsCode_Utility_RelativePath__remarks">Remarks</h5>
-              <div class="markdown level1 remarks"><p>Concat two relative path
-e.g.:
-a/b/c/ + d/e.txt = a/b/c/d/e.txt
-a/b/c/ + ../d/e.txt = a/b/d/e.txt
-a/b/c.txt + d/e.txt = a/b/d/e.txt
-a/b/c.txt + ../e.txt = a/e.txt
-../c.txt + ../e.txt = ../../e.txt</p>
-</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public static RelativePath operator +(RelativePath left, RelativePath right)</code></pre>
@@ -780,15 +747,6 @@ a/b/c.txt - a/d.txt = b/c.txt
 a.txt - ../b.txt = Oop...</p>
 </div>
               <div class="markdown level1 conceptual"></div>
-              <h5 id="Microsoft_DocAsCode_Utility_RelativePath_op_Subtraction_Microsoft_DocAsCode_Utility_RelativePath_Microsoft_DocAsCode_Utility_RelativePath__remarks">Remarks</h5>
-              <div class="markdown level1 remarks"><p>Get relative path from right relative path to left relative path
-e.g.:
-a/b/c.txt - d/e.txt = ../a/b/c.txt
-a/b/c.txt - a/d.txt = b/c.txt
-../../a.txt - ../b.txt = ../a.txt
-../../a.txt - ../b/c.txt = ../../a.txt
-a.txt - ../b.txt = Oop...</p>
-</div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public static RelativePath operator -(RelativePath left, RelativePath right)</code></pre>
