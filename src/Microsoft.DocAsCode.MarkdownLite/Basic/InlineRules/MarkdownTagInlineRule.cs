@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 engine.SwitchContext(MarkdownInlineContext.IsInLink, false);
             }
-            return new MarkdownTagInlineToken(this, match.Value);
+            return new MarkdownTagInlineToken(this, engine.Context, match.Value);
         }
     }
 }

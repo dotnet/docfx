@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 cells[i] = cells[i][0].SplitRegex(Regexes.Lexers.TableSplitter);
             }
-            return new MarkdownTableBlockToken(this, header, align, cells);
+            return new MarkdownTableBlockToken(this, engine.Context, header, align, cells);
         }
 
         protected virtual Align[] ParseAligns(string[] aligns)

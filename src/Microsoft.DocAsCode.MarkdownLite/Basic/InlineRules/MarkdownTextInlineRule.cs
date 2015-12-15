@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            return new MarkdownTextToken(this, StringHelper.Escape(Smartypants(engine.Options, match.Groups[0].Value)));
+            return new MarkdownTextToken(this, engine.Context, StringHelper.Escape(Smartypants(engine.Options, match.Groups[0].Value)));
         }
 
         /// <summary>

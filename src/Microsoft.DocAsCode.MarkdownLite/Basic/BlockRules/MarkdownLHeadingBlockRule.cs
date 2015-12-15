@@ -19,7 +19,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownHeadingBlockToken(this, match.Groups[1].Value, match.Groups[2].Value == "=" ? 1 : 2);
+            return new MarkdownHeadingBlockToken(
+                this,
+                engine.Context,
+                engine.TokenizeInline(match.Groups[1].Value),
+                Regex.Replace(match.Groups[1].Value.ToLower(), @"[^\w]+", "-"),
+                match.Groups[2].Value == "=" ? 1 : 2);
         }
     }
 }

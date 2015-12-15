@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownNewLineBlockToken(this, match.Value);
+            return new MarkdownNewLineBlockToken(this, engine.Context);
         }
     }
 }

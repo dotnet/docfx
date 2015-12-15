@@ -44,13 +44,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public Dictionary<string, LinkObj> Links { get; }
 
-        public StringBuffer Render(IMarkdownToken token, IMarkdownContext context)
+        public StringBuffer Render(IMarkdownToken token)
         {
             var rewrittenToken = RewriteToken(token);
             try
             {
                 // double dispatch.
-                return ((dynamic)Renderer).Render((dynamic)this, (dynamic)rewrittenToken, (dynamic)context);
+                return ((dynamic)Renderer).Render((dynamic)this, (dynamic)rewrittenToken, (dynamic)rewrittenToken.Context);
             }
             catch (RuntimeBinderException ex)
             {
@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var result = StringBuffer.Empty;
             foreach (var token in TokenizeCore(Preprocess(markdown)))
             {
-                result += Render(token, Context);
+                result += Render(token);
             }
             return result;
         }
@@ -144,6 +144,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public ImmutableArray<IMarkdownToken> Tokenize(string markdown)
         {
             return TokenizeCore(Preprocess(markdown)).ToImmutableArray();
+        }
+
+        public ImmutableArray<IMarkdownToken> TokenizeInline(string markdown)
+        {
+            var context = Context as MarkdownBlockContext;
+            if (markdown == null)
+            {
+                throw new InvalidOperationException($"{nameof(Context)}(type:{Context.GetType().FullName}) is invalid.");
+            }
+            var c = SwitchContext(context.InlineContext);
+            var tokens = Tokenize(markdown);
+            SwitchContext(c);
+            return tokens;
         }
 
         private List<IMarkdownToken> TokenizeCore(string markdown)

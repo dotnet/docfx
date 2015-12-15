@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                   .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
                   .SplitRegex(Regexes.Lexers.TableSplitter);
             }
-            return new MarkdownTableBlockToken(this, header, align, cells);
+            return new MarkdownTableBlockToken(this, engine.Context, header, align, cells);
         }
 
         protected virtual Align[] ParseAligns(string[] aligns)

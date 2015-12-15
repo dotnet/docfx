@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            return new MarkdownEmInlineToken(this, match.NotEmpty(2, 1));
+            return new MarkdownEmInlineToken(this, engine.Context, engine.Tokenize(match.NotEmpty(2, 1)));
         }
     }
 }

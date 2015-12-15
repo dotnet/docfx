@@ -51,11 +51,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 + level
                 + " id=\""
                 + engine.Options.HeaderPrefix
-                + Regex.Replace(token.Content.ToLower(), @"[^\w]+", "-")
+                + token.Id
                 + "\">";
-            var c = engine.SwitchContext(context.InlineContext);
-            result += engine.Mark(token.Content);
-            engine.SwitchContext(c);
+            foreach (var item in token.Content)
+            {
+                result += engine.Render(item);
+            }
             result += "</h";
             result += level;
             result += ">\n";
@@ -82,7 +83,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             content += ">\n";
             foreach (var t in token.Tokens)
             {
-                content += engine.Render(t, context);
+                content += engine.Render(t);
             }
             return content + "</" + type + ">\n";
         }
@@ -119,7 +120,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent);
                     textContent = StringBuffer.Empty;
                 }
-                content += engine.Render(t, context);
+                content += engine.Render(t);
             }
             if (textContent != StringBuffer.Empty)
             {
@@ -132,7 +133,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             if (wrapParagraph)
             {
-                return Render(engine, new MarkdownParagraphBlockToken(rule, textContent), context);
+                return Render(engine, new MarkdownParagraphBlockToken(rule, context, engine.TokenizeInline(textContent)), context);
             }
             else
             {
@@ -154,25 +155,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
         {
-            if (!token.Pre && !engine.Options.Pedantic)
+            var result = StringBuffer.Empty;
+            foreach (var item in token.Content)
             {
-                var c = engine.SwitchContext(context.InlineContext);
-                var result = engine.Mark(token.Content);
-                engine.SwitchContext(c);
-                return result;
+                result += engine.Render(item);
             }
-            else
-            {
-                return token.Content;
-            }
+            return result;
         }
 
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer result = "<p>";
-            var c = engine.SwitchContext(context.InlineContext);
-            result += engine.Mark(token.Content);
-            engine.SwitchContext(c);
+            foreach (var item in token.InlineTokens)
+            {
+                result += engine.Render(item);
+            }
             result += "</p>\n";
             return result;
         }
@@ -271,17 +268,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 result = result + " title=\"" + token.Title + "\"";
             }
-
             result += ">";
-            if (token.ShouldApplyInlineRule)
+
+            foreach (var item in token.Content)
             {
-                engine.SwitchContext(MarkdownInlineContext.IsInLink, true);
-                result += engine.Mark(token.Text);
-                engine.SwitchContext(MarkdownInlineContext.IsInLink, false);
-            }
-            else
-            {
-                result += token.Text;
+                result += engine.Render(item);
             }
 
             result += "</a>";
@@ -303,7 +294,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownStrongInlineToken token, MarkdownInlineContext context)
         {
             var result = (StringBuffer)"<strong>";
-            result += engine.Mark(token.Content);
+            foreach (var item in token.Content)
+            {
+                result += engine.Render(item);
+            }
             result += "</strong>";
             return result;
         }
@@ -311,7 +305,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownEmInlineToken token, MarkdownInlineContext context)
         {
             var result = (StringBuffer)"<em>";
-            result += engine.Mark(token.Content);
+            foreach (var item in token.Content)
+            {
+                result += engine.Render(item);
+            }
             result += "</em>";
             return result;
         }
@@ -324,7 +321,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(MarkdownEngine engine, GfmDelInlineToken token, MarkdownInlineContext context)
         {
             var result = (StringBuffer)"<del>";
-            result += engine.Mark(token.Content);
+            foreach (var item in token.Content)
+            {
+                result += engine.Render(item);
+            }
             result += "</del>";
             return result;
         }
@@ -335,11 +335,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 if (engine.Options.Sanitizer != null)
                 {
-                    return engine.Options.Sanitizer(token.Content);
+                    return engine.Options.Sanitizer(token.RawMarkdown);
                 }
-                return StringHelper.Escape(token.Content);
+                return StringHelper.Escape(token.RawMarkdown);
             }
-            return token.Content;
+            return token.RawMarkdown;
         }
 
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownBrInlineToken token, MarkdownInlineContext context)
@@ -359,6 +359,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(MarkdownEngine engine, MarkdownIgnoreToken token, IMarkdownContext context)
         {
             return StringBuffer.Empty;
+        }
+
+        public virtual StringBuffer Render(MarkdownEngine engine, MarkdownRawToken token, IMarkdownContext context)
+        {
+            return token.RawMarkdown;
         }
 
         #endregion
