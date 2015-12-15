@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Collections.Generic;
     using System.IO;
+
     using Microsoft.DocAsCode.Utility;
 
     public class MetadataModel

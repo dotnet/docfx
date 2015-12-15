@@ -5,10 +5,10 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
 
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Utility;
-    using Newtonsoft.Json;
 
     [Serializable]
     public class SourceDetail

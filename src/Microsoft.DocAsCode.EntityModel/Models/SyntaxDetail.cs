@@ -3,8 +3,9 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
+
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
     public class SyntaxDetail
