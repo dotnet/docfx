@@ -19,6 +19,14 @@
       <Project>{efaa7a53-d047-422e-a3fb-ecc834944ce6}</Project>
       <Name>Microsoft.DocAsCode.EntityModel.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite.Tests\Microsoft.DocAsCode.MarkdownLite.Tests.csproj">
+      <Project>{f94bb644-a042-4364-ad2d-bf9d5bbd44ac}</Project>
+      <Name>Microsoft.DocAsCode.MarkdownLite.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Utility.Tests\Microsoft.DocAsCode.Utility.Tests.csproj">
+      <Project>{f84bb644-a042-4364-ad2d-bf9d5bbd44ac}</Project>
+      <Name>Microsoft.DocAsCode.Utility.Tests</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
