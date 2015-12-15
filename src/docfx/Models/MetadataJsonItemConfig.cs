@@ -14,10 +14,10 @@ namespace Microsoft.DocAsCode
         public string Destination { get; set; }
 
         [JsonProperty("force")]
-        public bool Force { get; set; }
+        public bool? Force { get; set; }
 
         [JsonProperty("raw")]
-        public bool Raw { get; set; }
+        public bool? Raw { get; set; }
     }
 
 }

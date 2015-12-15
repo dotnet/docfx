@@ -3,14 +3,13 @@
 
 namespace Microsoft.DocAsCode
 {
-    using Microsoft.DocAsCode.EntityModel;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
+
+    using Microsoft.DocAsCode.EntityModel;
+    using Newtonsoft.Json;
 
     public class DefaultConfigModel
     {
@@ -21,48 +20,79 @@ namespace Microsoft.DocAsCode
         public BuildJsonConfig Build { get; set; }
     }
 
-    class InitCommand : ICommand
+    internal class InitCommand : ICommand
     {
         private const string ConfigName = Constants.ConfigFileName;
-        private static List<IQuestion> _questions = new List<IQuestion> {
-            new SingleAnswerQuestion(
-                "Is the generation contains conceptual files only?", (s, m) => {
-                    m.Build = new BuildJsonConfig();
-                    if (s == "No" || s == "N") 
-                       m.Metadata = new MetadataJsonConfig();
-                    },
-                "Yes")
-            {
+        private const string DefaultMetadataOutputFolder = "obj/api";
+        private static readonly string[] DefaultExcludeFiles = new string[] { "**/bin/**", "**/obj/**" };
+        private static readonly IEnumerable<IQuestion> _metadataQuestions = new IQuestion[]
+        {
+            new MultiAnswerQuestion(
+                "What are the locations of your source code files?", (s, m, c) => 
+                {
+                    if (s != null)
+                    {
+                        var item = new FileMapping(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
+                        m.Metadata.Add(new MetadataJsonItemConfig
+                        {
+                             Source = item,
+                             Destination = DefaultMetadataOutputFolder,
+                        });
+                        m.Build.Content = new FileMapping(new FileMappingItem("api/**.yml") { CurrentWorkingDirectory = "obj" });
+                    }
+                },
+                new string[] { "src/**.csproj" }) {
                 Descriptions = new string[]
                 {
-                    "Yes", 
-                    "No"
+                    "Supported project files could be .sln, .csproj, .vbproj project files or .cs, .vb source files",
+                    Hints.Glob,
+                    Hints.Empty,
                 }
             },
+            new MultiAnswerQuestion(
+                "What are the locations of your the markdown files overwriting triple slash comments?", (s, m, c) =>
+                {
+                    if (s != null)
+                    {
+                        m.Build.Overwrite = new FileMapping(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
+                    }
+                },
+                new string[] { "apidoc/**.md" }) {
+                Descriptions = new string[]
+                {
+                    "You can specify markdown files with YAML header to override summary, remarks and description for parameters",
+                    Hints.Glob,
+                    Hints.Empty,
+                }
+            },
+        };
+
+        private static readonly IEnumerable<IQuestion> _buildQuestions = new IQuestion[]
+        {
             new SingleAnswerQuestion(
-                "Where to save the generated documenation?", (s, m) => m.Build.Destination = s,
+                "Where to save the generated documenation?", (s, m, c) => m.Build.Destination = s,
                 "_site") {
                  Descriptions = new string[]
                  {
                      Hints.Enter,
                  }
             },
-            // TODO: enable metadata from the first option
-            //new MultiAnswerQuestion(
-            //    "What are the locations of your files?", (s, m) => { m.Metadata.Content= new FileMapping(); if (s != null) m.Projects.Add(new FileMappingItem { Files = new FileItems(s), Name = "api" }); },
-            //    new string[] { "**/*.csproj", "**/*.vbproj" }) {
-            //     Descriptions = new string[]
-            //     {
-            //         "Supported project files could be .sln, .csproj, .vbproj project files or .cs, .vb source files",
-            //         Hints.Glob,
-            //         Hints.Empty,
-            //     }
-            //},
             // TODO: Check if the input glob pattern matches any files
             // IF no matching: WARN [init]: There is no file matching this pattern.
             new MultiAnswerQuestion(
-                "What are the locations of your conceputal files?", (s, m) => { m.Build.Content = new FileMapping(); if (s != null) m.Build.Content.Add(new FileMappingItem { Files = new FileItems(s) }); },
-                new string[] { "articles/**/*.md" }) {
+                "What are the locations of your conceputal files?", (s, m, c) =>
+                {
+                    if (s != null)
+                    {
+                        if (m.Build.Content == null)
+                        {
+                            m.Build.Content = new FileMapping();
+                        }
+
+                        m.Build.Content.Add(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
+                    } 
+                },
+                new string[] { "articles/**/*.md", "toc.yml", "*.md" }) {
                  Descriptions = new string[]
                  {
                      "Supported conceptual files could be any text files, markdown format is also supported.",
@@ -71,7 +101,13 @@ namespace Microsoft.DocAsCode
                  }
             },
             new MultiAnswerQuestion(
-                "What are the locations of your resource files?", (s, m) => { m.Build.Resource = new FileMapping(); if (s != null) m.Build.Resource.Add(new FileMappingItem { Files = new FileItems(s) }); },
+                "What are the locations of your resource files?", (s, m, c) =>
+                {
+                    if (s != null)
+                    {
+                        m.Build.Resource = new FileMapping(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
+                    }
+                },
                 new string[] { "images/**" }) {
                  Descriptions = new string[]
                  {
@@ -81,7 +117,13 @@ namespace Microsoft.DocAsCode
                  }
             },
             new MultiAnswerQuestion(
-                "Do you want to specify external API references?", (s, m) => { m.Build.ExternalReference = new FileMapping(); if (s != null) m.Build.ExternalReference.Add(new FileMappingItem { Files = new FileItems(s) }); },
+                "Do you want to specify external API references?", (s, m, c) =>
+                {
+                    if (s != null)
+                    {
+                        m.Build.ExternalReference = new FileMapping(new FileMappingItem(s));
+                    }
+                },
                 null) {
                  Descriptions = new string[]
                  {
@@ -91,20 +133,39 @@ namespace Microsoft.DocAsCode
                  }
             },
             new MultiAnswerQuestion(
-                "What documentation templates to use?", (s, m) => { if (s != null) m.Build.Templates.AddRange(s); },
+                "What documentation templates to use?", (s, m, c) => { if (s != null) m.Build.Templates.AddRange(s); },
                 new string[] { "default" }) {
                  Descriptions = new string[]
                  {
                      "You can define multiple templates in order, latter one will override former one if name collides",
-                     "There are several predefined templates in docfx: default, op.html, msdn.html, angular",
+                     "Predefined templates in docfx are now: default",
                      Hints.Tab,
                      Hints.Empty,
                  }
             }
         };
 
+        private static readonly IEnumerable<IQuestion> _selectorQuestions = new IQuestion[]
+        {
+            new YesOrNoQuestion(
+                "Is the generation contains source code files?", (s, m, c) =>
+                {
+                    m.Build = new BuildJsonConfig();
+                    if (s)
+                    {
+                        m.Metadata = new MetadataJsonConfig();
+                        c.ContainsMetadata = true;
+                    }
+                    else
+                    {
+                        c.ContainsMetadata = false;
+                    }
+                }),
+        };
+
         public InitCommandOptions _options { get; }
         public Options _rootOptions { get; }
+
         public InitCommand(Options options, CommandContext context)
         {
             _options = options.InitCommand;
@@ -117,29 +178,27 @@ namespace Microsoft.DocAsCode
             string path = null;
             try
             {
-                DefaultConfigModel config = new DefaultConfigModel();
-                if (_options.Quiet)
+                var config = new DefaultConfigModel();
+                var questionContext = new QuestionContext
                 {
-                    // Generate a default Config
-                    foreach (var question in _questions)
+                    Quite = _options.Quiet
+                };
+                foreach (var question in _selectorQuestions)
+                {
+                    question.Process(config, questionContext);
+                }
+
+                if (questionContext.ContainsMetadata)
+                {
+                    foreach (var question in _metadataQuestions)
                     {
-                        question.SetDefault(config);
+                        question.Process(config, questionContext);
                     }
                 }
-                else
-                {
-                    foreach (var question in _questions)
-                    {
-                        if (question is SingleQuestion)
-                        {
-                            ProcessSingleQuestion((SingleQuestion)question, config);
-                        }
-                        else
-                        {
-                            ProcessMultiQuestion((MultiQuestion)question, config);
-                        }
 
-                    }
+                foreach (var question in _buildQuestions)
+                {
+                    question.Process(config, questionContext);
                 }
 
                 name = string.IsNullOrEmpty(_options.Name) ? ConfigName : _options.Name;
@@ -154,61 +213,83 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private void ProcessSingleQuestion(SingleQuestion question, DefaultConfigModel model)
+        private sealed class YesOrNoQuestion : SingleChoiceQuestion<bool>
         {
-            WriteContent(question.Content);
-            WriteDefaultAnswer(question.DefaultAnswer);
-            WriteDescription(question.Descriptions);
-            var singleChoice = question as SingleChoiceQuestion;
-            if (singleChoice != null)
+            private const string YesAnswer = "Yes";
+            private const string NoAnswer = "No";
+            private static readonly string[] YesOrNoAnswer = new string[] { YesAnswer, NoAnswer };
+            public YesOrNoQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, YesOrNoAnswer)
             {
-                var options = singleChoice.Options;
-                Console.Write("Choose Answer ({0}): ", string.Join("/", options));
-                Console.Write(singleChoice.DefaultAnswer[0]);
-                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                string matched;
-                do
-                {
-                    var input = Console.ReadLine();
-                    if (string.IsNullOrEmpty(input))
-                    {
-                        question.SetDefault(model);
-                        break;
-                    }
-                    else
-                    {
-                        matched = GetMatchedOption(options, input);
-                        if (matched == null)
-                            Console.Write("Invalid Answer, please reenter: ");
-                        else
-                        {
-                            question.Setter(matched, model);
-                        }
-                    }
-                }
-                while (matched == null);
             }
-            else
+
+            private static bool Converter(string input)
             {
-                var line = Console.ReadLine();
-                if (!string.IsNullOrEmpty(line))
-                {
-                    question.Setter(line, model);
-                }
-                else
-                {
-                    question.SetDefault(model);
-                }
+                return input == YesAnswer;
             }
         }
 
-        private void ProcessMultiQuestion(MultiQuestion question, DefaultConfigModel model)
+        private class SingleChoiceQuestion<T> : Question<T>
         {
-            WriteContent(question.Content);
-            WriteDefaultAnswer(question.DefaultAnswer);
-            WriteDescription(question.Descriptions);
-            var multiAnswer = question as MultiAnswerQuestion;
-            if (multiAnswer != null)
+            private Func<string, T> _converter;
+            /// <summary>
+            /// Options, the first one as the default one
+            /// </summary>
+            public string[] Options { get; set; }
+
+            public SingleChoiceQuestion(string content, Action<T, DefaultConfigModel, QuestionContext> setter, Func<string, T> converter, params string[] options)
+                : base(content, setter)
+            {
+                if (options == null || options.Length == 0) throw new ArgumentNullException(nameof(options));
+                if (converter == null) throw new ArgumentNullException(nameof(converter));
+                _converter = converter;
+                Options = options;
+                DefaultAnswer = options[0];
+                DefaultValue = converter(DefaultAnswer);
+            }
+
+            protected override T GetAnswer()
+            {
+                var options = Options;
+                Console.Write("Choose Answer ({0}): ", string.Join("/", options));
+                Console.Write(DefaultAnswer[0]);
+                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                string matched = null;
+
+                var line = Console.ReadLine();
+                while (!string.IsNullOrEmpty(line))
+                {
+                    matched = GetMatchedOption(options, line);
+                    if (matched == null)
+                    {
+                        Console.Write("Invalid Answer, please reenter: ");
+                    }
+                    else
+                    {
+                        return _converter(matched);
+                    }
+
+                    line = Console.ReadLine();
+                }
+
+                return DefaultValue;
+            }
+
+            private static string GetMatchedOption(string[] options, string input)
+            {
+                return options.FirstOrDefault(s => s.Equals(input, StringComparison.OrdinalIgnoreCase) || s.Substring(0, 1).Equals(input, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
+        private sealed class MultiAnswerQuestion : Question<string[]>
+        {
+            public MultiAnswerQuestion(string content, Action<string[], DefaultConfigModel, QuestionContext> setter, string[] defaultValue = null) 
+                : base(content, setter)
+            {
+                DefaultValue = defaultValue;
+                DefaultAnswer = ConvertToString(defaultValue);
+            }
+
+            protected override string[] GetAnswer()
             {
                 var line = Console.ReadLine();
                 List<string> answers = new List<string>();
@@ -220,167 +301,114 @@ namespace Microsoft.DocAsCode
 
                 if (answers.Count > 0)
                 {
-                    question.Setter(answers.ToArray(), model);
+                    return answers.ToArray();
                 }
                 else
                 {
-                    question.SetDefault(model);
+                    return DefaultValue;
                 }
             }
-        }
 
-        private void WriteDefaultAnswer(params string[] defaultAnswers)
-        {
-            if (defaultAnswers == null || defaultAnswers.Length == 0) return;
-            string defaultAnswerString = string.Join(",", defaultAnswers);
-            " (Default: ".WriteToConsole(ConsoleColor.Gray);
-            defaultAnswerString.WriteToConsole(ConsoleColor.Green);
-            ")".WriteLineToConsole(ConsoleColor.Gray);
-        }
-
-        private void WriteDescription(params string[] description)
-        {
-            description.WriteLinesToConsole(ConsoleColor.Gray);
-        }
-
-        private void WriteContent(string content)
-        {
-            content.WriteToConsole(ConsoleColor.White);
-        }
-
-        private string GetMatchedOption(string[] options, string input)
-        {
-            var matched = options.FirstOrDefault(s => s.Equals(input, StringComparison.OrdinalIgnoreCase));
-            if (matched == null)
+            private static string ConvertToString(string[] array)
             {
-                matched = options.FirstOrDefault(s => s.Substring(0, 1).Equals(input, StringComparison.OrdinalIgnoreCase));
+                if (array == null) return null;
+                return string.Join(",", array);
+            }
+        }
+
+        private sealed class SingleAnswerQuestion : Question<string>
+        {
+            public SingleAnswerQuestion(string content, Action<string, DefaultConfigModel, QuestionContext> setter, string defaultAnswer = null)
+                : base(content, setter)
+            {
+                DefaultValue = defaultAnswer;
+                DefaultAnswer = defaultAnswer;
             }
 
-            return matched;
-        }
-
-        static class Hints
-        {
-            public const string Tab = "Press tab to list possible options.";
-            public const string Enter = "Enter to move to the next question.";
-            public const string Empty = "Enter empty string to move to the next question.";
-            public const string Glob = "You can use glob patterns, eg. src/**/*.cs";
-        }
-
-        enum QuestionType
-        {
-            Choice,
-            SingleLineAnswer,
-            MultiLineAnswer,
-            Container
-        }
-
-        class SingleChoiceQuestion : SingleQuestion
-        {
-            public override QuestionType QuestionType
+            protected override string GetAnswer()
             {
-                get
+                var line = Console.ReadLine();
+                if (!string.IsNullOrEmpty(line))
                 {
-                    return QuestionType.Choice;
+                    return line;
                 }
-            }
-
-            /// <summary>
-            /// Options, the first one as the default one
-            /// </summary>
-            public string[] Options { get; set; }
-
-            public SingleChoiceQuestion(string content, Action<string, DefaultConfigModel> setter, params string[] options) : base(content, setter, options == null || options.Length == 0 ? null : options[0])
-            {
-                Options = options;
-            }
-        }
-
-        class MultiAnswerQuestion : MultiQuestion
-        {
-            public override QuestionType QuestionType
-            {
-                get
+                else
                 {
-                    return QuestionType.MultiLineAnswer;
+                    return DefaultValue;
                 }
             }
-
-            public MultiAnswerQuestion(string content, Action<string[], DefaultConfigModel> setter, string[] defaultAnswer = null) : base(content, setter, defaultAnswer)
-            {
-            }
         }
 
-        class SingleAnswerQuestion : SingleQuestion
+        private abstract class Question<T> : IQuestion
         {
-            public override QuestionType QuestionType
-            {
-                get
-                {
-                    return QuestionType.SingleLineAnswer;
-                }
-            }
+            private Action<T, DefaultConfigModel, QuestionContext> _setter { get; }
 
-
-            public SingleAnswerQuestion(string content, Action<string, DefaultConfigModel> setter, string defaultAnswer = null) : base(content, setter, defaultAnswer)
-            {
-            }
-        }
-
-        abstract class MultiQuestion : Question<string[]>
-        {
-            public MultiQuestion(string content, Action<string[], DefaultConfigModel> setter, string[] defaultValue) : base(content, setter, defaultValue)
-            {
-            }
-        }
-
-        abstract class SingleQuestion : Question<string>
-        {
-
-            public SingleQuestion(string content, Action<string, DefaultConfigModel> setter, string defaultValue) : base(content, setter, defaultValue)
-            {
-            }
-
-        }
-
-        abstract class Question<T> : Question, IQuestion
-        {
-            public Action<T, DefaultConfigModel> Setter { get; private set; }
-
-            public T DefaultAnswer { get; private set; }
-
-            public Question(string content, Action<T, DefaultConfigModel> setter, T defaultValue) : base(content)
-            {
-                this.DefaultAnswer = defaultValue;
-                this.Setter = setter;
-            }
-
-            public void SetDefault(DefaultConfigModel model)
-            {
-                Setter(DefaultAnswer, model);
-            }
-        }
-
-        abstract class Question
-        {
-            public abstract QuestionType QuestionType { get; }
-
-            public string Content { get; private set; }
+            public string Content { get; }
 
             /// <summary>
             /// Each string stands for one line
             /// </summary>
             public string[] Descriptions { get; set; }
 
-            public Question(string content)
+            public T DefaultValue { get; protected set; }
+            public string DefaultAnswer { get; protected set; }
+
+            public Question(string content, Action<T, DefaultConfigModel, QuestionContext> setter)
             {
-                this.Content = content;
+                if (setter == null) throw new ArgumentNullException(nameof(setter));
+                Content = content;
+                _setter = setter;
+            }
+
+            public void Process(DefaultConfigModel model, QuestionContext context)
+            {
+                if (context.Quite)
+                {
+                    _setter(DefaultValue, model, context);
+                }
+                else
+                {
+                    WriteQuestion();
+                    var value = GetAnswer();
+                    _setter(value, model, context);
+                }
+            }
+
+            protected abstract T GetAnswer();
+
+            protected void WriteQuestion()
+            {
+                Content.WriteToConsole(ConsoleColor.White);
+                WriteDefaultAnswer();
+                Descriptions.WriteLinesToConsole(ConsoleColor.Gray);
+            }
+
+            private void WriteDefaultAnswer()
+            {
+                if (DefaultAnswer == null) return;
+                " (Default: ".WriteToConsole(ConsoleColor.Gray);
+                DefaultAnswer.WriteToConsole(ConsoleColor.Green);
+                ")".WriteLineToConsole(ConsoleColor.Gray);
             }
         }
 
-        interface IQuestion
+        private interface IQuestion
         {
-            void SetDefault(DefaultConfigModel model);
+            void Process(DefaultConfigModel model, QuestionContext context);
+        }
+
+        private sealed class QuestionContext
+        {
+            public bool Quite { get; set; }
+            public bool ContainsMetadata { get; set; }
+        }
+
+        private static class Hints
+        {
+            public const string Tab = "Press tab to list possible options.";
+            public const string Enter = "Enter to move to the next question.";
+            public const string Empty = "Enter empty string to move to the next question.";
+            public const string Glob = "You can use glob patterns, eg. src/**";
         }
     }
 }

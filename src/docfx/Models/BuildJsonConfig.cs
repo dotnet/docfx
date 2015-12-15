@@ -15,9 +15,6 @@ namespace Microsoft.DocAsCode
         [JsonIgnore]
         public string OutputFolder { get; set; }
 
-        [JsonProperty("force")]
-        public bool Force { get; set; }
-
         [JsonProperty("content")]
         public FileMapping Content { get; set; }
 
@@ -53,7 +50,10 @@ namespace Microsoft.DocAsCode
         public ListWithStringFallback Themes { get; set; }
 
         [JsonProperty("serve")]
-        public bool Serve { get; set; }
+        public bool? Serve { get; set; }
+
+        [JsonProperty("force")]
+        public bool? Force { get; set; }
 
         [JsonProperty("port")]
         public string Port { get; set; }

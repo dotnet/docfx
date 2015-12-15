@@ -118,8 +118,8 @@ namespace Microsoft.DocAsCode
             var outputFolder = Path.Combine(Config.OutputFolder ?? Config.BaseDirectory ?? string.Empty, configModel.Destination ?? Constants.DefaultMetadataOutputFolderName);
             var inputModel = new ExtractMetadataInputModel
             {
-                PreserveRawInlineComments = configModel.Raw,
-                ForceRebuild = configModel.Force,
+                PreserveRawInlineComments = configModel?.Raw ?? false,
+                ForceRebuild = configModel?.Force ?? false,
                 ApiFolderName = string.Empty,
             };
 

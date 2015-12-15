@@ -45,12 +45,12 @@ namespace Microsoft.DocAsCode
 
         private static GlobMatcherOptions GetMatchOptionsFromItem(FileMappingItem item)
         {
-            GlobMatcherOptions options = item.CaseSensitive ? GlobMatcherOptions.None : GlobMatcherOptions.IgnoreCase;
-            if (item.AllowDotMatch) options |= GlobMatcherOptions.AllowDotMatch;
-            if (!item.DisableEscape) options |= GlobMatcherOptions.AllowEscape;
-            if (!item.DisableExpand) options |= GlobMatcherOptions.AllowExpand;
-            if (!item.DisableGlobStar) options |= GlobMatcherOptions.AllowGlobStar;
-            if (!item.DisableNegate) options |= GlobMatcherOptions.AllowNegate;
+            GlobMatcherOptions options = item?.CaseSensitive ?? false ? GlobMatcherOptions.None : GlobMatcherOptions.IgnoreCase;
+            if (item?.AllowDotMatch ?? false) options |= GlobMatcherOptions.AllowDotMatch;
+            if (!(item?.DisableEscape ?? false)) options |= GlobMatcherOptions.AllowEscape;
+            if (!(item?.DisableExpand ?? false)) options |= GlobMatcherOptions.AllowExpand;
+            if (!(item?.DisableGlobStar ?? false)) options |= GlobMatcherOptions.AllowGlobStar;
+            if (!(item?.DisableNegate ?? false)) options |= GlobMatcherOptions.AllowNegate;
             return options;
         }
     }

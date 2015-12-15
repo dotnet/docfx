@@ -93,7 +93,7 @@ namespace Microsoft.DocAsCode
 
             // TODO: SEARCH DATA
 
-            if (config.Serve)
+            if (config?.Serve ?? false)
             {
                 ServeCommand.Serve(outputFolder, config.Port);
             }
