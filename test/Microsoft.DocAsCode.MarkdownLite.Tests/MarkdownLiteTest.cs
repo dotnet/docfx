@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
     using System;
 
@@ -263,7 +263,7 @@ c
 <li>Second</li>
 </ol>
 ")]
-        public void Parse(string source, string expected)
+        public void TestGfmInGeneral(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
             var engine = builder.CreateEngine(new MarkdownRenderer());
@@ -273,7 +273,7 @@ c
 
         [Fact]
         [Trait("Related", "Markdown")]
-        public void ParseWithRewrite()
+        public void TestGfmWithRewrite()
         {
             const string source = @"
 Heading

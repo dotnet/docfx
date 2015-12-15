@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Utility.Tests
 {
     using System;
     using Xunit;
@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     public class RelativePathTest
     {
         [Fact]
-        public void TestRelativePath_Basic()
+        public void TestRelativePathWithBasicScenarios()
         {
             {
                 var s = "../a/b.txt";
@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         [InlineData("", "../a/b.txt", "../a/")]
         [InlineData("../", "a/", "")]
         [InlineData("", "", "")]
-        public void TestRelativePath_BasedOn(string thisPath, string basedOnPath, string expected)
+        public void TestRelativePathBasedOn(string thisPath, string basedOnPath, string expected)
         {
             var actual = ((RelativePath)thisPath).BasedOn((RelativePath)basedOnPath);
             Assert.NotNull(actual);
@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         [InlineData("", "a/b.txt", "../")]
         [InlineData("a/", "a/", "")]
         [InlineData("", "", "")]
-        public void TestRelativePath_MakeRelativeTo(string thisPath, string relativeToPath, string expected)
+        public void TestRelativePathMakeRelativeTo(string thisPath, string relativeToPath, string expected)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         }
 
         [Fact]
-        public void TestRelativePath_Operator_Add()
+        public void TestRelativePathOperatorAdd()
         {
             // a/b/c/ + d/e.txt = a/b/c/d/e.txt
             {
@@ -211,7 +211,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         }
 
         [Fact]
-        public void TestRelativePath_Operator_Sub()
+        public void TestRelativePathOperatorSub()
         {
             // a/b/c.txt - d/e.txt = ../a/b/c.txt
             {
@@ -298,7 +298,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         }
 
         [Fact]
-        public void TestRelativePath_Rebase()
+        public void TestRelativePathRebase()
         {
             // a/b/c.txt rebase from x/y.txt to d/e.txt = ../x/a/b/c.txt
             {

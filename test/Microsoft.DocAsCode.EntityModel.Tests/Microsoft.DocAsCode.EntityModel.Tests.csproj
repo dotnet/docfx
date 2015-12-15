@@ -90,15 +90,12 @@
   <ItemGroup>
     <Compile Include="ExtractSearchDataTest.cs" />
     <Compile Include="DocfxFlavoredMarkdownTest.cs" />
-    <Compile Include="MarkdownLiteTest.cs" />
     <Compile Include="MarkdownReaderTest.cs" />
-    <Compile Include="ReflectionEntityMergerTest.cs" />
     <Compile Include="TemplateManagerUnitTest.cs" />
     <Compile Include="ParsersUnitTest.cs" />
     <Compile Include="ConvertToViewModelUnitTest.cs" />
     <Compile Include="GenerateMetadataFromVBUnitTest.cs" />
     <Compile Include="GenerateMetadataFromCSUnitTest.cs" />
-    <Compile Include="RelativePathTest.cs" />
     <Compile Include="DocumentBuilderTest.cs" />
     <Compile Include="WordCounterUnitTest.cs" />
     <Compile Include="TestLoggerListener.cs" />

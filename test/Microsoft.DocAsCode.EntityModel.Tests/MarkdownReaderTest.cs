@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     public class MarkdownReaderTest
     {
         [Fact]
-        public void TestMarkdownReader_ReadMarkdownAsOverride()
+        public void TestReadMarkdownAsOverride()
         {
             const string Content = @"---
 uid: Test

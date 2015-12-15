@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.BackEnd.Tests
+namespace Microsoft.DocAsCode.EntityModel.Tests
 {
     using DocAsCode.EntityModel;
     using Microsoft.CodeAnalysis;
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.BackEnd.Tests
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Class()
+        public void TestGenereateMetadataWithClass()
         {
             string code = @"
 Imports System.Collections.Generic
@@ -80,7 +80,7 @@ End Namespace
         }
 
         [Fact]
-        public void TestGenereateMetadata_Enum()
+        public void TestGenereateMetadataWithEnum()
         {
             string code = @"
 Namespace Test1
@@ -122,7 +122,7 @@ End Namespace
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Interface()
+        public void TestGenereateMetadataWithInterface()
         {
             string code = @"
 Namespace Test1
@@ -166,7 +166,7 @@ End Namespace
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Structure()
+        public void TestGenereateMetadataWithStructure()
         {
             string code = @"
 Namespace Test1
@@ -214,7 +214,7 @@ End Namespace
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Delegate()
+        public void TestGenereateMetadataWithDelegate()
         {
             string code = @"
 Namespace Test1
@@ -254,7 +254,7 @@ End Namespace
         [Trait("Related", "Generic")]
         [Trait("Related", "Inheritance")]
         [Fact]
-        public void TestGenereateMetadata_Method()
+        public void TestGenereateMetadataWithMethod()
         {
             string code = @"
 Namespace Test1
@@ -410,7 +410,7 @@ End Namespace
         }
 
         [Fact]
-        public void TestGenereateMetadata_Operator()
+        public void TestGenereateMetadataWithOperator()
         {
             string code = @"
 Namespace Test1
@@ -684,7 +684,7 @@ End Namespace
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Constructor()
+        public void TestGenereateMetadataWithConstructor()
         {
             string code = @"
 Namespace Test1
@@ -734,7 +734,7 @@ End Namespace
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Field()
+        public void TestGenereateMetadataWithField()
         {
             string code = @"
 Namespace Test1
@@ -822,7 +822,7 @@ End Namespace
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Event()
+        public void TestGenereateMetadataWithEvent()
         {
             string code = @"
 Imports System
@@ -883,7 +883,7 @@ End Namespace
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Property()
+        public void TestGenereateMetadataWithProperty()
         {
             string code = @"
 Namespace Test1
@@ -1042,7 +1042,7 @@ End Namespace
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Index()
+        public void TestGenereateMetadataWithIndex()
         {
             string code = @"
 Imports System
@@ -1215,7 +1215,7 @@ End Namespace
         [Trait("Related", "Generic")]
         [Trait("Related", "Multilanguage")]
         [Fact]
-        public void TestGenereateMetadataAsync_Multilanguage()
+        public void TestGenereateMetadataAsyncWithMultilanguage()
         {
             string code = @"
 Namespace Test1

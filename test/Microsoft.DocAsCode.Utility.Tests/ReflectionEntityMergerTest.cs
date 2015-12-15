@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Utility.Tests
 {
     using System.Collections.Generic;
     using Xunit;
@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     public class ReflectionEntityMergerTest
     {
         [Fact]
-        public void TestReflectionEntityMerger_Basic()
+        public void TestReflectionEntityMergerWithBasicScenarios()
         {
             var sample = new BasicSample
             {
@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         }
 
         [Fact]
-        public void TestReflectionEntityMerger_MergeNullOrDefault()
+        public void TestReflectionEntityMergerWhenMergeNullOrDefault()
         {
             var sample = new MergeOptionSample
             {
@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         }
 
         [Fact]
-        public void TestReflectionEntityMerger_MergeListWithKey()
+        public void TestReflectionEntityMergerWhenMergeListWithKey()
         {
             var sample = new List<ListItemSample>
             {

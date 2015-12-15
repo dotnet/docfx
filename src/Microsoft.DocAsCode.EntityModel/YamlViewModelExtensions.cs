@@ -3,86 +3,9 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
 
-    public static class TreeIterator
-    {
-        public static async Task PreorderAsync<T>(T current, T parent, Func<T, IEnumerable<T>> childrenGetter, Func<T, T, Task<bool>> action)
-        {
-            if (current == null || action == null)
-            {
-                return;
-            }
-
-            if (!await action(current, parent))
-            {
-                return;
-            }
-
-            if (childrenGetter == null)
-            {
-                return;
-            }
-
-            var children = childrenGetter(current);
-            if (children != null)
-            {
-                foreach (var child in children)
-                {
-                    await PreorderAsync(child, current, childrenGetter, action);
-                }
-            }
-        }
-
-        public static void Preorder<T>(T current, T parent, Func<T, IEnumerable<T>> childrenGetter, Func<T, T, bool> action)
-        {
-            if (current == null || action == null)
-            {
-                return;
-            }
-
-            if (!action(current, parent))
-            {
-                return;
-            }
-
-            if (childrenGetter == null)
-            {
-                return;
-            }
-
-            var children = childrenGetter(current);
-            if (children != null)
-            {
-                foreach (var child in children)
-                {
-                    Preorder(child, current, childrenGetter, action);
-                }
-            }
-        }
-
-        public static T PreorderFirstOrDefault<T>(T current, Func<T, IEnumerable<T>> childrenGetter, Func<T, bool> predicate)
-        {
-            if (predicate(current)) return current;
-            if (childrenGetter == null) return default(T);
-            var children = childrenGetter(current);
-            if (children == null) return default(T);
-            foreach(var child in children)
-            {
-                var result = PreorderFirstOrDefault(child, childrenGetter, predicate);
-                if (!object.Equals(result, default(T)))
-                {
-                    return result;
-                }
-            }
-
-            return default(T);
-        }
-    }
-
-    public static class YamlViewModelExtension
+    public static class YamlViewModelExtensions
     {
         public static bool IsPageLevel(this MemberType type)
         {
@@ -99,16 +22,6 @@ namespace Microsoft.DocAsCode.EntityModel
             return type == MemberType.Class || type == MemberType.Enum || type == MemberType.Delegate || type == MemberType.Interface || type == MemberType.Struct;
         }
 
-        public static MetadataItem Shrink(this MetadataItem item)
-        {
-            MetadataItem shrinkedItem = new MetadataItem();
-            shrinkedItem.Name = item.Name;
-
-            shrinkedItem.Summary = item.Summary;
-            shrinkedItem.Type = item.Type;
-            shrinkedItem.Href = item.Href;
-            return shrinkedItem;
-        }
         public static MetadataItem ShrinkToSimpleToc(this MetadataItem item)
         {
             MetadataItem shrinkedItem = new MetadataItem();

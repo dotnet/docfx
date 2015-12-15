@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System.Threading.Tasks;
-
     using Microsoft.DocAsCode.Utility;
 
     public class BuildToc : IResolverPipeline

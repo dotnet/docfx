@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.BackEnd.Tests
+namespace Microsoft.DocAsCode.EntityModel.Tests
 {
     using DocAsCode.EntityModel;
     using Microsoft.CodeAnalysis;
@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.BackEnd.Tests
         private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();
 
         [Fact]
-        public void TestGenereateMetadataAsync_FuncVoidReturn()
+        public void TestGenereateMetadataAsyncWithFuncVoidReturn()
         {
             string code = @"
 namespace Test1
@@ -53,7 +53,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadataAsync_Namespace()
+        public void TestGenereateMetadataAsyncWithNamespace()
         {
             string code = @"
 namespace Test1.Test2
@@ -75,7 +75,7 @@ namespace Test1.Test2
         [Trait("Related", "Reference")]
         [Trait("Related", "TripleSlashComments")]
         [Fact]
-        public void TestGenereateMetadata_GenericClass()
+        public void TestGenereateMetadataWithGenericClass()
         {
             string code = @"
 using System.Collections.Generic
@@ -224,7 +224,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_Interface()
+        public void TestGenereateMetadataWithInterface()
         {
             string code = @"
 namespace Test1
@@ -278,7 +278,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_Interface_Inherits()
+        public void TestGenereateMetadataWithInterfaceAndInherits()
         {
             string code = @"
 namespace Test1
@@ -314,7 +314,7 @@ namespace Test1
         [Trait("Related", "Inheritance")]
         [Trait("Related", "Reference")]
         [Fact]
-        public void TestGenereateMetadata_Class_Inherits()
+        public void TestGenereateMetadataWithClassAndInherits()
         {
             string code = @"
 namespace Test1
@@ -450,7 +450,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_Enum()
+        public void TestGenereateMetadataWithEnum()
         {
             string code = @"
 namespace Test1
@@ -490,7 +490,7 @@ namespace Test1
 
         [Trait("Related", "Inheritance")]
         [Fact]
-        public void TestGenereateMetadata_Struct()
+        public void TestGenereateMetadataWithStruct()
         {
             string code = @"
 using System.Collections
@@ -545,7 +545,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Delegate()
+        public void TestGenereateMetadataWithDelegate()
         {
             string code = @"
 using System.Collections.Generic
@@ -605,7 +605,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Method()
+        public void TestGenereateMetadataWithMethod()
         {
             string code = @"
 using System.Threading.Tasks
@@ -724,7 +724,7 @@ namespace Test1
         [Trait("Related", "Generic")]
         [Trait("Related", "EII")]
         [Fact]
-        public void TestGenereateMetadata_Eii()
+        public void TestGenereateMetadataWithEii()
         {
             string code = @"
 using System.Collections.Generic
@@ -845,7 +845,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_Operator()
+        public void TestGenereateMetadataWithOperator()
         {
             string code = @"
 using System.Collections.Generic
@@ -1104,7 +1104,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Constructor()
+        public void TestGenereateMetadataWithConstructor()
         {
             string code = @"
 namespace Test1
@@ -1169,7 +1169,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Field()
+        public void TestGenereateMetadataWithField()
         {
             string code = @"
 namespace Test1
@@ -1260,7 +1260,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_CSharp_Event()
+        public void TestGenereateMetadataWithCSharpCodeAndEvent()
         {
             string code = @"
 using System;
@@ -1366,7 +1366,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Property()
+        public void TestGenereateMetadataWithProperty()
         {
             string code = @"
 namespace Test1
@@ -1539,7 +1539,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadata_Indexer()
+        public void TestGenereateMetadataWithIndexer()
         {
             string code = @"
 using System;
@@ -1715,7 +1715,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadata_Method_DefaultValue()
+        public void TestGenereateMetadataWithMethodUsingDefaultValue()
         {
             string code = @"
 namespace Test1
@@ -1744,7 +1744,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadataAsync_AssemblyInfo_CrossReference()
+        public void TestGenereateMetadataAsyncWithAssemblyInfoAndCrossReference()
         {
             string referenceCode = @"
 namespace Test1
@@ -1796,7 +1796,7 @@ namespace Test1
         [Fact]
         [Trait("Related", "Multilanguage")]
         [Trait("Related", "Generic")]
-        public void TestGenereateMetadataAsync_Multilanguage()
+        public void TestGenereateMetadataAsyncWithMultilanguage()
         {
             string code = @"
 namespace Test1
@@ -1859,7 +1859,7 @@ namespace Test1
         [Fact]
         [Trait("Related", "Generic")]
         [Trait("Related", "Inheritance")]
-        public void TestGenereateMetadataAsync_GenericInheritance()
+        public void TestGenereateMetadataAsyncWithGenericInheritance()
         {
             string code = @"
 using System.Collections.Generic;
@@ -1903,7 +1903,7 @@ namespace Test1
         [Trait("Related", "Dynamic")]
         [Trait("Related", "Multilanguage")]
         [Fact]
-        public void TestGenereateMetadata_Dynamic()
+        public void TestGenereateMetadataWithDynamic()
         {
             string code = @"
 namespace Test1
@@ -1974,7 +1974,7 @@ namespace Test1
 
         [Fact]
         [Trait("Related", "Generic")]
-        public void TestGenereateMetadataAsync_NestedGeneric()
+        public void TestGenereateMetadataAsyncWithNestedGeneric()
         {
             string code = @"
 using System.Collections.Generic;
