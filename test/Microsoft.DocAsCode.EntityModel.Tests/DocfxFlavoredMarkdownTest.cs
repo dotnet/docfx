@@ -370,7 +370,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
     using System.Collections.Generic;
     using System.IO;
 </code></pre>")]
-        [InlineData(@"[!code[Main](Program.cs#L5-L9 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">    using System.Collections.Generic;
+        [InlineData(@"[!code[Main](Program.cs?start=5&end=9 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">    using System.Collections.Generic;
     using System.IO;
     // &lt;/namespace&gt;
 
