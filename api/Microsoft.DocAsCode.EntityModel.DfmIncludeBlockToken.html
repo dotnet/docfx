@@ -61,7 +61,7 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L146" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L151" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken">Class DfmIncludeBlockToken</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
@@ -79,14 +79,14 @@
               <h3 id="constructors">Constructors</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L155">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L161">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_System_String_System_String_System_String_System_String_">DfmIncludeBlockToken(IMarkdownRule, String, String, String, String)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_String_System_String_">DfmIncludeBlockToken(IMarkdownRule, IMarkdownContext, String, String, String, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public DfmIncludeBlockToken(IMarkdownRule rule, string src, string name, string title, string raw)</code></pre>
+                <pre><code class="lang-csharp hljs">public DfmIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -101,6 +101,11 @@
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRule">IMarkdownRule</a></td>
                     <td><em>rule</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td><em>context</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -128,7 +133,33 @@
               <h3 id="properties">Properties</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L150">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L154">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken_Context">Context</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IMarkdownContext Context { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L156">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken_Name">Name</h4>
               <div class="markdown level1 summary"></div>
@@ -154,7 +185,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L152">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L158">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken_Raw">Raw</h4>
               <div class="markdown level1 summary"></div>
@@ -180,7 +211,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L153">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L159">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken_RawMarkdown">RawMarkdown</h4>
               <div class="markdown level1 summary"></div>
@@ -206,7 +237,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L148">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L153">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken_Rule">Rule</h4>
               <div class="markdown level1 summary"></div>
@@ -232,7 +263,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L149">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L155">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken_Src">Src</h4>
               <div class="markdown level1 summary"></div>
@@ -258,7 +289,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L151">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L157">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_DfmIncludeBlockToken_Title">Title</h4>
               <div class="markdown level1 summary"></div>
