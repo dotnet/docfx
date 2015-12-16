@@ -22,11 +22,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var capStr = Regexes.Lexers.LeadingWhiteSpaces.Replace(match.Value, string.Empty);
             if (engine.Options.Pedantic)
             {
-                return new MarkdownCodeBlockToken(this, capStr);
+                return new MarkdownCodeBlockToken(this, engine.Context, capStr);
             }
             else
             {
-                return new MarkdownCodeBlockToken(this, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty));
+                return new MarkdownCodeBlockToken(this, engine.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty));
             }
         }
     }

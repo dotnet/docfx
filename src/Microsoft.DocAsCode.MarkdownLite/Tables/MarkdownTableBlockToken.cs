@@ -5,15 +5,18 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownTableBlockToken : IMarkdownToken
     {
-        public MarkdownTableBlockToken(IMarkdownRule rule, string[] header, Align[] align, string[][] cells)
+        public MarkdownTableBlockToken(IMarkdownRule rule, IMarkdownContext context, string[] header, Align[] align, string[][] cells)
         {
             Rule = rule;
+            Context = context;
             Header = header;
             Align = align;
             Cells = cells;
         }
 
         public IMarkdownRule Rule { get; }
+
+        public IMarkdownContext Context { get; }
 
         public string[] Header { get; }
 

@@ -3,18 +3,26 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Immutable;
+
     public class MarkdownHeadingBlockToken : IMarkdownToken
     {
-        public MarkdownHeadingBlockToken(IMarkdownRule rule, string content, int depth)
+        public MarkdownHeadingBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, string id, int depth)
         {
             Rule = rule;
+            Context = context;
             Content = content;
+            Id = id;
             Depth = depth;
         }
 
         public IMarkdownRule Rule { get; }
 
-        public string Content { get; }
+        public IMarkdownContext Context { get; }
+
+        public ImmutableArray<IMarkdownToken> Content { get; }
+
+        public string Id { get; }
 
         public int Depth { get; }
 

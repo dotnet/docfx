@@ -18,6 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Align.cs" />
+    <Compile Include="Basic\MarkdownRawToken.cs" />
     <Compile Include="Contexts\MarkdownInlineContext.cs" />
     <Compile Include="GfmEngineBuilder.cs" />
     <Compile Include="Gfm\GfmDelInlineRule.cs" />

@@ -3,24 +3,28 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Immutable;
+
     public class MarkdownLinkInlineToken : IMarkdownToken
     {
-        public MarkdownLinkInlineToken(IMarkdownRule rule, string href, string title, string text, bool shouldApplyInlineRule = false)
+        public MarkdownLinkInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, ImmutableArray<IMarkdownToken> content)
         {
             Rule = rule;
+            Context = context;
             Href = href;
             Title = title;
-            Text = text;
-            ShouldApplyInlineRule = shouldApplyInlineRule;
+            Content = content;
         }
 
         public IMarkdownRule Rule { get; }
+
+        public IMarkdownContext Context { get; }
 
         public string Href { get; }
 
         public string Title { get; }
 
-        public string Text { get; }
+        public ImmutableArray<IMarkdownToken> Content { get; }
 
         public bool ShouldApplyInlineRule { get; set; }
 

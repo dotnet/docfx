@@ -5,12 +5,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownHrBlockToken : IMarkdownToken
     {
-        public MarkdownHrBlockToken(IMarkdownRule rule)
+        public MarkdownHrBlockToken(IMarkdownRule rule, IMarkdownContext context)
         {
             Rule = rule;
+            Context = context;
         }
 
         public IMarkdownRule Rule { get; }
+
+        public IMarkdownContext Context { get; }
 
         public string RawMarkdown { get; set; }
     }

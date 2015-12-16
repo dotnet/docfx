@@ -3,9 +3,9 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    public class MarkdownTagInlineToken : IMarkdownToken
+    public class MarkdownRawToken : IMarkdownToken
     {
-        public MarkdownTagInlineToken(IMarkdownRule rule, IMarkdownContext context, string rawMarkdown)
+        public MarkdownRawToken(IMarkdownRule rule, IMarkdownContext context, string rawMarkdown)
         {
             Rule = rule;
             Context = context;

@@ -7,13 +7,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownBlockquoteBlockToken : IMarkdownToken
     {
-        public MarkdownBlockquoteBlockToken(IMarkdownRule rule, ImmutableArray<IMarkdownToken> tokens)
+        public MarkdownBlockquoteBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens)
         {
             Rule = rule;
+            Context = context;
             Tokens = tokens;
         }
 
         public IMarkdownRule Rule { get; }
+
+        public IMarkdownContext Context { get; }
 
         public ImmutableArray<IMarkdownToken> Tokens { get; }
 

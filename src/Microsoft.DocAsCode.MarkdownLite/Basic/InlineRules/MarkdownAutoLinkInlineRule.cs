@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
+    using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
     public class MarkdownAutoLinkInlineRule : IMarkdownRule
@@ -37,7 +38,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 href = text;
             }
 
-            return new MarkdownLinkInlineToken(this, href, null, text);
+            return new MarkdownLinkInlineToken(
+                this, 
+                engine.Context, 
+                href, 
+                null, 
+                ImmutableArray<IMarkdownToken>.Empty.Add(
+                    new MarkdownRawToken(this, engine.Context, text)));
         }
 
         private StringBuffer Mangle(bool enableMangle, string text)

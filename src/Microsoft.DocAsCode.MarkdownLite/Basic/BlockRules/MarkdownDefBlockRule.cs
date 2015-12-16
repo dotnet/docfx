@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 Href = match.Groups[2].Value,
                 Title = match.Groups[3].Value
             };
-            return new MarkdownIgnoreToken(this);
+            return new MarkdownIgnoreToken(this, engine.Context);
         }
     }
 }
