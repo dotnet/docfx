@@ -86,8 +86,9 @@ There are two types of file inclusion: inline one and block one, as similar to i
 <pre><code>...Other inline contents... [!include[&lt;title&gt;](&lt;filepath&gt;)]
 </code></pre><h4 id="block">Block</h4>
 <p>Block file inclusion must be in a single line and with no prefix characters before the start <code>[</code>. Content inside the included file will be transformed using DFM syntax.</p>
-<pre><code>[!include[&lt;title&gt;](&lt;filepath&gt;)]
-</code></pre><h3 id="section-definition">Section definition</h3>
+<pre><code class="lang-md">[!include[&lt;title&gt;](&lt;filepath&gt;)]
+</code></pre>
+<h3 id="section-definition">Section definition</h3>
 <p>User may need to define section. Mostly used for code table. Give an example below. The attributes you write in BEGINSECTION comments will be the div tag&#39;s attributes. Currently we only allow 3 attributes, namely class, id, data-resources</p>
 <pre><code>&lt;!-- BEGINSECTION class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot; --&gt;
 ```cs-i
@@ -111,10 +112,42 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
 &lt;!-- ENDSECTION --&gt;
 </code></pre><h3 id="code-snippet">CODE SNIPPET</h3>
 <p>Allow you to insert code with code language specified. The content of specified code path will be expanded.</p>
-<pre><code>[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt; &quot;&lt;title&gt;&quot;)]
-</code></pre><h3 id="note-warning-tip-important-">Note(Warning/Tip/Important)</h3>
+<pre><code class="lang-md">[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt;&lt;queryoption&gt;&lt;queryoptionvalue&gt; &quot;&lt;title&gt;&quot;)]
+</code></pre>
+<ul>
+<li><strong><code>&lt;language&gt;</code></strong> can be made up of any number of character and &#39;-&#39;. However, the recommend value should follow <a href="http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases">Highlight.js language names and aliases</a>.</li>
+<li><strong><code>&lt;codepath&gt;</code></strong> is the relative path in file system which indicates the code snippet file that you want to expand.</li>
+<li><strong><code>&lt;queryoption&gt;</code></strong> and <strong><code>&lt;queryoptionvalue&gt;</code></strong> are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these 2 ways:<ul>
+<li><strong><code>#</code></strong>: <em><code>#L{startlinenumber}-L{endlinenumber}</code></em> (line range) or <em><code>#L{tagname}</code></em> (tag name)</li>
+<li><strong><code>?</code></strong>: <em><code>?start={startlinenumber}&amp;end={endlinenumber}</code></em> (line range) or <em><code>?{name}={tagname}</code></em> (tag name)</li>
+</ul>
+</li>
+<li><strong><code>&lt;title&gt;</code></strong> can be omitted.</li>
+</ul>
+<h4 id="code-snippet-sample">Code Snippet Sample</h4>
+<pre><code class="lang-md">[!code-csharp[Main](Program.cs)]
+
+[!code[Main](Program.cs#L12-L16 &quot;This is source file&quot;)]
+[!code-vb[Main](../Application/Program.vb#testsnippet &quot;This is source file&quot;)]
+
+[!code[Main](index.xml?start=5&amp;end=9)]
+[!code-javascript[Main](../jquery.js?name=testsnippet)]
+</code></pre>
+<h4 id="tag-name-representation-in-code-snippet-source-file">Tag Name Representation in Code Snippet Source File</h4>
+<p>DFM currently only supports following <strong><code>&lt;language&gt;</code></strong> values to be able to retrieve by tag name:</p>
+<ul>
+<li>C#: cs, csharp</li>
+<li>VB: vb, vbnet</li>
+<li>C++: cpp, c++</li>
+<li>F#: fsharp</li>
+<li>XML: xml</li>
+<li>Html: html</li>
+<li>SQL: sql</li>
+<li>Javascript: javascript</li>
+</ul>
+<h3 id="note-warning-tip-important-">Note(Warning/Tip/Important)</h3>
 <p>Using specific syntax at the beginning of block quote to indicate the following content is Note.</p>
-<pre><code>The following text is a note types in block quote
+<pre><code class="lang-md">The following text is a note types in block quote
 
 &gt; [!NOTE]
 &gt; &lt;notecontent&gt;
@@ -123,6 +156,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
 
 This line is not inside the note
 </code></pre>
+
             </article>
           </div>
           
