@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
+    using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
     public class GfmUrlInlineRule : IMarkdownRule
@@ -12,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Url => Regexes.Inline.Gfm.Url;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             if ((bool)engine.Context.Variables[MarkdownInlineContext.IsInLink])
             {
@@ -30,7 +31,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
 
             source = source.Substring(match.Length);
-            return new MarkdownLinkInlineToken(this, text, null, text);
+            return new MarkdownLinkInlineToken(
+                this,
+                engine.Context,
+                text,
+                null,
+                ImmutableArray<IMarkdownToken>.Empty.Add(
+                    new MarkdownRawToken(this, engine.Context, text)));
         }
     }
 }

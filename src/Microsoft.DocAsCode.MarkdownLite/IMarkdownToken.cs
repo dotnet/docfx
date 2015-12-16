@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         IMarkdownRule Rule { get; }
 
+        IMarkdownContext Context { get; }
+
         string RawMarkdown { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public Regex _dfmNoteRegex = new Regex(@"^(?<rawmarkdown>\s*\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\]\s*(\n|$))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             if (!engine.Context.Variables.ContainsKey(MarkdownBlockContext.IsBlockQuote) || !(bool)engine.Context.Variables[MarkdownBlockContext.IsBlockQuote])
             {
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 return null;
             }
             source = source.Substring(match.Length);
-            return new DfmNoteBlockToken(this, match.Groups["notetype"].Value, match.Groups["rawmarkdown"].Value);
+            return new DfmNoteBlockToken(this, engine.Context, match.Groups["notetype"].Value, match.Groups["rawmarkdown"].Value);
         }
     }
 }

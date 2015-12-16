@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private static readonly Regex _incRegex = new Regex($"{DocfxFlavoredIncHelper.InlineIncRegexString}\\s*(\\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public string Name => "INCLUDE";
         public virtual Regex Include => _incRegex;
-        public IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Include.Match(source);
             if (match.Length == 0)
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var value = match.Groups[1].Value;
             var title = match.Groups[4].Value;
 
-            return new DfmIncludeBlockToken(this, path, value, title, match.Groups[0].Value);
+            return new DfmIncludeBlockToken(this, engine.Context, path, value, title, match.Groups[0].Value);
         }
     }
 
@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public static readonly Regex _yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline);
         public string Name => "YamlHeader";
         public virtual Regex YamlHeader => _yamlHeaderRegex;
-        public IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = YamlHeader.Match(source);
             if (match.Length == 0)
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 return null;
             }
 
-            return new DfmYamlHeaderBlockToken(this, value);
+            return new DfmYamlHeaderBlockToken(this, engine.Context, value);
         }
     }
 }

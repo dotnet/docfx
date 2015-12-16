@@ -7,9 +7,10 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmFencesBlockToken : IMarkdownToken
     {
-        public DfmFencesBlockToken(IMarkdownRule rule, string name, string path, string lang = null, string title = null, DfmFencesBlockPathQueryOption pathQueryOption = null)
+        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, string lang = null, string title = null, DfmFencesBlockPathQueryOption pathQueryOption = null)
         {
             Rule = rule;
+            Context = context;
             Path = path;
             Lang = lang;
             Name = name;
@@ -18,6 +19,8 @@ namespace Microsoft.DocAsCode.EntityModel
         }
 
         public IMarkdownRule Rule { get; }
+
+        public IMarkdownContext Context { get; }
 
         public string Path { get; }
 

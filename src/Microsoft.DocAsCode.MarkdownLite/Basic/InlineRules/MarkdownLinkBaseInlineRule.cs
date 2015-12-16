@@ -7,19 +7,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         public abstract string Name { get; }
 
-        public abstract IMarkdownToken TryMatch(MarkdownEngine engine, ref string source);
+        public abstract IMarkdownToken TryMatch(MarkdownParser engine, ref string source);
 
-        protected virtual IMarkdownToken GenerateToken(string href, string title, string text, bool isImage)
+        protected virtual IMarkdownToken GenerateToken(MarkdownParser engine, string href, string title, string text, bool isImage)
         {
             var escapedHref = StringHelper.Escape(href);
             var escapedTitle = !string.IsNullOrEmpty(title) ? StringHelper.Escape(title) : null;
             if (isImage)
             {
-                return new MarkdownImageInlineToken(this, escapedHref, escapedTitle, text);
+                return new MarkdownImageInlineToken(this, engine.Context, escapedHref, escapedTitle, text);
             }
             else
             {
-                return new MarkdownLinkInlineToken(this, escapedHref, escapedTitle, text, true);
+                return new MarkdownLinkInlineToken(this, engine.Context, escapedHref, escapedTitle, engine.Tokenize(text));
             }
         }
     }

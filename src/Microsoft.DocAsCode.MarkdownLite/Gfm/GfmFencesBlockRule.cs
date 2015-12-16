@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Fences => Regexes.Block.Gfm.Fences;
 
-        public IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Fences.Match(source);
             if (match.Length == 0)
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            return new MarkdownCodeBlockToken(this, match.Groups[3].Value, match.Groups[2].Value);
+            return new MarkdownCodeBlockToken(this, engine.Context, match.Groups[3].Value, match.Groups[2].Value);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         public override string Name => "DfmBlockquote";
 
-        public override IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public override IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Blockquote.Match(source);
             if (match.Length == 0)
@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var c = engine.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
             var tokens = engine.Tokenize(capStr);
             engine.SwitchContext(c);
-            return new DfmBlockquoteBlockToken(this, tokens);
+            return new DfmBlockquoteBlockToken(this, engine.Context, tokens);
         }
     }
 }

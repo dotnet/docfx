@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Def => Regexes.Block.Def;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             if (!(bool)engine.Context.Variables[MarkdownBlockContext.IsTop])
             {
@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 Href = match.Groups[2].Value,
                 Title = match.Groups[3].Value
             };
-            return new MarkdownIgnoreToken(this);
+            return new MarkdownIgnoreToken(this, engine.Context);
         }
     }
 }

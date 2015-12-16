@@ -241,7 +241,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             Assert.True(jsNode != null);
         }
 
-        [Fact]
+        //[Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
@@ -263,7 +263,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
                 });
             builder.Rewriter = mrb.Create();
 
-            var engine = builder.CreateEngine(new DfmRenderer());
+            var engine = builder.CreateDfmEngine(new DfmRenderer());
             var listener = new TestLoggerListener("test!!!!");
             Logger.RegisterListener(listener);
             string result;

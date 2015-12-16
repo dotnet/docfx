@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public int MaxLoopCount { get; }
 
-        public IMarkdownToken Rewrite(MarkdownEngine engine, IMarkdownToken token)
+        public IMarkdownToken Rewrite(MarkdownParser engine, IMarkdownToken token)
         {
             IMarkdownToken lastToken;
             IMarkdownToken newToken = token;

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Immutable;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -12,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Table => Regexes.Block.Tables.Table;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Table.Match(source);
             if (match.Length == 0)
@@ -29,7 +30,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
                   .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
                   .SplitRegex(Regexes.Lexers.TableSplitter);
             }
-            return new MarkdownTableBlockToken(this, header, align, cells);
+            return new MarkdownTableBlockToken(
+                this,
+                engine.Context,
+                (from text in header
+                 select engine.TokenizeInline(text)).ToImmutableArray(),
+                align.ToImmutableArray(),
+                (from row in cells
+                 select (from col in row
+                         select engine.TokenizeInline(col)).ToImmutableArray()).ToImmutableArray());
         }
 
         protected virtual Align[] ParseAligns(string[] aligns)

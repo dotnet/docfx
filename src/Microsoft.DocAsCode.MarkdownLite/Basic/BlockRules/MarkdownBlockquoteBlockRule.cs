@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex LeadingBlockquote => Regexes.Lexers.LeadingBlockquote;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Blockquote.Match(source);
             if (match.Length == 0)
@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
             var capStr = LeadingBlockquote.Replace(match.Value, string.Empty);
-            return new MarkdownBlockquoteBlockToken(this, engine.Tokenize(capStr));
+            return new MarkdownBlockquoteBlockToken(this, engine.Context, engine.Tokenize(capStr));
         }
     }
 }

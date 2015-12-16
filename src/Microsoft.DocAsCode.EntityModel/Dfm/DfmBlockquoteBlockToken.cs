@@ -9,8 +9,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmBlockquoteBlockToken : MarkdownBlockquoteBlockToken
     {
-        public DfmBlockquoteBlockToken(IMarkdownRule rule, ImmutableArray<IMarkdownToken> tokens)
-            : base(rule, tokens)
+        public DfmBlockquoteBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens)
+            : base(rule, context, tokens)
         {
         }
     }

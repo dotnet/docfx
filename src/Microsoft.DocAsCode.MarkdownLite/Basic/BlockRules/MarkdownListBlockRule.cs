@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Bullet => Regexes.Block.Bullet;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Regexes.Block.List.Match(source);
             if (match.Length == 0)
@@ -77,11 +77,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
 
                 var c = engine.SwitchContext(MarkdownBlockContext.IsTop, false);
-                tokens.Add(new MarkdownListItemBlockToken(this, engine.Tokenize(item), loose));
+                tokens.Add(new MarkdownListItemBlockToken(this, engine.Context, engine.Tokenize(item), loose));
                 engine.SwitchContext(c);
             }
 
-            return new MarkdownListBlockToken(this, tokens.ToImmutableArray(), bull.Length > 1);
+            return new MarkdownListBlockToken(this, engine.Context, tokens.ToImmutableArray(), bull.Length > 1);
         }
     }
 }

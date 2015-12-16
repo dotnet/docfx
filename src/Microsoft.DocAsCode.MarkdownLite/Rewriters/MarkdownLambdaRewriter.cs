@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System;
 
     internal sealed class MarkdownLambdaRewriter<TEngine, TToken> : IMarkdownRewriter
-        where TEngine : MarkdownEngine
+        where TEngine : MarkdownParser
         where TToken : class, IMarkdownToken
     {
         public MarkdownLambdaRewriter(Func<TEngine, TToken, IMarkdownToken> rewriteFunc)
@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public Func<TEngine, TToken, IMarkdownToken> RewriteFunc { get; }
 
-        public IMarkdownToken Rewrite(MarkdownEngine engine, IMarkdownToken token)
+        public IMarkdownToken Rewrite(MarkdownParser engine, IMarkdownToken token)
         {
             var tengine = engine as TEngine;
             var ttoken = token as TToken;

@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Newline => Regexes.Block.Newline;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Newline.Match(source);
             if (match.Length == 0)
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownNewLineBlockToken(this, match.Value);
+            return new MarkdownNewLineBlockToken(this, engine.Context);
         }
     }
 }

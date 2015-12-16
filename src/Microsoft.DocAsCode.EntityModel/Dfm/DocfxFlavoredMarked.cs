@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public static string Markup(string src, string path = null)
         {
-            var engine = _builder.CreateEngine(_renderer);
+            var engine = _builder.CreateDfmEngine(_renderer);
             return engine.Markup(src, path);
         }
     }

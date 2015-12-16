@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new MarkdownBlockContext(BlockRules, new MarkdownInlineContext(InlineRules));
         }
 
-        public virtual MarkdownEngine CreateEngine(object renderer)
+        public virtual IMarkdownEngine CreateEngine(object renderer)
         {
             return new MarkdownEngine(CreateParseContext(), Rewriter, renderer, Options);
         }

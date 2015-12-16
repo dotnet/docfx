@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public static readonly Regex _dfmFencesRegex = new Regex(@"^\[\!((?i)code(\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[\s\S]*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled);
         public static readonly Regex _dfmFencesSharpQueryStringRegex = new Regex(@"^L(?<start>\d+)\-L(?<end>\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = _dfmFencesRegex.Match(source);
             if (match.Length == 0)
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesBlockToken(this, name, path, lang, title, pathQueryOption);
+            return new DfmFencesBlockToken(this, engine.Context, name, path, lang, title, pathQueryOption);
         }
 
         private static DfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)

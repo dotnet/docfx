@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
         public IMarkdownRewriter Create()
         {
             var context = new MarkdownRewriterContext(CompositionHost, Validators);
-            return MarkdownRewriterFactory.FromLambda<MarkdownEngine, MarkdownTagInlineToken>(context.Validate);
+            return MarkdownRewriterFactory.FromLambda<MarkdownParser, MarkdownTagInlineToken>(context.Validate);
         }
 
         private sealed class MarkdownRewriterContext
@@ -50,13 +50,13 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
 
             public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
-            public IMarkdownToken Validate(MarkdownEngine engine, MarkdownTagInlineToken token)
+            public IMarkdownToken Validate(MarkdownParser engine, MarkdownTagInlineToken token)
             {
-                var m = OpeningTag.Match(token.Content);
+                var m = OpeningTag.Match(token.RawMarkdown);
                 bool isOpeningTag = true;
                 if (m.Length == 0)
                 {
-                    m = ClosingTag.Match(token.Content);
+                    m = ClosingTag.Match(token.RawMarkdown);
                     if (m.Length == 0)
                     {
                         return null;
@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
                         Logger.LogWarning($"Cannot find custom markdown tag validator by contract name: {validator.CustomValidatorContractName}.");
                         return null;
                     }
-                    if (customValidators.TrueForAll(av => av.Validate(token.Content)))
+                    if (customValidators.TrueForAll(av => av.Validate(token.RawMarkdown)))
                     {
                         return null;
                     }
@@ -121,14 +121,14 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
                 switch (validator.Behavior)
                 {
                     case TagRewriteBehavior.Warning:
-                        Logger.LogWarning(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.Content));
+                        Logger.LogWarning(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
                         return null;
                     case TagRewriteBehavior.Error:
-                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.Content));
+                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
                         return null;
                     case TagRewriteBehavior.ErrorAndRemove:
-                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.Content));
-                        return new MarkdownIgnoreToken(token.Rule);
+                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
+                        return new MarkdownIgnoreToken(token.Rule, token.Context);
                     case TagRewriteBehavior.None:
                     default:
                         return null;

@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -23,12 +24,12 @@ namespace Microsoft.DocAsCode.EntityModel
             _cache = new FileCacheLite(new FilePathComparer());
         }
 
-        public string Load(string currentPath, string raw, Stack<string> parents, Func<string, Stack<string>, string> resolver)
+        public string Load(DfmRendererAdapter adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
         {
-            return LoadCore(currentPath, raw, parents, resolver);
+            return LoadCore(adapter, currentPath, raw, context, resolver);
         }
 
-        private string LoadCore(string currentPath, string raw, Stack<string> parents, Func<string, Stack<string>, string> resolver)
+        private string LoadCore(DfmRendererAdapter adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
         {
             if (!PathUtility.IsRelativePath(currentPath))
             {
@@ -39,13 +40,13 @@ namespace Microsoft.DocAsCode.EntityModel
                 else
                     currentPath = PathUtility.MakeRelativePath(Environment.CurrentDirectory, currentPath);
             }
-
+            var parents = adapter.GetFilePathStack(context);
             var originalPath = currentPath;
             string parent = string.Empty;
-            if (parents == null) parents = new Stack<string>();
+            if (parents == null) parents = ImmutableStack<string>.Empty;
 
             // Update currentPath to be referencing to sourcePath
-            else if (parents.Count > 0)
+            else if (!parents.IsEmpty)
             {
                 parent = parents.Peek();
                 currentPath = ((RelativePath)currentPath).BasedOn((RelativePath)parent);
@@ -59,21 +60,21 @@ namespace Microsoft.DocAsCode.EntityModel
             string result = string.Empty;
 
             // Add current file path to chain when entering recursion
-            parents.Push(currentPath);
+            parents = parents.Push(currentPath);
             try
             {
                 if (!_cache.TryGet(currentPath, out result))
                 {
                     var src = File.ReadAllText(currentPath);
 
-                    src = resolver(src, parents);
+                    src = resolver(src, adapter.SetFilePathStack(context, parents));
 
                     HtmlDocument htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(src);
                     var node = htmlDoc.DocumentNode;
 
                     // If current content is not the root one, update href to root
-                    if (parents.Count > 1)
+                    if (parents.Count() > 1)
                         UpdateHref(node, originalPath);
 
                     result = node.WriteTo();
@@ -87,8 +88,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
             _cache.Add(currentPath, result);
 
-            // Remove current file path when leaving recusion
-            parents.Pop();
             return result;
         }
 

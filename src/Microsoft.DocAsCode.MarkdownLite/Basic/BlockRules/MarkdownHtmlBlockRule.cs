@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
     public class MarkdownHtmlBlockRule : IMarkdownRule
@@ -11,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Html => Regexes.Block.Html;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Html.Match(source);
             if (match.Length == 0)
@@ -24,11 +25,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 (match.Groups[1].Value == "pre" || match.Groups[1].Value == "script" || match.Groups[1].Value == "style");
             if (engine.Options.Sanitize)
             {
-                return new MarkdownParagraphBlockToken(this, match.Value);
+                return new MarkdownParagraphBlockToken(this, engine.Context, engine.TokenizeInline(match.Value));
             }
             else
             {
-                return new MarkdownHtmlBlockToken(this, match.Value, isPre);
+                return new MarkdownHtmlBlockToken(
+                    this,
+                    engine.Context,
+                    isPre ? new InlineContent(new IMarkdownToken[] { new MarkdownRawToken(this, engine.Context, match.Value) }.ToImmutableArray()) : engine.TokenizeInline(match.Value));
             }
         }
     }

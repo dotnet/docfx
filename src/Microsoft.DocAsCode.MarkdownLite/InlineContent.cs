@@ -3,14 +3,15 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    /// <summary>
-    /// Null object.
-    /// </summary>
-    internal sealed class MarkdownNullRewriter : IMarkdownRewriter
+    using System.Collections.Immutable;
+
+    public class InlineContent
     {
-        public IMarkdownToken Rewrite(MarkdownParser engine, IMarkdownToken token)
+        public InlineContent(ImmutableArray<IMarkdownToken> tokens)
         {
-            return null;
+            Tokens = tokens;
         }
+
+        public ImmutableArray<IMarkdownToken> Tokens { get; }
     }
 }

@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public static readonly Regex _sectionEnd = new Regex(@"^<!--(\s*)((?i)ENDSECTION)(\s*)-->(\s*)(?:\n+|$)", RegexOptions.Compiled);
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = _sectionEnd.Match(source);
             if (match.Length == 0)
@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             source = source.Substring(match.Length);
             
-            return new DfmSectionEndBlockToken(this);
+            return new DfmSectionEndBlockToken(this, engine.Context);
         }
     }
 }

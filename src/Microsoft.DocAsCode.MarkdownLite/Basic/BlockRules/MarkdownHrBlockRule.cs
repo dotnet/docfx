@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Hr => Regexes.Block.Hr;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Hr.Match(source);
             if (match.Length == 0)
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownHrBlockToken(this);
+            return new MarkdownHrBlockToken(this, engine.Context);
         }
     }
 }

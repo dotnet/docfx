@@ -9,13 +9,16 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmSectionBeginBlockToken : IMarkdownToken
     {
-        public DfmSectionBeginBlockToken(IMarkdownRule rule, string attributes)
+        public DfmSectionBeginBlockToken(IMarkdownRule rule, IMarkdownContext context, string attributes)
         {
             Rule = rule;
+            Context = context;
             Attributes = attributes;
         }
 
         public IMarkdownRule Rule { get; }
+
+        public IMarkdownContext Context { get; }
 
         public string Attributes { get; }
 

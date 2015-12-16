@@ -7,12 +7,15 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmSectionEndBlockToken : IMarkdownToken
     {
-        public DfmSectionEndBlockToken(IMarkdownRule rule)
+        public DfmSectionEndBlockToken(IMarkdownRule rule, IMarkdownContext context)
         {
             Rule = rule;
+            Context = context;
         }
 
         public IMarkdownRule Rule { get; }
+
+        public IMarkdownContext Context { get; }
 
         public string RawMarkdown { get; set; }
     }

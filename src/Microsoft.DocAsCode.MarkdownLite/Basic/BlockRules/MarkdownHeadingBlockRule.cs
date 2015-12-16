@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Heading => Regexes.Block.Heading;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Heading.Match(source);
             if (match.Length == 0)
@@ -19,7 +19,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownHeadingBlockToken(this, match.Groups[2].Value, match.Groups[1].Value.Length);
+            return new MarkdownHeadingBlockToken(
+                this,
+                engine.Context,
+                engine.TokenizeInline(match.Groups[2].Value),
+                Regex.Replace(match.Groups[2].Value.ToLower(), @"[^\w]+", "-"),
+                match.Groups[1].Value.Length);
         }
     }
 }

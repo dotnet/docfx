@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private const string SectionReplacementHtmlTag = "div";
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = _sectionBegin.Match(source);
             if (match.Length == 0)
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.EntityModel
             source = source.Substring(match.Length);
 
             var attributes = ExtractAttibutes(match.Groups["attributes"].Value);
-            return new DfmSectionBeginBlockToken(this, attributes);
+            return new DfmSectionBeginBlockToken(this, engine.Context, attributes);
         }
 
         private string ExtractAttibutes(string commentText)

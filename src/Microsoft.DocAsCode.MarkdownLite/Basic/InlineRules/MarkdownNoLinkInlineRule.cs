@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex NoLink => Regexes.Inline.NoLink;
 
-        public override IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public override IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = NoLink.Match(source);
             if (match.Length == 0)
@@ -28,9 +28,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (string.IsNullOrEmpty(link?.Href))
             {
                 source = match.Groups[0].Value.Substring(1) + source;
-                return new MarkdownTextToken(this, match.Groups[0].Value[0].ToString());
+                return new MarkdownTextToken(this, engine.Context, match.Groups[0].Value[0].ToString());
             }
-            return GenerateToken(link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!');
+            return GenerateToken(engine, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!');
         }
     }
 }

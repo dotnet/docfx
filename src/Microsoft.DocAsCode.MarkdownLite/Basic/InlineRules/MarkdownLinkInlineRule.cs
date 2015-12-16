@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Link => Regexes.Inline.Link;
 
-        public override IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public override IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Link.Match(source);
             if (match.Length == 0)
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            return GenerateToken(match.Groups[2].Value, match.Groups[3].Value, match.Groups[1].Value, match.Value[0] == '!');
+            return GenerateToken(engine, match.Groups[2].Value, match.Groups[3].Value, match.Groups[1].Value, match.Value[0] == '!');
         }
     }
 }

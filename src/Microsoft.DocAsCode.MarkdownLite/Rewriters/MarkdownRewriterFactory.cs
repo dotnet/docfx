@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static IMarkdownRewriter FromLambda<TEngine, TToken>(
             Func<TEngine, TToken, IMarkdownToken> rewriteFunc)
-            where TEngine : MarkdownEngine
+            where TEngine : MarkdownParser
             where TToken : class, IMarkdownToken
         {
             if (rewriteFunc == null)

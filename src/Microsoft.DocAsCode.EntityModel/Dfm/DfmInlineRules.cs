@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel
         ///         d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
         /// </summary>
         public virtual Regex Xref => _xrefRegex;
-        public IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Xref.Match(source);
             if (match.Length == 0)
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // @String=>cap[3]=String, @'string'=>cap[2]=string
             // For cross-reference, add ~/ prefix
             var content = string.IsNullOrEmpty(match.Groups[2].Value) ? match.Groups[3].Value : match.Groups[2].Value;
-            return new DfmXrefInlineToken(this, content, null, null);
+            return new DfmXrefInlineToken(this, engine.Context, content, null, null);
         }
     }
 
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private static readonly Regex _inlineIncludeRegex = new Regex(DocfxFlavoredIncHelper.InlineIncRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public virtual Regex Include => _inlineIncludeRegex;
 
-        public IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Include.Match(source);
             if (match.Length == 0)
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var title = match.Groups[4].Value;
 
             // 3. Apply inline rules to the included content
-            return new DfmIncludeInlineToken(this, path, value, title, match.Groups[0].Value);
+            return new DfmIncludeInlineToken(this, engine.Context, path, value, title, match.Groups[0].Value);
         }
     }
 

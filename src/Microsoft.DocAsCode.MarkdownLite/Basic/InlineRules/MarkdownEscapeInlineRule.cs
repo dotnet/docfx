@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Escape => Regexes.Inline.Escape;
 
-        public virtual IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)
+        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
         {
             var match = Escape.Match(source);
             if (match.Length == 0)
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownEscapeInlineToken(this, match.Groups[1].Value);
+            return new MarkdownEscapeInlineToken(this, engine.Context, match.Groups[1].Value);
         }
     }
 }

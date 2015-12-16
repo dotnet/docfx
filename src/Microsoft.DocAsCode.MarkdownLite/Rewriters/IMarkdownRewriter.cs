@@ -14,6 +14,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <param name="engine">the engine</param>
         /// <param name="token">the token</param>
         /// <returns>If need rewrite, return the new token, otherwise, null</returns>
-        IMarkdownToken Rewrite(MarkdownEngine engine, IMarkdownToken token);
+        IMarkdownToken Rewrite(MarkdownParser engine, IMarkdownToken token);
     }
 }

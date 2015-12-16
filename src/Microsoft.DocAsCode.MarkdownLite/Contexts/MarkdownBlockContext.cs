@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public const string IsBlockQuote = "IsBlockQuote";
 
+        private readonly IMarkdownContext _inlineContext;
+
         public MarkdownBlockContext(ImmutableList<IMarkdownRule> rules, IMarkdownContext inlineContext)
             : this (rules, inlineContext, ImmutableDictionary<string, object>.Empty.Add(IsTop, true))
         {
@@ -20,11 +22,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
         protected MarkdownBlockContext(ImmutableList<IMarkdownRule> rules, IMarkdownContext inlineContext, ImmutableDictionary<string, object> variables)
         {
             Rules = rules;
-            InlineContext = inlineContext;
+            _inlineContext = inlineContext;
             Variables = variables;
         }
 
-        public IMarkdownContext InlineContext { get; }
+        public IMarkdownContext GetInlineContext()
+        {
+            return _inlineContext.CreateContext(_inlineContext.Variables.SetItems(Variables));
+        }
 
         public ImmutableList<IMarkdownRule> Rules { get; }
 

@@ -3,17 +3,22 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Immutable;
+
     public class MarkdownEmInlineToken : IMarkdownToken
     {
-        public MarkdownEmInlineToken(IMarkdownRule rule, string content)
+        public MarkdownEmInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content)
         {
             Rule = rule;
+            Context = context;
             Content = content;
         }
 
         public IMarkdownRule Rule { get; }
 
-        public string Content { get; }
+        public IMarkdownContext Context { get; }
+
+        public ImmutableArray<IMarkdownToken> Content { get; }
 
         public string RawMarkdown { get; set; }
     }

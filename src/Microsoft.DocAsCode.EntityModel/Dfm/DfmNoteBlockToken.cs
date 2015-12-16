@@ -8,8 +8,8 @@ namespace Microsoft.DocAsCode.EntityModel
     public class DfmNoteBlockToken : MarkdownTextToken
     {
 
-        public DfmNoteBlockToken(IMarkdownRule rule, string noteType, string content)
-            : base(rule, content)
+        public DfmNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content)
+            : base(rule, context, content)
         {
             NoteType = noteType;
         }

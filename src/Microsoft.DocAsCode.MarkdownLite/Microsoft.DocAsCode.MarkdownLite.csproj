@@ -18,6 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Align.cs" />
+    <Compile Include="Basic\MarkdownRawToken.cs" />
     <Compile Include="Contexts\MarkdownInlineContext.cs" />
     <Compile Include="GfmEngineBuilder.cs" />
     <Compile Include="Gfm\GfmDelInlineRule.cs" />
@@ -29,10 +30,16 @@
     <Compile Include="Gfm\GfmTextInlineRule.cs" />
     <Compile Include="Gfm\GfmUrlInlineRule.cs" />
     <Compile Include="IMarkdownContext.cs" />
+    <Compile Include="IMarkdownEngine.cs" />
+    <Compile Include="IMarkdownParser.cs" />
+    <Compile Include="IMarkdownRenderer.cs" />
     <Compile Include="IMarkdownRule.cs" />
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
     <Compile Include="MarkdownEngine.cs" />
+    <Compile Include="MarkdownParserExtensions.cs" />
+    <Compile Include="MarkdownRendererAdapter.cs" />
+    <Compile Include="MarkdownParser.cs" />
     <Compile Include="MarkdownEngineByOptionsBuilder.cs" />
     <Compile Include="MarkdownEngineBuilder.cs" />
     <Compile Include="MarkdownRenderer.cs" />
@@ -93,6 +100,7 @@
     <Compile Include="Regexes.cs" />
     <Compile Include="StringBuffer.cs" />
     <Compile Include="StringHelper.cs" />
+    <Compile Include="InlineContent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
