@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System.IO;
-
     using MarkdownLite;
 
     using Utility;
@@ -13,6 +12,9 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private static readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
+
+        private static readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
+
         public virtual StringBuffer Render(MarkdownEngine engine, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
             var href = token.Href == null ? string.Empty : $" href=\"{StringHelper.HtmlEncode(token.Href)}\"";
@@ -68,29 +70,47 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public virtual StringBuffer Render(DfmEngine engine, DfmFencesBlockToken token, MarkdownBlockContext context)
         {
-            var lang = string.IsNullOrEmpty(token.Lang) ? null : $" class=\"language-{token.Lang}\"";
-            var name = string.IsNullOrEmpty(token.Name) ? null : $" name=\"{StringHelper.HtmlEncode(token.Name)}\"";
-            var title = string.IsNullOrEmpty(token.Title) ? null : $" title=\"{StringHelper.HtmlEncode(token.Title)}\"";
             if (!PathUtility.IsRelativePath(token.Path))
             {
                 string errorMessage = $"Code absolute path: {token.Path} is not supported in file {engine.Parents.Peek()}";
                 Logger.LogError(errorMessage);
-                return $"<!-- {StringHelper.HtmlEncode(errorMessage)} -->";
+                return GetRenderedFencesBlockString(token, errorMessage);
             }
 
             try
             {
                 // TODO: Valid REST and REST-i script.
                 var fencesPath = ((RelativePath)token.Path).BasedOn((RelativePath)engine.Parents.Peek());
-                var fencesCode = File.ReadAllText(fencesPath);
-                return $"<pre><code{lang}{name}{title}>{StringHelper.HtmlEncode(fencesCode)}\n</code></pre>";
+                var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
+                return GetRenderedFencesBlockString(token, extractResult.ErrorMessage, extractResult.FencesCodeLines);
             }
-            catch(FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 string errorMessage = $"Can not find reference {token.Path}";
                 Logger.LogError(errorMessage);
-                return $"<!-- {StringHelper.HtmlEncode(errorMessage)} -->";
+                return GetRenderedFencesBlockString(token, errorMessage);
             }
+        }
+
+        private static string GetRenderedFencesBlockString(DfmFencesBlockToken token, string errorMessage, string[] codeLines = null)
+        {
+            string renderedErrorMessage = string.Empty;
+            string renderedCodeLines = string.Empty;
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                renderedErrorMessage = $@"<!-- {StringHelper.HtmlEncode(errorMessage)} -->\n";
+            }
+
+            if (codeLines != null)
+            {
+                var lang = string.IsNullOrEmpty(token.Lang) ? null : $" class=\"language-{token.Lang}\"";
+                var name = string.IsNullOrEmpty(token.Name) ? null : $" name=\"{StringHelper.HtmlEncode(token.Name)}\"";
+                var title = string.IsNullOrEmpty(token.Title) ? null : $" title=\"{StringHelper.HtmlEncode(token.Title)}\"";
+
+                renderedCodeLines = $"<pre><code{lang}{name}{title}>{StringHelper.HtmlEncode(string.Join("\n", codeLines))}\n</code></pre>";
+            }
+
+            return $"{renderedErrorMessage}{renderedCodeLines}";
         }
     }
 
@@ -142,7 +162,7 @@ namespace Microsoft.DocAsCode.EntityModel
         }
     }
 
-    public class DfmIncludeInlineToken: IMarkdownToken
+    public class DfmIncludeInlineToken : IMarkdownToken
     {
         public IMarkdownRule Rule { get; }
         public string Src { get; }

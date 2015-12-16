@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         [Trait("Related", "DfmMarkdown")]
         [InlineData("", "")]
         [InlineData("<address@example.com>", "<p><a href=\"mailto:address@example.com\">address@example.com</a></p>\n")]
-        [InlineData(@"<Insert OneGet Deatils - meeting on 10/30 for details.>", @"<Insert OneGet Deatils - meeting on 10/30 for details.>")]
+        [InlineData(@"<Insert OneGet Details - meeting on 10/30 for details.>", @"<Insert OneGet Details - meeting on 10/30 for details.>")]
         [InlineData("<http://example.com/>", "<p><a href=\"http://example.com/\">http://example.com/</a></p>\n")]
         [InlineData("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
         [InlineData("Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>", "<p>Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd></p>\n")]
@@ -195,7 +195,7 @@ this is B
 <!-- ENDSECTION -->
 
 <!-- ENDSECTION -->")]
-        public void TestSectionBlockLevelRecusive(string source)
+        public void TestSectionBlockLevelRecursive(string source)
         {
             var markedContent = DocfxFlavoredMarked.Markup(source);
             Assert.Equal("<div class=\"All\" id=\"All\"><div class=\"A\" id=\"A\"><p>this is A</p>\n</div><div class=\"B\" id=\"B\"><p>this is B</p>\n</div></div>", markedContent);
@@ -300,6 +300,111 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
             var marked = DocfxFlavoredMarked.Markup(root, Path.GetFullPath("api.json"));
             Assert.Equal("<pre><code class=\"language-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"language-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"language-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre>", marked);
+        }
+
+        [Theory]
+        [Trait("Owner", "humao")]
+        [Trait("Related", "DfmMarkdown")]
+        [InlineData(@"[!code-csharp[Main](Program.cs)]", @"<pre><code class=""language-csharp"" name=""Main"">namespace ConsoleApplication1
+{
+    // &lt;namespace&gt;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // &lt;/namespace&gt;
+
+    // &lt;snippetprogram&gt;
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+    }
+    // &lt;/snippetprogram&gt;
+}
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs#L12-L16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs#L12-L100 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+    }
+    // &lt;/snippetprogram&gt;
+}
+</code></pre>")]
+        [InlineData(@"[!code-csharp[Main](Program.cs#namespace ""This is root"")]", @"<pre><code class=""language-csharp"" name=""Main"" title=""This is root"">    using System;
+    using System.Collections.Generic;
+    using System.IO;
+</code></pre>")]
+        [InlineData(@"[!code-csharp[Main](Program.cs#NAMESPACE ""This is root"")]", @"<pre><code class=""language-csharp"" name=""Main"" title=""This is root"">    using System;
+    using System.Collections.Generic;
+    using System.IO;
+</code></pre>")]
+        [InlineData(@"[!code-csharp[Main](Program.cs#program ""This is root"")]", @"<pre><code class=""language-csharp"" name=""Main"" title=""This is root"">    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+    }
+</code></pre>")]
+        [InlineData(@"[!code-csharp[Main](Program.cs#snippetprogram ""This is root"")]", @"<pre><code class=""language-csharp"" name=""Main"" title=""This is root"">    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+    }
+</code></pre>")]
+        [InlineData(@"[!code-csharp[Main](Program.cs?name=namespace ""This is root"")]", @"<pre><code class=""language-csharp"" name=""Main"" title=""This is root"">    using System;
+    using System.Collections.Generic;
+    using System.IO;
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs#L5-L9 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">    using System.Collections.Generic;
+    using System.IO;
+    // &lt;/namespace&gt;
+
+    // &lt;snippetprogram&gt;
+</code></pre>")]
+        public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
+        {
+            // arrange
+            var content = @"namespace ConsoleApplication1
+{
+    // <namespace>
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // </namespace>
+
+    // <snippetprogram>
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = ""test"";
+            int i = 100;
+        }
+    }
+    // </snippetprogram>
+}";
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            // act
+            var marked = DocfxFlavoredMarked.Markup(fencesPath, Path.GetFullPath("Program.cs"));
+
+            // assert
+            Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);
         }
 
         private static void WriteToFile(string file, string content)
