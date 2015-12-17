@@ -22,6 +22,7 @@
     <Compile Include="DocumentType.cs" />
     <Compile Include="FileAndType.cs" />
     <Compile Include="FileModel.cs" />
+    <Compile Include="IDocumentBuildStep.cs" />
     <Compile Include="IDocumentProcessor.cs" />
     <Compile Include="IHostService.cs" />
     <Compile Include="ICustomMarkdownTagValidator.cs" />

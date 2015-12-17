@@ -15,8 +15,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(typeof(IDocumentProcessor))]
     public class ConceptualDocumentProcessor : IDocumentProcessor
     {
-        private const string ConceputalKey = "conceptual";
-        private const string DocumentTypeKey = "documentType";
+        [ImportMany(nameof(ConceptualDocumentProcessor))]
+        public IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
 
         public string Name => nameof(ConceptualDocumentProcessor);
 
@@ -81,55 +81,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 LinkToFiles = model.Properties.LinkToFiles,
                 LinkToUids = model.Properties.LinkToUids,
             };
-        }
-
-        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
-        }
-
-        public void Build(FileModel model, IHostService host)
-        {
-            if (model.Type != DocumentType.Article)
-            {
-                return;
-            }
-            var content = (Dictionary<string, object>)model.Content;
-            var markdown = (string)content[ConceputalKey];
-            var result = host.Markup(markdown, model.FileAndType);
-            content[ConceputalKey] = result.Html;
-            content["title"] = result.Title;
-            content["word_count"] = WordCounter.CountWord(result.Html);
-            if (result.YamlHeader != null && result.YamlHeader.Count > 0)
-            {
-                foreach (var item in result.YamlHeader)
-                {
-                    if (item.Key == "uid")
-                    {
-                        var uid = item.Value as string;
-                        if (!string.IsNullOrWhiteSpace(uid))
-                        {
-                            model.Uids = new[] { uid }.ToImmutableArray();
-                        }
-                    }
-                    else
-                    {
-                        content[item.Key] = item.Value;
-                        if (item.Key == DocumentTypeKey)
-                        {
-                            model.DocumentType = item.Value as string;
-                        }
-                    }
-                }
-            }
-            model.Properties.LinkToFiles = result.LinkToFiles;
-            model.Properties.LinkToUids = result.LinkToUids;
-            model.File = Path.ChangeExtension(model.File, ".json");
-        }
-
-        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
         }
     }
 }

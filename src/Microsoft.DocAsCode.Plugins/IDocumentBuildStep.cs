@@ -6,12 +6,12 @@ namespace Microsoft.DocAsCode.Plugins
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public interface IDocumentProcessor
+    public interface IDocumentBuildStep
     {
         string Name { get; }
-        IEnumerable<IDocumentBuildStep> BuildSteps { get; }
-        ProcessingPriority GetProcessingPriority(FileAndType file);
-        FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata);
-        SaveResult Save(FileModel model);
+        int BuildOrder { get; }
+        IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host);
+        void Build(FileModel model, IHostService host);
+        IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host);
     }
 }

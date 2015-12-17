@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Plugins
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -20,6 +19,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         public IEnumerable<IResourceFileConfig> Configs { get; set; }
 
         public string Name => nameof(ResourceDocumentProcessor);
+
+        [ImportMany(nameof(ResourceDocumentProcessor))]
+        public IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
 
         public ProcessingPriority GetProcessingPriority(FileAndType file)
         {
@@ -101,25 +103,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 result.ModelFile = modelFile;
             }
             return result;
-        }
-
-        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
-        }
-
-        public void Build(FileModel model, IHostService host)
-        {
-            if (model.Type != DocumentType.Article && model.Type != DocumentType.Resource)
-            {
-                throw new NotSupportedException();
-            }
-            // todo : metadata.
-        }
-
-        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
         }
     }
 }

@@ -162,7 +162,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             var result = new Dictionary<string, object>(metadata);
             var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Environment.CurrentDirectory : fileMetadata.BaseDir;
             var relativePath = PathUtility.MakeRelativePath(baseDir, file);
-            foreach(var item in fileMetadata)
+            foreach (var item in fileMetadata)
             {
                 // As the latter one overrides the former one, match the pattern from latter to former
                 for (int i = item.Value.Length - 1; i >= 0; i--)
@@ -181,33 +181,53 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void Prebuild(IDocumentProcessor processor, HostService hostService)
         {
-            var models = processor.Prebuild(hostService.Models, hostService);
-            if (!object.ReferenceEquals(models, hostService.Models))
-            {
-                hostService.Reload(models);
-            }
+            RunBuildSteps(
+                processor.BuildSteps,
+                buildStep =>
+                    {
+                        Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Preprocessing...");
+                        var models = buildStep.Prebuild(hostService.Models, hostService);
+                        if (!object.ReferenceEquals(models, hostService.Models))
+                        {
+                            Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Reloading models...");
+                            hostService.Reload(models);
+                        }
+                    });
         }
 
         private void BuildArticle(IDocumentProcessor processor, HostService hostService)
         {
-            hostService.Models.RunAll(m =>
-            {
-                using (new LoggerFileScope(m.OriginalFileAndType.File))
-                {
-                    Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
-                    processor.Build(m, hostService);
-                }
-            });
+            hostService.Models.RunAll(
+                m =>
+                    {
+                        using (new LoggerFileScope(m.OriginalFileAndType.File))
+                        {
+                            Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
+                            RunBuildSteps(
+                                processor.BuildSteps,
+                                buildStep =>
+                                    {
+                                        Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Building...");
+                                        buildStep.Build(m, hostService);
+                                    });
+                        }
+                    });
         }
 
         private void Postbuild(IDocumentProcessor processor, HostService hostService)
         {
-            var models = processor.Postbuild(hostService.Models, hostService);
-            if (!object.ReferenceEquals(models, hostService.Models))
-            {
-                Logger.LogVerbose($"Plug-in {processor.Name}: Reloading models...");
-                hostService.Reload(models);
-            }
+            RunBuildSteps(
+                processor.BuildSteps,
+                buildStep =>
+                    {
+                        Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Postprocessing...");
+                        var models = buildStep.Postbuild(hostService.Models, hostService);
+                        if (!object.ReferenceEquals(models, hostService.Models))
+                        {
+                            Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Reloading models...");
+                            hostService.Reload(models);
+                        }
+                    });
         }
 
         private void Save(IDocumentProcessor processor, HostService hostService, DocumentBuildContext context)
@@ -330,6 +350,17 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
                 LocalPathFromRepoRoot = model.LocalPathFromRepoRoot
             });
+        }
+
+        private static void RunBuildSteps(IEnumerable<IDocumentBuildStep> buildSteps, Action<IDocumentBuildStep> action)
+        {
+            if (buildSteps != null)
+            {
+                foreach (var buildStep in buildSteps.OrderBy(step => step.BuildOrder))
+                {
+                    action(buildStep);
+                }
+            }
         }
     }
 }
