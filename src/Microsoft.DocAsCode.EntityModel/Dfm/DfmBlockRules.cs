@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private static readonly Regex _incRegex = new Regex($"{DocfxFlavoredIncHelper.InlineIncRegexString}\\s*(\\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public string Name => "INCLUDE";
         public virtual Regex Include => _incRegex;
-        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = Include.Match(source);
             if (match.Length == 0)
@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public static readonly Regex _yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline);
         public string Name => "YamlHeader";
         public virtual Regex YamlHeader => _yamlHeaderRegex;
-        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = YamlHeader.Match(source);
             if (match.Length == 0)

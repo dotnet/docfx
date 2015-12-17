@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Code => Regexes.Block.Code;
 
-        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = Regexes.Block.Code.Match(source);
             if (match.Length == 0)

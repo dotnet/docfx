@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Text.RegularExpressions;
     using System.Web;
 
-    using MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmFencesBlockRule : IMarkdownRule
     {
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public static readonly Regex _dfmFencesRegex = new Regex(@"^\[\!((?i)code(\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[\s\S]*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled);
         public static readonly Regex _dfmFencesSharpQueryStringRegex = new Regex(@"^L(?<start>\d+)\-L(?<end>\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = _dfmFencesRegex.Match(source);
             if (match.Length == 0)

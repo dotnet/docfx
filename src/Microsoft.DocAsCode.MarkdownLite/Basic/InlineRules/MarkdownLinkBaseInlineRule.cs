@@ -7,9 +7,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         public abstract string Name { get; }
 
-        public abstract IMarkdownToken TryMatch(MarkdownParser engine, ref string source);
+        public abstract IMarkdownToken TryMatch(IMarkdownParser engine, ref string source);
 
-        protected virtual IMarkdownToken GenerateToken(MarkdownParser engine, string href, string title, string text, bool isImage)
+        protected virtual IMarkdownToken GenerateToken(IMarkdownParser engine, string href, string title, string text, bool isImage)
         {
             var escapedHref = StringHelper.Escape(href);
             var escapedTitle = !string.IsNullOrEmpty(title) ? StringHelper.Escape(title) : null;

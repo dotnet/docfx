@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex LeadingBlockquote => Regexes.Lexers.LeadingBlockquote;
 
-        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = Blockquote.Match(source);
             if (match.Length == 0)

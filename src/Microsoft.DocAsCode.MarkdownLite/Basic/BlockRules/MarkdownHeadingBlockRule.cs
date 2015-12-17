@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Heading => Regexes.Block.Heading;
 
-        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = Heading.Match(source);
             if (match.Length == 0)

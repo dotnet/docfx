@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Url => Regexes.Inline.Gfm.Url;
 
-        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             if ((bool)engine.Context.Variables[MarkdownInlineContext.IsInLink])
             {

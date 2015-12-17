@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Text.RegularExpressions;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmParagraphBlockRule : GfmParagraphBlockRule

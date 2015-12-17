@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Text.RegularExpressions;
 
-    using MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmSectionEndBlockRule : IMarkdownRule
     {
@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public static readonly Regex _sectionEnd = new Regex(@"^<!--(\s*)((?i)ENDSECTION)(\s*)-->(\s*)(?:\n+|$)", RegexOptions.Compiled);
 
-        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = _sectionEnd.Match(source);
             if (match.Length == 0)

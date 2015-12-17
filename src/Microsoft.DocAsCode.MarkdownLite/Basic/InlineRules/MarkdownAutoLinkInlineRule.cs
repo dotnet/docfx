@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex AutoLink => Regexes.Inline.AutoLink;
 
-        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = AutoLink.Match(source);
             if (match.Length == 0)

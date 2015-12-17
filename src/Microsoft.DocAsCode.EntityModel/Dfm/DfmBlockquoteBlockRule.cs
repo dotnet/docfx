@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         public override string Name => "DfmBlockquote";
 
-        public override IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public override IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = Blockquote.Match(source);
             if (match.Length == 0)

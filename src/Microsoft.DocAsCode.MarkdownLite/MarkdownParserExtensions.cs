@@ -10,6 +10,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         public static IMarkdownContext SwitchContext(this IMarkdownParser parser, string variableKey, object value)
         {
+            if (parser == null)
+            {
+                throw new ArgumentNullException(nameof(parser));
+            }
             if (variableKey == null)
             {
                 throw new ArgumentNullException(nameof(variableKey));
@@ -21,6 +25,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static IMarkdownContext SwitchContext(this IMarkdownParser parser, IReadOnlyDictionary<string, object> variables)
         {
+            if (parser == null)
+            {
+                throw new ArgumentNullException(nameof(parser));
+            }
             if (variables == null)
             {
                 throw new ArgumentNullException(nameof(variables));
@@ -37,6 +45,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static InlineContent TokenizeInline(this IMarkdownParser parser, string markdown)
         {
+            if (parser == null)
+            {
+                throw new ArgumentNullException(nameof(parser));
+            }
+            if (markdown == null)
+            {
+                throw new ArgumentNullException(nameof(markdown));
+            }
             var context = parser.Context as MarkdownBlockContext;
             if (context == null)
             {
@@ -47,6 +63,5 @@ namespace Microsoft.DocAsCode.MarkdownLite
             parser.SwitchContext(c);
             return new InlineContent(tokens);
         }
-
     }
 }

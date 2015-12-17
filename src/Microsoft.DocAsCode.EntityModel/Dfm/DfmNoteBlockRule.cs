@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Text.RegularExpressions;
 
-    using MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmNoteBlockRule : IMarkdownRule
     {
@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public Regex _dfmNoteRegex = new Regex(@"^(?<rawmarkdown>\s*\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\]\s*(\n|$))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public virtual IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             if (!engine.Context.Variables.ContainsKey(MarkdownBlockContext.IsBlockQuote) || !(bool)engine.Context.Variables[MarkdownBlockContext.IsBlockQuote])
             {

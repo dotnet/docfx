@@ -3,10 +3,9 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using MarkdownLite;
-    using Utility;
-    using System.Collections.Generic;
     using System.Text.RegularExpressions;
+
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmXrefInlineRule : IMarkdownRule
     {
@@ -23,7 +22,8 @@ namespace Microsoft.DocAsCode.EntityModel
         ///         d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
         /// </summary>
         public virtual Regex Xref => _xrefRegex;
-        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+
+        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = Xref.Match(source);
             if (match.Length == 0)
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private static readonly Regex _inlineIncludeRegex = new Regex(DocfxFlavoredIncHelper.InlineIncRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public virtual Regex Include => _inlineIncludeRegex;
 
-        public IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = Include.Match(source);
             if (match.Length == 0)

@@ -6,6 +6,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public interface IMarkdownRule
     {
         string Name { get; }
-        IMarkdownToken TryMatch(MarkdownParser engine, ref string source);
+        IMarkdownToken TryMatch(IMarkdownParser engine, ref string source);
     }
 }

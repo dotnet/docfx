@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Link => Regexes.Inline.Link;
 
-        public override IMarkdownToken TryMatch(MarkdownParser engine, ref string source)
+        public override IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
             var match = Link.Match(source);
             if (match.Length == 0)

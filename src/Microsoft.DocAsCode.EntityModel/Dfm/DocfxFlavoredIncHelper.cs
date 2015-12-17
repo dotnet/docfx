@@ -4,14 +4,13 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
     using HtmlAgilityPack;
-    using MarkdownLite;
-    using Utility;
+    using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Utility;
 
     internal sealed class DocfxFlavoredIncHelper : IDisposable
     {

@@ -3,8 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-
-    using MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DocfxFlavoredMarked
     {
