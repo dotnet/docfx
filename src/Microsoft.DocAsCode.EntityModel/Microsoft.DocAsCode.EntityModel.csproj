@@ -106,11 +106,13 @@
     <Compile Include="Dfm\DfmSectionBeginBlockToken.cs" />
     <Compile Include="Dfm\DfmSectionEndBlockRule.cs" />
     <Compile Include="Dfm\DfmSectionEndBlockToken.cs" />
+    <Compile Include="Plugins\BuildSteps\BaseDocumentBuildStep.cs" />
     <Compile Include="Plugins\BuildSteps\BuildConceptualDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildManagedReferenceDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildResourceDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildTocDocument.cs" />
-    <Compile Include="Plugins\WordCounter.cs" />
+    <Compile Include="Plugins\BuildSteps\CountWord.cs" />
+    <Compile Include="Plugins\BuildSteps\SetContributorInformation.cs" />
     <Compile Include="JsonUtility.cs" />
     <Compile Include="TreeIterator.cs" />
     <Compile Include="YamlUtility.cs" />

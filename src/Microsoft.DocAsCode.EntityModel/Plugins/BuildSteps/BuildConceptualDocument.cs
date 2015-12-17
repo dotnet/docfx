@@ -11,21 +11,16 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildConceptualDocument : IDocumentBuildStep
+    public class BuildConceptualDocument : BaseDocumentBuildStep
     {
         private const string ConceputalKey = "conceptual";
         private const string DocumentTypeKey = "documentType";
 
-        public string Name => nameof(BuildConceptualDocument);
+        public override string Name => nameof(BuildConceptualDocument);
 
-        public int BuildOrder => 0;
+        public override int BuildOrder => 0;
 
-        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
-        }
-
-        public void Build(FileModel model, IHostService host)
+        public override void Build(FileModel model, IHostService host)
         {
             if (model.Type != DocumentType.Article)
             {
@@ -36,7 +31,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var result = host.Markup(markdown, model.FileAndType);
             content[ConceputalKey] = result.Html;
             content["title"] = result.Title;
-            content["wordCount"] = WordCounter.CountWord(result.Html);
             if (result.YamlHeader != null && result.YamlHeader.Count > 0)
             {
                 foreach (var item in result.YamlHeader)
@@ -62,11 +56,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             model.Properties.LinkToFiles = result.LinkToFiles;
             model.Properties.LinkToUids = result.LinkToUids;
             model.File = Path.ChangeExtension(model.File, ".json");
-        }
-
-        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
         }
     }
 }

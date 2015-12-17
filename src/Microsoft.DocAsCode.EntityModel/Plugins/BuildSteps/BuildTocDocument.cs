@@ -14,18 +14,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.Utility;
 
     [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildTocDocument : IDocumentBuildStep
+    public class BuildTocDocument : BaseDocumentBuildStep
     {
-        public string Name => nameof(BuildTocDocument);
+        public override string Name => nameof(BuildTocDocument);
 
-        public int BuildOrder => 0;
+        public override int BuildOrder => 0;
 
-        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
-        }
-
-        public void Build(FileModel model, IHostService host)
+        public override void Build(FileModel model, IHostService host)
         {
             model.File = Path.ChangeExtension(model.File, ".json");
             var toc = (TocViewModel)model.Content;
@@ -35,11 +30,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             model.Properties.LinkToFiles = links.ToImmutableArray();
             model.Properties.TocMap = tocMap.ToImmutableDictionary();
             // todo : metadata.
-        }
-
-        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
         }
 
         private void UpdateRelativePathAndAddTocMap(TocViewModel toc, FileModel model, HashSet<string> links, Dictionary<string, HashSet<string>> tocMap, IHostService hostService)

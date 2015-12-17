@@ -4,32 +4,53 @@
 namespace Microsoft.DocAsCode.EntityModel.Plugins
 {
     using System;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Composition;
     using System.Linq;
-    using System.Text;
 
     using HtmlAgilityPack;
 
-    public static class WordCounter
+    using Microsoft.DocAsCode.Plugins;
+
+    [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
+    public class CountWord : BaseDocumentBuildStep
+    {
+        public override string Name => nameof(CountWord);
+
+        public override int BuildOrder => 1;
+
+        public override IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
+        {
+            foreach (var model in models)
+            {
+                if (model.Type == DocumentType.Article)
+                {
+                    var content = (Dictionary<string, object>)model.Content;
+                    content["wordCount"] = WordCounter.CountWord((string)content["conceptual"]);
+                }
+            }
+            return models;
+        }
+    }
+
+    internal static class WordCounter
     {
         private static readonly string[] ExcludeNodeXPaths = { "//title" };
 
-        public static int CountWord(string html)
+        public static long CountWord(string html)
         {
             if (html == null)
             {
                 throw new ArgumentNullException(nameof(html));
             }
 
-            StringBuilder htmlString = new StringBuilder();
-            htmlString.Append(html);
+            HtmlDocument document = new HtmlDocument();
 
             // Append a space before each end bracket so that InnerText inside different child nodes can seperate itself from each other.
-            htmlString.Replace("</", " </");
+            document.LoadHtml(html.Replace("</", " </"));
 
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(htmlString.ToString());
-
-            int wordCount = 0;
+            long wordCount = 0;
             HtmlNodeCollection nodes = document.DocumentNode.SelectNodes("/");
             if (nodes != null)
             {

@@ -18,9 +18,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         [InlineData(@"<div><title>Connect and TFS information</title><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the MSDN and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 35)]
         [InlineData(@"<div><div class=""content""><h1>Connect and TFS information</h1><p>Open Publishing is being developed by the Visual Studio China team. The team owns the <a href=""http://www.msdn.com"">MSDN</a> and Technet platforms, as well as CAPS authoring tool, which is the replacement of DxStudio.</p></div></div>", 35)]
         [Theory]
-        public void TestWordCounter(string html, int expectedCount)
+        public void TestWordCounter(string html, long expectedCount)
         {
-            int wordCount = WordCounter.CountWord(html);
+            long wordCount = WordCounter.CountWord(html);
             Assert.Equal(expectedCount, wordCount);
         }
     }

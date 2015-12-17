@@ -15,20 +15,15 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildManagedReferenceDocument : IDocumentBuildStep
+    public class BuildManagedReferenceDocument : BaseDocumentBuildStep
     {
         private readonly ReflectionEntityMerger Merger = new ReflectionEntityMerger();
 
-        public string Name => nameof(BuildManagedReferenceDocument);
+        public override string Name => nameof(BuildManagedReferenceDocument);
 
-        public int BuildOrder => 0;
+        public override int BuildOrder => 0;
 
-        public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            return models;
-        }
-
-        public void Build(FileModel model, IHostService host)
+        public override void Build(FileModel model, IHostService host)
         {
             switch (model.Type)
             {
@@ -56,7 +51,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
         }
 
-        public IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
+        public override IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             if (models.Count > 0)
             {
