@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class MarkdownAutoLinkInlineRule | docfx website</title>
+    <title>Class BuildConceptualDocument | docfx website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class MarkdownAutoLinkInlineRule | docfx website">
+    <meta name="title" content="Class BuildConceptualDocument | docfx website">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -61,32 +61,32 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownAutoLinkInlineRule.cs/#L10" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownAutoLinkInlineRule">Class MarkdownAutoLinkInlineRule</h1>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/BuildSteps/BuildConceptualDocument.cs/#L13" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_EntityModel_Plugins_BuildConceptualDocument">Class BuildConceptualDocument</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
                 <h5>Inheritance</h5>
                   <div class="level0"><span class="xref">System.Object</span></div>
-                  <div class="level1"><span class="xref">MarkdownAutoLinkInlineRule</span></div>
+                  <div class="level1"><span class="xref">BuildConceptualDocument</span></div>
               </div>
-              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.MarkdownLite</h6>
-              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.MarkdownLite.dll</h6>
-              <h5 id="Microsoft_DocAsCode_MarkdownLite_MarkdownAutoLinkInlineRule_syntax">Syntax</h5>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.EntityModel.Plugins</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.EntityModel.dll</h6>
+              <h5 id="Microsoft_DocAsCode_EntityModel_Plugins_BuildConceptualDocument_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class MarkdownAutoLinkInlineRule : IMarkdownRule</code></pre>
+                <pre><code class="lang-csharp hljs">public class BuildConceptualDocument : IDocumentBuildStep</code></pre>
               </div>
               <h3 id="properties">Properties</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownAutoLinkInlineRule.cs/#L15">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/BuildSteps/BuildConceptualDocument.cs/#L21">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownAutoLinkInlineRule_AutoLink">AutoLink</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Plugins_BuildConceptualDocument_BuildOrder">BuildOrder</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual Regex AutoLink { get; }</code></pre>
+                <pre><code class="lang-csharp hljs">public int BuildOrder { get; }</code></pre>
               </div>
               <h5 class="returns">Returns</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -98,16 +98,16 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.Text.RegularExpressions.Regex</span></td>
+                    <td><span class="xref">System.Int32</span></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownAutoLinkInlineRule.cs/#L12">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/BuildSteps/BuildConceptualDocument.cs/#L19">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownAutoLinkInlineRule_Name">Name</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Plugins_BuildConceptualDocument_Name">Name</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -132,14 +132,14 @@
               <h3 id="methods">Methods</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownAutoLinkInlineRule.cs/#L62">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/BuildSteps/BuildConceptualDocument.cs/#L28">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownAutoLinkInlineRule_Mangle_System_String_">Mangle(String)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Plugins_BuildConceptualDocument_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">Build(FileModel, IHostService)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">protected virtual StringBuffer Mangle(string text)</code></pre>
+                <pre><code class="lang-csharp hljs">public void Build(FileModel model, IHostService host)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -152,37 +152,27 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.String</span></td>
-                    <td><em>text</em></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html#Microsoft_DocAsCode_Plugins_FileModel">FileModel</a></td>
+                    <td><em>model</em></td>
                     <td></td>
                   </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
                   <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.StringBuffer.html#Microsoft_DocAsCode_MarkdownLite_StringBuffer">StringBuffer</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService">IHostService</a></td>
+                    <td><em>host</em></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownAutoLinkInlineRule.cs/#L17">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/BuildSteps/BuildConceptualDocument.cs/#L67">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownAutoLinkInlineRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String__">TryMatch(IMarkdownParser, ref String)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Plugins_BuildConceptualDocument_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)</code></pre>
+                <pre><code class="lang-csharp hljs">public IEnumerable&lt;FileModel&gt; Postbuild(ImmutableList&lt;FileModel&gt; models, IHostService host)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -195,13 +185,13 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParser">IMarkdownParser</a></td>
-                    <td><em>engine</em></td>
+                    <td><span class="xref">System.Collections.Immutable.ImmutableList</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html#Microsoft_DocAsCode_Plugins_FileModel">FileModel</a>&gt;</td>
+                    <td><em>models</em></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><span class="xref">System.String</span></td>
-                    <td><em>source</em></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService">IHostService</a></td>
+                    <td><em>host</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -216,7 +206,55 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">IMarkdownToken</a></td>
+                    <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html#Microsoft_DocAsCode_Plugins_FileModel">FileModel</a>&gt;</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/BuildSteps/BuildConceptualDocument.cs/#L23">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Plugins_BuildConceptualDocument_Prebuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">Prebuild(ImmutableList&lt;FileModel&gt;, IHostService)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IEnumerable&lt;FileModel&gt; Prebuild(ImmutableList&lt;FileModel&gt; models, IHostService host)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">System.Collections.Immutable.ImmutableList</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html#Microsoft_DocAsCode_Plugins_FileModel">FileModel</a>&gt;</td>
+                    <td><em>models</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService">IHostService</a></td>
+                    <td><em>host</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html#Microsoft_DocAsCode_Plugins_FileModel">FileModel</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
