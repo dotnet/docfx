@@ -12,8 +12,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmEngine : MarkdownEngine
     {
-        internal const string FilePathStackKey = "FilePathStack";
-
         public DfmEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options)
             : base(context, rewriter, renderer, options, new Dictionary<string, LinkObj>())
         {
@@ -30,7 +28,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public string InternalMarkup(string src, ImmutableStack<string> parents)
         {
             DfmEngine engine = new DfmEngine(Context, Rewriter, Renderer, Options);
-            return Mark(Normalize(src), Context.CreateContext(Context.Variables.SetItem(FilePathStackKey, parents))).ToString();
+            return Mark(Normalize(src), Context.SetFilePathStack(parents)).ToString();
         }
 
         public string InternalMarkup(string src, IMarkdownContext context)
@@ -40,7 +38,5 @@ namespace Microsoft.DocAsCode.EntityModel
         }
 
         public override IMarkdownParser Parser => new DfmParser(Context, Options, Links);
-
-        public override IMarkdownRenderer Renderer => new DfmRendererAdapter(this, RendererImpl, Options, Links);
     }
 }

@@ -23,18 +23,18 @@ namespace Microsoft.DocAsCode.EntityModel
             return $"<xref{href}{title}>{name}</xref>";
         }
 
-        public virtual StringBuffer Render(DfmRendererAdapter engine, DfmIncludeBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmIncludeBlockToken token, MarkdownBlockContext context)
         {
             var href = token.Src == null ? null : $"src=\"{StringHelper.HtmlEncode(token.Src)}\"";
             var name = token.Name == null ? null : StringHelper.HtmlEncode(token.Name);
             var title = token.Title == null ? null : $"title=\"{StringHelper.HtmlEncode(token.Title)}\"";
-            var resolved = _blockInclusionHelper.Load(engine, token.Src, token.Raw, context, engine.Engine.InternalMarkup);
+            var resolved = _blockInclusionHelper.Load(engine, token.Src, token.Raw, context, ((DfmEngine)engine.Engine).InternalMarkup);
             return resolved;
         }
 
-        public virtual StringBuffer Render(DfmRendererAdapter engine, DfmIncludeInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmIncludeInlineToken token, MarkdownInlineContext context)
         {
-            var resolved = _inlineInclusionHelper.Load(engine, token.Src, token.Raw, context, engine.Engine.InternalMarkup);
+            var resolved = _inlineInclusionHelper.Load(engine, token.Src, token.Raw, context, ((DfmEngine)engine.Engine).InternalMarkup);
             return resolved;
         }
 
@@ -68,11 +68,11 @@ namespace Microsoft.DocAsCode.EntityModel
             return $"</div>";
         }
 
-        public virtual StringBuffer Render(DfmRendererAdapter engine, DfmFencesBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmFencesBlockToken token, MarkdownBlockContext context)
         {
             if (!PathUtility.IsRelativePath(token.Path))
             {
-                string errorMessage = $"Code absolute path: {token.Path} is not supported in file {engine.GetFilePathStack(context).Peek()}";
+                string errorMessage = $"Code absolute path: {token.Path} is not supported in file {context.GetFilePathStack().Peek()}";
                 Logger.LogError(errorMessage);
                 return GetRenderedFencesBlockString(token, errorMessage);
             }
@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.EntityModel
             try
             {
                 // TODO: Valid REST and REST-i script.
-                var fencesPath = ((RelativePath)token.Path).BasedOn((RelativePath)engine.GetFilePathStack(context).Peek());
+                var fencesPath = ((RelativePath)token.Path).BasedOn((RelativePath)context.GetFilePathStack().Peek());
                 var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
                 return GetRenderedFencesBlockString(token, extractResult.ErrorMessage, extractResult.FencesCodeLines);
             }

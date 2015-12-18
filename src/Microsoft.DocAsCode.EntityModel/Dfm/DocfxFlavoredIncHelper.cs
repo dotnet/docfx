@@ -23,12 +23,12 @@ namespace Microsoft.DocAsCode.EntityModel
             _cache = new FileCacheLite(new FilePathComparer());
         }
 
-        public string Load(DfmRendererAdapter adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
+        public string Load(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
         {
             return LoadCore(adapter, currentPath, raw, context, resolver);
         }
 
-        private string LoadCore(DfmRendererAdapter adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
+        private string LoadCore(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
         {
             if (!PathUtility.IsRelativePath(currentPath))
             {
@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 else
                     currentPath = PathUtility.MakeRelativePath(Environment.CurrentDirectory, currentPath);
             }
-            var parents = adapter.GetFilePathStack(context);
+            var parents = context.GetFilePathStack();
             var originalPath = currentPath;
             string parent = string.Empty;
             if (parents == null) parents = ImmutableStack<string>.Empty;
@@ -66,7 +66,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     var src = File.ReadAllText(currentPath);
 
-                    src = resolver(src, adapter.SetFilePathStack(context, parents));
+                    src = resolver(src, context.SetFilePathStack(parents));
 
                     HtmlDocument htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(src);

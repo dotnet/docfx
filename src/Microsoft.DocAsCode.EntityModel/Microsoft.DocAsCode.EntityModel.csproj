@@ -87,9 +87,9 @@
     <Compile Include="Dfm\DfmBlockquoteBlockToken.cs" />
     <Compile Include="Dfm\DfmBlockRules.cs" />
     <Compile Include="Dfm\DfmCodeExtractor.cs" />
+    <Compile Include="Dfm\DfmContextExtensions.cs" />
     <Compile Include="Dfm\DfmEngineBuilder.cs" />
     <Compile Include="Dfm\DfmParser.cs" />
-    <Compile Include="Dfm\DfmRendererAdapter.cs" />
     <Compile Include="Dfm\DfmExtractCodeResult.cs" />
     <Compile Include="Dfm\DfmFencesBlockPathQueryOption.cs" />
     <Compile Include="Dfm\DfmNoteBlockRule.cs" />
