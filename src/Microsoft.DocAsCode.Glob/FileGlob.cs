@@ -65,7 +65,11 @@ namespace Microsoft.DocAsCode.Glob
 
         private static string GetRelativeFilePath(string directory, string file)
         {
-            return file.Substring(directory.Length + 1);
+            var subpath = file.Substring(directory.Length);
+            // directory could be 
+            // 1. root folder, e.g. E:\ or /
+            // 2. sub folder, e.g. a or a/ or a\
+            return subpath.TrimStart('\\', '/');
         }
 
         private static string GetRelativeDirectoryPath(string parentDirectory, string directory)
