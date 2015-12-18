@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 throw new ArgumentNullException(nameof(context));
             }
-            return (ImmutableStack<string>)context.Variables[DfmEngine.FilePathStackKey]; ;
+            return (ImmutableStack<string>)context.Variables[FilePathStackKey]; ;
         }
 
         public static IMarkdownContext SetFilePathStack(this IMarkdownContext context, ImmutableStack<string> filePathStack)
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 throw new ArgumentNullException(nameof(context));
             }
-            return context.CreateContext(context.Variables.SetItem(DfmEngine.FilePathStackKey, filePathStack));
+            return context.CreateContext(context.Variables.SetItem(FilePathStackKey, filePathStack));
         }
     }
 }

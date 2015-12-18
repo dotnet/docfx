@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmParser : MarkdownParser
     {
-        public ImmutableStack<string> FilePathStack => (ImmutableStack<string>)Context.Variables[DfmEngine.FilePathStackKey];
+        public ImmutableStack<string> FilePathStack => Context.GetFilePathStack();
 
         public DfmParser(IMarkdownContext context, Options options, Dictionary<string, LinkObj> links)
             : base(context, options, links)
