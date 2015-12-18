@@ -36,7 +36,5 @@ namespace Microsoft.DocAsCode.EntityModel
             DfmEngine engine = new DfmEngine(context, Rewriter, Renderer, Options);
             return Mark(Normalize(src), context).ToString();
         }
-
-        public override IMarkdownParser Parser => new DfmParser(Context, Options, Links);
     }
 }
