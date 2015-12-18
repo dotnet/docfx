@@ -1,0 +1,419 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class FullObjectGraphTraversalStrategy | docfx website</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class FullObjectGraphTraversalStrategy | docfx website">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="../">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content">
+        
+        <div class="sidenav">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div class="sidetoc">
+              <iframe id="sidetoc" src="toc.html"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content">
+              
+              
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L24" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy">Class FullObjectGraphTraversalStrategy</h1>
+              <div class="markdown level0 summary"><p>An implementation of <span class="xref">YamlDotNet.Serialization.IObjectGraphTraversalStrategy</span> that traverses
+readable properties, collections and dictionaries.</p>
+</div>
+              <div class="markdown level0 conceptual"></div>
+              <div class="inheritance">
+                <h5>Inheritance</h5>
+                  <div class="level0"><span class="xref">System.Object</span></div>
+                  <div class="level1"><span class="xref">FullObjectGraphTraversalStrategy</span></div>
+              </div>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.YamlSerializations.ObjectGraphTraversalStrategies</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.YamlSerializations.dll</h6>
+              <h5 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_syntax">Syntax</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy</code></pre>
+              </div>
+              <h3 id="constructors">Constructors</h3>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L38">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy__ctor_Microsoft_DocAsCode_YamlSerializations_YamlSerializer_YamlDotNet_Serialization_ITypeInspector_YamlDotNet_Serialization_ITypeResolver_System_Int32_YamlDotNet_Serialization_INamingConvention_">FullObjectGraphTraversalStrategy(YamlSerializer, ITypeInspector, ITypeResolver, Int32, INamingConvention)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public FullObjectGraphTraversalStrategy(YamlSerializer serializer, ITypeInspector typeDescriptor, ITypeResolver typeResolver, int maxRecursion, INamingConvention namingConvention)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.YamlSerializations.YamlSerializer.html#Microsoft_DocAsCode_YamlSerializations_YamlSerializer">YamlSerializer</a></td>
+                    <td><em>serializer</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.ITypeInspector</span></td>
+                    <td><em>typeDescriptor</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.ITypeResolver</span></td>
+                    <td><em>typeResolver</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>maxRecursion</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.INamingConvention</span></td>
+                    <td><em>namingConvention</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h3 id="properties">Properties</h3>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L28">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_Serializer">Serializer</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected YamlSerializer Serializer { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.YamlSerializations.YamlSerializer.html#Microsoft_DocAsCode_YamlSerializations_YamlSerializer">YamlSerializer</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h3 id="methods">Methods</h3>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L70">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_Traverse_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">Traverse(IObjectDescriptor, IObjectGraphVisitor, Int32)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected virtual void Traverse(IObjectDescriptor value, IObjectGraphVisitor visitor, int currentDepth)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectDescriptor</span></td>
+                    <td><em>value</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectGraphVisitor</span></td>
+                    <td><em>visitor</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>currentDepth</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L162">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseDictionary_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">TraverseDictionary(IObjectDescriptor, IObjectGraphVisitor, Int32)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected virtual void TraverseDictionary(IObjectDescriptor dictionary, IObjectGraphVisitor visitor, int currentDepth)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectDescriptor</span></td>
+                    <td><em>dictionary</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectGraphVisitor</span></td>
+                    <td><em>visitor</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>currentDepth</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L215">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseGenericDictionaryHelper__2_Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_System_Collections_Generic_IDictionary___0___1__YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_YamlDotNet_Serialization_INamingConvention_">TraverseGenericDictionaryHelper&lt;TKey, TValue&gt;(FullObjectGraphTraversalStrategy, IDictionary&lt;TKey, TValue&gt;, IObjectGraphVisitor, Int32, INamingConvention)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public static void TraverseGenericDictionaryHelper&lt;TKey, TValue&gt;(FullObjectGraphTraversalStrategy self, IDictionary&lt;TKey, TValue&gt; dictionary, IObjectGraphVisitor visitor, int currentDepth, INamingConvention namingConvention)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.YamlSerializations.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy">FullObjectGraphTraversalStrategy</a></td>
+                    <td><em>self</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Collections.Generic.IDictionary</span>&lt;TKey, TValue&gt;</td>
+                    <td><em>dictionary</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectGraphVisitor</span></td>
+                    <td><em>visitor</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>currentDepth</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.INamingConvention</span></td>
+                    <td><em>namingConvention</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L132">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseObject_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">TraverseObject(IObjectDescriptor, IObjectGraphVisitor, Int32)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected virtual void TraverseObject(IObjectDescriptor value, IObjectGraphVisitor visitor, int currentDepth)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectDescriptor</span></td>
+                    <td><em>value</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectGraphVisitor</span></td>
+                    <td><em>visitor</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>currentDepth</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L251">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseProperties_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">TraverseProperties(IObjectDescriptor, IObjectGraphVisitor, Int32)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected virtual void TraverseProperties(IObjectDescriptor value, IObjectGraphVisitor visitor, int currentDepth)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectDescriptor</span></td>
+                    <td><em>value</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectGraphVisitor</span></td>
+                    <td><em>visitor</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Int32</span></td>
+                    <td><em>currentDepth</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerializations/ObjectGraphTraversalStrategies/FullObjectGraphTraversalStrategy.cs/#L65">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerializations_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_YamlDotNet_Serialization_IObjectGraphTraversalStrategy_Traverse_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_">IObjectGraphTraversalStrategy.Traverse(IObjectDescriptor, IObjectGraphVisitor)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">void IObjectGraphTraversalStrategy.Traverse(IObjectDescriptor graph, IObjectGraphVisitor visitor)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectDescriptor</span></td>
+                    <td><em>graph</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IObjectGraphVisitor</span></td>
+                    <td><em>visitor</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+            </nav>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
