@@ -31,6 +31,11 @@ tools           | Source code for tools used in code build and deployment
 
 ##How to Contribute
 Check out the [contributing](CONTRIBUTING.md) page to see the best places to log issues and start discussions.
+This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
+For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
 ##License
 DocFX is licensed under the [MIT license](LICENSE).
+
+### .NET Foundation
+The DocFX is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
