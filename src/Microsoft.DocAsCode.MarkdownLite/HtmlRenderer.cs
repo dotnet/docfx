@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
-    public class MarkdownRenderer
+    public class HtmlRenderer
     {
         #region Block
 

@@ -266,7 +266,7 @@ c
         public void TestGfmInGeneral(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new MarkdownRenderer());
+            var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
@@ -331,7 +331,7 @@ by a blank line.</p>
                 MarkdownRewriterFactory.FromLambda(
                     (MarkdownParser e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context) // ignore all heading
                 );
-            var engine = builder.CreateEngine(new MarkdownRenderer());
+            var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }

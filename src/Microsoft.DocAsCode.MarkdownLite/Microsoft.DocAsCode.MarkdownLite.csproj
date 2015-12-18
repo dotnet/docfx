@@ -42,7 +42,7 @@
     <Compile Include="MarkdownParser.cs" />
     <Compile Include="MarkdownEngineByOptionsBuilder.cs" />
     <Compile Include="MarkdownEngineBuilder.cs" />
-    <Compile Include="MarkdownRenderer.cs" />
+    <Compile Include="HtmlRenderer.cs" />
     <Compile Include="Rewriters\MarkdownCompositeRewriter.cs" />
     <Compile Include="Rewriters\IMarkdownRewriter.cs" />
     <Compile Include="RegexExtentions.cs" />

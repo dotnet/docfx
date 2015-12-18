@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Utility;
 
-    public class DfmRenderer : MarkdownRenderer
+    public class DfmRenderer : HtmlRenderer
     {
         private static readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
