@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var index = inlineRules.FindLastIndex(s => s is MarkdownLinkInlineRule);
             if (index < 0) throw new ArgumentException("MarkdownLinkInlineRule should exist!");
             inlineRules.Insert(index + 1, new DfmXrefInlineRule());
+            inlineRules.Insert(index + 1, new DfmEmailInlineRule());
             inlineRules.Insert(index, new DfmIncludeInlineRule());
             index = inlineRules.FindIndex(s => s is MarkdownTextInlineRule);
             inlineRules[index] = new DfmTextInlineRule();

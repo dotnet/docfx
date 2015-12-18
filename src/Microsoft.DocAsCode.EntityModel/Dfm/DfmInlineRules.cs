@@ -39,6 +39,25 @@ namespace Microsoft.DocAsCode.EntityModel
         }
     }
 
+    public class DfmEmailInlineRule : IMarkdownRule
+    {
+        private static readonly Regex _emailRegex = new Regex(@"^\s*[\w._%+-]*[\w_%+-]@[\w.-]+\.[\w]{2,}\b", RegexOptions.Compiled);
+        public string Name => "Email";
+        
+        public virtual Regex Xref => _emailRegex;
+
+        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        {
+            var match = Xref.Match(source);
+            if (match.Length == 0)
+            {
+                return null;
+            }
+            source = source.Substring(match.Length);
+            return new MarkdownTextToken(this, engine.Context, match.Groups[0].Value);
+        }
+    }
+
     public class DfmIncludeInlineRule : IMarkdownRule
     {
         public string Name => "INCLUDE";
@@ -69,7 +88,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmTextInlineRule : MarkdownTextInlineRule
     {
-        private static readonly Regex _inlineTextRegex = new Regex(@"^(?:[\s\S]*?(?:[.,;:!?~\s])(?=@)|[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$))", RegexOptions.Compiled);
+        private static readonly Regex _inlineTextRegex = new Regex(@"^[\s\S]+?(?=\S*@|[\\<!\[_*`]| {2,}\n|$)", RegexOptions.Compiled);
 
         /// <summary>
         /// Override the one in MarkdownLite, difference is:
