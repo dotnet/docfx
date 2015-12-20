@@ -55,6 +55,11 @@ function transform(model, _attrs){
         if (linenum > 0) path += '/#L' + linenum;
         return path;
       }
+      if (repo.match(/git@.*github\.com:.*/g)) {
+        var path = 'https://' + repo.substr(4).replace(':', '/') + '/blob' + '/' + remote.branch + '/' + remote.path;
+        if (linenum > 0) path += '/#L' + linenum;
+        return path;
+      }
     } else {
       return '';
     }
