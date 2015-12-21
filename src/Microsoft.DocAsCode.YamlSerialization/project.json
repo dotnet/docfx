@@ -4,6 +4,11 @@
     "YamlDotNet.Signed": "3.7.0"
   },
   "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Core": ""
+      }
+    },
     "dnx451": {
       "frameworkAssemblies": {
         "System.Core": ""
