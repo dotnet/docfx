@@ -3,11 +3,10 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System;
     using System.IO;
-    using MarkdownLite;
 
-    using Utility;
+    using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Utility;
 
     public class DfmRenderer : HtmlRenderer
     {
@@ -111,82 +110,6 @@ namespace Microsoft.DocAsCode.EntityModel
             }
 
             return $"{renderedErrorMessage}{renderedCodeLines}";
-        }
-    }
-
-    public class DfmYamlHeaderBlockToken : IMarkdownToken
-    {
-        public IMarkdownRule Rule { get; }
-        public IMarkdownContext Context { get; }
-        public string Content { get; }
-        public string RawMarkdown { get; set; }
-
-        public DfmYamlHeaderBlockToken(IMarkdownRule rule, IMarkdownContext context, string content)
-        {
-            Rule = rule;
-            Context = context;
-            Content = content;
-        }
-    }
-
-    public class DfmXrefInlineToken : IMarkdownToken
-    {
-        public IMarkdownRule Rule { get; }
-        public IMarkdownContext Context { get; }
-        public string Href { get; }
-        public string Name { get; }
-        public string Title { get; }
-        public string RawMarkdown { get; set; }
-
-        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string name, string title)
-        {
-            Rule = rule;
-            Context = context;
-            Href = href;
-            Name = name;
-            Title = title;
-        }
-    }
-
-    public class DfmIncludeBlockToken : IMarkdownToken
-    {
-        public IMarkdownRule Rule { get; }
-        public IMarkdownContext Context { get; }
-        public string Src { get; }
-        public string Name { get; }
-        public string Title { get; }
-        public string Raw { get; }
-        public string RawMarkdown { get; set; }
-
-        public DfmIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw)
-        {
-            Rule = rule;
-            Context = context;
-            Src = src;
-            Name = name;
-            Title = title;
-            Raw = raw;
-        }
-    }
-
-    public class DfmIncludeInlineToken : IMarkdownToken
-    {
-        public IMarkdownRule Rule { get; }
-        public IMarkdownContext Context { get; }
-        public string Src { get; }
-        public string Name { get; }
-        public string Title { get; }
-        public string Raw { get; }
-        public string RawMarkdown { get; set; }
-
-        public DfmIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw)
-        {
-            Rule = rule;
-            Context = context;
-            Src = src;
-            Name = name;
-            Title = title;
-            Raw = raw;
         }
     }
 }
