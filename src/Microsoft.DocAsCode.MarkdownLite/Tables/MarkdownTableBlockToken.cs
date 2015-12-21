@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Immutable;
 
-    public class MarkdownTableBlockToken : IMarkdownToken
+    public class MarkdownTableBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownTableBlockToken>
     {
         public MarkdownTableBlockToken(
             IMarkdownRule rule,
@@ -35,5 +35,43 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public ImmutableArray<ImmutableArray<InlineContent>> Cells { get; }
 
         public string RawMarkdown { get; set; }
+
+        public MarkdownTableBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
+        {
+            var header = Header;
+            for (int index = 0; index < header.Length; index++)
+            {
+                var cell = header[index];
+                var rewritten = cell.Rewrite(rewriterEngine);
+                if (rewritten != cell)
+                {
+                    header = header.SetItem(index, rewritten);
+                }
+            }
+            var cells = Cells;
+            for (int rowIndex = 0; rowIndex < Cells.Length; rowIndex++)
+            {
+                var row = cells[rowIndex];
+                var rewrittenRow = row;
+                for (int columnIndex = 0; columnIndex < row.Length; columnIndex++)
+                {
+                    var cell = row[columnIndex];
+                    var rewritten = cell.Rewrite(rewriterEngine);
+                    if (rewritten != cell)
+                    {
+                        rewrittenRow = rewrittenRow.SetItem(columnIndex, rewritten);
+                    }
+                }
+                if (rewrittenRow != row)
+                {
+                    cells = cells.SetItem(rowIndex, rewrittenRow);
+                }
+            }
+            if (header == Header && cells == Cells)
+            {
+                return this;
+            }
+            return new MarkdownTableBlockToken(Rule, Context, header, Align, cells);
+        }
     }
 }

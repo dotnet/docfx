@@ -241,7 +241,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             Assert.True(jsNode != null);
         }
 
-        //[Fact]
+        [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {

@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Immutable;
 
-    public class MarkdownEmInlineToken : IMarkdownToken
+    public class MarkdownEmInlineToken : IMarkdownToken, IMarkdownRewritable<MarkdownEmInlineToken>
     {
         public MarkdownEmInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content)
         {
@@ -21,5 +21,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public ImmutableArray<IMarkdownToken> Content { get; }
 
         public string RawMarkdown { get; set; }
+
+        public MarkdownEmInlineToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
+        {
+            var tokens = rewriterEngine.Rewrite(Content);
+            if (tokens == Content)
+            {
+                return this;
+            }
+            return new MarkdownEmInlineToken(Rule, Context, tokens);
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Immutable;
 
-    public class GfmDelInlineToken : IMarkdownToken
+    public class GfmDelInlineToken : IMarkdownToken, IMarkdownRewritable<GfmDelInlineToken>
     {
         public GfmDelInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content)
         {
@@ -21,5 +21,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public ImmutableArray<IMarkdownToken> Content { get; }
 
         public string RawMarkdown { get; set; }
+
+        public GfmDelInlineToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
+        {
+            var tokens = rewriterEngine.Rewrite(Content);
+            if (tokens == Content)
+            {
+                return this;
+            }
+            return new GfmDelInlineToken(Rule, Context, tokens);
+        }
     }
 }
