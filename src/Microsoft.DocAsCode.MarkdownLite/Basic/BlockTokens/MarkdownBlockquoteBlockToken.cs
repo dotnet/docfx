@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Immutable;
 
-    public class MarkdownBlockquoteBlockToken : IMarkdownToken
+    public class MarkdownBlockquoteBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownBlockquoteBlockToken>
     {
         public MarkdownBlockquoteBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens)
         {
@@ -21,5 +21,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public ImmutableArray<IMarkdownToken> Tokens { get; }
 
         public string RawMarkdown { get; set; }
+
+        public MarkdownBlockquoteBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
+        {
+            var tokens = rewriterEngine.Rewrite(Tokens);
+            if (tokens == Tokens)
+            {
+                return this;
+            }
+            return new MarkdownBlockquoteBlockToken(Rule, Context, tokens);
+        }
     }
 }

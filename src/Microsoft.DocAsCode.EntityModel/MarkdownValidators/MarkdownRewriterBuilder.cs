@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
         public IMarkdownRewriter Create()
         {
             var context = new MarkdownRewriterContext(CompositionHost, Validators);
-            return MarkdownRewriterFactory.FromLambda<MarkdownParser, MarkdownTagInlineToken>(context.Validate);
+            return MarkdownRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownTagInlineToken>(context.Validate);
         }
 
         private sealed class MarkdownRewriterContext
@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
 
             public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
-            public IMarkdownToken Validate(MarkdownParser engine, MarkdownTagInlineToken token)
+            public IMarkdownToken Validate(IMarkdownRewriteEngine engine, MarkdownTagInlineToken token)
             {
                 var m = OpeningTag.Match(token.RawMarkdown);
                 bool isOpeningTag = true;

@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public ImmutableList<IMarkdownRewriter> Rewriters { get; }
 
-        public IMarkdownToken Rewrite(MarkdownParser engine, IMarkdownToken token)
+        public IMarkdownToken Rewrite(IMarkdownRewriteEngine engine, IMarkdownToken token)
         {
             if (Rewriters.Count > 0)
             {

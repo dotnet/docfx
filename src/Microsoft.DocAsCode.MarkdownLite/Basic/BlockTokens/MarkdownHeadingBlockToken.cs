@@ -3,9 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System.Collections.Immutable;
-
-    public class MarkdownHeadingBlockToken : IMarkdownToken
+    public class MarkdownHeadingBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownHeadingBlockToken>
     {
         public MarkdownHeadingBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, string id, int depth)
         {
@@ -27,5 +25,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public int Depth { get; }
 
         public string RawMarkdown { get; set; }
+
+        public MarkdownHeadingBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
+        {
+            var c = Content.Rewrite(rewriterEngine);
+            if (c == Content)
+            {
+                return this;
+            }
+            return new MarkdownHeadingBlockToken(Rule, Context, c, Id, Depth);
+        }
     }
 }

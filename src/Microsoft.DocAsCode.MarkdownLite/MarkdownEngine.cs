@@ -54,6 +54,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 parser.SwitchContext(context);
             }
             var tokens = parser.Tokenize(Preprocess(markdown));
+            tokens = RewriteEngine.Rewrite(tokens);
             var renderer = Renderer;
             foreach (var token in tokens)
             {
@@ -75,8 +76,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual IMarkdownParser Parser =>
             new MarkdownParser(Context, Options, Links);
 
-        public virtual object RewriterEngine =>
-            null;// new MarkdownParser(this, Context, Options);
+        public virtual IMarkdownRewriteEngine RewriteEngine =>
+            new MarkdownRewriteEngine(this, Rewriter);
 
         public virtual IMarkdownRenderer Renderer =>
             new MarkdownRendererAdapter(this, RendererImpl, Options, Links);

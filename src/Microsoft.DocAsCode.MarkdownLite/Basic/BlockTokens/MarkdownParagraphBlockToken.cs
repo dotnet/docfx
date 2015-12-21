@@ -3,10 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System;
-    using System.Collections.Immutable;
-
-    public class MarkdownParagraphBlockToken : IMarkdownToken
+    public class MarkdownParagraphBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownParagraphBlockToken>
     {
         public MarkdownParagraphBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent inlineTokens)
         {
@@ -28,5 +25,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new MarkdownParagraphBlockToken(rule, engine.Context, engine.TokenizeInline(content));
         }
 
+        public MarkdownParagraphBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
+        {
+            var c = InlineTokens.Rewrite(rewriterEngine);
+            if (c == InlineTokens)
+            {
+                return this;
+            }
+            return new MarkdownParagraphBlockToken(Rule, Context, InlineTokens);
+        }
     }
 }

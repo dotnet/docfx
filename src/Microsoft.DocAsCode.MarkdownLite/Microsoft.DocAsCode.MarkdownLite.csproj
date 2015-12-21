@@ -33,9 +33,11 @@
     <Compile Include="IMarkdownEngine.cs" />
     <Compile Include="IMarkdownParser.cs" />
     <Compile Include="IMarkdownRenderer.cs" />
+    <Compile Include="IMarkdownRewriteEngine.cs" />
     <Compile Include="IMarkdownRule.cs" />
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
+    <Compile Include="IMarkdownRewritableToken.cs" />
     <Compile Include="MarkdownEngine.cs" />
     <Compile Include="MarkdownParserExtensions.cs" />
     <Compile Include="MarkdownRendererAdapter.cs" />
@@ -43,6 +45,7 @@
     <Compile Include="MarkdownEngineByOptionsBuilder.cs" />
     <Compile Include="MarkdownEngineBuilder.cs" />
     <Compile Include="HtmlRenderer.cs" />
+    <Compile Include="MarkdownRewriteEngine.cs" />
     <Compile Include="Rewriters\MarkdownCompositeRewriter.cs" />
     <Compile Include="Rewriters\IMarkdownRewriter.cs" />
     <Compile Include="RegexExtentions.cs" />

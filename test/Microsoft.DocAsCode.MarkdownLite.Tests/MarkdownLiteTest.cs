@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
     using System;
+    using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
@@ -271,6 +272,7 @@ c
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Fact]
         [Trait("Related", "Markdown")]
         public void TestGfmWithRewrite()
         {
@@ -329,36 +331,36 @@ by a blank line.</p>
             var builder = new GfmEngineBuilder(new Options());
             builder.Rewriter =
                 MarkdownRewriterFactory.FromLambda(
-                    (MarkdownParser e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context) // ignore all heading
+                    (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context) // ignore all heading
                 );
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
-//        [Fact]
-//        [Trait("Related", "Markdown")]
-//        public void ParseWithBadRewrite()
-//        {
-//            const string source = @"
-//# Heading
-//";
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void ParseWithBadRewrite()
+        {
+            const string source = @"
+# Heading
+";
 
-//            var builder = new GfmEngineBuilder(new Options());
-//            builder.Rewriter =
-//                MarkdownRewriterFactory.Loop(
-//                    MarkdownRewriterFactory.Composite(
-//                        MarkdownRewriterFactory.FromLambda(
-//                            (MarkdownEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown)
-//                        ),
-//                        MarkdownRewriterFactory.FromLambda(
-//                            (MarkdownEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, , 1)
-//                        )
-//                    ),
-//                10);
-//            var engine = builder.CreateEngine(new MarkdownRenderer());
-//            Assert.Throws<InvalidOperationException>(() => engine.Markup(source));
-//        }
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownRewriterFactory.Loop(
+                    MarkdownRewriterFactory.Composite(
+                        MarkdownRewriterFactory.FromLambda(
+                            (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown)
+                        ),
+                        MarkdownRewriterFactory.FromLambda(
+                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa" , 1)
+                        )
+                    ),
+                10);
+            var engine = builder.CreateEngine(new MarkdownRenderer());
+            Assert.Throws<InvalidOperationException>(() => engine.Markup(source));
+        }
 
     }
 }

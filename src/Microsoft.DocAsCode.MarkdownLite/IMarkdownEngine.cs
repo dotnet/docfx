@@ -7,8 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         IMarkdownParser Parser { get; }
         IMarkdownRenderer Renderer { get; }
-        // todo : coming soon.
-        object RewriterEngine { get; }
+        IMarkdownRewriteEngine RewriteEngine { get; }
 
         StringBuffer Mark(string markdown, IMarkdownContext context = null);
         string Markup(string markdown);
