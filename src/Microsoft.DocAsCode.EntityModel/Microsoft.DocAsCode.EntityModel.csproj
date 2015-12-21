@@ -85,7 +85,11 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Dfm\DfmBlockquoteBlockRule.cs" />
     <Compile Include="Dfm\DfmBlockquoteBlockToken.cs" />
-    <Compile Include="Dfm\DfmBlockRules.cs" />
+    <Compile Include="Dfm\DfmIncludeBlockRule.cs" />
+    <Compile Include="Dfm\DfmXrefInlineRule.cs" />
+    <Compile Include="Dfm\DfmEmailInlineRule.cs" />
+    <Compile Include="Dfm\DfmIncludeInlineRule.cs" />
+    <Compile Include="Dfm\DfmYamlHeaderBlockRule.cs" />
     <Compile Include="Dfm\DfmCodeExtractor.cs" />
     <Compile Include="Dfm\DfmContextExtensions.cs" />
     <Compile Include="Dfm\DfmEngineBuilder.cs" />
@@ -95,7 +99,7 @@
     <Compile Include="Dfm\DfmNoteBlockToken.cs" />
     <Compile Include="Dfm\DfmParagraphBlockRule.cs" />
     <Compile Include="Dfm\DfmRenderer.cs" />
-    <Compile Include="Dfm\DfmInlineRules.cs" />
+    <Compile Include="Dfm\DfmTextInlineRule.cs" />
     <Compile Include="Dfm\DfmEngine.cs" />
     <Compile Include="Dfm\DfmFencesBlockRule.cs" />
     <Compile Include="Dfm\DfmFencesBlockToken.cs" />
