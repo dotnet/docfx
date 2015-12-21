@@ -358,7 +358,7 @@ by a blank line.</p>
                         )
                     ),
                 10);
-            var engine = builder.CreateEngine(new MarkdownRenderer());
+            var engine = builder.CreateEngine(new HtmlRenderer());
             Assert.Throws<InvalidOperationException>(() => engine.Markup(source));
         }
 
