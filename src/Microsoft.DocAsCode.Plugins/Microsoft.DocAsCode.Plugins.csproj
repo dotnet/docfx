@@ -22,11 +22,16 @@
     <Compile Include="DocumentType.cs" />
     <Compile Include="FileAndType.cs" />
     <Compile Include="FileModel.cs" />
+    <Compile Include="ISubCommandController.cs" />
+    <Compile Include="ISubCommandCreator.cs" />
     <Compile Include="IDocumentBuildStep.cs" />
     <Compile Include="IDocumentProcessor.cs" />
     <Compile Include="IHostService.cs" />
     <Compile Include="ICustomMarkdownTagValidator.cs" />
+    <Compile Include="SubCommandRunningContext.cs" />
+    <Compile Include="ISubCommand.cs" />
     <Compile Include="MarkupResult.cs" />
+    <Compile Include="SubCommandParseOption.cs" />
     <Compile Include="SaveResult.cs" />
     <Compile Include="ProcessingPriority.cs" />
     <Compile Include="PropertyChangedEventArgs.cs" />

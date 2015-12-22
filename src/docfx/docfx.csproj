@@ -109,6 +109,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandModels\OptionParserException.cs" />
+    <Compile Include="CommandModels\CompositeOptions.cs" />
+    <Compile Include="SubCommands\BuildCommandCreator.cs" />
+    <Compile Include="SubCommands\CommandOptionAttribute.cs" />
+    <Compile Include="SubCommands\CommandController.cs" />
+    <Compile Include="SubCommands\BuildCommand.cs" />
+    <Compile Include="SubCommands\CompositeCommand.cs" />
+    <Compile Include="SubCommands\HelpCommand.cs" />
     <Compile Include="Commands\BuildCommand.cs" />
     <Compile Include="Exceptions\DocfxException.cs" />
     <Compile Include="Exceptions\DocfxMetadataException.cs" />
@@ -150,9 +158,11 @@
     <Compile Include="OptionsAttributes.cs" />
     <Compile Include="Models\Options.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="ArgsParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\CommandType.cs" />
+    <Compile Include="SubCommands\HelpCommandCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
