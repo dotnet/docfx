@@ -110,7 +110,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BuildCommand.cs" />
+    <Compile Include="Exceptions\DocfxException.cs" />
+    <Compile Include="Exceptions\DocfxMetadataException.cs" />
+    <Compile Include="Exceptions\DocfxInitException.cs" />
     <Compile Include="Models\BuildCommandOptions.cs" />
+    <Compile Include="Exceptions\InvalidOptionException.cs" />
     <Compile Include="Models\FileMetadataPairsItem.cs" />
     <Compile Include="Models\ListWithStringFallback.cs" />
     <Compile Include="Models\ListWithStringFallbackConverter.cs" />

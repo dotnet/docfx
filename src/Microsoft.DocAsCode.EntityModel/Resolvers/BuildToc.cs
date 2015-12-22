@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class BuildToc : IResolverPipeline
     {
-        public ParseResult Run(MetadataModel yaml, ResolverContext context)
+        public void Run(MetadataModel yaml, ResolverContext context)
         {
             yaml.TocYamlViewModel = yaml.TocYamlViewModel.ShrinkToSimpleTocWithNamespaceNotEmpty();
             // Comparing to toc files, yaml files are all in api folder
@@ -28,7 +28,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
                     return true;
                 });
-            return new ParseResult(ResultLevel.Success);
         }
     }
 }

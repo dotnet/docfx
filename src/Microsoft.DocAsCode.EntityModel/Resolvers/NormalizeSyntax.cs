@@ -4,13 +4,10 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
-    using System.Diagnostics;
-    using System.Threading.Tasks;
-    using Microsoft.DocAsCode.Utility;
 
     public class NormalizeSyntax : IResolverPipeline
     {
-        public ParseResult Run(MetadataModel yaml, ResolverContext context)
+        public void Run(MetadataModel yaml, ResolverContext context)
         {
             var index = yaml.Indexer;
 
@@ -31,8 +28,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
                     return true;
                 });
-            return new ParseResult(ResultLevel.Success);
         }
+
         private static string NormalizeLines(string content)
         {
             if (string.IsNullOrEmpty(content)) return content;

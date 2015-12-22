@@ -3,13 +3,7 @@
 
 namespace Microsoft.DocAsCode
 {
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.Utility;
-    using Newtonsoft.Json.Linq;
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
 
     internal class HelpCommand : ICommand
     {
@@ -21,12 +15,11 @@ namespace Microsoft.DocAsCode
             _rootOptions = options;
         }
 
-        public ParseResult Exec(RunningContext context)
+        public void Exec(RunningContext context)
         {
             string text = HelpTextGenerator.GetHelpMessage(_rootOptions, _options.Command);
             _rootOptions.CurrentSubCommand = CommandType.Help;
             Console.WriteLine(text);
-            return ParseResult.SuccessResult;
         }
     }
 }

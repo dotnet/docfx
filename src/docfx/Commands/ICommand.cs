@@ -7,6 +7,6 @@ namespace Microsoft.DocAsCode
 
     interface ICommand
     {
-        ParseResult Exec(RunningContext context);
+        void Exec(RunningContext context);
     }
 }

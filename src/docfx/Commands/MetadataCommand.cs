@@ -52,30 +52,19 @@ namespace Microsoft.DocAsCode
             if (metadataCommandOptions.LogLevel.HasValue) Logger.LogLevelThreshold = metadataCommandOptions.LogLevel.Value;
         }
 
-        public ParseResult Exec(RunningContext context)
+        public void Exec(RunningContext context)
         {
             if (_helpMessage != null)
             {
                 Console.WriteLine(_helpMessage);
-                return ParseResult.SuccessResult;
             }
-
-            return InternalExec(context);
+            else
+            {
+                InternalExec(context);
+            }
         }
 
-        private ParseResult InternalExec(RunningContext context)
-        {
-            // TODO: can we do it parallelly?
-            return CompositeCommand.AggregateParseResult(YieldExec(context));
-        }
-
-        /// <summary>
-        /// TODO: catch exception 
-        /// </summary>
-        /// <param name="configs"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private IEnumerable<ParseResult> YieldExec(RunningContext context)
+        private void InternalExec(RunningContext context)
         {
             foreach (var inputModel in InputModels)
             {
@@ -84,7 +73,7 @@ namespace Microsoft.DocAsCode
                 {
                     // Use task.run to get rid of current context (causing deadlock in xunit)
                     var task = Task.Run(worker.ExtractMetadataAsync);
-                    yield return task.Result;
+                    task.Wait();
                 }
             }
         }

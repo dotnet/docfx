@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.EntityModel
             new SetParent(),
             new ResolveRelativePath(),
             new BuildIndex(),
-            new ResolveGitPath(),
             new ResolveReference(),
             new ResolvePath(),
             new NormalizeSyntax(),
@@ -51,30 +50,18 @@ namespace Microsoft.DocAsCode.EntityModel
                 PreserveRawInlineComments = preserveRawInlineComments,
                 ExternalReferences = externalReferencePackages == null ? null : new ExternalReferencePackageCollection(externalReferencePackages),
             };
-            var result = ExecutePipeline(viewModel, context);
 
-            Logger.Log(result);
+            ExecutePipeline(viewModel, context);
+
             return viewModel;
         }
 
-        public static ParseResult ExecutePipeline(MetadataModel yaml, ResolverContext context)
+        public static void ExecutePipeline(MetadataModel yaml, ResolverContext context)
         {
-            ParseResult result = new ParseResult(ResultLevel.Success);
             foreach (var pipeline in pipelines)
             {
-                result = pipeline.Run(yaml, context);
-                if (result.ResultLevel == ResultLevel.Error)
-                {
-                    return result;
-                }
-
-                if (!string.IsNullOrEmpty(result.Message))
-                {
-                    Logger.Log(result);
-                }
+                pipeline.Run(yaml, context);
             }
-
-            return result;
         }
     }
 }

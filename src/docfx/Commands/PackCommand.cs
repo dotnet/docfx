@@ -3,11 +3,13 @@
 
 namespace Microsoft.DocAsCode
 {
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.Glob;
     using System;
     using System.IO;
     using System.Linq;
+
+    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Glob;
 
     /// <summary>
     /// TODO: NOT SURE IF IT IS WORKING NOW, simply migrate from old sub command and have not done any E2E test
@@ -22,50 +24,43 @@ namespace Microsoft.DocAsCode
             _rootOptions = options;
         }
 
-        public ParseResult Exec(RunningContext context)
+        public void Exec(RunningContext context)
         {
             var outputFile = Path.Combine(_options.OutputFolder ?? Environment.CurrentDirectory, _options.Name ?? "externalreference.rpk");
-            try
+            var baseUri = new Uri(_options.BaseUrl);
+            if (!baseUri.IsAbsoluteUri)
             {
-                var baseUri = new Uri(_options.BaseUrl);
-                if (!baseUri.IsAbsoluteUri)
+                throw new InvalidOptionException("BaseUrl should be absolute url.", "BaseUrl");
+            }
+
+            var source = _options.Source.TrimEnd('/', '\\');
+            using (var package = _options.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
+            {
+                var files = FileGlob.GetFiles(source, new string[] { _options.Glob }, null).ToList();
+                if (_options.FlatMode)
                 {
-                    return new ParseResult(ResultLevel.Error, "BaseUrl should be absolute url.");
+                    package.AddFiles(string.Empty, files);
                 }
-                var source = _options.Source.TrimEnd('/', '\\');
-                using (var package = _options.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
+                else
                 {
-                    var files = FileGlob.GetFiles(source, new string[] { _options.Glob }, null).ToList();
-                    if (_options.FlatMode)
+                    foreach (var g in from f in files
+                                      group f by Path.GetDirectoryName(f) into g
+                                      select new
+                                      {
+                                          Folder = g.Key.Substring(source.Length).Replace('\\', '/').Trim('/'),
+                                          Files = g.ToList(),
+                                      })
                     {
-                        package.AddFiles(string.Empty, files);
-                    }
-                    else
-                    {
-                        foreach (var g in from f in files
-                                          group f by Path.GetDirectoryName(f) into g
-                                          select new
-                                          {
-                                              Folder = g.Key.Substring(source.Length).Replace('\\', '/').Trim('/'),
-                                              Files = g.ToList(),
-                                          })
+                        if (g.Folder.Length == 0)
                         {
-                            if (g.Folder.Length == 0)
-                            {
-                                package.AddFiles(string.Empty, g.Files);
-                            }
-                            else
-                            {
-                                package.AddFiles(g.Folder + "/", g.Files);
-                            }
+                            package.AddFiles(string.Empty, g.Files);
+                        }
+                        else
+                        {
+                            package.AddFiles(g.Folder + "/", g.Files);
                         }
                     }
                 }
-                return ParseResult.SuccessResult;
-            }
-            catch (Exception ex)
-            {
-                return new ParseResult(ResultLevel.Error, ex.ToString());
             }
         }
     }

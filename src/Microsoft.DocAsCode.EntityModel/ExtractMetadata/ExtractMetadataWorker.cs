@@ -3,12 +3,6 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Microsoft.DocAsCode.Utility;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.MSBuild;
-    #if DNX451
-    using Microsoft.CodeAnalysis.Workspaces.Dnx;
-    #endif
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -17,7 +11,14 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.MSBuild;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Utility;
+    #if DNX451
+    using Microsoft.CodeAnalysis.Workspaces.Dnx;
+    #endif
 
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
@@ -57,13 +58,13 @@ namespace Microsoft.DocAsCode.EntityModel
             _preserveRawInlineComments = input.PreserveRawInlineComments;
         }
 
-        public async Task<ParseResult> ExtractMetadataAsync()
+        public async Task ExtractMetadataAsync()
         {
             var validInput = _validInput;
             if (validInput == null)
             {
-                var result = new ParseResult(ResultLevel.Warning, $"No valid file is found from input {_rawInput}. Exiting...");
-                return result;
+                Logger.LogWarning($"No valid file is found from input {_rawInput}. Exiting...");
+                return;
             }
 
             try
@@ -77,11 +78,8 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             catch (Exception e)
             {
-                var result = new ParseResult(ResultLevel.Error, $"Error extracting metadata for {_rawInput}: {e}");
-                return result;
+                throw new DocfxMetadataException($"Error extracting metadata for {_rawInput}: {e}", e);
             }
-
-            return new ParseResult(ResultLevel.Success);
         }
 
         #region Internal For UT
@@ -513,15 +511,13 @@ namespace Microsoft.DocAsCode.EntityModel
                 // Load from cache
                 var cacheFile = Path.Combine(projectConfig.OutputFolder, projectConfig.RelatvieOutputFiles.First());
                 Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' keep up-to-date since '{projectConfig.TriggeredUtcTime.ToString()}', cached intermediate result '{cacheFile}' is used.");
-                var result = TryParseYamlMetadataFile(cacheFile, out projectMetadata);
-                if (result.ResultLevel != ResultLevel.Success) Logger.Log(result);
-                if (projectMetadata == null)
+                if (TryParseYamlMetadataFile(cacheFile, out projectMetadata))
                 {
-                    Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' is invalid, rebuild needed.");
+                    return projectMetadata;
                 }
                 else
                 {
-                    return projectMetadata;
+                    Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' is invalid, rebuild needed.");
                 }
             }
 
@@ -675,7 +671,7 @@ namespace Microsoft.DocAsCode.EntityModel
             return allMembers;
         }
 
-        private static ParseResult TryParseYamlMetadataFile(string metadataFileName, out MetadataItem projectMetadata)
+        private static bool TryParseYamlMetadataFile(string metadataFileName, out MetadataItem projectMetadata)
         {
             projectMetadata = null;
             try
@@ -683,12 +679,13 @@ namespace Microsoft.DocAsCode.EntityModel
                 using (StreamReader reader = new StreamReader(metadataFileName))
                 {
                     projectMetadata = YamlUtility.Deserialize<MetadataItem>(reader);
-                    return new ParseResult(ResultLevel.Success);
+                    return true;
                 }
             }
             catch (Exception e)
             {
-                return new ParseResult(ResultLevel.Error, e.Message);
+                Logger.LogInfo($"Error parsing yaml metadata file: {e.Message}");
+                return false;
             }
         }
 

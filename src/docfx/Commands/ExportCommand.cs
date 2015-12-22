@@ -3,13 +3,12 @@
 
 namespace Microsoft.DocAsCode
 {
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.Utility;
-    using Newtonsoft.Json.Linq;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+
+    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Exceptions;
 
     /// <summary>
     /// TODO: NOT SURE IF IT IS WORKING NOW, simply migrate from old sub command and have not done any E2E test
@@ -34,46 +33,38 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        public ParseResult Exec(RunningContext context)
+        public void Exec(RunningContext context)
         {
             if (_helpMessage != null)
             {
                 Console.WriteLine(_helpMessage);
-                return ParseResult.SuccessResult;
             }
-
-            var extractMetadataResult = _metadataCommand.Exec(context);
-
-            Logger.Log(extractMetadataResult);
-            if (extractMetadataResult.ResultLevel == ResultLevel.Error)
+            else
             {
-                return extractMetadataResult;
+                InternalExec(context);
             }
+        }
+
+        private void InternalExec(RunningContext context)
+        {
+            _metadataCommand.Exec(context);
 
             // 2. convert.
             var inputModels = _metadataCommand.InputModels;
             var outputFile = Path.Combine(_options.OutputFolder ?? Environment.CurrentDirectory, _options.Name ?? "externalreference.rpk");
             if (string.IsNullOrWhiteSpace(_options.BaseUrl))
             {
-                return new ParseResult(ResultLevel.Error, "BaseUrl cannot be empty.");
+                throw new InvalidOptionException("BaseUrl cannot be empty.", "BaseUrl");
             }
-            try
-            {
-                var baseUri = new Uri(_options.BaseUrl);
-                if (!baseUri.IsAbsoluteUri)
-                {
-                    return new ParseResult(ResultLevel.Error, "BaseUrl should be absolute url.");
-                }
-                using (var package = _options.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
-                {
-                    package.AddProjects(inputModels.SelectMany(s => s.Items).Select(s => s.Key).ToList());
-                }
 
-                return ParseResult.SuccessResult;
-            }
-            catch (Exception ex)
+            var baseUri = new Uri(_options.BaseUrl);
+            if (!baseUri.IsAbsoluteUri)
             {
-                return new ParseResult(ResultLevel.Error, ex.ToString());
+                throw new InvalidOptionException("BaseUrl should be absolute url.", "BaseUrl");
+            }
+            using (var package = _options.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
+            {
+                package.AddProjects(inputModels.SelectMany(s => s.Items).Select(s => s.Key).ToList());
             }
         }
     }

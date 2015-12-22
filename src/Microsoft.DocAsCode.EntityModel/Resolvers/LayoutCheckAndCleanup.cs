@@ -14,33 +14,32 @@ namespace Microsoft.DocAsCode.EntityModel
         /// </summary>
         /// <param name="allMembers"></param>
         /// <returns></returns>
-        public ParseResult Run(MetadataModel yaml, ResolverContext context)
+        public void Run(MetadataModel yaml, ResolverContext context)
         {
-            ParseResult overall = new ParseResult(ResultLevel.Success);
             StringBuilder message = new StringBuilder();
             foreach (var member in yaml.TocYamlViewModel.Items)
             {
-                CheckNamespaces(member);
+                var result = CheckNamespaces(member);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    message.AppendLine(result);
+                }
             }
 
             if (message.Length > 0)
             {
-                overall.ResultLevel = ResultLevel.Warning;
-                overall.Message = message.ToString();
+                Logger.LogWarning(message.ToString());
             }
-
-            return overall;
         }
 
-        private ParseResult CheckNamespaces(MetadataItem member)
+        private string CheckNamespaces(MetadataItem member)
         {
-            ParseResult overall = new ParseResult(ResultLevel.Success);
             StringBuilder message = new StringBuilder();
 
             // Skip if it is already invalid
             if (member.Items == null || member.IsInvalid)
             {
-                return overall;
+                return string.Empty;
             }
 
             foreach (var i in member.Items)
@@ -54,21 +53,15 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    ParseResult result = CheckNamespaceMembers(i);
-                    if (!string.IsNullOrEmpty(result.Message))
+                    var result = CheckNamespaceMembers(i);
+                    if (!string.IsNullOrEmpty(result))
                     {
-                        message.AppendLine(result.Message);
+                        message.AppendLine(result);
                     }
                 }
             }
 
-            if (message.Length > 0)
-            {
-                overall.ResultLevel = ResultLevel.Warning;
-                overall.Message = message.ToString();
-            }
-
-            return overall;
+            return message.ToString();
         }
 
         /// <summary>
@@ -76,17 +69,15 @@ namespace Microsoft.DocAsCode.EntityModel
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private ParseResult CheckNamespaceMembers(MetadataItem member)
+        private string CheckNamespaceMembers(MetadataItem member)
         {
-            ParseResult overall = new ParseResult(ResultLevel.Success);
             StringBuilder message = new StringBuilder();
 
             // Skip if it is already invalid
             if (member.Items == null || member.IsInvalid)
             {
-                return overall;
+                return string.Empty;
             }
-
 
             foreach (var i in member.Items)
             {
@@ -99,21 +90,15 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    ParseResult result = CheckNamespaceMembersMembers(i);
-                    if (!string.IsNullOrEmpty(result.Message))
+                    var result = CheckNamespaceMembersMembers(i);
+                    if (!string.IsNullOrEmpty(result))
                     {
-                        message.AppendLine(result.Message);
+                        message.AppendLine(result);
                     }
                 }
             }
 
-            if (message.Length > 0)
-            {
-                overall.ResultLevel = ResultLevel.Warning;
-                overall.Message = message.ToString();
-            }
-
-            return overall;
+            return message.ToString();
         }
 
 
@@ -122,13 +107,12 @@ namespace Microsoft.DocAsCode.EntityModel
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private ParseResult CheckNamespaceMembersMembers(MetadataItem member)
+        private string CheckNamespaceMembersMembers(MetadataItem member)
         {
-            ParseResult overall = new ParseResult(ResultLevel.Success);
             StringBuilder message = new StringBuilder();
             if (member.IsInvalid)
             {
-                return overall;
+                return string.Empty;
             }
 
             // does method has members?
@@ -144,13 +128,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 message.AppendFormat("{0} should not contain items.", member.Type.ToString());
             }
 
-            if (message.Length > 0)
-            {
-                overall.ResultLevel = ResultLevel.Warning;
-                overall.Message = message.ToString();
-            }
-
-            return overall;
+            return message.ToString();
         }
     }
 }

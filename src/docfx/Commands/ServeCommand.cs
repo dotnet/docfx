@@ -21,10 +21,9 @@ namespace Microsoft.DocAsCode
             _rootOptions = options;
         }
 
-        public ParseResult Exec(RunningContext context)
+        public void Exec(RunningContext context)
         {
             Serve(_options.Folder, _options.Port.HasValue ? _options.Port.Value.ToString() : null);
-            return ParseResult.SuccessResult;
         }
 
         public static void Serve(string folder, string port)

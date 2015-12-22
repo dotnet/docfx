@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode
     using System.Linq;
 
     using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Exceptions;
     using Newtonsoft.Json;
 
     public class DefaultConfigModel
@@ -172,7 +173,7 @@ namespace Microsoft.DocAsCode
             _rootOptions = options;
         }
 
-        public ParseResult Exec(RunningContext context)
+        public void Exec(RunningContext context)
         {
             string name = null;
             string path = null;
@@ -205,11 +206,11 @@ namespace Microsoft.DocAsCode
                 path = string.IsNullOrEmpty(_options.OutputFolder) ? name : Path.Combine(_options.OutputFolder, name);
 
                 JsonUtility.Serialize(path, config, Formatting.Indented);
-                return new ParseResult(ResultLevel.Success, $"Generated {name} to {path}");
+                Logger.LogInfo($"Generated {name} to {path}");
             }
             catch (Exception e)
             {
-                return new ParseResult(ResultLevel.Error, $"Error init { name ?? ConfigName}: {e.Message}");
+                throw new DocfxInitException($"Error init { name ?? ConfigName}: {e.Message}", e);
             }
         }
 

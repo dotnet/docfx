@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class ResolveReference : IResolverPipeline
     {
-        public ParseResult Run(MetadataModel yaml, ResolverContext context)
+        public void Run(MetadataModel yaml, ResolverContext context)
         {
             TreeIterator.Preorder(yaml.TocYamlViewModel, null,
                 s => s.IsInvalid ? null : s.Items,
@@ -48,8 +48,6 @@ namespace Microsoft.DocAsCode.EntityModel
                     AddIndirectReference(context, page, addingReferences);
                     return true;
                 });
-
-            return new ParseResult(ResultLevel.Success);
         }
 
         private static void TryAddReference(ResolverContext context, MetadataItem page, List<ReferenceItem> addingReferences, string key)

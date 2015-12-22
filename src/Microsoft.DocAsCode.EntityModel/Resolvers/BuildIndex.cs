@@ -4,11 +4,10 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using Microsoft.DocAsCode.Utility;
-    using System.Threading.Tasks;
 
     public class BuildIndex : IResolverPipeline
     {
-        public ParseResult Run(MetadataModel yaml, ResolverContext context)
+        public void Run(MetadataModel yaml, ResolverContext context)
         {
             TreeIterator.Preorder(yaml.TocYamlViewModel, null,
                 s => s.IsInvalid ? null : s.Items,
@@ -31,8 +30,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
                     return true;
                 });
-
-            return new ParseResult(ResultLevel.Success);
         }
     }
 }

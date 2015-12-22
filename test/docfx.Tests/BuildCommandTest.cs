@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Tests
                     "test",
                 });
 
-            ParseResult result = new BuildCommand(new Options
+            new BuildCommand(new Options
             {
                 CurrentSubCommand = CommandType.Build,
                 BuildCommand = new BuildCommandOptions
@@ -75,7 +75,6 @@ namespace Microsoft.DocAsCode.Tests
             }
             , null).Exec(null);
 
-            Assert.Equal(ResultLevel.Success, result.ResultLevel);
             var file = Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".html"));
             Assert.True(File.Exists(file));
             // TODO: Update when XREF is implemented by @zhyan

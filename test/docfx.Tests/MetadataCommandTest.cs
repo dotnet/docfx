@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Tests
             File.Copy("Assets/test.csproj.sample.1", projectFile);
             File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-            ParseResult result = new MetadataCommand(
+            new MetadataCommand(
                 new Options
                 {
                     CurrentSubCommand = CommandType.Metadata,
@@ -50,7 +50,6 @@ namespace Microsoft.DocAsCode.Tests
                 }
                 , null).Exec(null);
 
-            Assert.Equal(ResultLevel.Success, result.ResultLevel);
             Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
             var file = Path.Combine(_outputFolder, "toc.yml");
@@ -111,7 +110,7 @@ namespace Microsoft.DocAsCode.Tests
             File.Copy("Assets/test.vbproj.sample.1", projectFile);
             File.Copy("Assets/test.vb.sample.1", sourceFile);
 
-            ParseResult result = new MetadataCommand(new Options
+            new MetadataCommand(new Options
             {
                 CurrentSubCommand = CommandType.Metadata,
                 MetadataCommand = new MetadataCommandOptions
@@ -121,8 +120,6 @@ namespace Microsoft.DocAsCode.Tests
                 }
             }
             , null).Exec(null);
-
-            Assert.Equal(ResultLevel.Success, result.ResultLevel);
             Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
             var file = Path.Combine(_outputFolder, "toc.yml");

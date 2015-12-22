@@ -113,6 +113,7 @@
     <Compile Include="Dfm\DfmSectionBeginBlockToken.cs" />
     <Compile Include="Dfm\DfmSectionEndBlockRule.cs" />
     <Compile Include="Dfm\DfmSectionEndBlockToken.cs" />
+    <Compile Include="Exceptions\ExtractMetadataException.cs" />
     <Compile Include="Plugins\BuildSteps\BaseDocumentBuildStep.cs" />
     <Compile Include="Plugins\BuildSteps\BuildConceptualDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildManagedReferenceDocument.cs" />
@@ -187,11 +188,9 @@
     <Compile Include="ViewModels\MapFileItemViewModel.cs" />
     <Compile Include="Models\SyntaxLanguage.cs" />
     <Compile Include="Models\MemberType.cs" />
-    <Compile Include="Models\ParseResult.cs" />
     <Compile Include="Models\LayoutItem.cs" />
     <Compile Include="Models\MetadataItem.cs" />
     <Compile Include="Resolvers\NormalizeSyntax.cs" />
-    <Compile Include="Resolvers\ResolveGitPath.cs" />
     <Compile Include="Resolvers\ResolvePath.cs" />
     <Compile Include="Resolvers\ResolveRelativePath.cs" />
     <Compile Include="Resolvers\LayoutCheckAndCleanup.cs" />

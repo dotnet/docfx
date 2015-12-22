@@ -49,33 +49,41 @@ namespace Microsoft.DocAsCode
             if (buildCommandOptions.LogLevel.HasValue) Logger.LogLevelThreshold = buildCommandOptions.LogLevel.Value;
         }
 
-        public ParseResult Exec(RunningContext context)
+        public void Exec(RunningContext context)
         {
             if (_helpMessage != null)
             {
                 Console.WriteLine(_helpMessage);
-                return ParseResult.SuccessResult;
             }
-
-            return InternalExec(Config, context);
+            else
+            {
+                InternalExec(Config, context);
+            }
         }
 
-        private ParseResult InternalExec(BuildJsonConfig config, RunningContext context)
+        private void InternalExec(BuildJsonConfig config, RunningContext context)
         {
             var parameters = ConfigToParameter(config);
-            if (parameters.Files.Count == 0) return new ParseResult(ResultLevel.Warning, "No files found, nothing is to be generated");
+            if (parameters.Files.Count == 0)
+            {
+                Logger.LogWarning("No files found, nothing is to be generated");
+                return;
+            }
             try
             {
                 _builder.Build(parameters);
             }
             catch (AggregateDocumentException aggEx)
             {
-                return new ParseResult(ResultLevel.Warning, "following document error:" + Environment.NewLine + string.Join(Environment.NewLine, from ex in aggEx.InnerExceptions select ex.Message));
+                Logger.LogWarning("following document error:" + Environment.NewLine + string.Join(Environment.NewLine, from ex in aggEx.InnerExceptions select ex.Message));
+                return;
             }
             catch (DocumentException ex)
             {
-                return new ParseResult(ResultLevel.Warning, "document error:" + ex.Message);
+                Logger.LogWarning("document error:" + ex.Message);
+                return;
             }
+
             var documentContext = DocumentBuildContext.DeserializeFrom(parameters.OutputBaseDir);
             var assembly = typeof(Program).Assembly;
 
@@ -97,8 +105,6 @@ namespace Microsoft.DocAsCode
             {
                 ServeCommand.Serve(outputFolder, config.Port);
             }
-
-            return ParseResult.SuccessResult;
         }
 
         private BuildJsonConfig MergeConfig(BuildJsonConfig config, CommandContext context)

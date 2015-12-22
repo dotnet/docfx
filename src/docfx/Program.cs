@@ -19,8 +19,7 @@ namespace Microsoft.DocAsCode
             {
                 var consoleLogListener = new ConsoleLogListener();
                 Logger.RegisterListener(consoleLogListener);
-                Options options;
-                var result = TryGetOptions(args, out options);
+                Options options = GetOptions(args);
 
                 if (!string.IsNullOrWhiteSpace(options.Log))
                 {
@@ -32,36 +31,19 @@ namespace Microsoft.DocAsCode
                     Logger.LogLevelThreshold = options.LogLevel.Value;
                 }
 
-                if (!string.IsNullOrEmpty(result.Message))
-                {
-                    Logger.Log(result);
-                }
-                if (result.ResultLevel == ResultLevel.Error)
-                {
-                    return 1;
-                }
-
                 var replayListener = new ReplayLogListener();
                 replayListener.AddListener(consoleLogListener);
                 Logger.RegisterListener(replayListener);
                 Logger.UnregisterListener(consoleLogListener);
 
                 var context = new RunningContext();
-                result = Exec(options, context);
-                if (!string.IsNullOrEmpty(result.Message))
-                {
-                    Logger.Log(result);
-                }
-
-                if (result.ResultLevel == ResultLevel.Error)
-                {
-                    return 1;
-                }
-                if (result.ResultLevel == ResultLevel.Warning)
-                {
-                    return 2;
-                }
+                Exec(options, context);
                 return 0;
+            }
+            catch(Exception e)
+            {
+                Logger.LogError(e.ToString());
+                return 1;
             }
             finally
             {
@@ -70,15 +52,15 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private static ParseResult TryGetOptions(string[] args, out Options options)
+        private static Options GetOptions(string[] args)
         {
-            options = new Options();
+            var options = new Options();
 
             string invokedVerb = null;
             object invokedVerbInstance = null;
             if (args.Length == 0)
             {
-                return ParseResult.SuccessResult;
+                return options;
             }
 
             if (!Parser.Default.ParseArguments(args, options, (s, o) =>
@@ -90,11 +72,11 @@ namespace Microsoft.DocAsCode
                 if (!Parser.Default.ParseArguments(args, options))
                 {
                     var text = HelpTextGenerator.GetHelpMessage(options);
-                    return new ParseResult(ResultLevel.Error, text);
+                    throw new ArgumentException(text);
                 }
                 else
                 {
-                    return ParseResult.SuccessResult;
+                    return options;
                 }
             }
             else
@@ -103,34 +85,19 @@ namespace Microsoft.DocAsCode
                 {
                     options.CurrentSubCommand = (CommandType)Enum.Parse(typeof(CommandType), invokedVerb, true);
                 }
-                catch
+                catch (Exception e)
                 {
-                    return new ParseResult(ResultLevel.Error, $"{invokedVerb} subcommand is not currently supported.");
+                    throw new ArgumentException($"{invokedVerb} subcommand is not currently supported.", e);
                 }
             }
 
-            return ParseResult.SuccessResult;
+            return options;
         }
 
-        private static ParseResult Exec(Options options, RunningContext context)
+        private static void Exec(Options options, RunningContext context)
         {
-            ICommand command;
-            try
-            {
-                command = CommandFactory.GetCommand(options);
-            }
-            catch (Exception e)
-            {
-                return new ParseResult(ResultLevel.Error, $"Fails to get config file: {e.Message}");
-            }
-            try
-            {
-                return command.Exec(context);
-            }
-            catch (Exception e)
-            {
-                return new ParseResult(ResultLevel.Error, $"Error running program: {e.ToString()}");
-            }
+            ICommand command = CommandFactory.GetCommand(options);
+            command.Exec(context);
         }
     }
 }

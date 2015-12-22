@@ -8,8 +8,6 @@ namespace Microsoft.DocAsCode
     using System.Linq;
 
     using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.Utility;
-    using System.IO;
     using Newtonsoft.Json.Linq;
 
     class CompositeCommand : ICommand
@@ -43,45 +41,12 @@ namespace Microsoft.DocAsCode
             Commands = dictionary.Select(s => CommandFactory.GetCommand(s.Key, s.Value, context)).ToList();
         }
 
-        public ParseResult Exec(RunningContext context)
-        {
-            return AggregateParseResult(YieldRun(context));
-        }
-
-        private IEnumerable<ParseResult> YieldRun(RunningContext context)
+        public void Exec(RunningContext context)
         {
             foreach (var command in Commands)
             {
-                yield return command.Exec(context);
+                command.Exec(context);
             }
-        }
-
-        public static ParseResult AggregateParseResult(IEnumerable<ParseResult> results)
-        {
-            List<ParseResult> warningResults = new List<ParseResult>();
-            foreach(var result in results)
-            {
-                if (result.ResultLevel == ResultLevel.Error)
-                {
-                    return result;
-                }
-                else if (result.ResultLevel == ResultLevel.Warning)
-                {
-                    warningResults.Add(result);
-                }
-            }
-
-            if (warningResults.Count > 0)
-            {
-                return new ParseResult(ResultLevel.Warning, warningResults.Select(s => $"Warning in build phase {s.Phase}: {EscapeFormatMessage(s.Message)}").ToDelimitedString("\n"));
-            }
-
-            return ParseResult.SuccessResult;
-        }
-
-        private static string EscapeFormatMessage(string message)
-        {
-            return message.Replace("{", "{{").Replace("}", "}}");
         }
     }
 
