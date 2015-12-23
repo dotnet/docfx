@@ -73,11 +73,6 @@ namespace Microsoft.DocAsCode
             {
                 _builder.Build(parameters);
             }
-            catch (AggregateDocumentException aggEx)
-            {
-                Logger.LogWarning("following document error:" + Environment.NewLine + string.Join(Environment.NewLine, from ex in aggEx.InnerExceptions select ex.Message));
-                return;
-            }
             catch (DocumentException ex)
             {
                 Logger.LogWarning("document error:" + ex.Message);

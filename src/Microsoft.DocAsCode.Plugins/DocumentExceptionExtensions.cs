@@ -16,7 +16,7 @@
                 throw new ArgumentNullException(nameof(func));
             }
             var results = new TResult[elements.Count];
-            List<DocumentException> exceptions = null;
+            DocumentException firstException = null;
             for (int i = 0; i < elements.Count; i++)
             {
                 try
@@ -25,16 +25,15 @@
                 }
                 catch (DocumentException ex)
                 {
-                    if (exceptions == null)
+                    if (firstException == null)
                     {
-                        exceptions = new List<DocumentException>();
+                        firstException = ex;
                     }
-                    exceptions.Add(ex);
                 }
             }
-            if (exceptions?.Count > 0)
+            if (firstException != null)
             {
-                throw DocumentException.CreateAggregate(exceptions);
+                throw new DocumentException(firstException.Message, firstException);
             }
             return results;
         }
@@ -49,7 +48,7 @@
             {
                 throw new ArgumentNullException(nameof(action));
             }
-            List<DocumentException> exceptions = null;
+            DocumentException firstException = null;
             for (int i = 0; i < elements.Count; i++)
             {
                 try
@@ -58,16 +57,15 @@
                 }
                 catch (DocumentException ex)
                 {
-                    if (exceptions == null)
+                    if (firstException == null)
                     {
-                        exceptions = new List<DocumentException>();
+                        firstException = ex;
                     }
-                    exceptions.Add(ex);
                 }
             }
-            if (exceptions?.Count > 0)
+            if (firstException != null)
             {
-                throw DocumentException.CreateAggregate(exceptions);
+                throw new DocumentException(firstException.Message, firstException);
             }
         }
     }
