@@ -151,6 +151,8 @@ namespace Microsoft.DocAsCode.Utility
             return (from + this) - to;
         }
 
+        public string FileName => _parts[_parts.Length - 1];
+
         public bool IsFromWorkingFolder()
         {
             return _parentDirectoryCount == 0 && _parts.Length > 1 && _parts[0] == "~";

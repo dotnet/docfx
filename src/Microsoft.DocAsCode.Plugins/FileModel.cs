@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Dynamic;
     using System.IO;
@@ -70,7 +69,7 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != BaseDir)
                 {
-                    FileAndType = new FileAndType(value, File, Type);
+                    FileAndType = new FileAndType(value, File, Type, PathRewriter);
                     OnFileOrBaseDirChanged();
                 }
             }
@@ -86,13 +85,15 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != File)
                 {
-                    FileAndType = new FileAndType(BaseDir, value, Type);
+                    FileAndType = new FileAndType(BaseDir, value, Type, PathRewriter);
                     OnFileOrBaseDirChanged();
                 }
             }
         }
 
         public DocumentType Type => FileAndType.Type;
+
+        public Func<string, string> PathRewriter => FileAndType.PathRewriter;
 
         public dynamic Properties { get; } = new ExpandoObject();
 

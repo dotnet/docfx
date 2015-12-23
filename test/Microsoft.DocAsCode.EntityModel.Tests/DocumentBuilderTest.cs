@@ -8,14 +8,12 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Xunit;
 
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.Plugins;
     using Microsoft.DocAsCode.Plugins;
-    using Newtonsoft.Json.Linq;
+    using Microsoft.DocAsCode.Utility;
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -89,7 +87,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
             files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2 });
-            files.Add(DocumentType.Article, "TestData", new[] { "System.Console.csyml", "System.ConsoleColor.csyml" });
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
@@ -170,8 +168,8 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.Equal(5, filemap.Count);
                 Assert.Equal("~/documents/test.json", filemap["~/documents/test.md"]);
                 Assert.Equal("~/documents/test/test.json", filemap["~/documents/test/test.md"]);
-                Assert.Equal("~/System.Console.json", filemap["~/System.Console.csyml"]);
-                Assert.Equal("~/System.ConsoleColor.json", filemap["~/System.ConsoleColor.csyml"]);
+                Assert.Equal("~/System.Console.json", filemap["~/TestData/System.Console.csyml"]);
+                Assert.Equal("~/System.ConsoleColor.json", filemap["~/TestData/System.ConsoleColor.csyml"]);
                 Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
             }
 

@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Plugins
     public sealed class FileAndType
         : IEquatable<FileAndType>
     {
-        public FileAndType(string baseDir, string file, DocumentType type)
+        public FileAndType(string baseDir, string file, DocumentType type, Func<string, string> pathRewriter = null)
         {
             if (baseDir == null)
             {
@@ -35,6 +35,7 @@ namespace Microsoft.DocAsCode.Plugins
             BaseDir = baseDir;
             File = file.Replace('\\', '/');
             Type = type;
+            PathRewriter = pathRewriter;
         }
 
         public string BaseDir { get; }
@@ -43,9 +44,11 @@ namespace Microsoft.DocAsCode.Plugins
 
         public DocumentType Type { get; }
 
+        public Func<string, string> PathRewriter { get; }
+
         public FileAndType ChangeType(DocumentType type)
         {
-            return new FileAndType(BaseDir, File, type);
+            return new FileAndType(BaseDir, File, type, PathRewriter);
         }
 
         public bool Equals(FileAndType other)
