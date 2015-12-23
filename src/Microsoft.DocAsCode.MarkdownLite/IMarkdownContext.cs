@@ -11,11 +11,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public interface IMarkdownContext
     {
         /// <summary>
-        /// The rule set for current context.
+        /// Get the rule set for current context.
         /// </summary>
         ImmutableList<IMarkdownRule> Rules { get; }
         /// <summary>
-        /// The variables.
+        /// Get the variables.
         /// </summary>
         ImmutableDictionary<string, object> Variables { get; }
 

@@ -9,15 +9,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public interface IMarkdownEngine
     {
         /// <summary>
-        /// Parser (it can read markdown text, then return markdown tokens).
+        /// Get the parser (it can read markdown text, then return markdown tokens).
         /// </summary>
         IMarkdownParser Parser { get; }
         /// <summary>
-        /// Renderer (it can read markdown token, then return text e.g. html).
+        /// Get the renderer (it can read markdown token, then return text e.g. html).
         /// </summary>
         IMarkdownRenderer Renderer { get; }
         /// <summary>
-        /// Writer (it can read markdown tokens, then rewrite them and return).
+        /// Get the rewriter (it can read markdown tokens, then rewrite them and return).
         /// </summary>
         IMarkdownRewriteEngine RewriteEngine { get; }
 
