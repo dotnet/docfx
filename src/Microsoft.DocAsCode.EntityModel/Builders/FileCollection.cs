@@ -50,7 +50,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 return file;
             }
-            return PathUtility.MakeRelativePath(rootedBaseDir, file);
+            var result = PathUtility.MakeRelativePath(rootedBaseDir, file);
+            if (Path.IsPathRooted(result))
+            {
+                throw new ArgumentException($"Cannot get relative path for {file} from {rootedBaseDir}.", nameof(file));
+            }
+            return result;
         }
 
         public IEnumerable<FileAndType> EnumerateFiles()
