@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Plugins
     public sealed class FileAndType
         : IEquatable<FileAndType>
     {
-        public FileAndType(string baseDir, string file, DocumentType type, Func<string, string> pathRewriter = null)
+        public FileAndType(string baseDir, string file, DocumentType type, Func<string, string> pathRewriter)
         {
             if (baseDir == null)
             {
