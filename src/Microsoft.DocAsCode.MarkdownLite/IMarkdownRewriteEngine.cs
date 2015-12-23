@@ -5,9 +5,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Immutable;
 
+    /// <summary>
+    /// Markdown rewrite engine.
+    /// </summary>
     public interface IMarkdownRewriteEngine
     {
+        /// <summary>
+        /// Get markdown engine.
+        /// </summary>
         IMarkdownEngine Engine { get; }
+
+        /// <summary>
+        /// Rewrite markdown tokens.
+        /// </summary>
+        /// <param name="tokens">Source markdown tokens.</param>
+        /// <returns>Rewritten markdown tokens.</returns>
         ImmutableArray<IMarkdownToken> Rewrite(ImmutableArray<IMarkdownToken> tokens);
     }
 }
