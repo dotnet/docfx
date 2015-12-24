@@ -8,8 +8,8 @@
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
-        "System.Xml": "",
         "System": "",
+        "System.Runtime": "",
         "System.Web": ""
       }
     },
@@ -17,7 +17,6 @@
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
-        "System.Xml": "",
         "System": "",
         "System.Runtime": "",
         "System.Web": ""

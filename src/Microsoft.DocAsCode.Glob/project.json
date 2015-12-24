@@ -3,6 +3,11 @@
   "dependencies": {
   },
   "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "System": ""
+      }
+    },
     "dnx451": {
       "frameworkAssemblies": {
         "System": ""

@@ -6,6 +6,14 @@
     "YamlDotNet.Signed": "3.7.0"
   },
   "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "Microsoft.CSharp": "",
+        "System.Core": "",
+        "System.Runtime": "",
+        "System.Web": ""
+      }
+    },
     "dnx451": {
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
