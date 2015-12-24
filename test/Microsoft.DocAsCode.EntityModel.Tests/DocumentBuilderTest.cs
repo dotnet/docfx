@@ -128,6 +128,12 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             }
 
             {
+                // check mref.
+                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.Console.csyml", ".json"))));
+                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.ConsoleColor.csyml", ".json"))));
+            }
+
+            {
                 // check resource.
                 Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
                 Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + ".json")));

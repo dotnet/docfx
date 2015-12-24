@@ -243,6 +243,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                             {
                                 Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
                                 m.BaseDir = context.BuildOutputFolder;
+                                if (m.PathRewriter != null)
+                                {
+                                    m.File = m.PathRewriter(m.File);
+                                }
                                 var result = processor.Save(m);
                                 if (result != null)
                                 {
@@ -264,18 +268,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             FileModel model,
             SaveResult result)
         {
-            if (model.PathRewriter != null)
-            {
-                model.File = model.PathRewriter(model.File);
-                if (result.ModelFile!= null)
-                {
-                    result.ModelFile = model.PathRewriter(result.ModelFile);
-                }
-                if (result.ResourceFile != null)
-                {
-                    result.ResourceFile = model.PathRewriter(result.ResourceFile);
-                }
-            }
             context.FileMap[((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder()] = ((RelativePath)model.File).GetPathFromWorkingFolder();
             DocumentException.RunAll(
                 () => CheckFileLink(hostService, model, result),
