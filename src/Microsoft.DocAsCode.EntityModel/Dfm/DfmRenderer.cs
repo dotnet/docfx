@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using System.Collections.Immutable;
     using System.IO;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -45,26 +46,30 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public override StringBuffer Render(IMarkdownRenderer engine, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
         {
-            if (token.Tokens.Length > 0)
+            StringBuffer content = string.Empty;
+            var splitTokens = DfmRendererHelper.SplitBlockquoteTokens(token.Tokens);
+            foreach (var splitToken in splitTokens)
             {
-                var ft = token.Tokens[0] as DfmNoteBlockToken;
-                if (ft != null)
+                if (splitToken.Token is DfmSectionBlockToken)
                 {
-                    return $"<blockquote class=\"{ft.NoteType}\">" + RenderTokens(engine, token.Tokens.RemoveAt(0), context, true, token.Rule) + "</blockquote>";
+                    var sectionToken = splitToken.Token as DfmSectionBlockToken;
+                    content += $"<div{sectionToken.Attributes}>";
+                    content += RenderTokens(engine, splitToken.InnerTokens.ToImmutableArray(), context, true, token.Rule);
+                    content += "</div>\n";
+                }
+                else if (splitToken.Token is DfmNoteBlockToken)
+                {
+                    var noteToken = splitToken.Token as DfmNoteBlockToken;
+                    content += $"<div class=\"{noteToken.NoteType}\"><h5>{noteToken.NoteType}</h5>" + RenderTokens(engine, splitToken.InnerTokens.ToImmutableArray(), context, true, token.Rule) + "</div>\n";
+                }
+                else
+                {
+                    content += "<blockquote>";
+                    content += RenderTokens(engine, splitToken.InnerTokens.ToImmutableArray(), context, true, token.Rule);
+                    content += "</blockquote>\n";
                 }
             }
-
-            return base.Render(engine, token, context);
-        }
-
-        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmSectionBeginBlockToken token, MarkdownBlockContext context)
-        {
-            return $"<div{token.Attributes}>";
-        }
-
-        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmSectionEndBlockToken token, MarkdownBlockContext context)
-        {
-            return $"</div>";
+            return content;
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer engine, DfmFencesBlockToken token, MarkdownBlockContext context)
@@ -73,7 +78,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 string errorMessage = $"Code absolute path: {token.Path} is not supported in file {context.GetFilePathStack().Peek()}";
                 Logger.LogError(errorMessage);
-                return GetRenderedFencesBlockString(token, errorMessage);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, errorMessage);
             }
 
             try
@@ -81,35 +86,14 @@ namespace Microsoft.DocAsCode.EntityModel
                 // TODO: Valid REST and REST-i script.
                 var fencesPath = ((RelativePath)token.Path).BasedOn((RelativePath)context.GetFilePathStack().Peek());
                 var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
-                return GetRenderedFencesBlockString(token, extractResult.ErrorMessage, extractResult.FencesCodeLines);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, extractResult.ErrorMessage, extractResult.FencesCodeLines);
             }
             catch (FileNotFoundException)
             {
                 string errorMessage = $"Can not find reference {token.Path}";
                 Logger.LogError(errorMessage);
-                return GetRenderedFencesBlockString(token, errorMessage);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, errorMessage);
             }
-        }
-
-        private static string GetRenderedFencesBlockString(DfmFencesBlockToken token, string errorMessage, string[] codeLines = null)
-        {
-            string renderedErrorMessage = string.Empty;
-            string renderedCodeLines = string.Empty;
-            if (!string.IsNullOrEmpty(errorMessage))
-            {
-                renderedErrorMessage = $@"<!-- {StringHelper.HtmlEncode(errorMessage)} -->\n";
-            }
-
-            if (codeLines != null)
-            {
-                var lang = string.IsNullOrEmpty(token.Lang) ? null : $" class=\"language-{token.Lang}\"";
-                var name = string.IsNullOrEmpty(token.Name) ? null : $" name=\"{StringHelper.HtmlEncode(token.Name)}\"";
-                var title = string.IsNullOrEmpty(token.Title) ? null : $" title=\"{StringHelper.HtmlEncode(token.Title)}\"";
-
-                renderedCodeLines = $"<pre><code{lang}{name}{title}>{StringHelper.HtmlEncode(string.Join("\n", codeLines))}\n</code></pre>";
-            }
-
-            return $"{renderedErrorMessage}{renderedCodeLines}";
         }
     }
 }

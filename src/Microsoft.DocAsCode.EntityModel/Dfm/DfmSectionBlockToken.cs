@@ -3,17 +3,16 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System.Collections.Generic;
-
     using MarkdownLite;
 
-    public class DfmSectionBeginBlockToken : IMarkdownToken
+    public class DfmSectionBlockToken : IMarkdownToken
     {
-        public DfmSectionBeginBlockToken(IMarkdownRule rule, IMarkdownContext context, string attributes)
+        public DfmSectionBlockToken(IMarkdownRule rule, IMarkdownContext context, string attributes, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
             Attributes = attributes;
+            RawMarkdown = rawMarkdown;
         }
 
         public IMarkdownRule Rule { get; }

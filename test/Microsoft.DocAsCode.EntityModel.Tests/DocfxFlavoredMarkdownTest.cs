@@ -129,10 +129,11 @@ This is also note with br
 
 Skip the note
 ", @"<p>the following is note type</p>
-<blockquote class=""NOTE""><p>note text 1-1
+<div class=""NOTE""><h5>NOTE</h5><p>note text 1-1
 note text 1-2<br>note text 2-1
 This is also note<br>This is also note with br</p>
-</blockquote><p>Skip the note</p>
+</div>
+<p>Skip the note</p>
 ")]
         [InlineData(@"the following is not note type
   > no-note text 1-1
@@ -140,11 +141,10 @@ This is also note<br>This is also note with br</p>
   > no-note text 1-2  
   > no-note text 2-1
 ", @"<p>the following is not note type</p>
-<blockquote>
-<p>no-note text 1-1
-[!NOTE]
-no-note text 1-2<br>no-note text 2-1</p>
+<blockquote><p>no-note text 1-1</p>
 </blockquote>
+<div class=""NOTE""><h5>NOTE</h5><p>no-note text 1-2<br>no-note text 2-1</p>
+</div>
 ")]
         [InlineData(@"the following is not note type
   > no-note text 1-1
@@ -153,12 +153,10 @@ no-note text 1-2<br>no-note text 2-1</p>
   > no-note text 2-1  
   > no-note text 2-2
 ", @"<p>the following is not note type</p>
-<blockquote>
-<p>no-note text 1-1</p>
-<p>[!NOTE]
-</p>
-<p>no-note text 2-1<br>no-note text 2-2</p>
+<blockquote><p>no-note text 1-1</p>
 </blockquote>
+<div class=""NOTE""><h5>NOTE</h5><p>no-note text 2-1<br>no-note text 2-2</p>
+</div>
 ")]
         [InlineData(@"the following is code
     > code text 1-1
@@ -180,32 +178,23 @@ no-note text 1-2<br>no-note text 2-1</p>
 
         [Theory]
         [Trait("Related", "DfmMarkdown")]
-        [InlineData(@"<!-- BEGINSECTION class=""All"" id=""All"" -->
-
-<!-- BEGINSECTION class=""A"" id=""A"" -->
-
-this is A
-
-<!-- ENDSECTION -->
-
-<!-- BEGINSECTION class=""B"" id=""B"" -->
-
-this is B
-
-<!-- ENDSECTION -->
-
-<!-- ENDSECTION -->")]
+        [InlineData(@"> [!div class=""All"" id=""All""]
+> this is out all
+> > [!div class=""A"" id=""A""]
+> > this is A
+> > [!div class=""B"" id=""B""]
+> > this is B")]
         public void TestSectionBlockLevelRecursive(string source)
         {
             var markedContent = DocfxFlavoredMarked.Markup(source);
-            Assert.Equal("<div class=\"All\" id=\"All\"><div class=\"A\" id=\"A\"><p>this is A</p>\n</div><div class=\"B\" id=\"B\"><p>this is B</p>\n</div></div>", markedContent);
+            Assert.Equal("<div class=\"All\" id=\"All\"><p>this is out all</p>\n<div class=\"A\" id=\"A\"><p>this is A</p>\n</div>\n<div class=\"B\" id=\"B\"><p>this is B</p>\n</div>\n</div>\n", markedContent);
         }
 
         [Theory]
         [Trait("Related", "DfmMarkdown")]
-        [InlineData(@"<!-- BEGINSECTION class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar"" -->
+        [InlineData(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
 
-```cs-i
+>```cs-i
     var outlookClient = await CreateOutlookClientAsync(""Calendar"");
     var events = await outlookClient.Me.Events.Take(10).ExecuteAsync();
             foreach (var calendarEvent in events.CurrentPage)
@@ -214,7 +203,7 @@ this is B
             }
 ```
 
-```javascript-i
+>```javascript-i
 outlookClient.me.events.getEvents().fetch().then(function(result) {
         result.currentPage.forEach(function(event) {
         console.log('Event ""' + event.subject + '""')
@@ -223,9 +212,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
     {
         console.log(error);
     });
-```
-
-<!-- ENDSECTION -->")]
+```")]
         public void TestSectionBlockLevel(string source)
         {
             var content = DocfxFlavoredMarked.Markup(source);
@@ -240,8 +227,41 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
             Assert.True(jsNode != null);
         }
+        
+        [Theory]
+        [Trait("Related", "DfmMarkdown")]
+        [InlineData(@"> this is blockquote
+>
+> this line is also in the before blockquote
+> [!NOTE]
+> This is note text
+> [!WARNING]
+> This is warning text
+> [!div class=""a"" id=""diva""]
+> this is div with class a and id diva
+> text also in div
+> [!div class=""b"" cause=""divb""]
+> this is div with class b and cause divb
+> [!IMPORTANT]
+> This is imoprtant text follow div")]
+        public void TestSectionNoteMixture(string source)
+        {
+            var content = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal("<blockquote><p>this is blockquote</p>\n<p>this line is also in the before blockquote</p>\n</blockquote>\n<div class=\"NOTE\"><h5>NOTE</h5><p>This is note text</p>\n</div>\n<div class=\"WARNING\"><h5>WARNING</h5><p>This is warning text</p>\n</div>\n<div class=\"a\" id=\"diva\"><p>this is div with class a and id diva\ntext also in div</p>\n</div>\n<div class=\"b\" cause=\"divb\"><p>this is div with class b and cause divb</p>\n</div>\n<div class=\"IMPORTANT\"><h5>IMPORTANT</h5><p>This is imoprtant text follow div</p>\n</div>\n", content);
+        }
 
-        [Fact]
+        [Theory]
+        [Trait("Related", "DfmMarkdown")]
+        [InlineData(@"> [!div]", "<div></div>\n")]
+        [InlineData(@"> [!div `id=""error""]", "<div></div>\n")]
+        [InlineData(@"> [!div `id=""right""`]", "<div id=\"right\"></div>\n")]
+        public void TestSectionCornerCase(string source, string expected)
+        {
+            var content = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected, content);
+        }
+
+        //[Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {

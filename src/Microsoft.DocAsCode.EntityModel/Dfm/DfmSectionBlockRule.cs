@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Web;
@@ -12,19 +10,21 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using MarkdownLite;
 
-    public class DfmSectionBeginBlockRule : IMarkdownRule
+    public class DfmSectionBlockRule : IMarkdownRule
     {
         public string Name => "Section";
 
-        public static readonly Regex _sectionBegin = new Regex(@"^<!--(\s*)((?i)BEGINSECTION)(\s*)(?<attributes>.*?)(\s*)-->(\s*)(?:\n+|$)", RegexOptions.Compiled);
-
-        private static readonly IReadOnlyList<string> _validAttributes = new List<string>() { "class", "id", "data-resources" };
+        public static readonly Regex _sectionRegex = new Regex(@"^(?<rawmarkdown> *\[\!div( +(?<quote>`?)(?<attributes>.*?)(\k<quote>))?\]\s*(?:\n|$))", RegexOptions.Compiled);
 
         private const string SectionReplacementHtmlTag = "div";
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
-            var match = _sectionBegin.Match(source);
+            if (!engine.Context.Variables.ContainsKey(MarkdownBlockContext.IsBlockQuote) || !(bool)engine.Context.Variables[MarkdownBlockContext.IsBlockQuote])
+            {
+                return null;
+            }
+            var match = _sectionRegex.Match(source);
             if (match.Length == 0)
             {
                 return null;
@@ -32,31 +32,28 @@ namespace Microsoft.DocAsCode.EntityModel
             source = source.Substring(match.Length);
 
             var attributes = ExtractAttibutes(match.Groups["attributes"].Value);
-            return new DfmSectionBeginBlockToken(this, engine.Context, attributes);
+            return new DfmSectionBlockToken(this, engine.Context, attributes, match.Groups["rawmarkdown"].Value);
         }
 
-        private string ExtractAttibutes(string commentText)
+        private string ExtractAttibutes(string attributeText)
         {
             var xmlDoc = new XmlDocument();
             var element = xmlDoc.CreateElement(SectionReplacementHtmlTag);
             try
             {
-                element.InnerXml = $"<{SectionReplacementHtmlTag} {commentText} />";
+                element.InnerXml = $"<{SectionReplacementHtmlTag} {attributeText} />";
             }
             catch
             {
-                Logger.LogWarning($"Parse section syntax error. {commentText} is not a valid attribute");
+                Logger.LogWarning($"Parse section syntax error. {attributeText} is not a valid attribute");
+                return string.Empty;
             }
 
             var attributes = element.SelectSingleNode($"./{SectionReplacementHtmlTag}[1]").Attributes;
             var attributesToReturn = new StringBuilder();
-
             foreach (XmlAttribute attr in attributes)
             {
-                if (_validAttributes.Contains(attr.Name))
-                {
-                    attributesToReturn.Append($@" {attr.Name}=""{HttpUtility.HtmlEncode(attr.Value)}""");
-                }
+                attributesToReturn.Append($@" {attr.Name}=""{HttpUtility.HtmlEncode(attr.Value)}""");
             }
             return attributesToReturn.ToString();
         }
