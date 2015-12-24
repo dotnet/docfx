@@ -38,28 +38,24 @@ Block file inclusion must be in a single line and with no prefix characters befo
 ```
 
 ### Section definition
-User may need to define section. Mostly used for code table. Give an example below. The attributes you write in BEGINSECTION comments will be the div tag's attributes. Currently we only allow 3 attributes, namely class, id, data-resources
+User may need to define section. Mostly used for code table.
+Give an example below.
 
-    <!-- BEGINSECTION class="tabbedCodeSnippets" data-resources="OutlookServices.Calendar" -->
-    ```cs-i
-    var outlookClient = await CreateOutlookClientAsync("Calendar");
-    var events = await outlookClient.Me.Events.Take(10).ExecuteAsync();
-    foreach (var calendarEvent in events.CurrentPage)
-    {
-        System.Diagnostics.Debug.WriteLine("Event '{0}'.", calendarEvent.Subject);
-    }
-    ```
-    ```javascript-i
-    outlookClient.me.events.getEvents().fetch().then(function(result) {
-        result.currentPage.forEach(function(event) {
-        console.log('Event "' + event.subject + '"')
-        });
-    }, function(error)
-    {
-        console.log(error);
-    });
-    ```
-    <!-- ENDSECTION -->
+    > [!div class="tabbedCodeSnippets" data-resources="OutlookServices.Calendar"]
+    > ```cs
+    > <cs code text>
+    > ```
+    > ```javascript
+    > <js code text>
+    > ```
+
+The above blockquote markdown text will transfromed to section html such as following shows:
+```
+<div class="tabbedCodeSnippets" data-resources="OutlookServices.Calendar">
+  <pre><code>cs code text</code></pre>
+  <pre><code>js code text</code></pre>
+</div>
+```
 
 ### CODE SNIPPET
 Allow you to insert code with code language specified. The content of specified code path will be expanded.
@@ -99,15 +95,24 @@ DFM currently only supports following __`<language>`__ values to be able to retr
 
 
 ### Note(Warning/Tip/Important)
-Using specific syntax at the beginning of block quote to indicate the following content is Note.
+Using specific syntax inside block quote to indicate the following content is Note.
 
-```md
-The following text is a note types in block quote
-
+```
 > [!NOTE]
-> <notecontent>
-> <notecontent>
-<notecontent>
+> <note content>
+> [!WARNING]
+> <warning content>
+```
 
-This line is not inside the note
+The above content will be transformed to the following html.
+
+```
+<div class="NOTE">
+  <h5>NOTE</h5>
+  <p>note content</p>
+</div>
+<div class="WARNING">
+  <h5>WARNING</h5>
+  <p>WARNING content</p>
+</div>
 ```
