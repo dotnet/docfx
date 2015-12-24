@@ -24,9 +24,9 @@ namespace Microsoft.DocAsCode
             foreach (var item in fileMapping.Items)
             {
                 // Use local variable to avoid different items influencing each other
-                var cwd = Path.Combine(baseDirectory, item.CurrentWorkingDirectory ?? string.Empty);
+                var src = Path.Combine(baseDirectory, item.SourceFolder ?? string.Empty);
                 var options = GetMatchOptionsFromItem(item);
-                var files = FileGlob.GetFiles(cwd, item.Files, item.Exclude, options).ToArray();
+                var files = FileGlob.GetFiles(src, item.Files, item.Exclude, options).ToArray();
                 if (files.Length == 0)
                 {
                     Logger.LogInfo($"No files are found with glob pattern {item.Files.ToDelimitedString() ?? "<none>"}, excluding {item.Exclude.ToDelimitedString() ?? "<none>"}, under working directory {baseDirectory ?? "<current>"}");
@@ -34,8 +34,9 @@ namespace Microsoft.DocAsCode
                 expandedFileMapping.Add(
                     new FileMappingItem
                     {
-                        CurrentWorkingDirectory = cwd,
+                        SourceFolder = src,
                         Files = new FileItems(files),
+                        DestinationFolder = item.DestinationFolder
                     });
             }
 

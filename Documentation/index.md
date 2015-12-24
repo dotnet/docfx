@@ -32,27 +32,26 @@ documentType: index
     </div>
   </div>
 </div>
-<!-- BEGINSECTION class="container content" -->
-<div id="vp-container">
-  <div id="initial-vps">
-    <div class="row value-props">
-      <div class="col-lg-4 text-center animated fadeInLeft">
-        <strong class="value-prop-heading">API-Documentation</strong>
-        <p>Able to generate API documentation from triple-slash-comments for .NET source code directly!</p>
-      </div><!-- /.col-lg-4 -->
-      <div class="col-lg-4 text-center animated fadeIn">
-        <strong class="value-prop-heading">Markdown-Documentation</strong>
-        <p>Able to generate HTML from markdown files supporting DFM syntax.</p>
-      </div><!-- /.col-lg-4 -->
-      <div class="col-lg-4 text-center animated fadeInRight">
-        <strong class="value-prop-heading">Customize</strong>
-        <p>Able to customize templates and themes easily</p>
-      </div><!-- /.col-lg-4 -->
-    </div><!-- /.row -->
+> [!div class="container content"]  
+  <div id="vp-container">
+    <div id="initial-vps">
+      <div class="row value-props">
+        <div class="col-lg-4 text-center animated fadeInLeft">
+          <strong class="value-prop-heading">API-Documentation</strong>
+          <p>Able to generate API documentation from triple-slash-comments for .NET source code directly!</p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4 text-center animated fadeIn">
+          <strong class="value-prop-heading">Markdown-Documentation</strong>
+          <p>Able to generate HTML from markdown files supporting DFM syntax.</p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4 text-center animated fadeInRight">
+          <strong class="value-prop-heading">Customize</strong>
+          <p>Able to customize templates and themes easily</p>
+        </div><!-- /.col-lg-4 -->
+      </div><!-- /.row -->
+    </div>
   </div>
-</div>
-<hr/>
-<!-- BEGINSECTION class="row" id="note"-->
-[!include[VersionNotes](../ReleaseNote.md)]
-<!-- ENDSECTION -->
-<!-- ENDSECTION -->
+  <hr/>
+
+> > [!div class="row" id="note"]  
+> > [!include[VersionNotes](../ReleaseNote.md)]

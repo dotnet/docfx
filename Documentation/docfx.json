@@ -8,24 +8,21 @@
           "cwd": "../src"
         }
       ],
-      "dest": "obj/docfx/api"
+      "dest": "obj/temp/docfxapi"
     }
   ],
   "build": {
     "content": [
       {
         "files": [ "**/*.yml" ],
-        "cwd": "obj/docfx"
+        "src": "obj/temp/docfxapi",
+        "dest": "api"
       },
       {
         "files": [ "tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml", "index.md", "guideline/**/*.md" ]
       },
       {
         "files": [ "toc.yml", "tutorial/toc.yml" ]
-      },
-      {
-        "files": [ "ReleaseNote.md" ],
-        "cwd": ".."
       }
     ],
     "resource": [

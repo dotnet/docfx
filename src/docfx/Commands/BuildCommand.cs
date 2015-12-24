@@ -3,15 +3,17 @@
 
 namespace Microsoft.DocAsCode
 {
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.EntityModel.Builders;
-    using Newtonsoft.Json.Linq;
-    using System.Linq;
-    using System.IO;
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using Plugins;
+    using System.IO;
+    using System.Linq;
+
+    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.EntityModel.Builders;
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
+    using Newtonsoft.Json.Linq;
 
     class BuildCommand : ICommand
     {
@@ -129,9 +131,9 @@ namespace Microsoft.DocAsCode
             if (config.FileMetadata != null) parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
             parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference)).ToImmutableArray();
             parameters.Files = GetFileCollectionFromFileMapping(baseDirectory,
-               Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
-               Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
-               Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
+                Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
+                Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
+                Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
             return parameters;
         }
 
@@ -158,7 +160,7 @@ namespace Microsoft.DocAsCode
             {
                 foreach (var item in file.Files)
                 {
-                    yield return Path.Combine(file.CurrentWorkingDirectory ?? Environment.CurrentDirectory, item);
+                    yield return Path.Combine(file.SourceFolder ?? Environment.CurrentDirectory, item);
                 }
             }
         }
@@ -172,12 +174,18 @@ namespace Microsoft.DocAsCode
                 {
                     foreach (var mapping in file.Item2.Items)
                     {
-                        fileCollection.Add(file.Item1, mapping.CurrentWorkingDirectory, mapping.Files);
+                        fileCollection.Add(file.Item1, mapping.Files, s => ConvertToDestinationPath(s, mapping.SourceFolder, mapping.DestinationFolder));
                     }
                 }
             }
 
             return fileCollection;
+        }
+
+        private static string ConvertToDestinationPath(string path, string src, string dest)
+        {
+            var relativePath = PathUtility.MakeRelativePath(src, path);
+            return Path.Combine(dest ?? string.Empty, relativePath);
         }
 
         private static BuildJsonConfig GetConfigFromOptions(BuildCommandOptions options)
@@ -220,25 +228,25 @@ namespace Microsoft.DocAsCode
             {
                 if (config.Content == null)
                     config.Content = new FileMapping(new FileMappingItem());
-                config.Content.Add(new FileMappingItem() { Files = new FileItems(options.Content), CurrentWorkingDirectory = optionsBaseDirectory });
+                config.Content.Add(new FileMappingItem() { Files = new FileItems(options.Content), SourceFolder = optionsBaseDirectory });
             }
             if (options.Resource != null)
             {
                 if (config.Resource == null)
                     config.Resource = new FileMapping(new FileMappingItem());
-                config.Resource.Add(new FileMappingItem() { Files = new FileItems(options.Resource), CurrentWorkingDirectory = optionsBaseDirectory });
+                config.Resource.Add(new FileMappingItem() { Files = new FileItems(options.Resource), SourceFolder = optionsBaseDirectory });
             }
             if (options.Overwrite != null)
             {
                 if (config.Overwrite == null)
                     config.Overwrite = new FileMapping(new FileMappingItem());
-                config.Overwrite.Add(new FileMappingItem() { Files = new FileItems(options.Overwrite), CurrentWorkingDirectory = optionsBaseDirectory });
+                config.Overwrite.Add(new FileMappingItem() { Files = new FileItems(options.Overwrite), SourceFolder = optionsBaseDirectory });
             }
             if (options.ExternalReference != null)
             {
                 if (config.ExternalReference == null)
                     config.ExternalReference = new FileMapping(new FileMappingItem());
-                config.ExternalReference.Add(new FileMappingItem() { Files = new FileItems(options.ExternalReference), CurrentWorkingDirectory = optionsBaseDirectory });
+                config.ExternalReference.Add(new FileMappingItem() { Files = new FileItems(options.ExternalReference), SourceFolder = optionsBaseDirectory });
             }
             if (options.Serve) config.Serve = options.Serve;
             if (options.Port.HasValue) config.Port = options.Port.Value.ToString();

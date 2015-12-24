@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode
                              Source = item,
                              Destination = DefaultMetadataOutputFolder,
                         });
-                        m.Build.Content = new FileMapping(new FileMappingItem("api/**.yml") { CurrentWorkingDirectory = "obj" });
+                        m.Build.Content = new FileMapping(new FileMappingItem("api/**.yml") { SourceFolder = "obj" });
                     }
                 },
                 new string[] { "src/**.csproj" }) {

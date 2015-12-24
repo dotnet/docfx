@@ -5,19 +5,69 @@ namespace Microsoft.DocAsCode
 {
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// Data model for a file-mapping item
+    /// </summary>
     public class FileMappingItem
     {
+        private string _sourceFolder;
+
+        /// <summary>
+        /// The name of current item, the value is not used for now
+        /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        /// <summary>
+        /// The file glob pattern collection, with path relative to property `src`/`cwd` is value is set
+        /// </summary>
         [JsonProperty("files")]
         public FileItems Files { get; set; }
 
+        /// <summary>
+        /// The file glob pattern collection for files that should be excluded, with path relative to property `src`/`cwd` is value is set
+        /// </summary>
         [JsonProperty("exclude")]
         public FileItems Exclude { get; set; }
 
+        /// <summary>
+        /// `src` defines the root folder for the source files, it has the same meaning as `cwd`
+        /// </summary>
+        [JsonProperty("src")]
+        public string SourceFolder
+        {
+            get
+            {
+                return _sourceFolder;
+            }
+            set
+            {
+                _sourceFolder = value;
+            }
+        }
+
+        /// <summary>
+        /// `cwd` defines the root folder for the source files, it has the same meaning as `src`
+        /// As discussed, `cwd` may lead to confusing and misunderstanding, so in version 1.3, `src` is introduced and `cwd` is kept for backward compatibility
+        /// </summary>
         [JsonProperty("cwd")]
-        public string CurrentWorkingDirectory { get; set; }
+        public string CurrentWorkingDirectory
+        {
+            get
+            {
+                return _sourceFolder;
+            }
+            set
+            {
+                _sourceFolder = value;
+            }
+        }
+
+        /// <summary>
+        /// The destination folder for the files if copy/transform is used
+        /// </summary>
+        [JsonProperty("dest")]
+        public string DestinationFolder { get; set; }
 
         /// <summary>
         /// Pattern match will be case sensitive.

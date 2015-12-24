@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     }
                     else
                     {
-                        Logger.Log(LogLevel.Warning, $"{key} is not found in .filemap");
+                        Logger.LogWarning($"{key} is not found in .filemap");
                     }
                 }
             }
@@ -91,10 +91,22 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 foreach (var pair in context.XRefSpecMap)
                 {
-                    string ext;
-                    if (extMapping.TryGetValue(pair.Value.Href, out ext))
+                    string targetFilePath;
+                    if (context.FileMap.TryGetValue(pair.Value.Href, out targetFilePath))
                     {
-                        pair.Value.Href = Path.ChangeExtension(pair.Value.Href, ext);
+                        string ext;
+                        if (extMapping.TryGetValue(pair.Value.Href, out ext))
+                        {
+                            pair.Value.Href = Path.ChangeExtension(targetFilePath, ext);
+                        }
+                        else
+                        {
+                            pair.Value.Href = targetFilePath;
+                        }
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"{pair.Value.Href} is not found in .filemap");
                     }
                 }
             }
@@ -111,7 +123,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         sb.AppendLine($"  -\"{file}\"");
                     }
                 }
-                Logger.Log(LogLevel.Warning, sb.ToString());// not processed but copied to '{modelOutputPath}'");
+                Logger.LogWarning(sb.ToString());// not processed but copied to '{modelOutputPath}'");
             }
 
             List<TemplateManifestItem> manifest = new List<TemplateManifestItem>();
@@ -162,7 +174,7 @@ namespace Microsoft.DocAsCode.EntityModel
                             else
                             {
                                 // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
-                                Logger.Log(LogLevel.Warning, $"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
+                                Logger.LogWarning($"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
                                 File.WriteAllText(outputPath, string.Empty);
                             }
                             manifestItem.OutputFiles.Add(extension, outputFile);
@@ -178,7 +190,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Warning, $"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
+                    Logger.LogWarning($"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
                 }
                 manifest.Add(manifestItem);
             }
@@ -418,7 +430,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    Logger.Log(LogLevel.Warning, $"File {path} is not found.");
+                    Logger.LogWarning($"File {path} is not found.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
                     link.SetAttributeValue(attribute, path);
@@ -441,7 +453,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    Logger.Log(LogLevel.Warning, $"File {path} is not found.");
+                    Logger.LogWarning($"File {path} is not found.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
                     link.SetAttributeValue(attribute, path);
