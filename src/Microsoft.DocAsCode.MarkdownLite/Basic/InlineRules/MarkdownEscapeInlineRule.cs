@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownEscapeInlineToken(this, engine.Context, match.Groups[1].Value);
+            return new MarkdownEscapeInlineToken(this, engine.Context, match.Groups[1].Value, match.Value);
         }
     }
 }

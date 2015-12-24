@@ -12,11 +12,12 @@ namespace Microsoft.DocAsCode.EntityModel
         public string Content { get; }
         public string RawMarkdown { get; set; }
 
-        public DfmYamlHeaderBlockToken(IMarkdownRule rule, IMarkdownContext context, string content)
+        public DfmYamlHeaderBlockToken(IMarkdownRule rule, IMarkdownContext context, string content, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
             Content = content;
+            RawMarkdown = rawMarkdown;
         }
     }
 }

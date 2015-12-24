@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // @String=>cap[3]=String, @'string'=>cap[2]=string
             // For cross-reference, add ~/ prefix
             var content = string.IsNullOrEmpty(match.Groups[2].Value) ? match.Groups[3].Value : match.Groups[2].Value;
-            return new DfmXrefInlineToken(this, engine.Context, content, null, null);
+            return new DfmXrefInlineToken(this, engine.Context, content, null, null, match.Value);
         }
     }
 }

@@ -5,13 +5,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownHeadingBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownHeadingBlockToken>
     {
-        public MarkdownHeadingBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, string id, int depth)
+        public MarkdownHeadingBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, string id, int depth, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
             Content = content;
             Id = id;
             Depth = depth;
+            RawMarkdown = rawMarkdown;
         }
 
         public IMarkdownRule Rule { get; }
@@ -33,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownHeadingBlockToken(Rule, Context, c, Id, Depth);
+            return new MarkdownHeadingBlockToken(Rule, Context, c, Id, Depth, RawMarkdown);
         }
     }
 }

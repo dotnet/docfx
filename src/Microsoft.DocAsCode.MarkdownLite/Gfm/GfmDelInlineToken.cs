@@ -7,11 +7,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class GfmDelInlineToken : IMarkdownToken, IMarkdownRewritable<GfmDelInlineToken>
     {
-        public GfmDelInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content)
+        public GfmDelInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
             Content = content;
+            RawMarkdown = rawMarkdown;
         }
 
         public IMarkdownRule Rule { get; }
@@ -29,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new GfmDelInlineToken(Rule, Context, tokens);
+            return new GfmDelInlineToken(Rule, Context, tokens, RawMarkdown);
         }
     }
 }

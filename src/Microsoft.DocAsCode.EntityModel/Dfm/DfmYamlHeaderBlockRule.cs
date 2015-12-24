@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 return null;
             }
 
-            return new DfmYamlHeaderBlockToken(this, engine.Context, value);
+            return new DfmYamlHeaderBlockToken(this, engine.Context, value, match.Value);
         }
     }
 }

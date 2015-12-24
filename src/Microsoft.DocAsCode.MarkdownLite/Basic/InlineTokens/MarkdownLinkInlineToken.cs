@@ -7,13 +7,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownLinkInlineToken : IMarkdownToken, IMarkdownRewritable<MarkdownLinkInlineToken>
     {
-        public MarkdownLinkInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, ImmutableArray<IMarkdownToken> content)
+        public MarkdownLinkInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, ImmutableArray<IMarkdownToken> content, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
             Href = href;
             Title = title;
             Content = content;
+            RawMarkdown = rawMarkdown;
         }
 
         public IMarkdownRule Rule { get; }
@@ -37,7 +38,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownLinkInlineToken(Rule, Context, Href, Title, tokens);
+            return new MarkdownLinkInlineToken(Rule, Context, Href, Title, tokens, RawMarkdown);
         }
     }
 }

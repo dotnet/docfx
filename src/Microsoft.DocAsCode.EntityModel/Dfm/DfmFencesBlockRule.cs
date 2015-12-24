@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesBlockToken(this, engine.Context, name, path, lang, title, pathQueryOption);
+            return new DfmFencesBlockToken(this, engine.Context, name, path, match.Value, lang, title, pathQueryOption);
         }
 
         private static DfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)

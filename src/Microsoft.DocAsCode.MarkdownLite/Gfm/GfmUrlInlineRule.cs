@@ -37,7 +37,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 text,
                 null,
                 ImmutableArray<IMarkdownToken>.Empty.Add(
-                    new MarkdownRawToken(this, engine.Context, text)));
+                    new MarkdownRawToken(this, engine.Context, text)),
+                match.Value);
         }
     }
 }

@@ -28,9 +28,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (string.IsNullOrEmpty(link?.Href))
             {
                 source = match.Groups[0].Value.Substring(1) + source;
-                return new MarkdownTextToken(this, engine.Context, match.Groups[0].Value[0].ToString());
+                return new MarkdownTextToken(this, engine.Context, match.Groups[0].Value[0].ToString(), match.Value);
             }
-            return GenerateToken(engine, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!');
+            return GenerateToken(engine, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', match.Value);
         }
     }
 }

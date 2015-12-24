@@ -128,7 +128,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
                         return null;
                     case TagRewriteBehavior.ErrorAndRemove:
                         Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
-                        return new MarkdownIgnoreToken(token.Rule, token.Context);
+                        return new MarkdownIgnoreToken(token.Rule, token.Context, token.RawMarkdown);
                     case TagRewriteBehavior.None:
                     default:
                         return null;

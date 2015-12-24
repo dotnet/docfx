@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownTextToken(this, engine.Context, match.Value);
+            return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
         }
     }
 }

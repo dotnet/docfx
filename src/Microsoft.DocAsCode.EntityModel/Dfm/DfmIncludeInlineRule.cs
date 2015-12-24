@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var title = match.Groups[4].Value;
 
             // 3. Apply inline rules to the included content
-            return new DfmIncludeInlineToken(this, engine.Context, path, value, title, match.Groups[0].Value);
+            return new DfmIncludeInlineToken(this, engine.Context, path, value, title, match.Groups[0].Value, match.Value);
         }
     }
 }

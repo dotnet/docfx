@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public string Raw { get; }
         public string RawMarkdown { get; set; }
 
-        public DfmIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw)
+        public DfmIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
@@ -23,6 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel
             Name = name;
             Title = title;
             Raw = raw;
+            RawMarkdown = rawMarkdown;
         }
     }
 }

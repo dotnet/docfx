@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            return GenerateToken(engine, match.Groups[2].Value, match.Groups[3].Value, match.Groups[1].Value, match.Value[0] == '!');
+            return GenerateToken(engine, match.Groups[2].Value, match.Groups[3].Value, match.Groups[1].Value, match.Value[0] == '!', match.Value);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var c = engine.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
             var tokens = engine.Tokenize(capStr);
             engine.SwitchContext(c);
-            return new DfmBlockquoteBlockToken(this, engine.Context, tokens);
+            return new DfmBlockquoteBlockToken(this, engine.Context, tokens, match.Value);
         }
     }
 }

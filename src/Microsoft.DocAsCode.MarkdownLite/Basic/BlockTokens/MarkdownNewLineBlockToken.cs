@@ -5,10 +5,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownNewLineBlockToken : IMarkdownToken
     {
-        public MarkdownNewLineBlockToken(IMarkdownRule rule, IMarkdownContext context)
+        public MarkdownNewLineBlockToken(IMarkdownRule rule, IMarkdownContext context, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
+            RawMarkdown = rawMarkdown;
         }
 
         public IMarkdownRule Rule { get; }

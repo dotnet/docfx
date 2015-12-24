@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 return null;
             }
             source = source.Substring(match.Length);
-            return new DfmNoteBlockToken(this, engine.Context, match.Groups["notetype"].Value, match.Groups["rawmarkdown"].Value);
+            return new DfmNoteBlockToken(this, engine.Context, match.Groups["notetype"].Value, match.Groups["rawmarkdown"].Value, match.Value);
         }
     }
 }

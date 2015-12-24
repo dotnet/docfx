@@ -7,12 +7,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownListItemBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownListItemBlockToken>
     {
-        public MarkdownListItemBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool loose)
+        public MarkdownListItemBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool loose, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
             Tokens = tokens;
             Loose = loose;
+            RawMarkdown = rawMarkdown;
         }
 
         public IMarkdownRule Rule { get; }
@@ -32,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownListItemBlockToken(Rule, Context, tokens, Loose);
+            return new MarkdownListItemBlockToken(Rule, Context, tokens, Loose, RawMarkdown);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownTextToken(this, engine.Context, match.Groups[0].Value);
+            return new MarkdownTextToken(this, engine.Context, match.Groups[0].Value, match.Value);
         }
     }
 }

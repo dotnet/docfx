@@ -77,11 +77,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
 
                 var c = engine.SwitchContext(MarkdownBlockContext.IsTop, false);
-                tokens.Add(new MarkdownListItemBlockToken(this, engine.Context, engine.Tokenize(item), loose));
+                tokens.Add(new MarkdownListItemBlockToken(this, engine.Context, engine.Tokenize(item), loose, match.Value));
                 engine.SwitchContext(c);
             }
 
-            return new MarkdownListBlockToken(this, engine.Context, tokens.ToImmutableArray(), bull.Length > 1);
+            return new MarkdownListBlockToken(this, engine.Context, tokens.ToImmutableArray(), bull.Length > 1, match.Value);
         }
     }
 }

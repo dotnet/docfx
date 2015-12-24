@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            return new GfmDelInlineToken(this, engine.Context, engine.Tokenize(match.Groups[1].Value));
+            return new GfmDelInlineToken(this, engine.Context, engine.Tokenize(match.Groups[1].Value), match.Value);
         }
     }
 }

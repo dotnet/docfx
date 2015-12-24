@@ -14,13 +14,14 @@ namespace Microsoft.DocAsCode.EntityModel
         public string Title { get; }
         public string RawMarkdown { get; set; }
 
-        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string name, string title)
+        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string name, string title, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
             Href = href;
             Name = name;
             Title = title;
+            RawMarkdown = rawMarkdown;
         }
     }
 }

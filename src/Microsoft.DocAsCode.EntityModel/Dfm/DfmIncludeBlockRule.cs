@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.EntityModel
             var value = match.Groups[1].Value;
             var title = match.Groups[4].Value;
 
-            return new DfmIncludeBlockToken(this, engine.Context, path, value, title, match.Groups[0].Value);
+            return new DfmIncludeBlockToken(this, engine.Context, path, value, title, match.Groups[0].Value, match.Value);
         }
     }
 }

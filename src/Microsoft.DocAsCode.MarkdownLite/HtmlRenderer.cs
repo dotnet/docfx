@@ -117,23 +117,23 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
                 if (textContent != StringBuffer.Empty)
                 {
-                    content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent);
+                    content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent, t.RawMarkdown);
                     textContent = StringBuffer.Empty;
                 }
                 content += engine.Render(t);
             }
             if (textContent != StringBuffer.Empty)
             {
-                content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent);
+                content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent, textContent);
             }
             return content;
         }
 
-        private StringBuffer RenderTextInTokens(IMarkdownRenderer engine, MarkdownBlockContext context, bool wrapParagraph, IMarkdownRule rule, StringBuffer textContent)
+        private StringBuffer RenderTextInTokens(IMarkdownRenderer engine, MarkdownBlockContext context, bool wrapParagraph, IMarkdownRule rule, StringBuffer textContent, string rawMarkdown)
         {
             if (wrapParagraph)
             {
-                return Render(engine, new MarkdownParagraphBlockToken(rule, context, engine.Engine.Parser.TokenizeInline(textContent)), context);
+                return Render(engine, new MarkdownParagraphBlockToken(rule, context, engine.Engine.Parser.TokenizeInline(textContent), rawMarkdown), context);
             }
             else
             {

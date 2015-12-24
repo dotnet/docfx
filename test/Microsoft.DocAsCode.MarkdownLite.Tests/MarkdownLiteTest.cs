@@ -331,7 +331,7 @@ by a blank line.</p>
             var builder = new GfmEngineBuilder(new Options());
             builder.Rewriter =
                 MarkdownRewriterFactory.FromLambda(
-                    (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context) // ignore all heading
+                    (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context, t.RawMarkdown) // ignore all heading
                 );
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
@@ -351,10 +351,10 @@ by a blank line.</p>
                 MarkdownRewriterFactory.Loop(
                     MarkdownRewriterFactory.Composite(
                         MarkdownRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown, t.RawMarkdown)
                         ),
                         MarkdownRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa" , 1)
+                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa" , 1, t.RawMarkdown)
                         )
                     ),
                 10);
