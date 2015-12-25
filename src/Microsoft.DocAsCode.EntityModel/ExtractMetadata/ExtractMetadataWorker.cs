@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
+    using Microsoft.DocAsCode.EntityModel.ExtractMetadata;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Utility;
@@ -20,13 +21,9 @@ namespace Microsoft.DocAsCode.EntityModel
     using Microsoft.CodeAnalysis.Workspaces.Dnx;
     #endif
 
-    using CS = Microsoft.CodeAnalysis.CSharp;
-    using VB = Microsoft.CodeAnalysis.VisualBasic;
-
     public sealed class ExtractMetadataWorker : IDisposable
     {
         private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
-        private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
         private static string[] SupportedSolutionExtensions = { ".sln" };
         #if DNX451
         private static string[] SupportedProjectName = { "project.json" };
@@ -213,67 +210,6 @@ namespace Microsoft.DocAsCode.EntityModel
             else return null;
         }
 
-        class ProjectDocumentCache
-        {
-            private readonly ConcurrentDictionary<string, HashSet<string>> _cache = new ConcurrentDictionary<string, HashSet<string>>();
-
-            public ProjectDocumentCache() { }
-
-            public ProjectDocumentCache(IDictionary<string, List<string>> inputs)
-            {
-                if (inputs == null) return;
-                foreach(var input in inputs)
-                {
-                    HashSet<string> cacheValue = new HashSet<string>();
-                    if (input.Value != null)
-                    {
-                        foreach (var item in input.Value)
-                        {
-                            cacheValue.Add(item.ToNormalizedFullPath());
-                        }
-                    }
-                    if (cacheValue.Count > 0) _cache.TryAdd(input.Key.ToNormalizedFullPath(), cacheValue);
-                }
-            }
-
-            public IDictionary<string, List<string>> Cache { get { return _cache.ToDictionary(s => s.Key, s => s.Value.ToList()); } }
-
-            public IEnumerable<string> Documents { get { return _cache.Values.SelectMany(s => s.ToList()).Distinct(); } }
-            public void AddDocuments(IEnumerable<string> documents)
-            {
-                var key = documents.OrderBy(s => s).FirstOrDefault();
-                AddDocuments(key, documents);
-            }
-
-            public void AddDocuments(string projectPath, IEnumerable<string> documents)
-            {
-                if (string.IsNullOrEmpty(projectPath) || documents == null || !documents.Any()) return;
-                var projectKey = projectPath.ToNormalizedFullPath();
-                var documentCache = _cache.GetOrAdd(projectKey, s => new HashSet<string>());
-                foreach(var document in documents)
-                {
-                    documentCache.Add(document.ToNormalizedFullPath());
-                }
-            }
-
-            public void AddDocument(string projectPath, string document)
-            {
-                if (string.IsNullOrEmpty(projectPath) || string.IsNullOrEmpty(document)) return;
-                var projectKey = projectPath.ToNormalizedFullPath();
-                var documentCache = _cache.GetOrAdd(projectKey, s => new HashSet<string>());
-                documentCache.Add(document.ToNormalizedFullPath());
-            }
-
-            public IEnumerable<string> GetDocuments(string projectPath)
-            {
-                if (string.IsNullOrEmpty(projectPath)) return null;
-                var projectKey = projectPath.ToNormalizedFullPath();
-                HashSet<string> documents = null;
-                _cache.TryGetValue(projectKey, out documents);
-                return documents.GetNormalizedFullPathList();
-            }
-        }
-
         private async Task SaveAllMembersFromCacheAsync(IEnumerable<string> inputs, string outputFolder, bool forceRebuild)
         {
             var projectCache = new ConcurrentDictionary<string, Project>();
@@ -405,7 +341,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (csFiles.Any())
             {
                 var csContent = string.Join(Environment.NewLine, csFiles.Select(s => File.ReadAllText(s)));
-                var csCompilation = CreateCompilationFromCsharpCode(csContent);
+                var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
                 if (csCompilation != null)
                 {
                     var csMetadata = await GetFileMetadataFromCacheAsync(csFiles, csCompilation, outputFolder, forceRebuild, _preserveRawInlineComments);
@@ -417,7 +353,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (vbFiles.Any())
             {
                 var vbContent = string.Join(Environment.NewLine, vbFiles.Select(s => File.ReadAllText(s)));
-                var vbCompilation = CreateCompilationFromVBCode(vbContent);
+                var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
                 if (vbCompilation != null)
                 {
                     var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild, _preserveRawInlineComments);
@@ -717,50 +653,6 @@ namespace Microsoft.DocAsCode.EntityModel
             }
 
             return result;
-        }
-
-        private static Compilation CreateCompilationFromCsharpCode(string code)
-        {
-            try
-            {
-                var tree = CS.SyntaxFactory.ParseSyntaxTree(code);
-                var compilation = CS.CSharpCompilation.Create(
-                    "cs.temp.dll",
-                    options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                    syntaxTrees: new[] { tree },
-                    references: new[] { MscorlibMetadataReference.Value });
-                return compilation;
-            }
-            catch (Exception e)
-            {
-                Logger.Log(LogLevel.Warning, $"Error generating compilation for C# code {GetAbbreviateString(code)}: {e.Message}. Ignored.");
-                return null;
-            }
-        }
-
-        private static Compilation CreateCompilationFromVBCode(string code)
-        {
-            try
-            {
-                var tree = VB.SyntaxFactory.ParseSyntaxTree(code);
-                var compilation = VB.VisualBasicCompilation.Create(
-                    "vb.temp.dll",
-                    options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                    syntaxTrees: new[] { tree },
-                    references: new[] { MscorlibMetadataReference.Value });
-                return compilation;
-            }
-            catch (Exception e)
-            {
-                Logger.Log(LogLevel.Warning, $"Error generating compilation for VB code {GetAbbreviateString(code)}: {e.Message}. Ignored.");
-                return null;
-            }
-        }
-
-        private static string GetAbbreviateString(string input, int length = 20)
-        {
-            if (string.IsNullOrEmpty(input) || input.Length <= 20) return input;
-            return input.Substring(0, length) + "...";
         }
 
         private async Task<Solution> GetSolutionAsync(string path)

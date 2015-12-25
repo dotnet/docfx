@@ -3,38 +3,14 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Utility;
-    using Microsoft.CodeAnalysis;
-    using Newtonsoft.Json;
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Security.Cryptography;
     using System.Reflection;
 
-    public class BuildInfo
-    {
-        public string BuildAssembly { get; set; }
-
-        public string InputFilesKey { get; set; }
-
-        public DateTime TriggeredUtcTime { get; set; }
-
-        public DateTime CompleteUtcTime { get; set; }
-
-        public string OutputFolder { get; set; }
-
-        public IEnumerable<string> RelatvieOutputFiles { get; set; }
-
-        /// <summary>
-        /// Save the files involved in the build
-        /// </summary>
-        public IDictionary<string, List<string>> ContainedFiles { get; set; }
-
-        public string CheckSum { get; set; }
-    }
+    using Microsoft.DocAsCode.Utility;
 
     public abstract class CacheBase
     {
@@ -302,59 +278,5 @@ namespace Microsoft.DocAsCode.EntityModel
         }
 
         #endregion
-    }
-
-    public class ProjectLevelCache : CacheBase
-    {
-        private static Func<string, string> GetProjectLevelConfig = projectPath => Path.Combine(Path.GetDirectoryName(projectPath) ?? string.Empty, "obj", "xdoc", "cache", "obj", ".inter").ToNormalizedFullPath();
-        private static ConcurrentDictionary<string, ProjectLevelCache> _cache = new ConcurrentDictionary<string, ProjectLevelCache>();
-        public readonly string OutputFolder;
-
-        private ProjectLevelCache(string projectPath) : base(projectPath)
-        {
-            OutputFolder = Path.GetDirectoryName(Path.GetFullPath(projectPath)).ToNormalizedFullPath();
-        }
-
-        public static ProjectLevelCache Get(IEnumerable<string> files)
-        {
-            if (files == null || !files.Any()) return null;
-            var normalizedFiles = files.GetNormalizedFullPathList();
-
-            // Use the folder for the first file as the cache folder
-            var firstFile = normalizedFiles.First();
-
-            string path = GetProjectLevelConfig(firstFile);
-            return _cache.GetOrAdd(path, new ProjectLevelCache(path));
-        }
-    }
-
-    public class ApplicationLevelCache : CacheBase
-    {
-        private static Func<string, string, string> GetApplicationLevelCacheFilePath = (projectPath, fileName) => Path.Combine(Path.GetDirectoryName(projectPath) ?? string.Empty, "obj", "xdoc", "cache", "final", fileName);
-        private static ConcurrentDictionary<string, ApplicationLevelCache> _cache = new ConcurrentDictionary<string, ApplicationLevelCache>();
-
-        private ApplicationLevelCache(string projectPath) : base(projectPath)
-        {
-        }
-
-        public static ApplicationLevelCache Get(IEnumerable<string> files)
-        {
-            string path = GetApplicationLevelCache(files);
-            if (string.IsNullOrEmpty(path)) return null;
-            return _cache.GetOrAdd(path, new ApplicationLevelCache(path));
-        }
-
-        private static string GetApplicationLevelCache(IEnumerable<string> files)
-        {
-            if (files == null || !files.Any()) return null;
-            var normalizedFiles = files.GetNormalizedFullPathList();
-
-            // Application Level cache locates in the same folder with the top one file in the file list
-            var firstFile = normalizedFiles.First();
-
-            // Use hash code
-            var fileName = files.GetNormalizedFullPathKey().GetHashCode().ToString();
-            return GetApplicationLevelCacheFilePath(firstFile, fileName);
-        }
     }
 }

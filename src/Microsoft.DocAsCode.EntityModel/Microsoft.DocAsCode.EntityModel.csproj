@@ -113,6 +113,12 @@
     <Compile Include="Dfm\DocfxFlavoredIncHelper.cs" />
     <Compile Include="Dfm\DfmYamlHeaderBlockToken.cs" />
     <Compile Include="Exceptions\ExtractMetadataException.cs" />
+    <Compile Include="ExtractMetadata\SupportedSourceType.cs" />
+    <Compile Include="ExtractMetadata\CompilationUtility.cs" />
+    <Compile Include="ExtractMetadata\ProjectDocumentCache.cs" />
+    <Compile Include="Incremental\BuildInfo.cs" />
+    <Compile Include="Incremental\CacheBase.cs" />
+    <Compile Include="Incremental\ProjectLevelCache.cs" />
     <Compile Include="Plugins\BuildSteps\BaseDocumentBuildStep.cs" />
     <Compile Include="Plugins\BuildSteps\BuildConceptualDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildManagedReferenceDocument.cs" />
@@ -130,7 +136,7 @@
     <Compile Include="ExtractMetadata\ExtractMetadataWorker.cs" />
     <Compile Include="ExtractSearchData\ExtractSearchData.cs" />
     <Compile Include="ExtractSearchData\SearchItem.cs" />
-    <Compile Include="Incremental\IncrementalCache.cs" />
+    <Compile Include="Incremental\ApplicationLevelCache.cs" />
     <Compile Include="Incremental\IncrementalCheck.cs" />
     <Compile Include="ExtractMetadata\ExtractMetadataInputModel.cs" />
     <Compile Include="Loggers\ConsoleLogListener.cs" />

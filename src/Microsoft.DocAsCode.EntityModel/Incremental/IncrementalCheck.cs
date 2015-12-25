@@ -3,15 +3,15 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Microsoft.DocAsCode.Utility;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.MSBuild;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
-    using System.Reflection;
     using System.Threading.Tasks;
+
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.MSBuild;
+    using Microsoft.DocAsCode.Utility;
 
     internal class IncrementalCheck
     {
