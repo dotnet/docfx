@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode
 
         /// <summary>
         /// 0. docfx {subcommand} {subcommand options}
-        /// 1. docfx {options} => {options} always cascades down to each subcommands
-        /// 2. docfx {docfx.json path} {options}
+        /// 1. docfx {options} => {options} always cascades down to each sub-command
+        /// 2. docfx {docfx.json path} {sub-command options}
         /// </summary>
         public CommandController Parse(string[] args)
         {

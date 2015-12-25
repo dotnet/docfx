@@ -51,6 +51,7 @@ namespace Microsoft.DocAsCode.SubCommands
             return false;
         }
 
+        // TODO: comment: option not used
         public ISubCommand Create(string[] args, ISubCommandController controller, SubCommandParseOption option)
         {
             if (args.Length > 0)
@@ -64,6 +65,8 @@ namespace Microsoft.DocAsCode.SubCommands
                     return command.Create(subArgs, controller, SubCommandParseOption.Strict);
                 }
             }
+
+            // TODO: comment: also handle log and loglevel like in build command
             var options = new CompositeOptions();
             bool parsed = ArgsParser.LooseParser.ParseArguments(args, options);
             if (options.IsHelp) return new HelpCommand(controller.GetHelpText());
@@ -85,6 +88,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 foreach (var file in Directory.EnumerateFiles(pluginDir, "*.dll"))
                 {
+                    // TODO: Comment: do not use LoadFile
                     configuration.WithAssembly(Assembly.LoadFile(file));
                 }
             }

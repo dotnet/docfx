@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         public BuildJsonConfig Config { get; }
 
+        // TODO: Command: move to a base class
         public BuildCommand(BuildCommandOptions options)
         {
             if (string.IsNullOrEmpty(options.ConfigFile))
