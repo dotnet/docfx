@@ -1,9 +1,0 @@
-#!/usr/bin/env node
-'use strict';
-var path = require('path');
-process.bin = process.title = 'docfx';
-var argvLength = process.argv.length;
-var args = process.argv.slice(2);
-var dir = path.dirname(process.argv[1]);
-var spawn = require('child_process').spawn,
-    docfx = spawn(dir + '/bin/docfx.exe', args, {stdio: 'inherit'});

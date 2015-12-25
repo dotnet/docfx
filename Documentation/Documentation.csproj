@@ -96,29 +96,14 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\docfx.msbuild.1.0.0\build\docfx.msbuild.targets" Condition="Exists('..\packages\docfx.msbuild.1.0.0\build\docfx.msbuild.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\docfx.msbuild.1.0.0\build\docfx.msbuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\docfx.msbuild.1.0.0\build\docfx.msbuild.targets'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <!-- Reinstall docfx package before build-->
   <Target Name="BeforeBuild">
-    <MSBuild Projects="..\src\nuspec\docfx.msbuild\docfx.msbuild.csproj" Properties="PackageVersion=1.0.0;WithSuffix=False;PackageOutputPath=$(MSBuildThisFileDirectory)..\artifacts\DocsPackage" />
-    <Warning Text="Unable to find nuget.exe! Please install nuget.exe to $(NugetPath) to make sure docfx.msbuild is re-installed!" Condition="!Exists($(NugetPath))">
-    </Warning>
-    <CallTarget Targets="_ReInstallDocfxPackage" Condition="Exists($(NugetPath))" />
+    <MSBuild Projects="..\src\nuspec\docfx.msbuild\docfx.msbuild.csproj" Properties="GenerateNupkg=False" />
   </Target>
-  <Target BeforeTargets="Compile" Name="_ReInstallDocfxPackage">
-    <!-- Remove the package folder so that nuget restore re-install the docfx package -->
-    <RemoveDir Directories="$(DocfxNugetPackagePath)" />
-    <Exec Command="&quot;$(NugetPath)&quot; restore -PackagesDirectory $(PackagesDirectory) -NoCache " />
+  <Target Name="AfterBuild">
+    <PropertyGroup>
+      <BuildProjectPath>..\src\nuspec\docfx.msbuild\bin\$(Configuration)\build\docfx.msbuild.targets</BuildProjectPath>
+    </PropertyGroup>
+    <MSBuild Projects="$(BuildProjectPath)" Targets="DocBuild" Properties="DocfxConfigFile=$(MSBuildThisFileDirectory)\docfx.json"/>
   </Target>
 </Project>

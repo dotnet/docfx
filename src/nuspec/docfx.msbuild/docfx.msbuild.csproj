@@ -11,6 +11,7 @@
     <DocfxOutputPath>$(MSBuildThisFileDirectory)..\..\..\target\$(Configuration)\docfx\</DocfxOutputPath>
     <OutputPath>bin\$(Configuration)</OutputPath>
     <NuspecPath>$(MSBuildProjectName).nuspec</NuspecPath>
+    <GenerateNupkg Condition=" '$(GenerateNupkg)'=='' ">True</GenerateNupkg>
   </PropertyGroup>
   <ItemGroup>
     <None Include="build\docfx.msbuild.targets">
@@ -49,9 +50,6 @@
     <CallTarget Targets="BuildNugetPackage" Condition="Exists($(NugetPath))" />
   </Target>
   <Target Name="BuildNugetPackage">
-    <PropertyGroup>
-      <PackageVersion Condition=" '$(PackageVersion)'=='' ">$(CurrentVersion)</PackageVersion>
-    </PropertyGroup>
     <ItemGroup>
       <DocfxFiles Include="$(DocfxOutputPath)\**\*.dll">
       </DocfxFiles>
@@ -59,6 +57,12 @@
       </DocfxFiles>
     </ItemGroup>
     <Copy SourceFiles="@(DocfxFiles)" DestinationFolder="$(OutputPath)\tools" />
+    <CallTarget Targets="GenerateNugetPackage" Condition="$(GenerateNupkg)" />
+  </Target>
+  <Target Name="GenerateNugetPackage">
+    <PropertyGroup>
+      <PackageVersion Condition=" '$(PackageVersion)'=='' ">$(CurrentVersion)</PackageVersion>
+    </PropertyGroup>
     <Exec Command="&quot;$(NugetPath)&quot; pack &quot;$(OutputPath)$(NuspecPath)&quot; -Version &quot;$(PackageVersion)&quot; -OutputDirectory &quot;bin/$(Configuration)&quot;" />
     <Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).$(PackageVersion).nupkg" DestinationFolder="$(PackageOutputPath)" />
     <Message Text="Successfully created package '$(PackageOutputPath)$(MSBuildProjectName).$(PackageVersion).nupkg'." />
