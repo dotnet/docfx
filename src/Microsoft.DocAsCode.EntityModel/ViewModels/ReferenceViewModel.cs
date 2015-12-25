@@ -56,14 +56,6 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("fullName.vb")]
         public string FullNameForVB { get; set; }
 
-        [YamlMember(Alias = "type")]
-        [JsonProperty("type")]
-        public MemberType? Type { get; set; }
-
-        [YamlMember(Alias = "summary")]
-        [JsonProperty("summary")]
-        public string Summary { get; set; }
-
         [YamlMember(Alias = "spec.csharp")]
         [JsonProperty("spec.csharp")]
         public List<SpecViewModel> SpecForCSharp { get; set; }
@@ -80,8 +72,6 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
                 Uid = model.Key,
                 Parent = model.Value.Parent,
                 Definition = model.Value.Definition,
-                Type = model.Value.Type,
-                Summary = model.Value.Summary,
             };
             if (model.Value.Parts != null && model.Value.Parts.Count > 0)
             {

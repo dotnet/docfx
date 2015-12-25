@@ -36,6 +36,10 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("href")]
         public string Href { get; set; }
 
+        [YamlMember(Alias = "langs")]
+        [JsonProperty("langs")]
+        public string[] SupportedLanguages { get; set; } = new string[] { "csharp", "vb" };
+
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
         public string Name { get; set; }

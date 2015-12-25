@@ -3,13 +3,14 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Microsoft.CodeAnalysis;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Text.RegularExpressions;
-    
+
+    using Microsoft.CodeAnalysis;
+
     public class SymbolVisitorAdapter
         : SymbolVisitor<MetadataItem>
     {
@@ -133,7 +134,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 symbol.GetMembers().OfType<ITypeSymbol>(),
                 t => t.GetMembers().OfType<ITypeSymbol>(),
                 t => true);
-            AddReference(symbol, item.Summary);
+            AddReference(symbol);
             return item;
         }
 
@@ -190,7 +191,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
             }
 
-            AddReference(symbol, item.Summary);
+            AddReference(symbol);
             return item;
         }
 
@@ -348,7 +349,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         #region Public Methods
 
-        public string AddReference(ISymbol symbol, string summary = null)
+        public string AddReference(ISymbol symbol)
         {
             var memberType = GetMemberTypeFromSymbol(symbol);
             if (memberType == MemberType.Default)
@@ -356,7 +357,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 Debug.Fail("Unexpected membertype.");
                 throw new InvalidOperationException("Unexpected membertype.");
             }
-            return _generator.AddReference(symbol, memberType, summary, _references, this);
+            return _generator.AddReference(symbol, _references, this);
         }
 
         public string AddReference(string id)

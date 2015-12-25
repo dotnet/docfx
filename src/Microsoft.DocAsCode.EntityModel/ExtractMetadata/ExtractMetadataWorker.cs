@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             catch (Exception e)
             {
-                throw new DocfxMetadataException($"Error extracting metadata for {_rawInput}: {e}", e);
+                throw new ExtractMetadataException($"Error extracting metadata for {_rawInput}: {e}", e);
             }
         }
 

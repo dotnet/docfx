@@ -6,21 +6,21 @@ namespace Microsoft.DocAsCode.Exceptions
     using System;
     using System.Runtime.Serialization;
 
-    public class DocfxMetadataException : Exception
+    public class ExtractMetadataException : Exception
     {
-        public DocfxMetadataException() : this("Error happens when extracting metadata")
+        public ExtractMetadataException() : this("Error happens when extracting metadata")
         {
         }
 
-        public DocfxMetadataException(string message) : base(message)
+        public ExtractMetadataException(string message) : base(message)
         {
         }
 
-        public DocfxMetadataException(string message, Exception innerException) : base(message, innerException)
+        public ExtractMetadataException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        protected DocfxMetadataException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected ExtractMetadataException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

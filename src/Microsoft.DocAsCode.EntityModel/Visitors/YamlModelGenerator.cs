@@ -3,8 +3,9 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Microsoft.CodeAnalysis;
     using System.Collections.Generic;
+
+    using Microsoft.CodeAnalysis;
 
     public abstract class YamlModelGenerator
     {
@@ -36,13 +37,11 @@ namespace Microsoft.DocAsCode.EntityModel
         {
         }
 
-        internal string AddReference(ISymbol symbol, MemberType type, string summary, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
+        internal string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
         {
             var id = VisitorHelper.GetId(symbol);
 
             ReferenceItem reference = new ReferenceItem();
-            reference.Type = type;
-            reference.Summary = summary;
             reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
             reference.IsDefinition = symbol.IsDefinition;
             GenerateReferenceInternal(symbol, reference, adapter);

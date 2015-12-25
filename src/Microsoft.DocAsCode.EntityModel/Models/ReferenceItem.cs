@@ -17,14 +17,6 @@ namespace Microsoft.DocAsCode.EntityModel
         [JsonProperty("name")]
         public SortedList<SyntaxLanguage, List<LinkItem>> Parts { get; set; }
 
-        [YamlMember(Alias = "type")]
-        [JsonProperty("type")]
-        public MemberType? Type { get; set; }
-
-        [YamlMember(Alias = "summary")]
-        [JsonProperty("summary")]
-        public string Summary { get; set; }
-
         [YamlMember(Alias = "isDefinition")]
         [JsonProperty("isDefinition")]
         public bool? IsDefinition { get; set; }
@@ -68,9 +60,6 @@ namespace Microsoft.DocAsCode.EntityModel
         public void Merge(ReferenceItem other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other));
-
-            Type = Merge(other.Type, Type);
-            Summary = Summary ?? other.Summary;
             IsDefinition = Merge(other.IsDefinition, IsDefinition);
             Definition = Merge(other.Definition, Definition);
             Parent = Merge(other.Parent, Parent);

@@ -33,10 +33,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     {
                         BuildItem(host, item, model);
                     }
-                    foreach (var reference in page.References)
-                    {
-                        BuildReference(host, reference, model);
-                    }
 
                     model.File = Path.ChangeExtension(model.File, ".json");
                     break;
@@ -113,11 +109,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     exception.Description = Markup(host, exception.Description, model);
                 }
             }
-        }
-
-        private void BuildReference(IHostService host, ReferenceViewModel reference, FileModel model)
-        {
-            reference.Summary = Markup(host, reference.Summary, model);
         }
 
         private string Markup(IHostService host, string markdown, FileModel model)
