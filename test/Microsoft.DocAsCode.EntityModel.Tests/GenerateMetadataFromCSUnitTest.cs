@@ -206,14 +206,10 @@ namespace Test1
                 Assert.True(output.References.ContainsKey("Test1.Class1`1"));
                 var refenence = output.References["Test1.Class1`1"];
                 Assert.Equal(true, refenence.IsDefinition);
-                Assert.Equal(MemberType.Class, refenence.Type);
                 Assert.Equal("Test1", refenence.Parent);
-                Assert.Equal("class1 @'System.Collections.Generic.Dictionary`2'", refenence.Summary);
-                Assert.Equal(@"class1 <see cref=""T:System.Collections.Generic.Dictionary`2"" />", output_preserveRaw.References["Test1.Class1`1"].Summary);
                 Assert.True(output.References.ContainsKey("Test1"));
                 refenence = output.References["Test1"];
                 Assert.Equal(true, refenence.IsDefinition);
-                Assert.Equal(MemberType.Namespace, refenence.Type);
                 Assert.Null(refenence.Parent);
 
                 Assert.True(output.References.ContainsKey("System.Collections.Generic.Dictionary`2"));

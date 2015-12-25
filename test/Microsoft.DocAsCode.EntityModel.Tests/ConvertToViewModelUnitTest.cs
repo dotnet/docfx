@@ -41,9 +41,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                             new ReferenceItem
                             {
                                 IsDefinition = true,
-                                Type = MemberType.Class,
                                 Parent = "N1",
-                                Summary = "Summary!",
                                 Parts = new SortedList<SyntaxLanguage, List<LinkItem>>
                                 {
                                     {
@@ -377,8 +375,6 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
             var reference = vm.References.Find(x => x.Uid == "N1.C1");
             Assert.NotNull(reference);
-            Assert.Equal(MemberType.Class, reference.Type);
-            Assert.Equal("Summary!", reference.Summary);
             Assert.Equal("C1", reference.Name);
             Assert.Null(reference.NameForCSharp);
             Assert.Null(reference.NameForVB);

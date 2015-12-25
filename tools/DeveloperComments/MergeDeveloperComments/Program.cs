@@ -128,23 +128,6 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
                     }
                 }
 
-                // Add summary for classes in namespace
-                if (model.Item2.Items[0].Type == MemberType.Namespace)
-                {
-                    foreach (var reference in model.Item2.References)
-                    {
-                        if (reference.Type == MemberType.Class || reference.Type == MemberType.Delegate || reference.Type == MemberType.Enum || reference.Type == MemberType.Interface || reference.Type == MemberType.Struct)
-                        {
-                            ReferenceViewModel refWithSummary;
-                            if (references.TryGetValue(reference.Uid, out refWithSummary))
-                            {
-                                reference.Summary = refWithSummary.Summary;
-                                dirty = true;
-                            }
-                        }
-                    }
-                }
-
                 if (dirty)
                 {
                     Console.WriteLine($"Rebuilding references: {model.Item1}");
@@ -175,15 +158,6 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
                 foreach (var reference in model.Item2.References)
                 {
                     references[reference.Uid] = reference;
-                }
-            }
-
-            foreach (var reference in references)
-            {
-                string content;
-                if (summary.TryGetValue(reference.Key, out content))
-                {
-                    reference.Value.Summary = content;
                 }
             }
 
