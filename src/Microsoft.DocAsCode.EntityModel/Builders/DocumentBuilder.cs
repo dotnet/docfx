@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         private const string Phase = "Build Document";
 
+        private static readonly Assembly[] DefaultAssemblies = { typeof(DocumentBuilder).Assembly };
+
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
         {
             var configuration = new ContainerConfiguration();
@@ -27,21 +29,29 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 configuration.WithAssembly(assembly);
             }
-            return configuration.CreateContainer();
+            try
+            {
+                return configuration.CreateContainer();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                Logger.LogError(
+                    $"Error when get composition container: {ex.Message}, loader exceptions: {(ex.LoaderExceptions != null ? string.Join(", ", ex.LoaderExceptions.Select(e => e.Message)) : "none")}");
+                throw;
+            }
         }
 
-        public DocumentBuilder()
-            : this(new[] { typeof(DocumentBuilder).Assembly })
-        {
-        }
-
-        public DocumentBuilder(IEnumerable<Assembly> assemblies)
+        public DocumentBuilder(IEnumerable<Assembly> assemblies = null)
         {
             using (new LoggerPhaseScope(Phase))
             {
                 Logger.LogInfo("Loading plug-in...");
-                GetContainer(assemblies).SatisfyImports(this);
-                Logger.LogInfo($"Plug-in loaded ({string.Join(", ", from p in Processors select p.Name)})");
+                GetContainer(DefaultAssemblies.Union(assemblies ?? new Assembly[0])).SatisfyImports(this);
+                Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded:");
+                foreach (var processor in Processors)
+                {
+                    Logger.LogInfo($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                }
             }
         }
 

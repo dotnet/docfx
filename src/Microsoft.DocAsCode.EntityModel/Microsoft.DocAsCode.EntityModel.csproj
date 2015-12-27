@@ -125,7 +125,6 @@
     <Compile Include="Plugins\BuildSteps\BuildResourceDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildTocDocument.cs" />
     <Compile Include="Plugins\BuildSteps\CountWord.cs" />
-    <Compile Include="Plugins\BuildSteps\SetContributorInformation.cs" />
     <Compile Include="JsonUtility.cs" />
     <Compile Include="TreeIterator.cs" />
     <Compile Include="YamlUtility.cs" />

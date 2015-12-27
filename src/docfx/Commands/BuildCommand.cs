@@ -8,17 +8,19 @@ namespace Microsoft.DocAsCode
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
 
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
+
     using Newtonsoft.Json.Linq;
 
     class BuildCommand : ICommand
     {
-        private DocumentBuilder _builder = new DocumentBuilder();
-        private string _helpMessage = null;
+        private readonly string _helpMessage;
+
         public BuildJsonConfig Config { get; }
 
         public BuildCommand(CommandContext context) : this(new BuildJsonConfig(), context)
@@ -71,9 +73,12 @@ namespace Microsoft.DocAsCode
                 Logger.LogWarning("No files found, nothing is to be generated");
                 return;
             }
+
+            var builder = new DocumentBuilder(LoadPluginAssemblies(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins")));
+
             try
             {
-                _builder.Build(parameters);
+                builder.Build(parameters);
             }
             catch (DocumentException ex)
             {
@@ -143,7 +148,7 @@ namespace Microsoft.DocAsCode
             foreach (var item in fileMetadata)
             {
                 var list = new List<FileMetadataItem>();
-                foreach(var pair in item.Value.Items)
+                foreach (var pair in item.Value.Items)
                 {
                     list.Add(new FileMetadataItem(pair.Glob, item.Key, pair.Value));
                 }
@@ -251,6 +256,41 @@ namespace Microsoft.DocAsCode
             if (options.Serve) config.Serve = options.Serve;
             if (options.Port.HasValue) config.Port = options.Port.Value.ToString();
             return config;
+        }
+
+        private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
+        {
+            if (!Directory.Exists(pluginDirectory))
+            {
+                yield break;
+            }
+
+            Logger.LogInfo($"Searching custom plug-ins in directory {pluginDirectory}...");
+
+            foreach (var assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
+            {
+                Assembly assembly = null;
+
+                // assume assembly name is the same with file name without extension
+                string assemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
+                if (!string.IsNullOrEmpty(assemblyName))
+                {
+                    try
+                    {
+                        assembly = Assembly.Load(assemblyName);
+                        Logger.LogInfo($"Scanning assembly file {assemblyFile}...");
+                    }
+                    catch (Exception ex) when (ex is BadImageFormatException || ex is FileLoadException || ex is FileNotFoundException)
+                    {
+                        Logger.LogWarning($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
+                    }
+
+                    if (assembly != null)
+                    {
+                        yield return assembly;
+                    }
+                }
+            }
         }
     }
 }
