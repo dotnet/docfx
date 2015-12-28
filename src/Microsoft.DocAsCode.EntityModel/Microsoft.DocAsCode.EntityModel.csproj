@@ -119,8 +119,10 @@
     <Compile Include="Incremental\BuildInfo.cs" />
     <Compile Include="Incremental\CacheBase.cs" />
     <Compile Include="Incremental\ProjectLevelCache.cs" />
+    <Compile Include="Plugins\BuildSteps\FillReferenceInformation.cs" />
     <Compile Include="Plugins\BuildSteps\BaseDocumentBuildStep.cs" />
     <Compile Include="Plugins\BuildSteps\BuildConceptualDocument.cs" />
+    <Compile Include="Plugins\BuildSteps\ApplyOverrideDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildManagedReferenceDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildResourceDocument.cs" />
     <Compile Include="Plugins\BuildSteps\BuildTocDocument.cs" />

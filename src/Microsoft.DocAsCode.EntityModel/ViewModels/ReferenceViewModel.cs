@@ -64,6 +64,14 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("spec.vb")]
         public List<SpecViewModel> SpecForVB { get; set; }
 
+        [YamlMember(Alias = "type")]
+        [JsonProperty("type")]
+        public MemberType? Type { get; set; }
+
+        [YamlMember(Alias = "summary")]
+        [JsonProperty("summary")]
+        public string Summary { get; set; }
+
         public static ReferenceViewModel FromModel(KeyValuePair<string, ReferenceItem> model)
         {
             Debug.Assert(model.Value != null, "Unexpected reference.");
