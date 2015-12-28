@@ -136,6 +136,10 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("conceptual")]
         public string Conceptual { get; set; }
 
+        [YamlMember(Alias = "platformVersion")]
+        [JsonProperty("platformVersion")]
+        public List<string> PlatformVersion { get; set; }
+
         public static ItemViewModel FromModel(MetadataItem model)
         {
             if (model == null)
