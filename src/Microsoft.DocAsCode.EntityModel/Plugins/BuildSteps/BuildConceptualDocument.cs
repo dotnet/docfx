@@ -8,6 +8,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Composition;
     using System.IO;
 
+    using HtmlAgilityPack;
+
+    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
@@ -30,7 +33,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var markdown = (string)content[ConceputalKey];
             var result = host.Markup(markdown, model.FileAndType);
             content[ConceputalKey] = result.Html;
-            content["title"] = result.Title;
+
+            var contentTitles = ExtractContentTitlesFromHtml(result.Html);
+            content["title"] = contentTitles.Title;
+            content["articleTitleHtml"] = contentTitles.ArticleTitleHtml;
+            content["articleContentHtml"] = contentTitles.ArticleContentHtml;
+
             if (result.YamlHeader != null && result.YamlHeader.Count > 0)
             {
                 foreach (var item in result.YamlHeader)
@@ -56,6 +64,42 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             model.Properties.LinkToFiles = result.LinkToFiles;
             model.Properties.LinkToUids = result.LinkToUids;
             model.File = Path.ChangeExtension(model.File, ".json");
+        }
+
+        private static Content ExtractContentTitlesFromHtml(string contentHtml)
+        {
+            var content = new Content();
+
+            var document = new HtmlDocument();
+            document.LoadHtml(contentHtml);
+
+            // TODO: how to get TITLE
+            // InnerText in HtmlAgilityPack is not decoded, should be a bug
+            var headerNode = document.DocumentNode.SelectSingleNode("//h1|//h2|//h3");
+            content.Title = StringHelper.HtmlDecode(headerNode?.InnerText);
+
+            if (headerNode != null && document.DocumentNode.FirstChild == headerNode)
+            {
+                content.ArticleTitleHtml = headerNode.OuterHtml;
+                headerNode.Remove();
+            }
+            else
+            {
+                content.ArticleTitleHtml = "<h1></h1>";
+            }
+
+            content.ArticleContentHtml = document.DocumentNode.OuterHtml;
+
+            return content;
+        }
+
+        private class Content
+        {
+            public string Title { get; set; }
+
+            public string ArticleTitleHtml { get; set; }
+
+            public string ArticleContentHtml { get; set; }
         }
     }
 }

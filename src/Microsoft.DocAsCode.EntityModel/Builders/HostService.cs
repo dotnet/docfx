@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 System.Diagnostics.Debug.Fail("Markup failed!");
                 Logger.LogWarning($"Markup failed:{Environment.NewLine}  Markdown: {markdown}{Environment.NewLine}  Details:{ex.ToString()}");
-                return new MarkupResult { Html = markdown, Title = "Markup failed." };
+                return new MarkupResult { Html = markdown };
             }
         }
 
@@ -80,11 +80,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             var result = new MarkupResult();
-
-            // TODO: how to get TITLE
-            // InnerText in HtmlAgilityPack is not decoded, should be a bug
-            var headerNode = doc.DocumentNode.SelectSingleNode("//h1|//h2|//h3");
-            result.Title = StringHelper.HtmlDecode(headerNode?.InnerText);
 
             var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
             if (node != null)
