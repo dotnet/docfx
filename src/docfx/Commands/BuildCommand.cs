@@ -179,7 +179,7 @@ namespace Microsoft.DocAsCode
                 {
                     foreach (var mapping in file.Item2.Items)
                     {
-                        fileCollection.Add(file.Item1, mapping.Files, s => ConvertToDestinationPath(s, mapping.SourceFolder, mapping.DestinationFolder));
+                        fileCollection.Add(file.Item1, mapping.Files, s => ConvertToDestinationPath(Path.Combine(baseDirectory, s), mapping.SourceFolder, mapping.DestinationFolder));
                     }
                 }
             }
