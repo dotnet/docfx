@@ -111,6 +111,14 @@
   <ItemGroup>
     <Compile Include="CommandModels\OptionParserException.cs" />
     <Compile Include="CommandModels\CompositeOptions.cs" />
+    <Compile Include="SubCommands\ServeCommand.cs" />
+    <Compile Include="SubCommands\InitCommand.cs" />
+    <Compile Include="SubCommands\ServeCommandCreator.cs" />
+    <Compile Include="SubCommands\MetadataCommand.cs" />
+    <Compile Include="SubCommands\InitCommandCreator.cs" />
+    <Compile Include="SubCommands\MetadataCommandCreator.cs" />
+    <Compile Include="SubCommands\CommandUtility.cs" />
+    <Compile Include="SubCommands\CommandCreator.cs" />
     <Compile Include="SubCommands\BuildCommandCreator.cs" />
     <Compile Include="SubCommands\CommandOptionAttribute.cs" />
     <Compile Include="SubCommands\CommandController.cs" />

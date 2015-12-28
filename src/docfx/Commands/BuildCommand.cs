@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode
                 Config = MergeConfig(GetConfigFromOptions(buildCommandOptions), context);
             }
 
-            if (!string.IsNullOrWhiteSpace(buildCommandOptions.Log)) Logger.RegisterListener(new ReportLogListener(buildCommandOptions.Log));
+            if (!string.IsNullOrWhiteSpace(buildCommandOptions.Log)) Logger.RegisterOrUpdateListener(new ReportLogListener(buildCommandOptions.Log));
 
             if (buildCommandOptions.LogLevel.HasValue) Logger.LogLevelThreshold = buildCommandOptions.LogLevel.Value;
         }

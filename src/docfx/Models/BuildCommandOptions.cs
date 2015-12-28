@@ -8,7 +8,18 @@ namespace Microsoft.DocAsCode
     using CommandLine;
     using Microsoft.DocAsCode.EntityModel;
 
-    internal class BuildCommandOptions
+    interface IHasHelp
+    {
+        bool IsHelp { get; }
+    }
+
+    interface IHasLog
+    {
+        string Log { get; }
+        LogLevel? LogLevel { get; }
+    }
+
+    internal class BuildCommandOptions : IHasHelp
     {
         [Option('o', "output")]
         public string OutputFolder { get; set; }

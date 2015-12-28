@@ -15,25 +15,17 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Plugins;
     using Newtonsoft.Json;
 
-    internal sealed class BuildCommand : ISubCommand
+    internal sealed class ServeCommand : ISubCommand
     {
-        public BuildJsonConfig Config { get; }
-
-        public BuildCommand(BuildCommandOptions options)
+        public ServeCommand(ServeCommandOptions options)
         {
-            Config = CommandUtility.GetConfig<BuildConfig>(options.ConfigFile).Item;
-            // TODO: Expand file mapping
+            // TODO: Read config from project list
+            throw new NotImplementedException();
         }
 
         public void Exec(SubCommandRunningContext context)
         {
             throw new NotImplementedException();
-        }
-
-        private class BuildConfig
-        {
-            [JsonProperty("build")]
-            public BuildJsonConfig Item { get; set; }
         }
     }
 }
