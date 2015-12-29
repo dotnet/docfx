@@ -7,17 +7,18 @@ var mkdirp = require('mkdirp');
 var extension = ".html";
 var options = { encoding: 'utf8' };
 var templateName = "ManagedReference.html";
+var templateName = process.argv.length > 2 ? process.argv[2] : "ManagedReference.html.primary";
 var content = fs.readFileSync(templateName + '.js', options);
 var template = fs.readFileSync(templateName + '.tmpl', options);
 eval(content);
 var dir = "sample";
 var output = "dist";
 var root = "./";
-var tocFile = 'toc.yml';
+var tocFile = 'toc.json';
 walk(dir, function (err, files) {
   if (err) return console.log(err);
   parse(dir, output, root, files, function (file, index) {
-    if (path.extname(file) === '.yml') return true;
+    if (path.extname(file) === '.json') return true;
     return false;
   }, transform);
 });
@@ -81,16 +82,17 @@ function parse(input, output, root, files, filter, callback) {
     fs.readFile(file, options, function (err, data) {
       if (err) return console.log(err);
       console.log("Transforming " + file);
-      var input = jsyaml.load(data);
-      var model = callback(input, attrs);
+      var model = callback(data, JSON.stringify(attrs));
       if (!model) return;
-      var output = Mustache.render(template, model);
+      var output = Mustache.render(template, model, function(partial) {
+        return fs.readFileSync(partial + ".tmpl.partial", options);
+      });
       if (/^\s*$/.test(output)) {
         console.warn("WARNING: Template generated nothing for " + file);
       } else {
         var folder = path.dirname(outputFilePath);
         mkdirp.sync(folder);
-        fs.writeFile(outputModelFilePath, JSON.stringify(model), options, function (err) {
+        fs.writeFile(outputModelFilePath, JSON.stringify(model, null, "  "), options, function (err) {
           if (err) return console.log(err);
         })
         fs.writeFile(outputFilePath, output, options, function (err) {

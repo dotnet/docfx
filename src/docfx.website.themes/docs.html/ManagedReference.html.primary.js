@@ -1,5 +1,4 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-// TODO: support multiple languages: [].concat(langs)
 function transform(model, _attrs) {
   var util = new Utility();
   var namespaceItems = {
@@ -67,6 +66,7 @@ function transform(model, _attrs) {
           this[key] = _attrs[key];
         }
       }
+      
       for (var key in mta) {
         if (mta.hasOwnProperty(key)) {
           this[key] = mta[key];
@@ -74,7 +74,7 @@ function transform(model, _attrs) {
       }
 
       if (refs) {
-        this.item = refs.getViewModel(item.uid, this._lang, util.changeExtension(this._ext));
+        this.item = refs.getViewModel(item.uid, item.langs, util.changeExtension(this._ext));
       }
     }
 
@@ -87,7 +87,7 @@ function transform(model, _attrs) {
         // group children with their type
         var that = this;
         this.item.children.forEach(function (c) {
-          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext));
+          c = refs.getViewModel(c, item.langs, util.changeExtension(that._ext));
           var type = c.type;
           if (!grouped.hasOwnProperty(type)) {
             grouped[type] = [];
@@ -108,7 +108,7 @@ function transform(model, _attrs) {
         this.item.children = children;
       }
       this.item.type = "Namespace";
-      this.title = this.item.type + " " + this.item.name;
+      this.title = this.item.name[0].value + " " + this.item.type;
     }
 
     function ClassViewModel(item, _attrs, refs, mta) {
@@ -120,8 +120,7 @@ function transform(model, _attrs) {
         var that = this;
         // group children with their type
         this.item.children.forEach(function (c) {
-
-          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext));
+          c = refs.getViewModel(c, item.langs, util.changeExtension(that._ext));
           var type = c.type;
           if (!grouped.hasOwnProperty(type)) {
             grouped[type] = [];
@@ -147,7 +146,7 @@ function transform(model, _attrs) {
         this.item.children = children;
       }
       this.item.type = namespaceItems[this.item.type].name;
-      this.title = this.item.type + " " + this.item.name;
+      this.title = this.item.name[0].value + " " + this.item.type;
     }
 
     function References(model) {
@@ -155,14 +154,14 @@ function transform(model, _attrs) {
       this.getRefvm = getRefvm;
       this.getViewModel = getViewModel;
 
-      function getViewModel(uid, lang, extChanger) {
-        var vm = getRefvm(uid, lang, extChanger);
+      function getViewModel(uid, langs, extChanger) {
+        var vm = getRefvm(uid, langs, extChanger);
         vm.docurl = getImproveTheDocHref(vm);
         vm.sourceurl = getViewSourceHref(vm);
 
         if (vm.inheritance) {
           vm.inheritance = vm.inheritance.map(function (c, i) {
-            var inhe = getRefvm(c, lang, extChanger);
+            var inhe = getRefvm(c, langs, extChanger);
             inhe.index = i;
             return inhe;
           })
@@ -172,25 +171,25 @@ function transform(model, _attrs) {
         if (syntax) {
           if (syntax.parameters) {
             syntax.parameters = syntax.parameters.map(function (currentValue, index, array) {
-              currentValue.type = getRefvm(currentValue.type, lang, extChanger);
+              currentValue.type = getRefvm(currentValue.type, langs, extChanger);
               return currentValue;
             });
           }
           if (syntax.return) {
-            syntax.return.type = getRefvm(syntax.return.type, lang, extChanger);
+            syntax.return.type = getRefvm(syntax.return.type, langs, extChanger);
           }
         }
 
         if (vm.exceptions) {
           vm.exceptions.forEach(function(i) {
-            i.type = getRefvm(i.type, lang, extChanger);
+            i.type = getRefvm(i.type, langs, extChanger);
           });
         }
 
         return vm;
       }
 
-      function getRefvm(uid, lang, extChanger) {
+      function getRefvm(uid, langs, extChanger) {
         if (!util.isString(uid)) {
           console.error("should be uid format: " + uid);
           return uid;
@@ -201,7 +200,7 @@ function transform(model, _attrs) {
             specName: getXref(uid)
           }
         };
-        return new Reference(references[uid], this).getReferenceViewModel(lang, extChanger);
+        return new Reference(references[uid], this).getReferenceViewModel(langs, extChanger);
       }
 
       /*
@@ -292,8 +291,7 @@ function transform(model, _attrs) {
         return vm;
       }
 
-      function getReferenceViewModel(lang, extChanger) {
-        var name = getLangSpecifiedProperty.call(_obj, "fullName", lang) || getLangSpecifiedProperty.call(_obj, "name", lang);
+      function getReferenceViewModel(langs, extChanger) {
         var vm = {};
 
         // Copy other properties and override name/id
@@ -302,9 +300,9 @@ function transform(model, _attrs) {
             vm[key] = _obj[key];
           }
         }
-        vm.specName = getSpecName(lang, extChanger);
-        vm.name = getLangSpecifiedProperty.call(vm, "name", lang) || vm.uid; // workaround bug for dynamic
-        vm.fullName = getLangSpecifiedProperty.call(vm, "fullName", lang);
+        vm.specName = getSpecNameForAllLang(langs, extChanger);
+        vm.name = getLangFullCoveredProperty.call(vm, "name", langs) || vm.uid; // workaround bug for dynamic
+        vm.fullName = getLangFullCoveredProperty.call(vm, "fullName", langs);
         vm.href = extChanger(vm.href);
         vm.id = getHtmlId(vm.uid);
         vm.summary = vm.summary;
@@ -313,7 +311,7 @@ function transform(model, _attrs) {
 
         vm.level = vm.inheritance ? vm.inheritance.length : 0;
         if (vm.syntax) {
-          vm.syntax.content = getLangSpecifiedProperty.call(vm.syntax, "content", lang);
+          vm.syntax.content = getLangFullCoveredProperty.call(vm.syntax, "content", langs);
         }
         return vm;
       }
@@ -321,9 +319,19 @@ function transform(model, _attrs) {
       function getHtmlId(input) {
         return input.replace(/\W/g, '_');
       }
+      
+      function getSpecNameForAllLang(langs, extChanger) {
+        var result = [];
+        for (var l in langs) {
+          var langItem = {};
+          langItem["lang"]=langs[l];
+          langItem["value"]=getSpecName(langs[l], extChanger);
+          result.push(langItem);
+        }
+        return result;
+      }
 
       function getSpecName(lang, extChanger) {
-        // spec is always language specific
         var name = '';
         var spec = _obj["spec." + lang];
         if (spec && util.isArray(spec)) {
@@ -341,17 +349,22 @@ function transform(model, _attrs) {
 
       function getCompositeName(lang, extChanger) {
         // If href exists, return name with href, elsewise, return full name
-        var href = this.href;
         var name = getLangSpecifiedProperty.call(this, "name", lang);
         var fullName = getLangSpecifiedProperty.call(this, "fullName", lang) || name;
         // If href does not exists, return full name
         if (!this.uid) { return util.escapeHtml(fullName); }
         return getXref(this.uid, fullName, name);
       }
-
-      function getName(lang) {
-        var fullName = getLangSpecifiedProperty.call(this, "fullName", lang) || getLangSpecifiedProperty.call(this, "name", lang);
-        return fullName;
+      
+      function getLangFullCoveredProperty(key, langs) {
+        var result = [];
+        for (var l in langs) {
+          var langItem = {};
+          langItem["lang"]=langs[l];
+          langItem["value"]=getLangSpecifiedProperty.call(this, key, langs[l]);
+          result.push(langItem);
+        }
+        return result;
       }
 
       function getLangSpecifiedProperty(key, lang) {

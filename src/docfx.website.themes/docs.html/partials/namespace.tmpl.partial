@@ -1,0 +1,69 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+<header class="header" id="top">
+  <h1>
+    {{#name}}
+    <span class="lang-{{lang}}">{{value}}</span>
+    {{/name}}
+   {{type}}</h1>
+</header>
+{{#summary}}
+<header class="header" id="summary">
+  <h2>Introduction</h2>
+</header>
+<div class="level">
+  <section class="primary">
+  {{{summary}}}
+  </section>
+</div>
+{{/summary}}
+{{#conceptual}}
+<header class="header" id="conceptual">
+  <h2>Using</h2>
+</header>
+<div class="level">
+  {{{conceptual}}}
+</div>
+{{/conceptual}}
+{{#remarks}}
+<header class="header" id="remarks">
+  <h2>Introduction</h2>
+</header>
+<div class="level">
+  <section class="primary">
+  {{{remarks}}}
+  </section>
+</div>
+{{/remarks}}
+{{#children}}
+  <header class="header" id="{{id}}">
+    <h2>{{title}}<h2>
+  </header>
+  <ul class="list-clean">
+    {{#children}}
+      <li id="">
+        <div class="level">
+          <section class="primary">
+            <h4>
+              {{#specName}}
+              <code class="lang-{{lang}}">
+                {{{value}}}
+              </code>
+              {{/specName}}
+            <h4>
+            {{{summary}}}
+          </section>
+          <section class="secondary">
+            {{#syntax}}
+            <figure><pre>
+              {{#content}}
+              <code lang="lang-{{lang}}">{{value}}</code>
+              {{/content}}
+            </pre></figure>
+          {{/syntax}}
+          </section>
+        </div>
+      <li>
+    {{/children}}
+  </ul>
+{{/children}}

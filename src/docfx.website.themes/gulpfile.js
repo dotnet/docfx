@@ -35,6 +35,7 @@ var pack = {
     "*.tmpl"
   ],
   "docs.html": [
+    "partials/*",
     "*.js",
     "*.tmpl"
   ]

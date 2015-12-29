@@ -16,6 +16,12 @@ function transform(model, _attrs){
   if (!entity.toc_asset_id){
     entity.toc_asset_id = attrs._tocPath;
   }
+  if (attrs._navPath && attrs._navPath.indexOf("~/") == 0){
+    attrs._navPath = attrs._navPath.substring(2);
+  }
+  if (!entity.breadcrumb_path){
+    entity.breadcrumb_path = attrs._navPath;
+  }
   return {
     content: JSON.stringify(entity)
   };
