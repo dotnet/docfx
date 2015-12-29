@@ -4,8 +4,10 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
-
+    
     public static class Logger
     {
         private static ImmutableList<ILoggerListener> _listeners = ImmutableList<ILoggerListener>.Empty;
@@ -13,10 +15,19 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
 
-        public static void RegisterListener(ILoggerListener listener)
+        public static void RegisterOrUpdateListener(ILoggerListener listener)
         {
             if (listener == null) throw new ArgumentNullException(nameof(listener));
-            _listeners = _listeners.Add(listener);
+            var currentListeners = _listeners;
+            var old = currentListeners.Find(s => TypeEqualityComparer.Default.Equals(s, listener));
+            if (old == null)
+            {
+                _listeners = currentListeners.Add(listener);
+            }
+            else
+            {
+                _listeners = currentListeners.Replace(old, listener);
+            }
         }
 
         public static void UnregisterListener(ILoggerListener listener)
@@ -108,6 +119,22 @@ namespace Microsoft.DocAsCode.EntityModel
             public string Message { get; set; }
 
             public string Phase { get; set; }
+        }
+
+
+        private sealed class TypeEqualityComparer : IEqualityComparer<ILoggerListener>
+        {
+            public static readonly TypeEqualityComparer Default = new TypeEqualityComparer();
+            private TypeEqualityComparer() { }
+            public bool Equals(ILoggerListener x, ILoggerListener y)
+            {
+                return x.GetType() == y.GetType();
+            }
+
+            public int GetHashCode(ILoggerListener obj)
+            {
+                return obj.GetHashCode();
+            }
         }
     }
 }

@@ -17,14 +17,14 @@ namespace Microsoft.DocAsCode
             try
             {
                 var consoleLogListener = new ConsoleLogListener();
-                Logger.RegisterListener(consoleLogListener);
+                Logger.RegisterOrUpdateListener(consoleLogListener);
 
                 CommandController controller = null;
                 ISubCommand command = null;
                 try
                 {
                     controller = ArgsParser.Instance.Parse(args);
-                    command = controller.Create(args, controller, SubCommandParseOption.Loose);
+                    command = controller.Create();
                 }
                 catch (OptionParserException e)
                 {
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode
                 {
                     var replayListener = new ReplayLogListener();
                     replayListener.AddListener(consoleLogListener);
-                    Logger.RegisterListener(replayListener);
+                    Logger.RegisterOrUpdateListener(replayListener);
                     Logger.UnregisterListener(consoleLogListener);
                 }
 

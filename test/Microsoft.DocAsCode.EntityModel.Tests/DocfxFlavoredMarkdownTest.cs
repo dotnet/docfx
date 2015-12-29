@@ -285,7 +285,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
 
             var engine = builder.CreateDfmEngine(new DfmRenderer());
             var listener = new TestLoggerListener("test!!!!");
-            Logger.RegisterListener(listener);
+            Logger.RegisterOrUpdateListener(listener);
             string result;
             using (new LoggerPhaseScope("test!!!!"))
             {

@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode
                 InputModels = GetInputModels(Config);
             }
 
-            if (!string.IsNullOrWhiteSpace(metadataCommandOptions.Log)) Logger.RegisterListener(new ReportLogListener(metadataCommandOptions.Log));
+            if (!string.IsNullOrWhiteSpace(metadataCommandOptions.Log)) Logger.RegisterOrUpdateListener(new ReportLogListener(metadataCommandOptions.Log));
 
             if (metadataCommandOptions.LogLevel.HasValue) Logger.LogLevelThreshold = metadataCommandOptions.LogLevel.Value;
         }

@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     {
         private void Init()
         {
-            Logger.RegisterListener(new ConsoleLogListener());
+            Logger.RegisterOrUpdateListener(new ConsoleLogListener());
         }
 
         private void CleanUp()

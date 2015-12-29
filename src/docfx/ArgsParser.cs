@@ -8,8 +8,6 @@ namespace Microsoft.DocAsCode
 
     internal class ArgsParser
     {
-        public static readonly Parser LooseParser = new Parser(s => s.IgnoreUnknownArguments = true);
-        public static readonly Parser StrictParser = Parser.Default;
         public static readonly ArgsParser Instance = new ArgsParser();
         private const string PluginFolder = "plugins";
         private ArgsParser()
@@ -24,9 +22,9 @@ namespace Microsoft.DocAsCode
         public CommandController Parse(string[] args)
         {
             var options = new CompositeOptions();
-            bool parsed = LooseParser.ParseArguments(args, options);
+            bool parsed = CommandUtility.GetParser(Plugins.SubCommandParseOption.Loose).ParseArguments(args, options);
             var pluginFolder = string.IsNullOrEmpty(options.PluginFolder) ? PluginFolder : options.PluginFolder;
-            return new CommandController(pluginFolder);
+            return new CommandController(pluginFolder, args);
         }
     }
 }

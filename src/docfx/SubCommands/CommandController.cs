@@ -20,9 +20,11 @@ namespace Microsoft.DocAsCode.SubCommands
         [ImportMany]
         private IList<ExportFactory<ISubCommandCreator, BaseCommandOption>> _allCommands { get; set; }
 
-        private Dictionary<string, ExportFactory<ISubCommandCreator, BaseCommandOption>> _commandMapping { get; }
+        private readonly Dictionary<string, ExportFactory<ISubCommandCreator, BaseCommandOption>> _commandMapping;
 
-        public CommandController(string pluginFolder)
+        private readonly string[] _args;
+
+        public CommandController(string pluginFolder, string[] args)
         {
             GetContainer(pluginFolder).SatisfyImports(this);
 
@@ -35,6 +37,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             _commandMapping = commands.ToDictionary(s => s.Key, s => s.First());
+            _args = args;
         }
 
         public bool TryGetCommandCreator(string name, out ISubCommandCreator creator)
@@ -51,9 +54,9 @@ namespace Microsoft.DocAsCode.SubCommands
             return false;
         }
 
-        // TODO: comment: option not used
-        public ISubCommand Create(string[] args, ISubCommandController controller, SubCommandParseOption option)
+        public ISubCommand Create()
         {
+            var args = _args;
             if (args.Length > 0)
             {
                 // Drawback: do not support such case: docfx --force <subcommands>
@@ -62,15 +65,17 @@ namespace Microsoft.DocAsCode.SubCommands
                 if (TryGetCommandCreator(subCommandName, out command))
                 {
                     var subArgs = args.Skip(1).ToArray();
-                    return command.Create(subArgs, controller, SubCommandParseOption.Strict);
+                    return command.Create(subArgs, this, SubCommandParseOption.Strict);
                 }
             }
 
             // TODO: comment: also handle log and loglevel like in build command
+            // WONT FIX: log and loglevel will be handled in each sub-command as passed in by options
             var options = new CompositeOptions();
-            bool parsed = ArgsParser.LooseParser.ParseArguments(args, options);
-            if (options.IsHelp) return new HelpCommand(controller.GetHelpText());
-            return new CompositeSubCommand(args, controller, options);
+            var parser = CommandUtility.GetParser(SubCommandParseOption.Loose);
+            bool parsed = parser.ParseArguments(args, options);
+            if (options.IsHelp) return new HelpCommand(GetHelpText());
+            return new CompositeCommand(args, this, options);
         }
 
         public string GetHelpText()
@@ -88,8 +93,8 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 foreach (var file in Directory.EnumerateFiles(pluginDir, "*.dll"))
                 {
-                    // TODO: Comment: do not use LoadFile
-                    configuration.WithAssembly(Assembly.LoadFile(file));
+                    var assemblyName = Path.GetFileNameWithoutExtension(file);
+                    configuration.WithAssembly(Assembly.Load(assemblyName));
                 }
             }
             return configuration.CreateContainer();

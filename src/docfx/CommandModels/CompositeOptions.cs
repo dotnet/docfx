@@ -6,8 +6,8 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.EntityModel;
     using CommandLine;
 
-    internal class CompositeOptions {
-
+    internal class CompositeOptions
+    {
         [ValueOption(0)]
         public string ConfigFile { get; set; }
 
