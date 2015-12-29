@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.EntityModel.Builders;
+    using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
     using Microsoft.DocAsCode.EntityModel.Plugins;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -19,14 +20,18 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     [Trait("EntityType", "DocumentBuilder")]
     public class DocumentBuilderTest
     {
-        private void Init()
+        private TestLoggerListener Listener { get; set; }
+
+        private void Init(string phaseName)
         {
-            Logger.RegisterListener(new ConsoleLogListener());
+            Listener = new TestLoggerListener(phaseName);
+            Logger.RegisterListener(Listener);
         }
 
         private void CleanUp()
         {
             Logger.UnregisterAllListeners();
+            Listener = null;
         }
 
         [Fact]
@@ -85,13 +90,21 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                     "test",
                 });
             File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
+            File.WriteAllText(DfmEngineBuilder.MarkdownStyleCopFileName, @"[
+    {
+        tagNames: [""p""],
+        behavior: ""Warning"",
+        messageFormatter: ""Tag {0} is not valid."",
+        openingTagOnly: true
+    }
+]");
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
             files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2 });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
-            Init();
+            Init(DocumentBuilder.PhaseName + "." + MarkdownRewriterBuilder.StyleCopPhaseName);
             try
             {
                 new DocumentBuilder().Build(
@@ -108,6 +121,19 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             finally
             {
                 Logger.UnregisterAllListeners();
+            }
+
+            {
+                // check log for markdown stylecop.
+                Assert.Equal(2, Listener.Items.Count);
+
+                Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
+                Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
+                Assert.Equal("documents/test.md", Listener.Items[0].File);
+
+                Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
+                Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
+                Assert.Equal("documents/test/test.md", Listener.Items[1].File);
             }
 
             {

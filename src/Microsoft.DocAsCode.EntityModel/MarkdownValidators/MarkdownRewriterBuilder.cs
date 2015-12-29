@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
 
     public class MarkdownRewriterBuilder
     {
+        public const string StyleCopPhaseName = "Markdown StyleCop";
         private static readonly Regex OpeningTag = new Regex(@"^\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
         private static readonly Regex ClosingTag = new Regex(@"^\</(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
 
@@ -105,7 +106,10 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
                         return null;
                     }
                 }
-                return ValidateOneCore(token, m, validator);
+                using (new LoggerPhaseScope(StyleCopPhaseName))
+                {
+                    return ValidateOneCore(token, m, validator);
+                }
             }
 
             private List<ICustomMarkdownTagValidator> GetCustomMarkdownTagValidators(MarkdownTagValidationRule validator)

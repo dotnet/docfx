@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
     public class DocumentBuilder
     {
-        private const string Phase = "Build Document";
+        public const string PhaseName = "Build Document";
 
         private static readonly Assembly[] DefaultAssemblies = { typeof(DocumentBuilder).Assembly };
 
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         public DocumentBuilder(IEnumerable<Assembly> assemblies = null)
         {
-            using (new LoggerPhaseScope(Phase))
+            using (new LoggerPhaseScope(PhaseName))
             {
                 Logger.LogInfo("Loading plug-in...");
                 GetContainer(DefaultAssemblies.Union(assemblies ?? new Assembly[0])).SatisfyImports(this);
@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 parameters.Metadata = ImmutableDictionary<string, object>.Empty;
             }
 
-            using (new LoggerPhaseScope(Phase))
+            using (new LoggerPhaseScope(PhaseName))
             {
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 var context = new DocumentBuildContext(

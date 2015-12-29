@@ -5,13 +5,18 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
     using System.Collections.Immutable;
+    using System.Composition.Hosting;
     using System.Linq;
+    using System.IO;
 
+    using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
-        public DfmEngineBuilder(Options options) : base(options)
+        public const string MarkdownStyleCopFileName = "md.stylecop";
+
+        public DfmEngineBuilder(Options options, CompositionHost host = null) : base(options)
         {
             var inlineRules = InlineRules.ToList();
 
@@ -40,6 +45,27 @@ namespace Microsoft.DocAsCode.EntityModel
 
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
+
+            Rewriter = InitMarkdownStyleCop(host);
+        }
+
+        private static IMarkdownRewriter InitMarkdownStyleCop(CompositionHost host)
+        {
+            try
+            {
+                if (File.Exists(MarkdownStyleCopFileName))
+                {
+                    var rules = JsonUtility.Deserialize<MarkdownTagValidationRule[]>(MarkdownStyleCopFileName);
+                    var builder = new MarkdownRewriterBuilder(host);
+                    builder.AddValidators(rules);
+                    return builder.Create();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Fail to init markdown stylecop, details:{Environment.NewLine}{ex.ToString()}");
+            }
+            return null;
         }
 
         public DfmEngine CreateDfmEngine(object renderer)
