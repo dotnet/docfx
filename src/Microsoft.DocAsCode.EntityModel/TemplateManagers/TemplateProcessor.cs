@@ -318,16 +318,14 @@ namespace Microsoft.DocAsCode.EntityModel
             XRefSpec spec = null;
             if (internalXRefMap.TryGetValue(key, out spec))
             {
-                spec.Href = updater(spec.Href);
-                var hashtagIndex = spec.Href.IndexOf('#');
+                href = updater(spec.Href);
+                var hashtagIndex = href.IndexOf('#');
                 if (hashtagIndex == -1)
                 {
                     var htmlId = GetHtmlId(key);
                     // TODO: What if href is not html?
-                    spec.Href = spec.Href + "#" + htmlId;
+                    href = href + "#" + htmlId;
                 }
-
-                href = spec.Href;
             }
             else if (externalXRefMap.TryGetValue(key, out spec) && !string.IsNullOrEmpty(spec.Href))
             {
