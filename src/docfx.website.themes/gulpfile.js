@@ -33,6 +33,10 @@ var pack = {
     "partials/*",
     "*.js",
     "*.tmpl"
+  ],
+  "docs.html": [
+    "*.js",
+    "*.tmpl"
   ]
 };
 
