@@ -41,7 +41,7 @@
   </header>
   <ul class="list-clean">
     {{#children}}
-      <li id="">
+      <li id="{{id}}">
         <div class="level">
           <section class="primary">
             <h4>
@@ -50,7 +50,7 @@
                 {{{value}}}
               </code>
               {{/specName}}
-            <h4>
+            </h4>
             {{{summary}}}
           </section>
           <section class="secondary">
@@ -63,7 +63,7 @@
           {{/syntax}}
           </section>
         </div>
-      <li>
+      </li>
     {{/children}}
   </ul>
 {{/children}}
