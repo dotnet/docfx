@@ -253,7 +253,7 @@ namespace Microsoft.DocAsCode.EntityModel
             return GetListContent(navigator, "/member/param", "parameter", context);
         }
 
-        public static Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
+        private static Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
         {
             return GetListContent(navigator, "/member/typeparam", "type parameter", context);
         }
