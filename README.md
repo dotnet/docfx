@@ -29,7 +29,7 @@ We currently support C# and VB projects.
   2. *Test failure with message `\r\n` not equal to `\n` for Windows*  
   Set `git config --global core.autocrlf true`
 
-## How do I paly with `docfx`?
+## How do I play with `docfx`?
 Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
 ## What's included?
