@@ -1,7 +1,6 @@
 function transform(model, _attrs){
-  var entityRaw = JSON.parse(model);
+  var entity = JSON.parse(model);
   var attrs = JSON.parse(_attrs);
-  var entity = {};
 
   // Clean up unused predefined properties
 
@@ -12,18 +11,19 @@ function transform(model, _attrs){
   if (!entity.toc_asset_id){
     entity.toc_asset_id = attrs._tocPath;
   }
-  if (attrs._navPath && attrs._navPath.indexOf("~/") == 0){
-    attrs._navPath = attrs._navPath.substring(2);
-  }
-  if (!entity.breadcrumb_path){
-    entity.breadcrumb_path = attrs._navPath;
-  } 
   
-  entity.langs = entityRaw.items[0].langs;
-  entity.breadcrum_path = attrs._navRel;
-  entity.doc_url =  getImproveTheDocHref(entityRaw.items[0]);
-  entity.source_url = getViewSourceHref(entityRaw.items[0]);
+  entity.langs = entity.items[0].langs;
+  if (!entity.breadcrumb_path){
+    entity.breadcrumb_path = "/toc.html";
+  }
+  entity.doc_url =  getImproveTheDocHref(entity.items[0]);
+  entity.source_url = getViewSourceHref(entity.items[0]);
 
+ // Clean up unused predefined properties
+  entity.items = undefined;
+  entity.references = undefined;
+  entity.metadata = undefined;
+  
   return {
     content: JSON.stringify(entity)
   };

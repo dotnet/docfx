@@ -72,6 +72,10 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("summary")]
         public string Summary { get; set; }
 
+        [YamlMember(Alias = "syntax")]
+        [JsonProperty("syntax")]
+        public SyntaxDetailViewModel Syntax { get; set; }
+
         public static ReferenceViewModel FromModel(KeyValuePair<string, ReferenceItem> model)
         {
             Debug.Assert(model.Value != null, "Unexpected reference.");
