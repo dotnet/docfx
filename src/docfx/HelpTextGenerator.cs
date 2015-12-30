@@ -34,22 +34,39 @@ namespace Microsoft.DocAsCode
 
         public static string GetHelpMessage(Options options, string verb = null)
         {
+            var helpText = new HelpText(HelpText);
             if (!string.IsNullOrEmpty(verb))
             {
                 var subOption = GetSubOption(options, verb);
                 if (subOption == null)
                 {
-                    HelpText.AddPreOptionsLine("Unknown command: " + verb);
+                    helpText.AddPreOptionsLine("Unknown command: " + verb);
                 }
                 else
                 {
-                    HelpText.AddPreOptionsLine(Environment.NewLine);
-                    HelpText.AddPreOptionsLine("Usage: docfx " + verb);
-                    HelpText.AddOptions(subOption);
+                    helpText.AddPreOptionsLine(Environment.NewLine);
+                    helpText.AddPreOptionsLine("Usage: docfx " + verb);
+                    helpText.AddOptions(subOption);
                 }
             }
 
-            return HelpText;
+            return helpText;
+        }
+
+        public static string GetHeader()
+        {
+            return new HelpText(HelpText);
+        }
+
+        public static string GetHelpMessage(object options)
+        {
+            var helpText = new HelpText(HelpText)
+            {
+                AdditionalNewLineAfterOption = false,
+                AddDashesToOption = true
+            };
+            helpText.AddOptions(options);
+            return helpText.ToString();
         }
 
         private static void AddLinesToHelpText(HelpText helpText, string message)

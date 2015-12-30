@@ -4,12 +4,12 @@
 namespace Microsoft.DocAsCode
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
 
     using CommandLine;
 
     using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.SubCommands;
 
     internal class Program
     {
@@ -39,6 +39,7 @@ namespace Microsoft.DocAsCode
                 var context = new RunningContext();
                 Exec(options, context);
                 return 0;
+                
             }
             catch(Exception e)
             {
@@ -49,6 +50,57 @@ namespace Microsoft.DocAsCode
             {
                 Logger.Flush();
                 Logger.UnregisterAllListeners();
+            }
+        }
+
+        private static int Exec(string[] args)
+        {
+            var consoleLogListener = new ConsoleLogListener();
+            Logger.RegisterListener(consoleLogListener);
+            CommandController controller = null;
+            ISubCommand command = null;
+            try
+            {
+                controller = ArgsParser.Instance.Parse(args);
+                command = controller.Create();
+            }
+            catch (OptionParserException e)
+            {
+                Logger.LogError(e.Message);
+                if (controller != null)
+                {
+                    Console.WriteLine(controller.GetHelpText());
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                if (controller != null)
+                {
+                    Console.WriteLine(controller.GetHelpText());
+                }
+                return 1;
+            }
+
+            if (!(command is SubCommands.HelpCommand))
+            {
+                var replayListener = new ReplayLogListener();
+                replayListener.AddListener(consoleLogListener);
+                Logger.RegisterListener(replayListener);
+                Logger.UnregisterListener(consoleLogListener);
+            }
+
+            var context = new SubCommandRunningContext();
+            try
+            {
+                command.Exec(context);
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message);
+                return 1;
             }
         }
 
