@@ -117,6 +117,24 @@ Inline [!include[ref3](ref3.md ""This is root"")]
             Assert.Equal("<p>Inline <!-- BEGIN INCLUDE: Include content from &quot;ref1.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;ref2.md&quot; -->## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md \"This is root\")]<!--END ERROR INCLUDE --><!--END INCLUDE --><!--END INCLUDE -->\nInline <!-- BEGIN INCLUDE: Include content from &quot;ref3.md&quot; --><strong>Hello</strong><!--END INCLUDE --></p>\n", marked);
         }
 
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestYaml_InvalidYamlInsideContent()
+        {
+            var source = @"# Title
+---
+Not yaml syntax
+---
+hello world";
+            var expected = @"<h1 id=""title"">Title</h1>
+<hr>
+<h2 id=""not-yaml-syntax"">Not yaml syntax</h2>
+<p>hello world</p>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
         [Theory]
         [Trait("Related", "DfmMarkdown")]
         [InlineData(@"the following is note type
