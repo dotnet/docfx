@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownParagraphBlockToken(Rule, Context, InlineTokens, RawMarkdown);
+            return new MarkdownParagraphBlockToken(Rule, Context, c, RawMarkdown);
         }
     }
 }
