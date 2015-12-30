@@ -21,16 +21,19 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
             host.LogInfo("Merging platform-version...");
-            var pages = host.GetModels(DocumentType.Article);
             var processedUid = new HashSet<string>();
-            var merged = pages.RunAll(page =>
+            var merged = models.RunAll(m =>
             {
-                if (page.Uids.Length == 0)
+                if (m.Type != DocumentType.Article)
                 {
-                    host.LogWarning("Unknown model without uid.", file: page.File);
-                    return page;
+                    return m;
                 }
-                var mainUid = page.Uids[0];
+                if (m.Uids.Length == 0)
+                {
+                    host.LogWarning("Unknown model without uid.", file: m.File);
+                    return m;
+                }
+                var mainUid = m.Uids[0];
                 if (processedUid.Contains(mainUid))
                 {
                     return null;
@@ -39,18 +42,18 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 if (sameTopics.Count == 1)
                 {
                     processedUid.Add(mainUid);
-                    return page;
+                    return m;
                 }
-                var vm = (PageViewModel)page.Content;
-                page.Content = MergeCore(
+                var vm = (PageViewModel)m.Content;
+                m.Content = MergeCore(
                     mainUid,
-                    page,
+                    m,
                     from topic in sameTopics
-                    where topic != page
+                    where topic != m
                     where topic.Type == DocumentType.Article
                     select topic,
                     host);
-                return page;
+                return m;
             });
             host.LogInfo("Platform-version merged.");
             return from p in merged
