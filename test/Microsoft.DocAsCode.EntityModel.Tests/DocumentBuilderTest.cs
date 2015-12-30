@@ -26,15 +26,17 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         {
             Listener = new TestLoggerListener(phaseName);
             Logger.RegisterListener(Listener);
+            DocfxFlavoredMarked.ClearBuilder();
         }
 
         private void CleanUp()
         {
             Logger.UnregisterAllListeners();
             Listener = null;
+            DocfxFlavoredMarked.ClearBuilder();
         }
 
-        // [Fact]
+        [Fact]
         public void TestBuild()
         {
             const string documentsBaseDir = "documents";
