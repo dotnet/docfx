@@ -13,11 +13,14 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Xml;
     using System.Xml.XPath;
 
+    using Microsoft.DocAsCode.Utility;
+
     public interface ITripleSlashCommentParserContext
     {
         bool Normalize { get; set; }
         bool PreserveRawInlineComments { get; set; }
         Action<string> AddReferenceDelegate { get; set; }
+        SourceDetail Source { get; set; }
     }
 
     public class TripleSlashCommentParserContext : ITripleSlashCommentParserContext
@@ -28,6 +31,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public Action<string> AddReferenceDelegate { get; set; }
 
+        public SourceDetail Source { get; set; }
     }
 
     public class TripleSlashCommentModel
@@ -227,7 +231,18 @@ namespace Microsoft.DocAsCode.EntityModel
                 string name = nav.GetAttribute("name", string.Empty);
                 string description = nav.Value;
                 if (context.Normalize) description = NormalizeContentFromTripleSlashComment(description);
-                if (!string.IsNullOrEmpty(name)) result.Add(name, description);
+                if (!string.IsNullOrEmpty(name))
+                {
+                    if (result.ContainsKey(name))
+                    {
+                        string path = context.Source.Remote != null ? Path.Combine(context.Source.Remote.LocalWorkingDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
+                        Logger.LogWarning($"Duplicate parameter '{name}' found in comments, the latter one is ignored.", null, path.ToDisplayPath(), context.Source.StartLine.ToString());
+                    }
+                    else
+                    {
+                        result.Add(name, description);
+                    }
+                }
             }
 
             return result;
@@ -243,7 +258,18 @@ namespace Microsoft.DocAsCode.EntityModel
                 string name = nav.GetAttribute("name", string.Empty);
                 string description = nav.Value;
                 if (context.Normalize) description = NormalizeContentFromTripleSlashComment(description);
-                if (!string.IsNullOrEmpty(name)) result.Add(name, description);
+                if (!string.IsNullOrEmpty(name))
+                {
+                    if (result.ContainsKey(name))
+                    {
+                        string path = context.Source.Remote != null ? Path.Combine(context.Source.Remote.LocalWorkingDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
+                        Logger.LogWarning($"Duplicate parameter '{name}' found in comments, the latter one is ignored.", null, path.ToDisplayPath(), context.Source.StartLine.ToString());
+                    }
+                    else
+                    {
+                        result.Add(name, description);
+                    }
+                }
             }
 
             return result;

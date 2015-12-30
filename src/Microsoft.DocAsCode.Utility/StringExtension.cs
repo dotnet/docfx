@@ -86,6 +86,12 @@ namespace Microsoft.DocAsCode.Utility
             return path.BackSlashToForwardSlash().TrimEnd('/');
         }
 
+        public static string ToDisplayPath(this string path)
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+            return path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        }
+
         public static string CoalesceNullOrEmpty(this string value, string defaultValue)
         {
             if (string.IsNullOrEmpty(value))
