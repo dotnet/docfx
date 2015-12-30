@@ -1,12 +1,11 @@
-#Generate your API documentation with DocFX
+# Generate your API documentation with DocFX
 
 |            | Windows  |
 | ---------- | --------- | ------
 | **master** | [![masterstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCi_Master)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCi_Master)
 | **dev**    | [![devstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCi_DocfxCiForDevBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCi_DocfxCiForDevBranch)
 
-
-##What is it?
+## What is it?
 DocFX makes it extremely easy to generate your developer hub, complete with API reference, landing page, and how-to.
 There are currently two versions of the tool:
 
@@ -15,10 +14,25 @@ There are currently two versions of the tool:
 
 We currently support C# and VB projects. 
 
-##How do I get started?
-Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html) to play with `docfx`!
+## How to build?
+### Prerequisites
+1. [VS 2015 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx) or above
+2. [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)
 
-##What's included?
+### Steps
+1. `dnvm install 1.0.0-rc1-final`
+2. Run `build.cmd` under `docfx` code repo
+
+> Possible build issues
+  1. *DNX.PackageManager not found*  
+   Install http://www.microsoft.com/en-us/download/details.aspx?id=49442. Note that there are 2 msi to be installed.
+  2. *Test failure with message `\r\n` not equal to `\n` for Windows*  
+  Set `git config --global core.autocrlf true`
+
+## How do I paly with `docfx`?
+Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
+
+## What's included?
 File/Folder     | Description 
 :----------     | :----------
 LICENSE         | Project license information
@@ -29,12 +43,12 @@ src             | Source code for `docfx`
 test            | Test cases for `docfx` using *xunit* test framework
 tools           | Source code for tools used in code build and deployment
 
-##How to Contribute
+## How to Contribute
 Check out the [contributing](CONTRIBUTING.md) page to see the best places to log issues and start discussions.
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
-##License
+## License
 DocFX is licensed under the [MIT license](LICENSE).
 
 ### .NET Foundation
