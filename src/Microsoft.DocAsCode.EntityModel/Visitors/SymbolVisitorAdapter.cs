@@ -610,7 +610,8 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 AddReferenceDelegate = GetAddReferenceDelegate(item),
                 Normalize = true,
-                PreserveRawInlineComments = preserve
+                PreserveRawInlineComments = preserve,
+                Source = item.Source
             };
         }
 

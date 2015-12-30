@@ -478,6 +478,7 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
             public Action<string> AddReferenceDelegate { get; set; }
             public bool Normalize { get; set; }
             public bool PreserveRawInlineComments { get; set; }
+            public SourceDetail Source { get; set; }
         }
 
         #endregion
