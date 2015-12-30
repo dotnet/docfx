@@ -129,15 +129,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return content;
         }
 
-        private StringBuffer RenderTextInTokens(IMarkdownRenderer engine, MarkdownBlockContext context, bool wrapParagraph, IMarkdownRule rule, StringBuffer textContent, string rawMarkdown)
+        private StringBuffer RenderTextInTokens(IMarkdownRenderer renderer, MarkdownBlockContext context, bool wrapParagraph, IMarkdownRule rule, StringBuffer textContent, string rawMarkdown)
         {
             if (wrapParagraph)
             {
-                return Render(engine, new MarkdownParagraphBlockToken(rule, context, engine.Engine.Parser.TokenizeInline(textContent), rawMarkdown), context);
+                var parser = renderer.Engine.Parser;
+                var c = parser.SwitchContext(context);
+                var inlineContent = parser.TokenizeInline(textContent);
+                parser.SwitchContext(c);
+                return Render(renderer, new MarkdownParagraphBlockToken(rule, context, inlineContent, rawMarkdown), context);
             }
             else
             {
-                return ApplyInline(engine, textContent, context);
+                return ApplyInline(renderer, textContent, context);
             }
         }
 
