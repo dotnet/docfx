@@ -105,4 +105,4 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
    For a .NET project, `Properties`->`Build`->check `XML documentation file`, `uid` is the same as value of `//member/@name` in the `XML documentation file`.
    > **NOTE** We are adding `uid` info to the generated website so that user can find `uid` much more easily.
    
-   ![uid sample](artifacts/uid.png)
+   ![uid sample](images/uid.png)

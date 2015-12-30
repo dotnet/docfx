@@ -27,7 +27,7 @@
     ],
     "resource": [
       {
-        "files": [ "spec/images/**", "tutorial/artifacts/**" ]
+        "files": [ "spec/images/**", "tutorial/artifacts/**", "tutorial/images/**" ]
       }
     ],
     "overwrite": "apispec/*.md",
