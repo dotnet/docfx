@@ -23,11 +23,13 @@ namespace Microsoft.DocAsCode
 
         public BuildJsonConfig Config { get; }
 
-        public BuildCommand(CommandContext context) : this(new BuildJsonConfig(), context)
+        public BuildCommand(CommandContext context)
+            : this(new BuildJsonConfig(), context)
         {
         }
 
-        public BuildCommand(JToken value, CommandContext context) : this(CommandFactory.ConvertJTokenTo<BuildJsonConfig>(value), context)
+        public BuildCommand(JToken value, CommandContext context)
+            : this(CommandFactory.ConvertJTokenTo<BuildJsonConfig>(value), context)
         {
         }
 
@@ -74,17 +76,7 @@ namespace Microsoft.DocAsCode
                 return;
             }
 
-            var builder = new DocumentBuilder(LoadPluginAssemblies(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins")));
-
-            try
-            {
-                builder.Build(parameters);
-            }
-            catch (DocumentException ex)
-            {
-                Logger.LogWarning("document error:" + ex.Message);
-                return;
-            }
+            BuildDocument(config);
 
             var documentContext = DocumentBuildContext.DeserializeFrom(parameters.OutputBaseDir);
             var assembly = typeof(Program).Assembly;
@@ -135,7 +127,8 @@ namespace Microsoft.DocAsCode
             if (config.GlobalMetadata != null) parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
             if (config.FileMetadata != null) parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
             parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference)).ToImmutableArray();
-            parameters.Files = GetFileCollectionFromFileMapping(baseDirectory,
+            parameters.Files = GetFileCollectionFromFileMapping(
+                baseDirectory,
                 Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
                 Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
                 Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
@@ -231,26 +224,22 @@ namespace Microsoft.DocAsCode
             if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
             if (options.Content != null)
             {
-                if (config.Content == null)
-                    config.Content = new FileMapping(new FileMappingItem());
+                if (config.Content == null) config.Content = new FileMapping(new FileMappingItem());
                 config.Content.Add(new FileMappingItem() { Files = new FileItems(options.Content), SourceFolder = optionsBaseDirectory });
             }
             if (options.Resource != null)
             {
-                if (config.Resource == null)
-                    config.Resource = new FileMapping(new FileMappingItem());
+                if (config.Resource == null) config.Resource = new FileMapping(new FileMappingItem());
                 config.Resource.Add(new FileMappingItem() { Files = new FileItems(options.Resource), SourceFolder = optionsBaseDirectory });
             }
             if (options.Overwrite != null)
             {
-                if (config.Overwrite == null)
-                    config.Overwrite = new FileMapping(new FileMappingItem());
+                if (config.Overwrite == null) config.Overwrite = new FileMapping(new FileMappingItem());
                 config.Overwrite.Add(new FileMappingItem() { Files = new FileItems(options.Overwrite), SourceFolder = optionsBaseDirectory });
             }
             if (options.ExternalReference != null)
             {
-                if (config.ExternalReference == null)
-                    config.ExternalReference = new FileMapping(new FileMappingItem());
+                if (config.ExternalReference == null) config.ExternalReference = new FileMapping(new FileMappingItem());
                 config.ExternalReference.Add(new FileMappingItem() { Files = new FileItems(options.ExternalReference), SourceFolder = optionsBaseDirectory });
             }
             if (options.Serve) config.Serve = options.Serve;
@@ -258,39 +247,116 @@ namespace Microsoft.DocAsCode
             return config;
         }
 
-        private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
+        private static void BuildDocument(BuildJsonConfig config)
         {
-            if (!Directory.Exists(pluginDirectory))
+            AppDomain builderDomain = null;
+            try
             {
-                yield break;
+                string applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string pluginDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
+                string pluginConfig = Path.Combine(pluginDirectory, "docfx.plugins.config");
+
+                Logger.LogInfo($"Plug-in directory: {pluginDirectory}, configuration file: {pluginConfig}");
+
+                AppDomainSetup setup = new AppDomainSetup
+                {
+                    ApplicationBase = applicationBaseDirectory,
+                    PrivateBinPath = string.Join(";", applicationBaseDirectory, pluginDirectory),
+                    ConfigurationFile = pluginConfig
+                };
+
+                builderDomain = AppDomain.CreateDomain("document builder domain", null, setup);
+
+                // TODO: redirect logged items into current domain
+                builderDomain.DoCallBack(new DocumentBuilderWrapper(pluginDirectory, config).BuildDocument);
+            }
+            catch (DocumentException ex)
+            {
+                Logger.LogWarning("document error:" + ex.Message);
+            }
+            finally
+            {
+                if (builderDomain != null)
+                {
+                    AppDomain.Unload(builderDomain);
+                }
+            }
+        }
+
+        #region DocumentBuilderWrapper
+
+        [Serializable]
+        class DocumentBuilderWrapper
+        {
+            private readonly string _pluginDirectory;
+            private readonly BuildJsonConfig _config;
+
+            public DocumentBuilderWrapper(string pluginDirectory, BuildJsonConfig config)
+            {
+                if (string.IsNullOrEmpty(pluginDirectory))
+                {
+                    throw new ArgumentNullException(nameof(_pluginDirectory));
+                }
+
+                if (config == null)
+                {
+                    throw new ArgumentNullException(nameof(config));
+                }
+
+                _pluginDirectory = pluginDirectory;
+                _config = config;
             }
 
-            Logger.LogInfo($"Searching custom plug-ins in directory {pluginDirectory}...");
-
-            foreach (var assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
+            public void BuildDocument()
             {
-                Assembly assembly = null;
+                var builder = new DocumentBuilder(LoadPluginAssemblies(_pluginDirectory));
 
-                // assume assembly name is the same with file name without extension
-                string assemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
-                if (!string.IsNullOrEmpty(assemblyName))
+                var parameters = ConfigToParameter(_config);
+                if (parameters.Files.Count == 0)
                 {
-                    try
-                    {
-                        assembly = Assembly.Load(assemblyName);
-                        Logger.LogInfo($"Scanning assembly file {assemblyFile}...");
-                    }
-                    catch (Exception ex) when (ex is BadImageFormatException || ex is FileLoadException || ex is FileNotFoundException)
-                    {
-                        Logger.LogWarning($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
-                    }
+                    Logger.LogWarning("No files found, nothing is to be generated");
+                    return;
+                }
 
-                    if (assembly != null)
+                builder.Build(parameters);
+            }
+
+            private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
+            {
+                if (!Directory.Exists(pluginDirectory))
+                {
+                    yield break;
+                }
+
+                Logger.LogInfo($"Searching custom plug-ins in directory {pluginDirectory}...");
+
+                foreach (var assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
+                {
+                    Assembly assembly = null;
+
+                    // assume assembly name is the same with file name without extension
+                    string assemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
+                    if (!string.IsNullOrEmpty(assemblyName))
                     {
-                        yield return assembly;
+                        try
+                        {
+                            assembly = Assembly.Load(assemblyName);
+                            Logger.LogInfo($"Scanning assembly file {assemblyFile}...");
+                        }
+                        catch (Exception ex) when (ex is BadImageFormatException || ex is FileLoadException || ex is FileNotFoundException)
+                        {
+                            Logger.LogWarning($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
+                        }
+
+                        if (assembly != null)
+                        {
+                            yield return assembly;
+                        }
                     }
                 }
             }
         }
+
+        #endregion DocumentBuilderWrapper
     }
 }

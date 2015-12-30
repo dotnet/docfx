@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
@@ -33,6 +34,7 @@ namespace Microsoft.DocAsCode
     ///     e.g. `projects: ["file1", "file2"]`
     /// </summary>
     [JsonConverter(typeof(FileMappingConverter))]
+    [Serializable]
     public class FileMapping
     {
         private List<FileMappingItem> _items = new List<FileMappingItem>();

@@ -3,11 +3,13 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
 
     [JsonConverter(typeof(ListWithStringFallbackConverter))]
+    [Serializable]
     public class ListWithStringFallback : List<string>
     {
         public ListWithStringFallback() : base()

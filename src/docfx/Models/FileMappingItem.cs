@@ -3,11 +3,14 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
+
     using Newtonsoft.Json;
 
     /// <summary>
     /// Data model for a file-mapping item
     /// </summary>
+    [Serializable]
     public class FileMappingItem
     {
         private string _sourceFolder;

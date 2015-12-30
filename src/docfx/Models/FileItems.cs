@@ -3,8 +3,10 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
     using System.Collections.Generic;
 
+    [Serializable]
     public class FileItems : List<string>
     {
         private static IEnumerable<string> Empty = new List<string>();
