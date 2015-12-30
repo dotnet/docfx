@@ -221,9 +221,9 @@ namespace Microsoft.DocAsCode.EntityModel
             return GetMultipleExampleNodes(nav, "/member/example", context.Normalize).ToList();
         }
 
-        private static Dictionary<string, string> GetParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
+        private static Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, ITripleSlashCommentParserContext context)
         {
-            var iterator = navigator.Select("/member/param");
+            var iterator = navigator.Select(xpath);
             var result = new Dictionary<string, string>();
             if (iterator == null) return result;
             foreach (XPathNavigator nav in iterator)
@@ -236,7 +236,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     if (result.ContainsKey(name))
                     {
                         string path = context.Source.Remote != null ? Path.Combine(context.Source.Remote.LocalWorkingDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
-                        Logger.LogWarning($"Duplicate parameter '{name}' found in comments, the latter one is ignored.", null, path.ToDisplayPath(), context.Source.StartLine.ToString());
+                        Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", null, path.ToDisplayPath(), context.Source.StartLine.ToString());
                     }
                     else
                     {
@@ -248,31 +248,14 @@ namespace Microsoft.DocAsCode.EntityModel
             return result;
         }
 
+        private static Dictionary<string, string> GetParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
+        {
+            return GetListContent(navigator, "/member/param", "parameter", context);
+        }
+
         public static Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
         {
-            var iterator = navigator.Select("/member/typeparam");
-            var result = new Dictionary<string, string>();
-            if (iterator == null) return result;
-            foreach (XPathNavigator nav in iterator)
-            {
-                string name = nav.GetAttribute("name", string.Empty);
-                string description = nav.Value;
-                if (context.Normalize) description = NormalizeContentFromTripleSlashComment(description);
-                if (!string.IsNullOrEmpty(name))
-                {
-                    if (result.ContainsKey(name))
-                    {
-                        string path = context.Source.Remote != null ? Path.Combine(context.Source.Remote.LocalWorkingDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
-                        Logger.LogWarning($"Duplicate parameter '{name}' found in comments, the latter one is ignored.", null, path.ToDisplayPath(), context.Source.StartLine.ToString());
-                    }
-                    else
-                    {
-                        result.Add(name, description);
-                    }
-                }
-            }
-
-            return result;
+            return GetListContent(navigator, "/member/typeparam", "type parameter", context);
         }
 
         private static void ResolveParameterRef(XPathNavigator nav)
