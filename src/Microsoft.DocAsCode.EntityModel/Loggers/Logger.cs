@@ -4,6 +4,8 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     public static class Logger
@@ -17,6 +19,22 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (listener == null) throw new ArgumentNullException(nameof(listener));
             _listeners = _listeners.Add(listener);
+        }
+
+        public static void AddOrReplaceListener(ILoggerListener listener, IEqualityComparer<ILoggerListener> equalityComparer)
+        {
+            if (listener == null) throw new ArgumentNullException(nameof(listener));
+            if (equalityComparer == null) throw new ArgumentNullException(nameof(equalityComparer));
+            var currentListeners = _listeners;
+            var old = currentListeners.Find(s => equalityComparer.Equals(s, listener));
+            if (old == null)
+            {
+                _listeners = currentListeners.Add(listener);
+            }
+            else
+            {
+                _listeners = currentListeners.Replace(old, listener);
+            }
         }
 
         public static void UnregisterListener(ILoggerListener listener)

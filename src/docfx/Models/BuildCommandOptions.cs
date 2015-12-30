@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode
     using CommandLine;
     using Microsoft.DocAsCode.EntityModel;
 
-    internal class BuildCommandOptions
+    internal class BuildCommandOptions : IHasHelp
     {
         [Option('o', "output")]
         public string OutputFolder { get; set; }
