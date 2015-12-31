@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Tests
                 for (int i = 0; i < pairs.Count; i++)
                 {
                     Assert.Equal(item[i].Glob.Raw, pairs[i].Glob.Raw);
-                    var parsedValue = ConvertJObjectToObject((JToken)pairs[i].Value);
+                    var parsedValue = pairs[i].Value;
                     Assert.Equal(item[i].Value, parsedValue);
                 }
             }
