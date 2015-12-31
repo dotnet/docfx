@@ -39,7 +39,7 @@ As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.c
 ```
 Install-Package docfx.msbuild
 ```
-**Step3.** You will notice that *docfx.json* and *toc.yml* are automatically added to your project. Modify *docfx.json* to include projects and conceptual files that you want to generate documentations. For detailed syntax about *docfx.json*, please refer to [docfx.exe User Mannual](docfx.exe_user_manual.md).
+**Step3.** You will notice that *docfx.json* and *toc.yml* are automatically added to your project. Modify *docfx.json* to include projects and conceptual files that you want to generate documentations. For detailed syntax about *docfx.json*, please refer to @user_manual.
 
 **Step4.** Right click on the website project, and click View => **View in browser**, navigate to `/_site/tutorial/docfx_getting_started.html` sub url, and start navigating through web pages!
 
@@ -102,7 +102,5 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
    A: Use `@uid` syntax.
 2. Q: What is `uid` and where to find `uid`?  
    A: Refer to `Cross Reference` section in [DFM](../spec/docfx_flavored_markdown.md).  
-   For a .NET project, `Properties`->`Build`->check `XML documentation file`, `uid` is the same as value of `//member/@name` in the `XML documentation file`.
-   > **NOTE** We are adding `uid` info to the generated website so that user can find `uid` much more easily.
-   
-   ![uid sample](images/uid.png)
+3. Q: Where to find `uid`?  
+   A: In the generated website, F12 to view source, `uid` is the value from `data-uid` attribute.

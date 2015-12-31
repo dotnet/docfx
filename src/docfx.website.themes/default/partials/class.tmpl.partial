@@ -2,7 +2,7 @@
 
 {{#docurl}}<a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>{{/docurl}}
 {{#sourceurl}}<a href="{{sourceurl}}" class="btn btn-primary pull-right mobile-hide">View Source</a>{{/sourceurl}}
-<h1 id="{{id}}">{{type}} {{name}}</h1>
+<h1 id="{{id}}" data-uid="{{uid}}">{{type}} {{name}}</h1>
 <div class="markdown level0 summary">{{{summary}}}</div>
 <div class="markdown level0 conceptual">{{{conceptual}}}</div>
 {{#inheritance.0}}
@@ -36,7 +36,7 @@
 <span class="small pull-right mobile-hide">
   <a href="{{sourceurl}}">View Source</a>
 </span>{{/sourceurl}}
-<h4 id="{{id}}">{{name}}</h4>
+<h4 id="{{id}}" data-uid="{{uid}}">{{name}}</h4>
 <div class="markdown level1 summary">{{{summary}}}</div>
 <div class="markdown level1 conceptual">{{{conceptual}}}</div>
 {{#remarks}}

@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
+    using Utility;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildConceptualDocument : BaseDocumentBuildStep
@@ -49,6 +50,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         if (!string.IsNullOrWhiteSpace(uid))
                         {
                             model.Uids = new[] { uid }.ToImmutableArray();
+                            content["uid"] = item.Value;
                         }
                     }
                     else
@@ -63,7 +65,24 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
             model.Properties.LinkToFiles = result.LinkToFiles;
             model.Properties.LinkToUids = result.LinkToUids;
+            model.Properties.XrefSpec = null;
+            if (model.Uids.Length > 0)
+            {
+                model.Properties.XrefSpec = new XRefSpec
+                {
+                    Uid = model.Uids[0],
+                    Name = TitleThumbnail(content["title"].ToString() ?? model.Uids[0], 30),
+                    Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
+                };
+            }
             model.File = Path.ChangeExtension(model.File, ".json");
+        }
+
+        private static string TitleThumbnail(string title, int maxLength)
+        {
+            if (string.IsNullOrEmpty(title)) return null;
+            if (title.Length <= maxLength) return title;
+            return title.Substring(0, maxLength) + "...";
         }
 
         private static Content ExtractContentTitlesFromHtml(string contentHtml)
