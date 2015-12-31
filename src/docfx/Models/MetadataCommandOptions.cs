@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode
     using CommandLine;
     using Microsoft.DocAsCode.EntityModel;
 
+    [OptionUsage("metadata [<docfx.json file path>]")]
+    [OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
     internal class MetadataCommandOptions : IHasHelp, IHasLog
     {
         [Option('f', "force", HelpText = "Force re-generate all the metadata")]

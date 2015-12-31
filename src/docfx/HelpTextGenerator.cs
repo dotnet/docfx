@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode
     using CommandLine;
     using CommandLine.Text;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -17,19 +18,24 @@ namespace Microsoft.DocAsCode
             AddDashesToOption = true
         };
 
+        private static readonly string License;
+        private static readonly string GeneralUsage;
+        private static readonly string ProductName;
+
         static HelpTextGenerator()
         {
             var assembly = Assembly.GetAssembly(typeof(HelpTextGenerator));
             var version = assembly.GetName()?.Version?.ToString();
-            if (version != null) HelpText.Heading = new HeadingInfo("docfx", version);
-
+            var name = assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product ?? "docfx";
+            if (version != null) HelpText.Heading = new HeadingInfo(name, version);
             var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
             if (copyright != null) HelpText.Copyright = new CopyrightInfo(copyright, DateTime.Now.Year);
             var license = assembly.GetCustomAttribute<AssemblyLicenseAttribute>()?.Value;
             var usage = assembly.GetCustomAttribute<AssemblyUsageAttribute>()?.Value;
-
             AddLinesToHelpText(HelpText, license);
-            AddLinesToHelpText(HelpText, usage);
+            ProductName = name;
+            License = license;
+            GeneralUsage = usage;
         }
 
         public static string GetHelpMessage(Options options, string verb = null)
@@ -55,7 +61,13 @@ namespace Microsoft.DocAsCode
 
         public static string GetHeader()
         {
-            return new HelpText(HelpText);
+            var helpText = new HelpText(HelpText)
+            {
+                AdditionalNewLineAfterOption = false,
+                AddDashesToOption = true
+            };
+            AddLinesToHelpText(helpText, GeneralUsage);
+            return helpText;
         }
 
         public static string GetHelpMessage(object options)
@@ -66,6 +78,25 @@ namespace Microsoft.DocAsCode
                 AddDashesToOption = true
             };
             helpText.AddOptions(options);
+            return helpText.ToString();
+        }
+
+        public static string GetSubCommandHelpMessage(object option, string[] usages)
+        {
+            var helpText = new HelpText(HelpText)
+            {
+                AdditionalNewLineAfterOption = false,
+                AddDashesToOption = true
+            };
+
+            bool multiple = usages.Length > 1;
+            for (int i = 0; i < usages.Length; i++)
+            {
+                string title = multiple ? $"Usage{i + 1}" : "Usage";
+                AddLinesToHelpText(helpText, $"{Environment.NewLine}{title}: {ProductName} {usages[i]}");
+            }
+
+            helpText.AddOptions(option);
             return helpText.ToString();
         }
 
