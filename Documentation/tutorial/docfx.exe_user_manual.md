@@ -1,3 +1,7 @@
+---
+uid: user_manual
+title: docfx.exe User Manual
+---
 Doc-as-code: `docfx.exe` User Manual
 ==========================================
 

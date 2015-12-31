@@ -74,13 +74,19 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 throw;
             }
 
-            return new SaveResult
+            var result = new SaveResult
             {
                 DocumentType = model.DocumentType ?? "Conceptual",
                 ModelFile = model.File,
                 LinkToFiles = model.Properties.LinkToFiles,
                 LinkToUids = model.Properties.LinkToUids,
             };
+            if (model.Properties.XrefSpec != null)
+            {
+                result.XRefSpecs = ImmutableArray.Create(model.Properties.XrefSpec);
+            }
+
+            return result;
         }
     }
 }
