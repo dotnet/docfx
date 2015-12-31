@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode
     public class FileMappingItem
     {
         private string _sourceFolder;
+        private string _cwd;
 
         /// <summary>
         /// The name of current item, the value is not used for now
@@ -54,14 +55,16 @@ namespace Microsoft.DocAsCode
         /// As discussed, `cwd` may lead to confusing and misunderstanding, so in version 1.3, `src` is introduced and `cwd` is kept for backward compatibility
         /// </summary>
         [JsonProperty("cwd")]
+        [Obsolete]
         public string CurrentWorkingDirectory
         {
             get
             {
-                return _sourceFolder;
+                return _cwd;
             }
             set
             {
+                _cwd = value;
                 _sourceFolder = value;
             }
         }
