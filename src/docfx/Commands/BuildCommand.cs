@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode
 
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.Builders;
+    using Microsoft.DocAsCode.EntityModel.Loggers;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
@@ -267,8 +268,7 @@ namespace Microsoft.DocAsCode
 
                 builderDomain = AppDomain.CreateDomain("document builder domain", null, setup);
 
-                // TODO: redirect logged items into current domain
-                builderDomain.DoCallBack(new DocumentBuilderWrapper(pluginDirectory, config).BuildDocument);
+                builderDomain.DoCallBack(new DocumentBuilderWrapper(pluginDirectory, config, new CrossAppDomainListener()).BuildDocument);
             }
             catch (DocumentException ex)
             {
@@ -290,8 +290,9 @@ namespace Microsoft.DocAsCode
         {
             private readonly string _pluginDirectory;
             private readonly BuildJsonConfig _config;
+            private readonly ILoggerListener _listener;
 
-            public DocumentBuilderWrapper(string pluginDirectory, BuildJsonConfig config)
+            public DocumentBuilderWrapper(string pluginDirectory, BuildJsonConfig config, ILoggerListener listener)
             {
                 if (string.IsNullOrEmpty(pluginDirectory))
                 {
@@ -305,10 +306,16 @@ namespace Microsoft.DocAsCode
 
                 _pluginDirectory = pluginDirectory;
                 _config = config;
+                _listener = listener;
             }
 
             public void BuildDocument()
             {
+                if (_listener != null)
+                {
+                    Logger.RegisterListener(_listener);
+                }
+
                 var builder = new DocumentBuilder(LoadPluginAssemblies(_pluginDirectory));
 
                 var parameters = ConfigToParameter(_config);
