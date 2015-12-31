@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode
     using System;
 
     using Microsoft.DocAsCode.Glob;
+    using Microsoft.DocAsCode.Utility;
 
     [Serializable]
     public class FileMetadataPairsItem
@@ -20,7 +21,7 @@ namespace Microsoft.DocAsCode
         public FileMetadataPairsItem(string pattern, object value)
         {
             Glob = new GlobMatcher(pattern);
-            Value = value;
+            Value = ConvertToObjectHelper.ConvertJObjectToObject(value);
         }
     }
 }
