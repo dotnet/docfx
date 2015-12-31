@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
-    using Utility;
+    using Microsoft.DocAsCode.Utility;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildConceptualDocument : BaseDocumentBuildStep
