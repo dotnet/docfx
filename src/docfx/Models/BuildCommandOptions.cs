@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode
     using CommandLine;
     using Microsoft.DocAsCode.EntityModel;
 
+    [OptionUsage("build [<config file path>]")]
     internal class BuildCommandOptions : IHasHelp, IHasLog
     {
         [Option('o', "output")]

@@ -9,14 +9,19 @@ namespace Microsoft.DocAsCode.SubCommands
     using CommandLine;
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.Plugins;
+    using System.Linq.Expressions;
+    using System.Linq;
+
     internal abstract class CommandCreator<TOptions, TCommand> : ISubCommandCreator where TOptions : class where TCommand : ISubCommand
     {
         public static readonly Parser LooseParser = new Parser(s => s.IgnoreUnknownArguments = true);
         public static readonly Parser StrictParser = Parser.Default;
         private static readonly TOptions DefaultOption = Activator.CreateInstance<TOptions>();
-        private static readonly string HelpText = HelpTextGenerator.GetHelpMessage(DefaultOption);
+        
+        private static readonly string HelpText = GetDefaultHelpText(DefaultOption);
         public virtual ISubCommand Create(string[] args, ISubCommandController controller, SubCommandParseOption option)
         {
+            
             var parser = CommandUtility.GetParser(option);
             var options = Activator.CreateInstance<TOptions>();
             bool parsed = parser.ParseArguments(args, options);
@@ -45,6 +50,19 @@ namespace Microsoft.DocAsCode.SubCommands
         public virtual string GetHelpText()
         {
             return HelpText;
+        }
+
+        private static string GetDefaultHelpText(TOptions option)
+        {
+            var usages = GetOptionUsages();
+            return HelpTextGenerator.GetSubCommandHelpMessage(option, usages.ToArray());
+        }
+
+        private static IEnumerable<string> GetOptionUsages()
+        {
+            var attributes = typeof(TOptions).GetCustomAttributes(typeof(OptionUsageAttribute), false);
+            foreach(var item in attributes)
+               yield return ((OptionUsageAttribute)item).Name;
         }
 
         private sealed class TypeEqualityComparer : IEqualityComparer<ILoggerListener>

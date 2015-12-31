@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("docfx")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyProduct("docfx")]
-[assembly: AssemblyCopyright("Copyright © Microsoft DocAsCode 2015")]
+[assembly: AssemblyCopyright("Copyright © Microsoft docfx 2015-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("docfx.Tests")]
@@ -28,17 +28,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyLicense(
     "This is open-source software under MIT License.")]
 [assembly: AssemblyUsage(
+    "",
     "   Usage1: docfx <docfx.json file path> [-o <output folder path>]",
-    "   Usage2: docfx <command> [<args>]",
+    "   Usage2: docfx <subcommand> [<args>]",
     "",
-    "Supported commands are:",
-    "   help        : Get an overall guide for the commands",
-    "   init        : Generate an initial docfx.json following the instructions",
-    "   metadata    : Generate YAML files for the APIs",
-    "   build       : Generate client-only website combining API in YAML files and conceptual files",
-    "   serve       : Host a local static website",
-    //"   export      : Export APIs in project for external reference",
-    //"   pack        : Pack existed APIs for external reference",
     "",
-    "See 'docfx help <command> to read about a specific subcommand guide"
+    "See 'docfx help <command> to read about a specific subcommand guide",
+    ""
     )]

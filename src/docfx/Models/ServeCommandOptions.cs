@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
+    [OptionUsage("serve <folder path>")]
     internal class ServeCommandOptions : IHasHelp
     {
         [ValueOption(0)]

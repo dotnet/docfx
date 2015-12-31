@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
+    [OptionUsage("init")]
     internal class InitCommandOptions : IHasHelp
     {
         [Option('h', "help", HelpText = "Print help message for this sub-command")]

@@ -7,10 +7,8 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.Composition;
     using System.ComponentModel;
-    using System.Linq;
     using System.Composition.Hosting;
-    using System.IO;
-    using System.Reflection;
+    using System.Linq;
 
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.Plugins;
@@ -81,7 +79,22 @@ namespace Microsoft.DocAsCode.SubCommands
         public string GetHelpText()
         {
             // "command name": "command help text"
-            return string.Join(Environment.NewLine, new string[] { HelpTextGenerator.GetHeader() }.Concat(_commandMapping.Select(s => $"{s.Key}: {s.Value.Metadata.HelpText};")));
+            return string.Join(
+                Environment.NewLine,
+                new string[] { HelpTextGenerator.GetHeader() }.Concat(GetSubCommandHelpTextLines(_commandMapping.Select(s => s.Value.Metadata))));
+        }
+
+        private IEnumerable<string> GetSubCommandHelpTextLines(IEnumerable<BaseCommandOption> options)
+        {
+            int maxLength = options.Max(s => s.Name.Length);
+            int leftWidth = maxLength + 6;
+            int paddingLeft = 4;
+            return options.OrderBy(s => s.Name).Select(s => GetSubCommandHelpText(s, paddingLeft, leftWidth));
+        }
+
+        private string GetSubCommandHelpText(BaseCommandOption option, int paddingLeft, int leftWidth)
+        {
+            return option.Name.PadRight(leftWidth).PadLeft(leftWidth + paddingLeft) + ": " + option.HelpText;
         }
 
         private CompositionHost GetContainer()
