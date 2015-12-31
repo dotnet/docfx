@@ -17,6 +17,19 @@ namespace Microsoft.DocAsCode
         {
             try
             {
+                return ExecCommand(args);
+            }
+            finally
+            {
+                Logger.Flush();
+                Logger.UnregisterAllListeners();
+            }
+        }
+
+        private static int ExecCommand(string[] args)
+        {
+            try
+            {
                 var consoleLogListener = new ConsoleLogListener();
                 Logger.RegisterListener(consoleLogListener);
                 Options options = GetOptions(args);
@@ -39,17 +52,12 @@ namespace Microsoft.DocAsCode
                 var context = new RunningContext();
                 Exec(options, context);
                 return 0;
-                
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.LogError(e.ToString());
                 return 1;
-            }
-            finally
-            {
-                Logger.Flush();
-                Logger.UnregisterAllListeners();
             }
         }
 

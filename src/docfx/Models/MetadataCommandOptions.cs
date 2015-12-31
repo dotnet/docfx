@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode
     using CommandLine;
     using Microsoft.DocAsCode.EntityModel;
 
-    internal class MetadataCommandOptions
+    internal class MetadataCommandOptions : IHasHelp, IHasLog
     {
         [Option('f', "force", HelpText = "Force re-generate all the metadata")]
         public bool ForceRebuild { get; set; }
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode
         [Option("raw", HelpText = "Preserve the existing xml comment tags inside 'summary' triple slash comments")]
         public bool PreserveRawInlineComments { get; set; }
 
-        [Option("help")]
+        [Option('h', "help", HelpText = "Print help message for this sub-command")]
         public bool IsHelp { get; set; }
 
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]

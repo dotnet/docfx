@@ -5,8 +5,11 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
-    internal class InitCommandOptions
+    internal class InitCommandOptions : IHasHelp
     {
+        [Option('h', "help", HelpText = "Print help message for this sub-command")]
+        public bool IsHelp { get; set; }
+
         [Option('q', "quiet", HelpText = "Quietly generate the default docfx.json")]
         public bool Quiet { get; set; }
 
