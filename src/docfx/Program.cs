@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode
         {
             try
             {
-                return ExecCommand(args);
+                return ExecSubCommand(args);
             }
             finally
             {
@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private static int Exec(string[] args)
+        private static int ExecSubCommand(string[] args)
         {
             var consoleLogListener = new ConsoleLogListener();
             Logger.RegisterListener(consoleLogListener);

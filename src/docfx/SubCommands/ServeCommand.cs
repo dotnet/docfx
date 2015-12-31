@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.SubCommands
             Serve(_options.Folder, _options.Port.HasValue ? _options.Port.Value.ToString() : null);
         }
 
-        private static void Serve(string folder, string port)
+        public static void Serve(string folder, string port)
         {
             if (string.IsNullOrEmpty(folder)) folder = Environment.CurrentDirectory;
             folder = Path.GetFullPath(folder);
