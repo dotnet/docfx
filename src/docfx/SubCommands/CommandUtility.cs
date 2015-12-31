@@ -12,7 +12,11 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal static class CommandUtility
     {
-        private static readonly Parser LooseParser = new Parser(s => s.IgnoreUnknownArguments = true);
+        private static readonly Parser LooseParser = new Parser(s =>
+        {
+            s.IgnoreUnknownArguments = true;
+            s.CaseSensitive = false;
+        });
         private static readonly Parser StrictParser = Parser.Default;
         public static Parser GetParser(SubCommandParseOption option)
         {

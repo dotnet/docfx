@@ -1,0 +1,23 @@
+﻿{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": ["**/*.csproj"],
+          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `cwd`
+          "cwd": "../src"
+        }
+      ],
+      "dest": "obj/docfx/api/dotnet"
+    },
+    {
+      "src": [
+        {
+          "files": ["**/*.js"],
+          "cwd": "../src"
+        }
+      ],
+      "dest": "obj/docfx/api/js" // throw error when dest is not unique
+    }
+  ]
+}

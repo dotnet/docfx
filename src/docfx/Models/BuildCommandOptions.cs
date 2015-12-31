@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode
     using CommandLine;
     using Microsoft.DocAsCode.EntityModel;
 
-    internal class BuildCommandOptions : IHasHelp
+    internal class BuildCommandOptions : IHasHelp, IHasLog
     {
         [Option('o', "output")]
         public string OutputFolder { get; set; }
@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode
         [ValueOption(0)]
         public string ConfigFile { get; set; }
 
-        [Option("help")]
+        [Option('h', "help", HelpText = "Print help message for this sub-command")]
         public bool IsHelp { get; set; }
 
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]
@@ -48,5 +48,8 @@ namespace Microsoft.DocAsCode
 
         [Option('p', "port", HelpText = "Specify the port of the hosted website")]
         public int? Port { get; set; }
+
+        [Option('f', "force", HelpText = "Force re-build all the documentation")]
+        public bool ForceRebuild { get; set; }
     }
 }

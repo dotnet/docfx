@@ -1,0 +1,42 @@
+﻿{
+  "build": { // input could be YAML or MARKDOWN files, outputs are Final-YAML files
+    "content":
+      [
+        {
+          "files": ["**/*.yml"],
+          "cwd": "obj/docfx"
+        },
+        {
+          "files": ["tutorial/**/*.md", "spec/**/*.md"]
+        },
+        {
+          "files": ["toc.yml"]
+        }
+      ],
+    "resource": [
+        {
+          "files": ["images/**"]
+        }
+    ],
+    "globalMetadata": {
+      "key": "value"
+    },
+    "fileMetadata": {
+      "key": {
+        "filepattern1": "string",
+        "filePattern2": 2,
+        "filePattern3": true,
+        "filePattern4": [ ],
+        "filePattern5": { }
+      }
+    },
+    "overwrite": "apispec/*.md",
+    "externalReference": [
+      "external/*.yml.zip"
+    ],
+    "dest": "_site",
+    "template": "default",
+    "theme": "happy",
+    "title": "Doc-as-code documentation"
+  }
+}

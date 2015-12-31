@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var parser = CommandUtility.GetParser(option);
             var options = Activator.CreateInstance<TOptions>();
             bool parsed = parser.ParseArguments(args, options);
-            if (!parsed) throw new OptionParserException();
+            if (!parsed && option == SubCommandParseOption.Strict) throw new OptionParserException();
             var helpOption = options as IHasHelp;
             if (helpOption != null && helpOption.IsHelp) return new HelpCommand(GetHelpText());
             var logOption = options as IHasLog;

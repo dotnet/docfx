@@ -86,6 +86,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\docfx.json_build\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_empty\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_invalid_key\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_invalid_format\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_metadata\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_metadata_build\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\docfx.sample.1.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
