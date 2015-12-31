@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Glob
     using System.Text.RegularExpressions;
     using System.Linq;
 
+    [Serializable]
     public class GlobMatcher
     {
         #region Private fields
@@ -47,6 +48,7 @@ namespace Microsoft.DocAsCode.Glob
         public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
         public GlobMatcherOptions Options { get; }
         public string Raw { get; }
+
         public GlobMatcher(string pattern, GlobMatcherOptions options = DefaultOptions)
         {
             if (pattern == null) throw new ArgumentNullException(nameof(pattern));

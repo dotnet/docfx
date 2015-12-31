@@ -3,8 +3,11 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
+
     using Microsoft.DocAsCode.Glob;
 
+    [Serializable]
     public class FileMetadataPairsItem
     {
         public GlobMatcher Glob { get; }
@@ -13,6 +16,7 @@ namespace Microsoft.DocAsCode
         /// JObject, no need to transform it to object as the metadata value will not be used but only to be serialized
         /// </summary>
         public object Value { get; }
+
         public FileMetadataPairsItem(string pattern, object value)
         {
             Glob = new GlobMatcher(pattern);

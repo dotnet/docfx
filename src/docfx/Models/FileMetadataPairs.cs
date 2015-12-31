@@ -3,15 +3,18 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
 
+    [Serializable]
     [JsonConverter(typeof(FileMetadataPairsConverter))]
     public class FileMetadataPairs
     {
         // Order matters, the latter one overrides the former one
         private List<FileMetadataPairsItem> _items;
+
         public IReadOnlyList<FileMetadataPairsItem> Items
         {
             get
