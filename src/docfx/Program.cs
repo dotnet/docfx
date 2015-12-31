@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode
         {
             try
             {
-                return ExecSubCommand(args);
+                return ExecCommand(args);
             }
             finally
             {
