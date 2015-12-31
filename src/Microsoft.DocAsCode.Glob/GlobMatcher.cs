@@ -725,6 +725,7 @@ namespace Microsoft.DocAsCode.Glob
             }
         }
 
+        [Serializable]
         private sealed class GlobRegexItem
         {
             public static readonly GlobRegexItem GlobStar = new GlobRegexItem(GlobRegexItemType.GlobStar);
