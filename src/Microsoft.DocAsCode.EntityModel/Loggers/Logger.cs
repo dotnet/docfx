@@ -115,6 +115,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
+        [Serializable]
         private class LogItem : ILogItem
         {
             public string File { get; set; }
