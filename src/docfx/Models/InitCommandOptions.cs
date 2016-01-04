@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode
     using CommandLine;
 
     [OptionUsage("init")]
-    internal class InitCommandOptions : IHasHelp
+    internal class InitCommandOptions : IIsHelp
     {
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
         public bool IsHelp { get; set; }

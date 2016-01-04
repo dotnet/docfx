@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode
     using CommandLine;
 
     [OptionUsage("serve <folder path>")]
-    internal class ServeCommandOptions : IHasHelp
+    internal class ServeCommandOptions : IIsHelp
     {
         [ValueOption(0)]
         public string Folder { get; set; }

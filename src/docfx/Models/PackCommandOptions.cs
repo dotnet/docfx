@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.EntityModel;
 
     [OptionUsage("pack")]
-    internal class PackCommandOptions : IHasHelp, IHasLog
+    internal class PackCommandOptions : IIsHelp, ILoggable
     {
         [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]
         public string BaseUrl { get; set; }
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode
         public bool IsHelp { get; set; }
 
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]
-        public string Log { get; set; }
+        public string LogFilePath { get; set; }
 
         [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
         public LogLevel? LogLevel { get; set; }

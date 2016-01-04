@@ -26,14 +26,14 @@ namespace Microsoft.DocAsCode.SubCommands
             var options = Activator.CreateInstance<TOptions>();
             bool parsed = parser.ParseArguments(args, options);
             if (!parsed && option == SubCommandParseOption.Strict) throw new OptionParserException();
-            var helpOption = options as IHasHelp;
+            var helpOption = options as IIsHelp;
             if (helpOption != null && helpOption.IsHelp) return new HelpCommand(GetHelpText());
-            var logOption = options as IHasLog;
+            var logOption = options as ILoggable;
             if (logOption != null)
             {
-                if (!string.IsNullOrWhiteSpace(logOption.Log))
+                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath))
                 {
-                    Logger.AddOrReplaceListener(new ReportLogListener(logOption.Log), TypeEqualityComparer.Default);
+                    Logger.AddOrReplaceListener(new ReportLogListener(logOption.LogFilePath), TypeEqualityComparer.Default);
                 }
 
                 if (logOption.LogLevel.HasValue)

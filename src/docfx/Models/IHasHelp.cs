@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode
 {
-    interface IHasHelp
+    interface IIsHelp
     {
         bool IsHelp { get; }
     }

@@ -5,9 +5,9 @@ namespace Microsoft.DocAsCode
 {
     using Microsoft.DocAsCode.EntityModel;
 
-    interface IHasLog
+    interface ILoggable
     {
-        string Log { get; }
+        string LogFilePath { get; }
         LogLevel? LogLevel { get; }
     }
 }

@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode
 
     [OptionUsage("metadata [<docfx.json file path>]")]
     [OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
-    internal class MetadataCommandOptions : IHasHelp, IHasLog
+    internal class MetadataCommandOptions : IIsHelp, ILoggable
     {
         [Option('f', "force", HelpText = "Force re-generate all the metadata")]
         public bool ForceRebuild { get; set; }
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode
         public bool IsHelp { get; set; }
 
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]
-        public string Log { get; set; }
+        public string LogFilePath { get; set; }
 
         [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
         public LogLevel? LogLevel { get; set; }
