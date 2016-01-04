@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.SubCommands
                         m.Build.Content.Add(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
                     }
                 },
-                new string[] { "articles/**/*.md", "toc.yml", "*.md" }) {
+                new string[] { "articles/**/*.md", "articles/**/toc.yml", "toc.yml", "*.md" }) {
                  Descriptions = new string[]
                  {
                      "Supported conceptual files could be any text files, markdown format is also supported.",
