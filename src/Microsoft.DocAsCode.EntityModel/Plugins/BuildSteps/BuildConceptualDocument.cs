@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     {
         private const string ConceputalKey = "conceptual";
         private const string DocumentTypeKey = "documentType";
-
+        private const int TitleThumbnailMaxLength = 30;
         public override string Name => nameof(BuildConceptualDocument);
 
         public override int BuildOrder => 0;
@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 model.Properties.XrefSpec = new XRefSpec
                 {
                     Uid = model.Uids[0],
-                    Name = TitleThumbnail(content["title"].ToString() ?? model.Uids[0], 30),
+                    Name = TitleThumbnail(content["title"].ToString() ?? model.Uids[0], TitleThumbnailMaxLength),
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
