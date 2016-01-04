@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode
         private static readonly string License;
         private static readonly string GeneralUsage;
         private static readonly string ProductName;
+
         static HelpTextGenerator()
         {
             var assembly = Assembly.GetAssembly(typeof(HelpTextGenerator));

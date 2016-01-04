@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode
 
         public OptionUsageAttribute(string name)
         {
-            this.Name = name;
+            Name = name;
         }
     }
 }
