@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.SubCommands
     // [CommandOption("pack", "Pack exsiting YAML files to external reference")]
     internal sealed class PackCommandCreator : CommandCreator<PackCommandOptions, PackCommand>
     {
-        public override PackCommand CreateCommand(ExportCommandOptions options, ISubCommandController controller)
+        public override PackCommand CreateCommand(PackCommandOptions options, ISubCommandController controller)
         {
             return new PackCommand(options);
         }
