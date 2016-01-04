@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmIncludeInlineRule : IMarkdownRule
     {
-        public string Name => "INCLUDE";
+        public virtual string Name => "INCLUDE";
         private static readonly Regex _inlineIncludeRegex = new Regex(DocfxFlavoredIncHelper.InlineIncRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public virtual Regex Include => _inlineIncludeRegex;
 

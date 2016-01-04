@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
     public class DfmIncludeBlockRule : IMarkdownRule
     {
         private static readonly Regex _incRegex = new Regex($"{DocfxFlavoredIncHelper.InlineIncRegexString}\\s*(\\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        public string Name => "INCLUDE";
+        public virtual string Name => "INCLUDE";
         public virtual Regex Include => _incRegex;
 
         public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
