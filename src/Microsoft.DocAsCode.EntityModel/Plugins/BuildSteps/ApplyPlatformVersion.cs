@@ -38,9 +38,22 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     var list = GetPlatformVersionFromMetadata(value);
                     if (list != null)
                     {
+                        list.Sort();
                         foreach (var item in page.Items)
                         {
-                            item.PlatformVersion = list;
+                            if (item.PlatformVersion == null)
+                            {
+                                item.PlatformVersion = list;
+                            }
+                            else
+                            {
+                                var set = new SortedSet<string>(item.PlatformVersion);
+                                foreach (var pv in list)
+                                {
+                                    set.Add(pv);
+                                }
+                                item.PlatformVersion = set.ToList();
+                            }
                         }
                     }
                 }
