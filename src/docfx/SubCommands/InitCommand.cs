@@ -11,10 +11,9 @@ namespace Microsoft.DocAsCode.SubCommands
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.EntityModel.Builders;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Newtonsoft.Json;
-    using Exceptions;
 
     internal sealed class InitCommand : ISubCommand
     {
@@ -26,7 +25,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
-
             string name = null;
             string path = null;
             try

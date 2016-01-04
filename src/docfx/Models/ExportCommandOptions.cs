@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
+    [OptionUsage("export")]
     internal class ExportCommandOptions : MetadataCommandOptions
     {
         [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]

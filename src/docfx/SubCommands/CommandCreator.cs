@@ -61,6 +61,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private static IEnumerable<string> GetOptionUsages()
         {
             var attributes = typeof(TOptions).GetCustomAttributes(typeof(OptionUsageAttribute), false);
+            if (attributes == null) yield break;
             foreach(var item in attributes)
                yield return ((OptionUsageAttribute)item).Name;
         }
