@@ -132,7 +132,6 @@
     <Compile Include="SubCommands\BuildCommand.cs" />
     <Compile Include="SubCommands\CompositeCommand.cs" />
     <Compile Include="SubCommands\HelpCommand.cs" />
-    <Compile Include="Commands\BuildCommand.cs" />
     <Compile Include="Exceptions\DocfxException.cs" />
     <Compile Include="Exceptions\DocfxMetadataException.cs" />
     <Compile Include="Exceptions\DocfxInitException.cs" />
@@ -144,20 +143,12 @@
     <Compile Include="Models\FileMetadataPairsConverter.cs" />
     <Compile Include="Models\FileMetadataPairs.cs" />
     <Compile Include="Models\BuildJsonConfig.cs" />
-    <Compile Include="Commands\CommandFactory.cs" />
-    <Compile Include="Commands\PackCommand.cs" />
     <Compile Include="Models\MetadataJsonItemConfig.cs" />
     <Compile Include="Models\PackCommandOptions.cs" />
-    <Compile Include="Commands\ExportCommand.cs" />
     <Compile Include="Models\ExportCommandOptions.cs" />
-    <Compile Include="Commands\ServeCommand.cs" />
     <Compile Include="Models\ServeCommandOptions.cs" />
-    <Compile Include="Commands\InitCommand.cs" />
     <Compile Include="Models\InitCommandOptions.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Models\HelpCommandOptions.cs" />
-    <Compile Include="Commands\MetadataCommand.cs" />
     <Compile Include="Models\MetadataCommandOptions.cs" />
     <Compile Include="Models\MetadataJsonConfig.cs" />
     <Compile Include="ConsoleExtension.cs" />
@@ -166,17 +157,14 @@
     <Compile Include="Models\FileMappingItem.cs" />
     <Compile Include="Models\FileMappingConverter.cs" />
     <Compile Include="Models\FileMapping.cs" />
-    <Compile Include="Commands\CompositeCommand.cs" />
     <Compile Include="Glob\GlobUtility.cs" />
     <Compile Include="HelpTextGenerator.cs" />
     <Compile Include="Models\CascadableOptions.cs" />
     <Compile Include="OptionsAttributes.cs" />
-    <Compile Include="Models\Options.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ArgsParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Commands\CommandType.cs" />
     <Compile Include="SubCommands\HelpCommandCreator.cs" />
   </ItemGroup>
   <ItemGroup>

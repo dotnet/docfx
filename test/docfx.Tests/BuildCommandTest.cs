@@ -3,10 +3,11 @@
 
 namespace Microsoft.DocAsCode.Tests
 {
-    using EntityModel;
     using System;
     using System.Collections.Generic;
     using System.IO;
+
+    using Microsoft.DocAsCode.SubCommands;
     using Xunit;
 
     [Collection("docfx STA")]
@@ -63,17 +64,12 @@ namespace Microsoft.DocAsCode.Tests
                     "test",
                 });
 
-            new BuildCommand(new Options
+            new BuildCommand(new BuildCommandOptions
             {
-                CurrentSubCommand = CommandType.Build,
-                BuildCommand = new BuildCommandOptions
-                {
-                    Content = new List<string> { conceptualFile },
-                    OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
-                    Templates = new List<string> { Path.Combine(templateDir, "default") }
-                }
-            }
-            , null).Exec(null);
+                Content = new List<string> { conceptualFile },
+                OutputFolder = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
+                Templates = new List<string> { Path.Combine(templateDir, "default") }
+            }).Exec(null);
 
             var file = Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".html"));
             Assert.True(File.Exists(file));

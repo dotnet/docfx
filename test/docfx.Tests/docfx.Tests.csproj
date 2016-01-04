@@ -143,7 +143,6 @@
     <Compile Include="JsonConverterTest.cs" />
     <Compile Include="MetadataCommandFixture.cs" />
     <Compile Include="MetadataCommandTest.cs" />
-    <Compile Include="GetConfigTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\test.csproj.sample.1">

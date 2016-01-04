@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private CompositionHost GetContainer()
         {
             var configuration = new ContainerConfiguration();
-            configuration.WithAssembly(typeof(CommandFactory).Assembly);
+            configuration.WithAssembly(typeof(CommandController).Assembly);
             return configuration.CreateContainer();
         }
 

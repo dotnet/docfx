@@ -38,27 +38,6 @@ namespace Microsoft.DocAsCode
             GeneralUsage = usage;
         }
 
-        public static string GetHelpMessage(Options options, string verb = null)
-        {
-            var helpText = new HelpText(HelpText);
-            if (!string.IsNullOrEmpty(verb))
-            {
-                var subOption = GetSubOption(options, verb);
-                if (subOption == null)
-                {
-                    helpText.AddPreOptionsLine("Unknown command: " + verb);
-                }
-                else
-                {
-                    helpText.AddPreOptionsLine(Environment.NewLine);
-                    helpText.AddPreOptionsLine("Usage: docfx " + verb);
-                    helpText.AddOptions(subOption);
-                }
-            }
-
-            return helpText;
-        }
-
         public static string GetHeader()
         {
             var helpText = new HelpText(HelpText)
@@ -68,17 +47,6 @@ namespace Microsoft.DocAsCode
             };
             AddLinesToHelpText(helpText, GeneralUsage);
             return helpText;
-        }
-
-        public static string GetHelpMessage(object options)
-        {
-            var helpText = new HelpText(HelpText)
-            {
-                AdditionalNewLineAfterOption = false,
-                AddDashesToOption = true
-            };
-            helpText.AddOptions(options);
-            return helpText.ToString();
         }
 
         public static string GetSubCommandHelpMessage(object option, string[] usages)
@@ -110,15 +78,6 @@ namespace Microsoft.DocAsCode
                     helpText.AddPreOptionsLine(i);
                 }
             }
-        }
-
-        private static object GetSubOption(Options options, string verb)
-        {
-            if (options == null || string.IsNullOrEmpty(verb)) return null;
-            var property = typeof(Options).GetProperties().Where(s => s.GetCustomAttribute<VerbOptionAttribute>()?.LongName.ToLowerInvariant() == verb).FirstOrDefault();
-            if (property == null) return null;
-
-            return property.GetValue(options);
         }
     }
 }
