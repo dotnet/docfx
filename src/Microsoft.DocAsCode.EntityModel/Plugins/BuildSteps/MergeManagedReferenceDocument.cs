@@ -41,9 +41,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 var sameTopics = host.LookupByUid(mainUid);
                 if (sameTopics.Count == 1)
                 {
-                    processedUid.Add(mainUid);
                     return m;
                 }
+                processedUid.Add(mainUid);
                 var vm = (PageViewModel)m.Content;
                 m.Content = MergeCore(
                     mainUid,
