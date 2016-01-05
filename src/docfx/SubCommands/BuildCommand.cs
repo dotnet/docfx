@@ -390,7 +390,14 @@ namespace Microsoft.DocAsCode.SubCommands
                     return;
                 }
 
-                builder.Build(parameters);
+                try
+                {
+                    builder.Build(parameters);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.ToString());
+                }
             }
 
             private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
