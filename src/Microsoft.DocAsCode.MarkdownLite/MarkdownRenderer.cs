@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
         {
-            StringBuffer content = string.Empty;
+            var content = StringBuffer.Empty;
             foreach (var t in token.InlineTokens.Tokens)
             {
                 content += render.Render(t);
@@ -28,20 +28,33 @@ namespace Microsoft.DocAsCode.MarkdownLite
             const string BlockQuoteStartString = "> ";
             const string BlockQuoteJoinString = "\n" + BlockQuoteStartString;
 
-            StringBuffer content = string.Empty;
+            var content = StringBuffer.Empty;
             foreach (var t in token.Tokens)
             {
                 content += render.Render(t);
             }
             var contents = content.ToString().Split('\n');
-            content = BlockQuoteStartString + string.Join(BlockQuoteJoinString, contents);
+            content = StringBuffer.Empty;
+            foreach (var item in contents)
+            {
+                if (content == StringBuffer.Empty)
+                {
+                    content += BlockQuoteStartString;
+                    content += item;
+                }
+                else
+                {
+                    content += BlockQuoteJoinString;
+                    content += item;
+                }
+            }
             return content;
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownListBlockToken token, MarkdownBlockContext context)
         {
             const string ListStartString = "* ";
-            StringBuffer content = string.Empty;
+            var content = StringBuffer.Empty;
 
             if (token.Ordered)
             {
@@ -52,8 +65,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     {
                         throw new Exception($"token {t.GetType()} is not MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{t.RawMarkdown}");
                     }
-
-                    content += ListStartString + render.Render(t);
+                    content += ListStartString;
+                    content += render.Render(t);
                 }
             }
             else
@@ -61,12 +74,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 for (int i = 1; i < token.Tokens.Length; ++i)
                 {
                     var listItemToken = token.Tokens[i] as MarkdownListItemBlockToken;
+
                     if (listItemToken == null)
                     {
                         throw new Exception($"token {token.Tokens[i].GetType()} is not MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{token.Tokens[i].RawMarkdown}");
                     }
 
-                    content += $"{i}. ";
+                    content += i.ToString();
+                    content += ". ";
                 }
             }
             return content;
@@ -75,7 +90,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownListItemBlockToken token, MarkdownBlockContext context)
         {
             // TODO: Add corresponding white space before the result
-            StringBuffer content = string.Empty;
+            var content = StringBuffer.Empty;
             foreach (var t in token.Tokens)
             {
                 content += render.Render(t);
