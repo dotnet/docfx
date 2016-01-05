@@ -19,6 +19,7 @@
   <ItemGroup>
     <Compile Include="Align.cs" />
     <Compile Include="Basic\MarkdownRawToken.cs" />
+    <Compile Include="Basic\BlockTokens\MarkdownNonParagraphBlockToken.cs" />
     <Compile Include="Contexts\MarkdownInlineContext.cs" />
     <Compile Include="GfmEngineBuilder.cs" />
     <Compile Include="Gfm\GfmDelInlineRule.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="StringBuffer.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="InlineContent.cs" />
+    <Compile Include="TokenHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

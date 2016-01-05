@@ -68,10 +68,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return engine.Options.XHtml ? "<hr/>\n" : "<hr>\n";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = "<blockquote>\n";
-            content += RenderTokens(engine, token.Tokens, context, true, token.Rule);
+            foreach (var item in token.Tokens)
+            {
+                content += renderer.Render(item);
+            }
             return content + "</blockquote>\n";
         }
 
@@ -88,10 +91,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return content + "</" + type + ">\n";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownListItemBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListItemBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = "<li>";
-            content += RenderTokens(engine, token.Tokens, context, token.Loose, token.Rule);
+            foreach (var item in token.Tokens)
+            {
+                content += renderer.Render(item);
+            }
             return content + "</li>\n";
         }
 
@@ -237,6 +243,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 result += "</tr>\n";
             }
             return result + "</tbody>\n" + "</table>\n";
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNonParagraphBlockToken token, MarkdownBlockContext context)
+        {
+            var result = StringBuffer.Empty;
+            foreach (var item in token.Content.Tokens)
+            {
+                result += renderer.Render(item);
+            }
+            return result;
         }
 
         #endregion

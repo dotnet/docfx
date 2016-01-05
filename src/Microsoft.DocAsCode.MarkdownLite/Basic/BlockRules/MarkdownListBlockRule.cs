@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Bullet => Regexes.Block.Bullet;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Regexes.Block.List.Match(source);
             if (match.Length == 0)
@@ -49,14 +49,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 if (item.IndexOf("\n ") > -1)
                 {
                     space -= item.Length;
-                    item = !engine.Options.Pedantic
+                    item = !parser.Options.Pedantic
                       ? Regex.Replace(item, "^ {1," + space + "}", "", RegexOptions.Multiline)
                       : Regex.Replace(item, @"^ {1,4}", "", RegexOptions.Multiline);
                 }
 
                 // Determine whether the next list item belongs here.
                 // Backpedal if it does not belong in this list.
-                if (engine.Options.SmartLists && i != l - 1)
+                if (parser.Options.SmartLists && i != l - 1)
                 {
                     var b = Bullet.Apply(cap[i + 1])[0]; // !!!!!!!!!!!
                     if (bull != b && !(bull.Length > 1 && b.Length > 1))
@@ -76,12 +76,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     if (!loose) loose = next;
                 }
 
-                var c = engine.SwitchContext(MarkdownBlockContext.IsTop, false);
-                tokens.Add(new MarkdownListItemBlockToken(this, engine.Context, engine.Tokenize(item), loose, match.Value));
-                engine.SwitchContext(c);
+                var c = parser.SwitchContext(MarkdownBlockContext.IsTop, false);
+                var blockTokens = parser.Tokenize(item);
+                blockTokens = TokenHelper.ParseInlineToken(parser, this, blockTokens, loose);
+                tokens.Add(new MarkdownListItemBlockToken(this, parser.Context, blockTokens, loose, item));
+                parser.SwitchContext(c);
             }
 
-            return new MarkdownListBlockToken(this, engine.Context, tokens.ToImmutableArray(), bull.Length > 1, match.Value);
+            return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), bull.Length > 1, match.Value);
         }
     }
 }
