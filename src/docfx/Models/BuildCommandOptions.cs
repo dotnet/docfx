@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.EntityModel;
 
     [OptionUsage("build [<config file path>]")]
-    internal class BuildCommandOptions : IIsHelp, ILoggable
+    internal class BuildCommandOptions : ICanPrintHelpMessage, ILoggable
     {
         [Option('o', "output")]
         public string OutputFolder { get; set; }
@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode
         public string ConfigFile { get; set; }
 
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
-        public bool IsHelp { get; set; }
+        public bool PrintHelpMessage { get; set; }
 
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]
         public string LogFilePath { get; set; }

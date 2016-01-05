@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode
     using CommandLine;
 
     [OptionUsage("serve <folder path>")]
-    internal class ServeCommandOptions : IIsHelp
+    internal class ServeCommandOptions : ICanPrintHelpMessage
     {
         [ValueOption(0)]
         public string Folder { get; set; }
@@ -15,6 +15,6 @@ namespace Microsoft.DocAsCode
         public int? Port { get; set; }
 
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
-        public bool IsHelp { get; set; }
+        public bool PrintHelpMessage { get; set; }
     }
 }

@@ -111,7 +111,7 @@
   <ItemGroup>
     <Compile Include="CommandModels\OptionParserException.cs" />
     <Compile Include="CommandModels\CompositeOptions.cs" />
-    <Compile Include="Models\IHasHelp.cs" />
+    <Compile Include="Models\ICanPrintHelpMessage.cs" />
     <Compile Include="Models\ILoggable.cs" />
     <Compile Include="Models\OptionUsageAttribute.cs" />
     <Compile Include="SubCommands\PackCommandCreator.cs" />

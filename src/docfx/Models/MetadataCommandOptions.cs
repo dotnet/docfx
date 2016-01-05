@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode
 
     [OptionUsage("metadata [<docfx.json file path>]")]
     [OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
-    internal class MetadataCommandOptions : IIsHelp, ILoggable
+    internal class MetadataCommandOptions : ICanPrintHelpMessage, ILoggable
     {
         [Option('f', "force", HelpText = "Force re-generate all the metadata")]
         public bool ForceRebuild { get; set; }
@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode
         public bool PreserveRawInlineComments { get; set; }
 
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
-        public bool IsHelp { get; set; }
+        public bool PrintHelpMessage { get; set; }
 
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]
         public string LogFilePath { get; set; }

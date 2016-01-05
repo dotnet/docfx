@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.EntityModel;
 
     [OptionUsage("pack")]
-    internal class PackCommandOptions : IIsHelp, ILoggable
+    internal class PackCommandOptions : ICanPrintHelpMessage, ILoggable
     {
         [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]
         public string BaseUrl { get; set; }
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode
         public string OutputFolder { get; set; }
 
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
-        public bool IsHelp { get; set; }
+        public bool PrintHelpMessage { get; set; }
 
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]
         public string LogFilePath { get; set; }

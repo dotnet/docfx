@@ -26,8 +26,8 @@ namespace Microsoft.DocAsCode.SubCommands
             var options = Activator.CreateInstance<TOptions>();
             bool parsed = parser.ParseArguments(args, options);
             if (!parsed && option == SubCommandParseOption.Strict) throw new OptionParserException();
-            var helpOption = options as IIsHelp;
-            if (helpOption != null && helpOption.IsHelp) return new HelpCommand(GetHelpText());
+            var helpOption = options as ICanPrintHelpMessage;
+            if (helpOption != null && helpOption.PrintHelpMessage) return new HelpCommand(GetHelpText());
             var logOption = options as ILoggable;
             if (logOption != null)
             {

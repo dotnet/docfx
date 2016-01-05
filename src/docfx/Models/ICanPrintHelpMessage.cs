@@ -3,8 +3,8 @@
 
 namespace Microsoft.DocAsCode
 {
-    interface IIsHelp
+    interface ICanPrintHelpMessage
     {
-        bool IsHelp { get; }
+        bool PrintHelpMessage { get; }
     }
 }
