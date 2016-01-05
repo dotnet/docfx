@@ -3,35 +3,22 @@
 
 namespace Microsoft.DocAsCode
 {
-    using Microsoft.DocAsCode.EntityModel;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    
-    public static class ConsoleExtension
-    {
-        private static Stack<ConsoleColor> colorStack = new Stack<ConsoleColor>();
 
+    using Microsoft.DocAsCode.Utility;
+
+    internal static class ConsoleExtension
+    {
         public static void WriteToConsole(this string text, ConsoleColor color)
         {
             if (string.IsNullOrEmpty(text)) return;
-            var foreColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.Write(text);
-            Console.ForegroundColor = foreColor;
+            ConsoleUtility.WriteToConsoleWithColor(() => Console.Write(text), color);
         }
 
         public static void WriteLineToConsole(this string text, ConsoleColor color)
         {
             if (string.IsNullOrEmpty(text)) return;
-            var foreColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.WriteLine(text);
-            Console.ForegroundColor = foreColor;
+            ConsoleUtility.WriteToConsoleWithColor(() => Console.WriteLine(text), color);
         }
 
         public static void WriteLinesToConsole(this string[] text, ConsoleColor color)

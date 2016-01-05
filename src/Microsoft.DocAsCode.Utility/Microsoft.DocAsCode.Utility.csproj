@@ -48,6 +48,7 @@
     <Compile Include="EntityMergers\ReflectionEntityMerger.cs" />
     <Compile Include="JObjectDictionaryToObjectDictionaryConverter.cs" />
     <Compile Include="LruList.cs" />
+    <Compile Include="ConsoleUtility.cs" />
     <Compile Include="PathUtility.cs" />
     <Compile Include="ProcessDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
