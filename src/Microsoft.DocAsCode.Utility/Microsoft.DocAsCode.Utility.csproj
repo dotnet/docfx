@@ -46,6 +46,7 @@
     <Compile Include="FilePathComparer.cs" />
     <Compile Include="GitDetail.cs" />
     <Compile Include="EntityMergers\ReflectionEntityMerger.cs" />
+    <Compile Include="JObjectDictionaryToObjectDictionaryConverter.cs" />
     <Compile Include="LruList.cs" />
     <Compile Include="PathUtility.cs" />
     <Compile Include="ProcessDetail.cs" />

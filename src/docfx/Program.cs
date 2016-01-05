@@ -27,9 +27,12 @@ namespace Microsoft.DocAsCode
         private static int ExecSubCommand(string[] args)
         {
             var consoleLogListener = new ConsoleLogListener();
-            Logger.RegisterListener(consoleLogListener);
+            var replayListener = new ReplayLogListener();
+            replayListener.AddListener(consoleLogListener);
+            Logger.RegisterListener(replayListener);
+
             CommandController controller = null;
-            ISubCommand command = null;
+            ISubCommand command;
             try
             {
                 controller = ArgsParser.Instance.Parse(args);
@@ -54,14 +57,6 @@ namespace Microsoft.DocAsCode
                 return 1;
             }
 
-            if (!(command is SubCommands.HelpCommand))
-            {
-                var replayListener = new ReplayLogListener();
-                replayListener.AddListener(consoleLogListener);
-                Logger.RegisterListener(replayListener);
-                Logger.UnregisterListener(consoleLogListener);
-            }
-
             var context = new SubCommandRunningContext();
             try
             {
@@ -70,7 +65,7 @@ namespace Microsoft.DocAsCode
             }
             catch (Exception e)
             {
-                Logger.LogError(e.Message);
+                Logger.LogError(e.ToString());
                 return 1;
             }
         }

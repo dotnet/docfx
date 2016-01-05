@@ -52,5 +52,14 @@ namespace Microsoft.DocAsCode
 
         [Option('f', "force", HelpText = "Force re-build all the documentation")]
         public bool ForceRebuild { get; set; }
+
+        [Option("globalMetadata", HelpText = "Specify global metadata key-value pair in json format. It overrides the globalMetadata settings from the config file.")]
+        public string GlobalMetadata { get; set; }
+
+        [Option("globalMetadataFile", HelpText = "Specify a JSON file path containing globalMetadata settings, as similar to {\"globalMetadata\":{\"key\":\"value\"}}. It overrides the globalMetadata settings from the config file.")]
+        public string GlobalMetadataFilePath { get; set; }
+
+        [Option("fileMetadataFile", HelpText = "Specify a JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
+        public string FileMetadataFilePath { get; set; }
     }
 }
