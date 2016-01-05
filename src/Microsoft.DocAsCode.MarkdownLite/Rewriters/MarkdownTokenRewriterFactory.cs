@@ -7,11 +7,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public static class MarkdownRewriterFactory
+    public static class MarkdownTokenRewriterFactory
     {
-        public static readonly IMarkdownRewriter Null = new MarkdownNullRewriter();
+        public static readonly IMarkdownTokenRewriter Null = new MarkdownNullTokenRewriter();
 
-        public static IMarkdownRewriter FromLambda<TEngine, TToken>(
+        public static IMarkdownTokenRewriter FromLambda<TEngine, TToken>(
             Func<TEngine, TToken, IMarkdownToken> rewriteFunc)
             where TEngine : class, IMarkdownRewriteEngine
             where TToken : class, IMarkdownToken
@@ -20,24 +20,24 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 throw new ArgumentNullException(nameof(rewriteFunc));
             }
-            return new MarkdownLambdaRewriter<TEngine, TToken>(rewriteFunc);
+            return new MarkdownLambdaTokenRewriter<TEngine, TToken>(rewriteFunc);
         }
 
-        public static IMarkdownRewriter Composite(params IMarkdownRewriter[] rewriters)
+        public static IMarkdownTokenRewriter Composite(params IMarkdownTokenRewriter[] rewriters)
         {
-            return Composite((IEnumerable<IMarkdownRewriter>)rewriters);
+            return Composite((IEnumerable<IMarkdownTokenRewriter>)rewriters);
         }
 
-        public static IMarkdownRewriter Composite(IEnumerable<IMarkdownRewriter> rewriters)
+        public static IMarkdownTokenRewriter Composite(IEnumerable<IMarkdownTokenRewriter> rewriters)
         {
             if (rewriters == null)
             {
                 throw new ArgumentNullException(nameof(rewriters));
             }
-            return new MarkdownCompositeRewriter(rewriters.ToImmutableList());
+            return new MarkdownCompositeTokenRewriter(rewriters.ToImmutableList());
         }
 
-        public static IMarkdownRewriter Loop(IMarkdownRewriter rewriter, int maxLoopCount)
+        public static IMarkdownTokenRewriter Loop(IMarkdownTokenRewriter rewriter, int maxLoopCount)
         {
             if (rewriter == null)
             {
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 throw new ArgumentOutOfRangeException("Should be great than 0.", nameof(maxLoopCount));
             }
-            return new MarkdownLoopRewriter(rewriter, maxLoopCount);
+            return new MarkdownLoopTokenRewriter(rewriter, maxLoopCount);
         }
     }
 }

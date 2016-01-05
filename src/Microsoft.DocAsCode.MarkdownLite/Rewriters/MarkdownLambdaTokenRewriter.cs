@@ -5,11 +5,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
 
-    internal sealed class MarkdownLambdaRewriter<TEngine, TToken> : IMarkdownRewriter
+    internal sealed class MarkdownLambdaTokenRewriter<TEngine, TToken> : IMarkdownTokenRewriter
         where TEngine : class, IMarkdownRewriteEngine
         where TToken : class, IMarkdownToken
     {
-        public MarkdownLambdaRewriter(Func<TEngine, TToken, IMarkdownToken> rewriteFunc)
+        public MarkdownLambdaTokenRewriter(Func<TEngine, TToken, IMarkdownToken> rewriteFunc)
         {
             RewriteFunc = rewriteFunc;
         }

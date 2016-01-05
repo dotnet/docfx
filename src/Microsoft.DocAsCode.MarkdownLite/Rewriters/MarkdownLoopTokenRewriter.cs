@@ -5,15 +5,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
 
-    internal sealed class MarkdownLoopRewriter : IMarkdownRewriter
+    internal sealed class MarkdownLoopTokenRewriter : IMarkdownTokenRewriter
     {
-        public MarkdownLoopRewriter(IMarkdownRewriter inner, int maxLoopCount)
+        public MarkdownLoopTokenRewriter(IMarkdownTokenRewriter inner, int maxLoopCount)
         {
             Inner = inner;
             MaxLoopCount = maxLoopCount;
         }
 
-        public IMarkdownRewriter Inner { get; }
+        public IMarkdownTokenRewriter Inner { get; }
 
         public int MaxLoopCount { get; }
 

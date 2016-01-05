@@ -61,17 +61,17 @@ namespace Microsoft.DocAsCode.MarkdownRewriters
 
         protected void CreateRewriters()
         {
-            Rewriter = MarkdownRewriterFactory.Composite(
-                        MarkdownRewriterFactory.FromLambda(
+            Rewriter = MarkdownTokenRewriterFactory.Composite(
+                        MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureIncludeInlineToken t) => new DfmIncludeInlineToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.Raw, t.RawMarkdown)
                         ),
-                        MarkdownRewriterFactory.FromLambda(
+                        MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureIncludeBlockToken t) => new DfmIncludeBlockToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.Raw, t.RawMarkdown)
                         ),
-                        MarkdownRewriterFactory.FromLambda(
+                        MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureNoteBlockToken t) => new DfmNoteBlockToken(t.Rule, t.Context, t.NoteType.Substring("AZURE.".Length), t.Content, t.RawMarkdown)
                         ),
-                        MarkdownRewriterFactory.FromLambda(
+                        MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new DfmBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
                         )
                     );

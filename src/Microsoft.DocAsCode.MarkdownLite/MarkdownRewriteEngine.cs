@@ -7,9 +7,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownRewriteEngine : IMarkdownRewriteEngine
     {
-        private readonly IMarkdownRewriter _rewriter;
+        private readonly IMarkdownTokenRewriter _rewriter;
 
-        public MarkdownRewriteEngine(IMarkdownEngine engine, IMarkdownRewriter rewriter)
+        public MarkdownRewriteEngine(IMarkdownEngine engine, IMarkdownTokenRewriter rewriter)
         {
             Engine = engine;
             _rewriter = rewriter;
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual ImmutableArray<IMarkdownToken> Rewrite(ImmutableArray<IMarkdownToken> tokens)
         {
-            if (_rewriter == MarkdownRewriterFactory.Null)
+            if (_rewriter == MarkdownTokenRewriterFactory.Null)
             {
                 return tokens;
             }

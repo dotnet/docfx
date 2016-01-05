@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     /// <summary>
     /// rewrite the markdown when rendering
     /// </summary>
-    public interface IMarkdownRewriter
+    public interface IMarkdownTokenRewriter
     {
         /// <summary>
         /// rewrite

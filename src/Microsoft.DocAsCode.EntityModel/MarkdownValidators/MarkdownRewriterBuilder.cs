@@ -33,10 +33,10 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
             Validators = Validators.AddRange(validators);
         }
 
-        public IMarkdownRewriter Create()
+        public IMarkdownTokenRewriter Create()
         {
             var context = new MarkdownRewriterContext(CompositionHost, Validators);
-            return MarkdownRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownTagInlineToken>(context.Validate);
+            return MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownTagInlineToken>(context.Validate);
         }
 
         private sealed class MarkdownRewriterContext

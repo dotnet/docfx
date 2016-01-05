@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
     {
         [Theory]
         [Trait("Related", "Markdown")]
+        #region Inline Data
         [InlineData("", "")]
         [InlineData("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
         [InlineData("Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>", "<p>Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd></p>\n")]
@@ -264,6 +265,7 @@ c
 <li>Second</li>
 </ol>
 ")]
+        #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
@@ -330,7 +332,7 @@ by a blank line.</p>
 
             var builder = new GfmEngineBuilder(new Options());
             builder.Rewriter =
-                MarkdownRewriterFactory.FromLambda(
+                MarkdownTokenRewriterFactory.FromLambda(
                     (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context, t.RawMarkdown) // ignore all heading
                 );
             var engine = builder.CreateEngine(new HtmlRenderer());
@@ -348,12 +350,12 @@ by a blank line.</p>
 
             var builder = new GfmEngineBuilder(new Options());
             builder.Rewriter =
-                MarkdownRewriterFactory.Loop(
-                    MarkdownRewriterFactory.Composite(
-                        MarkdownRewriterFactory.FromLambda(
+                MarkdownTokenRewriterFactory.Loop(
+                    MarkdownTokenRewriterFactory.Composite(
+                        MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown, t.RawMarkdown)
                         ),
-                        MarkdownRewriterFactory.FromLambda(
+                        MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa" , 1, t.RawMarkdown)
                         )
                     ),

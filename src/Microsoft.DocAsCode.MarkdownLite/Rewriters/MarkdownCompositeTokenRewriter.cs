@@ -5,14 +5,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Immutable;
 
-    internal sealed class MarkdownCompositeRewriter : IMarkdownRewriter
+    internal sealed class MarkdownCompositeTokenRewriter : IMarkdownTokenRewriter
     {
-        public MarkdownCompositeRewriter(ImmutableList<IMarkdownRewriter> rewriters)
+        public MarkdownCompositeTokenRewriter(ImmutableList<IMarkdownTokenRewriter> rewriters)
         {
             Rewriters = rewriters;
         }
 
-        public ImmutableList<IMarkdownRewriter> Rewriters { get; }
+        public ImmutableList<IMarkdownTokenRewriter> Rewriters { get; }
 
         public IMarkdownToken Rewrite(IMarkdownRewriteEngine engine, IMarkdownToken token)
         {

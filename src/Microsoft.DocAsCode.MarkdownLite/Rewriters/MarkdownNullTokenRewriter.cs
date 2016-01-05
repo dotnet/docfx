@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     /// <summary>
     /// Null object.
     /// </summary>
-    internal sealed class MarkdownNullRewriter : IMarkdownRewriter
+    internal sealed class MarkdownNullTokenRewriter : IMarkdownTokenRewriter
     {
         public IMarkdownToken Rewrite(IMarkdownRewriteEngine engine, IMarkdownToken token)
         {

@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmEngine : MarkdownEngine
     {
-        public DfmEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options)
+        public DfmEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options)
             : base(context, rewriter, renderer, options, new Dictionary<string, LinkObj>())
         {
         }

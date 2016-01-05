@@ -12,15 +12,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
         }
 
-        public MarkdownEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options)
+        public MarkdownEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options)
             : this(context, rewriter, renderer, options, new Dictionary<string, LinkObj>())
         {
         }
 
-        protected MarkdownEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options, Dictionary<string, LinkObj> links)
+        protected MarkdownEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options, Dictionary<string, LinkObj> links)
         {
             Context = context;
-            Rewriter = rewriter ?? MarkdownRewriterFactory.Null;
+            Rewriter = rewriter ?? MarkdownTokenRewriterFactory.Null;
             RendererImpl = renderer;
             Options = options;
             Links = links;
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownContext Context { get; private set; }
 
-        public IMarkdownRewriter Rewriter { get; }
+        public IMarkdownTokenRewriter Rewriter { get; }
 
         public Dictionary<string, LinkObj> Links { get; }
 
