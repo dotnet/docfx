@@ -1,6 +1,6 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
-<header class="header" id="top">
+<header class="header" id="overview">
   <h1>
     {{#name}}
     <span class="lang-{{lang}}">{{value}}</span>
