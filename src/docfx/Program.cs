@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode
     using System;
 
     using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.SubCommands;
 
@@ -62,6 +63,11 @@ namespace Microsoft.DocAsCode
             {
                 command.Exec(context);
                 return 0;
+            }
+            catch (DocfxException de)
+            {
+                Logger.LogError(de.Message);
+                return 1;
             }
             catch (Exception e)
             {

@@ -132,7 +132,6 @@
     <Compile Include="SubCommands\BuildCommand.cs" />
     <Compile Include="SubCommands\CompositeCommand.cs" />
     <Compile Include="SubCommands\HelpCommand.cs" />
-    <Compile Include="Exceptions\DocfxException.cs" />
     <Compile Include="Exceptions\DocfxMetadataException.cs" />
     <Compile Include="Exceptions\DocfxInitException.cs" />
     <Compile Include="Models\BuildCommandOptions.cs" />

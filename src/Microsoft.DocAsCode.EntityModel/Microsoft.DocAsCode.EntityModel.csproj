@@ -112,6 +112,10 @@
     <Compile Include="Dfm\FileCacheLite.cs" />
     <Compile Include="Dfm\DocfxFlavoredIncHelper.cs" />
     <Compile Include="Dfm\DfmYamlHeaderBlockToken.cs" />
+    <Compile Include="Exceptions\DocfxException.cs" />
+    <Compile Include="Exceptions\PluginDirectoryAlreadyExistsException.cs" />
+    <Compile Include="Exceptions\PluginException.cs" />
+    <Compile Include="Exceptions\ResourceDirectoryExceedsMaxDepthException.cs" />
     <Compile Include="Exceptions\ExtractMetadataException.cs" />
     <Compile Include="ExtractMetadata\SupportedSourceType.cs" />
     <Compile Include="ExtractMetadata\CompilationUtility.cs" />

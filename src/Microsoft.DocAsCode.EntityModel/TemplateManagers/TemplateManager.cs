@@ -3,52 +3,30 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Builders;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using Utility;
 
-    public class TemplateManager : IDisposable
+    using Microsoft.DocAsCode.EntityModel.Builders;
+    using Microsoft.DocAsCode.Utility;
+
+    public class TemplateManager
     {
-        private const string TemplateEntry = "index.html";
-
-        private const string TocApi = @"
-- name: Api {0}
-  href: {0}
-";
-
-        private const string TocConceputal = @"
-- name: {0}
-  href: {0}
-";
-
-        public const string DefaultTocEntry = "toc.yml";
-
-        private TemplateProcessor _templateProcessor;
-
-        private ResourceCollection _themeResource = null;
-
+        private readonly List<string> _templates = new List<string>();
+        private readonly List<string> _themes = new List<string>();
+        private readonly ResourceFinder _finder;
         public TemplateManager(Assembly assembly, string rootNamespace, List<string> templates, List<string> themes, string baseDirectory)
         {
-            var resourceFinder = new ResourceFinder(assembly, rootNamespace, baseDirectory);
+            _finder = new ResourceFinder(assembly, rootNamespace, baseDirectory);
             if (templates == null || templates.Count == 0)
             {
                 Logger.Log(LogLevel.Info, "Template is not specified, files will not be transformed.");
             }
             else
             {
-                var templateResources = templates.Select(s => resourceFinder.Find(s)).Where(s => s != null).ToArray();
-                if (templateResources.Length == 0)
-                {
-                    Logger.Log(LogLevel.Warning, $"No template resource found for [{templates.ToDelimitedString()}].");
-                }
-                else
-                {
-                    _templateProcessor = new TemplateProcessor(new CompositeResourceCollectionWithOverridden(templateResources));
-                }
+                _templates = templates;
             }
             
             if (themes == null || themes.Count == 0)
@@ -57,65 +35,92 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             else
             {
-                var themeResources = themes.Select(s => resourceFinder.Find(s)).Where(s => s != null).ToArray();
-                if (themeResources.Length == 0)
+                _themes = themes;
+            }
+        }
+
+        /// <summary>
+        /// Template can contain a set of plugins to define the behavior of how to generate the output YAML data model
+        /// The name of plugin folder is always "plugins"
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, Stream>> GetTemplatePlugins()
+        {
+            using (var templateResource = new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)))
+            {
+                if (templateResource.IsEmpty)
                 {
-                    Logger.Log(LogLevel.Warning, $"No theme resource found for [{themes.ToDelimitedString()}].");
+                    yield break;
                 }
                 else
                 {
-                    _themeResource = new CompositeResourceCollectionWithOverridden(themeResources);
+                    foreach (var pair in templateResource.GetResourceStreams(@"^plugins/.*"))
+                    {
+                        yield return pair;
+                    }
                 }
             }
         }
 
         public void ProcessTemplateAndTheme(DocumentBuildContext context, string outputDirectory, bool overwrite)
         {
-            if (_templateProcessor != null)
-            {
-                Logger.Log(LogLevel.Verbose, "Template resource found, starting applying template.");
-                _templateProcessor.Process(context, outputDirectory);
-            }
+            ProcessTemplate(context, outputDirectory);
+            ProcessTheme(outputDirectory, overwrite);
+        }
 
-            if (_themeResource != null)
+        public bool TryExportTemplateFiles(string outputDirectory, string regexFilter = null)
+        {
+            return TryExportResourceFiles(_templates, outputDirectory, true, regexFilter);
+        }
+
+        private void ProcessTemplate(DocumentBuildContext context, string outputDirectory)
+        {
+            using (var templateResource = new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)))
             {
-                Logger.Log(LogLevel.Verbose, "Theme resource found, starting copying theme.");
-                foreach (var resourceName in _themeResource.Names)
+                if (templateResource.IsEmpty)
                 {
-                    using (var stream = _themeResource.GetResourceStream(resourceName))
+                    Logger.Log(LogLevel.Warning, $"No template resource found for [{_templates.ToDelimitedString()}].");
+                }
+                else
+                {
+                    Logger.Log(LogLevel.Verbose, "Template resource found, starting applying template.");
+                    using (var processor = new TemplateProcessor(templateResource))
                     {
-                        var outputPath = Path.Combine(outputDirectory, resourceName);
-                        CopyResource(stream, outputPath, overwrite);
-                        Logger.Log(LogLevel.Info, $"Theme resource {resourceName} copied to {outputPath}.");
+                        processor.Process(context, outputDirectory);
                     }
                 }
             }
         }
 
-        public static void GenerateDefaultToc(IEnumerable<string> apiFolder, IEnumerable<string> conceptualFolder, string outputFolder, bool overwrite)
+        private void ProcessTheme(string outputDirectory, bool overwrite)
         {
-            if (string.IsNullOrEmpty(outputFolder)) outputFolder = Environment.CurrentDirectory;
-            var targetTocPath = Path.Combine(outputFolder, DefaultTocEntry);
-            var message = overwrite ? $"Root toc.yml {targetTocPath} is overwritten." : $"Root toc.yml {targetTocPath} is not found, default toc.yml is generated.";
-            Copy(s =>
+            if (_themes == null || _themes.Count == 0) return;
+            TryExportResourceFiles(_themes, outputDirectory, overwrite);
+        }
+
+        private bool TryExportResourceFiles(IEnumerable<string> resourceNames, string outputDirectory, bool overwrite, string regexFilter = null)
+        {
+            if (string.IsNullOrEmpty(outputDirectory)) throw new ArgumentNullException(nameof(outputDirectory));
+            if (!resourceNames.Any()) return false;
+            bool isEmpty = true;
+            using (var templateResource = new CompositeResourceCollectionWithOverridden(resourceNames.Select(s => _finder.Find(s)).Where(s => s != null)))
             {
-                using (var writer = new StreamWriter(s))
+                if (templateResource.IsEmpty)
                 {
-                    if (apiFolder != null)
-                        foreach (var i in apiFolder)
-                        {
-                            var relativePath = PathUtility.MakeRelativePath(outputFolder, i);
-                            writer.Write(string.Format(TocApi, relativePath));
-                        }
-                    if (conceptualFolder != null)
-                        foreach (var i in conceptualFolder)
-                        {
-                            var relativePath = PathUtility.MakeRelativePath(outputFolder, i);
-                            writer.Write(string.Format(TocConceputal, relativePath));
-                        }
-                    Logger.Log(LogLevel.Info, message);
+                    Logger.Log(LogLevel.Warning, $"No resource found for [{resourceNames.ToDelimitedString()}].");
                 }
-            }, targetTocPath, overwrite);
+                else
+                {
+                    foreach (var pair in templateResource.GetResourceStreams(regexFilter))
+                    {
+                        var outputPath = Path.Combine(outputDirectory, pair.Key);
+                        CopyResource(pair.Value, outputPath, overwrite);
+                        Logger.Log(LogLevel.Verbose, $"File {pair.Key} copied to {outputPath}.");
+                        isEmpty = false;
+                    }
+                }
+
+                return !isEmpty;
+            }
         }
 
         private static void CopyResource(Stream stream, string filePath, bool overwrite)
@@ -145,12 +150,6 @@ namespace Microsoft.DocAsCode.EntityModel
                 // If the file already exists, skip
                 Logger.Log(LogLevel.Info, $"File {filePath}: {e.Message}, skipped");
             }
-        }
-
-        public void Dispose()
-        {
-            _themeResource?.Dispose();
-            _templateProcessor?.Dispose();
         }
     }
     

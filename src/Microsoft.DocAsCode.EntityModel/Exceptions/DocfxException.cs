@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Exceptions
     using System;
     using System.Runtime.Serialization;
 
+    [Serializable]
     public class DocfxException : Exception
     {
         public DocfxException() : this("Error happens when running docfx")
