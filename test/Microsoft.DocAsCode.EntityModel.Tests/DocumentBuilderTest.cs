@@ -220,7 +220,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.InternalXRefSpecFileName);
                 Assert.True(File.Exists(filepath));
                 var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
-                Assert.Equal(68, xref.Count);
+                Assert.Equal(70, xref.Count);
                 Assert.NotNull(xref.Single(s => s.Uid == "System.Console"));
                 Assert.NotNull(xref.Single(s => s.Uid == "System.Console.BackgroundColor"));
                 Assert.NotNull(xref.Single(s => s.Uid == "System.Console.SetOut(System.IO.TextWriter)"));

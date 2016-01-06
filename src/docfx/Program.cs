@@ -39,6 +39,11 @@ namespace Microsoft.DocAsCode
                 controller = ArgsParser.Instance.Parse(args);
                 command = controller.Create();
             }
+            catch (System.IO.FileNotFoundException fe)
+            {
+                Logger.LogError(fe.Message);
+                return 1;
+            }
             catch (OptionParserException e)
             {
                 Logger.LogError(e.Message);
