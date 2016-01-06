@@ -79,39 +79,50 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
             using (new LoggerPhaseScope(PhaseName))
             {
-                Directory.CreateDirectory(parameters.OutputBaseDir);
-                var context = new DocumentBuildContext(
-                    Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
-                    parameters.Files.EnumerateFiles(),
-                    parameters.ExternalReferencePackages);
-                Logger.LogInfo("Start building document ...");
-                foreach (var item in
-                    from file in parameters.Files.EnumerateFiles()
-                    group file by (from processor in Processors
-                                   let priority = processor.GetProcessingPriority(file)
-                                   where priority != ProcessingPriority.NotSupportted
-                                   orderby priority descending
-                                   select processor).FirstOrDefault())
+                try
                 {
-                    if (item.Key != null)
+                    Directory.CreateDirectory(parameters.OutputBaseDir);
+                    var context = new DocumentBuildContext(
+                        Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
+                        parameters.Files.EnumerateFiles(),
+                        parameters.ExternalReferencePackages);
+                    Logger.LogInfo("Start building document ...");
+                    foreach (var item in
+                        from file in parameters.Files.EnumerateFiles()
+                        group file by (from processor in Processors
+                                       let priority = processor.GetProcessingPriority(file)
+                                       where priority != ProcessingPriority.NotSupportted
+                                       orderby priority descending
+                                       select processor).FirstOrDefault())
                     {
-                        BuildCore(item.Key, item, parameters.Metadata, parameters.FileMetadata, context);
-                    }
-                    else
-                    {
-                        var sb = new StringBuilder();
-                        sb.AppendLine("Cannot handle following file:");
-                        foreach (var f in item)
+                        if (item.Key != null)
                         {
-                            sb.Append("\t");
-                            sb.AppendLine(f.File);
+                            BuildCore(item.Key, item, parameters.Metadata, parameters.FileMetadata, context);
                         }
-                        Logger.LogWarning(sb.ToString());
+                        else
+                        {
+                            var sb = new StringBuilder();
+                            sb.AppendLine("Cannot handle following file:");
+                            foreach (var f in item)
+                            {
+                                sb.Append("\t");
+                                sb.AppendLine(f.File);
+                            }
+                            Logger.LogWarning(sb.ToString());
+                        }
+                    }
+
+                    context.SerializeTo(parameters.OutputBaseDir);
+                    Logger.LogInfo("Building document completed.");
+                }
+                finally
+                {
+                    foreach (var processor in Processors)
+                    {
+                        Logger.LogInfo($"Disposing processor {processor.Name} ...");
+                        (processor as IDisposable)?.Dispose();
                     }
                 }
-
-                context.SerializeTo(parameters.OutputBaseDir);
-                Logger.LogInfo("Building document completed.");
             }
         }
 
