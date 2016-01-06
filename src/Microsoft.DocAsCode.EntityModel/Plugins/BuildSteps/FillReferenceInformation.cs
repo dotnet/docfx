@@ -57,6 +57,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 r.Summary = item.Summary;
                 r.Type = item.Type;
                 r.Syntax = item.Syntax;
+                r.Platform = item.Platform;
             }
         }
 

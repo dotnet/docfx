@@ -5,7 +5,8 @@
     {{#name}}
     <span class="lang-{{lang}}">{{value}}</span>
     {{/name}}
-   {{type}}</h1>
+   {{type}}
+   </h1>
 </header>
 <div class="level">
 {{#inheritance.0}}
@@ -74,7 +75,7 @@
 </header>
 <ul class="list-clean">
   {{#children}}
-  <li class="expand-container" id="{{id}}">
+  <li class="expand-container{{#platform}} platform-{{.}}{{/platform}}" id="{{id}}">
     <h4><a href class="expander">
     {{#name}}
       <code lang="lang-{{lang}}">{{value}}</code>

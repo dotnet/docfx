@@ -12,7 +12,8 @@ function transform(model, _attrs){
   if (!entity.toc_asset_id){
     entity.toc_asset_id = attrs._tocPath;
   }
-  
+
+  entity.platforms = entity.items[0].platform;
   entity.langs = entity.items[0].langs;
   if (!entity.breadcrumb_path){
     entity.breadcrumb_path = "/toc.html";

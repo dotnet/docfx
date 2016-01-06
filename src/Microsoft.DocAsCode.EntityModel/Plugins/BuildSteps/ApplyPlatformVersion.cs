@@ -70,10 +70,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 return new List<string> { text };
             }
 
-            var collection = value as IEnumerable<string>;
+            var collection = value as IEnumerable<object>;
             if (collection != null)
             {
-                return collection.ToList();
+                return collection.OfType<string>().ToList();
             }
 
             var jarray = value as JArray;
