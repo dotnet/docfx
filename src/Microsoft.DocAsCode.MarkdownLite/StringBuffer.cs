@@ -65,15 +65,27 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private StringBuffer EnsureCapacity(int count)
         {
+            const int LobSize = 85000;
             if (this == Empty)
             {
                 return new StringBuffer(Math.Max(count, MinArrayLength));
             }
             if (_index > ShrinkArrayLength)
             {
-                _buffer[0] = string.Concat(_buffer);
-                Array.Clear(_buffer, 1, _buffer.Length - 1);
-                _index = 1;
+                if (_buffer[0].Length > LobSize / 3 &&
+                    _buffer[1].Length < LobSize / 3)
+                {
+                    var temp = new string[_index - 1];
+                    Array.Copy(_buffer, 1, temp, 0, _index - 1);
+                    _buffer[1] = string.Concat(temp);
+                    Array.Clear(_buffer, 2, _buffer.Length - 2);
+                }
+                else
+                {
+                    _buffer[0] = string.Concat(_buffer);
+                    Array.Clear(_buffer, 1, _buffer.Length - 1);
+                    _index = 1;
+                }
             }
             var expected = _index + count;
             if (expected > _buffer.Length)
@@ -131,7 +143,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new StringBuffer(value);
         }
 
-        public static implicit operator string (StringBuffer buffer)
+        public static implicit operator string(StringBuffer buffer)
         {
             return buffer.ToString();
         }
