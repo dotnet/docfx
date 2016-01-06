@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 string errorMessage = $"Code absolute path: {token.Path} is not supported in file {context.GetFilePathStack().Peek()}";
                 Logger.LogError(errorMessage);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, errorMessage);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, engine.Options, errorMessage);
             }
 
             try
@@ -86,13 +86,13 @@ namespace Microsoft.DocAsCode.EntityModel
                 // TODO: Valid REST and REST-i script.
                 var fencesPath = ((RelativePath)token.Path).BasedOn((RelativePath)context.GetFilePathStack().Peek());
                 var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, extractResult.ErrorMessage, extractResult.FencesCodeLines);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, engine.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
             }
             catch (FileNotFoundException)
             {
                 string errorMessage = $"Can not find reference {token.Path}";
                 Logger.LogError(errorMessage);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, errorMessage);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, engine.Options, errorMessage);
             }
         }
     }

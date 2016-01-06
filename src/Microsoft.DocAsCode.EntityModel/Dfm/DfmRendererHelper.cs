@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     internal class DfmRendererHelper
     {
-        public static string GetRenderedFencesBlockString(DfmFencesBlockToken token, string errorMessage, string[] codeLines = null)
+        public static string GetRenderedFencesBlockString(DfmFencesBlockToken token, Options options, string errorMessage, string[] codeLines = null)
         {
             string renderedErrorMessage = string.Empty;
             string renderedCodeLines = string.Empty;
@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             if (codeLines != null)
             {
-                var lang = string.IsNullOrEmpty(token.Lang) ? null : $" class=\"language-{token.Lang}\"";
+                var lang = string.IsNullOrEmpty(token.Lang) ? null : $" class=\"{options.LangPrefix}{token.Lang}\"";
                 var name = string.IsNullOrEmpty(token.Name) ? null : $" name=\"{StringHelper.HtmlEncode(token.Name)}\"";
                 var title = string.IsNullOrEmpty(token.Title) ? null : $" title=\"{StringHelper.HtmlEncode(token.Title)}\"";
 
