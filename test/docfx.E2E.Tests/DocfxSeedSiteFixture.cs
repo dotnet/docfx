@@ -29,7 +29,8 @@ namespace Microsoft.DocAsCode.E2E.Tests
             var port = (int)token.SelectToken("port");
 
             Driver = new FirefoxDriver();
-            Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(3));
+            Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+            Driver.Manage().Window.Maximize();
 
             try
             {
