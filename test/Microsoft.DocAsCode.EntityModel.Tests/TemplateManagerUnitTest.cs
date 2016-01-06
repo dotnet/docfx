@@ -65,20 +65,18 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         {
             // If the same resource name exists in the override folder, use the overriden one
             var themes = new List<string> { "tmpl1", "tmpl/tmpl1" };
-            using (var manager = new TemplateManager(this.GetType().Assembly, "tmpl", null, themes, null))
-            {
-                var outputFolder = Path.Combine(_outputFolder, "TestTemplateManager_MutipleThemes");
-                manager.ProcessTemplateAndTheme(null, outputFolder, true);
-                // 1. Support tmpl1.zip
-                var file1 = Path.Combine(outputFolder, "tmpl1.dot.$");
-                Assert.True(File.Exists(file1));
-                Assert.Equal("Override: This is file with complex filename characters", File.ReadAllText(file1));
+            var manager = new TemplateManager(GetType().Assembly, "tmpl", null, themes, null);
+            var outputFolder = Path.Combine(_outputFolder, "TestTemplateManager_MutipleThemes");
+            manager.ProcessTemplateAndTheme(null, outputFolder, true);
+            // 1. Support tmpl1.zip
+            var file1 = Path.Combine(outputFolder, "tmpl1.dot.$");
+            Assert.True(File.Exists(file1));
+            Assert.Equal("Override: This is file with complex filename characters", File.ReadAllText(file1));
 
-                // backslash is also supported
-                var file2 = Path.Combine(outputFolder, "sub/file1");
-                Assert.True(File.Exists(file2));
-                Assert.Equal("Override: This is file inside a subfolder", File.ReadAllText(file2));
-            }
+            // backslash is also supported
+            var file2 = Path.Combine(outputFolder, "sub/file1");
+            Assert.True(File.Exists(file2));
+            Assert.Equal("Override: This is file inside a subfolder", File.ReadAllText(file2));
         }
 
         #region Mustache template processor test
@@ -538,16 +536,6 @@ test2
         }
 
         #endregion
-
-        [Trait("Related", "GenerateDefaultToc")]
-        [Fact]
-        public void TestGenerateDefaultTocShouldWork()
-        {
-            TemplateManager.GenerateDefaultToc(null, null, null, true);
-            Assert.True(File.Exists(TemplateManager.DefaultTocEntry));
-            var content = File.ReadAllText(TemplateManager.DefaultTocEntry);
-            Assert.True(string.IsNullOrEmpty(content));
-        }
 
         private static void ProcessTemplate(string templateName, string inputFolder, IEnumerable<ManifestItem> items, object model, string outputFolder, params Tuple<string, string>[] templateFiles)
         {
