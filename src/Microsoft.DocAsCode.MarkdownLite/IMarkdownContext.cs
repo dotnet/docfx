@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     /// <summary>
     /// The context for markdown parser.
+    /// It should be immutable.
     /// </summary>
     public interface IMarkdownContext
     {

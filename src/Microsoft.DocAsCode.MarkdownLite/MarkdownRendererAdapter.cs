@@ -7,6 +7,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// The adapter for markdown renderer, use dynamic dispatch.
+    /// </summary>
     public class MarkdownRendererAdapter : IMarkdownRenderer
     {
         public MarkdownRendererAdapter(IMarkdownEngine engine, object renderer, Options options, Dictionary<string, LinkObj> links)

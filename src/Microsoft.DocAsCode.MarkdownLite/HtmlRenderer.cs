@@ -7,6 +7,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
+    /// <summary>
+    /// The html renderer for gfm.
+    /// </summary>
     public class HtmlRenderer
     {
         #region Block

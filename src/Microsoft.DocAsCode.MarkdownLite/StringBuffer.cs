@@ -5,11 +5,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
 
+    /// <summary>
+    /// A type like <see cref="System.Text.StringBuilder"/> but only do concat.
+    /// </summary>
     public sealed class StringBuffer : ICloneable
     {
         private const int MinArrayLength = 8;
         private const int ShrinkArrayLength = 100;
 
+        /// <summary>
+        /// An empty <see cref="StringBuffer"/>.
+        /// </summary>
         public static readonly StringBuffer Empty = new StringBuffer(0);
         private string[] _buffer;
         private int _index;
