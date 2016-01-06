@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            host.LogInfo("Merging platform-version...");
+            host.LogInfo("Merging platform...");
             var processedUid = new HashSet<string>();
             var merged = models.RunAll(m =>
             {
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     host);
                 return m;
             });
-            host.LogInfo("Platform-version merged.");
+            host.LogInfo("Platform merged.");
             return from p in merged
                    where p != null
                    select p;
@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 MajorItem = majorItem,
                 Children = new SortedSet<string>(majorItem.Children ?? Enumerable.Empty<string>()),
-                PlatformVersion = new SortedSet<string>(majorItem.PlatformVersion ?? Enumerable.Empty<string>()),
+                PlatformVersion = new SortedSet<string>(majorItem.Platform ?? Enumerable.Empty<string>()),
                 MinorItems = page?.Items.Where(x => x.Uid != majorItem.Uid).ToDictionary(item => item.Uid, item => CreateMergeItemCore(item, null)),
                 References = page?.References.ToDictionary(item => item.Uid),
                 Metadata = page?.Metadata,
@@ -197,7 +197,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
             if (mergeItem.PlatformVersion.Count > 0)
             {
-                mergeItem.MajorItem.PlatformVersion = mergeItem.PlatformVersion.ToList();
+                mergeItem.MajorItem.Platform = mergeItem.PlatformVersion.ToList();
             }
             vm.Items.Add(mergeItem.MajorItem);
             if (mergeItem.MinorItems != null)
