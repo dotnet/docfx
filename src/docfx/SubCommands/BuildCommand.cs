@@ -366,16 +366,17 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 try
                 {
-                    var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory));
-
-                    var parameters = ConfigToParameter(config, baseDirectory, outputDirectory);
-                    if (parameters.Files.Count == 0)
+                    using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
                     {
-                        Logger.LogWarning("No files found, nothing is to be generated");
-                        return;
-                    }
+                        var parameters = ConfigToParameter(config, baseDirectory, outputDirectory);
+                        if (parameters.Files.Count == 0)
+                        {
+                            Logger.LogWarning("No files found, nothing is to be generated");
+                            return;
+                        }
 
-                    builder.Build(parameters);
+                        builder.Build(parameters);
+                    }
                 }
                 catch (DocumentException ex)
                 {

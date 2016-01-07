@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
-    public class DocumentBuilder
+    public class DocumentBuilder : IDisposable
     {
         public const string PhaseName = "Build Document";
 
@@ -79,83 +79,54 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
             using (new LoggerPhaseScope(PhaseName))
             {
+                Directory.CreateDirectory(parameters.OutputBaseDir);
+                var context = new DocumentBuildContext(
+                    Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
+                    parameters.Files.EnumerateFiles(),
+                    parameters.ExternalReferencePackages);
+                Logger.LogInfo("Start building document ...");
+                IEnumerable<InnerBuildContext> innerContexts = Enumerable.Empty<InnerBuildContext>();
                 try
                 {
-                    Directory.CreateDirectory(parameters.OutputBaseDir);
-                    var context = new DocumentBuildContext(
-                        Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
-                        parameters.Files.EnumerateFiles(),
-                        parameters.ExternalReferencePackages);
-                    Logger.LogInfo("Start building document ...");
-                    foreach (var item in
-                        from file in parameters.Files.EnumerateFiles()
-                        group file by (from processor in Processors
-                                       let priority = processor.GetProcessingPriority(file)
-                                       where priority != ProcessingPriority.NotSupportted
-                                       orderby priority descending
-                                       select processor).FirstOrDefault())
+                    innerContexts = GetInnerContexts(parameters, Processors);
+                    foreach (var item in innerContexts)
                     {
-                        if (item.Key != null)
-                        {
-                            BuildCore(item.Key, item, parameters.Metadata, parameters.FileMetadata, context);
-                        }
-                        else
-                        {
-                            var sb = new StringBuilder();
-                            sb.AppendLine("Cannot handle following file:");
-                            foreach (var f in item)
-                            {
-                                sb.Append("\t");
-                                sb.AppendLine(f.File);
-                            }
-                            Logger.LogWarning(sb.ToString());
-                        }
+                        BuildCore(item.HostService, item.Processor, context);
                     }
-
-                    context.SerializeTo(parameters.OutputBaseDir);
-                    Logger.LogInfo("Building document completed.");
                 }
                 finally
                 {
-                    foreach (var processor in Processors)
+                    foreach (var item in innerContexts)
                     {
-                        Logger.LogInfo($"Disposing processor {processor.Name} ...");
-                        (processor as IDisposable)?.Dispose();
+                        item.HostService?.Dispose();
                     }
                 }
+
+                context.SerializeTo(parameters.OutputBaseDir);
+                Logger.LogInfo("Building document completed.");
             }
         }
 
-        private void BuildCore(
-            IDocumentProcessor processor,
-            IEnumerable<FileAndType> files,
-            ImmutableDictionary<string, object> metadata,
-            FileMetadata fileMetadata,
-            DocumentBuildContext context)
+        private void BuildCore(HostService hostService, IDocumentProcessor processor, DocumentBuildContext context)
         {
             Logger.LogInfo($"Plug-in {processor.Name}: Loading document...");
-            using (var hostService = new HostService(
-                from file in files
-                select Load(processor, metadata, fileMetadata, file)))
+            hostService.SourceFiles = context.AllSourceFiles;
+            foreach (var m in hostService.Models)
             {
-                hostService.SourceFiles = context.AllSourceFiles;
-                foreach (var m in hostService.Models)
+                if (m.LocalPathFromRepoRoot == null)
                 {
-                    if (m.LocalPathFromRepoRoot == null)
-                    {
-                        m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File);
-                    }
+                    m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File);
                 }
-                Logger.LogInfo($"Plug-in {processor.Name}: Document loaded (count = {hostService.Models.Count}).");
-                Logger.LogInfo($"Plug-in {processor.Name}: Preprocessing...");
-                Prebuild(processor, hostService);
-                Logger.LogInfo($"Plug-in {processor.Name}: Building...");
-                BuildArticle(processor, hostService);
-                Logger.LogInfo($"Plug-in {processor.Name}: Postprocessing...");
-                Postbuild(processor, hostService);
-                Logger.LogInfo($"Plug-in {processor.Name}: Saving...");
-                Save(processor, hostService, context);
             }
+            Logger.LogInfo($"Plug-in {processor.Name}: Document loaded (count = {hostService.Models.Count}).");
+            Logger.LogInfo($"Plug-in {processor.Name}: Preprocessing...");
+            Prebuild(processor, hostService);
+            Logger.LogInfo($"Plug-in {processor.Name}: Building...");
+            BuildArticle(processor, hostService);
+            Logger.LogInfo($"Plug-in {processor.Name}: Postprocessing...");
+            Postbuild(processor, hostService);
+            Logger.LogInfo($"Plug-in {processor.Name}: Saving...");
+            Save(processor, hostService, context);
         }
 
         private static FileModel Load(
@@ -396,6 +367,59 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 {
                     action(buildStep);
                 }
+            }
+        }
+
+        private static IEnumerable<InnerBuildContext> GetInnerContexts(DocumentBuildParameters parameters, IEnumerable<IDocumentProcessor> processors)
+        {
+            var filesGroupedByProcessor =
+                    from file in parameters.Files.EnumerateFiles()
+                    group file by (from processor in processors
+                                   let priority = processor.GetProcessingPriority(file)
+                                   where priority != ProcessingPriority.NotSupportted
+                                   orderby priority descending
+                                   select processor).FirstOrDefault();
+            var toHandleItems = filesGroupedByProcessor.Where(s => s.Key != null);
+            var notToHandleItems = filesGroupedByProcessor.Where(s => s.Key == null);
+            foreach (var item in notToHandleItems)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("Cannot handle following file:");
+                foreach (var f in item)
+                {
+                    sb.Append("\t");
+                    sb.AppendLine(f.File);
+                }
+                Logger.LogWarning(sb.ToString());
+            }
+
+            foreach (var item in toHandleItems)
+            {
+                yield return new InnerBuildContext(new HostService(
+                    from file in item
+                    select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file)),
+                    item.Key);
+            }
+        }
+
+        private sealed class InnerBuildContext
+        {
+            public HostService HostService { get; }
+            public IDocumentProcessor Processor { get; }
+
+            public InnerBuildContext(HostService hostService, IDocumentProcessor processor)
+            {
+                HostService = hostService;
+                Processor = processor;
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (var processor in Processors)
+            {
+                Logger.LogVerbose($"Disposing processor {processor.Name} ...");
+                (processor as IDisposable)?.Dispose();
             }
         }
     }

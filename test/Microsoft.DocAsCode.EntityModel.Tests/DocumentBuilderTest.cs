@@ -109,7 +109,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             Init(DocumentBuilder.PhaseName + "." + MarkdownRewriterBuilder.StyleCopPhaseName);
             try
             {
-                new DocumentBuilder().Build(
+                using (var builder = new DocumentBuilder())
+                {
+                    builder.Build(
                     new DocumentBuildParameters
                     {
                         Files = files,
@@ -119,6 +121,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                             ["meta"] = "Hello world!",
                         }.ToImmutableDictionary()
                     });
+                }
             }
             finally
             {
