@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Microsoft.DocAsCode.Utility;
 
-    internal class Template
+    public class Template
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
         private string _script = null;
@@ -45,6 +45,17 @@ namespace Microsoft.DocAsCode.EntityModel
             }
 
             Resources = ExtractDependentResources();
+        }
+
+        public string TransformModel(object model, object attrs)
+        {
+            if (_renderer == null) return null;
+            if (_script != null)
+            {
+                model = ProcessWithJint(JsonUtility.Serialize(model), attrs);
+            }
+
+            return _renderer.Render(model);
         }
 
         public string Transform(string modelPath, object attrs)

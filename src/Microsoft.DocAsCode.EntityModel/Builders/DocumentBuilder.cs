@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         public const string PhaseName = "Build Document";
 
+        private const string ManifestFileName = ".manifest";
+
         private static readonly Assembly[] DefaultAssemblies = { typeof(DocumentBuilder).Assembly };
 
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
@@ -83,28 +85,77 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 var context = new DocumentBuildContext(
                     Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
                     parameters.Files.EnumerateFiles(),
-                    parameters.ExternalReferencePackages);
-                Logger.LogInfo("Start building document ...");
+                    parameters.ExternalReferencePackages,
+                    parameters.TemplateCollection
+                    );
+                Logger.LogInfo("Start building document...");
                 IEnumerable<InnerBuildContext> innerContexts = Enumerable.Empty<InnerBuildContext>();
                 try
                 {
-                    innerContexts = GetInnerContexts(parameters, Processors);
+                    innerContexts = GetInnerContexts(parameters, Processors).ToList();
                     foreach (var item in innerContexts)
                     {
                         BuildCore(item.HostService, item.Processor, context);
                     }
+
+                    foreach(var item in innerContexts)
+                    {
+                        UpdateHref(item.HostService, item.Processor, context);
+                    }
+
+                    Transform(context, parameters.TemplateCollection);
                 }
                 finally
                 {
                     foreach (var item in innerContexts)
                     {
-                        item.HostService?.Dispose();
+                        if (item.HostService != null)
+                        {
+                            Cleanup(item.HostService);
+                            item.HostService.Dispose();
+                        }
                     }
                 }
 
-                context.SerializeTo(parameters.OutputBaseDir);
                 Logger.LogInfo("Building document completed.");
             }
+        }
+
+        private void Cleanup(HostService hostService)
+        {
+            hostService.Models.RunAll(m => m.Dispose());
+        }
+
+        private void Transform(DocumentBuildContext context, TemplateCollection templateCollection)
+        {
+            if (templateCollection == null || templateCollection.Count == 0)
+            {
+                Logger.LogWarning("No template is found.");
+            }
+            else
+            {
+                Logger.LogInfo("Start applying template...");
+            }
+
+            var outputDirectory = context.BuildOutputFolder;
+
+            // TODO: move to HandleSaveResult
+            // 1. Update internal xref value to final path
+            // 2. Set external xref
+            TemplateProcessor.UpdateFileMap(context, outputDirectory, templateCollection);
+            List<TemplateManifestItem> manifest = new List<TemplateManifestItem>();
+
+            // 3. Process every model and save to output directory
+            foreach (var item in context.Manifest)
+            {
+                var manifestItem = TemplateProcessor.Transform(context, item, templateCollection, outputDirectory);
+                manifest.Add(manifestItem);
+            }
+
+            // Save manifest
+            var manifestPath = Path.Combine(outputDirectory, ManifestFileName);
+            JsonUtility.Serialize(manifestPath, manifest);
+            Logger.Log(LogLevel.Verbose, $"Manifest file saved to {manifestPath}.");
         }
 
         private void BuildCore(HostService hostService, IDocumentProcessor processor, DocumentBuildContext context)
@@ -127,6 +178,29 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             Postbuild(processor, hostService);
             Logger.LogInfo($"Plug-in {processor.Name}: Saving...");
             Save(processor, hostService, context);
+        }
+
+        private void UpdateHref(HostService hostService, IDocumentProcessor processor, DocumentBuildContext context)
+        {
+            Func<string, string, string> updater = (originalPathToFile, filePathToRoot) =>
+            {
+                string href;
+                if (string.IsNullOrEmpty(originalPathToFile) || !context.FileMap.TryGetValue(originalPathToFile, out href))
+                {
+                    return originalPathToFile;
+                }
+                var relativePath = ((RelativePath)href).MakeRelativeTo(((RelativePath)filePathToRoot).GetPathFromWorkingFolder());
+                return relativePath;
+            };
+            hostService.Models.RunAll(
+                m =>
+                {
+                    using (new LoggerFileScope(m.OriginalFileAndType.File))
+                    {
+                        Logger.LogVerbose($"Plug-in {processor.Name}: Updating href...");
+                        processor.UpdateHref(m, updater);
+                    }
+                });
         }
 
         private static FileModel Load(
@@ -227,29 +301,24 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             hostService.Models.RunAll(
                 m =>
                 {
-                    try
+                    if (m.Type != DocumentType.Override)
                     {
-                        if (m.Type != DocumentType.Override)
+                        using (new LoggerFileScope(m.OriginalFileAndType.File))
                         {
-                            using (new LoggerFileScope(m.OriginalFileAndType.File))
+                            Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
+                            m.BaseDir = context.BuildOutputFolder;
+                            if (m.PathRewriter != null)
                             {
-                                Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
-                                m.BaseDir = context.BuildOutputFolder;
-                                if (m.PathRewriter != null)
-                                {
-                                    m.File = m.PathRewriter(m.File);
-                                }
-                                var result = processor.Save(m);
-                                if (result != null)
-                                {
-                                    HandleSaveResult(context, hostService, m, result);
-                                }
+                                m.File = m.PathRewriter(m.File);
+                            }
+                            var result = processor.Save(m);
+                            if (result != null)
+                            {
+                                m.File = TemplateProcessor.UpdateFilePath(m.File, result.DocumentType, context.TemplateCollection);
+                                result.ModelFile = TemplateProcessor.UpdateFilePath(result.ModelFile, result.DocumentType, context.TemplateCollection);
+                                HandleSaveResult(context, hostService, m, result);
                             }
                         }
-                    }
-                    finally
-                    {
-                        m.Dispose();
                     }
                 });
         }
@@ -355,7 +424,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 ResourceFile = result.ResourceFile,
                 OriginalFile = model.OriginalFileAndType.File,
                 // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
-                LocalPathFromRepoRoot = model.LocalPathFromRepoRoot
+                LocalPathFromRepoRoot = model.LocalPathFromRepoRoot,
+                Model = model
             });
         }
 

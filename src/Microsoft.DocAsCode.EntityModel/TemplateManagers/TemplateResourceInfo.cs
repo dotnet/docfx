@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    internal sealed class TemplateResourceInfo
+    public sealed class TemplateResourceInfo
     {
         public string ResourceKey { get; }
         public string FilePath { get; }

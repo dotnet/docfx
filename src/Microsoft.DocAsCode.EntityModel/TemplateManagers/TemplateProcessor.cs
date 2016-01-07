@@ -19,8 +19,11 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private const string ManifestFileName = ".manifest";
         private const string Language = "csharp"; // TODO: how to handle multi-language
-        private TemplateCollection _templates;
         private ResourceCollection _resourceProvider = null;
+
+        public TemplateCollection Templates { get; }
+
+        public bool IsEmpty { get { return Templates.Count == 0; } }
 
         /// <summary>
         /// TemplateName can be either file or folder
@@ -32,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public TemplateProcessor(ResourceCollection resourceProvider)
         {
             _resourceProvider = resourceProvider;
-            _templates = new TemplateCollection(resourceProvider);
+            Templates = new TemplateCollection(resourceProvider);
         }
 
         public void Process(DocumentBuildContext context, string outputDirectory)
@@ -46,152 +49,13 @@ namespace Microsoft.DocAsCode.EntityModel
 
             // 1. Copy dependent files with path relative to the base output directory
             ProcessDependencies(outputDirectory);
-            Dictionary<string, HashSet<string>> unProcessedType = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
-            Dictionary<string, string> extMapping = new Dictionary<string, string>();
-            // 2. Get extension for each item
-            foreach (var item in context.Manifest)
-            {
-                if (item.ModelFile == null) throw new ArgumentNullException("Model file path must be specified!");
-                if (item.DocumentType == null) throw new ArgumentNullException($"Document type is not allowed to be NULL for ${item.ModelFile}!");
-                // NOTE: Resource is not supported for applying templates
-                if (item.DocumentType.Equals("Resource", StringComparison.OrdinalIgnoreCase)) continue;
-                var templates = _templates[item.DocumentType];
-                // Get default template extension
-                if (templates == null || templates.Count == 0)
-                {
-                    HashSet<string> unProcessedFiles;
-                    if (unProcessedType.TryGetValue(item.DocumentType, out unProcessedFiles))
-                    {
-                        unProcessedFiles.Add(item.ModelFile);
-                    }
-                    else
-                    {
-                        unProcessedType[item.DocumentType] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { item.ModelFile };
-                    }
-                }
-                else
-                {
-                    var defaultTemplate = templates.FirstOrDefault(s => s.IsPrimary) ?? templates[0];
-                    string key = ((RelativePath)item.OriginalFile).GetPathFromWorkingFolder();
-                    string value;
-                    if (context.FileMap.TryGetValue(key, out value))
-                    {
-                        context.FileMap[key] = Path.ChangeExtension(value, defaultTemplate.Extension);
-                        extMapping[key] = defaultTemplate.Extension;
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"{key} is not found in .filemap");
-                    }
-                }
-            }
-
-            //update internal XrefMap
-            if (context.XRefSpecMap != null)
-            {
-                foreach (var pair in context.XRefSpecMap)
-                {
-                    string targetFilePath;
-                    if (context.FileMap.TryGetValue(pair.Value.Href, out targetFilePath))
-                    {
-                        string ext;
-                        if (extMapping.TryGetValue(pair.Value.Href, out ext))
-                        {
-                            pair.Value.Href = Path.ChangeExtension(targetFilePath, ext);
-                        }
-                        else
-                        {
-                            pair.Value.Href = targetFilePath;
-                        }
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"{pair.Value.Href} is not found in .filemap");
-                    }
-                }
-            }
-
-            if (unProcessedType.Count > 0)
-            {
-                StringBuilder sb = new StringBuilder("There is no template processing:");
-                foreach (var type in unProcessedType)
-                {
-                    sb.AppendLine($"- Document type: \"{type.Key}\"");
-                    sb.AppendLine($"- Files:");
-                    foreach (var file in type.Value)
-                    {
-                        sb.AppendLine($"  -\"{file}\"");
-                    }
-                }
-                Logger.LogWarning(sb.ToString());// not processed but copied to '{modelOutputPath}'");
-            }
-
+            UpdateFileMap(context, outputDirectory, Templates);
             List<TemplateManifestItem> manifest = new List<TemplateManifestItem>();
 
             // 3. Process every model and save to output directory
             foreach (var item in context.Manifest)
             {
-                var manifestItem = new TemplateManifestItem
-                {
-                    DocumentType = item.DocumentType,
-                    OriginalFile = item.LocalPathFromRepoRoot,
-                    OutputFiles = new Dictionary<string, string>()
-                };
-                try
-                {
-                    var templates = _templates[item.DocumentType];
-                    // 1. process model
-                    if (templates == null)
-                    {
-                        // TODO: what if template to transform the type is not found? DO NOTHING?
-                        // CopyFile(modelFile, modelOutputPath);
-                    }
-                    else
-                    {
-                        var modelFile = Path.Combine(baseDirectory, item.ModelFile);
-                        var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
-                        foreach (var template in templates)
-                        {
-                            var extension = template.Extension;
-                            string outputFile = Path.ChangeExtension(item.ModelFile, extension);
-                            string outputPath = Path.Combine(outputDirectory ?? string.Empty, outputFile);
-                            var dir = Path.GetDirectoryName(outputPath);
-                            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                            var transformed = template.Transform(modelFile, systemAttrs);
-                            if (!string.IsNullOrWhiteSpace(transformed))
-                            {
-                                if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    TranformHtml(context, transformed, item.ModelFile, outputPath);
-                                }
-                                else
-                                {
-                                    File.WriteAllText(outputPath, transformed, Encoding.UTF8);
-                                }
-
-                                Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.ModelFile}\" to \"{outputPath}\".");
-                            }
-                            else
-                            {
-                                // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
-                                Logger.LogWarning($"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
-                                File.WriteAllText(outputPath, string.Empty);
-                            }
-                            manifestItem.OutputFiles.Add(extension, outputFile);
-                        }
-                    }
-
-                    // 2. process resource
-                    if (item.ResourceFile != null)
-                    {
-                        manifestItem.OutputFiles.Add("resource", item.ResourceFile);
-                        PathUtility.CopyFile(Path.Combine(baseDirectory, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.LogWarning($"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
-                }
+                var manifestItem = Transform(context, item, Templates, outputDirectory);
                 manifest.Add(manifestItem);
             }
 
@@ -201,9 +65,123 @@ namespace Microsoft.DocAsCode.EntityModel
             Logger.Log(LogLevel.Verbose, $"Manifest file saved to {manifestPath}.");
         }
 
-        private void TranformHtml(DocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
+        public static string UpdateFilePath(string path, string documentType, TemplateCollection templateCollection)
+        {
+            if (templateCollection == null) return path;
+            var templates = templateCollection[documentType];
+
+            // Get default template extension
+            if (templates == null || templates.Count == 0) return path;
+
+            var defaultTemplate = templates.FirstOrDefault(s => s.IsPrimary) ?? templates[0];
+            return Path.ChangeExtension(path, defaultTemplate.Extension);
+        }
+
+        public static void UpdateFileMap(DocumentBuildContext context, string outputDirectory, TemplateCollection templateCollection)
+        {
+            //update internal XrefMap
+            if (context.XRefSpecMap != null)
+            {
+                foreach (var pair in context.XRefSpecMap)
+                {
+                    string targetFilePath;
+                    if (context.FileMap.TryGetValue(pair.Value.Href, out targetFilePath))
+                    {
+                        pair.Value.Href = targetFilePath;
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"{pair.Value.Href} is not found in .filemap");
+                    }
+                }
+            }
+
+            context.SetExternalXRefSpec();
+        }
+
+        public static TemplateManifestItem Transform(DocumentBuildContext context, ManifestItem item, TemplateCollection templateCollection, string outputDirectory)
+        {
+            var baseDirectory = context.BuildOutputFolder ?? string.Empty;
+            var manifestItem = new TemplateManifestItem
+            {
+                DocumentType = item.DocumentType,
+                OriginalFile = item.LocalPathFromRepoRoot,
+                OutputFiles = new Dictionary<string, string>()
+            };
+            try
+            {
+                var model = item.Model?.Content;
+                var templates = templateCollection[item.DocumentType];
+                // 1. process model
+                if (templates == null)
+                {
+                    // Logger.LogWarning($"There is no template processing {item.DocumentType} document \"{item.LocalPathFromRepoRoot}\"");
+                }
+                else
+                {
+                    var modelFile = Path.Combine(baseDirectory, item.ModelFile);
+                    var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
+                    foreach (var template in templates)
+                    {
+                        var extension = template.Extension;
+                        string outputFile = Path.ChangeExtension(item.ModelFile, extension);
+                        string outputPath = Path.Combine(outputDirectory ?? string.Empty, outputFile);
+                        var dir = Path.GetDirectoryName(outputPath);
+                        if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                        string transformed;
+                        if (model == null)
+                        {
+                            // TODO: remove, keep to pass UT
+                            transformed = template.Transform(item.ModelFile, systemAttrs);
+                        }
+                        else
+                        {
+                            transformed = template.TransformModel(model, systemAttrs);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(transformed))
+                        {
+                            if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
+                            {
+                                TranformHtml(context, transformed, item.ModelFile, outputPath);
+                            }
+                            else
+                            {
+                                File.WriteAllText(outputPath, transformed, Encoding.UTF8);
+                            }
+
+                            Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.ModelFile}\" to \"{outputPath}\".");
+                        }
+                        else
+                        {
+                            // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
+                            Logger.LogWarning($"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
+                            File.WriteAllText(outputPath, string.Empty);
+                        }
+                        manifestItem.OutputFiles.Add(extension, outputFile);
+                    }
+                }
+
+                // 2. process resource
+                if (item.ResourceFile != null)
+                {
+                    PathUtility.CopyFile(Path.Combine(baseDirectory, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
+                    manifestItem.OutputFiles.Add("resource", item.ResourceFile);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
+            }
+
+            return manifestItem;
+        }
+
+        private static void TranformHtml(DocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
         {
             // Update HREF and XREF
+            var internalXref = context.XRefSpecMap;
+            var externalXref = context.ExternalXRefSpec;
             HtmlAgilityPack.HtmlDocument html = new HtmlAgilityPack.HtmlDocument();
             html.LoadHtml(transformed);
             var srcNodes = html.DocumentNode.SelectNodes("//*/@src");
@@ -220,7 +198,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     // xref is generated by docfx, and is lower-cased
                     if (link.Name == "xref")
                     {
-                        UpdateXref(link, context.XRefSpecMap, context.ExternalXRefSpec, s => UpdateFilePath(s, relativeModelPath), Language);
+                        UpdateXref(link, internalXref, externalXref, s => UpdateFilePath(s, relativeModelPath), Language);
                     }
                     else
                     {
@@ -234,17 +212,11 @@ namespace Microsoft.DocAsCode.EntityModel
             html.Save(outputPath, Encoding.UTF8);
         }
 
-        private void ProcessDependencies(string outputDirectory)
+        public void ProcessDependencies(string outputDirectory)
         {
-            if (_resourceProvider == null)
+            if (!IsEmpty)
             {
-                Logger.Log(LogLevel.Info, "Resource provider is not specified, dependencies will not be processed.");
-                return;
-            }
-
-            if (_templates != null)
-            {
-                foreach (var resourceInfo in ExtractDependentFilePaths(_templates).Distinct())
+                foreach (var resourceInfo in ExtractDependentFilePaths(Templates).Distinct())
                 {
                     try
                     {

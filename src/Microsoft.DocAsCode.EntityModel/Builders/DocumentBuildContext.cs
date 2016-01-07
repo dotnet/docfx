@@ -18,16 +18,19 @@
         public const string InternalXRefSpecFileName = ".docfx.xref.internal";
         public const string TocFileName = ".docfx.toc";
 
-        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty) { }
+        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, null) { }
 
-        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages)
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, TemplateCollection templateCollection)
         {
             BuildOutputFolder = buildOutputFolder;
             AllSourceFiles = allSourceFiles.ToImmutableDictionary(ft => ((RelativePath)ft.File).GetPathFromWorkingFolder(), FilePathComparer.OSPlatformSensitiveStringComparer);
+            TemplateCollection = templateCollection;
             ExternalReferencePackages = externalReferencePackages;
         }
 
         public string BuildOutputFolder { get; }
+
+        public TemplateCollection TemplateCollection { get; }
 
         public ImmutableArray<string> ExternalReferencePackages { get; }
 
@@ -41,38 +44,13 @@
 
         public Dictionary<string, HashSet<string>> TocMap { get; private set; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-        public Dictionary<string, XRefSpec> ExternalXRefSpec { get; private set; }
-
         public List<ManifestItem> Manifest { get; private set; } = new List<ManifestItem>();
 
         public Dictionary<string, HashSet<string>> XRef { get; } = new Dictionary<string, HashSet<string>>();
 
-        public void SerializeTo(string outputBaseDir)
-        {
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ManifestFileName), Manifest);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, FileMapFileName), FileMap);
-            if (ExternalXRefSpec == null)
-            {
-                ExternalXRefSpec = GetExternalXRefSpec();
-            }
+        public Dictionary<string, XRefSpec> ExternalXRefSpec { get; private set; } = new Dictionary<string, XRefSpec>();
 
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, ExternalXRefSpecFileName), ExternalXRefSpec.Values);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, InternalXRefSpecFileName), XRefSpecMap.Values);
-            YamlUtility.Serialize(Path.Combine(outputBaseDir, TocFileName), TocMap);
-        }
-
-        public static DocumentBuildContext DeserializeFrom(string outputBaseDir)
-        {
-            var context = new DocumentBuildContext(outputBaseDir);
-            context.Manifest = YamlUtility.Deserialize<List<ManifestItem>>(Path.Combine(outputBaseDir, ManifestFileName));
-            context.FileMap = new Dictionary<string, string>(YamlUtility.Deserialize<Dictionary<string, string>>(Path.Combine(outputBaseDir, FileMapFileName)), FilePathComparer.OSPlatformSensitiveStringComparer);
-            context.ExternalXRefSpec = YamlUtility.Deserialize<List<XRefSpec>>(Path.Combine(outputBaseDir, ExternalXRefSpecFileName)).ToDictionary(x => x.Uid, x => x.ToReadOnly());
-            context.XRefSpecMap = YamlUtility.Deserialize<List<XRefSpec>>(Path.Combine(outputBaseDir, InternalXRefSpecFileName)).ToDictionary(x => x.Uid, x => x.ToReadOnly());
-            context.TocMap = new Dictionary<string, HashSet<string>>(YamlUtility.Deserialize<Dictionary<string, HashSet<string>>>(Path.Combine(outputBaseDir, TocFileName)), FilePathComparer.OSPlatformSensitiveStringComparer);
-            return context;
-        }
-
-        private Dictionary<string, XRefSpec> GetExternalXRefSpec()
+        public void SetExternalXRefSpec()
         {
             var result = new Dictionary<string, XRefSpec>();
 
@@ -81,7 +59,7 @@
 
             if (xref.Count == 0)
             {
-                return result;
+                return;
             }
 
             var missingUids = new List<KeyValuePair<string, HashSet<string>>>();
@@ -122,7 +100,7 @@
                     Logger.LogWarning($"Too many missing definitions of cross-reference, following is top 100:{Environment.NewLine}\t{uidLines}");
                 }
             }
-            return result;
+            ExternalXRefSpec = result;
         }
 
         private static XRefSpec GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)

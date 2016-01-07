@@ -178,59 +178,60 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.Equal("r1", meta["uid"]);
             }
 
-            {
-                // check manifest file.
-                var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.ManifestFileName);
-                Assert.True(File.Exists(filepath));
-                var manifest = YamlUtility.Deserialize<List<Dictionary<string, object>>>(filepath);
-                Assert.Equal(5, manifest.Count);
-                Assert.Equal("Conceptual", manifest[0]["type"]);
-                Assert.Equal(@"documents/test.json", manifest[0]["model"]);
-                Assert.Equal("Conceptual", manifest[1]["type"]);
-                Assert.Equal(@"documents/test/test.json", manifest[1]["model"]);
-                Assert.Equal("ManagedReference", manifest[2]["type"]);
-                Assert.Equal(@"System.Console.json", manifest[2]["model"]);
-                Assert.Equal("ManagedReference", manifest[3]["type"]);
-                Assert.Equal(@"System.ConsoleColor.json", manifest[3]["model"]);
-                Assert.Equal("Resource", manifest[4]["type"]);
-                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.json", manifest[4]["model"]);
-                Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[4]["resource"]);
-            }
+            // TODO: remove. Reason: intermediate files are no longer generated
+            //{
+            //    // check manifest file.
+            //    var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.ManifestFileName);
+            //    Assert.True(File.Exists(filepath));
+            //    var manifest = YamlUtility.Deserialize<List<Dictionary<string, object>>>(filepath);
+            //    Assert.Equal(5, manifest.Count);
+            //    Assert.Equal("Conceptual", manifest[0]["type"]);
+            //    Assert.Equal(@"documents/test.json", manifest[0]["model"]);
+            //    Assert.Equal("Conceptual", manifest[1]["type"]);
+            //    Assert.Equal(@"documents/test/test.json", manifest[1]["model"]);
+            //    Assert.Equal("ManagedReference", manifest[2]["type"]);
+            //    Assert.Equal(@"System.Console.json", manifest[2]["model"]);
+            //    Assert.Equal("ManagedReference", manifest[3]["type"]);
+            //    Assert.Equal(@"System.ConsoleColor.json", manifest[3]["model"]);
+            //    Assert.Equal("Resource", manifest[4]["type"]);
+            //    Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.json", manifest[4]["model"]);
+            //    Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[4]["resource"]);
+            //}
 
-            {
-                // check file map
-                var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.FileMapFileName);
-                Assert.True(File.Exists(filepath));
-                var filemap = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
-                Assert.Equal(5, filemap.Count);
-                Assert.Equal("~/documents/test.json", filemap["~/documents/test.md"]);
-                Assert.Equal("~/documents/test/test.json", filemap["~/documents/test/test.md"]);
-                Assert.Equal("~/System.Console.json", filemap["~/TestData/System.Console.csyml"]);
-                Assert.Equal("~/System.ConsoleColor.json", filemap["~/TestData/System.ConsoleColor.csyml"]);
-                Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
-            }
+            //{
+            //    // check file map
+            //    var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.FileMapFileName);
+            //    Assert.True(File.Exists(filepath));
+            //    var filemap = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
+            //    Assert.Equal(5, filemap.Count);
+            //    Assert.Equal("~/documents/test.json", filemap["~/documents/test.md"]);
+            //    Assert.Equal("~/documents/test/test.json", filemap["~/documents/test/test.md"]);
+            //    Assert.Equal("~/System.Console.json", filemap["~/TestData/System.Console.csyml"]);
+            //    Assert.Equal("~/System.ConsoleColor.json", filemap["~/TestData/System.ConsoleColor.csyml"]);
+            //    Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
+            //}
 
-            {
-                // check external xref spec
-                var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.ExternalXRefSpecFileName);
-                Assert.True(File.Exists(filepath));
-                var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
-                Assert.Equal(0, xref.Count);
-            }
+            //{
+            //    // check external xref spec
+            //    var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.ExternalXRefSpecFileName);
+            //    Assert.True(File.Exists(filepath));
+            //    var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
+            //    Assert.Equal(0, xref.Count);
+            //}
 
-            {
-                // check internal xref spec
-                var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.InternalXRefSpecFileName);
-                Assert.True(File.Exists(filepath));
-                var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
-                Assert.Equal(70, xref.Count);
-                Assert.NotNull(xref.Single(s => s.Uid == "System.Console"));
-                Assert.NotNull(xref.Single(s => s.Uid == "System.Console.BackgroundColor"));
-                Assert.NotNull(xref.Single(s => s.Uid == "System.Console.SetOut(System.IO.TextWriter)"));
-                Assert.NotNull(xref.Single(s => s.Uid == "System.Console.WriteLine(System.Int32)"));
-                Assert.NotNull(xref.Single(s => s.Uid == "System.ConsoleColor"));
-                Assert.NotNull(xref.Single(s => s.Uid == "System.ConsoleColor.Black"));
-            }
+            //{
+            //    // check internal xref spec
+            //    var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.InternalXRefSpecFileName);
+            //    Assert.True(File.Exists(filepath));
+            //    var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
+            //    Assert.Equal(70, xref.Count);
+            //    Assert.NotNull(xref.Single(s => s.Uid == "System.Console"));
+            //    Assert.NotNull(xref.Single(s => s.Uid == "System.Console.BackgroundColor"));
+            //    Assert.NotNull(xref.Single(s => s.Uid == "System.Console.SetOut(System.IO.TextWriter)"));
+            //    Assert.NotNull(xref.Single(s => s.Uid == "System.Console.WriteLine(System.Int32)"));
+            //    Assert.NotNull(xref.Single(s => s.Uid == "System.ConsoleColor"));
+            //    Assert.NotNull(xref.Single(s => s.Uid == "System.ConsoleColor.Black"));
+            //}
 
             #region Cleanup
             Directory.Delete(documentsBaseDir, true);

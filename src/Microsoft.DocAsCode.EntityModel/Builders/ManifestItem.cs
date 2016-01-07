@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Builders
 {
+    using Microsoft.DocAsCode.Plugins;
+
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
@@ -23,5 +25,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         [YamlMember(Alias = "resource")]
         [JsonProperty("resource")]
         public string ResourceFile { get; set; }
+        [JsonIgnore]
+        [YamlIgnore]
+        public FileModel Model { get; set; }
     }
 }

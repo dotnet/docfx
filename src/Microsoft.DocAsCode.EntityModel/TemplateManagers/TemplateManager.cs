@@ -20,23 +20,8 @@ namespace Microsoft.DocAsCode.EntityModel
         public TemplateManager(Assembly assembly, string rootNamespace, List<string> templates, List<string> themes, string baseDirectory)
         {
             _finder = new ResourceFinder(assembly, rootNamespace, baseDirectory);
-            if (templates == null || templates.Count == 0)
-            {
-                Logger.Log(LogLevel.Info, "Template is not specified, files will not be transformed.");
-            }
-            else
-            {
-                _templates = templates;
-            }
-            
-            if (themes == null || themes.Count == 0)
-            {
-                Logger.Log(LogLevel.Info, "Theme is not specified, no additional theme will be applied to the documentation.");
-            }
-            else
-            {
-                _themes = themes;
-            }
+            _templates = templates;
+            _themes = themes;
         }
 
         /// <summary>
@@ -72,8 +57,19 @@ namespace Microsoft.DocAsCode.EntityModel
             return TryExportResourceFiles(_templates, outputDirectory, true, regexFilter);
         }
 
+        public TemplateProcessor GetTemplateProcessor()
+        {
+            return new TemplateProcessor(new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)));
+        }
+
         private void ProcessTemplate(DocumentBuildContext context, string outputDirectory)
         {
+            if (_templates == null || _templates.Count == 0)
+            {
+                Logger.Log(LogLevel.Info, "Template is not specified, files will not be transformed.");
+                return;
+            }
+
             using (var templateResource = new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)))
             {
                 if (templateResource.IsEmpty)
@@ -91,9 +87,14 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private void ProcessTheme(string outputDirectory, bool overwrite)
+        public void ProcessTheme(string outputDirectory, bool overwrite)
         {
-            if (_themes == null || _themes.Count == 0) return;
+            if (_themes == null || _themes.Count == 0)
+            {
+                Logger.Log(LogLevel.Info, "Theme is not specified, no additional theme will be applied to the documentation.");
+                return;
+            }
+
             TryExportResourceFiles(_themes, outputDirectory, overwrite);
         }
 

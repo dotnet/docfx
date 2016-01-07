@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
                     // Add toc.yml to tocMap before change item.Href to home page
                     item.Href = ((RelativePath)file + (RelativePath)item.Href).GetPathFromWorkingFolder();
-                    if (item.OriginalHref != null) item.OriginalHref = (RelativePath)file + (RelativePath)item.OriginalHref;
+                    if (item.OriginalHref != null) item.OriginalHref = ((RelativePath)file + (RelativePath)item.OriginalHref).GetPathFromWorkingFolder();
 
                     HashSet<string> value;
                     if (tocMap.TryGetValue(item.Href, out value))

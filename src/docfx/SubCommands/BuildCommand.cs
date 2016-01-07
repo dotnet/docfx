@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 return jsonSerializer;
             });
 
-        private TemplateManager _templateManager;
+        private readonly TemplateManager _templateManager;
 
         public BuildJsonConfig Config { get; }
 
@@ -54,15 +54,11 @@ namespace Microsoft.DocAsCode.SubCommands
             var config = Config;
             var baseDirectory = config.BaseDirectory ?? Environment.CurrentDirectory;
             var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
-
-            BuildDocument(baseDirectory, intermediateOutputFolder);
-
-            var documentContext = DocumentBuildContext.DeserializeFrom(intermediateOutputFolder);
-
-            // If RootOutput folder is specified from command line, use it instead of the base directory
             var outputFolder = Path.Combine(config.OutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
-            _templateManager.ProcessTemplateAndTheme(documentContext, outputFolder, true);
 
+            BuildDocument(baseDirectory, outputFolder);
+
+            _templateManager.ProcessTheme(outputFolder, true);
             // TODO: SEARCH DATA
 
             if (config?.Serve ?? false)
@@ -368,6 +364,8 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 try
                 {
+                    var templateManager = new TemplateManager(typeof(DocumentBuilderWrapper).Assembly, "Template", config.Templates, config.Themes, config.BaseDirectory);
+
                     using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
                     {
                         var parameters = ConfigToParameter(config, baseDirectory, outputDirectory);
@@ -377,7 +375,11 @@ namespace Microsoft.DocAsCode.SubCommands
                             return;
                         }
 
-                        builder.Build(parameters);
+                        using (var processor = templateManager.GetTemplateProcessor())
+                        {
+                            parameters.TemplateCollection = processor.Templates;
+                            builder.Build(parameters);
+                        }
                     }
                 }
                 catch (DocumentException ex)
@@ -428,7 +430,6 @@ namespace Microsoft.DocAsCode.SubCommands
             private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config, string baseDirectory, string outputDirectory)
             {
                 var parameters = new DocumentBuildParameters();
-
                 parameters.OutputBaseDir = outputDirectory;
                 if (config.GlobalMetadata != null) parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
                 if (config.FileMetadata != null) parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);

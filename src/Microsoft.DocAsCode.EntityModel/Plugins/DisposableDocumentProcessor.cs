@@ -24,10 +24,15 @@
             {
                 foreach (var buildStep in BuildSteps)
                 {
-                    Logger.LogInfo($"Disposing build step {buildStep.Name} ...");
+                    Logger.LogVerbose($"Disposing build step {buildStep.Name} ...");
                     (buildStep as IDisposable)?.Dispose();
                 }
             }
+        }
+
+        // TODO: implement update href in each plugin
+        public virtual void UpdateHref(FileModel model, Func<string, string, string> updater)
+        {
         }
     }
 }

@@ -3,16 +3,18 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Builders
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public sealed class DocumentBuildParameters
+    public sealed class DocumentBuildParameters : MarshalByRefObject
     {
         public FileCollection Files { get; set; }
         public string OutputBaseDir { get; set; }
         public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
         public FileMetadata FileMetadata { get; set; }
+        public TemplateCollection TemplateCollection { get; set; }
     }
 
     public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>

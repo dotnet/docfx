@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Linq;
     using Microsoft.DocAsCode.Utility;
 
-    internal class TemplateCollection : Dictionary<string, List<Template>>
+    public class TemplateCollection : Dictionary<string, List<Template>>
     {
         private List<Template> _defaultTemplate = null;
 
@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             // type <=> list of template with different extension
             var dict = new Dictionary<string, List<Template>>(StringComparer.OrdinalIgnoreCase);
-            if (resource == null) return dict;
+            if (resource == null || resource.IsEmpty) return dict;
             // Template file ends with .tmpl(Mustache) or .liquid(Liquid)
             // Template file naming convention: {template file name}.{file extension}.(tmpl|liquid)
             var templates = resource.GetResources(@".*\.(tmpl|liquid|js)$").ToList();

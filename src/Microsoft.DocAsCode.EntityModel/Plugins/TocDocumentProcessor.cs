@@ -66,6 +66,33 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
+        public override void UpdateHref(FileModel model, Func<string, string, string> updater)
+        {
+            if (updater == null) return;
+            var toc = (TocViewModel)model.Content;
+            var path = model.File;
+            if (toc.Count > 0)
+            {
+                foreach (var item in toc)
+                {
+                    UpdateTocItemHref(item, path, updater);
+                }
+            }
+        }
+
+        private void UpdateTocItemHref(TocItemViewModel toc, string path, Func<string, string, string> updater)
+        {
+            toc.Href = updater(toc.Href, path);
+            toc.OriginalHref = updater(toc.OriginalHref, path);
+            if (toc.Items != null && toc.Items.Count > 0)
+            {
+                foreach (var item in toc.Items)
+                {
+                    UpdateTocItemHref(item, path, updater);
+                }
+            }
+        }
+
         private TocViewModel LoadSingleToc(string filePath)
         {
             if ("toc.md".Equals(Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
@@ -12,6 +13,10 @@ namespace Microsoft.DocAsCode.Plugins
         IEnumerable<IDocumentBuildStep> BuildSteps { get; }
         ProcessingPriority GetProcessingPriority(FileAndType file);
         FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata);
+
+        // TODO: rename
         SaveResult Save(FileModel model);
+
+        void UpdateHref(FileModel model, Func<string, string, string> updater);
     }
 }
