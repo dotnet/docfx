@@ -108,18 +108,18 @@
             }
             else
             {
-                missingUids.AddRange(XRef.Take(100));
+                missingUids.AddRange(xref.Take(100));
             }
             if (missingUids.Count > 0)
             {
-                var uidLines = string.Join(Environment.NewLine + "\t", missingUids.Select(s => s.Key + " in files \"" + string.Join(",", s.Value) + "\""));
+                var uidLines = string.Join(Environment.NewLine + "\t", missingUids.Select(s => "@" + s.Key + " in files \"" + string.Join(",", s.Value.Select(p => p.ToDisplayPath())) + "\""));
                 if (missingUids.Count < 100)
                 {
-                    Logger.LogWarning($"Missing following definitions of xref:{Environment.NewLine}\t{uidLines}.");
+                    Logger.LogWarning($"Missing following definitions of cross-reference:{Environment.NewLine}\t{uidLines}");
                 }
                 else
                 {
-                    Logger.LogWarning($"Too many missing definitions of xref, following is top 100:{Environment.NewLine}{uidLines}.");
+                    Logger.LogWarning($"Too many missing definitions of cross-reference, following is top 100:{Environment.NewLine}\t{uidLines}");
                 }
             }
             return result;
