@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Plugins
         public string DocumentType { get; set; }
         public string ModelFile { get; set; }
         public string ResourceFile { get; set; }
-        public ImmutableArray<string> LinkToUids { get; set; } = ImmutableArray<string>.Empty;
+        public ImmutableDictionary<string, HashSet<string>> LinkToUids { get; set; } = ImmutableDictionary<string, HashSet<string>>.Empty;
         public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableDictionary<string, HashSet<string>> TocMap { get; set; } = ImmutableDictionary<string, HashSet<string>>.Empty;
         public ImmutableArray<XRefSpec> XRefSpecs { get; set; } = ImmutableArray<XRefSpec>.Empty;

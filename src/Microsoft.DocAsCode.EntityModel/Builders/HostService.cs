@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                                  from attr in n.Attributes
                                  where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
                                  where !string.IsNullOrWhiteSpace(attr.Value)
-                                 select attr.Value).ToImmutableArray();
+                                 select attr.Value).ToImmutableHashSet();
             using (var sw = new StringWriter())
             {
                 doc.Save(sw);

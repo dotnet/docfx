@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 DocumentType = "ManagedReference",
                 ModelFile = model.File,
                 LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
-                LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableArray(),
+                LinkToUids = ((IEnumerable<string>)model.Properties.LinkToUids).ToDictionary(s => s, s => new HashSet<string> { model.LocalPathFromRepoRoot }).ToImmutableDictionary(),
                 XRefSpecs = (from item in vm.Items
                              select GetXRefInfo(item, model.OriginalFileAndType.File)).ToImmutableArray(),
             };

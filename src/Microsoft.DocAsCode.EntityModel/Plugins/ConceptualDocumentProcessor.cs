@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
 
     using Microsoft.DocAsCode.Plugins;
@@ -79,7 +80,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 DocumentType = model.DocumentType ?? "Conceptual",
                 ModelFile = model.File,
                 LinkToFiles = model.Properties.LinkToFiles,
-                LinkToUids = model.Properties.LinkToUids,
+                LinkToUids = ((IEnumerable<string>)model.Properties.LinkToUids).ToDictionary(s => s, s => new HashSet<string> { model.LocalPathFromRepoRoot }).ToImmutableDictionary(),
             };
             if (model.Properties.XrefSpec != null)
             {

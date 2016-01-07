@@ -45,7 +45,7 @@
 
         public List<ManifestItem> Manifest { get; private set; } = new List<ManifestItem>();
 
-        public HashSet<string> XRef { get; } = new HashSet<string>();
+        public Dictionary<string, HashSet<string>> XRef { get; } = new Dictionary<string, HashSet<string>>();
 
         public void SerializeTo(string outputBaseDir)
         {
@@ -77,19 +77,19 @@
             var result = new Dictionary<string, XRefSpec>();
 
             // remove internal xref.
-            XRef.ExceptWith(UidMap.Keys);
+            var xref = XRef.Where(s => !UidMap.ContainsKey(s.Key)).ToDictionary(s => s.Key, s => s.Value);
 
-            if (XRef.Count == 0)
+            if (xref.Count == 0)
             {
                 return result;
             }
 
-            var missingUids = new List<string>();
+            var missingUids = new List<KeyValuePair<string, HashSet<string>>>();
             if (ExternalReferencePackages.Length > 0)
             {
                 using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages))
                 {
-                    foreach (var uid in XRef)
+                    foreach (var uid in xref.Keys)
                     {
                         var spec = GetExternalReference(externalReferences, uid);
                         if (spec != null)
@@ -100,7 +100,7 @@
                         {
                             if (missingUids.Count < 100)
                             {
-                                missingUids.Add(uid);
+                                missingUids.Add(new KeyValuePair<string, HashSet<string>>(uid, xref[uid]));
                             }
                         }
                     }
@@ -112,10 +112,10 @@
             }
             if (missingUids.Count > 0)
             {
-                var uidLines = string.Join(Environment.NewLine + "\t", missingUids);
+                var uidLines = string.Join(Environment.NewLine + "\t", missingUids.Select(s => s.Key + " in files \"" + string.Join(",", s.Value) + "\""));
                 if (missingUids.Count < 100)
                 {
-                    Logger.LogWarning($"Missing following definitions of xref:{Environment.NewLine}{uidLines}.");
+                    Logger.LogWarning($"Missing following definitions of xref:{Environment.NewLine}\t{uidLines}.");
                 }
                 else
                 {

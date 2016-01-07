@@ -318,9 +318,20 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 context.UidMap[uid] = ((RelativePath)model.File).GetPathFromWorkingFolder();
             }
-            if (result.LinkToUids.Length > 0)
+            if (result.LinkToUids.Count > 0)
             {
-                context.XRef.UnionWith(result.LinkToUids);
+                foreach(var item in result.LinkToUids)
+                {
+                    HashSet<string> files;
+                    if (context.XRef.TryGetValue(item.Key, out files))
+                    {
+                        files.UnionWith(item.Value);
+                    }
+                    else
+                    {
+                        context.XRef[item.Key] = item.Value;
+                    }
+                }
             }
         }
 

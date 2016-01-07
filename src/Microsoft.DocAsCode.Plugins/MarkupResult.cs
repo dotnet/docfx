@@ -10,6 +10,6 @@ namespace Microsoft.DocAsCode.Plugins
         public string Html { get; set; }
         public ImmutableDictionary<string, object> YamlHeader { get; set; }
         public ImmutableArray<string> LinkToFiles { get; set; }
-        public ImmutableArray<string> LinkToUids { get; set; }
+        public ImmutableHashSet<string> LinkToUids { get; set; }
     }
 }
