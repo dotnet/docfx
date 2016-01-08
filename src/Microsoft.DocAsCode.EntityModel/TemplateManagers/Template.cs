@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.EntityModel
             Resources = ExtractDependentResources();
         }
 
-        public string TransformModel(object model, object attrs)
+        public TemplateTransformedResult TransformModel(object model, object attrs)
         {
             if (_renderer == null) return null;
             if (_script != null)
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 model = ProcessWithJint(JsonUtility.Serialize(model), attrs);
             }
 
-            return _renderer.Render(model);
+            return new TemplateTransformedResult(model, _renderer.Render(model));
         }
 
         public string Transform(string modelPath, object attrs)

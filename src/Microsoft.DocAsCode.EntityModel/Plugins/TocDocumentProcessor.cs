@@ -54,9 +54,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override SaveResult Save(FileModel model)
         {
-            var toc = (TocViewModel)model.Content;
-
-            JsonUtility.Serialize(Path.Combine(model.BaseDir, model.File), toc);
             return new SaveResult
             {
                 DocumentType = "Toc",

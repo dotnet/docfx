@@ -138,6 +138,7 @@
     <Compile Include="Plugins\BuildSteps\FillReferenceInformation.cs" />
     <Compile Include="Plugins\BuildSteps\MergeManagedReferenceDocument.cs" />
     <Compile Include="JsonUtility.cs" />
+    <Compile Include="TemplateManagers\TemplateTransformedResult.cs" />
     <Compile Include="TreeIterator.cs" />
     <Compile Include="YamlUtility.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageCollection.cs" />

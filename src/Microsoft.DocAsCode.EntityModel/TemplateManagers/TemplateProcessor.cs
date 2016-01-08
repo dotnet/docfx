@@ -38,6 +38,7 @@ namespace Microsoft.DocAsCode.EntityModel
             Templates = new TemplateCollection(resourceProvider);
         }
 
+        // TODO: remove
         public void Process(DocumentBuildContext context, string outputDirectory)
         {
             var baseDirectory = context.BuildOutputFolder;
@@ -55,7 +56,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // 3. Process every model and save to output directory
             foreach (var item in context.Manifest)
             {
-                var manifestItem = Transform(context, item, Templates, outputDirectory);
+                var manifestItem = Transform(context, item, Templates, outputDirectory, false, null);
                 manifest.Add(manifestItem);
             }
 
@@ -99,7 +100,7 @@ namespace Microsoft.DocAsCode.EntityModel
             context.SetExternalXRefSpec();
         }
 
-        public static TemplateManifestItem Transform(DocumentBuildContext context, ManifestItem item, TemplateCollection templateCollection, string outputDirectory)
+        public static TemplateManifestItem Transform(DocumentBuildContext context, ManifestItem item, TemplateCollection templateCollection, string outputDirectory, bool exportMetadata, Func<string, string> metadataFilePathProvider)
         {
             var baseDirectory = context.BuildOutputFolder ?? string.Empty;
             var manifestItem = new TemplateManifestItem
@@ -108,6 +109,10 @@ namespace Microsoft.DocAsCode.EntityModel
                 OriginalFile = item.LocalPathFromRepoRoot,
                 OutputFiles = new Dictionary<string, string>()
             };
+            if (templateCollection == null || templateCollection.Count == 0)
+            {
+                return manifestItem;
+            }
             try
             {
                 var model = item.Model?.Content;
@@ -131,12 +136,25 @@ namespace Microsoft.DocAsCode.EntityModel
                         string transformed;
                         if (model == null)
                         {
-                            // TODO: remove, keep to pass UT
+                            // TODO: remove
+                            // currently keep to pass UT
                             transformed = template.Transform(item.ModelFile, systemAttrs);
                         }
                         else
                         {
-                            transformed = template.TransformModel(model, systemAttrs);
+                            var result = template.TransformModel(model, systemAttrs);
+
+                            if (exportMetadata)
+                            {
+                                if (metadataFilePathProvider == null)
+                                {
+                                    throw new ArgumentNullException(nameof(metadataFilePathProvider));
+                                }
+
+                                JsonUtility.Serialize(metadataFilePathProvider(outputPath), result.Model);
+                            }
+
+                            transformed = result.Result;
                         }
 
                         if (!string.IsNullOrWhiteSpace(transformed))

@@ -120,7 +120,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         }
                     }
 
-                    Transform(context, parameters.TemplateCollection);
+                    Transform(context, parameters.TemplateCollection, parameters.ExportViewModel);
                 }
                 finally
                 {
@@ -143,7 +143,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             hostService.Models.RunAll(m => m.Dispose());
         }
 
-        private void Transform(DocumentBuildContext context, TemplateCollection templateCollection)
+        private void Transform(DocumentBuildContext context, TemplateCollection templateCollection, bool exportMetadata)
         {
             if (templateCollection == null || templateCollection.Count == 0)
             {
@@ -163,9 +163,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             List<TemplateManifestItem> manifest = new List<TemplateManifestItem>();
 
             // 3. Process every model and save to output directory
+
+            // Model can apply multiple template with different extension, so append the view model extension instead of change extension
+            Func<string, string> metadataPathProvider = (s) => { return s + ViewModelExtension; };
             foreach (var item in context.Manifest)
             {
-                var manifestItem = TemplateProcessor.Transform(context, item, templateCollection, outputDirectory);
+                var manifestItem = TemplateProcessor.Transform(context, item, templateCollection, outputDirectory, exportMetadata, metadataPathProvider);
                 manifest.Add(manifestItem);
             }
 
