@@ -22,7 +22,6 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly TemplateCommandType _commandType;
 
         private readonly ExportTemplateConfig _exportTemplateConfig = null;
-        private readonly ListTemplateConfig _listTemplateConfig = null;
         public TemplateCommand(TemplateCommandOptions options)
         {
             _options = options;
@@ -32,12 +31,6 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             switch (_commandType)
             {
-                case TemplateCommandType.List:
-                    _listTemplateConfig = new ListTemplateConfig
-                    {
-                        All = options.All,
-                    };
-                    break;
                 case TemplateCommandType.Export:
                     _exportTemplateConfig = new ExportTemplateConfig
                     {
@@ -83,8 +76,14 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 Logger.LogInfo($"Exporting {template} to {outputFolder}");
                 var manager = new TemplateManager(this.GetType().Assembly, "Template", new List<string> { template }, null, null);
-                manager.TryExportTemplateFiles(Path.Combine(outputFolder, template));
-                Logger.LogInfo($"{template} is exported to {outputFolder}");
+                if (manager.TryExportTemplateFiles(Path.Combine(outputFolder, template)))
+                {
+                    Logger.LogInfo($"{template} is exported to {outputFolder}");
+                }
+                else
+                {
+                    Logger.LogWarning($"{template} is not an embeded template.");
+                }
             }
         }
 
@@ -100,11 +99,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
             public string OutputFolder { get; set; }
 
-            public bool All { get; set; }
-        }
-
-        private sealed class ListTemplateConfig
-        {
             public bool All { get; set; }
         }
     }
