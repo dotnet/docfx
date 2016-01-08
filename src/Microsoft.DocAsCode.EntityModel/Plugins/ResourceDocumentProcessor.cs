@@ -9,8 +9,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Utility;
+    using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class ResourceDocumentProcessor : DisposableDocumentProcessor

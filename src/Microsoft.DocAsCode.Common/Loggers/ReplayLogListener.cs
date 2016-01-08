@@ -1,14 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel
+namespace Microsoft.DocAsCode.Common
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
-
-    using Microsoft.DocAsCode.Utility;
 
     /// <summary>
     /// Replay log on flushing.
@@ -139,7 +137,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static void WriteToConsole(string message, ConsoleColor color = ConsoleColor.White)
         {
-            ConsoleUtility.WriteToConsoleWithColor(() => Console.WriteLine(message), color);
+            ConsoleUtility.WriteLine(message, color);
         }
 
         private static BuildStatus GetBuildStatusFromLogLevel(LogLevel level)

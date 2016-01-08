@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.IO.Compression;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     public class ExternalReferencePackageWriter : IDisposable

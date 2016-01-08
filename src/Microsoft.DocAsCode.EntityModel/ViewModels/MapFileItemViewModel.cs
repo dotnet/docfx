@@ -3,14 +3,15 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
+    using Newtonsoft.Json;
+
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
-    using System.Globalization;
 
     public class MapFileViewModel : SortedList<string, MapFileItemViewModel>
     {

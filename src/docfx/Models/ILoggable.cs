@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode
 {
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
 
     interface ILoggable
     {

@@ -10,6 +10,8 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
+
     internal class DfmCodeExtractor
     {
         // C# code snippet block: // <[/]snippetname>

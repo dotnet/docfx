@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     public abstract class DisposableDocumentProcessor : IDocumentProcessor, IDisposable

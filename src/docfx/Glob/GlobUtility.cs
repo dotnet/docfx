@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode
     using System.IO;
     using System.Linq;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Glob;
     using Microsoft.DocAsCode.Utility;
 

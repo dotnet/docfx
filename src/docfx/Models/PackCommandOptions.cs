@@ -4,7 +4,8 @@
 namespace Microsoft.DocAsCode
 {
     using CommandLine;
-    using Microsoft.DocAsCode.EntityModel;
+
+    using Microsoft.DocAsCode.Common;
 
     [OptionUsage("pack")]
     internal class PackCommandOptions : ICanPrintHelpMessage, ILoggable

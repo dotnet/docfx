@@ -7,7 +7,8 @@ namespace Microsoft.DocAsCode
     using System.Collections.Generic;
     using System.Linq;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 

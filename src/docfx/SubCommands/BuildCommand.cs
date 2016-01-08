@@ -12,9 +12,9 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Threading;
 
     using Microsoft.DocAsCode;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.Builders;
-    using Microsoft.DocAsCode.EntityModel.Loggers;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;

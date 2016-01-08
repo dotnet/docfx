@@ -5,12 +5,12 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Text.RegularExpressions;
     using System.Linq;
     using System.Xml;
 
     using Xunit;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
 
     public class DocfxFlavoredMarkdownTest

@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using System.Reflection;
     using System.Text;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 

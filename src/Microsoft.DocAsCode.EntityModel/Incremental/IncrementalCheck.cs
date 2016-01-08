@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
+
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
     internal class IncrementalCheck

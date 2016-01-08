@@ -5,7 +5,8 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Text;
+
+    using Microsoft.DocAsCode.Common;
 
     public class ExtractMetadataInputModel
     {

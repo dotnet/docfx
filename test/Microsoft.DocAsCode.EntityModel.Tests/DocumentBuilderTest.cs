@@ -7,9 +7,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-    using System.Linq;
     using Xunit;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
     using Microsoft.DocAsCode.EntityModel.Plugins;

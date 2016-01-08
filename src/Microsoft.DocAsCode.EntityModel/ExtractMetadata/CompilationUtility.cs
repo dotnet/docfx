@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.EntityModel.ExtractMetadata
 
     using Microsoft.CodeAnalysis;
 
+    using Microsoft.DocAsCode.Common;
+
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
 

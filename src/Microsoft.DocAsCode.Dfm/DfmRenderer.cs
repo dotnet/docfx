@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Collections.Immutable;
     using System.IO;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 

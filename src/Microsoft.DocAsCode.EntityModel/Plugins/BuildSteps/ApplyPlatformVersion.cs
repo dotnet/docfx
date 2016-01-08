@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     using Newtonsoft.Json.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
 

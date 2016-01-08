@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Jint;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
     public class Template

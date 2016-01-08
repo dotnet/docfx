@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.IO;
 
     using Microsoft.DocAsCode;
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Owin.StaticFiles;
     using Owin.FileSystems;

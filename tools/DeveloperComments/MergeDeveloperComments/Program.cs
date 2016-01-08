@@ -9,8 +9,8 @@ namespace Microsoft.DocAsCode.DeveloperComments.MergeDeveloperComments
     using System.Linq;
     using System.Threading;
     using System.Xml;
-    using System.Xml.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
 

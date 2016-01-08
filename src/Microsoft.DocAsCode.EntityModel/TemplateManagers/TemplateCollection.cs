@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
     public class TemplateCollection : Dictionary<string, List<Template>>

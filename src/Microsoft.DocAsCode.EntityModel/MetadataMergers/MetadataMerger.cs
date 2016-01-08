@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.MetadataMergers
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.Plugins;
     using Microsoft.DocAsCode.EntityModel.ViewModels;

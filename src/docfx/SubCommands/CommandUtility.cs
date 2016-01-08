@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
     using CommandLine;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     internal static class CommandUtility

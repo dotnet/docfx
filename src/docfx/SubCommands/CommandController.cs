@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Composition.Hosting;
     using System.Linq;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     internal class CommandController : ISubCommandController

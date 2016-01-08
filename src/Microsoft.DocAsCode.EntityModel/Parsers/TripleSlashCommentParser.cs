@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Xml;
     using System.Xml.XPath;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
     public interface ITripleSlashCommentParserContext

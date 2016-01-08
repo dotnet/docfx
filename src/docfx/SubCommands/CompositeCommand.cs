@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.SubCommands
 {
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json.Linq;

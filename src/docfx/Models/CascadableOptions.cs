@@ -3,9 +3,11 @@
 
 namespace Microsoft.DocAsCode
 {
-    using CommandLine;
-    using EntityModel;
     using System.Collections.Generic;
+
+    using CommandLine;
+
+    using Microsoft.DocAsCode.Common;
 
     public class CascadableOptions
     {

@@ -3,8 +3,9 @@
 
 namespace Microsoft.DocAsCode.SubCommands
 {
-    using Microsoft.DocAsCode.EntityModel;
     using CommandLine;
+
+    using Microsoft.DocAsCode.Common;
 
     internal class CompositeOptions
     {

@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmYamlHeaderBlockRule : IMarkdownRule

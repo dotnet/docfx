@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 

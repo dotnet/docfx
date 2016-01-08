@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Diagnostics;
     using System.Text;
 
+    using Microsoft.DocAsCode.Common;
+
     public class LayoutCheckAndCleanup : IResolverPipeline
     {
         /// <summary>

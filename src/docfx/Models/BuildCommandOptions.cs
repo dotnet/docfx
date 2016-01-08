@@ -6,7 +6,8 @@ namespace Microsoft.DocAsCode
     using System.Collections.Generic;
 
     using CommandLine;
-    using Microsoft.DocAsCode.EntityModel;
+
+    using Microsoft.DocAsCode.Common;
 
     [OptionUsage("build [<config file path>]")]
     internal class BuildCommandOptions : ICanPrintHelpMessage, ILoggable

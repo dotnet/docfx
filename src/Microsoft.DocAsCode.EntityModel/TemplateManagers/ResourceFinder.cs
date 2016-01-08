@@ -8,7 +8,9 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    
+
+    using Microsoft.DocAsCode.Common;
+
     public class ResourceFinder
     {
         private IEnumerable<string> _embeddedResourceNames;

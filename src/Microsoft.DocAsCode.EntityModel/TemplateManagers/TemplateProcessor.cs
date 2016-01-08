@@ -10,10 +10,11 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Text;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.Builders;
+    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
-    using MarkdownLite;
 
     public class TemplateProcessor : IDisposable
     {

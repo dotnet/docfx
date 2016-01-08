@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;

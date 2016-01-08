@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Security.Cryptography;
     using System.Reflection;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
     public abstract class CacheBase

@@ -5,12 +5,12 @@ namespace Microsoft.DocAsCode.SubCommands
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using CommandLine;
-    using Microsoft.DocAsCode.EntityModel;
+
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using System.Linq.Expressions;
-    using System.Linq;
 
     internal abstract class CommandCreator<TOptions, TCommand> : ISubCommandCreator where TOptions : class where TCommand : ISubCommand
     {

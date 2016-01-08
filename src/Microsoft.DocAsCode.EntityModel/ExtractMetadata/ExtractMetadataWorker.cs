@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
+
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ExtractMetadata;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Exceptions;

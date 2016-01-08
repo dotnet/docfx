@@ -10,8 +10,10 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Threading.Tasks;
 
     using Microsoft.DocAsCode;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.Plugins;
+
     using Newtonsoft.Json;
 
     internal sealed class MetadataCommand : ISubCommand

@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Tests
 
     using Xunit;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.SubCommands;
 

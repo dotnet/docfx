@@ -6,7 +6,8 @@ namespace Microsoft.DocAsCode
     using System.Collections.Generic;
 
     using CommandLine;
-    using Microsoft.DocAsCode.EntityModel;
+
+    using Microsoft.DocAsCode.Common;
 
     [OptionUsage("metadata [<docfx.json file path>]")]
     [OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]

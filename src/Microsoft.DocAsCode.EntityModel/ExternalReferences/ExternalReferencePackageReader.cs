@@ -9,7 +9,9 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.IO.Compression;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
+
     using YamlDotNet.Core;
 
     public class ExternalReferencePackageReader : IDisposable

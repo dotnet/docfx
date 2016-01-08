@@ -3,13 +3,15 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Tests
 {
-    using Builders;
-    using EntityModel;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using Xunit;
+
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.EntityModel.Builders;
 
     public class TemplateManagerFixture : IDisposable
     {

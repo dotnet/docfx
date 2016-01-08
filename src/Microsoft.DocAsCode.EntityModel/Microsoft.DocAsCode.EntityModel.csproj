@@ -83,35 +83,6 @@
     <Compile Include="Builders\DocumentBuildParameters.cs" />
     <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Dfm\DfmBlockquoteBlockRule.cs" />
-    <Compile Include="Dfm\DfmBlockquoteBlockToken.cs" />
-    <Compile Include="Dfm\DfmIncludeBlockRule.cs" />
-    <Compile Include="Dfm\DfmIncludeBlockToken.cs" />
-    <Compile Include="Dfm\DfmIncludeInlineToken.cs" />
-    <Compile Include="Dfm\DfmXrefInlineRule.cs" />
-    <Compile Include="Dfm\DfmEmailInlineRule.cs" />
-    <Compile Include="Dfm\DfmIncludeInlineRule.cs" />
-    <Compile Include="Dfm\DfmXrefInlineToken.cs" />
-    <Compile Include="Dfm\DfmYamlHeaderBlockRule.cs" />
-    <Compile Include="Dfm\DfmCodeExtractor.cs" />
-    <Compile Include="Dfm\DfmContextExtensions.cs" />
-    <Compile Include="Dfm\DfmEngineBuilder.cs" />
-    <Compile Include="Dfm\DfmExtractCodeResult.cs" />
-    <Compile Include="Dfm\DfmFencesBlockPathQueryOption.cs" />
-    <Compile Include="Dfm\DfmNoteBlockRule.cs" />
-    <Compile Include="Dfm\DfmNoteBlockToken.cs" />
-    <Compile Include="Dfm\DfmParagraphBlockRule.cs" />
-    <Compile Include="Dfm\DfmRenderer.cs" />
-    <Compile Include="Dfm\DfmTextInlineRule.cs" />
-    <Compile Include="Dfm\DfmEngine.cs" />
-    <Compile Include="Dfm\DfmFencesBlockRule.cs" />
-    <Compile Include="Dfm\DfmFencesBlockToken.cs" />
-    <Compile Include="Dfm\DfmRendererHelper.cs" />
-    <Compile Include="Dfm\DfmSectionBlockToken.cs" />
-    <Compile Include="Dfm\DfmSectionBlockRule.cs" />
-    <Compile Include="Dfm\FileCacheLite.cs" />
-    <Compile Include="Dfm\DocfxFlavoredIncHelper.cs" />
-    <Compile Include="Dfm\DfmYamlHeaderBlockToken.cs" />
     <Compile Include="Exceptions\DocfxException.cs" />
     <Compile Include="Exceptions\PluginDirectoryAlreadyExistsException.cs" />
     <Compile Include="Exceptions\PluginException.cs" />
@@ -123,7 +94,6 @@
     <Compile Include="Incremental\BuildInfo.cs" />
     <Compile Include="Incremental\CacheBase.cs" />
     <Compile Include="Incremental\ProjectLevelCache.cs" />
-    <Compile Include="Loggers\CrossAppDomainListener.cs" />
     <Compile Include="Plugins\DisposableDocumentProcessor.cs" />
     <Compile Include="MetadataMergers\MetadataMergeParameters.cs" />
     <Compile Include="MetadataMergers\MetadataMerger.cs" />
@@ -137,10 +107,8 @@
     <Compile Include="Plugins\BuildSteps\CountWord.cs" />
     <Compile Include="Plugins\BuildSteps\FillReferenceInformation.cs" />
     <Compile Include="Plugins\BuildSteps\MergeManagedReferenceDocument.cs" />
-    <Compile Include="JsonUtility.cs" />
     <Compile Include="TemplateManagers\TemplateTransformedResult.cs" />
     <Compile Include="TreeIterator.cs" />
-    <Compile Include="YamlUtility.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageCollection.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageWriter.cs" />
@@ -151,22 +119,9 @@
     <Compile Include="Incremental\ApplicationLevelCache.cs" />
     <Compile Include="Incremental\IncrementalCheck.cs" />
     <Compile Include="ExtractMetadata\ExtractMetadataInputModel.cs" />
-    <Compile Include="Loggers\ConsoleLogListener.cs" />
-    <Compile Include="Loggers\ILoggerListener.cs" />
-    <Compile Include="Loggers\ILogItem.cs" />
-    <Compile Include="Loggers\Logger.cs" />
-    <Compile Include="Loggers\LoggerFileScope.cs" />
-    <Compile Include="Loggers\LoggerPhaseScope.cs" />
-    <Compile Include="Loggers\LogLevel.cs" />
-    <Compile Include="Loggers\ReplayLogListener.cs" />
-    <Compile Include="Loggers\ReportLogListener.cs" />
-    <Compile Include="MarkdownValidators\MarkdownRewriterBuilder.cs" />
-    <Compile Include="MarkdownValidators\MarkdownTagValidationRule.cs" />
-    <Compile Include="MarkdownValidators\TagRewriteBehavior.cs" />
     <Compile Include="Models\CrefInfo.cs" />
     <Compile Include="Models\ApiReferenceModel.cs" />
     <Compile Include="Models\ReferenceItem.cs" />
-    <Compile Include="Dfm\DocfxFlavoredMarked.cs" />
     <Compile Include="Parsers\YamlHeaderParser.cs" />
     <Compile Include="Parsers\CodeSnippetParser.cs" />
     <Compile Include="Parsers\MatchDetail.cs" />
@@ -242,6 +197,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
+      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
+      <Name>Microsoft.DocAsCode.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
+      <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
+      <Name>Microsoft.DocAsCode.Dfm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj">
       <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Glob</Name>

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
     public class BuildIndex : IResolverPipeline

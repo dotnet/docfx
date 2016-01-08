@@ -8,7 +8,8 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Web;
     using System.Xml;
 
-    using MarkdownLite;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmSectionBlockRule : IMarkdownRule
     {

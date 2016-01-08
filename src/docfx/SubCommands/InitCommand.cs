@@ -5,12 +5,11 @@ namespace Microsoft.DocAsCode.SubCommands
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode;
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Newtonsoft.Json;

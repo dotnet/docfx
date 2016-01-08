@@ -3,13 +3,14 @@
 
 namespace Microsoft.DocAsCode.Tests
 {
-    using Microsoft.DocAsCode.EntityModel;
-    using Newtonsoft.Json.Linq;
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+
+    using Newtonsoft.Json.Linq;
     using Xunit;
+
+    using Microsoft.DocAsCode.Common;
 
     public class JsonConverterTest
     {

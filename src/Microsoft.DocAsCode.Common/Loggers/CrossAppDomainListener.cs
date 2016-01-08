@@ -1,4 +1,4 @@
-﻿namespace Microsoft.DocAsCode.EntityModel.Loggers
+﻿namespace Microsoft.DocAsCode.Common
 {
     using System;
 

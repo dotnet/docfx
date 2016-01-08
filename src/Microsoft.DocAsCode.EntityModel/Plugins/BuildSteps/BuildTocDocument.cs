@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Composition;
     using System.IO;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
