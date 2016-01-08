@@ -261,6 +261,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var pluginBaseFolder = AppDomain.CurrentDomain.BaseDirectory;
             var pluginFolderName = "plugins_" + Path.GetRandomFileName();
             var pluginFilePath = Path.Combine(pluginBaseFolder, pluginFolderName);
+            var defaultPluginFolderPath = Path.Combine(pluginBaseFolder, "plugins");
             if (Directory.Exists(pluginFilePath))
             {
                 throw new PluginDirectoryAlreadyExistsException(pluginFilePath);
@@ -276,7 +277,14 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 else
                 {
-                    DocumentBuilderWrapper.BuildDocument(Config, baseDirectory, outputDirectory, null);
+                    if (Directory.Exists(defaultPluginFolderPath))
+                    {
+                        BuildDocumentWithPlugin(Config, baseDirectory, outputDirectory, pluginBaseFolder, defaultPluginFolderPath);
+                    }
+                    else
+                    {
+                        DocumentBuilderWrapper.BuildDocument(Config, baseDirectory, outputDirectory, null);
+                    }
                 }
             }
             finally
@@ -306,7 +314,6 @@ namespace Microsoft.DocAsCode.SubCommands
             try
             {
                 var pluginConfig = Path.Combine(pluginDirectory, "docfx.plugins.config");
-
                 Logger.LogInfo($"Plug-in directory: {pluginDirectory}, configuration file: {pluginConfig}");
 
                 AppDomainSetup setup = new AppDomainSetup
