@@ -11,9 +11,9 @@ v1.3
     6. Support plugins. You can create your own template with a `plugins` folder, inside which, you create your own build steps. Refer to @Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep for a sample plugin implementation. 
 2. *DFM* syntax improvements
     1. Support note&div syntax
-    1. Support *query* format in *code snippet*
+    2. Support *query* format in *code snippet*
        `[!code-<language>[<name>](<codepath><queryoption><queryoptionvalue> "<title>")]`
-    2. Change *xref* logic:
+    3. Change *xref* logic:
         1. If content after `@` is wrapped by `'` or `"`,  it contains any character including white space
         2. If content after `@` is not wrapped by `'` or `"`, it ends when
             a. line ends
