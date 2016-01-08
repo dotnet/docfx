@@ -1,8 +1,17 @@
 Version Notes (Current Version: v1.3)
 =======================================
-v1.3 (Pre-release)
+v1.3
 -----------
-
+1. Add subcommand `docfx template`. You can now `docfx template list` and `docfx template export -A` to list and export all the embeded templates!
+2. Support plugins. You can create your own template with a `plugins` folder, inside which, you create your own build steps. Refer to @Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep for a sample plugin implementation.
+3. Add a new property `_path` into `_attrs`, it stands for the relative path from `docfx.json` to current file
+4. Add two options to `build` subcommand, `--exportRawModel` and `--exportViewModel`. `--exportRawModel` exports the data model to apply templates, `--exportViewModel` exports the view model after running template's pre-process scripts.
+5. Improve *missing xref* warning message to include containing files.
+6. Fix *xref* DFM syntax to exclude email address. Address such as `docfx@docfx.com` will not be considered as *xref* any more.
+7. Add subcommand `docfx merge`. You can use this subcommand to merge `platform` info inside API yaml.
+8. Add `data-uid` as attribute to generated html from *default* template, so that you can now find `uid` for API much more easily.
+9. Add `--globalMetadata`, `--fileMetadataFile` and `--globalMetadataFile` options to `build` subcommand
+10.
 
 v1.2
 ------------
