@@ -9,6 +9,12 @@ function transform(model, _attrs){
   entity.type = undefined;
   entity.source = undefined;
 
+  // Clean up open publishing internal used properties
+  entity._op_accessToken = undefined;
+  entity._op_clientId = undefined;
+  entity._op_clientSecret = undefined;
+  entity._op_gitContributorInformation = undefined;
+
   // If toc is not defined in model, read it from _attrs
   if (attrs._tocPath && attrs._tocPath.indexOf("~/") == 0){
     attrs._tocPath = attrs._tocPath.substring(2);
