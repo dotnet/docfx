@@ -63,6 +63,11 @@ namespace Microsoft.DocAsCode
                 return 1;
             }
 
+            if (!(command is ILoggable))
+            {
+                replayListener.PrintBuildStatus = false;
+            }
+
             var context = new SubCommandRunningContext();
             try
             {

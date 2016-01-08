@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.EntityModel
         private ImmutableArray<ILoggerListener> _listeners =
             ImmutableArray<ILoggerListener>.Empty;
 
+        public bool PrintBuildStatus { get; set; } = true;
+
         public ReplayLogListener(LogLevel replayLevel = LogLevel.Warning)
         {
             _replayLevel = replayLevel;
@@ -49,7 +51,10 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             var logLevel = _replayList.FirstOrDefault(s => s.Value.Count > 0).Key;
             var buildStatus = GetBuildStatusFromLogLevel(logLevel);
-            WriteHeader(buildStatus);
+            if (PrintBuildStatus)
+            {
+                WriteHeader(buildStatus);
+            }
             foreach (var list in _replayList)
             {
                 foreach (var item in list.Value)
@@ -63,7 +68,10 @@ namespace Microsoft.DocAsCode.EntityModel
                 listener.Flush();
             }
 
-            WriteFooter(buildStatus);
+            if (PrintBuildStatus)
+            {
+                WriteFooter(buildStatus);
+            }
 
             foreach (var level in _replayList.Keys.ToList())
             {

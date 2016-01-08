@@ -116,14 +116,17 @@
     <Compile Include="Models\ICanPrintHelpMessage.cs" />
     <Compile Include="Models\ILoggable.cs" />
     <Compile Include="Models\OptionUsageAttribute.cs" />
+    <Compile Include="Models\TemplateCommandOptions.cs" />
     <Compile Include="SubCommands\MergeCommandCreator.cs" />
     <Compile Include="SubCommands\MergeCommand.cs" />
     <Compile Include="SubCommands\PackCommandCreator.cs" />
     <Compile Include="SubCommands\ExportCommandCreator.cs" />
     <Compile Include="SubCommands\ExportCommand.cs" />
     <Compile Include="SubCommands\PackCommand.cs" />
+    <Compile Include="SubCommands\TemplateCommand.cs" />
     <Compile Include="SubCommands\ServeCommand.cs" />
     <Compile Include="SubCommands\InitCommand.cs" />
+    <Compile Include="SubCommands\TemplateCommandCreator.cs" />
     <Compile Include="SubCommands\ServeCommandCreator.cs" />
     <Compile Include="SubCommands\MetadataCommand.cs" />
     <Compile Include="SubCommands\InitCommandCreator.cs" />
