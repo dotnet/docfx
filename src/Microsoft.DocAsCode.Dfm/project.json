@@ -21,6 +21,15 @@
         "System.Runtime": "",
         "System.Xml": ""
       }
+    },
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Collections": "",
+        "System.Threading.Tasks": "",
+        "System.Globalization": "",
+        "System.Runtime": "",
+        "System.Xml": ""
+      }
     }
   }
 }

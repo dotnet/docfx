@@ -14,6 +14,14 @@
         "System.Globalization": "",
         "System.Runtime": ""
       }
+    },
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Collections": "",
+        "System.Threading.Tasks": "",
+        "System.Globalization": "",
+        "System.Runtime": ""
+      }
     }
   }
 }
