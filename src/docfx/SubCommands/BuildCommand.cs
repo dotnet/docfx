@@ -378,6 +378,7 @@ namespace Microsoft.DocAsCode.SubCommands
                         using (var processor = templateManager.GetTemplateProcessor())
                         {
                             parameters.TemplateCollection = processor.Templates;
+                            processor.ProcessDependencies(parameters.OutputBaseDir);
                             builder.Build(parameters);
                         }
                     }
