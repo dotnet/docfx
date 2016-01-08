@@ -15,6 +15,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
         public FileMetadata FileMetadata { get; set; }
         public TemplateCollection TemplateCollection { get; set; }
+        public bool ExportRawModel { get; set; }
+        public bool ExportViewModel { get; set; }
     }
 
     public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadataItem>>

@@ -22,6 +22,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private const string ManifestFileName = ".manifest";
 
+        private const string RawModelExtension = ".raw.model.json";
+        private const string ViewModelExtension = ".view.model.json";
+
         private static readonly Assembly[] DefaultAssemblies = { typeof(DocumentBuilder).Assembly };
 
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
@@ -101,6 +104,20 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     foreach(var item in innerContexts)
                     {
                         UpdateHref(item.HostService, item.Processor, context);
+                    }
+
+                    if (parameters.ExportRawModel)
+                    {
+                        Logger.LogInfo("Start exporting raw model...");
+                        foreach(var item in context.Manifest)
+                        {
+                            var model = item.Model;
+                            if (model.Content != null)
+                            {
+                                var rawModelPath = Path.Combine(model.BaseDir, Path.ChangeExtension(model.File, RawModelExtension));
+                                JsonUtility.Serialize(rawModelPath, model.Content);
+                            }
+                        }
                     }
 
                     Transform(context, parameters.TemplateCollection);

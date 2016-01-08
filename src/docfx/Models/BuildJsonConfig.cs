@@ -62,5 +62,11 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("port")]
         public string Port { get; set; }
+
+        [JsonProperty("exportRawModel")]
+        public bool? ExportRawModel { get; set; }
+
+        [JsonProperty("exportViewModel")]
+        public bool? ExportViewModel { get; set; }
     }
 }

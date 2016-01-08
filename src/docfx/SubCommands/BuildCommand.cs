@@ -141,6 +141,8 @@ namespace Microsoft.DocAsCode.SubCommands
             if (options.Serve) config.Serve = options.Serve;
             if (options.Port.HasValue) config.Port = options.Port.Value.ToString();
             config.Force |= options.ForceRebuild;
+            config.ExportRawModel |= options.ExportRawModel;
+            config.ExportViewModel |= options.ExportViewModel;
             var fileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath);
             if (fileMetadata != null) config.FileMetadata = fileMetadata;
             var globalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath);
@@ -440,6 +442,8 @@ namespace Microsoft.DocAsCode.SubCommands
                     Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
                     Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
                     Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
+                parameters.ExportViewModel = config.ExportViewModel == true;
+                parameters.ExportRawModel = config.ExportRawModel == true;
                 return parameters;
             }
 

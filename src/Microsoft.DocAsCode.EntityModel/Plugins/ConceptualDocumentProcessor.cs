@@ -64,17 +64,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 throw new NotSupportedException();
             }
 
-            string path = Path.Combine(model.BaseDir, model.File);
-            try
-            {
-                JsonUtility.Serialize(path, model.Content);
-            }
-            catch (PathTooLongException e)
-            {
-                Logger.LogError($"Path \"{path}\": {e.Message}");
-                throw;
-            }
-
             var result = new SaveResult
             {
                 DocumentType = model.DocumentType ?? "Conceptual",

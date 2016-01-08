@@ -103,7 +103,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
             var vm = (PageViewModel)model.Content;
 
-            JsonUtility.Serialize(Path.Combine(model.BaseDir, model.File), vm);
             return new SaveResult
             {
                 DocumentType = "ManagedReference",

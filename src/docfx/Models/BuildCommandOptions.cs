@@ -61,5 +61,11 @@ namespace Microsoft.DocAsCode
 
         [Option("fileMetadataFile", HelpText = "Specify a JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
         public string FileMetadataFilePath { get; set; }
+
+        [Option("exportRawModel", HelpText = "If set to true, data model to run template script will be extracted in .raw.model.json extension")]
+        public bool ExportRawModel { get; set; }
+
+        [Option("exportViewModel", HelpText = "If set to true, data model to apply template will be extracted in .view.model.json extension")]
+        public bool ExportViewModel { get; set; }
     }
 }
