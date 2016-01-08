@@ -1,25 +1,28 @@
 {
   "version": "1.0.0",
-  "dependencies": {
-    "System.Collections.Immutable": "1.1.37"
-  },
   "frameworks": {
     "net45": {
+      "dependencies": {
+        "System.Collections.Immutable": "1.1.37"
+      },
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
         "System": "",
-        "System.Runtime": "",
-        "System.Web": ""
+        "System.Net": "",
+        "System.Runtime": ""
       }
     },
     "dnx451": {
+      "dependencies": {
+        "System.Collections.Immutable": "1.1.37"
+      },
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
         "System": "",
-        "System.Runtime": "",
-        "System.Web": ""
+        "System.Net": "",
+        "System.Runtime": ""
       }
     }
   }

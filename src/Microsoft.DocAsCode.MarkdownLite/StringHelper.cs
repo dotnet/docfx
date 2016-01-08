@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
-    using System.Web;
+    using System.Net;
 
     public static class StringHelper
     {
@@ -20,12 +20,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static string HtmlEncode(string html)
         {
-            return HttpUtility.HtmlEncode(html);
+            return WebUtility.HtmlEncode(html);
         }
 
         public static string HtmlDecode(string html)
         {
-            return HttpUtility.HtmlDecode(html);
+            return WebUtility.HtmlDecode(html);
         }
 
         public static string Escape(string html, bool encode = false)
