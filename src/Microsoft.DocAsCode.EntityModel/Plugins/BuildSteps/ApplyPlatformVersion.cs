@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
     public class ApplyPlatformVersion : BaseDocumentBuildStep
     {
         public override int BuildOrder => 0x10;
@@ -35,6 +34,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 if (page?.Metadata != null &&
                     page.Metadata.TryGetValue("platform", out value))
                 {
+                    page.Metadata.Remove("platform");
                     var list = GetPlatformVersionFromMetadata(value);
                     if (list != null)
                     {

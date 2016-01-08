@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.Utility
             Func<List<TItem>, TResult> merger)
         {
             var enumerators = new EnumeratorInfo<TItem>[sources.Count];
-            var eof = new bool[sources.Count];
             try
             {
                 for (int i = 0; i < sources.Count; i++)
@@ -24,18 +23,11 @@ namespace Microsoft.DocAsCode.Utility
                     enumerators[i] = new EnumeratorInfo<TItem>(sources[i]?.OrderBy(x => x, comparer));
                 }
                 var indexes = new List<int>(sources.Count);
-                while (true)
+                TResult result;
+                while (MoveNext(enumerators, indexes, comparer, merger, out result))
                 {
-                    TResult result;
+                    yield return result;
                     indexes.Clear();
-                    if (MoveNext(enumerators, indexes, comparer, merger, out result))
-                    {
-                        yield return result;
-                    }
-                    else
-                    {
-                        yield break;
-                    }
                 }
             }
             finally

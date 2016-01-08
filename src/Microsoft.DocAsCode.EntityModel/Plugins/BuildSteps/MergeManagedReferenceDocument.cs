@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
     public class MergeManagedReferenceDocument : BaseDocumentBuildStep
     {
         public override int BuildOrder => 0xff;
@@ -100,7 +99,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 MajorItem = majorItem,
                 Children = new SortedSet<string>(majorItem.Children ?? Enumerable.Empty<string>()),
-                PlatformVersion = new SortedSet<string>(majorItem.Platform ?? Enumerable.Empty<string>()),
+                Platform = new SortedSet<string>(majorItem.Platform ?? Enumerable.Empty<string>()),
                 MinorItems = page?.Items.Where(x => x.Uid != majorItem.Uid).ToDictionary(item => item.Uid, item => CreateMergeItemCore(item, null)),
                 References = page?.References.ToDictionary(item => item.Uid),
                 Metadata = page?.Metadata,
@@ -110,7 +109,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         private void MergeCore(MergeItem item, MergeItem otherItem)
         {
             item.Children.UnionWith(otherItem.Children);
-            item.PlatformVersion.UnionWith(otherItem.PlatformVersion);
+            item.Platform.UnionWith(otherItem.Platform);
             MergeMinorItems(item, otherItem);
             MergeReferences(item, otherItem);
         }
@@ -195,9 +194,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 mergeItem.MajorItem.Children = mergeItem.Children.ToList();
             }
-            if (mergeItem.PlatformVersion.Count > 0)
+            if (mergeItem.Platform.Count > 0)
             {
-                mergeItem.MajorItem.Platform = mergeItem.PlatformVersion.ToList();
+                mergeItem.MajorItem.Platform = mergeItem.Platform.ToList();
             }
             vm.Items.Add(mergeItem.MajorItem);
             if (mergeItem.MinorItems != null)
@@ -213,7 +212,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             public ItemViewModel MajorItem { get; set; }
             public SortedSet<string> Children { get; set; }
-            public SortedSet<string> PlatformVersion { get; set; }
+            public SortedSet<string> Platform { get; set; }
             public Dictionary<string, MergeItem> MinorItems { get; set; }
             public Dictionary<string, ReferenceViewModel> References { get; set; }
             public Dictionary<string, object> Metadata { get; set; }

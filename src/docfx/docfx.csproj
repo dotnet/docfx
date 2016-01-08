@@ -111,9 +111,13 @@
   <ItemGroup>
     <Compile Include="CommandModels\OptionParserException.cs" />
     <Compile Include="CommandModels\CompositeOptions.cs" />
+    <Compile Include="Models\MergeCommandOptions.cs" />
+    <Compile Include="Models\MergeJsonConfig.cs" />
     <Compile Include="Models\ICanPrintHelpMessage.cs" />
     <Compile Include="Models\ILoggable.cs" />
     <Compile Include="Models\OptionUsageAttribute.cs" />
+    <Compile Include="SubCommands\MergeCommandCreator.cs" />
+    <Compile Include="SubCommands\MergeCommand.cs" />
     <Compile Include="SubCommands\PackCommandCreator.cs" />
     <Compile Include="SubCommands\ExportCommandCreator.cs" />
     <Compile Include="SubCommands\ExportCommand.cs" />

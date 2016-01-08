@@ -145,46 +145,48 @@ namespace Microsoft.DocAsCode.SubCommands
             if (options.Serve) config.Serve = options.Serve;
             if (options.Port.HasValue) config.Port = options.Port.Value.ToString();
             config.Force |= options.ForceRebuild;
-            var fileMetadata = GetFileMetadataFromOption(options);
+            var fileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath);
             if (fileMetadata != null) config.FileMetadata = fileMetadata;
-            var globalMetadata = GetGlobalMetadataFromOption(options);
+            var globalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath);
             if (globalMetadata != null) config.GlobalMetadata = globalMetadata;
         }
 
-        private static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(BuildCommandOptions options)
+        internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(string fileMetadataFilePath)
         {
-            if (options.FileMetadataFilePath != null)
+            if (fileMetadataFilePath == null)
             {
-                try
+                return null;
+            }
+            try
+            {
+                var fileMetadata = JsonUtility.Deserialize<BuildJsonConfig>(fileMetadataFilePath).FileMetadata;
+                if (fileMetadata == null)
                 {
-                    var fileMetadata = JsonUtility.Deserialize<BuildJsonConfig>(options.FileMetadataFilePath).FileMetadata;
-                    if (fileMetadata == null)
-                    {
-                        Logger.LogWarning($"File from \"--fileMetadataFile {options.FileMetadataFilePath}\" does not contain \"fileMetadata\" definition, ignored.");
-                    }
-                    else
-                    {
-                        Logger.LogInfo($"File metadata from \"--fileMetadataFile {options.FileMetadataFilePath}\" overrides the one defined in config file");
-                    }
+                    Logger.LogWarning($"File from \"--fileMetadataFile {fileMetadataFilePath}\" does not contain \"fileMetadata\" definition, ignored.");
                 }
-                catch (FileNotFoundException)
+                else
                 {
-                    Logger.LogWarning($"Invalid option \"--fileMetadataFile {options.FileMetadataFilePath}\": file does not exist, ignored.");
+                    Logger.LogInfo($"File metadata from \"--fileMetadataFile {fileMetadataFilePath}\" overrides the one defined in config file");
                 }
-                catch (JsonException e)
-                {
-                    Logger.LogWarning($"File from \"--fileMetadataFile {options.FileMetadataFilePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
-                }
+                return fileMetadata;
+            }
+            catch (FileNotFoundException)
+            {
+                Logger.LogWarning($"Invalid option \"--fileMetadataFile {fileMetadataFilePath}\": file does not exist, ignored.");
+            }
+            catch (JsonException e)
+            {
+                Logger.LogWarning($"File from \"--fileMetadataFile {fileMetadataFilePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
             }
             return null;
         }
 
-        private static Dictionary<string, object> GetGlobalMetadataFromOption(BuildCommandOptions options)
+        internal static Dictionary<string, object> GetGlobalMetadataFromOption(string globalMetadataContent, string globalMetadataFilePath)
         {
             Dictionary<string, object> globalMetadata = null;
-            if (options.GlobalMetadata != null)
+            if (globalMetadataContent != null)
             {
-                using (var sr = new StringReader(options.GlobalMetadata))
+                using (var sr = new StringReader(globalMetadataContent))
                 {
                     try
                     {
@@ -196,19 +198,19 @@ namespace Microsoft.DocAsCode.SubCommands
                     }
                     catch (JsonException e)
                     {
-                        Logger.LogWarning($"Metadata from \"--globalMetadata {options.GlobalMetadata}\" is not a valid JSON format global metadata, ignored: {e.Message}");
+                        Logger.LogWarning($"Metadata from \"--globalMetadata {globalMetadataContent}\" is not a valid JSON format global metadata, ignored: {e.Message}");
                     }
                 }
             }
 
-            if (options.GlobalMetadataFilePath != null)
+            if (globalMetadataFilePath != null)
             {
                 try
                 {
-                    var globalMetadataFromFile = JsonUtility.Deserialize<BuildJsonConfig>(options.GlobalMetadataFilePath).GlobalMetadata;
+                    var globalMetadataFromFile = JsonUtility.Deserialize<BuildJsonConfig>(globalMetadataFilePath).GlobalMetadata;
                     if (globalMetadataFromFile == null)
                     {
-                        Logger.LogWarning($" File from \"--globalMetadataFile {options.GlobalMetadataFilePath}\" does not contain \"globalMetadata\" definition.");
+                        Logger.LogWarning($" File from \"--globalMetadataFile {globalMetadataFilePath}\" does not contain \"globalMetadata\" definition.");
                     }
                     else
                     {
@@ -219,7 +221,7 @@ namespace Microsoft.DocAsCode.SubCommands
                             {
                                 if (globalMetadata.ContainsKey(pair.Key))
                                 {
-                                    Logger.LogWarning($"Both --globalMetadata and --globalMetadataFile contain definition for \"{pair.Key}\", the one from \"--globalMetadata\" overrides the one from \"--globalMetadataFile {options.GlobalMetadataFilePath}\".");
+                                    Logger.LogWarning($"Both --globalMetadata and --globalMetadataFile contain definition for \"{pair.Key}\", the one from \"--globalMetadata\" overrides the one from \"--globalMetadataFile {globalMetadataFilePath}\".");
                                 }
                                 else
                                 {
@@ -231,11 +233,11 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 catch (FileNotFoundException)
                 {
-                    Logger.LogWarning($"Invalid option \"--globalMetadataFile {options.GlobalMetadataFilePath}\": file does not exist, ignored.");
+                    Logger.LogWarning($"Invalid option \"--globalMetadataFile {globalMetadataFilePath}\": file does not exist, ignored.");
                 }
                 catch (JsonException e)
                 {
-                    Logger.LogWarning($"File from \"--globalMetadataFile {options.GlobalMetadataFilePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
+                    Logger.LogWarning($"File from \"--globalMetadataFile {globalMetadataFilePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
                 }
             }
 
