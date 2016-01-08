@@ -2,16 +2,33 @@ Version Notes (Current Version: v1.3)
 =======================================
 v1.3
 -----------
-1. Add subcommand `docfx template`. You can now `docfx template list` and `docfx template export -A` to list and export all the embeded templates!
-2. Support plugins. You can create your own template with a `plugins` folder, inside which, you create your own build steps. Refer to @Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep for a sample plugin implementation.
-3. Add a new property `_path` into `_attrs`, it stands for the relative path from `docfx.json` to current file
-4. Add two options to `build` subcommand, `--exportRawModel` and `--exportViewModel`. `--exportRawModel` exports the data model to apply templates, `--exportViewModel` exports the view model after running template's pre-process scripts.
-5. Improve *missing xref* warning message to include containing files.
-6. Fix *xref* DFM syntax to exclude email address. Address such as `docfx@docfx.com` will not be considered as *xref* any more.
-7. Add subcommand `docfx merge`. You can use this subcommand to merge `platform` info inside API yaml.
-8. Add `data-uid` as attribute to generated html from *default* template, so that you can now find `uid` for API much more easily.
-9. Add `--globalMetadata`, `--fileMetadataFile` and `--globalMetadataFile` options to `build` subcommand
-10.
+1. `docfx` improvements
+    1. Add subcommand `docfx template`. You can now `docfx template list` and `docfx template export -A` to list and export all the embeded templates!
+    2. Add subcommand `docfx merge`. You can use this subcommand to merge `platform` from multiple APIs with the same `uid`
+    3. Add two options to `build` subcommand, `--exportRawModel` and `--exportViewModel`. `--exportRawModel` exports the data model to apply templates, `--exportViewModel` exports the view model after running template's pre-process scripts.
+    4. Add `--globalMetadata`, and `--globalMetadataFile` options to `build` subcommand. These options allow `globalMetadata` to be loaded from command line in json format or from a JSON file.
+    5. Add `--fileMetadataFile` option to `build` subcommand. This option allows `fileMeatdata` to be read from an external JSON file.
+    6. Support plugins. You can create your own template with a `plugins` folder, inside which, you create your own build steps. Refer to @Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep for a sample plugin implementation. 
+2. *DFM* syntax improvements
+    1. Support note&div syntax
+    1. Support *query* format in *code snippet*
+       `[!code-<language>[<name>](<codepath><queryoption><queryoptionvalue> "<title>")]`
+    2. Change *xref* logic:
+        1. If content after `@` is wrapped by `'` or `"`,  it contains any character including white space
+        2. If content after `@` is not wrapped by `'` or `"`, it ends when
+            a. line ends
+            b. meets whitespaces
+            c. line ends with `.`, `,`, `;`, `:`, `!`, `?` and `~`
+            d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
+3. Code improvements
+    1. Add @Microsoft.DocAsCode.YamlSerialization
+   This project is based on [YamlDotNet](https://github.com/aaubry/YamlDotNet). It overrides classes like type converters to improve performance and fix bug existed in *YamlDotNet*
+    2. Refactor markdown engine @Microsoft.DocAsCode.MarkdownLite
+    3. Add @Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable`1. It provides a way to operate markdown tokens.
+4. Other improvements
+    1. Add a new property `_path` into `_attrs`, it stands for the relative path from `docfx.json` to current file
+    2. Improve *missing xref* warning message to include containing files.
+    3. Add `data-uid` as attribute to generated html from *default* template, so that you can now find `uid` for API much more easily.
 
 v1.2
 ------------
