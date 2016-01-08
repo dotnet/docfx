@@ -3,11 +3,13 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.Glob;
     using Microsoft.DocAsCode.Utility;
-    using System.IO;
-    using System.Linq;
 
     internal class GlobUtility
     {
@@ -29,7 +31,8 @@ namespace Microsoft.DocAsCode
                 var files = FileGlob.GetFiles(src, item.Files, item.Exclude, options).ToArray();
                 if (files.Length == 0)
                 {
-                    Logger.LogInfo($"No files are found with glob pattern {item.Files.ToDelimitedString() ?? "<none>"}, excluding {item.Exclude.ToDelimitedString() ?? "<none>"}, under directory \"{Path.GetFullPath(src) ?? "<current>"}\"");
+                    var currentSrcFullPath = string.IsNullOrEmpty(src) ? Environment.CurrentDirectory : Path.GetFullPath(src);
+                    Logger.LogInfo($"No files are found with glob pattern {item.Files.ToDelimitedString() ?? "<none>"}, excluding {item.Exclude.ToDelimitedString() ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
                 }
                 expandedFileMapping.Add(
                     new FileMappingItem
