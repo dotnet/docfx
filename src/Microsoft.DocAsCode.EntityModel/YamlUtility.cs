@@ -6,11 +6,13 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.Threading;
 
+    using YamlDotNet.Serialization;
+
     using Microsoft.DocAsCode.YamlSerialization;
 
     public static class YamlUtility
     {
-        private static readonly ThreadLocal<YamlSerializer> serializer = new ThreadLocal<YamlSerializer>(() => new YamlSerializer());
+        private static readonly ThreadLocal<YamlSerializer> serializer = new ThreadLocal<YamlSerializer>(() => new YamlSerializer(SerializationOptions.DisableAliases));
         private static readonly ThreadLocal<YamlDeserializer> deserializer = new ThreadLocal<YamlDeserializer>(() => new YamlDeserializer(ignoreUnmatched: true));
 
         public static void Serialize(TextWriter writer, object graph)
