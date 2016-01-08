@@ -1,8 +1,16 @@
 function transform(model, _attrs){
   var entity = JSON.parse(model);
+  var attrs = JSON.parse(_attrs);
   var transformed = [];
   var level = 1;
   var length = entity.length;
+  var path = attrs._path;
+  var directory = "";
+    var index = path.lastIndexOf('/');
+    if (index > -1){
+      directory = path.substr(0, index + 1); // keep '/'
+    }
+
   for (var i = 0; i<length; i++) {
     transformed.push(transformItem(entity[i], level));
   };
@@ -19,8 +27,7 @@ function transform(model, _attrs){
       if (isAbsolutePath(item.href)){
         item.external_link = item.href;
       }else{
-        if (item.href.indexOf('~/') == 0) item.href = item.href.substring(2);
-        item.relative_path_in_depot = removeExtension(item.href);
+        item.relative_path_in_depot = directory + item.href;
       }
       item.href = undefined;
     }
@@ -38,13 +45,5 @@ function transform(model, _attrs){
 
   function isAbsolutePath(path){
     return /^(\w+:)?\/\//g.test(path);
-  }
-
-  function removeExtension(path){
-    var index = path.lastIndexOf('.');
-    if (index > 0){
-      return path.substring(0, index);
-    }
-    return path;
   }
 }

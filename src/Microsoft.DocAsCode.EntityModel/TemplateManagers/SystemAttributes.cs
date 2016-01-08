@@ -43,6 +43,9 @@ namespace Microsoft.DocAsCode.EntityModel
         [JsonProperty("_rel")]
         public string RelativePathToRoot { get; set; }
 
+        [JsonProperty("_path")]
+        public string PathFromRoot { get; set; }
+
         /// <summary>
         /// ROOT TOC file's relative path to ROOT
         /// </summary>
@@ -62,6 +65,7 @@ namespace Microsoft.DocAsCode.EntityModel
             TocRelativePath = TocPath == null ? null : ((RelativePath)TocPath).MakeRelativeTo((RelativePath)item.ModelFile);
             RootTocRelativePath = RootTocPath == null ? null : ((RelativePath)RootTocPath).MakeRelativeTo((RelativePath)item.ModelFile);
             RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo((RelativePath)item.ModelFile);
+            PathFromRoot = ((RelativePath)item.ModelFile).RemoveWorkingFolder();
         }
 
         private void GetTocInfo(DocumentBuildContext context, ManifestItem item)

@@ -100,12 +100,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     {
                         BuildCore(item.HostService, item.Processor, context);
                     }
-
-                    foreach(var item in innerContexts)
+                    foreach (var item in innerContexts)
                     {
                         UpdateHref(item.HostService, item.Processor, context);
                     }
 
+                    UpdateContext(context);
                     if (parameters.ExportRawModel)
                     {
                         Logger.LogInfo("Start exporting raw model...");
@@ -156,13 +156,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
             var outputDirectory = context.BuildOutputFolder;
 
-            // TODO: move to HandleSaveResult
-            // 1. Update internal xref value to final path
-            // 2. Set external xref
-            TemplateProcessor.UpdateFileMap(context, outputDirectory, templateCollection);
             List<TemplateManifestItem> manifest = new List<TemplateManifestItem>();
-
-            // 3. Process every model and save to output directory
 
             // Model can apply multiple template with different extension, so append the view model extension instead of change extension
             Func<string, string> metadataPathProvider = (s) => { return s + ViewModelExtension; };
@@ -341,6 +335,28 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         }
                     }
                 });
+        }
+
+        private void UpdateContext(DocumentBuildContext context)
+        {
+            //update internal XrefMap
+            if (context.XRefSpecMap != null)
+            {
+                foreach (var pair in context.XRefSpecMap)
+                {
+                    string targetFilePath;
+                    if (context.FileMap.TryGetValue(pair.Value.Href, out targetFilePath))
+                    {
+                        pair.Value.Href = targetFilePath;
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"{pair.Value.Href} is not found in .filemap");
+                    }
+                }
+            }
+
+            context.SetExternalXRefSpec();
         }
 
         private void HandleSaveResult(
