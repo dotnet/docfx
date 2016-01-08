@@ -48,9 +48,20 @@ IF '%BRANCH%'=='master' (
 
 ) ELSE (
     ECHO For branch other than master, use alpha version
-    SET VERSION=!MainVersion!.0-alpha
     FOR /F "tokens=2,3 delims=-" %%i in ('git describe') DO (
-        SET VERSION=!MainVersion!.0-alpha-%%i-%%j
+        SET VERSION=!MainVersion!.0-alpha
+        SET PADDINGZERO=0000
+        SET VERSIONI=%%i
+        SET VERSIONJ=%%j
+        SET TMP=%%i
+        :EXECUTE
+        IF DEFINED TMP (
+        SET PADDINGZERO=!PADDINGZERO:~1!
+        SET TMP=!TMP:~1!
+        GOTO EXECUTE
+        )
+        SET VERSION=!MainVersion!.0-alpha-!PADDINGZERO!!VERSIONI!-!VERSIONJ!
+
         ECHO CURRENT VERSION:!VERSION!
     )
 )
