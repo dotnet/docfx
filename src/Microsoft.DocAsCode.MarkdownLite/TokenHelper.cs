@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public static class TokenHelper
     {
-        internal static ImmutableArray<IMarkdownToken> ParseInlineToken(
+        public static ImmutableArray<IMarkdownToken> ParseInlineToken(
             IMarkdownParser parser,
             IMarkdownRule rule,
             ImmutableArray<IMarkdownToken> blockTokens,
