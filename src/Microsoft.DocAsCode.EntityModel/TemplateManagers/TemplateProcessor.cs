@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // 3. Process every model and save to output directory
             foreach (var item in context.Manifest)
             {
-                var manifestItem = Transform(context, item, Templates, outputDirectory, false, null);
+                var manifestItem = Transform(context, item, Templates, outputDirectory, true, s => s + ".json");
                 manifest.Add(manifestItem);
             }
 

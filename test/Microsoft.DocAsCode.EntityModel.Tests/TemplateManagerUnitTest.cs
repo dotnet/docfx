@@ -168,30 +168,6 @@ test2
         [Trait("Related", "TemplateProcessor")]
         [Trait("Related", "Mustache")]
         [Fact]
-        public void TestMustacheTemplateProcessNoTemplateShouldFail()
-        {
-            var modelFileName = "TestTemplateProcessor_NoTemplate.yml";
-            var modelFile = Path.Combine(_outputFolder, modelFileName);
-            var model = new
-            {
-                model = new List<dynamic>
-               {
-                   new {name = "test1"},
-                   new {name = "test2"},
-               }
-            };
-            var templateName = "NoTemplate";
-            var item = new ManifestItem { ModelFile = modelFileName, OriginalFile = modelFileName, DocumentType = string.Empty };
-            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
-            Assert.True(!File.Exists(modelFile));
-            item = new ManifestItem { ModelFile = modelFileName, OriginalFile = modelFileName, ResourceFile = modelFileName, DocumentType = string.Empty };
-            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
-            Assert.True(File.Exists(modelFile));
-        }
-
-        [Trait("Related", "TemplateProcessor")]
-        [Trait("Related", "Mustache")]
-        [Fact]
         public void TestMustacheTemplateProcessInvalidTemplateShouldFail()
         {
             var templateName = "InvalidTemplate.html";
@@ -398,30 +374,6 @@ partial 2:
 test1
 test2
 ", File.ReadAllText(outputFile));
-        }
-
-        [Trait("Related", "TemplateProcessor")]
-        [Trait("Related", "Liquid")]
-        [Fact]
-        public void TestLiquidTemplateProcessNoTemplateShouldFail()
-        {
-            var modelFileName = "TestLiquidTemplateProcessor_NoTemplate.yml";
-            var modelFile = Path.Combine(_outputFolder, modelFileName);
-            var model = new
-            {
-                model = new List<dynamic>
-               {
-                   new {name = "test1"},
-                   new {name = "test2"},
-               }
-            };
-            var templateName = "NoTemplate.liquid";
-            var item = new ManifestItem { ModelFile = modelFileName, OriginalFile = modelFileName, DocumentType = string.Empty };
-            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
-            Assert.True(!File.Exists(modelFile));
-            item = new ManifestItem { ModelFile = modelFileName, OriginalFile = modelFileName, ResourceFile = modelFileName, DocumentType = string.Empty };
-            ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder);
-            Assert.True(File.Exists(modelFile));
         }
 
         [Trait("Related", "TemplateProcessor")]
