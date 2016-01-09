@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     /// <summary>
     /// A type like <see cref="System.Text.StringBuilder"/> but only do concat.
     /// </summary>
-    public sealed class StringBuffer : ICloneable
+    public sealed class StringBuffer
     {
         private const int MinArrayLength = 8;
         private const int ShrinkArrayLength = 100;
@@ -114,11 +114,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Array.Copy(_buffer, result._buffer, _index);
             result._index = _index;
             return result;
-        }
-
-        object ICloneable.Clone()
-        {
-            return Clone();
         }
 
         public override string ToString()
