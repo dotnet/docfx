@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 if (token == null)
                 {
                     var nextLine = current.Split('\n')[0];
-                    var lineNumber = markdown.Take(markdown.Length - current.Length).Where(c => c == '\n').Count();
+                    var lineNumber = CountNewLine(markdown, markdown.Length - current.Length);
                     throw new InvalidOperationException($"Cannot parse: {nextLine}{Environment.NewLine}{GetMarkdownContext(markdown, lineNumber)}{GetRuleContextMessage()}.");
                 }
                 tokens.Add(token);
@@ -139,23 +139,18 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return sb.ToString();
         }
-    }
 
-#if NetCore
-    internal static class StringExtensions
-    {
-        public static IEnumerable<char> Take(this string str, int count)
+        internal static int CountNewLine(string text, int charCount)
         {
-            int index = 0;
-            foreach (var ch in str)
+            int count = 0;
+            for (int i = 0; i < charCount; i++)
             {
-                if (index++ >= count)
+                if (text[i] == '\n')
                 {
-                    break;
+                    count++;
                 }
-                yield return ch;
             }
+            return count;
         }
     }
-#endif
 }
