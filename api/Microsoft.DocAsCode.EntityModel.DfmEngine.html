@@ -61,8 +61,8 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmEngine.cs/#L14" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_EntityModel_DfmEngine">Class DfmEngine</h1>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmEngine.cs/#L13" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_EntityModel_DfmEngine" data-uid="Microsoft.DocAsCode.EntityModel.DfmEngine">Class DfmEngine</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
@@ -72,22 +72,22 @@
                   <div class="level2"><span class="xref">DfmEngine</span></div>
               </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode.EntityModel</h6>
-              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.EntityModel.dll</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Dfm.dll</h6>
               <h5 id="Microsoft_DocAsCode_EntityModel_DfmEngine_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class DfmEngine : MarkdownEngine, ICloneable</code></pre>
+                <pre><code class="lang-csharp hljs">public class DfmEngine : MarkdownEngine, IMarkdownEngine</code></pre>
               </div>
               <h3 id="constructors">Constructors</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmEngine.cs/#L18">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmEngine.cs/#L15">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_">DfmEngine(IMarkdownContext, IMarkdownRewriter, Object, Options)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_" data-uid="Microsoft.DocAsCode.EntityModel.DfmEngine.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter,System.Object,Microsoft.DocAsCode.MarkdownLite.Options)">DfmEngine(IMarkdownContext, IMarkdownTokenRewriter, Object, Options)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public DfmEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options)</code></pre>
+                <pre><code class="lang-csharp hljs">public DfmEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -105,7 +105,7 @@
                     <td></td>
                   </tr>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter">IMarkdownTokenRewriter</a></td>
                     <td><em>rewriter</em></td>
                     <td></td>
                   </tr>
@@ -121,44 +121,17 @@
                   </tr>
                 </tbody>
               </table>
-              <h3 id="properties">Properties</h3>
-              
-              <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmEngine.cs/#L16">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine_Parents">Parents</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public Stack&lt;string&gt; Parents { get; set; }</code></pre>
-              </div>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">System.Collections.Generic.Stack</span>&lt;<span class="xref">System.String</span>&gt;</td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
               <h3 id="methods">Methods</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmEngine.cs/#L30">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmEngine.cs/#L34">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine_InternalMarkup_System_String_System_Collections_Generic_Stack_System_String__">InternalMarkup(String, Stack&lt;String&gt;)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine_InternalMarkup_System_String_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_" data-uid="Microsoft.DocAsCode.EntityModel.DfmEngine.InternalMarkup(System.String,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)">InternalMarkup(String, IMarkdownContext)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string InternalMarkup(string src, Stack&lt;string&gt; parents)</code></pre>
+                <pre><code class="lang-csharp hljs">public string InternalMarkup(string src, IMarkdownContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -176,7 +149,55 @@
                     <td></td>
                   </tr>
                   <tr>
-                    <td><span class="xref">System.Collections.Generic.Stack</span>&lt;<span class="xref">System.String</span>&gt;</td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td><em>context</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">System.String</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmEngine.cs/#L28">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine_InternalMarkup_System_String_System_Collections_Immutable_ImmutableStack_System_String__" data-uid="Microsoft.DocAsCode.EntityModel.DfmEngine.InternalMarkup(System.String,System.Collections.Immutable.ImmutableStack{System.String})">InternalMarkup(String, ImmutableStack&lt;String&gt;)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public string InternalMarkup(string src, ImmutableStack&lt;string&gt; parents)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">System.String</span></td>
+                    <td><em>src</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Collections.Immutable.ImmutableStack</span>&lt;<span class="xref">System.String</span>&gt;</td>
                     <td><em>parents</em></td>
                     <td></td>
                   </tr>
@@ -199,9 +220,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmEngine.cs/#L22">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmEngine.cs/#L20">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine_Markup_System_String_System_String_">Markup(String, String)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmEngine_Markup_System_String_System_String_" data-uid="Microsoft.DocAsCode.EntityModel.DfmEngine.Markup(System.String,System.String)">Markup(String, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>

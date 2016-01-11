@@ -61,8 +61,8 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L109" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken">Class DfmXrefInlineToken</h1>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmXrefInlineToken.cs/#L8" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken" data-uid="Microsoft.DocAsCode.EntityModel.DfmXrefInlineToken">Class DfmXrefInlineToken</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
@@ -71,7 +71,7 @@
                   <div class="level1"><span class="xref">DfmXrefInlineToken</span></div>
               </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode.EntityModel</h6>
-              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.EntityModel.dll</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Dfm.dll</h6>
               <h5 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_syntax">Syntax</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public class DfmXrefInlineToken : IMarkdownToken</code></pre>
@@ -79,14 +79,14 @@
               <h3 id="constructors">Constructors</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L117">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmXrefInlineToken.cs/#L17">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_System_String_System_String_System_String_">DfmXrefInlineToken(IMarkdownRule, String, String, String)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_String_System_String_" data-uid="Microsoft.DocAsCode.EntityModel.DfmXrefInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,System.String)">DfmXrefInlineToken(IMarkdownRule, IMarkdownContext, String, String, String, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public DfmXrefInlineToken(IMarkdownRule rule, string href, string name, string title)</code></pre>
+                <pre><code class="lang-csharp hljs">public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string name, string title, string rawMarkdown)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -104,6 +104,11 @@
                     <td></td>
                   </tr>
                   <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td><em>context</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
                     <td><span class="xref">System.String</span></td>
                     <td><em>href</em></td>
                     <td></td>
@@ -118,14 +123,45 @@
                     <td><em>title</em></td>
                     <td></td>
                   </tr>
+                  <tr>
+                    <td><span class="xref">System.String</span></td>
+                    <td><em>rawMarkdown</em></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
               <h3 id="properties">Properties</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L112">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmXrefInlineToken.cs/#L11">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Href">Href</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Context" data-uid="Microsoft.DocAsCode.EntityModel.DfmXrefInlineToken.Context">Context</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IMarkdownContext Context { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmXrefInlineToken.cs/#L12">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Href" data-uid="Microsoft.DocAsCode.EntityModel.DfmXrefInlineToken.Href">Href</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -149,9 +185,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L113">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmXrefInlineToken.cs/#L13">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Name">Name</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Name" data-uid="Microsoft.DocAsCode.EntityModel.DfmXrefInlineToken.Name">Name</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -175,9 +211,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L115">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmXrefInlineToken.cs/#L15">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_RawMarkdown">RawMarkdown</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_RawMarkdown" data-uid="Microsoft.DocAsCode.EntityModel.DfmXrefInlineToken.RawMarkdown">RawMarkdown</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -201,9 +237,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L111">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmXrefInlineToken.cs/#L10">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Rule">Rule</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Rule" data-uid="Microsoft.DocAsCode.EntityModel.DfmXrefInlineToken.Rule">Rule</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -227,9 +263,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Dfm/DfmRenderer.cs/#L114">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmXrefInlineToken.cs/#L14">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Title">Title</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_DfmXrefInlineToken_Title" data-uid="Microsoft.DocAsCode.EntityModel.DfmXrefInlineToken.Title">Title</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>

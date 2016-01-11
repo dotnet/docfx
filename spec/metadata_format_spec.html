@@ -58,9 +58,10 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content">
+            <article class="content wrap" id="_content" data-uid="">
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/Documentation/spec/metadata_format_spec.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="doc-as-code-metadata-format-specification">Doc-as-Code: Metadata Format Specification</h1>
+              
 <h2 id="0-introduction">0. Introduction</h2>
 <h3 id="0-1-goals-and-non-goals">0.1 Goals and Non-goals</h3>
 <ol>
@@ -70,13 +71,12 @@
 <li>This document does <strong>NOT</strong> discuss details of metadata format implementation of a specific programming language.</li>
 </ol>
 <h3 id="0-2-terminology">0.2 Terminology</h3>
-<p>The key words <strong>MUST</strong>, <strong>MUST NOT</strong>, <strong>REQUIRED</strong>, <strong>SHALL</strong>, <strong>SHALL NOT</strong>, <strong>SHOULD</strong>, <strong>SHOULD NOT</strong>, <strong>RECOMMENDED</strong>,  <strong>MAY</strong>, and <strong>OPTIONAL</strong> in this document are to be interpreted as described in <a href="https://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>.</p>
+<p>The key words <strong>MUST</strong>, <strong>MUST NOT</strong>, <strong>REQUIRED</strong>, <strong>SHALL</strong>, <strong>SHALL NOT</strong>, <strong>SHOULD</strong>, <strong>SHOULD NOT</strong>, <strong>RECOMMENDED</strong>,  <strong>MAY</strong>, and <strong>OPTIONAL</strong> in this document are to be interpreted as described in [RFC 2119][1].</p>
 <p>Words in <em>italic</em> imply they are terms defined in an earlier section of this document.</p>
 <h2 id="1-items-and-identifiers">1. Items and Identifiers</h2>
 <h3 id="1-1-items">1.1 Items</h3>
 <p>Item is the basic unit of metadata format. From documentation perspective, each item represents a &quot;section&quot; in the reference documentation. This &quot;section&quot; is the minimum unit that you can cross reference to, or customize its layout and content.</p>
-<blockquote>
-<p>When implementing the metadata format for your own language, you can decide which elements are items. For example, usually namespaces, classes, methods are items. But you can also make smaller elements like parameters to be item if you want them to be referencable and customizable.</p>
+<blockquote><p>When implementing the metadata format for your own language, you can decide which elements are items. For example, usually namespaces, classes, methods are items. But you can also make smaller elements like parameters to be item if you want them to be referencable and customizable.</p>
 </blockquote>
 <p>Items can be hierarchical. One item can have other items as children. For example, in C#, namespaces and classes can have classes and/or methods as children.</p>
 <h3 id="1-2-identifiers">1.2 Identifiers</h3>
@@ -90,8 +90,7 @@
 </ol>
 <p>Valid separators are <code>.</code>, <code>:</code>, <code>/</code> and <code>\</code>.</p>
 <p>For example, for a class <code>String</code> under namespace <code>System</code>, its ID is <code>String</code> and UID is <code>System.String</code>.</p>
-<blockquote>
-<p>Given the above definition, an <em>item</em>&#39;s UID <strong>MUST</strong> starts with the UID of its parent (and any of its ancestor) and ends with the ID of itself. This is useful to quickly determine whether an <em>item</em> is under another <em>item</em>.</p>
+<blockquote><p>Given the above definition, an <em>item</em>&#39;s UID <strong>MUST</strong> starts with the UID of its parent (and any of its ancestor) and ends with the ID of itself. This is useful to quickly determine whether an <em>item</em> is under another <em>item</em>.</p>
 </blockquote>
 <h3 id="1-3-alias">1.3 Alias</h3>
 <p><em>Identifier</em> could be very long, which makes it difficult to write by hand in markdown. For example, it&#39;s easy to create a long <em>ID</em> in C# like this:</p>
@@ -103,13 +102,12 @@
 <li>It doesn&#39;t have to be unique.</li>
 <li>One <em>item</em> can have multiple aliases.</li>
 </ol>
-<blockquote>
-<p>It&#39;s not <strong>RECOMMENDED</strong> to create alias that has nothing to do with item&#39;s <em>ID</em>. Usually an <em>item</em>&#39;s alias is part of its <em>ID</em> so it&#39;s easy to recognize and memorize.<br>For example, for the case above, we usually create an alias <code>Format()</code>.</p>
+<blockquote><p>It&#39;s not <strong>RECOMMENDED</strong> to create alias that has nothing to do with item&#39;s <em>ID</em>. Usually an <em>item</em>&#39;s alias is part of its <em>ID</em> so it&#39;s easy to recognize and memorize.<br>For example, for the case above, we usually create an alias <code>Format()</code>.</p>
 </blockquote>
 <p>We can easily get a &quot;global&quot; alias for an <em>item</em> by replacing the <em>ID</em> part of its <em>UID</em> with its alias.</p>
 <h2 id="2-file-structure">2. File Structure</h2>
 <h3 id="2-1-file-format">2.1 File Format</h3>
-<p>You can use any file format that can represent structural data to store metadata. But we recommend to use <a href="http://www.yaml.org/">YAML</a> or <a href="http://www.json.org/">JSON</a>. In this document, we use YAML in examples, but all YAML can be converted to JSON easily.</p>
+<p>You can use any file format that can represent structural data to store metadata. But we recommend to use [YAML][2] or [JSON][3]. In this document, we use YAML in examples, but all YAML can be converted to JSON easily.</p>
 <h3 id="2-2-file-layout">2.2 File Layout</h3>
 <p>A metadata file consists of two parts, an &quot;item&quot; section and a &quot;reference&quot; section. Each section is a list of objects and each object is a key-value pair (hereafter referred to as &quot;property&quot;) list that represents an <em>item</em>.</p>
 <h3 id="2-3-item-section">2.3 Item Section</h3>
@@ -172,8 +170,7 @@
 references:
 ...
 </code></pre>
-<blockquote>
-<p><em>Items</em> <strong>SHOULD</strong> be organized based on how they will be displayed in documentation. For example, if you want all members of a class be displayed in a single page, put all members in a single metadata file.</p>
+<blockquote><p><em>Items</em> <strong>SHOULD</strong> be organized based on how they will be displayed in documentation. For example, if you want all members of a class be displayed in a single page, put all members in a single metadata file.</p>
 </blockquote>
 <h3 id="2-3-item-object">2.3 Item Object</h3>
 <p>In additional to the <em>properties</em> listed in last section, <em>item object</em> also has some <strong>OPTIONAL</strong> <em>properties</em>:</p>
@@ -238,8 +235,7 @@ references:
 <h3 id="2-5-reference-section">2.5 Reference Section</h3>
 <p>Reference section also contains a list of <em>items</em>, these <em>items</em> serve as the references by <em>items</em> in <em>item section</em> and won&#39;t show up in documentation. Also reference <em>item</em> doesn&#39;t need to have full <em>properties</em>, it just contains necessary information needed by its referrer, for example, name or url.</p>
 <p>In metadata file, all <em>items</em> <strong>MUST</strong> be referenced by <em>UID</em>.</p>
-<blockquote>
-<p>It&#39;s <strong>RECOMMENDED</strong> to include all referenced <em>items</em> in reference section. This makes the file self contained and easy to render at runtime.</p>
+<blockquote><p>It&#39;s <strong>RECOMMENDED</strong> to include all referenced <em>items</em> in reference section. This makes the file self contained and easy to render at runtime.</p>
 <p>Many programming languages has the concept of &quot;template instantiation&quot;. For example, in C#, you can create a new type <code>List&lt;int&gt;</code> from <code>List&lt;T&gt;</code> with argument <code>int</code>. You can create a reference for &quot;template instances&quot;. For example, for a class inherited from <code>List&lt;int&gt;</code>:</p>
 </blockquote>
 <pre><code class="lang-yaml">items:
@@ -287,8 +283,7 @@ This is a **string** class.
 <p>If a string starts with <code>@</code>, and followed by a string enclosed by quotes <code>&#39;</code> or double quotes <code>&quot;</code>, it will be treated as an <em>item</em> reference. The string inside <code>&quot;&quot;</code> or <code>&#39;&#39;</code> is the <em>UID</em> of the <em>item</em>. Here is one example:</p>
 <pre><code class="lang-markdown">@&quot;System.String&quot;
 </code></pre>
-<blockquote>
-<p>Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@{int}</code>, we may also want to allow <code>@int</code>.</p>
+<blockquote><p>Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@{int}</code>, we may also want to allow <code>@int</code>.</p>
 </blockquote>
 <p>When rendering reference in markdown, they will be expanded into a link with the <em>item</em>&#39;s name as link title. You can also customize the link title using the standard syntax of markdown:</p>
 <pre><code class="lang-markdown">[Dictionary](@{System.Collections.Generic.Dictionary`2})&lt;[String](@{System.String}), [String](@{System.String})&gt;

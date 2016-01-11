@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Walkthrough Part II: Adding API Documentation to the Website | docfx website</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Walkthrough Part II: Adding API Documentation to the Website | docfx website">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="../">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content">
+        
+        <div class="sidenav">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div class="sidetoc">
+              <iframe id="sidetoc" src="toc.html"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/Documentation/tutorial/walkthrough_create_a_docfx_project_2.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <h1 id="walkthrough-part-ii-adding-api-documentation-to-the-website">Walkthrough Part II: Adding API Documentation to the Website</h1>
+              
+<p>After completing <a href="walkthrough_create_a_docfx_project.html">Walkthrough Part I: Generate a Simple Documentation Website</a>, we build a website from a set of <code>.md</code> files. We call it <strong>Conceptual Documentation</strong>. In this walkthrough, we will learn to build website from .NET source code, which is called <strong>API Documentation</strong>. We will also integrate <strong>Conceptual Documentation</strong> and <strong>API Documentation</strong> into one website, so that we can navigate from <strong>Conceptual</strong> to <strong>API</strong>, or <strong>API</strong> to <strong>Conceptual</strong> seamlessly. Download the files used in this walkthrough <a href="artifacts/walkthrough2.zip">here</a>.</p>
+<p>After completing walkthourgh part I, our <code>D:\docfx_walkthrough</code> folder is in the following structure:</p>
+<pre><code>|- index.md
+|- toc.yml
+|- articles
+|    |- introduction.md
+|    |- details1.md
+|    |- details2.md
+|    |- details3.md
+|    |- toc.yml
+|- images
+     |- introduction_image1.png
+</code></pre><p>And our root toc file <code>D:\docfx_walkthrough\toc.yml</code> is:</p>
+<pre><code class="lang-yml">- name: Home
+  href: index.md
+- name: An introduction
+  href: articles/introduction.md
+- name: Details
+  href: articles/
+</code></pre>
+<h2 id="step1-add-a-c-project">Step1. Add a C# project</h2>
+<ol>
+<li>Create a subfolder <code>src</code> under <code>D:\docfx_walkthrough</code>. Open <em>Visual Studio Community 2015</em> or above and create a <strong>C# Class Library</strong> <code>HelloDocfx</code> under folder <code>src</code>. In the <code>Class1.cs</code>, add some comments and methods to this class, as similar to:</li>
+</ol>
+<pre><code class="lang-csharp">namespace HelloDocfx
+{
+    /// &lt;summary&gt;
+    /// Hello this is **Class1** from *HelloDocfx*
+    /// &lt;/summary&gt;
+    public class Class1
+    {
+        private InnerClass _class;
+        public int Value { get; }
+
+        /// &lt;summary&gt;
+        /// This is a ctor
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;value&quot;&gt;The value of the class&lt;/param&gt;
+        public Class1(int value)
+        {
+            Value = value;
+        }
+
+        public double ConvertToDouble()
+        {
+            return Value;
+        }
+
+        /// &lt;summary&gt;
+        /// A method referencing a inner class
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;name&quot;&gt;The name&lt;/param&gt;
+        /// &lt;param name=&quot;inner&quot;&gt;A inner class with type &lt;seealso cref=&quot;InnerClass&quot;/&gt;&lt;/param&gt;
+        public void SetInnerClass(string name, InnerClass inner)
+        {
+            inner.Name = name;
+            _class = inner;
+        }
+
+        public class InnerClass
+        {
+            public string Name { get; set; }
+        }
+    }
+}
+</code></pre>
+<h2 id="step2-generate-metadata-for-the-c-project">Step2. Generate metadata for the C# project</h2>
+<p>Call <code>docfx metadata</code> under <code>D:\docfx_walkthrough</code>. <code>docfx metadata</code> is a sub-command registered in <code>docfx</code>, it reads configuration in the <code>metadata</code> section from <code>docfx.json</code>. <code>[ &quot;src/**.csproj&quot; ]</code> in <code>metadata/src/files</code> tells <code>docfx</code> to search all the <code>csproj</code> from <code>src</code> subfolder  to generate metadata.</p>
+<pre><code class="lang-json">&quot;metadata&quot;: [
+{
+    &quot;src&quot;: [
+    {
+        &quot;files&quot;: [ &quot;src/**.csproj&quot; ],
+        &quot;exclude&quot;: [ &quot;**/bin/**&quot;, &quot;**/obj/**&quot; ]
+    }
+    ],
+    &quot;dest&quot;: &quot;obj/api&quot;
+}
+]
+</code></pre>
+<p><code>obj/api</code> folder is generated. There are several <code>yml</code> files generated under the folder. It contains the data model extracted from C# source code file. YAML is the metadata format used in <code>docfx</code>. <a href="http://dotnet.github.io/docfx/spec/metadata_format_spec.html">General Metadata Spec</a> defines the general schema and <a href="http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html">.NET Metadata Spec</a> defines the metadata schema for .NET languages that <code>docfx</code> can consume.</p>
+<pre><code>|- HelloDocfx.Class1.InnerClass.yml
+|- HelloDocfx.Class1.yml
+|- HelloDocfx.yml
+|- toc.yml
+</code></pre><h2 id="step3-add-the-api-metadata-file-into-your-website">Step3. Add the API metadata file into your website</h2>
+<p>Update root <code>toc.yml</code> to include API metadata files:</p>
+<pre><code class="lang-yml">- name: Home
+  href: index.md
+- name: An introduction
+  href: articles/introduction.md
+- name: Details
+  href: articles/
+- name: Api Documentation
+  href: obj/api/
+</code></pre>
+<h2 id="step4-build-and-preview-our-website">Step4. Build and preview our website</h2>
+<p>Run command <code>docfx</code>. <code>docfx</code> reads <code>docfx.json</code> and execute subcommands defined in the config file one by one. Our <code>docfx.json</code> defines <code>metadata</code> and <code>build</code>, so by running <code>docfx</code>, we are actually excuting <code>docfx metadata</code> and <code>docfx build</code>, and thus generate the website.</p>
+<p>Run <code>docfx serve _site</code>, and the website is now:
+<img src="images/walkthrough2_step4.png" alt="Step4">.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this walkthrough, we build a website containing both <strong>Conceptual Documentation</strong> and <strong>API Documentation</strong>. And the upcoming series of advanced walkthroughs, we will learn advanced concepts in <code>docfx</code>, such as <em>cross reference</em> between articles, <em>external reference</em> to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.</p>
+<h2 id="read-more">Read more</h2>
+<ul>
+<li><p><a href="walkthrough_create_a_docfx_project.html">Walkthrough Part I: Generate a Simple Documentation Website</a></p>
+</li>
+<li><p><a href="advanced_walkthrough.html">Walkthrough Advanced: Customize Your Website</a></p>
+</li>
+</ul>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+            </nav>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>

@@ -67,26 +67,68 @@
     </div>
   </div>
 </div></p>
-<div class="container content"><p><div id="vp-container">
-  <div id="initial-vps">
-    <div class="row value-props">
-      <div class="col-lg-4 text-center animated fadeInLeft">
-        <strong class="value-prop-heading">API-Documentation</strong>
-        <p>Able to generate API documentation from triple-slash-comments for .NET source code directly!</p>
-      </div><!-- /.col-lg-4 -->
-      <div class="col-lg-4 text-center animated fadeIn">
-        <strong class="value-prop-heading">Markdown-Documentation</strong>
-        <p>Able to generate HTML from markdown files supporting DFM syntax.</p>
-      </div><!-- /.col-lg-4 -->
-      <div class="col-lg-4 text-center animated fadeInRight">
-        <strong class="value-prop-heading">Customize</strong>
-        <p>Able to customize templates and themes easily</p>
-      </div><!-- /.col-lg-4 -->
-    </div><!-- /.row -->
+<div class="container content"><p>  <div id="vp-container">
+    <div id="initial-vps">
+      <div class="row value-props">
+        <div class="col-lg-4 text-center animated fadeInLeft">
+          <strong class="value-prop-heading">API-Documentation</strong>
+          <p>Able to generate API documentation from triple-slash-comments for .NET source code directly!</p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4 text-center animated fadeIn">
+          <strong class="value-prop-heading">Markdown-Documentation</strong>
+          <p>Able to generate HTML from markdown files supporting DFM syntax.</p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4 text-center animated fadeInRight">
+          <strong class="value-prop-heading">Customize</strong>
+          <p>Able to customize templates and themes easily</p>
+        </div><!-- /.col-lg-4 -->
+      </div><!-- /.row -->
+    </div>
   </div>
-</div></p>
-<p><hr></p>
-<div class="row" id="note"><!-- BEGIN INCLUDE: Include content from &quot;../ReleaseNote.md&quot; --><h1 id="version-notes-current-version-v1-2-">Version Notes (Current Version: v1.2)</h1>
+  <hr></p>
+<div class="row" id="note"><!-- BEGIN INCLUDE: Include content from &quot;../ReleaseNote.md&quot; --><h1 id="version-notes-current-version-v1-3-">Version Notes (Current Version: v1.3)</h1>
+<h2 id="v1-3">v1.3</h2>
+<ol>
+<li><code>docfx</code> improvements<ol>
+<li>Add subcommand <code>docfx template</code>. You can now <code>docfx template list</code> and <code>docfx template export -A</code> to list and export all the embeded templates!</li>
+<li>Add subcommand <code>docfx merge</code>. You can use this subcommand to merge <code>platform</code> from multiple APIs with the same <code>uid</code></li>
+<li>Add two options to <code>build</code> subcommand, <code>--exportRawModel</code> and <code>--exportViewModel</code>. <code>--exportRawModel</code> exports the data model to apply templates, <code>--exportViewModel</code> exports the view model after running template&#39;s pre-process scripts.</li>
+<li>Add <code>--globalMetadata</code>, and <code>--globalMetadataFile</code> options to <code>build</code> subcommand. These options allow <code>globalMetadata</code> to be loaded from command line in json format or from a JSON file.</li>
+<li>Add <code>--fileMetadataFile</code> option to <code>build</code> subcommand. This option allows <code>fileMeatdata</code> to be read from an external JSON file.</li>
+<li>Support plugins. You can create your own template with a <code>plugins</code> folder, inside which, you create your own build steps. Refer to <a class="xref" href="api/Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep.html#Microsoft_DocAsCode_EntityModel_Plugins_BaseDocumentBuildStep">BaseDocumentBuildStep</a> for a sample plugin implementation. </li>
+</ol>
+</li>
+<li><em>DFM</em> syntax improvements<ol>
+<li>Support note&amp;div syntax</li>
+<li>Support <em>query</em> format in <em>code snippet</em>
+<code>[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt;&lt;queryoption&gt;&lt;queryoptionvalue&gt; &quot;&lt;title&gt;&quot;)]</code></li>
+<li>Change <em>xref</em> logic:<ol>
+<li>If content after <code>@</code> is wrapped by <code>&#39;</code> or <code>&quot;</code>,  it contains any character including white space</li>
+<li>If content after <code>@</code> is not wrapped by <code>&#39;</code> or <code>&quot;</code>, it ends when:<ol>
+<li>line ends</li>
+<li>meets whitespaces</li>
+<li>line ends with <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
+<li>meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Code improvements<ol>
+<li>Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.html#Microsoft_DocAsCode_YamlSerialization">Microsoft.DocAsCode.YamlSerialization</a>
+This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotNet</a>. It overrides classes like type converters to improve performance and fix bug existed in <em>YamlDotNet</em></li>
+<li>Refactor markdown engine <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.html#Microsoft_DocAsCode_MarkdownLite">Microsoft.DocAsCode.MarkdownLite</a></li>
+<li>Add <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable`1.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewritable_1">IMarkdownRewritable&lt;T&gt;</a>. It provides a way to operate markdown tokens.</li>
+</ol>
+</li>
+<li>Other improvements<ol>
+<li>Add a new property <code>_path</code> into <code>_attrs</code>, it stands for the relative path from <code>docfx.json</code> to current file</li>
+<li>Improve <em>missing xref</em> warning message to include containing files.</li>
+<li>Add <code>data-uid</code> as attribute to generated html from <em>default</em> template, so that you can now find <code>uid</code> for API much more easily.</li>
+</ol>
+</li>
+</ol>
 <h2 id="v1-2">v1.2</h2>
 <ol>
 <li>Support Liquid template, templates ending with <code>.liquid</code> are considered as using liquid templating language. Liquid contains <code>include</code> tag to support partials, we follow the ruby partials naming convention to have <code>_&lt;partialName&gt;.liquid</code> as partial template. A custom tag <code>ref</code>, e.g. <code>{% ref file1 %}</code> is introduced to specify the resource files that current template depends on.</li>
@@ -97,13 +139,13 @@
 <ol>
 <li>Rewrite Glob
  The syntax of glob is:<ol>
-<li><code>**</code> is called globstar, it matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part. </li>
+<li><code>**</code> is called globstar, it matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part.</li>
 <li>If <code>**</code> is right behind <code>/</code>, it is a shortcut for <code>**/*</code>.</li>
 <li><code>*</code> matches any number of characters, but not <code>/</code></li>
 <li><code>?</code> matches 1 characters, but not <code>/</code></li>
 <li><code>{}</code> allows for a comma-separated list of &quot;or&quot; expressions, e.g. <code>{a,b}</code> =&gt; <code>a</code> and <code>b</code></li>
 <li><code>!</code> at the beginning of a pattern will negate the match</li>
-<li><code>[...]</code> matches a range of characters, similar to a RegExp range </li>
+<li><code>[...]</code> matches a range of characters, similar to a RegExp range</li>
 <li><code>/</code> is considered as path separator, while <code>\</code> is considered as escape character</li>
 </ol>
 </li>
@@ -126,7 +168,9 @@
 <li>Support Static Website Templates</li>
 <li>Schema change to docfx.json</li>
 </ol>
-<!--END INCLUDE --></div></div>
+<!--END INCLUDE --></div>
+</div>
+
       
       <footer>
         <div class="grad-bottom"></div>

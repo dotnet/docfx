@@ -60,8 +60,8 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content">
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Plugins/MarkdownReader.cs/#L4" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_EntityModel">Namespace Microsoft.DocAsCode.EntityModel
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownRewriters/AzureBlockTokens/AzureNoteBlockToken.cs/#L4" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_EntityModel" data-uid="Microsoft.DocAsCode.EntityModel">Namespace Microsoft.DocAsCode.EntityModel
               </h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
@@ -78,6 +78,8 @@
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ApplicationLevelCache.html#Microsoft_DocAsCode_EntityModel_ApplicationLevelCache">ApplicationLevelCache</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ArchiveResourceCollection.html#Microsoft_DocAsCode_EntityModel_ArchiveResourceCollection">ArchiveResourceCollection</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.AzureNoteBlockToken.html#Microsoft_DocAsCode_EntityModel_AzureNoteBlockToken">AzureNoteBlockToken</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.BuildIndex.html#Microsoft_DocAsCode_EntityModel_BuildIndex">BuildIndex</a></h4>
                   <section></section>
@@ -99,8 +101,6 @@ the default values for which are 1 and the fileLength.</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.html#Microsoft_DocAsCode_EntityModel_CompositeYamlModelGenerator">CompositeYamlModelGenerator</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ConsoleLogListener.html#Microsoft_DocAsCode_EntityModel_ConsoleLogListener">ConsoleLogListener</a></h4>
-                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.Constants.html#Microsoft_DocAsCode_EntityModel_Constants">Constants</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.CrefInfo.html#Microsoft_DocAsCode_EntityModel_CrefInfo">CrefInfo</a></h4>
@@ -115,9 +115,15 @@ the default values for which are 1 and the fileLength.</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmBlockquoteBlockToken.html#Microsoft_DocAsCode_EntityModel_DfmBlockquoteBlockToken">DfmBlockquoteBlockToken</a></h4>
                   <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmContextExtensions.html#Microsoft_DocAsCode_EntityModel_DfmContextExtensions">DfmContextExtensions</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmEmailInlineRule.html#Microsoft_DocAsCode_EntityModel_DfmEmailInlineRule">DfmEmailInlineRule</a></h4>
+                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmEngine.html#Microsoft_DocAsCode_EntityModel_DfmEngine">DfmEngine</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmEngineBuilder.html#Microsoft_DocAsCode_EntityModel_DfmEngineBuilder">DfmEngineBuilder</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_EntityModel_DfmFencesBlockPathQueryOption">DfmFencesBlockPathQueryOption</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmFencesBlockRule.html#Microsoft_DocAsCode_EntityModel_DfmFencesBlockRule">DfmFencesBlockRule</a></h4>
                   <section></section>
@@ -139,13 +145,9 @@ the default values for which are 1 and the fileLength.</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmRenderer.html#Microsoft_DocAsCode_EntityModel_DfmRenderer">DfmRenderer</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmSectionBeginBlockRule.html#Microsoft_DocAsCode_EntityModel_DfmSectionBeginBlockRule">DfmSectionBeginBlockRule</a></h4>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmSectionBlockRule.html#Microsoft_DocAsCode_EntityModel_DfmSectionBlockRule">DfmSectionBlockRule</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmSectionBeginBlockToken.html#Microsoft_DocAsCode_EntityModel_DfmSectionBeginBlockToken">DfmSectionBeginBlockToken</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmSectionEndBlockRule.html#Microsoft_DocAsCode_EntityModel_DfmSectionEndBlockRule">DfmSectionEndBlockRule</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmSectionEndBlockToken.html#Microsoft_DocAsCode_EntityModel_DfmSectionEndBlockToken">DfmSectionEndBlockToken</a></h4>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmSectionBlockToken.html#Microsoft_DocAsCode_EntityModel_DfmSectionBlockToken">DfmSectionBlockToken</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.DfmTextInlineRule.html#Microsoft_DocAsCode_EntityModel_DfmTextInlineRule">DfmTextInlineRule</a></h4>
                   <section></section>
@@ -175,19 +177,9 @@ the default values for which are 1 and the fileLength.</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.FileResourceCollection.html#Microsoft_DocAsCode_EntityModel_FileResourceCollection">FileResourceCollection</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.JsonUtility.html#Microsoft_DocAsCode_EntityModel_JsonUtility">JsonUtility</a></h4>
-                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.LayoutCheckAndCleanup.html#Microsoft_DocAsCode_EntityModel_LayoutCheckAndCleanup">LayoutCheckAndCleanup</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.LinkItem.html#Microsoft_DocAsCode_EntityModel_LinkItem">LinkItem</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.LinkParser.html#Microsoft_DocAsCode_EntityModel_LinkParser">LinkParser</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.Logger.html#Microsoft_DocAsCode_EntityModel_Logger">Logger</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.LoggerFileScope.html#Microsoft_DocAsCode_EntityModel_LoggerFileScope">LoggerFileScope</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.LoggerPhaseScope.html#Microsoft_DocAsCode_EntityModel_LoggerPhaseScope">LoggerPhaseScope</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.MatchDetail.html#Microsoft_DocAsCode_EntityModel_MatchDetail">MatchDetail</a></h4>
                   <section></section>
@@ -207,22 +199,11 @@ the default values for which are 1 and the fileLength.</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.NormalizeSyntax.html#Microsoft_DocAsCode_EntityModel_NormalizeSyntax">NormalizeSyntax</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ParseResult.html#Microsoft_DocAsCode_EntityModel_ParseResult">ParseResult</a></h4>
-                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ProjectLevelCache.html#Microsoft_DocAsCode_EntityModel_ProjectLevelCache">ProjectLevelCache</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ReferenceItem.html#Microsoft_DocAsCode_EntityModel_ReferenceItem">ReferenceItem</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ReferenceItemVisitor.html#Microsoft_DocAsCode_EntityModel_ReferenceItemVisitor">ReferenceItemVisitor</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ReplayLogListener.html#Microsoft_DocAsCode_EntityModel_ReplayLogListener">ReplayLogListener</a></h4>
-                  <section><p>Replay log on flushing.</p>
-</section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ReportLogListener.html#Microsoft_DocAsCode_EntityModel_ReportLogListener">ReportLogListener</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ReportLogListener.ReportItem.html#Microsoft_DocAsCode_EntityModel_ReportLogListener_ReportItem">ReportLogListener.ReportItem</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ResolveGitPath.html#Microsoft_DocAsCode_EntityModel_ResolveGitPath">ResolveGitPath</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ResolvePath.html#Microsoft_DocAsCode_EntityModel_ResolvePath">ResolvePath</a></h4>
                   <section></section>
@@ -248,11 +229,19 @@ the default values for which are 1 and the fileLength.</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.SyntaxDetail.html#Microsoft_DocAsCode_EntityModel_SyntaxDetail">SyntaxDetail</a></h4>
                   <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.Template.html#Microsoft_DocAsCode_EntityModel_Template">Template</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.TemplateCollection.html#Microsoft_DocAsCode_EntityModel_TemplateCollection">TemplateCollection</a></h4>
+                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.TemplateManager.html#Microsoft_DocAsCode_EntityModel_TemplateManager">TemplateManager</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.TemplateManifestItem.html#Microsoft_DocAsCode_EntityModel_TemplateManifestItem">TemplateManifestItem</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.TemplateProcessor.html#Microsoft_DocAsCode_EntityModel_TemplateProcessor">TemplateProcessor</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.TemplateResourceInfo.html#Microsoft_DocAsCode_EntityModel_TemplateResourceInfo">TemplateResourceInfo</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.TemplateTransformedResult.html#Microsoft_DocAsCode_EntityModel_TemplateTransformedResult">TemplateTransformedResult</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.TreeIterator.html#Microsoft_DocAsCode_EntityModel_TreeIterator">TreeIterator</a></h4>
                   <section></section>
@@ -283,15 +272,9 @@ YAML HEADER Syntax</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.YamlModelGenerator.html#Microsoft_DocAsCode_EntityModel_YamlModelGenerator">YamlModelGenerator</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.YamlUtility.html#Microsoft_DocAsCode_EntityModel_YamlUtility">YamlUtility</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.YamlViewModelExtension.html#Microsoft_DocAsCode_EntityModel_YamlViewModelExtension">YamlViewModelExtension</a></h4>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.YamlViewModelExtensions.html#Microsoft_DocAsCode_EntityModel_YamlViewModelExtensions">YamlViewModelExtensions</a></h4>
                   <section></section>
                 <h3 id="interfaces">Interfaces</h3>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ILoggerListener.html#Microsoft_DocAsCode_EntityModel_ILoggerListener">ILoggerListener</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ILogItem.html#Microsoft_DocAsCode_EntityModel_ILogItem">ILogItem</a></h4>
-                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.IResolverPipeline.html#Microsoft_DocAsCode_EntityModel_IResolverPipeline">IResolverPipeline</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.html#Microsoft_DocAsCode_EntityModel_ITripleSlashCommentParserContext">ITripleSlashCommentParserContext</a></h4>
@@ -300,15 +283,9 @@ YAML HEADER Syntax</p>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.LayoutItem.html#Microsoft_DocAsCode_EntityModel_LayoutItem">LayoutItem</a></h4>
                   <section><p>Defines the layout for an API page</p>
 </section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.LogLevel.html#Microsoft_DocAsCode_EntityModel_LogLevel">LogLevel</a></h4>
-                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.MemberType.html#Microsoft_DocAsCode_EntityModel_MemberType">MemberType</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.NameOptions.html#Microsoft_DocAsCode_EntityModel_NameOptions">NameOptions</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ReportLogListener.MessageSeverity.html#Microsoft_DocAsCode_EntityModel_ReportLogListener_MessageSeverity">ReportLogListener.MessageSeverity</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ResultLevel.html#Microsoft_DocAsCode_EntityModel_ResultLevel">ResultLevel</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.SyntaxLanguage.html#Microsoft_DocAsCode_EntityModel_SyntaxLanguage">SyntaxLanguage</a></h4>
                   <section></section>

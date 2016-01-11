@@ -62,7 +62,7 @@
               
               
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownLinkBaseInlineRule.cs/#L6" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule">Class MarkdownLinkBaseInlineRule</h1>
+              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule">Class MarkdownLinkBaseInlineRule</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
@@ -81,7 +81,7 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownLinkBaseInlineRule.cs/#L8">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_Name">Name</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_Name" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.Name">Name</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -108,12 +108,12 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownLinkBaseInlineRule.cs/#L12">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_GenerateToken_System_String_System_String_System_String_System_Boolean_">GenerateToken(String, String, String, Boolean)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_GenerateToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String_System_String_System_String_System_Boolean_System_String_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String,System.String,System.String,System.Boolean,System.String)">GenerateToken(IMarkdownParser, String, String, String, Boolean, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">protected virtual IMarkdownToken GenerateToken(string href, string title, string text, bool isImage)</code></pre>
+                <pre><code class="lang-csharp hljs">protected virtual IMarkdownToken GenerateToken(IMarkdownParser engine, string href, string title, string text, bool isImage, string rawMarkdown)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -125,6 +125,11 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParser">IMarkdownParser</a></td>
+                    <td><em>engine</em></td>
+                    <td></td>
+                  </tr>
                   <tr>
                     <td><span class="xref">System.String</span></td>
                     <td><em>href</em></td>
@@ -143,6 +148,11 @@
                   <tr>
                     <td><span class="xref">System.Boolean</span></td>
                     <td><em>isImage</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.String</span></td>
+                    <td><em>rawMarkdown</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -166,12 +176,12 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownLinkBaseInlineRule.cs/#L10">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_System_String__">TryMatch(MarkdownEngine, ref String)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String__" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String@)">TryMatch(IMarkdownParser, ref String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public abstract IMarkdownToken TryMatch(MarkdownEngine engine, ref string source)</code></pre>
+                <pre><code class="lang-csharp hljs">public abstract IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -184,7 +194,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.html#Microsoft_DocAsCode_MarkdownLite_MarkdownEngine">MarkdownEngine</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParser">IMarkdownParser</a></td>
                     <td><em>engine</em></td>
                     <td></td>
                   </tr>

@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Doc-as-code: docfx.exe User Manual | docfx website</title>
+    <title>docfx.exe User Manual | docfx website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Doc-as-code: docfx.exe User Manual | docfx website">
+    <meta name="title" content="docfx.exe User Manual | docfx website">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -58,13 +58,14 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content">
+            <article class="content wrap" id="_content" data-uid="user_manual">
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/Documentation/tutorial/docfx.exe_user_manual.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="doc-as-code-docfx-exe-user-manual">Doc-as-code: <code>docfx.exe</code> User Manual</h1>
+              
 <h2 id="0-introduction">0. Introduction</h2>
 <p><code>docfx.exe</code> is used to generate documentation for programs. It has the ability to:</p>
 <ol>
-<li><p>Extract language metadata for programing languages as defined in <a href="../spec/metadata_format_spec.html">Metadata Format Specification</a>. Currently language <code>VB</code> and <code>CSharp</code> are supported. The language metadata will be saved with <code>YAML</code> format as described in <a href="http://yaml.org/">YAML 1.2</a>.</p>
+<li><p>Extract language metadata for programing languages as defined in <a href="../spec/metadata_format_spec.html">Metadata Format Specification</a>. Currently language <code>VB</code> and <code>CSharp</code> are supported. The language metadata will be saved with <code>YAML</code> format as described in [YAML 1.2][1].</p>
 </li>
 <li><p>Look for available conceptual files as provided and link it with existing programs with syntax described in <a href="../spec/metadata_format_spec.html">Section 3. Work with Metadata in Markdown</a>. Supported conceptual files are <em>plain text</em> files, <em>html</em> files, and <em>markdown</em> files.</p>
 </li>
@@ -268,8 +269,7 @@
   ... 
 }
 </code></pre>
-<blockquote>
-<p>The template path could either be a zip file called <code>&lt;template&gt;.zip</code> or a folder called <code>&lt;template&gt;</code>.</p>
+<blockquote><p>The template path could either be a zip file called <code>&lt;template&gt;.zip</code> or a folder called <code>&lt;template&gt;</code>.</p>
 </blockquote>
 <p>To custom theme, one way is to specify theme name with <code>--theme</code> command option, multiple themes must be seperated by <code>,</code> with no spaces. The other way is to set key-value mapping in <code>docfx.json</code> as similar to defining template. Also, both <code>.zip</code> file and folder are supported.</p>
 <p>Please refer to <a href="howto_create_custom_template.html">How to Create Custom Templates</a> to create custom templates.</p>

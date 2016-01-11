@@ -58,9 +58,10 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content">
+            <article class="content wrap" id="_content" data-uid="">
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/Documentation/tutorial/docfx_getting_started.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="getting-started-with-docfx-">Getting Started with <code>docfx</code></h1>
+              
 <h2 id="1-getting-started">1. Getting Started</h2>
 <p><code>docfx</code> is an API documentation generator for .NET, currently support C# and VB, as similar to JSDoc or Sphinx. It has the ability to extract triple slash comments out from your source code. What&#39;s more, it has syntax to link additional files to API to add additional remarks. <code>docfx</code> will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. <code>docfx</code> provides the flexibility for you to customize the website through templates. We currently have several embedded templates, including websites containing pure static html pages and also website managed by AngularJS. Of cause, if you are interested in creating your own website with your own styles, you can follow <a href="howto_create_custom_template.html">how to create custom template</a> to create custom templates.</p>
 <ul>
@@ -84,14 +85,13 @@
 <p><strong>Step1.</strong> Open Visual Studio and create a .csproj as your documentation project. You can use the <strong>ASP.NET website project template</strong> as it has built-in <em>PREVIEW</em> feature which we could leverage to preview the generated website easily.</p>
 <p><strong>Step2.</strong> Install Nuget Package <code>docfx.msbuild</code> within <em>Package Manager Console</em>:</p>
 <pre><code>Install-Package docfx.msbuild
-</code></pre><p><strong>Step3.</strong> You will notice that <em>docfx.json</em> and <em>toc.yml</em> are automatically added to your project. Modify <em>docfx.json</em> to include projects and conceptual files that you want to generate documentations. For detailed syntax about <em>docfx.json</em>, please refer to <a href="docfx.exe_user_manual.html">docfx.exe User Mannual</a>.</p>
+</code></pre><p><strong>Step3.</strong> You will notice that <em>docfx.json</em> and <em>toc.yml</em> are automatically added to your project. Modify <em>docfx.json</em> to include projects and conceptual files that you want to generate documentations. For detailed syntax about <em>docfx.json</em>, please refer to <a class="xref" href="docfx.exe_user_manual.html#user_manual">docfx.exe User Manual</a>.</p>
 <p><strong>Step4.</strong> Right click on the website project, and click View =&gt; <strong>View in browser</strong>, navigate to <code>/_site/tutorial/docfx_getting_started.html</code> sub url, and start navigating through web pages!</p>
 <h3 id="3-2-build-from-source-code">3.2 Build from source code</h3>
 <p><strong>Step1.</strong> <code>git clone</code> to get the latest code.</p>
 <p><strong>Step2.</strong> Run <code>build.cmd</code> under root folder</p>
 <p><strong>Step3.</strong> Add <code>artifacts</code> folder to nuget source by in IDE:</p>
-<blockquote>
-<p>Tools &gt; Nuget Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
+<blockquote><p>Tools &gt; Nuget Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
 </blockquote>
 <p><strong>Step4.</strong> Follow <strong>Step1</strong>~<strong>Step4</strong> in above <strong>Quick Start</strong> section to generate your documentation!</p>
 <h2 id="4-use-docfx-under-dnx">4. Use <code>docfx</code> under DNX</h2>
@@ -101,8 +101,7 @@
 <li><code>SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/</code> as we depends on the release version of aspnet 1.0.0-rc1.</li>
 <li><code>dnvm upgrade</code> to get the latest dnvm.</li>
 <li><p>Add feed https://www.myget.org/F/aspnetrelease/api/v2/ to Nuget.config</p>
-<blockquote>
-<p>For Windows, the nuget config file is  <strong>%AppData%\NuGet\NuGet.config</strong>.</p>
+<blockquote><p>For Windows, the nuget config file is  <strong>%AppData%\NuGet\NuGet.config</strong>.</p>
 <p>For Linux/OSX, the nuget config file is <strong>~/.config/NuGet/NuGet.config</strong>.</p>
 </blockquote>
 <p>Sample nuget.config</p>
@@ -132,20 +131,13 @@
 <li><code>toc.yml</code> under root folder. It will be rendered as the navbar of the website.</li>
 <li><code>docfx.json</code> under root folder. It is the configuration file that <code>docfx</code> depends on.</li>
 </ol>
-<blockquote>
-<p>Tips<br>  It is a good practice to seperate files with different type into different folders.</p>
+<blockquote><p>Tips<br>  It is a good practice to seperate files with different type into different folders.</p>
 </blockquote>
 <h2 id="6-q-a">6. Q&amp;A</h2>
 <ol>
 <li>Q: How to quickly reference APIs from other APIs or conceptual files?<br>A: Use <code>@uid</code> syntax.</li>
-<li><p>Q: What is <code>uid</code> and where to find <code>uid</code>?  </p>
-<p>A: Refer to <code>Cross Reference</code> section in <a href="../spec/docfx_flavored_markdown.html">DFM</a>.  </p>
-<p>For a .NET project, <code>Properties</code>-&gt;<code>Build</code>-&gt;check <code>XML documentation file</code>, <code>uid</code> is the same as value of <code>//member/@name</code> in the <code>XML documentation file</code>.</p>
-<blockquote>
-<p><strong>NOTE</strong> We are adding <code>uid</code> info to the generated website so that user can find <code>uid</code> much more easily.</p>
-</blockquote>
-<p><img src="images/uid.png" alt="uid sample"></p>
-</li>
+<li>Q: What is <code>uid</code> and where to find <code>uid</code>?<br>A: Refer to <code>Cross Reference</code> section in <a href="../spec/docfx_flavored_markdown.html">DFM</a>.  </li>
+<li>Q: Where to find <code>uid</code>?<br>A: In the generated website, F12 to view source, <code>uid</code> is the value from <code>data-uid</code> attribute.</li>
 </ol>
 
             </article>

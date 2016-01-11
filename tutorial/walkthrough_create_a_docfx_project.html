@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Walkthrough Part I: Generate a Simple Documentation Website | docfx website</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Walkthrough Part I: Generate a Simple Documentation Website | docfx website">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="../">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content">
+        
+        <div class="sidenav">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div class="sidetoc">
+              <iframe id="sidetoc" src="toc.html"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/Documentation/tutorial/walkthrough_create_a_docfx_project.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <h1 id="walkthrough-part-i-generate-a-simple-documentation-website">Walkthrough Part I: Generate a Simple Documentation Website</h1>
+              
+<p>By completing this walkthrough, you&#39;ll become familiar with the workflow of <code>docfx</code> and the general principle of organizing documents inside <code>docfx</code>. You will finish this walkthrough with a static website that can be published to any host service. Download the files used in this walkthrough <a href="artifacts/walkthrough1.zip">here</a>.</p>
+<h2 id="step1-setup-docfx">Step1. Setup docfx</h2>
+<p>Download <em>docfx</em> from http://dotnet.github.io/docfx/. <a href="http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-exe-directly">Getting Started with docfx</a> describes 3 ways to install <em>docfx</em>. This walkthrough uses the first one: use <em>docfx.exe</em> directly.</p>
+<ol>
+<li>Download <em>docfx.zip</em> and unzip it to <code>D:\docfx\</code></li>
+<li>Add <code>D:\docfx\</code> to <code>PATH</code> so that command <code>docfx</code> and be directly called from everywhere for convenience. E.g. for Windows, <code>setx PATH &quot;%PATH%;D:\docfx\&quot;</code></li>
+</ol>
+<h2 id="step2-init-a-docfx-project">Step2. Init a docfx project</h2>
+<ol>
+<li>Create a new folder <code>D:\docfx_walkthrough</code></li>
+<li>Start Command Line under <code>D:\docfx_walkthrough</code></li>
+<li>Call <code>docfx init -q</code>. This command generates a <code>docfx.json</code> file under the same folder. <code>docfx.json</code> is the configuration file <code>docfx</code> uses to generate documentation. <code>-q</code> option means generating <code>docfx.json</code> quitely using default value, you can also try <code>docfx init</code> and follow the instructions to provide your own settings.</li>
+</ol>
+<h2 id="step3-create-the-homepage-for-our-website">Step3. Create the homepage for our website</h2>
+<p>Create a file named <code>index.md</code> and add some content to it. <code>index.md</code> will be the homepage for our website. <code>.md</code> files are written in <em>markdown</em> syntax. <a href="http://daringfireball.net/projects/markdown/">Markdown</a> is a lightweight markup language, and is the syntax <code>docfx</code> supported for writing documentations.</p>
+<pre><code class="lang-md">Welcome to the world of docfx!
+=============================
+
+Hello *everyone*.
+</code></pre>
+<h2 id="step4-build-our-website">Step4. Build our website</h2>
+<p>Run command <code>docfx build</code>. Note that a new subfolder <code>_site</code> is generated under the same folder. This is where the static website is generated.</p>
+<h2 id="step5-preview-our-website">Step5. Preview our website</h2>
+<p>The generated static website can be published to github pages, azure websites, or your own hosting service without any further changes. You can also run command <code>docfx serve _site</code> to preview the website locally.</p>
+<p>If port <code>8080</code> is not in use, <code>docfx</code> will host <code>_site</code> under <code>http://localhost:8080</code>. If <code>8080</code> is in use, you can use <code>docfx serve _site -p &lt;port&gt;</code> to change the port to be used by <code>docfx</code>.</p>
+<p>Congrats! You can now see a simple website similar to:
+<img src="images/walkthrough_simple_homepage.png" alt="Homepage"></p>
+<hr>
+<h2 id="step6-add-more-articles-to-the-website">Step6. Add more articles to the website</h2>
+<ol>
+<li>Create subfolder <code>articles</code> and <code>images</code> under <code>D:\docfx_walkthrough</code></li>
+<li>Place a <code>.md</code> file to <code>articles</code>, e.g. <code>introduction.md</code>. If the file references to any resources, put the resources into <code>images</code> folder.</li>
+<li><p>In order to navigate to this article, we create a file named <code>toc.yml</code> under <code>D:\docfx_walkthrough</code>. This file tells <code>docfx</code> the navigation title for the article, and where is the article. The content of <code>toc.yml</code> is as below:</p>
+<pre><code class="lang-yml"> - name: Home
+   href: index.md
+ - name: An introduction
+   href: articles/introduction.md
+</code></pre>
+<p> So now our folder layout is:</p>
+<pre><code> |- index.md
+ |- toc.yml
+ |- articles
+ |    |- introduction.md
+ |- images
+     |- introduction_image1.png
+</code></pre></li>
+<li>Run <strong>Step4</strong> and <strong>Step5</strong> again, and the website is now:
+<img src="images/walkthrough_step6.png" alt="Step6">.</li>
+</ol>
+<p>Noticed a navigation bar is shown at the top of the website, the title for the navigation bar is what you set in <code>name</code> in <code>toc.yml</code></p>
+<h2 id="step7-add-a-set-of-articles-to-the-website">Step7. Add a set of articles to the website</h2>
+<ol>
+<li>Place more <code>.md</code> files to <code>articles</code>, e.g. <code>details1.md</code>, <code>details2.md</code>, <code>details3.md</code>. If the file references to any resources, put the resources into <code>images</code> folder.</li>
+<li><p>In order to organize these articles, we create a file named <code>toc.yml</code> under <code>articles</code> subfolder. The content of <code>toc.yml</code> is as below:</p>
+<pre><code class="lang-yml"> - name: Details 1
+   href: details1.md
+ - name: Details 2
+   href: details2.md
+ - name: Details 3
+   href: details3.md
+</code></pre>
+</li>
+<li><p>In order to navigate to the set of articles, we update <code>toc.yml</code> under <code>D:\docfx_walkthrough</code> to as below:</p>
+<pre><code class="lang-yml"> - name: Home
+   href: index.md
+ - name: An introduction
+   href: articles/introduction.md
+ - name: Details
+   href: articles/
+</code></pre>
+<p> Note that a <code>/</code> must be appended to the folder name so that <code>docfx</code> knows it should contain a set of articles instead of one article.</p>
+<p> So now our folder layout is:</p>
+<pre><code> |- index.md
+ |- toc.yml
+ |- articles
+ |    |- introduction.md
+ |    |- details1.md
+ |    |- details2.md
+ |    |- details3.md
+ |    |- toc.yml
+ |- images
+     |- introduction_image1.png
+</code></pre></li>
+<li>Run <strong>Step4</strong> and <strong>Step5</strong> again, and the website is now:
+<img src="images/walkthrough_step7.png" alt="Step7">.</li>
+</ol>
+<p>Noticed a new navigation bar named <strong>Details</strong> is shown at the top of the website, and a sidebar is shown on the left side, the title inside the sidebar is exactly what we set in the <code>toc.yml</code> inside <code>articles</code> subfolder.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this walkthrough, we build a website from a set of <code>.md</code> files. We call these <code>.md</code> files <strong>Conceptual Documentation</strong>. In walkthrough part 2, we will learn to add <strong>API Documentation</strong> to our website. The <strong>API Documentation</strong> is extracted directly from .NET source code. And in series of advanced walkthroughs, we will learn advanced concepts in <code>docfx</code>, such as <em>cross reference</em> between articles, <em>external reference</em> to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.</p>
+<h2 id="read-more">Read more</h2>
+<ul>
+<li><p><a href="walkthrough_create_a_docfx_project_2.html">Walkthrough Part II: Adding API Documentation to the Website</a></p>
+</li>
+<li><p><a href="advanced_walkthrough.html">Walkthrough Advanced: Customize Your Website</a></p>
+</li>
+</ul>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+            </nav>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>

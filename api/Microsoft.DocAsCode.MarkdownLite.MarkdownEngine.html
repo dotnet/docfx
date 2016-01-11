@@ -61,8 +61,8 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L12" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine">Class MarkdownEngine</h1>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L8" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine">Class MarkdownEngine</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
@@ -74,19 +74,19 @@
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.MarkdownLite.dll</h6>
               <h5 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class MarkdownEngine : ICloneable</code></pre>
+                <pre><code class="lang-csharp hljs">public class MarkdownEngine : IMarkdownEngine</code></pre>
               </div>
               <h3 id="constructors">Constructors</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L23">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L15">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_">MarkdownEngine(IMarkdownContext, IMarkdownRewriter, Object, Options)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter,System.Object,Microsoft.DocAsCode.MarkdownLite.Options)">MarkdownEngine(IMarkdownContext, IMarkdownTokenRewriter, Object, Options)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public MarkdownEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options)</code></pre>
+                <pre><code class="lang-csharp hljs">public MarkdownEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -104,7 +104,7 @@
                     <td></td>
                   </tr>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter">IMarkdownTokenRewriter</a></td>
                     <td><em>rewriter</em></td>
                     <td></td>
                   </tr>
@@ -122,14 +122,14 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L28">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L20">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_MarkdownLite_LinkObj__">MarkdownEngine(IMarkdownContext, IMarkdownRewriter, Object, Options, Dictionary&lt;String, LinkObj&gt;)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_MarkdownLite_LinkObj__" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter,System.Object,Microsoft.DocAsCode.MarkdownLite.Options,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.MarkdownLite.LinkObj})">MarkdownEngine(IMarkdownContext, IMarkdownTokenRewriter, Object, Options, Dictionary&lt;String, LinkObj&gt;)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">protected MarkdownEngine(IMarkdownContext context, IMarkdownRewriter rewriter, object renderer, Options options, Dictionary&lt;string, LinkObj&gt; links)</code></pre>
+                <pre><code class="lang-csharp hljs">protected MarkdownEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options, Dictionary&lt;string, LinkObj&gt; links)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -147,7 +147,7 @@
                     <td></td>
                   </tr>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter">IMarkdownTokenRewriter</a></td>
                     <td><em>rewriter</em></td>
                     <td></td>
                   </tr>
@@ -170,9 +170,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L18">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L10">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_">MarkdownEngine(IMarkdownContext, Object, Options)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_Object_Microsoft_DocAsCode_MarkdownLite_Options_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.Object,Microsoft.DocAsCode.MarkdownLite.Options)">MarkdownEngine(IMarkdownContext, Object, Options)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -209,9 +209,9 @@
               <h3 id="properties">Properties</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L41">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L33">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Context">Context</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Context" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Context">Context</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -235,9 +235,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L45">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L37">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Links">Links</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Links" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Links">Links</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -261,9 +261,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L39">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L31">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Options">Options</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Options" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Options">Options</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -287,14 +287,66 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L37">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L76">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Renderer">Renderer</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Parser" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Parser">Parser</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public object Renderer { get; }</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual IMarkdownParser Parser { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParser">IMarkdownParser</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L82">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Renderer" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Renderer">Renderer</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public virtual IMarkdownRenderer Renderer { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L29">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_RendererImpl" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.RendererImpl">RendererImpl</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public object RendererImpl { get; }</code></pre>
               </div>
               <h5 class="returns">Returns</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -313,14 +365,14 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L43">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L79">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Rewriter">Rewriter</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_RewriteEngine" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.RewriteEngine">RewriteEngine</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public IMarkdownRewriter Rewriter { get; }</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual IMarkdownRewriteEngine RewriteEngine { get; }</code></pre>
               </div>
               <h5 class="returns">Returns</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -332,7 +384,33 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriter">IMarkdownRewriter</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriteEngine">IMarkdownRewriteEngine</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L35">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Rewriter" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Rewriter">Rewriter</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IMarkdownTokenRewriter Rewriter { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter">IMarkdownTokenRewriter</a></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -340,40 +418,14 @@
               <h3 id="methods">Methods</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L236">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L48">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Clone">Clone()</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Mark_System_String_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Mark(System.String,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)">Mark(String, IMarkdownContext)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual object Clone()</code></pre>
-              </div>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">System.Object</span></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L124">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Mark_System_String_">Mark(String)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public StringBuffer Mark(string markdown)</code></pre>
+                <pre><code class="lang-csharp hljs">public StringBuffer Mark(string markdown, IMarkdownContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -388,6 +440,11 @@
                   <tr>
                     <td><span class="xref">System.String</span></td>
                     <td><em>markdown</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td><em>context</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -409,9 +466,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L134">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L66">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Markup_System_String_">Markup(String)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Markup_System_String_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Markup(System.String)">Markup(String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -452,9 +509,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L115">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L39">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Normalize_System_String_">Normalize(String)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Normalize_System_String_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Normalize(System.String)">Normalize(String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -495,9 +552,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L139">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L71">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Preprocess_System_String_">Preprocess(String)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Preprocess_System_String_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEngine.Preprocess(System.String)">Preprocess(String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -532,231 +589,6 @@
                 <tbody>
                   <tr>
                     <td><span class="xref">System.String</span></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L47">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_">Render(IMarkdownToken, IMarkdownContext)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public StringBuffer Render(IMarkdownToken token, IMarkdownContext context)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">IMarkdownToken</a></td>
-                    <td><em>token</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
-                    <td><em>context</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.StringBuffer.html#Microsoft_DocAsCode_MarkdownLite_StringBuffer">StringBuffer</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L99">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_SwitchContext_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_">SwitchContext(IMarkdownContext)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public IMarkdownContext SwitchContext(IMarkdownContext context)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
-                    <td><em>context</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L83">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_SwitchContext_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Object__">SwitchContext(IReadOnlyDictionary&lt;String, Object&gt;)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public IMarkdownContext SwitchContext(IReadOnlyDictionary&lt;string, object&gt; variables)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">System.Collections.Generic.IReadOnlyDictionary</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Object</span>&gt;</td>
-                    <td><em>variables</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L72">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_SwitchContext_System_String_System_Object_">SwitchContext(String, Object)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public IMarkdownContext SwitchContext(string variableKey, object value)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">System.String</span></td>
-                    <td><em>variableKey</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><span class="xref">System.Object</span></td>
-                    <td><em>value</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/MarkdownEngine.cs/#L144">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEngine_Tokenize_System_String_">Tokenize(String)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public ImmutableArray&lt;IMarkdownToken&gt; Tokenize(string markdown)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">System.String</span></td>
-                    <td><em>markdown</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">System.Collections.Immutable.ImmutableArray</span>&lt;<a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">IMarkdownToken</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>

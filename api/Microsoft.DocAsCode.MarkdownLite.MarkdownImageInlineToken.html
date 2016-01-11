@@ -62,7 +62,7 @@
               
               
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L6" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken">Class MarkdownImageInlineToken</h1>
+              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken">Class MarkdownImageInlineToken</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
@@ -81,12 +81,12 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L8">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_System_String_System_String_System_String_">MarkdownImageInlineToken(IMarkdownRule, String, String, String)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_String_System_String_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,System.String)">MarkdownImageInlineToken(IMarkdownRule, IMarkdownContext, String, String, String, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public MarkdownImageInlineToken(IMarkdownRule rule, string href, string title, string text)</code></pre>
+                <pre><code class="lang-csharp hljs">public MarkdownImageInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, string text, string rawMarkdown)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -104,6 +104,11 @@
                     <td></td>
                   </tr>
                   <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td><em>context</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
                     <td><span class="xref">System.String</span></td>
                     <td><em>href</em></td>
                     <td></td>
@@ -118,14 +123,45 @@
                     <td><em>text</em></td>
                     <td></td>
                   </tr>
+                  <tr>
+                    <td><span class="xref">System.String</span></td>
+                    <td><em>rawMarkdown</em></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
               <h3 id="properties">Properties</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L18">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L20">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Href">Href</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Context" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Context">Context</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IMarkdownContext Context { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L22">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Href" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Href">Href</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -149,9 +185,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L24">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L28">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_RawMarkdown">RawMarkdown</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_RawMarkdown" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.RawMarkdown">RawMarkdown</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -175,9 +211,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L16">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L18">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Rule">Rule</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Rule" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Rule">Rule</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -201,9 +237,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L22">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L26">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Text">Text</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Text" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Text">Text</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -227,9 +263,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L20">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownImageInlineToken.cs/#L24">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Title">Title</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Title" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Title">Title</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>

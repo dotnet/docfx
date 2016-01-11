@@ -61,8 +61,8 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L6" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken">Class MarkdownEmInlineToken</h1>
+              <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L8" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken">Class MarkdownEmInlineToken</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
@@ -74,19 +74,19 @@
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.MarkdownLite.dll</h6>
               <h5 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class MarkdownEmInlineToken : IMarkdownToken</code></pre>
+                <pre><code class="lang-csharp hljs">public class MarkdownEmInlineToken : IMarkdownToken, IMarkdownRewritable&lt;MarkdownEmInlineToken&gt;</code></pre>
               </div>
               <h3 id="constructors">Constructors</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L8">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L10">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_System_String_">MarkdownEmInlineToken(IMarkdownRule, String)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_Collections_Immutable_ImmutableArray_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken__System_String_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.Collections.Immutable.ImmutableArray{Microsoft.DocAsCode.MarkdownLite.IMarkdownToken},System.String)">MarkdownEmInlineToken(IMarkdownRule, IMarkdownContext, ImmutableArray&lt;IMarkdownToken&gt;, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public MarkdownEmInlineToken(IMarkdownRule rule, string content)</code></pre>
+                <pre><code class="lang-csharp hljs">public MarkdownEmInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray&lt;IMarkdownToken&gt; content, string rawMarkdown)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -104,8 +104,18 @@
                     <td></td>
                   </tr>
                   <tr>
-                    <td><span class="xref">System.String</span></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td><em>context</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Collections.Immutable.ImmutableArray</span>&lt;<a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">IMarkdownToken</a>&gt;</td>
                     <td><em>content</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.String</span></td>
+                    <td><em>rawMarkdown</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -113,14 +123,14 @@
               <h3 id="properties">Properties</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L16">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L22">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_Content">Content</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_Content" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken.Content">Content</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Content { get; }</code></pre>
+                <pre><code class="lang-csharp hljs">public ImmutableArray&lt;IMarkdownToken&gt; Content { get; }</code></pre>
               </div>
               <h5 class="returns">Returns</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -132,16 +142,42 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.String</span></td>
+                    <td><span class="xref">System.Collections.Immutable.ImmutableArray</span>&lt;<a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">IMarkdownToken</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L18">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L20">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_RawMarkdown">RawMarkdown</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_Context" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken.Context">Context</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IMarkdownContext Context { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L24">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_RawMarkdown" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken.RawMarkdown">RawMarkdown</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -165,9 +201,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L14">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L18">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_Rule">Rule</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_Rule" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken.Rule">Rule</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -185,6 +221,50 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRule">IMarkdownRule</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h3 id="methods">Methods</h3>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineTokens/MarkdownEmInlineToken.cs/#L26">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_Rewrite_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriteEngine_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken.Rewrite(Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine)">Rewrite(IMarkdownRewriteEngine)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public MarkdownEmInlineToken Rewrite(IMarkdownRewriteEngine rewriterEngine)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriteEngine">IMarkdownRewriteEngine</a></td>
+                    <td><em>rewriterEngine</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken">MarkdownEmInlineToken</a></td>
                     <td></td>
                   </tr>
                 </tbody>

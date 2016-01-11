@@ -62,7 +62,7 @@
               
               
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L9" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_Plugins_FileAndType">Class FileAndType</h1>
+              <h1 id="Microsoft_DocAsCode_Plugins_FileAndType" data-uid="Microsoft.DocAsCode.Plugins.FileAndType">Class FileAndType</h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
@@ -81,12 +81,12 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L12">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType__ctor_System_String_System_String_Microsoft_DocAsCode_Plugins_DocumentType_">FileAndType(String, String, DocumentType)</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType__ctor_System_String_System_String_Microsoft_DocAsCode_Plugins_DocumentType_System_Func_System_String_System_String__" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.#ctor(System.String,System.String,Microsoft.DocAsCode.Plugins.DocumentType,System.Func{System.String,System.String})">FileAndType(String, String, DocumentType, Func&lt;String, String&gt;)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public FileAndType(string baseDir, string file, DocumentType type)</code></pre>
+                <pre><code class="lang-csharp hljs">public FileAndType(string baseDir, string file, DocumentType type, Func&lt;string, string&gt; pathRewriter)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -113,14 +113,19 @@
                     <td><em>type</em></td>
                     <td></td>
                   </tr>
+                  <tr>
+                    <td><span class="xref">System.Func</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.String</span>&gt;</td>
+                    <td><em>pathRewriter</em></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
               <h3 id="properties">Properties</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L40">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L41">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_BaseDir">BaseDir</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_BaseDir" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.BaseDir">BaseDir</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -144,9 +149,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L42">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L43">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_File">File</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_File" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.File">File</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -170,9 +175,35 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L44">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L47">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_Type">Type</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_PathRewriter" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.PathRewriter">PathRewriter</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public Func&lt;string, string&gt; PathRewriter { get; }</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">System.Func</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.String</span>&gt;</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L45">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_Type" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.Type">Type</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -197,9 +228,9 @@
               <h3 id="methods">Methods</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L46">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L49">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_ChangeType_Microsoft_DocAsCode_Plugins_DocumentType_">ChangeType(DocumentType)</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_ChangeType_Microsoft_DocAsCode_Plugins_DocumentType_" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.ChangeType(Microsoft.DocAsCode.Plugins.DocumentType)">ChangeType(DocumentType)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -240,9 +271,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L51">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L54">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_Equals_Microsoft_DocAsCode_Plugins_FileAndType_">Equals(FileAndType)</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_Equals_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.Equals(Microsoft.DocAsCode.Plugins.FileAndType)">Equals(FileAndType)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -283,9 +314,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L60">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L63">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_Equals_System_Object_">Equals(Object)</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_Equals_System_Object_" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.Equals(System.Object)">Equals(Object)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -326,9 +357,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L65">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L68">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_GetHashCode">GetHashCode()</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_GetHashCode" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.GetHashCode">GetHashCode()</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -353,9 +384,9 @@
               <h3 id="operators">Operators</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L70">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L73">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_op_Equality_Microsoft_DocAsCode_Plugins_FileAndType_Microsoft_DocAsCode_Plugins_FileAndType_">Equality(FileAndType, FileAndType)</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_op_Equality_Microsoft_DocAsCode_Plugins_FileAndType_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.op_Equality(Microsoft.DocAsCode.Plugins.FileAndType,Microsoft.DocAsCode.Plugins.FileAndType)">Equality(FileAndType, FileAndType)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -401,9 +432,9 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L83">View Source</a>
+                <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/FileAndType.cs/#L86">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_op_Inequality_Microsoft_DocAsCode_Plugins_FileAndType_Microsoft_DocAsCode_Plugins_FileAndType_">Inequality(FileAndType, FileAndType)</h4>
+              <h4 id="Microsoft_DocAsCode_Plugins_FileAndType_op_Inequality_Microsoft_DocAsCode_Plugins_FileAndType_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Plugins.FileAndType.op_Inequality(Microsoft.DocAsCode.Plugins.FileAndType,Microsoft.DocAsCode.Plugins.FileAndType)">Inequality(FileAndType, FileAndType)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>

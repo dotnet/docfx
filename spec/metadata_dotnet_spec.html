@@ -58,9 +58,10 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content">
+            <article class="content wrap" id="_content" data-uid="">
               <a href="https://MarzinZ@github.com/dotnet/docfx/blob/master/Documentation/spec/metadata_dotnet_spec.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="doc-as-code-metadata-format-for-net-languages">Doc-as-Code: Metadata Format for .NET Languages</h1>
+              
 <h2 id="0-introduction">0. Introduction</h2>
 <h3 id="0-1-goal-and-non-goals">0.1 Goal and Non-goals</h3>
 <h3 id="0-2-terminology">0.2 Terminology</h3>
@@ -84,8 +85,7 @@ It can spec a generic type with type arguments, e.g. for parameters, return type
 <p>It is a simple modified Unique Identifiers, when it contains generic type arguments, it will use <code>{Name}</code> instead <code>`N</code>.
 For type parameter, it will be <code>{Name}</code>.
 And it also supports array and pointer.</p>
-<blockquote>
-<p>Example 2.2 Spec Identifier</p>
+<blockquote><p>Example 2.2 Spec Identifier</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace Foo
 {
@@ -110,8 +110,7 @@ And it also supports array and pointer.</p>
 <h2 id="3-namespaces">3. Namespaces</h2>
 <p>For all namespaces, they are flat, e.i. namespaces do not have the parent namespace.
 So for any namespace, <em>ID</em> is always same with its <em>UID</em>. </p>
-<blockquote>
-<p>Example 3 Namespace</p>
+<blockquote><p>Example 3 Namespace</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System.IO
 {
@@ -132,8 +131,7 @@ The parent of types are namespaces.
 The children of types are members.</p>
 <h4 id="id">ID</h4>
 <p><em>ID</em> for a type is also its <em>name</em>.</p>
-<blockquote>
-<p>Example 4 Type</p>
+<blockquote><p>Example 4 Type</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -170,8 +168,7 @@ The children of types are members.</p>
 <h4 id="4-1-id-for-nested-types">4.1 ID for Nested Types</h4>
 <p>For nested types, <em>ID</em> is defined by concatenating the <em>ID</em> of all its containing types and the <em>ID</em> of itself, separated by dot.</p>
 <p>The parent type of a nested type is its containing namespace, rather than its containing type.</p>
-<blockquote>
-<p>Example 4.1 Nested type</p>
+<blockquote><p>Example 4.1 Nested type</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -190,8 +187,7 @@ fullName.csharp: System.Environment.SpecialFolder
 </blockquote>
 <h4 id="4-2-inheritance">4.2 Inheritance</h4>
 <p>Only class contains inheritance, the inheritance is a list of spec id.</p>
-<blockquote>
-<p>Example 4.2 Inheritance</p>
+<blockquote><p>Example 4.2 Inheritance</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System.Collections.Generic
 {
@@ -221,8 +217,7 @@ All parameter types or return types are spec id.</p>
 <p>The <em>ID</em> of a constructor is defined by <code>#ctor</code>, followed by the list of the <em>UIDs</em> of its parameter types:
 When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</strong> end with parentheses.</p>
 <p>The syntax part for constructors contains special languages declaration, and descriptions of paramters.</p>
-<blockquote>
-<p>Example 5.1 Constructor</p>
+<blockquote><p>Example 5.1 Constructor</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -250,8 +245,7 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
 </code></pre>
 <p>When a method does not have parameter, its <em>ID</em> <strong>MUST</strong> end with parentheses.</p>
 <p>The syntax part for method contains special languages declaration, and descriptions of type parameters for generic method, descriptions of paramters and return type.</p>
-<blockquote>
-<p>Example 5.2 Method</p>
+<blockquote><p>Example 5.2 Method</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -275,8 +269,7 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
 </blockquote>
 <h4 id="5-2-1-explicit-interface-implementation">5.2.1 Explicit Interface Implementation</h4>
 <p>The <em>ID</em> of an explicit interface implementation (EII) member <strong>MUST</strong> be prefixed by the <em>UID</em> of the interface it implements and replace <code>.</code> to <code>#</code>.</p>
-<blockquote>
-<p>Example 2.6 Explicit interface implementation (EII)</p>
+<blockquote><p>Example 2.6 Explicit interface implementation (EII)</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -301,8 +294,7 @@ The names of operator overloads are similar to msdn, just remove <code>op_</code
 For instance, the name of the equals (<code>==</code>) operator is <code>Equality</code>.</p>
 <p>Type conversion operator can be considered as a special operator whose name is the UID of the target type, with one parameter of the source type. For example, an operator that converts from string to int should be <code>Explicit(System.String to System.Int32)</code>.</p>
 <p>The syntax part for methods contains special languages declaration, descriptions of paramters and return type.</p>
-<blockquote>
-<p>Example 5.4 Operator overload</p>
+<blockquote><p>Example 5.4 Operator overload</p>
 <pre><code class="lang-csharp">namespace System
 {
     public struct Decimal
@@ -327,14 +319,13 @@ For instance, the name of the equals (<code>==</code>) operator is <code>Equalit
   fullName.csharp: System.String.Equality(System.String,System.String)
 </code></pre>
 </blockquote>
-<p>Please check <a href="https://msdn.microsoft.com/en-us/library/8edha89s.aspx">overloadable operators</a> for all overloadable operators.</p>
+<p>Please check [overloadable operators][1] for all overloadable operators.</p>
 <h4 id="5-5-field-property-or-event">5.5 Field, Property or Event</h4>
 <p>The <em>ID</em> of field, property or event is its name.
 The syntax part for field contains special languages declaration, descriptions of field type.
 For property, it contains special languages declaration, descriptions of paramters and return type.
 For event, it contains special languages declaration, descriptions of event handler type.</p>
-<blockquote>
-<p>Example 5.5 Field, Property and Event</p>
+<blockquote><p>Example 5.5 Field, Property and Event</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -367,8 +358,7 @@ For event, it contains special languages declaration, descriptions of event hand
 </blockquote>
 <h4 id="5-6-indexer">5.6 Indexer</h4>
 <p>Indexer operator&#39;s name is metadata name, by default, it is <code>Item</code>, with brackets and parameters.</p>
-<blockquote>
-<p>Example 5.6 Indexer</p>
+<blockquote><p>Example 5.6 Indexer</p>
 <pre><code class="lang-csharp">namespace System.Collections
 {
     public interface IList
@@ -388,8 +378,7 @@ For event, it contains special languages declaration, descriptions of event hand
 <p>The <em>ID</em> of a generic type is its name with followed by <code>`n</code>, <code>n</code> the count of generic type count, same as the rule for document comment id.
 For example, <code>Dictionary`2</code>.</p>
 <p>The <em>ID</em> of a generic method uses postfix <code>``n</code>, <code>n</code> is the count of in method parameters, for example, <code>System.Tuple.Create``1(``0)</code>.</p>
-<blockquote>
-<p>Example 2.7 Generic</p>
+<blockquote><p>Example 2.7 Generic</p>
 <pre><code class="lang-csharp">namespace System
 {
     public static class Tuple
@@ -415,8 +404,7 @@ For example, <code>Dictionary`2</code>.</p>
   name, fullName, summary, isExternal, href, and more.</p>
 <p>The <em>UID</em> in reference can be a <em>Spec Id</em>, then it contains one more member: spec.
 The <em>spec</em> in reference is very like a list of lightweight references, it describes how to compose the gerenic type in some special language.</p>
-<blockquote>
-<p>Example 7 <em>spec</em> for references</p>
+<blockquote><p>Example 7 <em>spec</em> for references</p>
 <p>YAML:</p>
 <pre><code class="lang-yaml">references:
 - uid: System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.Int32}}
