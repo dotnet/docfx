@@ -487,7 +487,7 @@ by a blank line.</p>
             var source1000 = string.Concat(Enumerable.Repeat(source, 1000));
             var expected1000 = string.Concat(Enumerable.Repeat(expected.Replace("\r\n", "\n"), 1000));
             var engine = builder.CreateEngine(new HtmlRenderer());
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 2; i++)
             {
                 var result = engine.Markup(source1000);
                 Assert.Equal(expected1000, result);

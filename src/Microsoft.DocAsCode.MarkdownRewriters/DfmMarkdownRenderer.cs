@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownRewriters
 {
     using System.Collections.Immutable;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmMarkdownRenderer : MarkdownRenderer

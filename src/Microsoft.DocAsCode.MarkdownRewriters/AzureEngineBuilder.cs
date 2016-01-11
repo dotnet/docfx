@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownRewriters
     using System.Collections.Immutable;
     using System.Linq;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class AzureEngineBuilder : GfmEngineBuilder

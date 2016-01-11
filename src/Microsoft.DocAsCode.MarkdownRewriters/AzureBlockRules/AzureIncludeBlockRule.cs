@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.MarkdownRewriters
 {
     using System.Text.RegularExpressions;
 
-    using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class AzureIncludeBlockRule : IMarkdownRule
