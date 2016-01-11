@@ -1,8 +1,8 @@
 Walkthrough Part II: Adding API Documentation to the Website
 ==========================
 
-After completing [Walkthrough Part I: Generate a Simple Documentation Website](walkthrough_create_a_docfx_project.md), we build a website from a set of `.md` files. We call it **Conceptual Documentation**. In this walkthrough, we will learn to build website from .NET source code, which is called **API Documentation**. We will also integrate **Conceptual Documentation** and **API Documentation** into one website, so that we can navigate from **Conceptual** to **API**, or **API** to **Conceptual** seamlessly. Download the files used in this walkthrough [here](../artifacts/walkthrough2.zip).
- 
+After completing [Walkthrough Part I: Generate a Simple Documentation Website](walkthrough_create_a_docfx_project.md), we build a website from a set of `.md` files. We call it **Conceptual Documentation**. In this walkthrough, we will learn to build website from .NET source code, which is called **API Documentation**. We will also integrate **Conceptual Documentation** and **API Documentation** into one website, so that we can navigate from **Conceptual** to **API**, or **API** to **Conceptual** seamlessly. Download the files used in this walkthrough [here](artifacts/walkthrough2.zip).
+
 After completing walkthourgh part I, our `D:\docfx_walkthrough` folder is in the following structure:
 
 ```
@@ -59,7 +59,7 @@ namespace HelloDocfx
         }
 
         /// <summary>
-        /// A method referencing a inner class 
+        /// A method referencing a inner class
         /// </summary>
         /// <param name="name">The name</param>
         /// <param name="inner">A inner class with type <seealso cref="InnerClass"/></param>

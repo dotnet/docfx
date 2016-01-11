@@ -1,7 +1,7 @@
 Walkthrough Part I: Generate a Simple Documentation Website
 ===================================
 
-By completing this walkthrough, you'll become familiar with the workflow of `docfx` and the general principle of organizing documents inside `docfx`. You will finish this walkthrough with a static website that can be published to any host service. Download the files used in this walkthrough [here](../artifacts/walkthrough1.zip).
+By completing this walkthrough, you'll become familiar with the workflow of `docfx` and the general principle of organizing documents inside `docfx`. You will finish this walkthrough with a static website that can be published to any host service. Download the files used in this walkthrough [here](artifacts/walkthrough1.zip).
 
 Step1. Setup docfx
 ------------------------
@@ -12,7 +12,7 @@ Download *docfx* from http://dotnet.github.io/docfx/. [Getting Started with docf
 
 Step2. Init a docfx project
 ---------------------------
-1. Create a new folder `D:\docfx_walkthrough`  
+1. Create a new folder `D:\docfx_walkthrough`
 2. Start Command Line under `D:\docfx_walkthrough`
 3. Call `docfx init -q`. This command generates a `docfx.json` file under the same folder. `docfx.json` is the configuration file `docfx` uses to generate documentation. `-q` option means generating `docfx.json` quitely using default value, you can also try `docfx init` and follow the instructions to provide your own settings.
 
@@ -94,7 +94,7 @@ Step7. Add a set of articles to the website
       href: articles/
     ```
     Note that a `/` must be appended to the folder name so that `docfx` knows it should contain a set of articles instead of one article.
-    
+
     So now our folder layout is:
     ```
     |- index.md
