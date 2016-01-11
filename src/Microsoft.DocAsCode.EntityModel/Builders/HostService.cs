@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     using HtmlAgilityPack;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
