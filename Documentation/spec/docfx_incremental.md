@@ -1,7 +1,7 @@
 Doc-as-code: DocFx.exe Incremental Build Specification
 ==========================================
 
-This documentation describes the implementation of incrementally extracting metadata from source. Currently we are using *Roslyn* to compile and analysis source code on the fly. When input sources are large, it may take minutes to load and process the files. To speed up the extraction, previous extracted details are saved to cache for further reference. 
+This documentation describes the implementation of incrementally extracting metadata from source. Currently we are using *Roslyn* to compile and analyse source code on the fly. When input sources are large, it may take minutes to load and process the files. To speed up the extraction, previous extracted details are saved to cache for further reference. 
 
 There are two level caches in current implementation. First one is called *Application* Level cache, and the other one is *Project* level cache.
 
