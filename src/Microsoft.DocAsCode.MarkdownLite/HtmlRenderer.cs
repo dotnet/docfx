@@ -89,12 +89,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             content += ">\n";
             foreach (var t in token.Tokens)
             {
-                content += engine.Render(t);
+                content += Render(engine, (MarkdownListItemBlockToken)t);
             }
             return content + "</" + type + ">\n";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListItemBlockToken token, MarkdownBlockContext context)
+        protected virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListItemBlockToken token)
         {
             StringBuffer content = "<li>";
             foreach (var item in token.Tokens)

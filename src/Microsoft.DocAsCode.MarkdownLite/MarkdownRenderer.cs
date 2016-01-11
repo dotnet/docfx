@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
+    using System.Linq;
     using System.Collections.Immutable;
 
     public class MarkdownRenderer
@@ -11,6 +12,33 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(IMarkdownRenderer render, IMarkdownToken token, IMarkdownContext context)
         {
             return token.RawMarkdown;
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownHeadingBlockToken token, MarkdownBlockContext context)
+        {
+            StringBuffer content = StringBuffer.Empty;
+            for (int i = 0; i < token.Depth; ++i)
+            {
+                content += "#";
+            }
+            content += " ";
+
+            foreach(var t in token.Content.Tokens)
+            {
+                content += render.Render(t);
+            }
+            content += "\n";
+            return content;
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownNonParagraphBlockToken token, MarkdownBlockContext context)
+        {
+            StringBuffer content = StringBuffer.Empty;
+            foreach(var t in token.Content.Tokens)
+            {
+                content += render.Render(t);
+            }
+            return content;
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
@@ -48,52 +76,59 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     content += item;
                 }
             }
-            return content;
+            return content + "\n";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownListBlockToken token, MarkdownBlockContext context)
         {
-            const string ListStartString = "* ";
             var content = StringBuffer.Empty;
 
-            if (token.Ordered)
+            if (!token.Ordered)
             {
+                const string ListStartString = "* ";
                 foreach (var t in token.Tokens)
                 {
                     var listItemToken = t as MarkdownListItemBlockToken;
                     if (listItemToken == null)
                     {
-                        throw new Exception($"token {t.GetType()} is not MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{t.RawMarkdown}");
+                        throw new Exception($"token {t.GetType()} is not unordered MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{t.RawMarkdown}");
                     }
                     content += ListStartString;
-                    content += render.Render(t);
+                    content += Render(render, listItemToken, "  ");
+                    content += "\n";
                 }
             }
             else
             {
-                for (int i = 1; i < token.Tokens.Length; ++i)
+                for (int i = 0; i < token.Tokens.Length; ++i)
                 {
                     var listItemToken = token.Tokens[i] as MarkdownListItemBlockToken;
 
                     if (listItemToken == null)
                     {
-                        throw new Exception($"token {token.Tokens[i].GetType()} is not MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{token.Tokens[i].RawMarkdown}");
+                        throw new Exception($"token {token.Tokens[i].GetType()} is not ordered MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{token.Tokens[i].RawMarkdown}");
                     }
 
-                    content += i.ToString();
-                    content += ". ";
+                    content += $"{i + 1}. ";
+                    string indent = new string(' ', (i + 1).ToString().Length + 2);
+                    content += Render(render, listItemToken, indent);
+                    content += "\n";
                 }
             }
-            return content;
+            return content + "\n";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownListItemBlockToken token, MarkdownBlockContext context)
+        protected virtual StringBuffer Render(IMarkdownRenderer render, MarkdownListItemBlockToken token, string indent)
         {
-            // TODO: Add corresponding white space before the result
             var content = StringBuffer.Empty;
-            foreach (var t in token.Tokens)
+            if (token.Tokens.Length > 0)
             {
-                content += render.Render(t);
+                content = render.Render(token.Tokens[0]);
+                foreach (var t in token.Tokens.Skip(1))
+                {
+                    content += indent;
+                    content += render.Render(t);
+                }
             }
             return content;
         }
