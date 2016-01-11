@@ -33,12 +33,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var content = (Dictionary<string, object>)model.Content;
             var markdown = (string)content[ConceputalKey];
             var result = host.Markup(markdown, model.FileAndType);
-            content[ConceputalKey] = result.Html;
 
-            var contentTitles = ExtractContentTitlesFromHtml(result.Html);
-            content["title"] = contentTitles.Title;
-            content["articleTitleHtml"] = contentTitles.ArticleTitleHtml;
-            content["articleContentHtml"] = contentTitles.ArticleContentHtml;
+            var htmlInfo = SeperateHtml(result.Html);
+            content["title"] = htmlInfo.Title;
+            content["rawTitle"] = htmlInfo.RawTitle;
+            content[ConceputalKey] = htmlInfo.Content;
 
             if (result.YamlHeader != null && result.YamlHeader.Count > 0)
             {
@@ -85,9 +84,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return title.Substring(0, maxLength) + "...";
         }
 
-        private static Content ExtractContentTitlesFromHtml(string contentHtml)
+        private static HtmlInfo SeperateHtml(string contentHtml)
         {
-            var content = new Content();
+            var content = new HtmlInfo();
 
             var document = new HtmlDocument();
             document.LoadHtml(contentHtml);
@@ -99,26 +98,26 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
             if (headerNode != null && document.DocumentNode.FirstChild == headerNode)
             {
-                content.ArticleTitleHtml = headerNode.OuterHtml;
+                content.RawTitle = headerNode.OuterHtml;
                 headerNode.Remove();
             }
             else
             {
-                content.ArticleTitleHtml = "<h1></h1>";
+                content.RawTitle = "<h1></h1>";
             }
 
-            content.ArticleContentHtml = document.DocumentNode.OuterHtml;
+            content.Content = document.DocumentNode.OuterHtml;
 
             return content;
         }
 
-        private class Content
+        private class HtmlInfo
         {
             public string Title { get; set; }
 
-            public string ArticleTitleHtml { get; set; }
+            public string RawTitle { get; set; }
 
-            public string ArticleContentHtml { get; set; }
+            public string Content { get; set; }
         }
     }
 }

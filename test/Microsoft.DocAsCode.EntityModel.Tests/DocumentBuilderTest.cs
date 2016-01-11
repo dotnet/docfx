@@ -147,8 +147,10 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".raw.model.json"))));
                 var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".raw.model.json")));
                 Assert.Equal(
-                    "<h1 id=\"hello-world\">Hello World</h1>\n" +
-                    "<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
+                    "<h1 id=\"hello-world\">Hello World</h1>",
+                    model["rawTitle"]);
+                Assert.Equal(
+                    "\n<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
                     "Test link: <a href=\"~/documents/test/test.md\">link text</a>\n" +
                     "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a></p>\n" +
                     "<p><p>\n" +

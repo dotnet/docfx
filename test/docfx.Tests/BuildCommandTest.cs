@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Tests
 
             // Create default template
             var defaultTemplate = @"
-{{{conceptual}}}
+{{{rawTitle}}}{{{conceptual}}}
 ";
             Directory.CreateDirectory(Path.Combine(templateDir, "default"));
             Directory.CreateDirectory(documentsBaseDir);

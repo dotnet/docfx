@@ -8,8 +8,7 @@ function transform(model, _attrs){
   entity.path = undefined;
   entity.type = undefined;
   entity.source = undefined;
-  entity.articleTitleHtml = undefined;
-  entity.articleContentHtml = undefined;
+  entity.rawTitle = undefined;
 
   // Clean up open publishing internal used properties
   entity._op_accessToken = undefined;
