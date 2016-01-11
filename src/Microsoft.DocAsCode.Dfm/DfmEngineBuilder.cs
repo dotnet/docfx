@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel
+namespace Microsoft.DocAsCode.Dfm
 {
     using System;
     using System.Collections.Immutable;
@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
+    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmEngineBuilder : GfmEngineBuilder

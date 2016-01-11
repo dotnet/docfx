@@ -11,7 +11,8 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
+    using Microsoft.DocAsCode.Dfm;
+    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
 
     public class DocfxFlavoredMarkdownTest
     {

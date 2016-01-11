@@ -10,8 +10,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Dfm;
+    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.EntityModel.Builders;
-    using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
     using Microsoft.DocAsCode.EntityModel.Plugins;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
