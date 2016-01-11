@@ -20,9 +20,8 @@ function transform(model, _attrs){
         item.external_link = item.href;
       }else{
         if (item.href.indexOf('~/') == 0) item.href = item.href.substring(2);
-        item.relative_path_in_depot = removeExtension(item.href);
+        item.href = removeExtension(item.href);
       }
-      item.href = undefined;
     }
     if (item.items && item.items.length > 0){
       var children = [];
