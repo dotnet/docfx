@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return sb.ToString();
         }
 
-        internal static int CountNewLine(string text, int charCount)
+        private static int CountNewLine(string text, int charCount)
         {
             int count = 0;
             for (int i = 0; i < charCount; i++)
