@@ -15,11 +15,11 @@ v1.3
        `[!code-<language>[<name>](<codepath><queryoption><queryoptionvalue> "<title>")]`
     3. Change *xref* logic:
         1. If content after `@` is wrapped by `'` or `"`,  it contains any character including white space
-        2. If content after `@` is not wrapped by `'` or `"`, it ends when
-            a. line ends
-            b. meets whitespaces
-            c. line ends with `.`, `,`, `;`, `:`, `!`, `?` and `~`
-            d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
+        2. If content after `@` is not wrapped by `'` or `"`, it ends when:
+            1. line ends
+            2. meets whitespaces
+            3. line ends with `.`, `,`, `;`, `:`, `!`, `?` and `~`
+            4. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
 3. Code improvements
     1. Add @Microsoft.DocAsCode.YamlSerialization
    This project is based on [YamlDotNet](https://github.com/aaubry/YamlDotNet). It overrides classes like type converters to improve performance and fix bug existed in *YamlDotNet*
