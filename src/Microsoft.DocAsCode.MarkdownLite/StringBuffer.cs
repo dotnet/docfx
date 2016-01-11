@@ -116,6 +116,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return result;
         }
 
+        public int GetLength()
+        {
+            int result = 0;
+            for (int i = 0; i < _index; i++)
+            {
+                result += _buffer[i].Length;
+            }
+            return result;
+        }
+
         public override string ToString()
         {
             if (this == Empty)
