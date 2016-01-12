@@ -1,5 +1,8 @@
-Version Notes (Current Version: v1.3)
+Version Notes (Current Version: v1.4)
 =======================================
+v1.4 (Pre-release)
+-----------
+
 v1.3
 -----------
 1. `docfx` improvements
@@ -8,7 +11,7 @@ v1.3
     3. Add two options to `build` subcommand, `--exportRawModel` and `--exportViewModel`. `--exportRawModel` exports the data model to apply templates, `--exportViewModel` exports the view model after running template's pre-process scripts.
     4. Add `--globalMetadata`, and `--globalMetadataFile` options to `build` subcommand. These options allow `globalMetadata` to be loaded from command line in json format or from a JSON file.
     5. Add `--fileMetadataFile` option to `build` subcommand. This option allows `fileMeatdata` to be read from an external JSON file.
-    6. Support plugins. You can create your own template with a `plugins` folder, inside which, you create your own build steps. Refer to @Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep for a sample plugin implementation. 
+    6. Support plugins. You can create your own template with a `plugins` folder, inside which, you create your own build steps. Refer to @Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep for a sample plugin implementation.
 2. *DFM* syntax improvements
     1. Support note&div syntax
     2. Support *query* format in *code snippet*
