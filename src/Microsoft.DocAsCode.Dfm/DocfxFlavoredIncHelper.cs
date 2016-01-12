@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Linq;
 
     using HtmlAgilityPack;
+
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 

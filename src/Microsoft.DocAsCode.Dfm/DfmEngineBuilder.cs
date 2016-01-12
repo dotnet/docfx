@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public const string MarkdownStyleCopFileName = "md.stylecop";
 
-        public DfmEngineBuilder(Options options, CompositionHost host = null) : base(options)
+        public DfmEngineBuilder(Options options) : base(options)
         {
             var inlineRules = InlineRules.ToList();
 
@@ -47,7 +47,17 @@ namespace Microsoft.DocAsCode.Dfm
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
 
-            Rewriter = InitMarkdownStyleCop(host);
+            Rewriter = InitMarkdownStyleCop(GetContainer());
+        }
+
+        private CompositionHost GetContainer()
+        {
+            return new ContainerConfiguration()
+                .WithAssemblies(
+                    from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                    where !assembly.IsDynamic && !assembly.ReflectionOnly
+                    select assembly)
+                .CreateContainer();
         }
 
         private static IMarkdownTokenRewriter InitMarkdownStyleCop(CompositionHost host)

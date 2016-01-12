@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    using MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmNoteBlockToken : MarkdownTextToken
     {

@@ -3,11 +3,12 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    using Utility;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Text;
+
+    using Microsoft.DocAsCode.Utility;
 
     public class FileCacheLite : IDisposable
     {
