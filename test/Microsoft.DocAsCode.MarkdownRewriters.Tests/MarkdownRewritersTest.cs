@@ -263,5 +263,161 @@ h2-2 text
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
+
+        [Fact]
+        [Trait("Related", "MarkdownRewriters")]
+        public void TestMarkdownRewriters_HrInContent()
+        {
+            var source = @"This is an H1
+========
+This is an H2
+-------------
+hr1
+- - -
+hr2
+* * *
+hr3
+***
+hr4
+*****
+this is an h2
+---------------------------------------
+hr5
+
+---------------------------------------
+world.";
+            var expected = @"# This is an H1
+## This is an H2
+hr1
+
+- - -
+hr2
+
+- - -
+hr3
+
+- - -
+hr4
+
+- - -
+## this is an h2
+hr5
+
+- - -
+world.
+
+";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdownRewriters")]
+        public void TestMarkdownRewriters_HtmlTagWithSimpleContent()
+        {
+            var source = @"# This is an H1
+<div>
+This is text inside html tag
+</div>";
+            var expected = @"# This is an H1
+<div>
+This is text inside html tag
+</div>";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdownRewriters")]
+        public void TestMarkdownRewriters_HtmlTagWithNotAffectiveBlockTokenContent()
+        {
+            var source = @"# This is an H1
+<div>
+- list item1
+- list item2
+- list item3
+</div>";
+            var expected = @"# This is an H1
+<div>
+- list item1
+- list item2
+- list item3
+</div>";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdownRewriters")]
+        public void TestMarkdownRewriters_HtmlTagWithAffectiveInlineTokenContent()
+        {
+            var source = @"# This is an H1
+<div>
+[AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")]
+</div>";
+            var expected = @"# This is an H1
+<div>
+[!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")]
+</div>";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdownRewriters")]
+        public void TestMarkdownRewriters_SimpleStrongEmDel()
+        {
+            var source = @"# Test Simple **Strong** *Em* ~~Del~~
+This is __Strong__
+This is _Em_
+This is ~~Del~~";
+            var expected = @"# Test Simple **Strong** *Em* ~~Del~~
+This is **Strong**
+This is *Em*
+This is ~~Del~~
+
+";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdownRewriters")]
+        public void TestMarkdownRewriters_ComplexStrongEmDel()
+        {
+            var source = @"# Test Complex String Em Del
+__Strong [AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] Text__
+<div>
+_Em Text_
+<div>
+- ~~Del Text~~
+- Simple text";
+            var expected = @"# Test Complex String Em Del
+**Strong [!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] Text**
+
+<div>
+*Em Text*
+
+<div>
+
+* ~~Del Text~~
+* Simple text
+
+";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
     }
 }

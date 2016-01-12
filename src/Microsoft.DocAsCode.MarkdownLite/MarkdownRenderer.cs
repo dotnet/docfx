@@ -14,6 +14,63 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return token.RawMarkdown;
         }
 
+        #region Inline Token
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, GfmDelInlineToken token, MarkdownInlineContext context)
+        {
+            StringBuffer content = StringBuffer.Empty;
+            content += "~~";
+            foreach(var t in token.Content)
+            {
+                content += render.Render(t);
+            }
+            content += "~~";
+            return content;
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownEmInlineToken token, MarkdownInlineContext context)
+        {
+            StringBuffer content = StringBuffer.Empty;
+            content += "*";
+            foreach(var t in token.Content)
+            {
+                content += render.Render(t);
+            }
+            content += "*";
+            return content;
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownStrongInlineToken token, MarkdownInlineContext context)
+        {
+            StringBuffer content = StringBuffer.Empty;
+            content += "**";
+            foreach (var t in token.Content)
+            {
+                content += render.Render(t);
+            }
+            content += "**";
+            return content;
+        }
+
+        #endregion
+
+        #region Block Token
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
+        {
+            StringBuffer content = StringBuffer.Empty;
+            foreach(var t in token.Content.Tokens)
+            {
+                content += render.Render(t);
+            }
+            return content;
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownHrBlockToken token, MarkdownBlockContext context)
+        {
+            return "- - -\n";
+        }
+
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownHeadingBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = StringBuffer.Empty;
@@ -132,5 +189,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return content;
         }
+
+        #endregion
     }
 }
