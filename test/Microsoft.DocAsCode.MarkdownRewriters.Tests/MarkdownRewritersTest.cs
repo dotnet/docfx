@@ -3,10 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
 {
-    using System;
-    using System.Collections.Immutable;
-
-    using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.MarkdownLite;
 
     using Xunit;
