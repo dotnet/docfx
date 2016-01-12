@@ -158,7 +158,6 @@ This is azure include block.
 
         [Fact]
         [Trait("Related", "MarkdownRewriters")]
-        [Trait("Bug need to fix", "the first list item is not correct")]
         public void TestMarkdownRewriters_ListWithAzureInclude()
         {
             var source = @"Hello world
@@ -177,11 +176,7 @@ This is azure include block.
             var expected = @"Hello world
 
 * list [!INCLUDE [include-short-name](../includes/include-file-name.md)]
-
-  
-  this should be same line with the above one
-
-  
+this should be same line with the above one
 
   this should be another line
 
@@ -190,8 +185,7 @@ This is azure include block.
 * list item3
 * list item4
 
----
-
+- - -
 1. nolist item1
 2. nolist item2
 
