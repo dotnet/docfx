@@ -108,6 +108,66 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return content + "\n\n";
         }
 
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownTableBlockToken token, MarkdownBlockContext context)
+        {
+            var content = StringBuffer.Empty;
+
+            // Generate header line
+            content += "|";
+            foreach(var header in token.Header)
+            {
+                content += " ";
+                foreach (var t in header.Tokens)
+                {
+                    content += render.Render(t);
+                }
+                content += " |";
+            }
+            content += "\n";
+
+            // Generate align line
+            content += "|";
+            foreach(var align in token.Align)
+            {
+                switch(align)
+                {
+                    case Align.NotSpec:
+                        content += " --- ";
+                        break;
+                    case Align.Left:
+                        content += ":--- ";
+                        break;
+                    case Align.Right:
+                        content += " ---:";
+                        break;
+                    case Align.Center:
+                        content += ":---:";
+                        break;
+                    default:
+                        throw new NotSupportedException($"align:{align} doesn't support in GFM table");
+                }
+                content += "|";
+            }
+            content += "\n";
+
+            // Generate content lines
+            foreach(var row in token.Cells)
+            {
+                content += "| ";
+                foreach (var column in row)
+                {
+                    foreach (var t in column.Tokens)
+                    {
+                        content += render.Render(t);
+                    }
+                    content += " |";
+                }
+                content += "\n";
+            }
+
+            return content += "\n";
+        }
+
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
         {
             const string BlockQuoteStartString = "> ";
@@ -152,7 +212,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     }
                     content += ListStartString;
                     content += Render(render, listItemToken, "  ");
-                    content += "\n";
                 }
             }
             else
@@ -169,7 +228,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     content += $"{i + 1}. ";
                     string indent = new string(' ', (i + 1).ToString().Length + 2);
                     content += Render(render, listItemToken, indent);
-                    content += "\n";
                 }
             }
             return content + "\n";
@@ -186,6 +244,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     content += indent;
                     content += render.Render(t);
                 }
+            }
+            if (!token.Loose)
+            {
+                content += "\n";
             }
             return content;
         }

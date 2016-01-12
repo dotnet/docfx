@@ -180,7 +180,6 @@ this should be same line with the above one
 
   this should be another line
 
-
 * list item2
 * list item3
 * list item4
@@ -406,6 +405,38 @@ _Em Text_
 
 * ~~Del Text~~
 * Simple text
+
+";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdownRewriters")]
+        public void TestMarkdownRewriters_Table()
+        {
+            var source = @"# Test table
+| header-1 | header-2 | header-3 |
+|:-------- |:--------:| --------:|
+| *1-1* | __1-2__ | ~~1-3~~ |
+| 2-1:[AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] | 2-2 | 2-3 |
+
+header-1 | header-2 | header-3
+-------- |--------:|:--------
+*1-1* | __1-2__ | ~~1-3~~
+2-1:[AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] | 2-2 | 2-3";
+            var expected = @"# Test table
+| header-1 | header-2 | header-3 |
+|:--- |:---:| ---:|
+| *1-1* |**1-2** |~~1-3~~ |
+| 2-1:[!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] |2-2 |2-3 |
+
+| header-1 | header-2 | header-3 |
+| --- | ---:|:--- |
+| *1-1* |**1-2** |~~1-3~~ |
+| 2-1:[!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] |2-2 |2-3 |
 
 ";
             var builder = new AzureEngineBuilder(new Options());
