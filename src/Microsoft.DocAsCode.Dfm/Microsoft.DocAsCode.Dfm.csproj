@@ -45,40 +45,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MarkdownValidators\MarkdownRewriterBuilder.cs" />
+    <Compile Include="MarkdownValidators\MarkdownTagValidationRule.cs" />
+    <Compile Include="MarkdownValidators\TagRewriteBehavior.cs" />
+    <Compile Include="Rules\DfmBlockquoteBlockRule.cs" />
+    <Compile Include="Rules\DfmEmailInlineRule.cs" />
+    <Compile Include="Rules\DfmFencesBlockRule.cs" />
+    <Compile Include="Rules\DfmIncludeBlockRule.cs" />
+    <Compile Include="Rules\DfmIncludeInlineRule.cs" />
+    <Compile Include="Rules\DfmNoteBlockRule.cs" />
+    <Compile Include="Rules\DfmParagraphBlockRule.cs" />
+    <Compile Include="Rules\DfmSectionBlockRule.cs" />
+    <Compile Include="Rules\DfmTextInlineRule.cs" />
+    <Compile Include="Rules\DfmXrefInlineRule.cs" />
+    <Compile Include="Rules\DfmYamlHeaderBlockRule.cs" />
+    <Compile Include="Tokens\DfmBlockquoteBlockToken.cs" />
+    <Compile Include="Tokens\DfmFencesBlockToken.cs" />
+    <Compile Include="Tokens\DfmIncludeBlockToken.cs" />
+    <Compile Include="Tokens\DfmIncludeInlineToken.cs" />
+    <Compile Include="Tokens\DfmNoteBlockToken.cs" />
+    <Compile Include="Tokens\DfmSectionBlockToken.cs" />
+    <Compile Include="Tokens\DfmXrefInlineToken.cs" />
+    <Compile Include="Tokens\DfmYamlHeaderBlockToken.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="DfmBlockquoteBlockRule.cs" />
-    <Compile Include="DfmBlockquoteBlockToken.cs" />
     <Compile Include="DfmCodeExtractor.cs" />
     <Compile Include="DfmContextExtensions.cs" />
-    <Compile Include="DfmEmailInlineRule.cs" />
     <Compile Include="DfmEngine.cs" />
     <Compile Include="DfmEngineBuilder.cs" />
     <Compile Include="DfmExtractCodeResult.cs" />
     <Compile Include="DfmFencesBlockPathQueryOption.cs" />
-    <Compile Include="DfmFencesBlockRule.cs" />
-    <Compile Include="DfmFencesBlockToken.cs" />
-    <Compile Include="DfmIncludeBlockRule.cs" />
-    <Compile Include="DfmIncludeBlockToken.cs" />
-    <Compile Include="DfmIncludeInlineRule.cs" />
-    <Compile Include="DfmIncludeInlineToken.cs" />
-    <Compile Include="DfmNoteBlockRule.cs" />
-    <Compile Include="DfmNoteBlockToken.cs" />
-    <Compile Include="DfmParagraphBlockRule.cs" />
     <Compile Include="DfmRenderer.cs" />
     <Compile Include="DfmRendererHelper.cs" />
-    <Compile Include="DfmSectionBlockRule.cs" />
-    <Compile Include="DfmSectionBlockToken.cs" />
-    <Compile Include="DfmTextInlineRule.cs" />
-    <Compile Include="DfmXrefInlineRule.cs" />
-    <Compile Include="DfmXrefInlineToken.cs" />
-    <Compile Include="DfmYamlHeaderBlockRule.cs" />
-    <Compile Include="DfmYamlHeaderBlockToken.cs" />
     <Compile Include="DocfxFlavoredIncHelper.cs" />
     <Compile Include="DocfxFlavoredMarked.cs" />
     <Compile Include="FileCacheLite.cs" />
-    <Compile Include="MarkdownRewriterBuilder.cs" />
-    <Compile Include="MarkdownTagValidationRule.cs" />
-    <Compile Include="TagRewriteBehavior.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

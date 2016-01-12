@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Collections.Immutable;
 
-    using MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmBlockquoteBlockToken : MarkdownBlockquoteBlockToken
     {

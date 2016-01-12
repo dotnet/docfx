@@ -16,6 +16,7 @@
     "dnx451": {
       "frameworkAssemblies": {
         "System.Collections": "",
+        "System.Reflection": "",
         "System.Threading.Tasks": "",
         "System.Globalization": "",
         "System.Runtime": "",
@@ -25,6 +26,7 @@
     "net45": {
       "frameworkAssemblies": {
         "System.Collections": "",
+        "System.Reflection": "",
         "System.Threading.Tasks": "",
         "System.Globalization": "",
         "System.Runtime": "",

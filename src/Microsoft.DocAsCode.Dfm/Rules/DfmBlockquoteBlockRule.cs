@@ -3,9 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System.Text.RegularExpressions;
-
-    using MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmBlockquoteBlockRule : MarkdownBlockquoteBlockRule
     {
