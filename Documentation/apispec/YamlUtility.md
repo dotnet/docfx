@@ -1,6 +1,6 @@
 
 ---
-uid: Microsoft.DocAsCode.EntityModel.YamlUtility
+uid: Microsoft.DocAsCode.Common.YamlUtility
 remarks: '*THIS* is remarks overriden in *MARKDWON* file'
 ---
 
