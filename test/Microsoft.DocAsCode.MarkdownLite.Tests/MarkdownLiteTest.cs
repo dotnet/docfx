@@ -265,6 +265,19 @@ c
 <li>Second</li>
 </ol>
 ")]
+        [InlineData(@"Hello world
+* list
+  this should be same line with the above one
+  
+  this should be another line",
+            @"<p>Hello world</p>
+<ul>
+<li><p>list
+this should be same line with the above one</p>
+<p>this should be another line</p>
+</li>
+</ul>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {

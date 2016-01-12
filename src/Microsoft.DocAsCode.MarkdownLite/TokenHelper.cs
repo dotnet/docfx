@@ -29,7 +29,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     textContent += text.Content;
                     continue;
                 }
-                if (!wrapParagraph && token is MarkdownNewLineBlockToken)
+                var newLine = token as MarkdownNewLineBlockToken;
+                if (newLine?.RawMarkdown.Length == 1)
                 {
                     continue;
                 }
@@ -38,6 +39,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     var rawMarkdown = textContent.ToString();
                     result.Add(CreateToken(parser, rule, wrapParagraph, rawMarkdown));
                     textContent = StringBuffer.Empty;
+                }
+                if (newLine != null)
+                {
+                    continue;
                 }
                 result.Add(token);
             }
