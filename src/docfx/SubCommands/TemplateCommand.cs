@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class TemplateCommand : ISubCommand
     {
-        private static readonly string[] ExistingTemplates = new string[] { "default" };
+        private static readonly string[] ExistingTemplates = new string[] { "default", "iframe.html" };
         private const string DefaultOutputFolder = "_exported_templates";
         private readonly TemplateCommandOptions _options;
 
