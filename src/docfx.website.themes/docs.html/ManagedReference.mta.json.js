@@ -13,12 +13,15 @@ function transform(model, _attrs){
     entity.toc_asset_id = attrs._tocPath;
   }
 
+  entity.toc_rel = attrs._tocRel;
   entity.platforms = entity.items[0].platform;
   entity.langs = entity.items[0].langs;
-  if (!entity.breadcrumb_path){
+  if (!entity.metadata || !entity.metadata.breadcrumb_path) {
     entity.breadcrumb_path = "/toc.html";
+  } else {
+    entity.breadcrumb_path = entity.metadata.breadcrumb_path
   }
-  entity.doc_url =  getImproveTheDocHref(entity.items[0]);
+  entity.content_git_url = getImproveTheDocHref(entity.items[0]);
   entity.source_url = getViewSourceHref(entity.items[0]);
 
  // Clean up unused predefined properties

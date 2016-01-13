@@ -18,6 +18,7 @@ function transform(model, _attrs){
   if (!entity.toc_asset_id){
     entity.toc_asset_id = attrs._tocPath;
   }
+  entity.toc_rel = attrs._tocRel;
   if (!entity.breadcrumb_path){
     entity.breadcrumb_path = "/toc.html";
   }
