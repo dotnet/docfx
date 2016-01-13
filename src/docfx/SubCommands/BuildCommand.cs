@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.Remoting.Lifetime;
     using System.Threading;
 
     using Microsoft.DocAsCode;
@@ -343,9 +344,9 @@ namespace Microsoft.DocAsCode.SubCommands
             private readonly string _baseDirectory;
             private readonly string _outputDirectory;
             private readonly BuildJsonConfig _config;
-            private readonly ILoggerListener _listener;
+            private readonly CrossAppDomainListener _listener;
 
-            public DocumentBuilderWrapper(BuildJsonConfig config, string baseDirectory, string outputDirectory, string pluginDirectory, ILoggerListener listener)
+            public DocumentBuilderWrapper(BuildJsonConfig config, string baseDirectory, string outputDirectory, string pluginDirectory, CrossAppDomainListener listener)
             {
                 if (config == null)
                 {
@@ -361,12 +362,20 @@ namespace Microsoft.DocAsCode.SubCommands
 
             public void BuildDocument()
             {
+                var sponsor = new ClientSponsor();
                 if (_listener != null)
                 {
                     Logger.RegisterListener(_listener);
+                    sponsor.Register(_listener);
                 }
-
-                BuildDocument(_config, _baseDirectory, _outputDirectory, _pluginDirectory);
+                try
+                {
+                    BuildDocument(_config, _baseDirectory, _outputDirectory, _pluginDirectory);
+                }
+                finally
+                {
+                    sponsor.Close();
+                }
             }
 
             public static void BuildDocument(BuildJsonConfig config, string baseDirectory, string outputDirectory, string pluginDirectory)
