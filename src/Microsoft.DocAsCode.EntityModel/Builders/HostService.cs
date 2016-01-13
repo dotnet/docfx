@@ -272,7 +272,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private static void OnLruRemoving(FileModel m)
         {
-            m.Serialize();
+            try
+            {
+                m.Serialize();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.OriginalFileAndType.File);
+            }
         }
     }
 }
