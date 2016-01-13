@@ -342,14 +342,18 @@ article section {
 .sidetoc {
   position: fixed;
   width: 260px;
-  top: 150px;
+  top: 100px;
   bottom: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   background-color: #f1f1f1;
   border-left: 1px solid #e7e7e7;
   border-right: 1px solid #e7e7e7;
   z-index: 1;
+}
+.sidetoc iframe{
+  height: 100%;
+  width: 100%;
+  border: none;
 }
 
 body .toc{
@@ -374,10 +378,11 @@ body .toc{
 .sidetoc-heading {
   font-weight: 500;
 }
-
-.toc {
-  margin: 0px 0 0 10px;
+.toc > .container-fluid {
   padding: 0 10px;
+}
+#toc {
+  margin: 40px 0 0 0;
 }
 .expand-stub {
   position: absolute;

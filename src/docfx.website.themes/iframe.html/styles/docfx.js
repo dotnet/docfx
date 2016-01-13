@@ -5,13 +5,70 @@ $(function () {
   var filtered = 'filtered';
   var show = 'show';
   var hide = 'hide';
+  $('.toc .nav > li > .expand-stub').click(function (e) {
+    $(e.target).parent().toggleClass(expanded);
+  });
+
+  // For TOC FILTER
+  (function () {
+    $('#toc_filter_input').on('input', function (e) {
+      var val = this.value;
+      if (val === '') {
+        // Clear 'filtered' class
+        $('#toc li').removeClass(filtered).removeClass(hide);
+        return;
+      }
+
+      // Get leaf nodes
+      $('#toc li>a').filter(function (i, e) {
+        return $(e).siblings().length === 0
+      }).each(function (i, anchor) {
+        var text = $(anchor).text();
+        var parent = $(anchor).parent();
+        var parentNodes = parent.parents('ul>li');
+        for (var i = 0; i < parentNodes.length; i++) {
+          var parentText = $(parentNodes[i]).children('a').text();
+          if (parentText) text = parentText + '.' + text;
+        };
+        if (filterNavItem(text, val)) {
+          parent.addClass(show);
+          parent.removeClass(hide);
+        } else {
+          parent.addClass(hide);
+          parent.removeClass(show);
+        }
+      });
+      $('#toc li>a').filter(function (i, e) {
+        return $(e).siblings().length > 0
+      }).each(function (i, anchor) {
+        var parent = $(anchor).parent();
+        if (parent.find('li.show').length > 0) {
+          parent.addClass(show);
+          parent.addClass(filtered);
+          parent.removeClass(hide);
+        } else {
+          parent.addClass(hide);
+          parent.removeClass(show);
+          parent.removeClass(filtered);
+        }
+      })
+    });
+
+    function filterNavItem(name, text) {
+      if (!text) return true;
+      if (name.toLowerCase().indexOf(text.toLowerCase()) > -1) return true;
+      return false;
+    }
+  })();
 
   // Update href in navbar
   (function () {
     var toc = $('#sidetoc');
     var breadcrumb = new Breadcrumb();
+    console.log("hello");
     loadNavbar();
-    loadToc();
+    onTocLoaded(updateTocHref);
+
     function loadNavbar() {
       var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
@@ -23,6 +80,7 @@ $(function () {
         if (index > -1) {
           navrel = navbarPath.substr(0, index + 1);
         }
+
         $('#navbar>ul').addClass('navbar-nav');
         var currentAbsPath = getAbsolutePath(window.location.pathname);
         // set active item
@@ -59,22 +117,26 @@ $(function () {
       });
     }
 
-    function loadToc() {
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
-      if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
-      $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
-        registerTocEvents();
+    // $(iframe).load() is not always working
+    function onTocLoaded(callback) {
+      if (toc.length === 0) return;
+      var iframe = $('body>*', toc.contents());
+      if (iframe.length === 0) {
+        setTimeout(function () {
+          onTocLoaded(callback);
+        }, 100);
+        return;
+      }
+      callback();
+    }
 
-        var index = tocPath.lastIndexOf('/');
-        var tocrel = '';
-        if (index > -1) {
-          tocrel = tocPath.substr(0, index + 1);
-        }
-        var currentHref = window.location.href;
-        var hashIndex = currentHref.indexOf('#');
-        if (hashIndex > -1) currentHref = currentHref.substr(0, hashIndex);
-        $('#sidetoc').find('a[href]').each(function (i, e) {
-          if (e.href === currentHref) {
+    function updateTocHref() {
+      var currentHref = window.location.href;
+      // remove hash
+      var hashIndex = currentHref.indexOf('#');
+      if (hashIndex > -1) currentHref = currentHref.substr(0, hashIndex);
+      toc.contents().find('a[href]').each(function (i, e) {
+        if (e.href === currentHref) {
           $(e).parent().addClass(active);
           var parent = $(e).parent().parents('li').children('a');
           if (parent.length > 0) {
@@ -97,67 +159,12 @@ $(function () {
             top += $(e).position().top;
           });
           // 50 is the size of the filter box
-          $('.sidetoc').scrollTop(top - 50);
+          toc[0].contentWindow.scrollTo(0, top - 50);
         } else {
           $(e).parent().removeClass(active);
           $(e).parents('li').children('a').removeClass(active);
         }
-        });
-      });
-    }
-
-    function registerTocEvents(){
-        $('.toc .nav > li > .expand-stub').click(function (e) {
-          $(e.target).parent().toggleClass(expanded);
-        });
-        $('#toc_filter_input').on('input', function (e) {
-          var val = this.value;
-          if (val === '') {
-            // Clear 'filtered' class
-            $('#toc li').removeClass(filtered).removeClass(hide);
-            return;
-          }
-
-          // Get leaf nodes
-          $('#toc li>a').filter(function (i, e) {
-            return $(e).siblings().length === 0
-          }).each(function (i, anchor) {
-            var text = $(anchor).text();
-            var parent = $(anchor).parent();
-            var parentNodes = parent.parents('ul>li');
-            for (var i = 0; i < parentNodes.length; i++) {
-              var parentText = $(parentNodes[i]).children('a').text();
-              if (parentText) text = parentText + '.' + text;
-            };
-            if (filterNavItem(text, val)) {
-              parent.addClass(show);
-              parent.removeClass(hide);
-            } else {
-              parent.addClass(hide);
-              parent.removeClass(show);
-            }
-          });
-          $('#toc li>a').filter(function (i, e) {
-            return $(e).siblings().length > 0
-          }).each(function (i, anchor) {
-            var parent = $(anchor).parent();
-            if (parent.find('li.show').length > 0) {
-              parent.addClass(show);
-              parent.addClass(filtered);
-              parent.removeClass(hide);
-            } else {
-              parent.addClass(hide);
-              parent.removeClass(show);
-              parent.removeClass(filtered);
-            }
-          })
-
-          function filterNavItem(name, text) {
-            if (!text) return true;
-            if (name.toLowerCase().indexOf(text.toLowerCase()) > -1) return true;
-            return false;
-          }
-        });
+      })
     }
 
     function Breadcrumb() {

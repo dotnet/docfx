@@ -1,0 +1,131 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+{{#docurl}}<a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>{{/docurl}}
+{{#sourceurl}}<a href="{{sourceurl}}" class="btn btn-primary pull-right mobile-hide">View Source</a>{{/sourceurl}}
+<h1 id="{{id}}" data-uid="{{uid}}">{{type}} {{name}}</h1>
+<div class="markdown level0 summary">{{{summary}}}</div>
+<div class="markdown level0 conceptual">{{{conceptual}}}</div>
+{{#inheritance.0}}
+<div class="inheritance">
+  <h5>Inheritance</h5>
+{{#inheritance}}
+    <div class="level{{index}}">{{{specName}}}</div>
+{{/inheritance}}
+    <div class="level{{item.level}}"><span class="xref">{{item.name}}</span></div>
+</div>
+{{/inheritance.0}}
+<h6><strong>Namespace</strong>:{{namespace}}</h6>
+<h6><strong>Assembly</strong>:{{assemblies.0}}.dll</h6>
+<h5 id="{{id}}_syntax">Syntax</h5>
+<div class="codewrapper">
+  <pre><code class="lang-{{_lang}} hljs">{{syntax.content}}</code></pre>
+</div>
+{{#remarks}}
+<h5 id="{{id}}_remarks"><strong>Remarks<strong></h5>
+<div class="markdown level0 remarks">{{{remarks}}}</div>
+{{/remarks}}
+{{#children}}
+<h3 id="{{id}}">{{title}}</h3>
+{{#children}}
+{{#docurl}}
+<span class="small pull-right mobile-hide">
+  <span class="divider">|</span>
+  <a href="{{docurl}}">Improve this Doc</a>
+</span>{{/docurl}}
+{{#sourceurl}}
+<span class="small pull-right mobile-hide">
+  <a href="{{sourceurl}}">View Source</a>
+</span>{{/sourceurl}}
+<h4 id="{{id}}" data-uid="{{uid}}">{{name}}</h4>
+<div class="markdown level1 summary">{{{summary}}}</div>
+<div class="markdown level1 conceptual">{{{conceptual}}}</div>
+{{#remarks}}
+<h5 id="{{id}}_remarks">Remarks</h5>
+<div class="markdown level1 remarks">{{{remarks}}}</div>
+{{/remarks}}
+<h5 class="decalaration">Declaration</h5>
+{{#syntax}}
+<div class="codewrapper">
+  <pre><code class="lang-{{_lang}} hljs">{{syntax.content}}</code></pre>
+</div>
+{{#parameters.0}}
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+{{/parameters.0}}
+{{#parameters}}
+    <tr>
+      <td>{{{type.specName}}}</td>
+      <td><em>{{{id}}}</em></td>
+      <td>{{{description}}}</td>
+    </tr>
+  {{/parameters}}
+  {{#parameters.0}}
+  </tbody>
+</table>
+{{/parameters.0}}
+{{#return}}
+<h5 class="returns">Returns</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{{type.specName}}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+  </tbody>
+</table>
+{{/return}}
+{{#propertyValue}}
+<h5 class="propertyValue">Property Value</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{{type.specName}}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+  </tbody>
+</table>
+{{/propertyValue}}
+{{/syntax}}
+{{#exceptions.0}}
+<h5 class="exceptions">Exceptions</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Condition</th>
+    </tr>
+  </thead>
+  <tbody>
+{{/exceptions.0}}
+{{#exceptions}}
+    <tr>
+      <td>{{{type.specName}}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+{{/exceptions}}
+{{#exceptions.0}}
+  </tbody>
+</table>
+{{/exceptions.0}}
+{{/children}}
+{{/children}}

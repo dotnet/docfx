@@ -19,6 +19,15 @@ var pack = {
     "favicon.ico",
     "logo.svg"
   ],
+  "iframe.html": [
+    "fonts/*",
+    "partials/*",
+    "styles/*",
+    "*.js",
+    "*.tmpl",
+    "favicon.ico",
+    "logo.svg"
+  ],
   "msdn.html": [
     "partials/*",
     "*.js",
