@@ -74,33 +74,38 @@ $(function () {
         var hashIndex = currentHref.indexOf('#');
         if (hashIndex > -1) currentHref = currentHref.substr(0, hashIndex);
         $('#sidetoc').find('a[href]').each(function (i, e) {
-          if (e.href === currentHref) {
-          $(e).parent().addClass(active);
-          var parent = $(e).parent().parents('li').children('a');
-          if (parent.length > 0) {
-            parent.addClass(active);
-            breadcrumb.push({
-              href: parent[0].href,
-              name: parent[0].innerHTML
-            });
-          }
-          // for active li, expand it
-          $(e).parents('ul.nav>li').addClass(expanded);
+          var href = $(e).attr("href");
+          if (isRelativePath(href)) {
+            href = tocrel + href;
+            $(e).attr("href", href);
+            if (e.href === currentHref) {
+            $(e).parent().addClass(active);
+            var parent = $(e).parent().parents('li').children('a');
+            if (parent.length > 0) {
+              parent.addClass(active);
+              breadcrumb.push({
+                href: parent[0].href,
+                name: parent[0].innerHTML
+              });
+            }
+            // for active li, expand it
+            $(e).parents('ul.nav>li').addClass(expanded);
 
-          breadcrumb.push({
-            href: e.href,
-            name: e.innerHTML
-          });
-          // Scroll to active item
-          var top = 0;
-          $(e).parents('li').each(function (i, e) {
-            top += $(e).position().top;
-          });
-          // 50 is the size of the filter box
-          $('.sidetoc').scrollTop(top - 50);
-        } else {
-          $(e).parent().removeClass(active);
-          $(e).parents('li').children('a').removeClass(active);
+            breadcrumb.push({
+              href: e.href,
+              name: e.innerHTML
+            });
+            // Scroll to active item
+            var top = 0;
+            $(e).parents('li').each(function (i, e) {
+              top += $(e).position().top;
+            });
+            // 50 is the size of the filter box
+            $('.sidetoc').scrollTop(top - 50);
+          } else {
+            $(e).parent().removeClass(active);
+            $(e).parents('li').children('a').removeClass(active);
+          }
         }
         });
       });
