@@ -14,7 +14,7 @@ Getting Started with `docfx`
 
 2. Use `docfx.exe` directly
 -----------------------
-Download and unzip [docfx.zip](artifacts/docfx.zip) to run `docfx.exe` directly!
+Download and unzip [docfx.zip](https://github.com/dotnet/docfx/releases/download/v1.3/docfx.zip) to run `docfx.exe` directly!
 
 ### 2.1 Quick Start
 **Step1.** Run
@@ -63,7 +63,7 @@ As a prerequisite, you will need to install [DNVM](http://docs.asp.net/en/latest
   > For Windows, the nuget config file is  **%AppData%\NuGet\NuGet.config**.
 
   > For Linux/OSX, the nuget config file is **~/.config/NuGet/NuGet.config**.
-  
+
   Sample nuget.config
   ```xml
   <?xml version="1.0" encoding="utf-8"?>
@@ -93,14 +93,14 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 4. `toc.yml` under root folder. It will be rendered as the navbar of the website.
 5. `docfx.json` under root folder. It is the configuration file that `docfx` depends on.
 
-> Tips  
+> Tips
   It is a good practice to seperate files with different type into different folders.
 
 6. Q&A
 -------------------------
-1. Q: How to quickly reference APIs from other APIs or conceptual files?  
+1. Q: How to quickly reference APIs from other APIs or conceptual files?
    A: Use `@uid` syntax.
-2. Q: What is `uid` and where to find `uid`?  
-   A: Refer to `Cross Reference` section in [DFM](../spec/docfx_flavored_markdown.md).  
-3. Q: Where to find `uid`?  
+2. Q: What is `uid` and where to find `uid`?
+   A: Refer to `Cross Reference` section in [DFM](../spec/docfx_flavored_markdown.md).
+3. Q: Where to find `uid`?
    A: In the generated website, F12 to view source, `uid` is the value from `data-uid` attribute.
