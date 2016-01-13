@@ -28,11 +28,11 @@ documentType: index
     </div>
     <div class="buttons-unit">
       <a href="tutorial/docfx_getting_started.md" class="button">Get Started</a>
-      <a href="tutorial/artifacts/docfx.zip" class="button">Download Latest Docfx!</a>
+      <a href="https://github.com/dotnet/docfx/releases/download/v1.3/docfx.zip" class="button">Download Latest Docfx!</a>
     </div>
   </div>
 </div>
-> [!div class="container content"]  
+> [!div class="container content"]
   <div id="vp-container">
     <div id="initial-vps">
       <div class="row value-props">
@@ -53,5 +53,5 @@ documentType: index
   </div>
   <hr/>
 
-> > [!div class="row" id="note"]  
+> > [!div class="row" id="note"]
 > > [!include[VersionNotes](../ReleaseNote.md)]
