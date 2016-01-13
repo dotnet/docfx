@@ -71,7 +71,7 @@
 <li><strong>Docfx Flavored Markdown(DFM)</strong> is introduced to write conceptual files. DFM is <strong>100%</strong> compatible with <em>Github Flavored Markdown(GFM)</em> and add several new features including <em>file inclusion</em>, <em>cross reference</em>, and <em>yaml header</em>. For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html">DFM</a>.</li>
 </ul>
 <h2 id="2-use-docfx-exe-directly">2. Use <code>docfx.exe</code> directly</h2>
-<p>Download and unzip <a href="artifacts/docfx.zip">docfx.zip</a> to run <code>docfx.exe</code> directly!</p>
+<p>Download and unzip <a href="https://github.com/dotnet/docfx/releases/download/v1.3/docfx.zip">docfx.zip</a> to run <code>docfx.exe</code> directly!</p>
 <h3 id="2-1-quick-start">2.1 Quick Start</h3>
 <p><strong>Step1.</strong> Run</p>
 <pre><code>docfx.exe init
@@ -131,13 +131,17 @@
 <li><code>toc.yml</code> under root folder. It will be rendered as the navbar of the website.</li>
 <li><code>docfx.json</code> under root folder. It is the configuration file that <code>docfx</code> depends on.</li>
 </ol>
-<blockquote><p>Tips<br>  It is a good practice to seperate files with different type into different folders.</p>
+<blockquote><p>Tips
+  It is a good practice to seperate files with different type into different folders.</p>
 </blockquote>
 <h2 id="6-q-a">6. Q&amp;A</h2>
 <ol>
-<li>Q: How to quickly reference APIs from other APIs or conceptual files?<br>A: Use <code>@uid</code> syntax.</li>
-<li>Q: What is <code>uid</code> and where to find <code>uid</code>?<br>A: Refer to <code>Cross Reference</code> section in <a href="../spec/docfx_flavored_markdown.html">DFM</a>.  </li>
-<li>Q: Where to find <code>uid</code>?<br>A: In the generated website, F12 to view source, <code>uid</code> is the value from <code>data-uid</code> attribute.</li>
+<li>Q: How to quickly reference APIs from other APIs or conceptual files?
+A: Use <code>@uid</code> syntax.</li>
+<li>Q: What is <code>uid</code> and where to find <code>uid</code>?
+A: Refer to <code>Cross Reference</code> section in <a href="../spec/docfx_flavored_markdown.html">DFM</a>.</li>
+<li>Q: Where to find <code>uid</code>?
+A: In the generated website, F12 to view source, <code>uid</code> is the value from <code>data-uid</code> attribute.</li>
 </ol>
 
             </article>
