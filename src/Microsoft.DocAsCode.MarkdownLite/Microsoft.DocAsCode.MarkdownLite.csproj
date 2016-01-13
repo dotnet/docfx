@@ -106,6 +106,10 @@
     <Compile Include="StringHelper.cs" />
     <Compile Include="InlineContent.cs" />
     <Compile Include="TokenHelper.cs" />
+    <Compile Include="Validators\IMarkdownTokenValidator.cs" />
+    <Compile Include="Validators\IMarkdownTokenValidatorProvider.cs" />
+    <Compile Include="Validators\MarkdownTokenValidatorAdapter.cs" />
+    <Compile Include="Validators\MarkdownTokenValidatorFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
