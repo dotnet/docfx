@@ -23,6 +23,24 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new MarkdownLambdaTokenRewriter<TEngine, TToken>(rewriteFunc);
         }
 
+        public static IMarkdownTokenRewriter FromValidators(IEnumerable<IMarkdownTokenValidator> validators)
+        {
+            if (validators == null)
+            {
+                throw new ArgumentNullException(nameof(validators));
+            }
+            return new MarkdownTokenValidatorAdapter(validators);
+        }
+
+        public static IMarkdownTokenRewriter FromValidators(params IMarkdownTokenValidator[] validators)
+        {
+            if (validators == null)
+            {
+                throw new ArgumentNullException(nameof(validators));
+            }
+            return new MarkdownTokenValidatorAdapter(validators);
+        }
+
         public static IMarkdownTokenRewriter Composite(params IMarkdownTokenRewriter[] rewriters)
         {
             return Composite((IEnumerable<IMarkdownTokenRewriter>)rewriters);

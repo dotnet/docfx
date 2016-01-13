@@ -289,6 +289,31 @@ this should be same line with the above one</p>
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestGfmWithValidator()
+        {
+            const string source = "#Hello World";
+            const string expected = "<h1 id=\"hello-world\">Hello World</h1>\n";
+            const string expectedMessage = "a space is expected after '#'";
+            string message = null;
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownTokenRewriterFactory.FromValidators(
+                    MarkdownTokenValidatorFactory.FromLambda(
+                        (MarkdownHeadingBlockToken token) =>
+                        {
+                            if (!token.RawMarkdown.StartsWith("# "))
+                            {
+                                message = expectedMessage;
+                            }
+                        }));
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(expectedMessage, message);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestGfmWithRewrite()
         {
             const string source = @"
@@ -369,7 +394,7 @@ by a blank line.</p>
                             (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown, t.RawMarkdown)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa" , 1, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa", 1, t.RawMarkdown)
                         )
                     ),
                 10);
