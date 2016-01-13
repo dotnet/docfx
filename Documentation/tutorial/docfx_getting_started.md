@@ -14,7 +14,7 @@ Getting Started with `docfx`
 
 2. Use `docfx.exe` directly
 -----------------------
-Download and unzip [docfx.zip](https://github.com/dotnet/docfx/releases/download/v1.3/docfx.zip) to run `docfx.exe` directly!
+Download and unzip [docfx.zip] from https://github.com/dotnet/docfx/releases to run `docfx.exe` directly!
 
 ### 2.1 Quick Start
 **Step1.** Run

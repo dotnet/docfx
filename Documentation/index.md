@@ -28,7 +28,7 @@ documentType: index
     </div>
     <div class="buttons-unit">
       <a href="tutorial/docfx_getting_started.md" class="button">Get Started</a>
-      <a href="https://github.com/dotnet/docfx/releases/download/v1.3/docfx.zip" class="button">Download Latest Docfx!</a>
+      <a href="https://github.com/dotnet/docfx/releases" class="button">Download Latest Docfx!</a>
     </div>
   </div>
 </div>
