@@ -125,6 +125,15 @@ namespace Microsoft.DocAsCode.E2E.Tests
             // check article
             Assert.NotEmpty(_driver.FindElements(By.XPath("//article[@id='_content']")));
 
+            // check overwrite
+            element = _driver.FindElement(By.ClassName("conceptual"));
+            Assert.Contains("This is a class talking about CAT.", element.Text);
+            _driver.FindElement(By.LinkText("CAT")).Click();
+            Assert.Contains("Wikipedia", _driver.Title);
+            _driver.Navigate().Back();
+            element = _driver.FindElement(By.TagName("blockquote"));
+            Assert.Equal("NOTE This is a CAT class", element.Text);
+
             // check "View Source" button
             _driver.FindElement(By.LinkText("View Source")).Click();
             Assert.Contains("GitHub", _driver.Title);
