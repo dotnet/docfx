@@ -56,6 +56,7 @@ namespace Microsoft.DocAsCode.Dfm
                 .WithAssemblies(
                     from assembly in AppDomain.CurrentDomain.GetAssemblies()
                     where !assembly.IsDynamic && !assembly.ReflectionOnly
+                    where !assembly.GetName().Name.StartsWith("xunit")
                     select assembly)
                 .CreateContainer();
         }
