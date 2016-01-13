@@ -381,6 +381,7 @@ body .toc{
 }
 .expand-stub {
   position: absolute;
+  left: -10px;
 }
 .toc .nav > li > a.sidetoc-expand {
   position: absolute;
@@ -393,7 +394,7 @@ body .toc{
   padding: 0;
 }
 .toc .nav > li > .expand-stub + a {
-  margin-left: 15px;
+  margin-left: 5px;
   display: block;
 }
 .toc .nav > li > a:hover,
