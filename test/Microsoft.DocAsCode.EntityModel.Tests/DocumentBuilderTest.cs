@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
@@ -27,21 +28,19 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         {
             Listener = new TestLoggerListener(phaseName);
             Logger.RegisterListener(Listener);
-            DocfxFlavoredMarked.ClearBuilder();
         }
 
         private void CleanUp()
         {
             Logger.UnregisterAllListeners();
             Listener = null;
-            DocfxFlavoredMarked.ClearBuilder();
         }
 
         [Fact]
         public void TestBuild()
         {
-            const string documentsBaseDir = "documents";
-            const string outputBaseDir = "output";
+            const string documentsBaseDir = "db.documents";
+            const string outputBaseDir = "db.output";
 
             #region Prepare test data
             if (Directory.Exists(documentsBaseDir))
@@ -93,7 +92,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                     "test",
                 });
             File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
-            File.WriteAllText(DfmEngineBuilder.MarkdownStyleCopFileName, @"[
+            File.WriteAllText(DfmEngineBuilder.MarkdownStyleFileName, @"[
     {
         tagNames: [""p""],
         behavior: ""Warning"",
@@ -107,22 +106,23 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
-            Init(DocumentBuilder.PhaseName + "." + MarkdownValidatorBuilder.MarkdownValidatePhaseName);
+            Init(string.Join(".", nameof(DocumentBuilderTest), DocumentBuilder.PhaseName, MarkdownValidatorBuilder.MarkdownValidatePhaseName));
             try
             {
+                using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
                 using (var builder = new DocumentBuilder())
                 {
                     builder.Build(
-                    new DocumentBuildParameters
-                    {
-                        Files = files,
-                        OutputBaseDir = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
-                        ExportRawModel = true,
-                        Metadata = new Dictionary<string, object>
+                        new DocumentBuildParameters
                         {
-                            ["meta"] = "Hello world!",
-                        }.ToImmutableDictionary()
-                    });
+                            Files = files,
+                            OutputBaseDir = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
+                            ExportRawModel = true,
+                            Metadata = new Dictionary<string, object>
+                            {
+                                ["meta"] = "Hello world!",
+                            }.ToImmutableDictionary()
+                        });
                 }
             }
             finally
@@ -136,11 +136,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
                 Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
                 Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
-                Assert.Equal("documents/test.md", Listener.Items[0].File);
+                Assert.Equal(documentsBaseDir + "/test.md", Listener.Items[0].File);
 
                 Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
                 Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
-                Assert.Equal("documents/test/test.md", Listener.Items[1].File);
+                Assert.Equal(documentsBaseDir + "/test/test.md", Listener.Items[1].File);
             }
 
             {
@@ -152,7 +152,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                     model["rawTitle"]);
                 Assert.Equal(
                     "\n<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
-                    "Test link: <a href=\"~/documents/test/test.md\">link text</a>\n" +
+                    "Test link: <a href=\"~/db.documents/test/test.md\">link text</a>\n" +
                     "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a></p>\n" +
                     "<p><p>\n" +
                     "test</p>\n",
@@ -181,61 +181,6 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.True(meta.ContainsKey("uid"));
                 Assert.Equal("r1", meta["uid"]);
             }
-
-            // TODO: remove. Reason: intermediate files are no longer generated
-            //{
-            //    // check manifest file.
-            //    var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.ManifestFileName);
-            //    Assert.True(File.Exists(filepath));
-            //    var manifest = YamlUtility.Deserialize<List<Dictionary<string, object>>>(filepath);
-            //    Assert.Equal(5, manifest.Count);
-            //    Assert.Equal("Conceptual", manifest[0]["type"]);
-            //    Assert.Equal(@"documents/test.json", manifest[0]["model"]);
-            //    Assert.Equal("Conceptual", manifest[1]["type"]);
-            //    Assert.Equal(@"documents/test/test.json", manifest[1]["model"]);
-            //    Assert.Equal("ManagedReference", manifest[2]["type"]);
-            //    Assert.Equal(@"System.Console.json", manifest[2]["model"]);
-            //    Assert.Equal("ManagedReference", manifest[3]["type"]);
-            //    Assert.Equal(@"System.ConsoleColor.json", manifest[3]["model"]);
-            //    Assert.Equal("Resource", manifest[4]["type"]);
-            //    Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll.json", manifest[4]["model"]);
-            //    Assert.Equal("Microsoft.DocAsCode.EntityModel.Tests.dll", manifest[4]["resource"]);
-            //}
-
-            //{
-            //    // check file map
-            //    var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.FileMapFileName);
-            //    Assert.True(File.Exists(filepath));
-            //    var filemap = YamlUtility.Deserialize<Dictionary<string, string>>(filepath);
-            //    Assert.Equal(5, filemap.Count);
-            //    Assert.Equal("~/documents/test.json", filemap["~/documents/test.md"]);
-            //    Assert.Equal("~/documents/test/test.json", filemap["~/documents/test/test.md"]);
-            //    Assert.Equal("~/System.Console.json", filemap["~/TestData/System.Console.csyml"]);
-            //    Assert.Equal("~/System.ConsoleColor.json", filemap["~/TestData/System.ConsoleColor.csyml"]);
-            //    Assert.Equal("~/Microsoft.DocAsCode.EntityModel.Tests.dll", filemap["~/Microsoft.DocAsCode.EntityModel.Tests.dll"]);
-            //}
-
-            //{
-            //    // check external xref spec
-            //    var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.ExternalXRefSpecFileName);
-            //    Assert.True(File.Exists(filepath));
-            //    var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
-            //    Assert.Equal(0, xref.Count);
-            //}
-
-            //{
-            //    // check internal xref spec
-            //    var filepath = Path.Combine(outputBaseDir, DocumentBuildContext.InternalXRefSpecFileName);
-            //    Assert.True(File.Exists(filepath));
-            //    var xref = YamlUtility.Deserialize<List<XRefSpec>>(filepath);
-            //    Assert.Equal(70, xref.Count);
-            //    Assert.NotNull(xref.Single(s => s.Uid == "System.Console"));
-            //    Assert.NotNull(xref.Single(s => s.Uid == "System.Console.BackgroundColor"));
-            //    Assert.NotNull(xref.Single(s => s.Uid == "System.Console.SetOut(System.IO.TextWriter)"));
-            //    Assert.NotNull(xref.Single(s => s.Uid == "System.Console.WriteLine(System.Int32)"));
-            //    Assert.NotNull(xref.Single(s => s.Uid == "System.ConsoleColor"));
-            //    Assert.NotNull(xref.Single(s => s.Uid == "System.ConsoleColor.Black"));
-            //}
 
             #region Cleanup
             Directory.Delete(documentsBaseDir, true);
