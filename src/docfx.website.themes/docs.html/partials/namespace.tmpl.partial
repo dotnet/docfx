@@ -56,11 +56,9 @@
       </section>
       <section class="secondary">
         {{#syntax}}
-        <figure><pre>
-          {{#content}}
-          <code lang="lang-{{lang}}">{{value}}</code>
-          {{/content}}
-        </pre></figure>
+        <figure>
+          <pre>{{#content}}<code lang="lang-{{lang}}">{{value}}</code>{{/content}}</pre>
+        </figure>
       {{/syntax}}
       </section>
     </div>

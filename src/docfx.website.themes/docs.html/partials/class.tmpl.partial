@@ -90,11 +90,9 @@
         <section class="secondary">
           <h6>Declaration</h6>
           {{#syntax}}
-          <figure><pre>
-            {{#content}}
-            <code lang="lang-{{lang}}">{{value}}</code>
-            {{/content}}
-          </pre></figure>
+          <figure>
+            <pre>{{#content}}<code lang="lang-{{lang}}">{{value}}</code>{{/content}}</pre>
+          </figure>
           {{/syntax}}
         </section>
       </div>
@@ -137,7 +135,7 @@
                 </li>
               </ol>
               <section class="description">
-                {{{description}}}                    
+                {{{description}}}
               </section>
             </li>
           </ul>
