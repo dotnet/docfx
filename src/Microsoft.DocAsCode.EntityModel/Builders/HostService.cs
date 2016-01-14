@@ -23,6 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
         private readonly LruList<FileModel> _lru = LruList<FileModel>.Create(0xC00, OnLruRemoving);
+        private DfmEngineBuilder _engine = DocfxFlavoredMarked.CreateBuilder();
 
         public ImmutableList<FileModel> Models { get; private set; }
 
@@ -75,9 +76,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
         }
 
-        public MarkupResult MarkupCore(string markdown, FileAndType ft)
+        private MarkupResult MarkupCore(string markdown, FileAndType ft)
         {
-            var html = DocfxFlavoredMarked.Markup(markdown, Path.Combine(ft.BaseDir, ft.File));
+            var html = _engine.CreateDfmEngine(DocfxFlavoredMarked.Renderer).Markup(markdown, Path.Combine(ft.BaseDir, ft.File));
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             var result = new MarkupResult();

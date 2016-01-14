@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
     using System.Linq;
@@ -16,7 +15,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
-        public const string MarkdownStyleCopFileName = "md.style";
+        public const string MarkdownStyleFileName = "md.style";
 
         public DfmEngineBuilder(Options options) : base(options)
         {
@@ -66,9 +65,9 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             try
             {
-                if (File.Exists(MarkdownStyleCopFileName))
+                if (File.Exists(MarkdownStyleFileName))
                 {
-                    var rules = JsonUtility.Deserialize<MarkdownTagValidationRule[]>(MarkdownStyleCopFileName);
+                    var rules = JsonUtility.Deserialize<MarkdownTagValidationRule[]>(MarkdownStyleFileName);
                     var builder = new MarkdownValidatorBuilder(host);
                     builder.AddTagValidators(rules);
                     return builder.Create();
