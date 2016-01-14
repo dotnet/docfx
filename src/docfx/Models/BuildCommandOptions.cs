@@ -8,7 +8,8 @@ namespace Microsoft.DocAsCode
     using CommandLine;
     using Microsoft.DocAsCode.EntityModel;
 
-    internal class BuildCommandOptions
+    [OptionUsage("build [<config file path>]")]
+    internal class BuildCommandOptions : ICanPrintHelpMessage, ILoggable
     {
         [Option('o', "output")]
         public string OutputFolder { get; set; }
@@ -16,11 +17,11 @@ namespace Microsoft.DocAsCode
         [ValueOption(0)]
         public string ConfigFile { get; set; }
 
-        [Option("help")]
-        public bool IsHelp { get; set; }
+        [Option('h', "help", HelpText = "Print help message for this sub-command")]
+        public bool PrintHelpMessage { get; set; }
 
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]
-        public string Log { get; set; }
+        public string LogFilePath { get; set; }
 
         [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
         public LogLevel? LogLevel { get; set; }
@@ -48,5 +49,17 @@ namespace Microsoft.DocAsCode
 
         [Option('p', "port", HelpText = "Specify the port of the hosted website")]
         public int? Port { get; set; }
+
+        [Option('f', "force", HelpText = "Force re-build all the documentation")]
+        public bool ForceRebuild { get; set; }
+
+        [Option("globalMetadata", HelpText = "Specify global metadata key-value pair in json format. It overrides the globalMetadata settings from the config file.")]
+        public string GlobalMetadata { get; set; }
+
+        [Option("globalMetadataFile", HelpText = "Specify a JSON file path containing globalMetadata settings, as similar to {\"globalMetadata\":{\"key\":\"value\"}}. It overrides the globalMetadata settings from the config file.")]
+        public string GlobalMetadataFilePath { get; set; }
+
+        [Option("fileMetadataFile", HelpText = "Specify a JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
+        public string FileMetadataFilePath { get; set; }
     }
 }

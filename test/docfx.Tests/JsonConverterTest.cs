@@ -36,10 +36,48 @@ namespace Microsoft.DocAsCode.Tests
                 for (int i = 0; i < pairs.Count; i++)
                 {
                     Assert.Equal(item[i].Glob.Raw, pairs[i].Glob.Raw);
-                    var parsedValue = ConvertJObjectToObject((JToken)pairs[i].Value);
+                    var parsedValue = pairs[i].Value;
                     Assert.Equal(item[i].Value, parsedValue);
                 }
             }
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        public void TestFileMappingItemCwdInputShouldWork()
+        {
+            var input = "{\"files\":[\"file1\"],\"cwd\":\"folder1\"}";
+            using (var sr = new StringReader(input))
+            {
+                var result = JsonUtility.Deserialize<FileMappingItem>(sr);
+                Assert.Equal("folder1", result.SourceFolder);
+            }
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        public void TestFileMappingItemSrcInputShouldWork()
+        {
+            var input = "{\"files\":[\"file1\"],\"src\":\"folder1\"}";
+            using(var sr = new StringReader(input))
+            {
+                var result = JsonUtility.Deserialize<FileMappingItem>(sr);
+                Assert.Equal("folder1", result.SourceFolder);
+            }
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        public void TestFileMappingItemOutputShouldContainSrcOnly()
+        {
+            var fileMappingItem = new FileMappingItem
+            {
+                Files = new FileItems("file1"),
+                SourceFolder = "folder1"
+            };
+
+            var result = JsonUtility.Serialize(fileMappingItem);
+            Assert.Equal("{\"files\":[\"file1\"],\"src\":\"folder1\"}", result);
         }
 
         private static object ConvertJObjectToObject(object raw)

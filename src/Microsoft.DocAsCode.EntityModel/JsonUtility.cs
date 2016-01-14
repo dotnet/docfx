@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public static class JsonUtility
     {
-        private static readonly ThreadLocal<JsonSerializer> serializer = new ThreadLocal<JsonSerializer>(
+        private static readonly ThreadLocal<JsonSerializer> _serializer = new ThreadLocal<JsonSerializer>(
             () =>
                 {
                     var jsonSerializer = new JsonSerializer();
@@ -20,13 +20,14 @@ namespace Microsoft.DocAsCode.EntityModel
                     return jsonSerializer;
                 });
 
-        public static void Serialize(TextWriter writer, object graph, Formatting formatting = Formatting.None)
+        public static void Serialize(TextWriter writer, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
-            serializer.Value.Formatting = formatting;
-            serializer.Value.Serialize(writer, graph);
+            var localSerializer = serializer ?? _serializer.Value;
+            localSerializer.Formatting = formatting;
+            localSerializer.Serialize(writer, graph);
         }
 
-        public static string Serialize(object graph, Formatting formatting = Formatting.None)
+        public static string Serialize(object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
             using (StringWriter writer = new StringWriter())
             {
@@ -35,7 +36,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        public static void Serialize(string path, object graph, Formatting formatting = Formatting.None)
+        public static void Serialize(string path, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
             var directory = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(directory))
@@ -49,20 +50,21 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        public static T Deserialize<T>(string path)
+        public static T Deserialize<T>(string path, JsonSerializer serializer = null)
         {
             using (StreamReader reader = new StreamReader(path))
             {
-                return Deserialize<T>(reader);
+                return Deserialize<T>(reader, serializer);
             }
         }
 
-        public static T Deserialize<T>(TextReader reader)
+        public static T Deserialize<T>(TextReader reader, JsonSerializer serializer = null)
         {
             using (JsonReader json = new JsonTextReader(reader))
             {
-                return serializer.Value.Deserialize<T>(json);
+                return (serializer ?? _serializer.Value).Deserialize<T>(json);
             }
+
         }
     }
 }

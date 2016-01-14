@@ -9,9 +9,9 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmNoteBlockRule : IMarkdownRule
     {
-        public string Name => "DfmNoteBlockRule";
+        public virtual string Name => "DfmNoteBlockRule";
 
-        public Regex _dfmNoteRegex = new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\]\s*(?:\n|$))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public virtual Regex DfmNoteRegex => new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\]\s*(?:\n|$))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 return null;
             }
-            var match = _dfmNoteRegex.Match(source);
+            var match = DfmNoteRegex.Match(source);
             if (match.Length == 0)
             {
                 return null;

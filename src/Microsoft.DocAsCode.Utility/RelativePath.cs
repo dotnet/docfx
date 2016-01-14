@@ -16,17 +16,19 @@ namespace Microsoft.DocAsCode.Utility
 
         #region Consts/Fields
         private const string ParentDirectory = "../";
-        public static readonly RelativePath Empty = new RelativePath(0, new string[] { string.Empty });
-        public static readonly RelativePath WorkingFolder = new RelativePath(0, new string[] { "~", string.Empty });
+        public static readonly RelativePath Empty = new RelativePath(false, 0, new string[] { string.Empty });
+        public static readonly RelativePath WorkingFolder = new RelativePath(true, 0, new string[] { string.Empty });
 
+        private readonly bool _isFromWorkingFolder;
         private readonly int _parentDirectoryCount;
         private readonly string[] _parts;
         #endregion
 
         #region Constructor
 
-        private RelativePath(int parentDirectoryCount, string[] parts)
+        private RelativePath(bool isFromWorkingFolder, int parentDirectoryCount, string[] parts)
         {
+            _isFromWorkingFolder = isFromWorkingFolder;
             _parentDirectoryCount = parentDirectoryCount;
             _parts = parts;
         }
@@ -49,6 +51,7 @@ namespace Microsoft.DocAsCode.Utility
             {
                 throw new ArgumentException($"Rooted path({path}) is not supported", nameof(path));
             }
+            bool isFromWorkingFolder = false;
             var parts = path.Replace('\\', '/').Split('/');
             var stack = new Stack<string>();
             int parentCount = 0;
@@ -56,6 +59,13 @@ namespace Microsoft.DocAsCode.Utility
             {
                 switch (parts[i])
                 {
+                    case "~":
+                        if (parentCount > 0 || stack.Count > 0 || isFromWorkingFolder)
+                        {
+                            throw new InvalidOperationException($"Invalid path: {path}");
+                        }
+                        isFromWorkingFolder = true;
+                        break;
                     case "..":
                         if (stack.Count > 0)
                         {
@@ -79,7 +89,7 @@ namespace Microsoft.DocAsCode.Utility
                 // if end with "/", treat it as folder
                 stack.Push(string.Empty);
             }
-            return Create(parentCount, stack.Reverse());
+            return Create(isFromWorkingFolder, parentCount, stack.Reverse());
         }
 
         public int ParentDirectoryCount => _parentDirectoryCount;
@@ -99,13 +109,17 @@ namespace Microsoft.DocAsCode.Utility
         /// </summary>
         public RelativePath BasedOn(RelativePath path)
         {
+            if (_isFromWorkingFolder)
+            {
+                return this;
+            }
             if (this.ParentDirectoryCount >= path.SubdirectoryCount)
             {
-                return Create(path.ParentDirectoryCount - path.SubdirectoryCount + this.ParentDirectoryCount, this._parts);
+                return Create(path._isFromWorkingFolder, path.ParentDirectoryCount - path.SubdirectoryCount + this.ParentDirectoryCount, this._parts);
             }
             else
             {
-                return Create(path.ParentDirectoryCount, path.GetSubdirectories(this.ParentDirectoryCount).Concat(this._parts));
+                return Create(path._isFromWorkingFolder, path.ParentDirectoryCount, path.GetSubdirectories(this.ParentDirectoryCount).Concat(this._parts));
             }
         }
 
@@ -120,6 +134,14 @@ namespace Microsoft.DocAsCode.Utility
         /// </summary>
         public RelativePath MakeRelativeTo(RelativePath relativeTo)
         {
+            if (_isFromWorkingFolder != relativeTo._isFromWorkingFolder)
+            {
+                if (_isFromWorkingFolder)
+                {
+                    return this;
+                }
+                throw new NotSupportedException("From working folder must be same.");
+            }
             if (_parentDirectoryCount < relativeTo._parentDirectoryCount)
             {
                 throw new NotSupportedException("Relative to path has too many '../'.");
@@ -137,7 +159,7 @@ namespace Microsoft.DocAsCode.Utility
                 commonCount++;
             }
             parentCount += rightParts.Length - 1 - commonCount;
-            return Create(parentCount, leftParts.Skip(commonCount));
+            return Create(false, parentCount, leftParts.Skip(commonCount));
         }
 
         /// <summary>
@@ -155,27 +177,23 @@ namespace Microsoft.DocAsCode.Utility
 
         public bool IsFromWorkingFolder()
         {
-            return _parentDirectoryCount == 0 && _parts.Length > 1 && _parts[0] == "~";
+            return _isFromWorkingFolder;
         }
 
         public RelativePath GetPathFromWorkingFolder()
         {
-            if (_parentDirectoryCount > 0)
-            {
-                throw new InvalidOperationException();
-            }
-            if (IsFromWorkingFolder())
+            if (_isFromWorkingFolder)
             {
                 return this;
             }
-            return WorkingFolder + this;
+            return new RelativePath(true, _parentDirectoryCount, _parts);
         }
 
         public RelativePath RemoveWorkingFolder()
         {
-            if (IsFromWorkingFolder())
+            if (_isFromWorkingFolder)
             {
-                return this - WorkingFolder;
+                return new RelativePath(false, _parentDirectoryCount, _parts);
             }
             return this;
         }
@@ -225,6 +243,7 @@ namespace Microsoft.DocAsCode.Utility
         }
 
         public override string ToString() =>
+            (_isFromWorkingFolder ? "~/" : "") +
             string.Concat(Enumerable.Repeat(ParentDirectory, _parentDirectoryCount)) +
             string.Join("/", _parts);
 
@@ -232,7 +251,7 @@ namespace Microsoft.DocAsCode.Utility
 
         #region Private Members
 
-        private static RelativePath Create(int parentDirectoryCount, IEnumerable<string> parts)
+        private static RelativePath Create(bool isFromWorkingFolder, int parentDirectoryCount, IEnumerable<string> parts)
         {
             var partArray = parts.ToArray();
             if (parentDirectoryCount == 0 &&
@@ -240,9 +259,16 @@ namespace Microsoft.DocAsCode.Utility
                  (partArray.Length == 1 &&
                   partArray[0].Length == 0)))
             {
-                return Empty;
+                if (isFromWorkingFolder)
+                {
+                    return WorkingFolder;
+                }
+                else
+                {
+                    return Empty;
+                }
             }
-            return new RelativePath(parentDirectoryCount, partArray);
+            return new RelativePath(isFromWorkingFolder, parentDirectoryCount, partArray);
         }
 
         private IEnumerable<string> GetSubdirectories(int skip)
@@ -286,7 +312,7 @@ namespace Microsoft.DocAsCode.Utility
             return (left ?? Empty).MakeRelativeTo(right ?? Empty);
         }
 
-        public static implicit operator string (RelativePath path)
+        public static implicit operator string(RelativePath path)
         {
             if (path == null)
             {

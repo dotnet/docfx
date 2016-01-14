@@ -4,12 +4,11 @@
 namespace Microsoft.DocAsCode
 {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-
-    using CommandLine;
 
     using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.SubCommands;
 
     internal class Program
     {
@@ -17,33 +16,7 @@ namespace Microsoft.DocAsCode
         {
             try
             {
-                var consoleLogListener = new ConsoleLogListener();
-                Logger.RegisterListener(consoleLogListener);
-                Options options = GetOptions(args);
-
-                if (!string.IsNullOrWhiteSpace(options.Log))
-                {
-                    Logger.RegisterListener(new ReportLogListener(options.Log));
-                }
-
-                if (options.LogLevel.HasValue)
-                {
-                    Logger.LogLevelThreshold = options.LogLevel.Value;
-                }
-
-                var replayListener = new ReplayLogListener();
-                replayListener.AddListener(consoleLogListener);
-                Logger.RegisterListener(replayListener);
-                Logger.UnregisterListener(consoleLogListener);
-
-                var context = new RunningContext();
-                Exec(options, context);
-                return 0;
-            }
-            catch(Exception e)
-            {
-                Logger.LogError(e.ToString());
-                return 1;
+                return ExecSubCommand(args);
             }
             finally
             {
@@ -51,53 +24,56 @@ namespace Microsoft.DocAsCode
                 Logger.UnregisterAllListeners();
             }
         }
-
-        private static Options GetOptions(string[] args)
+        
+        private static int ExecSubCommand(string[] args)
         {
-            var options = new Options();
+            var consoleLogListener = new ConsoleLogListener();
+            var replayListener = new ReplayLogListener();
+            replayListener.AddListener(consoleLogListener);
+            Logger.RegisterListener(replayListener);
 
-            string invokedVerb = null;
-            object invokedVerbInstance = null;
-            if (args.Length == 0)
+            CommandController controller = null;
+            ISubCommand command;
+            try
             {
-                return options;
+                controller = ArgsParser.Instance.Parse(args);
+                command = controller.Create();
+            }
+            catch (OptionParserException e)
+            {
+                Logger.LogError(e.Message);
+                if (controller != null)
+                {
+                    Console.WriteLine(controller.GetHelpText());
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                if (controller != null)
+                {
+                    Console.WriteLine(controller.GetHelpText());
+                }
+                return 1;
             }
 
-            if (!Parser.Default.ParseArguments(args, options, (s, o) =>
+            var context = new SubCommandRunningContext();
+            try
             {
-                invokedVerb = s;
-                invokedVerbInstance = o;
-            }))
-            {
-                if (!Parser.Default.ParseArguments(args, options))
-                {
-                    var text = HelpTextGenerator.GetHelpMessage(options);
-                    throw new ArgumentException(text);
-                }
-                else
-                {
-                    return options;
-                }
+                command.Exec(context);
+                return 0;
             }
-            else
+            catch (DocfxException de)
             {
-                try
-                {
-                    options.CurrentSubCommand = (CommandType)Enum.Parse(typeof(CommandType), invokedVerb, true);
-                }
-                catch (Exception e)
-                {
-                    throw new ArgumentException($"{invokedVerb} subcommand is not currently supported.", e);
-                }
+                Logger.LogError(de.Message);
+                return 1;
             }
-
-            return options;
-        }
-
-        private static void Exec(Options options, RunningContext context)
-        {
-            ICommand command = CommandFactory.GetCommand(options);
-            command.Exec(context);
+            catch (Exception e)
+            {
+                Logger.LogError(e.ToString());
+                return 1;
+            }
         }
     }
 }

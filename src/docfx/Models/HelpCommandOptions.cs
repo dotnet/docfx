@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using CommandLine;
 
+    [OptionUsage("help <command name>")]
     internal class HelpCommandOptions
     {
         [ValueOption(0)]

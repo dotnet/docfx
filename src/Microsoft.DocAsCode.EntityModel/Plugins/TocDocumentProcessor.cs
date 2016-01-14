@@ -14,14 +14,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
-    public class TocDocumentProcessor : IDocumentProcessor
+    public class TocDocumentProcessor : DisposableDocumentProcessor
     {
-        public string Name => nameof(TocDocumentProcessor);
+        public override string Name => nameof(TocDocumentProcessor);
 
         [ImportMany(nameof(TocDocumentProcessor))]
-        public IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
+        public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
 
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
+        public override ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             if (file.Type == DocumentType.Article)
             {
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return ProcessingPriority.NotSupportted;
         }
 
-        public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
+        public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             var filePath = Path.Combine(file.BaseDir, file.File);
             TocViewModel toc = LoadSingleToc(filePath);
@@ -52,10 +52,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        public SaveResult Save(FileModel model)
+        public override SaveResult Save(FileModel model)
         {
             var toc = (TocViewModel)model.Content;
-            var path = (RelativePath)model.OriginalFileAndType.File;
 
             JsonUtility.Serialize(Path.Combine(model.BaseDir, model.File), toc);
             return new SaveResult

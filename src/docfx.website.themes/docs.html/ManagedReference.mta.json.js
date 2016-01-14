@@ -2,7 +2,8 @@ function transform(model, _attrs){
   var entity = JSON.parse(model);
   var attrs = JSON.parse(_attrs);
 
-  // Clean up unused predefined properties
+  entity.layout = "Reference";
+  entity.title = entity.items[0].name + " " + entity.items[0].type;
 
   // If toc is not defined in model, read it from _attrs
   if (attrs._tocPath && attrs._tocPath.indexOf("~/") == 0){

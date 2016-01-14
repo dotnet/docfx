@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownParagraphBlockRule : IMarkdownRule
     {
-        public string Name => "Paragraph";
+        public virtual string Name => "Paragraph";
 
         public virtual Regex Paragraph => Regexes.Block.Paragraph;
 

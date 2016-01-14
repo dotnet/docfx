@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Collections.Immutable;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Utility;
+
     /// <summary>
     /// Replay log on flushing.
     /// </summary>
@@ -38,9 +40,16 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
+        public void AddListener(ILoggerListener listener)
+        {
+            _listeners = _listeners.Add(listener);
+        }
+
         public void Flush()
         {
-            WriteHeader();
+            var logLevel = _replayList.FirstOrDefault(s => s.Value.Count > 0).Key;
+            var buildStatus = GetBuildStatusFromLogLevel(logLevel);
+            WriteHeader(buildStatus);
             foreach (var list in _replayList)
             {
                 foreach (var item in list.Value)
@@ -54,7 +63,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 listener.Flush();
             }
 
-            WriteFooter();
+            WriteFooter(buildStatus);
 
             foreach (var level in _replayList.Keys.ToList())
             {
@@ -71,39 +80,31 @@ namespace Microsoft.DocAsCode.EntityModel
             WriteLineCore(item);
         }
 
-        private void WriteHeader()
+        private void WriteHeader(BuildStatus status)
         {
-            var logLevel = _replayList.FirstOrDefault(s => s.Value.Count > 0).Key;
-            string message;
-            if (logLevel >= LogLevel.Error)
+            string message = Environment.NewLine + Environment.NewLine;
+            switch (status)
             {
-                message = "Build failed.";
+                case BuildStatus.Failed:
+                    message += "Build failed.";
+                    break;
+                case BuildStatus.SucceedWithWarning:
+                    message += "Build succeeded with warning.";
+                    break;
+                case BuildStatus.Succeed:
+                    message += "Build succeeded.";
+                    break;
+                default:
+                    break;
             }
-            else if (logLevel == LogLevel.Warning)
-            {
-                message = "Build succeeded with warning.";
-            }
-            else
-            {
-                message = "Build succeeded.";
-            }
-            var logItem = new SimpleLogItem(logLevel, $"\n\n{message}", null);
-            foreach (var listener in _listeners)
-            {
-                listener.WriteLine(logItem);
-            }
+            WriteToConsole(message, status);
         }
 
-        private void WriteFooter()
+        private void WriteFooter(BuildStatus status)
         {
-            var status = string.Join(", ", _replayList.Select(s => $"{s.Value.Count} {s.Key}(s)"));
-            var logLevel = _replayList.FirstOrDefault(s => s.Value.Count > 0).Key;
-            var header = $"\n\nThere are totally {status}";
-            var logItem = new SimpleLogItem(logLevel, header, "Build Completed.");
-            foreach (var listener in _listeners)
-            {
-                listener.WriteLine(logItem);
-            }
+            var detail = string.Join(", ", _replayList.Select(s => $"{s.Value.Count} {s.Key}(s)"));
+            var footer = $"{Environment.NewLine}{Environment.NewLine}There are totally {detail}";
+            WriteToConsole(footer, status);
         }
 
         private void WriteLineCore(ILogItem item)
@@ -114,29 +115,47 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        public void AddListener(ILoggerListener listener)
+        private static void WriteToConsole(string message, BuildStatus status)
         {
-            _listeners = _listeners.Add(listener);
+            switch (status)
+            {
+                case BuildStatus.Failed:
+                    WriteToConsole(message, ConsoleColor.Red);
+                    break;
+                case BuildStatus.SucceedWithWarning:
+                    WriteToConsole(message, ConsoleColor.Yellow);
+                    break;
+                case BuildStatus.Succeed:
+                    WriteToConsole(message, ConsoleColor.Green);
+                    break;
+                default:
+                    break;
+            }
         }
 
-        private sealed class SimpleLogItem : ILogItem
+        private static void WriteToConsole(string message, ConsoleColor color = ConsoleColor.White)
         {
-            public string File => null;
+            ConsoleUtility.WriteToConsoleWithColor(() => Console.WriteLine(message), color);
+        }
 
-            public string Line => null;
-
-            public LogLevel LogLevel { get; }
-
-            public string Message { get; }
-
-            public string Phase { get; }
-
-            public SimpleLogItem(LogLevel logLevel, string message, string phase)
+        private static BuildStatus GetBuildStatusFromLogLevel(LogLevel level)
+        {
+            switch (level)
             {
-                LogLevel = logLevel;
-                Message = message;
-                Phase = phase;
+                case LogLevel.Error:
+                    return BuildStatus.Failed;
+                case LogLevel.Warning:
+                    return BuildStatus.SucceedWithWarning;
+                default:
+                    return BuildStatus.Succeed;
             }
+        }
+
+        private enum BuildStatus
+        {
+            Failed,
+            SucceedWithWarning,
+            Succeed
         }
     }
 }

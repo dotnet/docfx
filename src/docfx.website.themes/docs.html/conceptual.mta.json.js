@@ -2,6 +2,8 @@ function transform(model, _attrs){
   var entity = JSON.parse(model);
   var attrs = JSON.parse(_attrs);
 
+  entity.layout = "Conceptual";
+
   // Clean up unused predefined properties
   entity.conceptual = undefined;
   entity.remote = undefined;

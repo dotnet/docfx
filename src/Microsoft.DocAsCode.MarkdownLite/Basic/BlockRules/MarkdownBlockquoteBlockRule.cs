@@ -22,7 +22,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
             var capStr = LeadingBlockquote.Replace(match.Value, string.Empty);
-            return new MarkdownBlockquoteBlockToken(this, engine.Context, engine.Tokenize(capStr), match.Value);
+            var blockTokens = engine.Tokenize(capStr);
+            blockTokens = TokenHelper.ParseInlineToken(engine, this, blockTokens, true);
+            return new MarkdownBlockquoteBlockToken(this, engine.Context, blockTokens, match.Value);
         }
     }
 }

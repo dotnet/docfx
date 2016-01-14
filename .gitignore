@@ -40,3 +40,4 @@ debugSettings.json
 launchSettings.json
 project.lock.json
 *.sublime-workspace
+*.nuget.targets

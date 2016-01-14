@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Tests
 
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Microsoft.DocAsCode.SubCommands;
 
     [Collection("docfx STA")]
     public class MetadataCommandTest : IClassFixture<MetadataCommandFixture>
@@ -38,17 +39,11 @@ namespace Microsoft.DocAsCode.Tests
             File.Copy("Assets/test.csproj.sample.1", projectFile);
             File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-            new MetadataCommand(
-                new Options
-                {
-                    CurrentSubCommand = CommandType.Metadata,
-                    MetadataCommand = new MetadataCommandOptions
-                    {
-                        OutputFolder = Path.Combine(Environment.CurrentDirectory, _outputFolder),
-                        Projects = new List<String> { projectFile },
-                    }
-                }
-                , null).Exec(null);
+            new MetadataCommand(new MetadataCommandOptions
+            {
+                OutputFolder = Path.Combine(Environment.CurrentDirectory, _outputFolder),
+                Projects = new List<String> { projectFile },
+            }).Exec(null);
 
             Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
@@ -110,16 +105,11 @@ namespace Microsoft.DocAsCode.Tests
             File.Copy("Assets/test.vbproj.sample.1", projectFile);
             File.Copy("Assets/test.vb.sample.1", sourceFile);
 
-            new MetadataCommand(new Options
+            new MetadataCommand(new MetadataCommandOptions
             {
-                CurrentSubCommand = CommandType.Metadata,
-                MetadataCommand = new MetadataCommandOptions
-                {
-                    OutputFolder = Path.Combine(Environment.CurrentDirectory, _outputFolder),
-                    Projects = new List<String> { projectFile },
-                }
-            }
-            , null).Exec(null);
+                OutputFolder = Path.Combine(Environment.CurrentDirectory, _outputFolder),
+                Projects = new List<String> { projectFile },
+            }).Exec(null);
             Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
             var file = Path.Combine(_outputFolder, "toc.yml");

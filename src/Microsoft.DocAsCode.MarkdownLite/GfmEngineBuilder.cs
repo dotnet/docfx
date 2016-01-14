@@ -13,13 +13,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
             BuildRules();
         }
 
-        protected void BuildRules()
+        protected virtual void BuildRules()
         {
             BuildBlockRules();
             BuildInlineRules();
         }
 
-        protected void BuildBlockRules()
+        protected virtual void BuildBlockRules()
         {
             var builder = ImmutableList<IMarkdownRule>.Empty.ToBuilder();
             builder.Add(new MarkdownNewLineBlockRule());
@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             BlockRules = builder.ToImmutable();
         }
 
-        protected void BuildInlineRules()
+        protected virtual void BuildInlineRules()
         {
             var builder = ImmutableList<IMarkdownRule>.Empty.ToBuilder();
             builder.Add(new GfmEscapeInlineRule());

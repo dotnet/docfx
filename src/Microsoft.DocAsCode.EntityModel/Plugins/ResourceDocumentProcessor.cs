@@ -13,17 +13,17 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Utility;
 
     [Export(typeof(IDocumentProcessor))]
-    public class ResourceDocumentProcessor : IDocumentProcessor
+    public class ResourceDocumentProcessor : DisposableDocumentProcessor
     {
         [ImportMany]
         public IEnumerable<IResourceFileConfig> Configs { get; set; }
 
-        public string Name => nameof(ResourceDocumentProcessor);
+        public override string Name => nameof(ResourceDocumentProcessor);
 
         [ImportMany(nameof(ResourceDocumentProcessor))]
-        public IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
+        public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
 
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
+        public override ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             if (file.Type == DocumentType.Resource)
             {
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return ProcessingPriority.NotSupportted;
         }
 
-        public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
+        public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             string uid = null;
             Dictionary<string, object> content = null;
@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        public SaveResult Save(FileModel model)
+        public override SaveResult Save(FileModel model)
         {
             if (model.FileAndType != model.OriginalFileAndType)
             {

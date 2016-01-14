@@ -4,8 +4,10 @@
 namespace Microsoft.DocAsCode
 {
     using CommandLine;
+    using Microsoft.DocAsCode.EntityModel;
 
-    internal class PackCommandOptions
+    [OptionUsage("pack")]
+    internal class PackCommandOptions : ICanPrintHelpMessage, ILoggable
     {
         [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]
         public string BaseUrl { get; set; }
@@ -27,5 +29,14 @@ namespace Microsoft.DocAsCode
 
         [Option('o', "output")]
         public string OutputFolder { get; set; }
+
+        [Option('h', "help", HelpText = "Print help message for this sub-command")]
+        public bool PrintHelpMessage { get; set; }
+
+        [Option('l', "log", HelpText = "Specify the file name to save processing log")]
+        public string LogFilePath { get; set; }
+
+        [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
+        public LogLevel? LogLevel { get; set; }
     }
 }

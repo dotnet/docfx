@@ -16,14 +16,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
-    public class ManagedReferenceDocumentProcessor : IDocumentProcessor
+    public class ManagedReferenceDocumentProcessor : DisposableDocumentProcessor
     {
         [ImportMany(nameof(ManagedReferenceDocumentProcessor))]
-        public IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
+        public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
 
-        public string Name => nameof(ManagedReferenceDocumentProcessor);
+        public override string Name => nameof(ManagedReferenceDocumentProcessor);
 
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
+        public override ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             switch (file.Type)
             {
@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return ProcessingPriority.NotSupportted;
         }
 
-        public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
+        public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             switch (file.Type)
             {
@@ -95,7 +95,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
         }
 
-        public SaveResult Save(FileModel model)
+        public override SaveResult Save(FileModel model)
         {
             if (model.Type != DocumentType.Article)
             {

@@ -86,6 +86,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\docfx.json_build\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_empty\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_invalid_key\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_invalid_format\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_metadata\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\docfx.json_metadata_build\docfx.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assets\docfx.sample.1.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -104,6 +122,10 @@
       <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Glob</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
+      <Project>{42F7A3B4-464B-403C-8352-5FBF40C696FF}</Project>
+      <Name>Microsoft.DocAsCode.Plugins</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619EC13D-8939-4F23-B7DC-7A98964BB9A4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
@@ -116,11 +138,11 @@
     <None Include="Assets\test.cs.sample.1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Compile Include="ArgsParserTest.cs" />
     <Compile Include="BuildCommandTest.cs" />
     <Compile Include="JsonConverterTest.cs" />
     <Compile Include="MetadataCommandFixture.cs" />
     <Compile Include="MetadataCommandTest.cs" />
-    <Compile Include="GetConfigTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\test.csproj.sample.1">

@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.EntityModel
             Rewriter = InitMarkdownStyleCop(host);
         }
 
-        private static IMarkdownRewriter InitMarkdownStyleCop(CompositionHost host)
+        private static IMarkdownTokenRewriter InitMarkdownStyleCop(CompositionHost host)
         {
             try
             {

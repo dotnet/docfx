@@ -33,19 +33,32 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 var page = m.Content as PageViewModel;
                 object value;
                 if (page?.Metadata != null &&
-                    page.Metadata.TryGetValue("platformVersion", out value))
+                    page.Metadata.TryGetValue("platform", out value))
                 {
                     var list = GetPlatformVersionFromMetadata(value);
                     if (list != null)
                     {
+                        list.Sort();
                         foreach (var item in page.Items)
                         {
-                            item.PlatformVersion = list;
+                            if (item.Platform == null)
+                            {
+                                item.Platform = list;
+                            }
+                            else
+                            {
+                                var set = new SortedSet<string>(item.Platform);
+                                foreach (var pv in list)
+                                {
+                                    set.Add(pv);
+                                }
+                                item.Platform = set.ToList();
+                            }
                         }
                     }
                 }
             });
-            host.LogInfo("Platform-version applied.");
+            host.LogInfo("Platform applied.");
             return models;
         }
 

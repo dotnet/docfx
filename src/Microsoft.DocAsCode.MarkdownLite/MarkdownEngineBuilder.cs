@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <summary>
         /// The markdown token rewriter.
         /// </summary>
-        public IMarkdownRewriter Rewriter { get; set; }
+        public IMarkdownTokenRewriter Rewriter { get; set; }
 
         /// <summary>
         /// Create markdown paring context.

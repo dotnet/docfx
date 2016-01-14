@@ -19,6 +19,7 @@
   <ItemGroup>
     <Compile Include="Align.cs" />
     <Compile Include="Basic\MarkdownRawToken.cs" />
+    <Compile Include="Basic\BlockTokens\MarkdownNonParagraphBlockToken.cs" />
     <Compile Include="Contexts\MarkdownInlineContext.cs" />
     <Compile Include="GfmEngineBuilder.cs" />
     <Compile Include="Gfm\GfmDelInlineRule.cs" />
@@ -37,7 +38,7 @@
     <Compile Include="IMarkdownRule.cs" />
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
-    <Compile Include="IMarkdownRewritableToken.cs" />
+    <Compile Include="IMarkdownRewritable.cs" />
     <Compile Include="MarkdownEngine.cs" />
     <Compile Include="MarkdownParserExtensions.cs" />
     <Compile Include="MarkdownRendererAdapter.cs" />
@@ -46,8 +47,9 @@
     <Compile Include="MarkdownEngineBuilder.cs" />
     <Compile Include="HtmlRenderer.cs" />
     <Compile Include="MarkdownRewriteEngine.cs" />
-    <Compile Include="Rewriters\MarkdownCompositeRewriter.cs" />
-    <Compile Include="Rewriters\IMarkdownRewriter.cs" />
+    <Compile Include="MarkdownRenderer.cs" />
+    <Compile Include="Rewriters\MarkdownCompositeTokenRewriter.cs" />
+    <Compile Include="Rewriters\IMarkdownTokenRewriter.cs" />
     <Compile Include="RegexExtentions.cs" />
     <Compile Include="Basic\BlockRules\MarkdownBlockquoteBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownCodeBlockRule.cs" />
@@ -55,10 +57,10 @@
     <Compile Include="Basic\BlockRules\MarkdownHeadingBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownHrBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownHtmlBlockRule.cs" />
-    <Compile Include="Rewriters\MarkdownLambdaRewriter.cs" />
-    <Compile Include="Rewriters\MarkdownNullRewriter.cs" />
-    <Compile Include="Rewriters\MarkdownLoopRewriter.cs" />
-    <Compile Include="Rewriters\MarkdownRewriterFactory.cs" />
+    <Compile Include="Rewriters\MarkdownLambdaTokenRewriter.cs" />
+    <Compile Include="Rewriters\MarkdownNullTokenRewriter.cs" />
+    <Compile Include="Rewriters\MarkdownLoopTokenRewriter.cs" />
+    <Compile Include="Rewriters\MarkdownTokenRewriterFactory.cs" />
     <Compile Include="Tables\MarkdownNpTableBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownParagraphBlockRule.cs" />
     <Compile Include="Tables\MarkdownTableBlockRule.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="StringBuffer.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="InlineContent.cs" />
+    <Compile Include="TokenHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

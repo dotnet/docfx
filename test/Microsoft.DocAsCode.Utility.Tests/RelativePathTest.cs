@@ -86,6 +86,8 @@ namespace Microsoft.DocAsCode.Utility.Tests
         [InlineData("", "../a/b.txt", "../a/")]
         [InlineData("../", "a/", "")]
         [InlineData("", "", "")]
+        [InlineData("~/a.txt", "a/b/c/", "~/a.txt")]
+        [InlineData("d.txt", "~/a/b/c/", "~/a/b/c/d.txt")]
         public void TestRelativePathBasedOn(string thisPath, string basedOnPath, string expected)
         {
             var actual = ((RelativePath)thisPath).BasedOn((RelativePath)basedOnPath);
@@ -103,6 +105,8 @@ namespace Microsoft.DocAsCode.Utility.Tests
         [InlineData("", "a/b.txt", "../")]
         [InlineData("a/", "a/", "")]
         [InlineData("", "", "")]
+        [InlineData("~/a/b.txt", "~/a/c.txt", "b.txt")]
+        [InlineData("~/a/b.txt", "a/c.txt", "~/a/b.txt")]
         public void TestRelativePathMakeRelativeTo(string thisPath, string relativeToPath, string expected)
         {
             try
@@ -309,6 +313,39 @@ namespace Microsoft.DocAsCode.Utility.Tests
                 Assert.NotNull(r2);
                 Assert.Equal(1, r2.ParentDirectoryCount);
                 Assert.Equal("../x/a/b/c.txt", r2.ToString());
+            }
+        }
+
+        [Fact]
+        public void TestRelativePathFromWorkingFolder()
+        {
+            {
+                var s = "~/";
+                var r = (RelativePath)s;
+                Assert.NotNull(r);
+                Assert.True(r.IsFromWorkingFolder());
+                Assert.Equal(0, r.ParentDirectoryCount);
+                Assert.Equal(s, r.ToString());
+                Assert.Equal(s, r);
+                Assert.Same(RelativePath.WorkingFolder, r);
+            }
+            {
+                var s = "~/../a.txt";
+                var r = (RelativePath)s;
+                Assert.NotNull(r);
+                Assert.True(r.IsFromWorkingFolder());
+                Assert.Equal(1, r.ParentDirectoryCount);
+                Assert.Equal(s, r.ToString());
+                Assert.Equal(s, r);
+            }
+            {
+                var s = "~/a.dir/";
+                var r = (RelativePath)s;
+                Assert.NotNull(r);
+                Assert.True(r.IsFromWorkingFolder());
+                Assert.Equal(0, r.ParentDirectoryCount);
+                Assert.Equal(s, r.ToString());
+                Assert.Equal(s, r);
             }
         }
     }

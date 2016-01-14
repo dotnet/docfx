@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode
     using System;
     using System.Collections.Generic;
 
+    using Microsoft.DocAsCode.Utility;
+
     using Newtonsoft.Json;
 
     [Serializable]
@@ -33,6 +35,7 @@ namespace Microsoft.DocAsCode
         public string Destination { get; set; }
 
         [JsonProperty("globalMetadata")]
+        [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
         public Dictionary<string, object> GlobalMetadata { get; set; }
 
         /// <summary>

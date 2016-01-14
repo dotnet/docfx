@@ -6,7 +6,8 @@ namespace Microsoft.DocAsCode.Exceptions
     using System;
     using System.Runtime.Serialization;
 
-    public class ExtractMetadataException : Exception
+    [Serializable]
+    public class ExtractMetadataException : DocfxException
     {
         public ExtractMetadataException() : this("Error happens when extracting metadata")
         {
