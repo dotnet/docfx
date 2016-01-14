@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="ExtractSearchDataTest.cs" />
     <Compile Include="DocfxFlavoredMarkdownTest.cs" />
+    <Compile Include="HtmlMarkdownTokenValidatorProvider.cs" />
     <Compile Include="MarkdownReaderTest.cs" />
     <Compile Include="TemplateManagerUnitTest.cs" />
     <Compile Include="ParsersUnitTest.cs" />

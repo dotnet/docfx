@@ -13,31 +13,60 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
-    public class MarkdownRewriterBuilder
+    public class MarkdownValidatorBuilder
     {
-        public const string StyleCopPhaseName = "Markdown StyleCop";
+        public const string MarkdownValidatePhaseName = "Markdown style";
+
         private static readonly Regex OpeningTag = new Regex(@"^\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
         private static readonly Regex ClosingTag = new Regex(@"^\</(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
 
         public CompositionHost CompositionHost { get; }
 
-        public ImmutableList<MarkdownTagValidationRule> Validators { get; set; }
+        public ImmutableList<MarkdownTagValidationRule> TagValidators { get; set; }
 
-        public MarkdownRewriterBuilder(CompositionHost host)
+        public ImmutableList<string> ValidatorContracts { get; set; }
+
+        public MarkdownValidatorBuilder(CompositionHost host)
         {
             CompositionHost = host;
-            Validators = ImmutableList<MarkdownTagValidationRule>.Empty;
+            TagValidators = ImmutableList<MarkdownTagValidationRule>.Empty;
+            ValidatorContracts = ImmutableList<string>.Empty;
         }
 
-        public void AddValidators(params MarkdownTagValidationRule[] validators)
+        public void AddTagValidators(params MarkdownTagValidationRule[] validators)
         {
-            Validators = Validators.AddRange(validators);
+            TagValidators = TagValidators.AddRange(validators);
+        }
+
+        public void AddValidators(params string[] validatorContracts)
+        {
+            ValidatorContracts = ValidatorContracts.AddRange(validatorContracts);
         }
 
         public IMarkdownTokenRewriter Create()
         {
-            var context = new MarkdownRewriterContext(CompositionHost, Validators);
-            return MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownTagInlineToken>(context.Validate);
+            var list = new List<IMarkdownTokenValidator>();
+            foreach (var contract in ValidatorContracts)
+            {
+                foreach (IMarkdownTokenValidatorProvider vp in CompositionHost.GetExports(typeof(IMarkdownTokenValidatorProvider), contract))
+                {
+                    list.AddRange(vp.GetValidators());
+                }
+            }
+            var context = new MarkdownRewriterContext(CompositionHost, TagValidators);
+            list.Add(MarkdownTokenValidatorFactory.FromLambda<MarkdownTagInlineToken>(context.Validate));
+            return MarkdownTokenRewriterFactory.FromLambda(
+                (IMarkdownRewriteEngine engine, IMarkdownToken token) =>
+                {
+                    using (new LoggerPhaseScope(MarkdownValidatePhaseName))
+                    {
+                        foreach (var item in list)
+                        {
+                            item.Validate(token);
+                        }
+                    }
+                    return null;
+                });
         }
 
         private sealed class MarkdownRewriterContext
@@ -52,7 +81,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
             public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
-            public IMarkdownToken Validate(IMarkdownRewriteEngine engine, MarkdownTagInlineToken token)
+            public void Validate(MarkdownTagInlineToken token)
             {
                 var m = OpeningTag.Match(token.RawMarkdown);
                 bool isOpeningTag = true;
@@ -61,15 +90,15 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     m = ClosingTag.Match(token.RawMarkdown);
                     if (m.Length == 0)
                     {
-                        return null;
+                        return;
                     }
                     isOpeningTag = false;
                 }
 
-                return ValidateCore(token, m, isOpeningTag);
+                ValidateCore(token, m, isOpeningTag);
             }
 
-            private IMarkdownToken ValidateCore(MarkdownTagInlineToken token, Match m, bool isOpeningTag)
+            private void ValidateCore(MarkdownTagInlineToken token, Match m, bool isOpeningTag)
             {
                 foreach (var validator in Validators)
                 {
@@ -79,38 +108,36 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                         {
                             if (string.Equals(tagName, m.Groups[1].Value, System.StringComparison.OrdinalIgnoreCase))
                             {
-                                return ValidateOne(token, m, validator);
+                                ValidateOne(token, m, validator);
+                                return;
                             }
                         }
                     }
                 }
-                return null;
+                return;
             }
 
-            private IMarkdownToken ValidateOne(MarkdownTagInlineToken token, Match m, MarkdownTagValidationRule validator)
+            private void ValidateOne(MarkdownTagInlineToken token, Match m, MarkdownTagValidationRule validator)
             {
                 if (!string.IsNullOrEmpty(validator.CustomValidatorContractName))
                 {
                     if (CompositionHost == null)
                     {
                         Logger.LogWarning($"Unable to validate tag by contract({validator.CustomValidatorContractName}): CompositionHost is null.");
-                        return null;
+                        return;
                     }
                     var customValidators = GetCustomMarkdownTagValidators(validator);
                     if (customValidators.Count == 0)
                     {
                         Logger.LogWarning($"Cannot find custom markdown tag validator by contract name: {validator.CustomValidatorContractName}.");
-                        return null;
+                        return;
                     }
                     if (customValidators.TrueForAll(av => av.Validate(token.RawMarkdown)))
                     {
-                        return null;
+                        return;
                     }
                 }
-                using (new LoggerPhaseScope(StyleCopPhaseName))
-                {
-                    return ValidateOneCore(token, m, validator);
-                }
+                ValidateOneCore(token, m, validator);
             }
 
             private List<ICustomMarkdownTagValidator> GetCustomMarkdownTagValidators(MarkdownTagValidationRule validator)
@@ -121,22 +148,19 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     .ToList();
             }
 
-            private IMarkdownToken ValidateOneCore(MarkdownTagInlineToken token, Match m, MarkdownTagValidationRule validator)
+            private void ValidateOneCore(MarkdownTagInlineToken token, Match m, MarkdownTagValidationRule validator)
             {
                 switch (validator.Behavior)
                 {
-                    case TagRewriteBehavior.Warning:
+                    case TagValidationBehavior.Warning:
                         Logger.LogWarning(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
-                        return null;
-                    case TagRewriteBehavior.Error:
+                        return;
+                    case TagValidationBehavior.Error:
                         Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
-                        return null;
-                    case TagRewriteBehavior.ErrorAndRemove:
-                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
-                        return new MarkdownIgnoreToken(token.Rule, token.Context, token.RawMarkdown);
-                    case TagRewriteBehavior.None:
+                        return;
+                    case TagValidationBehavior.None:
                     default:
-                        return null;
+                        return;
                 }
             }
         }

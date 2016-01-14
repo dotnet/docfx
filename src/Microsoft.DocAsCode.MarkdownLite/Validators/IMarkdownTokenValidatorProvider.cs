@@ -3,8 +3,10 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Immutable;
+
     public interface IMarkdownTokenValidatorProvider
     {
-        IMarkdownTokenValidator[] GetValidators();
+         ImmutableArray<IMarkdownTokenValidator> GetValidators();
     }
 }

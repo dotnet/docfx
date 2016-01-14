@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
-            Init(DocumentBuilder.PhaseName + "." + MarkdownRewriterBuilder.StyleCopPhaseName);
+            Init(DocumentBuilder.PhaseName + "." + MarkdownValidatorBuilder.MarkdownValidatePhaseName);
             try
             {
                 using (var builder = new DocumentBuilder())
