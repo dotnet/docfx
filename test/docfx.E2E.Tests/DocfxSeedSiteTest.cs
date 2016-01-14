@@ -79,17 +79,15 @@ namespace Microsoft.DocAsCode.E2E.Tests
             _driver.FindElement(By.XPath("//div[@id='navbar']/ul/li/a[@title='Articles']")).Click();
 
             // check toc
-            _driver.SwitchTo().Frame("sidetoc");
-            IList<IWebElement> results = _driver.FindElements(By.XPath("//div[@id='toc']/ul/li"));
+            IList<IWebElement> results = _driver.FindElements(By.XPath("//div[@class='sidetoc']/div[@id='toc']/ul/li"));
             Assert.NotEmpty(results);
-            Assert.Equal("Getting Started", _driver.FindElement(By.XPath("//div[@id='toc']/ul/li[@class='active in']/a")).Text);
+            Assert.Equal("Getting Started", _driver.FindElement(By.XPath("//div[@class='sidetoc']/div[@id='toc']/ul/li[@class='active in']/a")).Text);
             var title = results[results.Count - 1].Text;
 
             // check filter
             _driver.FindElement(By.Id("toc_filter_input")).SendKeys(title);
             Assert.True(results[results.Count - 1].Displayed);
             results[results.Count - 1].Click();
-            _driver.SwitchTo().Frame("sidetoc");
             results = _driver.FindElements(By.XPath("//div[@id='toc']/ul/li"));
             Assert.NotEmpty(results);
             Assert.Equal("active in", results[results.Count - 1].GetAttribute("class"));
@@ -167,10 +165,9 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.NotEmpty(_driver.FindElements(By.XPath("//footer/div[@class='footer']/div[@class='container']")));
 
             // check toc
-            _driver.SwitchTo().Frame("sidetoc");
-            results = _driver.FindElements(By.XPath("//div[@id='toc']/ul/li"));
+            results = _driver.FindElements(By.XPath("//div[@class='sidetoc']/div[@id='toc']/ul/li"));
             Assert.NotEmpty(results);
-            results = _driver.FindElements(By.XPath("//div[@id='toc']/ul/li/ul/li[@class='active in']/a"));
+            results = _driver.FindElements(By.XPath("//div[@class='sidetoc']/div[@id='toc']/ul/li/ul/li[@class='active in']/a"));
             Assert.NotEmpty(results);
             Assert.Contains(results[0].Text, title);
 
@@ -181,11 +178,9 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.Contains("tomfrombaseclass", results[0].Text.ToLower());
             Assert.True(results[0].Displayed);
             results[0].Click();
-            _driver.SwitchTo().Frame("sidetoc");
-            results = _driver.FindElements(By.XPath("//div[@id='toc']/ul/li/ul/li[@class='active in']"));
+            results = _driver.FindElements(By.XPath("//div[@class='sidetoc']/div[@id='toc']/ul/li/ul/li[@class='active in']"));
             Assert.NotEmpty(results);
             Assert.Equal("TomFromBaseClass", results[0].Text);
-            _driver.SwitchTo().DefaultContent();
 
             // check inheritance
             results = _driver.FindElements(By.XPath("//div[@class='inheritance']/div/a"));
