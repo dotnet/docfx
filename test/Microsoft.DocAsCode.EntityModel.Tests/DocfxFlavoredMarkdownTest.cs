@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.EntityModel.Tests
 {
     using System.Collections.Generic;
+    using System.Composition.Hosting;
     using System.IO;
     using System.Linq;
     using System.Xml;
@@ -11,7 +12,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel.MarkdownValidators;
+    using Microsoft.DocAsCode.Dfm;
+    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
+    using Microsoft.DocAsCode.MarkdownLite;
 
     public class DocfxFlavoredMarkdownTest
     {
@@ -279,30 +282,34 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             Assert.Equal(expected, content);
         }
 
-        //[Fact]
+        [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
-            var builder = new DfmEngineBuilder(new MarkdownLite.Options() { Mangle = false });
-            var mrb = new MarkdownRewriterBuilder(null);
-            mrb.AddValidators(
+            var builder = new DfmEngineBuilder(new Options() { Mangle = false });
+            var mrb = new MarkdownValidatorBuilder(
+                new ContainerConfiguration()
+                    .WithAssembly(typeof(DocfxFlavoredMarkdownTest).Assembly)
+                    .CreateContainer());
+            mrb.AddTagValidators(
                 new MarkdownTagValidationRule
                 {
                     TagNames = new List<string> { "em", "div" },
                     MessageFormatter = "Invalid tag({0})!",
-                    Behavior = TagRewriteBehavior.Error,
+                    Behavior = TagValidationBehavior.Error,
                     OpeningTagOnly = true,
                 },
                 new MarkdownTagValidationRule
                 {
                     TagNames = new List<string> { "h1" },
-                    MessageFormatter = "Invalid tag({0}), Removed!",
-                    Behavior = TagRewriteBehavior.ErrorAndRemove,
+                    MessageFormatter = "Warning tag({0})!",
+                    Behavior = TagValidationBehavior.Warning,
                 });
+            mrb.AddValidators(HtmlMarkdownTokenValidatorProvider.ContractName);
             builder.Rewriter = mrb.Create();
 
             var engine = builder.CreateDfmEngine(new DfmRenderer());
-            var listener = new TestLoggerListener("test!!!!");
+            var listener = new TestLoggerListener("test!!!!" + "." + MarkdownValidatorBuilder.MarkdownValidatePhaseName);
             Logger.RegisterListener(listener);
             string result;
             using (new LoggerPhaseScope("test!!!!"))
@@ -310,9 +317,9 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
                 result = engine.Markup(@"<div><i>x</i><EM>y</EM><h1>z</h1></div>", "test");
             }
             Logger.UnregisterListener(listener);
-            Assert.Equal("<div><i>x</i><EM>y</EM>z</div>", result);
-            Assert.Equal(4, listener.Items.Count);
-            Assert.Equal(new[] { "Invalid tag(div)!", "Invalid tag(EM)!", "Invalid tag(h1), Removed!", "Invalid tag(h1), Removed!" }, from item in listener.Items select item.Message);
+            Assert.Equal("<div><i>x</i><EM>y</EM><h1>z</h1></div>", result);
+            Assert.Equal(5, listener.Items.Count);
+            Assert.Equal(new[] { HtmlMarkdownTokenValidatorProvider.WarningMessage,  "Invalid tag(div)!", "Invalid tag(EM)!", "Warning tag(h1)!", "Warning tag(h1)!" }, from item in listener.Items select item.Message);
         }
 
         [Fact]

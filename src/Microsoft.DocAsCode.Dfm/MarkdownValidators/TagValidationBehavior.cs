@@ -3,11 +3,10 @@
 
 namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
 {
-    public enum TagRewriteBehavior
+    public enum TagValidationBehavior
     {
         None,
         Warning,
         Error,
-        ErrorAndRemove,
     }
 }

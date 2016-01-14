@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
     using System.Linq;
@@ -15,7 +16,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
-        public const string MarkdownStyleCopFileName = "md.stylecop";
+        public const string MarkdownStyleCopFileName = "md.style";
 
         public DfmEngineBuilder(Options options) : base(options)
         {
@@ -47,7 +48,7 @@ namespace Microsoft.DocAsCode.EntityModel
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
 
-            Rewriter = InitMarkdownStyleCop(GetContainer());
+            Rewriter = InitMarkdownStyle(GetContainer());
         }
 
         private CompositionHost GetContainer()
@@ -61,21 +62,21 @@ namespace Microsoft.DocAsCode.EntityModel
                 .CreateContainer();
         }
 
-        private static IMarkdownTokenRewriter InitMarkdownStyleCop(CompositionHost host)
+        private static IMarkdownTokenRewriter InitMarkdownStyle(CompositionHost host)
         {
             try
             {
                 if (File.Exists(MarkdownStyleCopFileName))
                 {
                     var rules = JsonUtility.Deserialize<MarkdownTagValidationRule[]>(MarkdownStyleCopFileName);
-                    var builder = new MarkdownRewriterBuilder(host);
-                    builder.AddValidators(rules);
+                    var builder = new MarkdownValidatorBuilder(host);
+                    builder.AddTagValidators(rules);
                     return builder.Create();
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Fail to init markdown stylecop, details:{Environment.NewLine}{ex.ToString()}");
+                Logger.LogWarning($"Fail to init markdown style, details:{Environment.NewLine}{ex.ToString()}");
             }
             return null;
         }

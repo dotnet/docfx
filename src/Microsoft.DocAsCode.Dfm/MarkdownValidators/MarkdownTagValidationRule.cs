@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
         /// Define tag's behavior.
         /// </summary>
         [JsonProperty("behavior")]
-        public TagRewriteBehavior Behavior { get; set; }
+        public TagValidationBehavior Behavior { get; set; }
         /// <summary>
         /// The message formatter for warning and error. '{0}' is name of tag, '{1}' is the full tag.
         /// </summary>
