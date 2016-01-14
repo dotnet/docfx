@@ -46,6 +46,8 @@
       <DocGenerateCommand>&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(OutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;</DocGenerateCommand>
       <DocGenerateCommand Condition="$(RebuildDoc)">$(DocGenerateCommand) -f</DocGenerateCommand>
       <DocGenerateCommand Condition="'$(DocTemplate)' != ''">$(DocGenerateCommand) --template &quot;$(DocTemplate)&quot; </DocGenerateCommand>
+      <DocGenerateCommand Condition="'$(GlobalMetadata)' != ''">$(DocGenerateCommand) --globalMetadata &quot;$(GlobalMetadata)&quot; </DocGenerateCommand>
+      <DocGenerateCommand Condition="'$(GlobalMetadataFile)' != ''">$(DocGenerateCommand) --globalMetadataFile &quot;$(GlobalMetadataFile)&quot; </DocGenerateCommand>
     </PropertyGroup>
     <Message Text="Executing $(DocGenerateCommand)" />
     <Exec Command="$(DocGenerateCommand)"></Exec>
