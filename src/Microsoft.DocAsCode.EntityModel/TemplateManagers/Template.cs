@@ -16,8 +16,8 @@ namespace Microsoft.DocAsCode.EntityModel
     public class Template
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
-        private string _script = null;
         private ITemplateRenderer _renderer  = null;
+        private Engine _engine = null;
         public string Name { get; }
         public string Extension { get; }
         public string Type { get; }
@@ -32,7 +32,21 @@ namespace Microsoft.DocAsCode.EntityModel
             Extension = typeAndExtension.Item2;
             Type = typeAndExtension.Item1;
             IsPrimary = typeAndExtension.Item3;
-            _script = script;
+            if (script != null)
+            {
+                var engine = new Engine();
+
+                // engine.SetValue("model", stream.ToString());
+                engine.SetValue("console", new
+                {
+                    log = new Action<object>(Logger.Log)
+                });
+
+                // throw exception when execution fails
+                engine.Execute(script);
+                _engine = engine;
+            }
+
             if (resourceProvider != null)
             {
                 if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
@@ -51,9 +65,9 @@ namespace Microsoft.DocAsCode.EntityModel
         public TemplateTransformedResult TransformModel(object model, object attrs)
         {
             if (_renderer == null) return null;
-            if (_script != null)
+            if (_engine != null)
             {
-                model = ProcessWithJint(JsonUtility.Serialize(model), attrs);
+                model = ProcessWithJint(model, attrs);
             }
 
             return new TemplateTransformedResult(model, _renderer.Render(model));
@@ -63,13 +77,13 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (_renderer == null) return null;
             object model;
-            if (_script == null)
+            if (_engine == null)
             {
                 model = JsonUtility.Deserialize<object>(modelPath);
             }
             else
             {
-                model = ProcessWithJint(File.ReadAllText(modelPath), attrs);
+                model = ProcessWithJint(JsonUtility.Deserialize<object>(modelPath), attrs);
             }
 
             return _renderer.Render(model);
@@ -81,23 +95,45 @@ namespace Microsoft.DocAsCode.EntityModel
             return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
         }
 
-        private object ProcessWithJint(string model, object attrs)
+        private object ProcessWithJint(object model, object attrs)
         {
-            var engine = new Engine();
-
-            // engine.SetValue("model", stream.ToString());
-            engine.SetValue("console", new
-            {
-                log = new Action<object>(Logger.Log)
-            });
-
-            // throw exception when execution fails
-            engine.Execute(_script);
-            var value = engine.Invoke("transform", model, JsonUtility.Serialize(attrs)).ToObject();
+            var argument1 = ConvertObjectToJsValue(_engine, model);
+            var argument2 = ConvertObjectToJsValue(_engine, attrs);
+            var value = _engine.Invoke("transform", argument1, argument2).ToObject();
 
             // var value = engine.GetValue("model").ToObject();
             // The results generated
             return value;
+        }
+
+        private static Jint.Native.JsValue ConvertObjectToJsValue(Engine engine, object model)
+        {
+            var objectModel = ConvertToObjectHelper.ConvertStrongTypeToObject(model);
+            var dict = objectModel as Dictionary<string, object>;
+            if (dict != null)
+            {
+                var jsObject = engine.Object.Construct(Jint.Runtime.Arguments.Empty);
+                foreach(var pair in dict)
+                {
+                    jsObject.Put(pair.Key, ConvertObjectToJsValue(engine, pair.Value), true);
+                }
+                return jsObject;
+            }
+            else
+            {
+                var array = objectModel as object[];
+                if (array != null)
+                {
+                    var jsArray = engine.Array.Construct(Jint.Runtime.Arguments.Empty);
+                    foreach (var item in array)
+                    {
+                        engine.Array.PrototypeObject.Push(jsArray, Jint.Runtime.Arguments.From(ConvertObjectToJsValue(engine, item)));
+                    }
+                    return jsArray;
+                }
+
+                return Jint.Native.JsValue.FromObject(engine, objectModel);
+            }
         }
 
         private static Tuple<string, string, bool> GetTemplateTypeAndExtension(string templateName)

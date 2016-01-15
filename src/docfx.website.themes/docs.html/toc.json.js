@@ -1,10 +1,9 @@
 function transform(model, _attrs){
-  var entity = JSON.parse(model);
   var transformed = [];
   var level = 1;
-  var length = entity.length;
+  var length = model.length;
   for (var i = 0; i<length; i++) {
-    transformed.push(transformItem(entity[i], level));
+    transformed.push(transformItem(model[i], level));
   };
 
   return {

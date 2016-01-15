@@ -1,7 +1,4 @@
-function transform(model, _attrs){
-  var entity = JSON.parse(model);
-  var attrs = JSON.parse(_attrs);
-
+function transform(entity, attrs){
   entity.layout = "Reference";
   entity.title = entity.items[0].name + " " + entity.items[0].type;
 

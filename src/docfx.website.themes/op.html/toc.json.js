@@ -1,10 +1,8 @@
 function transform(model, _attrs){
-  var entity = JSON.parse(model);
-  var attrs = JSON.parse(_attrs);
   var transformed = [];
   var level = 1;
-  var length = entity.length;
-  var path = attrs._path;
+  var length = model.length;
+  var path = _attrs._path;
   var directory = "";
     var index = path.lastIndexOf('/');
     if (index > -1){
@@ -12,7 +10,7 @@ function transform(model, _attrs){
     }
 
   for (var i = 0; i<length; i++) {
-    transformed.push(transformItem(entity[i], level));
+    transformed.push(transformItem(model[i], level));
   };
 
   return {

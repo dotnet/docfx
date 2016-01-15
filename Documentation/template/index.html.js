@@ -1,18 +1,15 @@
 function transform(model, _attrs){
-  var entity = JSON.parse(model);
-  var attrs = JSON.parse(_attrs);
-
   var vm = {};
-  // Copy default attrs and override name/id
-  for (var key in attrs) {
-    if (attrs.hasOwnProperty(key)) {
-      vm[key] = attrs[key];
+  // Copy default _attrs and override name/id
+  for (var key in _attrs) {
+    if (_attrs.hasOwnProperty(key)) {
+      vm[key] = _attrs[key];
     }
   }
-  // Copy entity
-  for (var key in entity) {
-    if (entity.hasOwnProperty(key)) {
-      vm[key] = entity[key];
+  // Copy model
+  for (var key in model) {
+    if (model.hasOwnProperty(key)) {
+      vm[key] = model[key];
     }
   }
   // If toc is not defined in model, read it from _attrs
