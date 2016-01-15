@@ -20,20 +20,10 @@ namespace Microsoft.DocAsCode.Common
             _listeners = _listeners.Add(listener);
         }
 
-        public static void AddOrReplaceListener(ILoggerListener listener, IEqualityComparer<ILoggerListener> equalityComparer)
+        public static ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
         {
-            if (listener == null) throw new ArgumentNullException(nameof(listener));
-            if (equalityComparer == null) throw new ArgumentNullException(nameof(equalityComparer));
-            var currentListeners = _listeners;
-            var old = currentListeners.Find(s => equalityComparer.Equals(s, listener));
-            if (old == null)
-            {
-                _listeners = currentListeners.Add(listener);
-            }
-            else
-            {
-                _listeners = currentListeners.Replace(old, listener);
-            }
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            return _listeners.Find(predicate);
         }
 
         public static void UnregisterListener(ILoggerListener listener)

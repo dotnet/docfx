@@ -31,9 +31,9 @@ namespace Microsoft.DocAsCode.SubCommands
             var logOption = options as ILoggable;
             if (logOption != null)
             {
-                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath))
+                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindListener(l => l is ReportLogListener) == null)
                 {
-                    Logger.AddOrReplaceListener(new ReportLogListener(logOption.LogFilePath), TypeEqualityComparer.Default);
+                    Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath));
                 }
 
                 if (logOption.LogLevel.HasValue)
@@ -64,21 +64,6 @@ namespace Microsoft.DocAsCode.SubCommands
             if (attributes == null) yield break;
             foreach(var item in attributes)
                yield return ((OptionUsageAttribute)item).Name;
-        }
-
-        private sealed class TypeEqualityComparer : IEqualityComparer<ILoggerListener>
-        {
-            public static readonly TypeEqualityComparer Default = new TypeEqualityComparer();
-            private TypeEqualityComparer() { }
-            public bool Equals(ILoggerListener x, ILoggerListener y)
-            {
-                return x.GetType() == y.GetType();
-            }
-
-            public int GetHashCode(ILoggerListener obj)
-            {
-                return obj.GetHashCode();
-            }
         }
     }
 }
