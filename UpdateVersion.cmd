@@ -32,24 +32,28 @@ FOR /F "tokens=5 delims=:) " %%i in (RELEASENOTE.md) DO (
     GOTO :GetGitVersion
 )
 
+:GetGitVersion
 IF NOT DEFINED MainVersion (
     ECHO ERROR: Unable to get main version from release note
     GOTO :Exit
 )
 
-:GetGitVersion
+FOR /F "tokens=3 delims=." %%i in ("!MainVersion!") DO (
+    SET BuildVersionExists=1
+)
+
+IF NOT DEFINED BuildVersionExists (
+    SET MainVersion=!MainVersion!.0
+)
+
+ECHO CURRENT MAINVERSION: !MainVersion!
+
 IF '%BRANCH%'=='master' (
     ECHO For master branch, use release version
-    SET VERSION=!MainVersion!.0
-    FOR /F "tokens=2 delims=-" %%i in ('git describe') DO (
-        SET VERSION=!MainVersion!.%%i
-        ECHO CURRENT VERSION: !VERSION!
-    )
-
+    SET VERSION=!MainVersion!
 ) ELSE (
     ECHO For branch other than master, use alpha version
     FOR /F "tokens=2,3 delims=-" %%i in ('git describe') DO (
-        SET VERSION=!MainVersion!.0-alpha
         SET PADDINGZERO=0000
         SET VERSIONI=%%i
         SET VERSIONJ=%%j
@@ -60,7 +64,7 @@ IF '%BRANCH%'=='master' (
         SET TMP=!TMP:~1!
         GOTO EXECUTE
         )
-        SET VERSION=!MainVersion!.0-alpha-!PADDINGZERO!!VERSIONI!-!VERSIONJ!
+        SET VERSION=!MainVersion!-alpha-!PADDINGZERO!!VERSIONI!-!VERSIONJ!
 
         ECHO CURRENT VERSION:!VERSION!
     )

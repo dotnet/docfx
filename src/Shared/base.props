@@ -51,9 +51,16 @@
         <![CDATA[
             // Version format similar to 0.4.8-alpha-g0a0259d
             var parts = CurrentVersion.Split('-');
-            var version = string.Format("{0}.{1}", parts[0], 0);
+            var version = parts[0];
+            var fileVersion = parts[0];
+            var versionParts = version.Split('.');
             var revision = DateTime.Now.ToString("yyMMdd").Substring(1);
-            var fileVersion = string.Format("{0}.{1}", parts[0], revision);
+            if (versionParts.Length < 4 ) {
+              version += string.Concat(Enumerable.Repeat(".0", 4 - versionParts.Length));
+              fileVersion += string.Concat(Enumerable.Repeat(".0", 3 - versionParts.Length));
+              fileVersion += "." + revision;
+            }
+            
             string versionFilePath = Path.Combine(VersionCSPath, "version.cs");
             string content = string.Format(@"
 using System.Reflection;

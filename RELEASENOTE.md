@@ -1,5 +1,4 @@
 Version Notes (Current Version: v1.4)
-=======================================
 
 v1.4 (Pre-release)
 -----------
