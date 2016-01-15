@@ -5,14 +5,24 @@ namespace Microsoft.DocAsCode.EntityModel
 {
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmNoteBlockToken : MarkdownTextToken
+    public class DfmNoteBlockToken : IMarkdownToken
     {
-
         public DfmNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content, string rawMarkdown)
-            : base(rule, context, content, rawMarkdown)
         {
+            Rule = rule;
+            Context = context;
+            Content = content;
+            RawMarkdown = rawMarkdown;
             NoteType = noteType;
         }
+
+        public IMarkdownRule Rule { get; }
+
+        public IMarkdownContext Context { get; }
+
+        public string Content { get; }
+
+        public string RawMarkdown { get; set; }
 
         public string NoteType { get; }
     }

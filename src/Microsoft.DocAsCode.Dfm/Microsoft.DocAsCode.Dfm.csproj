@@ -61,7 +61,6 @@
     <Compile Include="Rules\DfmTextInlineRule.cs" />
     <Compile Include="Rules\DfmXrefInlineRule.cs" />
     <Compile Include="Rules\DfmYamlHeaderBlockRule.cs" />
-    <Compile Include="Tokens\DfmBlockquoteBlockToken.cs" />
     <Compile Include="Tokens\DfmFencesBlockToken.cs" />
     <Compile Include="Tokens\DfmIncludeBlockToken.cs" />
     <Compile Include="Tokens\DfmIncludeInlineToken.cs" />

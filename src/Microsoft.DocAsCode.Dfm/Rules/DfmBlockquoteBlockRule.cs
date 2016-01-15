@@ -11,17 +11,10 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public override IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
-            var match = Blockquote.Match(source);
-            if (match.Length == 0)
-            {
-                return null;
-            }
-            source = source.Substring(match.Length);
-            var capStr = LeadingBlockquote.Replace(match.Value, string.Empty);
             var c = engine.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
-            var tokens = engine.Tokenize(capStr);
+            var result = base.TryMatch(engine, ref source);
             engine.SwitchContext(c);
-            return new DfmBlockquoteBlockToken(this, engine.Context, tokens, match.Value);
+            return result;
         }
     }
 }
