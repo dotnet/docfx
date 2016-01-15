@@ -3,6 +3,11 @@ Version Notes (Current Version: v1.4)
 v1.4 (Pre-release)
 -----------
 
+v1.3.6
+------
+1. Fix cross domain issue: timeout exception throws when document build takes longer than 15 minutes
+2. Fix docfx IOException when calling `docfx -l report.txt`
+
 v1.3.5
 ------
 FIX Github pages compatibility issue( Github pages now disallow *iframe*, however the default template of `docfx` uses *iframe* to load side toc): Update *default* template to use AJAX to load side toc, the original one is renamed to `iframe.html`. So now we have 2 embedded template, one is `default` and another is `iframe.html`.
