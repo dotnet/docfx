@@ -91,12 +91,12 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L23">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Common_Logger_AddOrReplaceListener_Microsoft_DocAsCode_Common_ILoggerListener_System_Collections_Generic_IEqualityComparer_Microsoft_DocAsCode_Common_ILoggerListener__" data-uid="Microsoft.DocAsCode.Common.Logger.AddOrReplaceListener(Microsoft.DocAsCode.Common.ILoggerListener,System.Collections.Generic.IEqualityComparer{Microsoft.DocAsCode.Common.ILoggerListener})">AddOrReplaceListener(ILoggerListener, IEqualityComparer&lt;ILoggerListener&gt;)</h4>
+              <h4 id="Microsoft_DocAsCode_Common_Logger_FindListener_System_Predicate_Microsoft_DocAsCode_Common_ILoggerListener__" data-uid="Microsoft.DocAsCode.Common.Logger.FindListener(System.Predicate{Microsoft.DocAsCode.Common.ILoggerListener})">FindListener(Predicate&lt;ILoggerListener&gt;)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static void AddOrReplaceListener(ILoggerListener listener, IEqualityComparer&lt;ILoggerListener&gt; equalityComparer)</code></pre>
+                <pre><code class="lang-csharp hljs">public static ILoggerListener FindListener(Predicate&lt;ILoggerListener&gt; predicate)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -109,20 +109,30 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener">ILoggerListener</a></td>
-                    <td><em>listener</em></td>
+                    <td><span class="xref">System.Predicate</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener">ILoggerListener</a>&gt;</td>
+                    <td><em>predicate</em></td>
                     <td></td>
                   </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
                   <tr>
-                    <td><span class="xref">System.Collections.Generic.IEqualityComparer</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener">ILoggerListener</a>&gt;</td>
-                    <td><em>equalityComparer</em></td>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener">ILoggerListener</a></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L106">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L96">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_Flush" data-uid="Microsoft.DocAsCode.Common.Logger.Flush">Flush()</h4>
               <div class="markdown level1 summary"></div>
@@ -133,7 +143,7 @@
               </div>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L56">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L46">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_Log_Microsoft_DocAsCode_Common_ILogItem_" data-uid="Microsoft.DocAsCode.Common.Logger.Log(Microsoft.DocAsCode.Common.ILogItem)">Log(ILogItem)</h4>
               <div class="markdown level1 summary"></div>
@@ -161,7 +171,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L68">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L58">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_Log_Microsoft_DocAsCode_Common_LogLevel_System_String_System_String_System_String_System_String_" data-uid="Microsoft.DocAsCode.Common.Logger.Log(Microsoft.DocAsCode.Common.LogLevel,System.String,System.String,System.String,System.String)">Log(LogLevel, String, String, String, String)</h4>
               <div class="markdown level1 summary"></div>
@@ -209,7 +219,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L100">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L90">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_Log_System_Object_" data-uid="Microsoft.DocAsCode.Common.Logger.Log(System.Object)">Log(Object)</h4>
               <div class="markdown level1 summary"></div>
@@ -237,7 +247,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L95">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L85">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_LogError_System_String_System_String_System_String_System_String_" data-uid="Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String)">LogError(String, String, String, String)</h4>
               <div class="markdown level1 summary"></div>
@@ -280,7 +290,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L85">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L75">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_LogInfo_System_String_System_String_System_String_System_String_" data-uid="Microsoft.DocAsCode.Common.Logger.LogInfo(System.String,System.String,System.String,System.String)">LogInfo(String, String, String, String)</h4>
               <div class="markdown level1 summary"></div>
@@ -323,7 +333,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L80">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L70">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_LogVerbose_System_String_System_String_System_String_System_String_" data-uid="Microsoft.DocAsCode.Common.Logger.LogVerbose(System.String,System.String,System.String,System.String)">LogVerbose(String, String, String, String)</h4>
               <div class="markdown level1 summary"></div>
@@ -366,7 +376,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L90">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L80">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_LogWarning_System_String_System_String_System_String_System_String_" data-uid="Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String)">LogWarning(String, String, String, String)</h4>
               <div class="markdown level1 summary"></div>
@@ -437,7 +447,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L46">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L36">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_UnregisterAllListeners" data-uid="Microsoft.DocAsCode.Common.Logger.UnregisterAllListeners">UnregisterAllListeners()</h4>
               <div class="markdown level1 summary"></div>
@@ -448,7 +458,7 @@
               </div>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L39">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/Logger.cs/#L29">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Common_Logger_UnregisterListener_Microsoft_DocAsCode_Common_ILoggerListener_" data-uid="Microsoft.DocAsCode.Common.Logger.UnregisterListener(Microsoft.DocAsCode.Common.ILoggerListener)">UnregisterListener(ILoggerListener)</h4>
               <div class="markdown level1 summary"></div>
