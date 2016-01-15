@@ -91,14 +91,20 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                     "test",
                 });
             File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
-            File.WriteAllText(DfmEngineBuilder.MarkdownStyleFileName, @"[
+            File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
+rules : [
+    ""foo"",
+    { name: ""bar"", disable: true}
+],
+tagRules : [
     {
         tagNames: [""p""],
         behavior: ""Warning"",
         messageFormatter: ""Tag {0} is not valid."",
         openingTagOnly: true
     }
-]");
+]
+}");
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
             files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2 });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());

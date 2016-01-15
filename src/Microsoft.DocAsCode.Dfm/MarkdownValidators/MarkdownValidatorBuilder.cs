@@ -35,10 +35,20 @@ namespace Microsoft.DocAsCode.EntityModel.MarkdownValidators
 
         public void AddTagValidators(params MarkdownTagValidationRule[] validators)
         {
+            AddTagValidators((IEnumerable<MarkdownTagValidationRule>)validators);
+        }
+
+        public void AddTagValidators(IEnumerable<MarkdownTagValidationRule> validators)
+        {
             TagValidators = TagValidators.AddRange(validators);
         }
 
         public void AddValidators(params string[] validatorContracts)
+        {
+            AddValidators((IEnumerable<string>)validatorContracts);
+        }
+
+        public void AddValidators(IEnumerable<string> validatorContracts)
         {
             ValidatorContracts = ValidatorContracts.AddRange(validatorContracts);
         }
