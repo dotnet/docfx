@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
         private void CleanUp()
         {
-            Logger.UnregisterAllListeners();
+            Logger.UnregisterListener(Listener);
             Listener = null;
         }
 
@@ -129,69 +129,66 @@ tagRules : [
                             }.ToImmutableDictionary()
                         });
                 }
+
+                {
+                    // check log for markdown stylecop.
+                    Assert.Equal(2, Listener.Items.Count);
+
+                    Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
+                    Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
+                    Assert.Equal(documentsBaseDir + "/test.md", Listener.Items[0].File);
+
+                    Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
+                    Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
+                    Assert.Equal(documentsBaseDir + "/test/test.md", Listener.Items[1].File);
+                }
+
+                {
+                    // check conceptual.
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".raw.model.json"))));
+                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".raw.model.json")));
+                    Assert.Equal(
+                        "<h1 id=\"hello-world\">Hello World</h1>",
+                        model["rawTitle"]);
+                    Assert.Equal(
+                        "\n<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
+                        "Test link: <a href=\"~/db.documents/test/test.md\">link text</a>\n" +
+                        "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a></p>\n" +
+                        "<p><p>\n" +
+                        "test</p>\n",
+                        model["conceptual"]);
+                    Assert.Equal("Conceptual", model["type"]);
+                    Assert.Equal("Hello world!", model["meta"]);
+                    Assert.Equal("b", model["a"]);
+                }
+
+                {
+                    // check mref.
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.Console.csyml", ".raw.model.json"))));
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.ConsoleColor.csyml", ".raw.model.json"))));
+                }
+
+                {
+                    // check resource.
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(resourceFile, ".raw.model.json"))));
+                    var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(resourceFile, ".raw.model.json")));
+                    Assert.Equal(3, meta.Count);
+                    Assert.True(meta.ContainsKey("meta"));
+                    Assert.Equal("Hello world!", meta["meta"]);
+                    Assert.True(meta.ContainsKey("abc"));
+                    Assert.Equal("xyz", meta["abc"]);
+                    Assert.True(meta.ContainsKey("uid"));
+                    Assert.Equal("r1", meta["uid"]);
+                }
             }
             finally
             {
-                Logger.UnregisterAllListeners();
+                CleanUp();
+                Directory.Delete(documentsBaseDir, true);
+                Directory.Delete(outputBaseDir, true);
+                File.Delete(resourceMetaFile);
             }
-
-            {
-                // check log for markdown stylecop.
-                Assert.Equal(2, Listener.Items.Count);
-
-                Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
-                Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
-                Assert.Equal(documentsBaseDir + "/test.md", Listener.Items[0].File);
-
-                Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
-                Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
-                Assert.Equal(documentsBaseDir + "/test/test.md", Listener.Items[1].File);
-            }
-
-            {
-                // check conceptual.
-                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".raw.model.json"))));
-                var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".raw.model.json")));
-                Assert.Equal(
-                    "<h1 id=\"hello-world\">Hello World</h1>",
-                    model["rawTitle"]);
-                Assert.Equal(
-                    "\n<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
-                    "Test link: <a href=\"~/db.documents/test/test.md\">link text</a>\n" +
-                    "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a></p>\n" +
-                    "<p><p>\n" +
-                    "test</p>\n",
-                    model["conceptual"]);
-                Assert.Equal("Conceptual", model["type"]);
-                Assert.Equal("Hello world!", model["meta"]);
-                Assert.Equal("b", model["a"]);
-            }
-
-            {
-                // check mref.
-                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.Console.csyml", ".raw.model.json"))));
-                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.ConsoleColor.csyml", ".raw.model.json"))));
-            }
-
-            {
-                // check resource.
-                Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
-                Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(resourceFile, ".raw.model.json"))));
-                var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(resourceFile, ".raw.model.json")));
-                Assert.Equal(3, meta.Count);
-                Assert.True(meta.ContainsKey("meta"));
-                Assert.Equal("Hello world!", meta["meta"]);
-                Assert.True(meta.ContainsKey("abc"));
-                Assert.Equal("xyz", meta["abc"]);
-                Assert.True(meta.ContainsKey("uid"));
-                Assert.Equal("r1", meta["uid"]);
-            }
-
-            #region Cleanup
-            Directory.Delete(documentsBaseDir, true);
-            Directory.Delete(outputBaseDir, true);
-            File.Delete(resourceMetaFile);
-            #endregion
         }
 
         [Fact]
