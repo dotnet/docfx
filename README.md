@@ -2,7 +2,7 @@
 
 |            | Windows  |
 | ---------- | --------- | ------
-| **master** | [![masterstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCi_Master)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCi_Master)
+| **master** | [![masterstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCi_MasterBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCi_MasterBranch)
 | **dev**    | [![devstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCi_DocfxCiForDevBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCi_DocfxCiForDevBranch)
 
 ## What is it?
@@ -12,7 +12,7 @@ There are currently two versions of the tool:
 * Windows specific IDE version which uses .NET Framework and works with [VS 2015 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx)
 * Cross platform console version which uses .NET Core and DNX
 
-We currently support C# and VB projects. 
+We currently support C# and VB projects.
 
 ## How to build?
 ### Prerequisites
@@ -24,16 +24,16 @@ We currently support C# and VB projects.
 2. Run `build.cmd` under `docfx` code repo
 
 > Possible build issues
-  1. *DNX.PackageManager not found*  
+  1. *DNX.PackageManager not found*
    Install http://www.microsoft.com/en-us/download/details.aspx?id=49442. Note that there are 2 msi to be installed.
-  2. *Test failure with message `\r\n` not equal to `\n` for Windows*  
+  2. *Test failure with message `\r\n` not equal to `\n` for Windows*
   Set `git config --global core.autocrlf true`
 
 ## How do I play with `docfx`?
 Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
 ## What's included?
-File/Folder     | Description 
+File/Folder     | Description
 :----------     | :----------
 LICENSE         | Project license information
 README.md       | Introduction to the project
