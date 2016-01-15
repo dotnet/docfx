@@ -199,8 +199,7 @@ test2
 {{/model}}
 ";
             string script = @"
-function transform(text){
-    var model = JSON.parse(text);
+function transform(model){
     model.model.push({name:'test2'});
     return model;
 }";
@@ -251,8 +250,7 @@ conceptual:
 {{/model}}
 ";
             string script = @"
-function transform(text){
-    var model = JSON.parse(text);
+function transform(model){
     model.model.push({name:'test2'});
     return model;
 }";
@@ -393,8 +391,7 @@ test2
 {% endfor -%}
 ";
             string script = @"
-function transform(text){
-    var model = JSON.parse(text);
+function transform(model){
     model.model.push({name:'test2'});
     return model;
 }";
@@ -445,8 +442,7 @@ conceptual:
 {% endfor -%}
 ";
             string script = @"
-function transform(text){
-    var model = JSON.parse(text);
+function transform(model){
     model.model.push({name:'test2'});
     return model;
 }";

@@ -191,7 +191,8 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             catch (Exception e)
             {
-                Logger.LogWarning($"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
+                Logger.LogError($"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
+                throw;
             }
 
             return manifestItem;

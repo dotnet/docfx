@@ -1,36 +1,33 @@
 function transform(model, _attrs){
-  var entity = JSON.parse(model);
-  var attrs = JSON.parse(_attrs);
+  model.layout = "Reference";
+  model.title = model.items[0].name + " " + model.items[0].type;
 
-  entity.layout = "Reference";
-  entity.title = entity.items[0].name + " " + entity.items[0].type;
-
-  // If toc is not defined in model, read it from _attrs
-  if (attrs._tocPath && attrs._tocPath.indexOf("~/") == 0){
-    attrs._tocPath = attrs._tocPath.substring(2);
+  // If toc is not defined in model, read it from __attrs
+  if (_attrs._tocPath && _attrs._tocPath.indexOf("~/") == 0){
+    _attrs._tocPath = _attrs._tocPath.substring(2);
   }
-  if (!entity.toc_asset_id){
-    entity.toc_asset_id = attrs._tocPath;
+  if (!model.toc_asset_id){
+    model.toc_asset_id = _attrs._tocPath;
   }
 
-  entity.toc_rel = attrs._tocRel;
-  entity.platforms = entity.items[0].platform;
-  entity.langs = entity.items[0].langs;
-  if (!entity.metadata || !entity.metadata.breadcrumb_path) {
-    entity.breadcrumb_path = "/toc.html";
+  model.toc_rel = _attrs._tocRel;
+  model.platforms = model.items[0].platform;
+  model.langs = model.items[0].langs;
+  if (!model.metadata || !model.metadata.breadcrumb_path) {
+    model.breadcrumb_path = "/toc.html";
   } else {
-    entity.breadcrumb_path = entity.metadata.breadcrumb_path
+    model.breadcrumb_path = model.metadata.breadcrumb_path
   }
-  entity.content_git_url = getImproveTheDocHref(entity.items[0]);
-  entity.source_url = getViewSourceHref(entity.items[0]);
+  model.content_git_url = getImproveTheDocHref(model.items[0]);
+  model.source_url = getViewSourceHref(model.items[0]);
 
  // Clean up unused predefined properties
-  entity.items = undefined;
-  entity.references = undefined;
-  entity.metadata = undefined;
-  
+  model.items = undefined;
+  model.references = undefined;
+  model.metadata = undefined;
+
   return {
-    content: JSON.stringify(entity)
+    content: JSON.stringify(model)
   };
 
   function getImproveTheDocHref(item) {
@@ -69,4 +66,4 @@ function transform(model, _attrs){
       return '';
     }
   }
-} 
+}

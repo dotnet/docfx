@@ -16,10 +16,6 @@ function transform(model, _attrs) {
     "event":        { title: "Events",        id: "events" },
     "operator":     { title: "Operators",     id: "operators" }
   };
-  if (util.isString(model)) model = JSON.parse(model);
-
-  // attrs contains additional system infomation:
-  if (_attrs && util.isString(_attrs)) _attrs = JSON.parse(_attrs);
 
   model = createViewModel(model, _attrs);
   if (_attrs._navPath === _attrs._tocPath) {

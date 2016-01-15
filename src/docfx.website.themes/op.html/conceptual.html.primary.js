@@ -1,6 +1,5 @@
 function transform(model, _attrs){
-  var entity = JSON.parse(model);
-  return setArrayLength(entity);
+  return setArrayLength(model);
 }
 
 function setArrayLength(entity)
