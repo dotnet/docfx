@@ -24,11 +24,6 @@ namespace Microsoft.DocAsCode.MarkdownRewriters
                     : $"[!INCLUDE [{token.Name}]({token.Src} \"{token.Title}\")]\n";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer render, DfmBlockquoteBlockToken token, MarkdownBlockContext context)
-        {
-            return Render(render, (MarkdownBlockquoteBlockToken)token, context);
-        }
-
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmNoteBlockToken token, MarkdownBlockContext context)
         {
             return $"[!{token.NoteType}]\n";

@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.MarkdownRewriters
                             (IMarkdownRewriteEngine e, AzureNoteBlockToken t) => new DfmNoteBlockToken(t.Rule, t.Context, t.NoteType.Substring("AZURE.".Length), t.Content, t.RawMarkdown)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new DfmBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
                         )
                     );
         }

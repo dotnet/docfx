@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Dfm
             return $"<yamlheader>{content}</yamlheader>";
         }
 
-        public override StringBuffer Render(IMarkdownRenderer engine, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
+        public override StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = string.Empty;
             var splitTokens = DfmRendererHelper.SplitBlockquoteTokens(token.Tokens);
@@ -53,20 +53,36 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 if (splitToken.Token is DfmSectionBlockToken)
                 {
-                    var sectionToken = splitToken.Token as DfmSectionBlockToken;
-                    content += $"<div{sectionToken.Attributes}>";
-                    content += RenderTokens(engine, splitToken.InnerTokens.ToImmutableArray(), context, true, token.Rule);
+                    content += "<div";
+                    content += ((DfmSectionBlockToken)splitToken.Token).Attributes;
+                    content += ">";
+                    foreach (var item in splitToken.InnerTokens)
+                    {
+                        content += renderer.Render(item);
+                    }
                     content += "</div>\n";
                 }
                 else if (splitToken.Token is DfmNoteBlockToken)
                 {
-                    var noteToken = splitToken.Token as DfmNoteBlockToken;
-                    content += $"<div class=\"{noteToken.NoteType}\"><h5>{noteToken.NoteType}</h5>" + RenderTokens(engine, splitToken.InnerTokens.ToImmutableArray(), context, true, token.Rule) + "</div>\n";
+                    var noteToken = (DfmNoteBlockToken)splitToken.Token;
+                    content += "<div class=\"";
+                    content += noteToken.NoteType;
+                    content += "\"><h5>";
+                    content += noteToken.NoteType;
+                    content += "</h5>";
+                    foreach (var item in splitToken.InnerTokens)
+                    {
+                        content += renderer.Render(item);
+                    }
+                    content += "</div>\n";
                 }
                 else
                 {
                     content += "<blockquote>";
-                    content += RenderTokens(engine, splitToken.InnerTokens.ToImmutableArray(), context, true, token.Rule);
+                    foreach (var item in splitToken.InnerTokens)
+                    {
+                        content += renderer.Render(item);
+                    }
                     content += "</blockquote>\n";
                 }
             }
@@ -95,6 +111,11 @@ namespace Microsoft.DocAsCode.Dfm
                 Logger.LogError(errorMessage);
                 return DfmRendererHelper.GetRenderedFencesBlockString(token, engine.Options, errorMessage);
             }
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmNoteBlockToken token, MarkdownBlockContext context)
+        {
+            return token.Content;
         }
     }
 }
