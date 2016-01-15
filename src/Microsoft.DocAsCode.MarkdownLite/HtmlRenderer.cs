@@ -104,66 +104,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return content + "</li>\n";
         }
 
-        protected StringBuffer RenderTokens(IMarkdownRenderer engine, ImmutableArray<IMarkdownToken> tokens, MarkdownBlockContext context, bool wrapParagraph = false, IMarkdownRule rule = null)
-        {
-            var content = StringBuffer.Empty;
-            var textContent = StringBuffer.Empty;
-            foreach (var t in tokens)
-            {
-                var text = t as MarkdownTextToken;
-                if (text != null)
-                {
-                    if (textContent != StringBuffer.Empty)
-                    {
-                        textContent += "\n";
-                    }
-                    textContent += text.Content;
-                    continue;
-                }
-                if (!wrapParagraph && t is MarkdownNewLineBlockToken)
-                {
-                    continue;
-                }
-                if (textContent != StringBuffer.Empty)
-                {
-                    content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent, t.RawMarkdown);
-                    textContent = StringBuffer.Empty;
-                }
-                content += engine.Render(t);
-            }
-            if (textContent != StringBuffer.Empty)
-            {
-                content += RenderTextInTokens(engine, context, wrapParagraph, rule, textContent, textContent);
-            }
-            return content;
-        }
-
-        private StringBuffer RenderTextInTokens(IMarkdownRenderer renderer, MarkdownBlockContext context, bool wrapParagraph, IMarkdownRule rule, StringBuffer textContent, string rawMarkdown)
-        {
-            if (wrapParagraph)
-            {
-                var parser = renderer.Engine.Parser;
-                var c = parser.SwitchContext(context);
-                var inlineContent = parser.TokenizeInline(textContent);
-                parser.SwitchContext(c);
-                return Render(renderer, new MarkdownParagraphBlockToken(rule, context, inlineContent, rawMarkdown), context);
-            }
-            else
-            {
-                return ApplyInline(renderer, textContent, context);
-            }
-        }
-
-        protected virtual StringBuffer ApplyInline(IMarkdownRenderer engine, StringBuffer content, MarkdownBlockContext context)
-        {
-            if (content == StringBuffer.Empty)
-            {
-                return StringBuffer.Empty;
-            }
-            var result = engine.Engine.Mark(content.ToString(), context.GetInlineContext());
-            return result;
-        }
-
         public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
         {
             var result = StringBuffer.Empty;
