@@ -16,33 +16,54 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmXrefInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
-            var href = token.Href == null ? string.Empty : $" href=\"{StringHelper.HtmlEncode(token.Href)}\"";
-            var name = token.Name == null ? null : StringHelper.HtmlEncode(token.Name);
-            var title = token.Title == null ? null : $" title=\"{StringHelper.HtmlEncode(token.Title)}\"";
-            return $"<xref{href}{title}>{name}</xref>";
+            StringBuffer result = "<xref";
+            if (token.Href != null)
+            {
+                result += " href=\"";
+                result += StringHelper.HtmlEncode(token.Href);
+                result += "\"";
+            }
+            if (token.Title != null)
+            {
+                result += " title=\"";
+                result += StringHelper.HtmlEncode(token.Title);
+                result += "\"";
+            }
+            result += ">";
+            if (token.Name != null)
+            {
+                result += StringHelper.HtmlEncode(token.Name);
+            }
+            result += "</xref>";
+            return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmIncludeBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmIncludeBlockToken token, MarkdownBlockContext context)
         {
             var href = token.Src == null ? null : $"src=\"{StringHelper.HtmlEncode(token.Src)}\"";
             var name = token.Name == null ? null : StringHelper.HtmlEncode(token.Name);
             var title = token.Title == null ? null : $"title=\"{StringHelper.HtmlEncode(token.Title)}\"";
-            var resolved = _blockInclusionHelper.Load(engine, token.Src, token.Raw, context, ((DfmEngine)engine.Engine).InternalMarkup);
+            var resolved = _blockInclusionHelper.Load(renderer, token.Src, token.Raw, context, ((DfmEngine)renderer.Engine).InternalMarkup);
             return resolved;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmIncludeInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmIncludeInlineToken token, MarkdownInlineContext context)
         {
-            var resolved = _inlineInclusionHelper.Load(engine, token.Src, token.Raw, context, ((DfmEngine)engine.Engine).InternalMarkup);
+            var resolved = _inlineInclusionHelper.Load(renderer, token.Src, token.Raw, context, ((DfmEngine)renderer.Engine).InternalMarkup);
             return resolved;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmYamlHeaderBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmYamlHeaderBlockToken token, MarkdownBlockContext context)
         {
-            var content = token.Content == null ? string.Empty : StringHelper.HtmlEncode(token.Content);
-            return $"<yamlheader>{content}</yamlheader>";
+            if (string.IsNullOrEmpty(token.Content))
+            {
+                return StringBuffer.Empty;
+            }
+            StringBuffer result = "<yamlheader>";
+            result += StringHelper.HtmlEncode(token.Content);
+            return result + "</yamlheader>";
         }
 
         public override StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
@@ -89,13 +110,13 @@ namespace Microsoft.DocAsCode.Dfm
             return content;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmFencesBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesBlockToken token, MarkdownBlockContext context)
         {
             if (!PathUtility.IsRelativePath(token.Path))
             {
                 string errorMessage = $"Code absolute path: {token.Path} is not supported in file {context.GetFilePathStack().Peek()}";
                 Logger.LogError(errorMessage);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, engine.Options, errorMessage);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
             }
 
             try
@@ -103,13 +124,13 @@ namespace Microsoft.DocAsCode.Dfm
                 // TODO: Valid REST and REST-i script.
                 var fencesPath = ((RelativePath)token.Path).BasedOn((RelativePath)context.GetFilePathStack().Peek());
                 var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, engine.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
             }
             catch (FileNotFoundException)
             {
                 string errorMessage = $"Can not find reference {token.Path}";
                 Logger.LogError(errorMessage);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, engine.Options, errorMessage);
+                return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
             }
         }
 
