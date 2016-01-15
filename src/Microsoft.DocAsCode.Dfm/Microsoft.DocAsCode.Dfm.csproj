@@ -45,6 +45,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MarkdownValidators\MarkdownSytleConfig.cs" />
+    <Compile Include="MarkdownValidators\MarkdownValidationRule.cs" />
     <Compile Include="MarkdownValidators\MarkdownValidatorBuilder.cs" />
     <Compile Include="MarkdownValidators\MarkdownTagValidationRule.cs" />
     <Compile Include="MarkdownValidators\TagValidationBehavior.cs" />

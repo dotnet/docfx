@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
-        public const string MarkdownStyleFileName = "md.style";
-
         public DfmEngineBuilder(Options options) : base(options)
         {
             var inlineRules = InlineRules.ToList();
@@ -65,11 +63,12 @@ namespace Microsoft.DocAsCode.Dfm
         {
             try
             {
-                if (File.Exists(MarkdownStyleFileName))
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
                 {
-                    var rules = JsonUtility.Deserialize<MarkdownTagValidationRule[]>(MarkdownStyleFileName);
+                    var config = JsonUtility.Deserialize<MarkdownSytleConfig>(MarkdownSytleConfig.MarkdownStyleFileName);
                     var builder = new MarkdownValidatorBuilder(host);
-                    builder.AddTagValidators(rules);
+                    builder.AddValidators(from r in config.Rules where !r.Disable select r.RuleName);
+                    builder.AddTagValidators(config.TagRules);
                     return builder.Create();
                 }
             }
