@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.3.5)
+Version Notes (Current Version: v1.3.6)
 =======================================
+v1.3.6
+------
+1. Fix cross domain issue: timeout exception throws when document build takes longer than 15 minutes
+2. Fix docfx IOException when calling `docfx -l report.txt`
 
 v1.3.5
 ------
