@@ -16,14 +16,16 @@ namespace Microsoft.DocAsCode.EntityModel
     public class Template
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
-        private ITemplateRenderer _renderer  = null;
-        private Engine _engine = null;
+        private readonly ITemplateRenderer _renderer  = null;
+        private readonly Engine _engine = null;
+
         public string Name { get; }
         public string Extension { get; }
         public string Type { get; }
         public bool IsPrimary { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
-        public Template(string template, string templateName, string script, ResourceCollection resourceProvider)
+
+        public Template(string template, string templateName, string script, ResourceCollection resourceCollection)
         {
             if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
             if (string.IsNullOrEmpty(template)) throw new ArgumentNullException(nameof(template));
@@ -32,33 +34,9 @@ namespace Microsoft.DocAsCode.EntityModel
             Extension = typeAndExtension.Item2;
             Type = typeAndExtension.Item1;
             IsPrimary = typeAndExtension.Item3;
-            if (script != null)
-            {
-                var engine = new Engine();
+            _engine = CreateEngine(script);
 
-                // engine.SetValue("model", stream.ToString());
-                engine.SetValue("console", new
-                {
-                    log = new Action<object>(Logger.Log)
-                });
-
-                // throw exception when execution fails
-                engine.Execute(script);
-                _engine = engine;
-            }
-
-            if (resourceProvider != null)
-            {
-                if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
-                {
-                    _renderer = LiquidTemplateRenderer.Create(resourceProvider, template);
-                }
-                else
-                {
-                    _renderer = new MustacheTemplateRenderer(resourceProvider, template);
-                }
-            }
-
+            _renderer = CreateRenderer(resourceCollection, templateName, template);
             Resources = ExtractDependentResources();
         }
 
@@ -89,51 +67,18 @@ namespace Microsoft.DocAsCode.EntityModel
             return _renderer.Render(model);
         }
 
+        private object ProcessWithJint(object model, object attrs)
+        {
+            var argument1 = JintProcessorHelper.ConvertStrongTypeToJsValue(model);
+            var argument2 = JintProcessorHelper.ConvertStrongTypeToJsValue(attrs);
+            var value = _engine.Invoke("transform", argument1, argument2).ToObject();
+            return value;
+        }
+
         private string GetRelativeResourceKey(string relativePath)
         {
             // Make sure resource keys are combined using '/'
             return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
-        }
-
-        private object ProcessWithJint(object model, object attrs)
-        {
-            var argument1 = ConvertObjectToJsValue(_engine, model);
-            var argument2 = ConvertObjectToJsValue(_engine, attrs);
-            var value = _engine.Invoke("transform", argument1, argument2).ToObject();
-
-            // var value = engine.GetValue("model").ToObject();
-            // The results generated
-            return value;
-        }
-
-        private static Jint.Native.JsValue ConvertObjectToJsValue(Engine engine, object model)
-        {
-            var objectModel = ConvertToObjectHelper.ConvertStrongTypeToObject(model);
-            var dict = objectModel as Dictionary<string, object>;
-            if (dict != null)
-            {
-                var jsObject = engine.Object.Construct(Jint.Runtime.Arguments.Empty);
-                foreach(var pair in dict)
-                {
-                    jsObject.Put(pair.Key, ConvertObjectToJsValue(engine, pair.Value), true);
-                }
-                return jsObject;
-            }
-            else
-            {
-                var array = objectModel as object[];
-                if (array != null)
-                {
-                    var jsArray = engine.Array.Construct(Jint.Runtime.Arguments.Empty);
-                    foreach (var item in array)
-                    {
-                        engine.Array.PrototypeObject.Push(jsArray, Jint.Runtime.Arguments.From(ConvertObjectToJsValue(engine, item)));
-                    }
-                    return jsArray;
-                }
-
-                return Jint.Native.JsValue.FromObject(engine, objectModel);
-            }
         }
 
         private static Tuple<string, string, bool> GetTemplateTypeAndExtension(string templateName)
@@ -178,6 +123,34 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, false);
                 }
+            }
+        }
+
+        private static Engine CreateEngine(string script)
+        {
+            if (string.IsNullOrEmpty(script)) return null;
+            var engine = new Engine();
+
+            engine.SetValue("console", new
+            {
+                log = new Action<object>(Logger.Log)
+            });
+
+            // throw exception when execution fails
+            engine.Execute(script);
+            return engine;
+        }
+
+        private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, string templateName, string template)
+        {
+            if (resourceCollection == null) return null;
+            if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
+            {
+                return LiquidTemplateRenderer.Create(resourceCollection, template);
+            }
+            else
+            {
+                return new MustacheTemplateRenderer(resourceCollection, template);
             }
         }
     }
