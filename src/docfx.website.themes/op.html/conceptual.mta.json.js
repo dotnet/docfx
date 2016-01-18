@@ -1,7 +1,4 @@
 function transform(model, _attrs){
-  var model = JSON.parse(model);
-  var _attrs = JSON.parse(_attrs);
-
   // Clean up unused predefined properties
   model.conceptual = undefined;
   model.remote = undefined;

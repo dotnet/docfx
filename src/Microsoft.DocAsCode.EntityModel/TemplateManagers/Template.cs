@@ -16,8 +16,9 @@ namespace Microsoft.DocAsCode.EntityModel
     public class Template
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
-        private readonly ITemplateRenderer _renderer  = null;
-        private readonly Engine _engine = null;
+        private readonly ITemplateRenderer _renderer;
+        private readonly Engine _engine;
+        private readonly string _script;
 
         public string Name { get; }
         public string Extension { get; }
@@ -34,6 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel
             Extension = typeAndExtension.Item2;
             Type = typeAndExtension.Item1;
             IsPrimary = typeAndExtension.Item3;
+            _script = script;
             _engine = CreateEngine(script);
 
             _renderer = CreateRenderer(resourceCollection, templateName, template);
