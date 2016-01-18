@@ -106,16 +106,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         SourceFolder = optionsBaseDirectory
                     });
             }
-            var fileMetadata = BuildCommand.GetFileMetadataFromOption(options.FileMetadataFilePath);
-            if (fileMetadata != null)
-            {
-                config.FileMetadata = fileMetadata;
-            }
-            var globalMetadata = BuildCommand.GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath);
-            if (globalMetadata != null)
-            {
-                config.GlobalMetadata = globalMetadata;
-            }
+            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
+            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
         }
 
         private static Dictionary<string, object> GetGlobalMetadataFromOption(MergeCommandOptions options)

@@ -144,43 +144,43 @@ namespace Microsoft.DocAsCode.SubCommands
             config.Force |= options.ForceRebuild;
             config.ExportRawModel |= options.ExportRawModel;
             config.ExportViewModel |= options.ExportViewModel;
-            var fileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath);
-            if (fileMetadata != null) config.FileMetadata = fileMetadata;
-            var globalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath);
-            if (globalMetadata != null) config.GlobalMetadata = globalMetadata;
+            config.FileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
+            config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
         }
 
-        internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(string fileMetadataFilePath)
+        internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(string fileMetadataFilePath, Dictionary<string, FileMetadataPairs> fileMetadataFromConfig)
         {
-            if (fileMetadataFilePath == null)
+            Dictionary<string, FileMetadataPairs> fileMetadata = null;
+            if (fileMetadataFilePath != null)
             {
-                return null;
-            }
-            try
-            {
-                var fileMetadata = JsonUtility.Deserialize<BuildJsonConfig>(fileMetadataFilePath).FileMetadata;
-                if (fileMetadata == null)
+                try
                 {
-                    Logger.LogWarning($"File from \"--fileMetadataFile {fileMetadataFilePath}\" does not contain \"fileMetadata\" definition, ignored.");
+                    fileMetadata = JsonUtility.Deserialize<BuildJsonConfig>(fileMetadataFilePath).FileMetadata;
+                    if (fileMetadata == null)
+                    {
+                        Logger.LogWarning($"File from \"--fileMetadataFile {fileMetadataFilePath}\" does not contain \"fileMetadata\" definition, ignored.");
+                    }
+                    else
+                    {
+                        Logger.LogInfo($"File metadata from \"--fileMetadataFile {fileMetadataFilePath}\" overrides the one defined in config file");
+                    }
                 }
-                else
+                catch (FileNotFoundException)
                 {
-                    Logger.LogInfo($"File metadata from \"--fileMetadataFile {fileMetadataFilePath}\" overrides the one defined in config file");
+                    Logger.LogWarning($"Invalid option \"--fileMetadataFile {fileMetadataFilePath}\": file does not exist, ignored.");
                 }
-                return fileMetadata;
+                catch (JsonException e)
+                {
+                    Logger.LogWarning($"File from \"--fileMetadataFile {fileMetadataFilePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
+                }
             }
-            catch (FileNotFoundException)
-            {
-                Logger.LogWarning($"Invalid option \"--fileMetadataFile {fileMetadataFilePath}\": file does not exist, ignored.");
-            }
-            catch (JsonException e)
-            {
-                Logger.LogWarning($"File from \"--fileMetadataFile {fileMetadataFilePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
-            }
-            return null;
+
+            return MergeDictionary(
+                new DictionaryMergeContext<FileMetadataPairs>("fileMetadata from config file", fileMetadataFromConfig),
+                new DictionaryMergeContext<FileMetadataPairs>("fileMetadata command option", fileMetadata));
         }
 
-        internal static Dictionary<string, object> GetGlobalMetadataFromOption(string globalMetadataContent, string globalMetadataFilePath)
+        internal static Dictionary<string, object> GetGlobalMetadataFromOption(string globalMetadataContent, string globalMetadataFilePath, Dictionary<string, object> globalMetadataFromConfig)
         {
             Dictionary<string, object> globalMetadata = null;
             if (globalMetadataContent != null)
@@ -190,10 +190,6 @@ namespace Microsoft.DocAsCode.SubCommands
                     try
                     {
                         globalMetadata = JsonUtility.Deserialize<Dictionary<string, object>>(sr, _toObjectSerializer.Value);
-                        if (globalMetadata != null && globalMetadata.Count > 0)
-                        {
-                            Logger.LogInfo($"Global metadata from \"--globalMetadata\" overrides the one defined in config file");
-                        }
                     }
                     catch (JsonException e)
                     {
@@ -213,21 +209,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     }
                     else
                     {
-                        if (globalMetadata == null) globalMetadata = globalMetadataFromFile;
-                        else
-                        {
-                            foreach (var pair in globalMetadataFromFile)
-                            {
-                                if (globalMetadata.ContainsKey(pair.Key))
-                                {
-                                    Logger.LogWarning($"Both --globalMetadata and --globalMetadataFile contain definition for \"{pair.Key}\", the one from \"--globalMetadata\" overrides the one from \"--globalMetadataFile {globalMetadataFilePath}\".");
-                                }
-                                else
-                                {
-                                    globalMetadata[pair.Key] = pair.Value;
-                                }
-                            }
-                        }
+                        globalMetadata = MergeDictionary(new DictionaryMergeContext<object>("--globalMetadataFile", globalMetadataFromFile), new DictionaryMergeContext<object>("--globalMetadata", globalMetadata));
                     }
                 }
                 catch (FileNotFoundException)
@@ -240,11 +222,53 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            if (globalMetadata?.Count > 0)
+            return MergeDictionary(
+                new DictionaryMergeContext<object>("globalMetadata from config file", globalMetadataFromConfig),
+                new DictionaryMergeContext<object>("globalMetadata command option", globalMetadata));
+        }
+
+        private static Dictionary<string, T> MergeDictionary<T>(DictionaryMergeContext<T> item, DictionaryMergeContext<T> overrideItem)
+        {
+            Dictionary<string, T> merged;
+            if (overrideItem == null || overrideItem.Item == null)
             {
-                return globalMetadata;
+                merged = new Dictionary<string, T>();
             }
-            return null;
+            else
+            {
+                merged = new Dictionary<string, T>(overrideItem.Item);
+            }
+            if (item == null || item.Item == null)
+            {
+                return merged;
+            }
+            else
+            {
+                foreach (var pair in item.Item)
+                {
+                    if (merged.ContainsKey(pair.Key))
+                    {
+                        Logger.LogWarning($"Both {item.Name} and {overrideItem.Name} contain definition for \"{pair.Key}\", the one from \"{overrideItem.Name}\" overrides the one from \"{item.Name}\".");
+                    }
+                    else
+                    {
+                        merged[pair.Key] = pair.Value;
+                    }
+                }
+            }
+            return merged;
+        }
+
+        private sealed class DictionaryMergeContext<T>
+        {
+            public string Name { get; }
+            public Dictionary<string, T> Item { get; }
+
+            public DictionaryMergeContext(string name, Dictionary<string, T> item)
+            {
+                Name = name;
+                Item = item;
+            }
         }
 
         private sealed class BuildConfig
