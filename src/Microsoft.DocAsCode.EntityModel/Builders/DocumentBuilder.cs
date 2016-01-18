@@ -101,12 +101,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     {
                         BuildCore(item.HostService, item.Processor, context);
                     }
+
+                    UpdateContext(context);
+
                     foreach (var item in innerContexts)
                     {
                         UpdateHref(item.HostService, item.Processor, context);
                     }
 
-                    UpdateContext(context);
                     if (parameters.ExportRawModel)
                     {
                         Logger.LogInfo("Start exporting raw model...");
@@ -197,23 +199,13 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void UpdateHref(HostService hostService, IDocumentProcessor processor, DocumentBuildContext context)
         {
-            Func<string, string, string> updater = (originalPathToFile, filePathToRoot) =>
-            {
-                string href;
-                if (string.IsNullOrEmpty(originalPathToFile) || !context.FileMap.TryGetValue(originalPathToFile, out href))
-                {
-                    return originalPathToFile;
-                }
-                var relativePath = ((RelativePath)href).MakeRelativeTo(((RelativePath)filePathToRoot).GetPathFromWorkingFolder());
-                return relativePath;
-            };
             hostService.Models.RunAll(
                 m =>
                 {
                     using (new LoggerFileScope(m.OriginalFileAndType.File))
                     {
                         Logger.LogVerbose($"Plug-in {processor.Name}: Updating href...");
-                        processor.UpdateHref(m, updater);
+                        processor.UpdateHref(m, context);
                     }
                 });
         }
@@ -393,7 +385,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         {
             foreach (var uid in model.Uids)
             {
-                context.UidMap[uid] = ((RelativePath)model.File).GetPathFromWorkingFolder();
+                // UidMap contains <uid => original file> mapping
+                // only FileMap contains <original file => final file> mapping
+                context.UidMap[uid] = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder();
             }
             if (result.LinkToUids.Count > 0)
             {

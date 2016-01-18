@@ -23,114 +23,100 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override void Build(FileModel model, IHostService host)
         {
-            model.File = Path.ChangeExtension(model.File, ".json");
             var toc = (TocViewModel)model.Content;
-            HashSet<string> links = new HashSet<string>();
-            Dictionary<string, HashSet<string>> tocMap = new Dictionary<string, HashSet<string>>();
-            UpdateRelativePathAndAddTocMap(toc, model, links, tocMap, host);
-            model.Properties.LinkToFiles = links.ToImmutableArray();
-            model.Properties.TocMap = tocMap.ToImmutableDictionary();
+            Normalize(toc, model, host);
             // todo : metadata.
         }
 
-        private void UpdateRelativePathAndAddTocMap(TocViewModel toc, FileModel model, HashSet<string> links, Dictionary<string, HashSet<string>> tocMap, IHostService hostService)
+        private void Normalize(TocViewModel toc, FileModel model, IHostService hostService)
         {
             if (toc == null) return;
+            foreach (var item in toc)
+            {
+                ValidateToc(item, model, hostService);
+                var relativeToFile = (RelativePath)model.File;
+                item.Href = NormalizeHref(item.Href, relativeToFile);
+                item.OriginalHref = NormalizeHref(item.OriginalHref, relativeToFile);
+                item.Homepage = NormalizeHref(item.Homepage, relativeToFile);
+
+                Normalize(item.Items, model, hostService);
+            }
+        }
+
+        private void ValidateToc(TocItemViewModel item, FileModel model, IHostService hostService)
+        {
+            if (!PathUtility.IsRelativePath(item.Href)) return;
             var file = model.File;
             var originalFile = model.OriginalFileAndType.File;
-            foreach (var item in toc)
+            // Special handle for folder ends with '/'
+            FileAndType originalTocFile = null;
+
+            string fileName = Path.GetFileName(item.Href);
+            if (string.IsNullOrEmpty(fileName))
             {
-                if (PathUtility.IsRelativePath(item.Href))
+                var href = item.Href + "toc.yml";
+                var absHref = (RelativePath)file + (RelativePath)href;
+                string tocPath = absHref.GetPathFromWorkingFolder();
+                if (!hostService.SourceFiles.TryGetValue(tocPath, out originalTocFile))
                 {
-                    // Special handle for folder ends with '/'
-                    FileAndType originalTocFile = null;
-
-                    string fileName = Path.GetFileName(item.Href);
-                    if (string.IsNullOrEmpty(fileName))
+                    href = item.Href + "toc.md";
+                    absHref = (RelativePath)file + (RelativePath)href;
+                    tocPath = absHref.GetPathFromWorkingFolder();
+                    if (!hostService.SourceFiles.TryGetValue(tocPath, out originalTocFile))
                     {
-                        var href = item.Href + "toc.yml";
-                        var absHref = (RelativePath)file + (RelativePath)href;
-                        string tocPath = absHref.GetPathFromWorkingFolder();
-                        if (!hostService.SourceFiles.TryGetValue(tocPath, out originalTocFile))
-                        {
-                            href = item.Href + "toc.md";
-                            absHref = (RelativePath)file + (RelativePath)href;
-                            tocPath = absHref.GetPathFromWorkingFolder();
-                            if (!hostService.SourceFiles.TryGetValue(tocPath, out originalTocFile))
-                            {
-                                var error = $"Unable to find either toc.yml or toc.md inside {item.Href}. Make sure the file is included in config file docfx.json!";
-                                Logger.LogError(error, file: model.LocalPathFromRepoRoot);
-                                throw new DocumentException(error);
-                            }
-                        }
-
-                        Logger.LogInfo($"TOC file {href} inside {item.Href} is used", file: model.LocalPathFromRepoRoot);
-                        item.Href = href;
-                        item.OriginalHref = item.Href;
+                        var error = $"Unable to find either toc.yml or toc.md inside {item.Href}. Make sure the file is included in config file docfx.json!";
+                        Logger.LogError(error, file: model.LocalPathFromRepoRoot);
+                        throw new DocumentException(error);
                     }
-
-                    // Add toc.yml to tocMap before change item.Href to home page
-                    item.Href = ((RelativePath)file + (RelativePath)item.Href).GetPathFromWorkingFolder();
-                    if (item.OriginalHref != null) item.OriginalHref = ((RelativePath)file + (RelativePath)item.OriginalHref).GetPathFromWorkingFolder();
-
-                    HashSet<string> value;
-                    if (tocMap.TryGetValue(item.Href, out value))
-                    {
-                        value.Add(originalFile);
-                    }
-                    else
-                    {
-                        tocMap[item.Href] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { originalFile };
-                    }
-                    links.Add(item.Href);
-
-                    SetHomepage(item, originalTocFile, model);
                 }
 
-                UpdateRelativePathAndAddTocMap(item.Items, model, links, tocMap, hostService);
+                Logger.LogInfo($"TOC file {href} inside {item.Href} is used", file: model.LocalPathFromRepoRoot);
+                item.Href = href;
+                item.OriginalHref = item.Href;
+            }
+
+            // Set default homepage
+            SetDefaultHomepage(item, originalTocFile, model);
+        }
+
+        private string NormalizeHref(string file, RelativePath relativeToFile)
+        {
+            if (!PathUtility.IsRelativePath(file)) return file;
+            return (relativeToFile + (RelativePath)file).GetPathFromWorkingFolder();
+        }
+
+        private void SetDefaultHomepage(TocItemViewModel item, FileAndType originalTocFile, FileModel model)
+        {
+            if (!string.IsNullOrEmpty(item.Homepage) || originalTocFile == null) return;
+            var subTocPath = Path.Combine(originalTocFile.BaseDir, originalTocFile.File);
+            var subToc = LoadSingleToc(subTocPath);
+            var tocItem = GetDefaultHomepageItem(subToc);
+
+            if (tocItem == null)
+            {
+                var error = $"Unable to get default page for {item.Href}: no item containing relative file link is defined inside TOC {subTocPath}";
+                Logger.LogError(error, file: model.LocalPathFromRepoRoot);
+                throw new DocumentException(error);
+            }
+
+            if (!string.IsNullOrEmpty(tocItem.Uid))
+            {
+                item.HomepageUid = tocItem.Uid;
+            }
+            else
+            {
+                item.Homepage = tocItem.Href;
             }
         }
 
-        private void SetHomepage(TocItemViewModel item, FileAndType originalTocFile, FileModel model)
-        {
-            if (!string.IsNullOrEmpty(item.Homepage))
-            {
-                if (PathUtility.IsRelativePath(item.Homepage))
-                {
-                    item.Href = ((RelativePath)model.File + (RelativePath)item.Homepage).GetPathFromWorkingFolder();
-                }
-                else
-                {
-                    item.Href = item.Homepage;
-                }
-
-                Logger.LogInfo($"Homepage {item.Homepage} is used.", file: model.LocalPathFromRepoRoot);
-            }
-            else if (originalTocFile != null)
-            {
-                var subTocPath = Path.Combine(originalTocFile.BaseDir, originalTocFile.File);
-                var subToc = LoadSingleToc(subTocPath);
-                var href = GetDefaultHomepage(subToc);
-
-                if (href == null)
-                {
-                    var error = $"Unable to get default page for {item.Href}: no item containing relative file link is defined inside TOC {subTocPath}";
-                    Logger.LogError(error, file: model.LocalPathFromRepoRoot);
-                    throw new DocumentException(error);
-                }
-
-                item.Href = (RelativePath)item.Href + (RelativePath)href;
-            }
-        }
-
-        private string GetDefaultHomepage(TocViewModel toc)
+        private TocItemViewModel GetDefaultHomepageItem(TocViewModel toc)
         {
             foreach (var item in toc)
             {
-                var href = TreeIterator.PreorderFirstOrDefault(item, s => s.Items, s => IsValidHomepageLink(s.Href));
-                if (href != null)
+                var tocItem = TreeIterator.PreorderFirstOrDefault(item, s => s.Items, s => IsValidHomepageLink(s));
+                if (tocItem != null)
                 {
-                    return href.Href;
+                    return tocItem;
                 }
             }
             return null;
@@ -141,12 +127,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         /// 1. relative file path
         /// 2. refer to a file
         /// 3. folder is not supported
+        /// 4. refer to an `uid`
         /// </summary>
         /// <param name="href"></param>
         /// <returns></returns>
-        private bool IsValidHomepageLink(string href)
+        private bool IsValidHomepageLink(TocItemViewModel tocItem)
         {
-            return PathUtility.IsRelativePath(href) && !string.IsNullOrEmpty(Path.GetFileName(href));
+            return !string.IsNullOrEmpty(tocItem.Uid) ||
+             (PathUtility.IsRelativePath(tocItem.Href) && !string.IsNullOrEmpty(Path.GetFileName(tocItem.Href)));
         }
 
         private TocViewModel LoadSingleToc(string filePath)

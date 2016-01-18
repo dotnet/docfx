@@ -11,14 +11,8 @@
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
-    public sealed class DocumentBuildContext
+    public sealed class DocumentBuildContext : IDocumentBuildContext
     {
-        public const string ManifestFileName = ".docfx.manifest";
-        public const string FileMapFileName = ".docfx.filemap";
-        public const string ExternalXRefSpecFileName = ".docfx.xref.external";
-        public const string InternalXRefSpecFileName = ".docfx.xref.internal";
-        public const string TocFileName = ".docfx.toc";
-
         public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, null) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, TemplateCollection templateCollection)
@@ -102,6 +96,70 @@
                 }
             }
             ExternalXRefSpec = result;
+        }
+
+        public string GetFilePath(string key)
+        {
+            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
+            string filePath;
+            if (FileMap.TryGetValue(key, out filePath))
+            {
+                return filePath;
+            }
+
+            return null;
+        }
+
+        // TODO: use this method instead of directly accessing FileMap
+        public void SetFilePath(string key, string filePath)
+        {
+            FileMap[key] = filePath;
+        }
+
+        // TODO: use this method instead of directly accessing UidMap
+        public void SetFileKeyWithUid(string uid, string fileKey)
+        {
+            UidMap[uid] = fileKey;
+        }
+
+        public string GetFileKeyFromUid(string uid)
+        {
+            if (string.IsNullOrEmpty(uid)) throw new ArgumentNullException(nameof(uid));
+
+            string key;
+            if (UidMap.TryGetValue(uid, out key))
+            {
+                return key;
+            }
+
+            return null;
+        }
+
+        public IImmutableList<string> GetTocFileKeySet(string key)
+        {
+            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
+            HashSet<string> sets;
+            if (TocMap.TryGetValue(key, out sets))
+            {
+                return sets.ToImmutableArray();
+            }
+
+            return null;
+        }
+
+        public void RegisterToc(string tocFileKey, string fileKey)
+        {
+            if (string.IsNullOrEmpty(fileKey)) throw new ArgumentNullException(nameof(fileKey));
+            if (string.IsNullOrEmpty(tocFileKey)) throw new ArgumentNullException(nameof(tocFileKey));
+            HashSet<string> sets;
+            if (TocMap.TryGetValue(fileKey, out sets))
+            {
+                sets.Add(tocFileKey);
+            }
+            else
+            {
+                TocMap[fileKey] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey };
+            }
         }
 
         private static XRefSpec GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)

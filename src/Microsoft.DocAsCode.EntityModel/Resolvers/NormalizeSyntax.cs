@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         public void Run(MetadataModel yaml, ResolverContext context)
         {
-            var index = yaml.Indexer;
-
             TreeIterator.Preorder(yaml.TocYamlViewModel, null,
                 s => s.IsInvalid ? null : s.Items,
                 (member, parent) =>

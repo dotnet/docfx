@@ -403,7 +403,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 catch (DocumentException ex)
                 {
-                    Logger.LogWarning("Document error occurs:" + ex.Message);
+                    Logger.LogError("Document error occurs:" + ex.Message);
                 }
                 catch (Exception ex)
                 {

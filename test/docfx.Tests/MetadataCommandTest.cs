@@ -52,10 +52,8 @@ namespace Microsoft.DocAsCode.Tests
             var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
             Assert.Equal("Foo", tocViewModel[0].Uid);
             Assert.Equal("Foo", tocViewModel[0].Name);
-            Assert.Equal("Foo.yml", tocViewModel[0].Href);
             Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
             Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
-            Assert.Equal("Foo.Bar.yml", tocViewModel[0].Items[0].Href);
 
             file = Path.Combine(_outputFolder, "Foo.yml");
             Assert.True(File.Exists(file));
@@ -117,10 +115,8 @@ namespace Microsoft.DocAsCode.Tests
             var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
             Assert.Equal("testVBproj1.Foo", tocViewModel[0].Uid);
             Assert.Equal("testVBproj1.Foo", tocViewModel[0].Name);
-            Assert.Equal("testVBproj1.Foo.yml", tocViewModel[0].Href);
             Assert.Equal("testVBproj1.Foo.Bar", tocViewModel[0].Items[0].Uid);
             Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
-            Assert.Equal("testVBproj1.Foo.Bar.yml", tocViewModel[0].Items[0].Href);
 
             file = Path.Combine(_outputFolder, "testVBproj1.Foo.yml");
             Assert.True(File.Exists(file));

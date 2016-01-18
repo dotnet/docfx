@@ -10,27 +10,12 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public class MetadataModel
     {
-        public ApiReferenceModel Indexer { get; set; }
         public MetadataItem TocYamlViewModel { get; set; }
         public List<MetadataItem> Members { get; set; }
     }
 
     public class MetadataModelUtility
     {
-        public static string ResolveApiHrefRelativeToCurrent(Dictionary<string, MetadataItem> index, string name, string currentHref)
-        {
-            if (string.IsNullOrEmpty(name) || index == null) return name;
-            MetadataItem item;
-            if (index.TryGetValue(name, out item))
-            {
-                if (string.IsNullOrEmpty(currentHref)) return item.Href;
-                var directoryName = Path.GetDirectoryName(currentHref);
-                return PathUtility.MakeRelativePath(directoryName, item.Href);
-            }
-
-            return name;
-        }
-
         public static string ResolveApiHrefRelativeToCurrentApi(ApiReferenceModel index, string name, string currentApiName)
         {
             if (string.IsNullOrEmpty(name) || index == null) return name;

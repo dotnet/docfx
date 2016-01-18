@@ -163,10 +163,7 @@
     <Compile Include="Models\LayoutItem.cs" />
     <Compile Include="Models\MetadataItem.cs" />
     <Compile Include="Resolvers\NormalizeSyntax.cs" />
-    <Compile Include="Resolvers\ResolvePath.cs" />
-    <Compile Include="Resolvers\ResolveRelativePath.cs" />
     <Compile Include="Resolvers\LayoutCheckAndCleanup.cs" />
-    <Compile Include="Resolvers\BuildIndex.cs" />
     <Compile Include="Resolvers\BuildMembers.cs" />
     <Compile Include="Resolvers\ResolverContext.cs" />
     <Compile Include="Resolvers\IResolverPipeline.cs" />

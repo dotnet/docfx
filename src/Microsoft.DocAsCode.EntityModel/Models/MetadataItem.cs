@@ -22,10 +22,6 @@ namespace Microsoft.DocAsCode.EntityModel
         [JsonProperty("id")]
         public string Name { get; set; }
 
-        [YamlMember(Alias = "href")]
-        [JsonProperty("href")]
-        public string Href { get; set; }
-
         [YamlMember(Alias = "language")]
         [JsonProperty("language")]
         public SyntaxLanguage Language { get; set; }

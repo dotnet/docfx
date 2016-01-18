@@ -58,6 +58,7 @@ namespace Microsoft.DocAsCode.EntityModel
         [JsonProperty("_tocRel")]
         public string TocRelativePath { get; set; }
 
+        // TODO: change to IDocumentBuildContext
         public SystemAttributes(DocumentBuildContext context, ManifestItem item, string lang)
         {
             Language = lang;

@@ -93,6 +93,9 @@ namespace Microsoft.DocAsCode.Plugins
 
         public DocumentType Type => FileAndType.Type;
 
+        // TODO: update to use Key instead of OriginalFileAndType.File
+        public string Key => OriginalFileAndType.File;
+
         public Func<string, string> PathRewriter => FileAndType.PathRewriter;
 
         public dynamic Properties { get; } = new ExpandoObject();

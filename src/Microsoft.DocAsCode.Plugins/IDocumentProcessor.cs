@@ -17,6 +17,6 @@ namespace Microsoft.DocAsCode.Plugins
         // TODO: rename
         SaveResult Save(FileModel model);
 
-        void UpdateHref(FileModel model, Func<string, string, string> updater);
+        void UpdateHref(FileModel model, IDocumentBuildContext context);
     }
 }

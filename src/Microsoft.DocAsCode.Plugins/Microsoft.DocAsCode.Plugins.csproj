@@ -20,6 +20,7 @@
     <Compile Include="DocumentType.cs" />
     <Compile Include="FileAndType.cs" />
     <Compile Include="FileModel.cs" />
+    <Compile Include="IDocumentBuildContext.cs" />
     <Compile Include="ISubCommandController.cs" />
     <Compile Include="ISubCommandCreator.cs" />
     <Compile Include="IDocumentBuildStep.cs" />

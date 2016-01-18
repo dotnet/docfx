@@ -32,7 +32,7 @@
         }
 
         // TODO: implement update href in each plugin
-        public virtual void UpdateHref(FileModel model, Func<string, string, string> updater)
+        public virtual void UpdateHref(FileModel model, IDocumentBuildContext context)
         {
         }
     }

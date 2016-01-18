@@ -31,6 +31,9 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [YamlMember(Alias = "homepage")]
         [JsonProperty("homepage")]
         public string Homepage { get; set; }
+        [YamlMember(Alias = "homepageUid")]
+        [JsonProperty("homepageUid")]
+        public string HomepageUid { get; set; }
         [YamlMember(Alias = "items")]
         [JsonProperty("items")]
         public TocViewModel Items { get; set; }
@@ -41,7 +44,6 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
             {
                 Uid = item.Name,
                 Name = item.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default),
-                Href = item.Href,
             };
             var nameForCSharp = item.DisplayNames.GetLanguageProperty(SyntaxLanguage.CSharp);
             if (nameForCSharp != result.Name)

@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
@@ -59,36 +60,92 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 DocumentType = "Toc",
                 ModelFile = model.File,
-                TocMap = model.Properties.TocMap,
-                LinkToFiles = model.Properties.LinkToFiles
             };
         }
 
-        public override void UpdateHref(FileModel model, Func<string, string, string> updater)
+        public override void UpdateHref(FileModel model, IDocumentBuildContext context)
         {
-            if (updater == null) return;
             var toc = (TocViewModel)model.Content;
-            var path = model.File;
+            var path = model.OriginalFileAndType.File;
             if (toc.Count > 0)
             {
                 foreach (var item in toc)
                 {
-                    UpdateTocItemHref(item, path, updater);
+                    UpdateTocItemHref(item, path, context);
                 }
             }
         }
 
-        private void UpdateTocItemHref(TocItemViewModel toc, string path, Func<string, string, string> updater)
+        private void UpdateTocItemHref(TocItemViewModel toc, string path, IDocumentBuildContext context)
         {
-            toc.Href = updater(toc.Href, path);
-            toc.OriginalHref = updater(toc.OriginalHref, path);
+            ResolveUid(toc, path, context);
+            RegisterTocMap(toc, path, context);
+
+            if (!string.IsNullOrEmpty(toc.Homepage))
+            {
+                toc.Href = toc.Homepage;
+            }
+
+            toc.Href = GetUpdatedHref(toc.Href, path, context);
+            toc.OriginalHref = GetUpdatedHref(toc.OriginalHref, path, context);
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
                 {
-                    UpdateTocItemHref(item, path, updater);
+                    UpdateTocItemHref(item, path, context);
                 }
             }
+        }
+
+        private void ResolveUid(TocItemViewModel item, string path, IDocumentBuildContext context)
+        {
+            if (item.Uid != null)
+            {
+                item.Href = GetPathFromUid(item.Uid, path, context);
+            }
+
+            if (item.HomepageUid != null)
+            {
+                item.Homepage = GetPathFromUid(item.HomepageUid, path, context);
+            }
+        }
+
+        private string GetPathFromUid(string uid, string path, IDocumentBuildContext context)
+        {
+            string href = context.GetFileKeyFromUid(uid);
+            if (string.IsNullOrEmpty(href))
+            {
+                throw new DocumentException($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{path}\"");
+            }
+            return href;
+        }
+
+        private void RegisterTocMap(TocItemViewModel item, string file, IDocumentBuildContext context)
+        {
+            var href = item.Href; // Should be original href from working folder starting with ~
+            if (!PathUtility.IsRelativePath(href)) return;
+
+            context.RegisterToc(file, href);
+        }
+
+        private string GetUpdatedHref(string originalPathToFile, string filePathToRoot, IDocumentBuildContext context)
+        {
+            if (!PathUtility.IsRelativePath(originalPathToFile)) return originalPathToFile;
+
+            string href = context.GetFilePath(originalPathToFile);
+
+            if (href == null)
+            {
+                throw new DocumentException($"Unalbe to find file \"{originalPathToFile}\" referenced by TOC file \"{filePathToRoot}\"");
+            }
+
+            var relativePath = GetRelativePath(href, filePathToRoot);
+            return relativePath;
+        }
+
+        private string GetRelativePath(string pathFromWorkingFolder, string relativeToPath)
+        {
+            return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo(((RelativePath)relativeToPath).GetPathFromWorkingFolder());
         }
 
         private TocViewModel LoadSingleToc(string filePath)

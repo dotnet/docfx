@@ -13,10 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             new LayoutCheckAndCleanup(),
             new SetParent(),
-            new ResolveRelativePath(),
-            new BuildIndex(),
             new ResolveReference(),
-            new ResolvePath(),
             new NormalizeSyntax(),
             new BuildMembers(),
             new BuildToc(),
@@ -36,7 +33,6 @@ namespace Microsoft.DocAsCode.EntityModel
             IEnumerable<string> externalReferencePackages)
         {
             MetadataModel viewModel = new MetadataModel();
-            viewModel.Indexer = new ApiReferenceModel();
             viewModel.TocYamlViewModel = new MetadataItem()
             {
                 Type = MemberType.Toc,

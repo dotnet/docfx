@@ -101,6 +101,7 @@ namespace Microsoft.DocAsCode.EntityModel
             context.SetExternalXRefSpec();
         }
 
+        // TODO: change to use IDocumentBuildContext
         public static TemplateManifestItem Transform(DocumentBuildContext context, ManifestItem item, TemplateCollection templateCollection, string outputDirectory, bool exportMetadata, Func<string, string> metadataFilePathProvider)
         {
             var baseDirectory = context.BuildOutputFolder ?? string.Empty;

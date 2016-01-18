@@ -496,7 +496,6 @@ namespace Microsoft.DocAsCode.EntityModel
             
             // 1. generate toc.yml
             outputFiles.Add(tocFileName);
-            model.TocYamlViewModel.Href = tocFileName;
             model.TocYamlViewModel.Type = MemberType.Toc;
 
             // TOC do not change
@@ -505,24 +504,54 @@ namespace Microsoft.DocAsCode.EntityModel
 
             YamlUtility.Serialize(tocFilePath, tocViewModel);
 
-            // 2. generate manifest file
-            outputFiles.Add(indexFileName);
-            string indexFilePath = Path.Combine(folder, indexFileName);
-            JsonUtility.Serialize(indexFilePath, model.Indexer.ToViewModel());
+            ApiReferenceViewModel indexer = new ApiReferenceViewModel();
 
-            // 3. generate each item's yaml
+            // 2. generate each item's yaml
             var members = model.Members;
             foreach (var memberModel in members)
             {
-                outputFiles.Add(Path.Combine(apiFolder, memberModel.Href));
-                string itemFilePath = Path.Combine(folder, apiFolder, memberModel.Href);
+                var outputPath = memberModel.Name + Constants.YamlExtension;
+
+                outputFiles.Add(Path.Combine(apiFolder, outputPath));
+                string itemFilePath = Path.Combine(folder, apiFolder, outputPath);
                 Directory.CreateDirectory(Path.GetDirectoryName(itemFilePath));
                 var memberViewModel = PageViewModel.FromModel(memberModel);
                 YamlUtility.Serialize(itemFilePath, memberViewModel);
                 Logger.Log(LogLevel.Verbose, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
+                AddMemberToIndexer(memberModel, outputPath, indexer);
             }
 
+            // 3. generate manifest file
+            outputFiles.Add(indexFileName);
+            string indexFilePath = Path.Combine(folder, indexFileName);
+
+            JsonUtility.Serialize(indexFilePath, indexer);
+
             return outputFiles;
+        }
+
+        private static void AddMemberToIndexer(MetadataItem memberModel, string outputPath, ApiReferenceViewModel indexer)
+        {
+            if (memberModel.Type == MemberType.Namespace)
+            {
+                indexer.Add(memberModel.Name, outputPath);
+            }
+            else
+            {
+                TreeIterator.Preorder(memberModel, null, s => s.Items, (member, parent) =>
+                {
+                    string path;
+                    if (indexer.TryGetValue(member.Name, out path))
+                    {
+                        Logger.LogWarning($"{member.Name} already exists in {path}, the duplicate one {outputPath} will be ignored.");
+                    }
+                    else
+                    {
+                        indexer.Add(member.Name, outputPath);
+                    }
+                    return true;
+                });
+            }
         }
 
         private static Dictionary<string, MetadataItem> MergeYamlProjectMetadata(List<MetadataItem> projectMetadataList)

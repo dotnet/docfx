@@ -28,7 +28,6 @@ namespace Microsoft.DocAsCode.EntityModel
             shrinkedItem.Name = item.Name;
             shrinkedItem.DisplayNames = item.DisplayNames;
 
-            shrinkedItem.Href = item.Href;
             shrinkedItem.Items = null;
 
             if (item.Items == null)
@@ -66,7 +65,6 @@ namespace Microsoft.DocAsCode.EntityModel
             shrinkedItem.Name = item.Name;
             shrinkedItem.DisplayNames = item.DisplayNames;
             shrinkedItem.Type = item.Type;
-            shrinkedItem.Href = item.Href;
             shrinkedItem.Items = null;
 
             if (item.Type == MemberType.Toc || item.Type == MemberType.Namespace)

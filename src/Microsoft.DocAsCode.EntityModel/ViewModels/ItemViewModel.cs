@@ -151,7 +151,6 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
                 Uid = model.Name,
                 Parent = model.Parent?.Name,
                 Children = model.Items?.Select(x => x.Name).OrderBy(s => s).ToList(),
-                Href = model.Href,
                 Type = model.Type,
                 Source = model.Source,
                 Documentation = model.Documentation,
