@@ -278,6 +278,8 @@ this should be same line with the above one</p>
 </li>
 </ul>
 ")]
+        [InlineData("[A] (link1)", @"<p><a href=""link1"">A</a></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
