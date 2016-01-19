@@ -8,14 +8,6 @@
     <AssemblyName>Microsoft.DocAsCode.MarkdownRewriters.Tests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.DocAsCode.Dfm, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\target\Debug\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DocAsCode.EntityModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\target\Debug\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -33,6 +25,14 @@
     <Compile Include="MarkdownRewritersTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
+      <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
+      <Name>Microsoft.DocAsCode.Dfm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
+      <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
+      <Name>Microsoft.DocAsCode.EntityModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownRewriters\Microsoft.DocAsCode.MarkdownRewriters.csproj">
       <Project>{99f0bb91-2ce9-4460-87e0-b99b87f7b193}</Project>
       <Name>Microsoft.DocAsCode.MarkdownRewriters</Name>
