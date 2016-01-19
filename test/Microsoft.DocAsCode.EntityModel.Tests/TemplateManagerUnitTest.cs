@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             var themes = new List<string> { "tmpl1", "tmpl/tmpl1" };
             var manager = new TemplateManager(GetType().Assembly, "tmpl", null, themes, null);
             var outputFolder = Path.Combine(_outputFolder, "TestTemplateManager_MutipleThemes");
-            manager.ProcessTemplateAndTheme(null, outputFolder, true);
+            manager.ProcessTheme(outputFolder, true);
             // 1. Support tmpl1.zip
             var file1 = Path.Combine(outputFolder, "tmpl1.dot.$");
             Assert.True(File.Exists(file1));
@@ -494,18 +494,17 @@ test2
             if (Directory.Exists(templateFolder))
                 Directory.Delete(templateFolder, true);
             WriteTemplate(templateFolder, templateFiles);
-            foreach (var item in items)
-            {
-                var modelPath = Path.Combine(inputFolder ?? string.Empty, item.ModelFile);
-                WriteModel(modelPath, model);
-            }
-
             using (var resource = new ResourceFinder(null, null).Find(templateFolder))
             {
                 var processor = new TemplateProcessor(resource);
                 var context = new DocumentBuildContext(inputFolder);
                 context.Manifest.AddRange(items);
-                processor.Process(context, outputFolder);
+                processor.ProcessDependencies(outputFolder);
+                foreach(var item in items)
+                {
+                    item.Model = new DocAsCode.Plugins.FileModel(new DocAsCode.Plugins.FileAndType(Environment.CurrentDirectory, item.ModelFile, DocAsCode.Plugins.DocumentType.Article, null), model);
+                    TemplateProcessor.Transform(context, item, processor.Templates, outputFolder, false, null);
+                }
             }
         }
 

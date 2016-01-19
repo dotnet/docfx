@@ -53,22 +53,6 @@ namespace Microsoft.DocAsCode.EntityModel
             return new TemplateTransformedResult(model, _renderer.Render(model));
         }
 
-        public string Transform(string modelPath, object attrs)
-        {
-            if (_renderer == null) return null;
-            object model;
-            if (_engine == null)
-            {
-                model = JsonUtility.Deserialize<object>(modelPath);
-            }
-            else
-            {
-                model = ProcessWithJint(JsonUtility.Deserialize<object>(modelPath), attrs);
-            }
-
-            return _renderer.Render(model);
-        }
-
         private object ProcessWithJint(object model, object attrs)
         {
             var argument1 = JintProcessorHelper.ConvertStrongTypeToJsValue(model);

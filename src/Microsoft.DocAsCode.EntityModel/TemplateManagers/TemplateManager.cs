@@ -25,34 +25,6 @@ namespace Microsoft.DocAsCode.EntityModel
             _themes = themes;
         }
 
-        /// <summary>
-        /// Template can contain a set of plugins to define the behavior of how to generate the output YAML data model
-        /// The name of plugin folder is always "plugins"
-        /// </summary>
-        public IEnumerable<KeyValuePair<string, Stream>> GetTemplatePlugins()
-        {
-            using (var templateResource = new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)))
-            {
-                if (templateResource.IsEmpty)
-                {
-                    yield break;
-                }
-                else
-                {
-                    foreach (var pair in templateResource.GetResourceStreams(@"^plugins/.*"))
-                    {
-                        yield return pair;
-                    }
-                }
-            }
-        }
-
-        public void ProcessTemplateAndTheme(DocumentBuildContext context, string outputDirectory, bool overwrite)
-        {
-            ProcessTemplate(context, outputDirectory);
-            ProcessTheme(outputDirectory, overwrite);
-        }
-
         public bool TryExportTemplateFiles(string outputDirectory, string regexFilter = null)
         {
             return TryExportResourceFiles(_templates, outputDirectory, true, regexFilter);
@@ -61,31 +33,6 @@ namespace Microsoft.DocAsCode.EntityModel
         public TemplateProcessor GetTemplateProcessor()
         {
             return new TemplateProcessor(new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)));
-        }
-
-        private void ProcessTemplate(DocumentBuildContext context, string outputDirectory)
-        {
-            if (_templates == null || _templates.Count == 0)
-            {
-                Logger.Log(LogLevel.Info, "Template is not specified, files will not be transformed.");
-                return;
-            }
-
-            using (var templateResource = new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)))
-            {
-                if (templateResource.IsEmpty)
-                {
-                    Logger.Log(LogLevel.Warning, $"No template resource found for [{_templates.ToDelimitedString()}].");
-                }
-                else
-                {
-                    Logger.Log(LogLevel.Verbose, "Template resource found, starting applying template.");
-                    using (var processor = new TemplateProcessor(templateResource))
-                    {
-                        processor.Process(context, outputDirectory);
-                    }
-                }
-            }
         }
 
         public void ProcessTheme(string outputDirectory, bool overwrite)

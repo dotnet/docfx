@@ -39,34 +39,6 @@ namespace Microsoft.DocAsCode.EntityModel
             Templates = new TemplateCollection(resourceProvider);
         }
 
-        // TODO: remove
-        public void Process(DocumentBuildContext context, string outputDirectory)
-        {
-            var baseDirectory = context.BuildOutputFolder;
-
-            if (string.IsNullOrEmpty(outputDirectory)) outputDirectory = Environment.CurrentDirectory;
-            if (string.IsNullOrEmpty(baseDirectory)) baseDirectory = Environment.CurrentDirectory;
-
-            if (!Directory.Exists(outputDirectory)) Directory.CreateDirectory(outputDirectory);
-
-            // 1. Copy dependent files with path relative to the base output directory
-            ProcessDependencies(outputDirectory);
-            UpdateFileMap(context, outputDirectory, Templates);
-            List<TemplateManifestItem> manifest = new List<TemplateManifestItem>();
-
-            // 3. Process every model and save to output directory
-            foreach (var item in context.Manifest)
-            {
-                var manifestItem = Transform(context, item, Templates, outputDirectory, true, s => s + ".json");
-                manifest.Add(manifestItem);
-            }
-
-            // Save manifest
-            var manifestPath = Path.Combine(outputDirectory, ManifestFileName);
-            JsonUtility.Serialize(manifestPath, manifest);
-            Logger.Log(LogLevel.Verbose, $"Manifest file saved to {manifestPath}.");
-        }
-
         public static string UpdateFilePath(string path, string documentType, TemplateCollection templateCollection)
         {
             if (templateCollection == null) return path;
@@ -79,31 +51,10 @@ namespace Microsoft.DocAsCode.EntityModel
             return Path.ChangeExtension(path, defaultTemplate.Extension);
         }
 
-        public static void UpdateFileMap(DocumentBuildContext context, string outputDirectory, TemplateCollection templateCollection)
-        {
-            //update internal XrefMap
-            if (context.XRefSpecMap != null)
-            {
-                foreach (var pair in context.XRefSpecMap)
-                {
-                    string targetFilePath;
-                    if (context.FileMap.TryGetValue(pair.Value.Href, out targetFilePath))
-                    {
-                        pair.Value.Href = targetFilePath;
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"{pair.Value.Href} is not found in .filemap");
-                    }
-                }
-            }
-
-            context.SetExternalXRefSpec();
-        }
-
         // TODO: change to use IDocumentBuildContext
         public static TemplateManifestItem Transform(DocumentBuildContext context, ManifestItem item, TemplateCollection templateCollection, string outputDirectory, bool exportMetadata, Func<string, string> metadataFilePathProvider)
         {
+            if (item.Model == null || item.Model.Content == null) throw new ArgumentNullException("Content for item.Model should not be null!");
             var baseDirectory = context.BuildOutputFolder ?? string.Empty;
             var manifestItem = new TemplateManifestItem
             {
@@ -117,7 +68,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             try
             {
-                var model = item.Model?.Content;
+                var model = item.Model.Content;
                 var templates = templateCollection[item.DocumentType];
                 // 1. process model
                 if (templates == null)
@@ -126,7 +77,6 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    var modelFile = Path.Combine(baseDirectory, item.ModelFile);
                     var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
                     foreach (var template in templates)
                     {
@@ -136,28 +86,20 @@ namespace Microsoft.DocAsCode.EntityModel
                         var dir = Path.GetDirectoryName(outputPath);
                         if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                         string transformed;
-                        if (model == null)
-                        {
-                            // TODO: remove
-                            // currently keep to pass UT
-                            transformed = template.Transform(item.ModelFile, systemAttrs);
-                        }
-                        else
-                        {
-                            var result = template.TransformModel(model, systemAttrs);
+                        var result = template.TransformModel(model, systemAttrs);
 
-                            if (exportMetadata)
+                        if (exportMetadata)
+                        {
+                            if (metadataFilePathProvider == null)
                             {
-                                if (metadataFilePathProvider == null)
-                                {
-                                    throw new ArgumentNullException(nameof(metadataFilePathProvider));
-                                }
-
-                                JsonUtility.Serialize(metadataFilePathProvider(outputPath), result.Model);
+                                throw new ArgumentNullException(nameof(metadataFilePathProvider));
                             }
 
-                            transformed = result.Result;
+                            JsonUtility.Serialize(metadataFilePathProvider(outputPath), result.Model);
                         }
+
+                        transformed = result.Result;
+
 
                         if (!string.IsNullOrWhiteSpace(transformed))
                         {
