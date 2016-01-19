@@ -196,8 +196,11 @@ function transform(model, _attrs) {
         }
 
         if (references[uid] === undefined) {
+          var xref = getXref(uid);
           return {
-            specName: getXref(uid)
+            specName: langs.map(function(l) {
+              return {"lang": l, "value": xref};
+            })
           }
         };
         return new Reference(references[uid], this).getReferenceViewModel(langs, extChanger);
@@ -321,14 +324,9 @@ function transform(model, _attrs) {
       }
       
       function getSpecNameForAllLang(langs, extChanger) {
-        var result = [];
-        for (var l in langs) {
-          var langItem = {};
-          langItem["lang"]=langs[l];
-          langItem["value"]=getSpecName(langs[l], extChanger);
-          result.push(langItem);
-        }
-        return result;
+        return langs.map(function(l) {
+          return {"lang": l, "value": getSpecName(l, extChanger)};
+        })
       }
 
       function getSpecName(lang, extChanger) {
@@ -357,14 +355,10 @@ function transform(model, _attrs) {
       }
       
       function getLangFullCoveredProperty(key, langs) {
-        var result = [];
-        for (var l in langs) {
-          var langItem = {};
-          langItem["lang"]=langs[l];
-          langItem["value"]=getLangSpecifiedProperty.call(this, key, langs[l]);
-          result.push(langItem);
-        }
-        return result;
+        var that = this;
+        return langs.map(function(l) {
+          return {"lang": l, "value": getLangSpecifiedProperty.call(that, key, l)};
+        })
       }
 
       function getLangSpecifiedProperty(key, lang) {
