@@ -67,13 +67,13 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             var commentModel = TripleSlashCommentModel.CreateModel(input, context);
 
             var summary = commentModel.Summary;
-            Assert.Equal("Parital classes @'System.AccessViolationException'@'System.AccessViolationException'can not cross assemblies, ```Classes in assemblies are by definition complete.```", summary);
+            Assert.Equal("Parital classes <xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref><xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref>can not cross assemblies, ```Classes in assemblies are by definition complete.```", summary);
 
             var returns = commentModel.Returns;
-            Assert.Equal("Task@'System.AccessViolationException' returns", returns);
+            Assert.Equal("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);
 
             var paramInput = commentModel.Parameters["input"];
-            Assert.Equal("This is @'System.AccessViolationException'the input", paramInput);
+            Assert.Equal("This is <xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref>the input", paramInput);
 
             var remarks = commentModel.Remarks;
             Assert.Equal("<para>This is a sample of exception node</para>", remarks);

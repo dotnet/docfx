@@ -19,32 +19,23 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
             StringBuffer result = "<xref";
-            if (token.Href != null)
-            {
-                result += " href=\"";
-                result += StringHelper.HtmlEncode(token.Href);
-                result += "\"";
-            }
-            if (token.Title != null)
-            {
-                result += " title=\"";
-                result += StringHelper.HtmlEncode(token.Title);
-                result += "\"";
-            }
+            result = AppendAttribute(result, "href", token.Href);
+            result = AppendAttribute(result, "title", token.Title);
+            result = AppendAttribute(result, "data-throw-if-not-resolved", token.ThrowIfNotResolved.ToString());
+            result = AppendAttribute(result, "data-raw", token.RawMarkdown);
+            
             result += ">";
             if (token.Name != null)
             {
                 result += StringHelper.HtmlEncode(token.Name);
             }
+
             result += "</xref>";
             return result;
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmIncludeBlockToken token, MarkdownBlockContext context)
         {
-            var href = token.Src == null ? null : $"src=\"{StringHelper.HtmlEncode(token.Src)}\"";
-            var name = token.Name == null ? null : StringHelper.HtmlEncode(token.Name);
-            var title = token.Title == null ? null : $"title=\"{StringHelper.HtmlEncode(token.Title)}\"";
             var resolved = _blockInclusionHelper.Load(renderer, token.Src, token.Raw, context, ((DfmEngine)renderer.Engine).InternalMarkup);
             return resolved;
         }
@@ -137,6 +128,17 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual StringBuffer Render(IMarkdownRenderer engine, DfmNoteBlockToken token, MarkdownBlockContext context)
         {
             return token.Content;
+        }
+
+        private static StringBuffer AppendAttribute(StringBuffer buffer, string attributeName, string value)
+        {
+            if (string.IsNullOrEmpty(value)) return buffer;
+            buffer += " ";
+            buffer += attributeName;
+            buffer += "=\"";
+            buffer += StringHelper.HtmlEncode(value);
+            buffer += "\"";
+            return buffer;
         }
     }
 }

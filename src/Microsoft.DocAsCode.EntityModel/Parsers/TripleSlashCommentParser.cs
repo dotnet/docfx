@@ -230,7 +230,7 @@ namespace Microsoft.DocAsCode.EntityModel
             foreach (XPathNavigator nav in iterator)
             {
                 string name = nav.GetAttribute("name", string.Empty);
-                string description = nav.Value;
+                string description = nav.InnerXml;
                 if (context.Normalize) description = NormalizeContentFromTripleSlashComment(description);
                 if (!string.IsNullOrEmpty(name))
                 {
@@ -315,7 +315,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         if (CommentIdRegex.IsMatch(value))
                         {
                             value = value.Substring(2);
-                            i.InsertAfter("@'" + value + "'");
+                            i.InsertAfter($"<xref href=\"{System.Net.WebUtility.HtmlEncode(value)}\" data-throw-if-not-resolved=\"false\"></xref>");
 
                             sees.Add(i);
                             if (addReference != null)
@@ -360,7 +360,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (iterator == null) yield break;
             foreach (XPathNavigator nav in iterator)
             {
-                string description = nav.Value;
+                string description = nav.InnerXml;
                 if (normalize) description = NormalizeContentFromTripleSlashComment(description);
 
                 string type = nav.GetAttribute("cref", string.Empty);

@@ -240,6 +240,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
+        // TODO: move uid resolve error here
         private static void UpdateXref(HtmlAgilityPack.HtmlNode xref, Dictionary<string, XRefSpec> internalXRefMap, Dictionary<string, XRefSpec> externalXRefMap, Func<string, string> updater, string language)
         {
             var key = xref.GetAttributeValue("href", null);
@@ -247,6 +248,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // e.g. return type: IEnumerable<T>, spec name should be IEnumerable
             var name = xref.GetAttributeValue("name", null);
             var fullName = xref.GetAttributeValue("fullName", null);
+            var raw = xref.GetAttributeValue("data-raw", null);
             string displayName;
             string href = null;
 
@@ -299,7 +301,8 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
 
                 var spanNode = $"<span class=\"xref\">{displayName}</span>";
-                xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(spanNode), xref);
+                var rawNode = raw == null ? spanNode : raw;
+                xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(rawNode), xref);
             }
         }
 

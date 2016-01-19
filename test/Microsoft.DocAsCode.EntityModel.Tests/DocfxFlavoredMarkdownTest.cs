@@ -34,7 +34,7 @@ b:
 ---", "<yamlheader>a: b\nb:\n  c: e</yamlheader>")]
         [InlineData(@"# Hello @CrossLink1 @'CrossLink2'dummy 
 @World",
-            "<h1 id=\"hello-crosslink1-crosslink2-dummy\">Hello <xref href=\"CrossLink1\"></xref> <xref href=\"CrossLink2\"></xref>dummy</h1>\n<p><xref href=\"World\"></xref></p>\n")]
+            "<h1 id=\"hello-crosslink1-crosslink2-dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw=\"@&#39;CrossLink2&#39;\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw=\"@World\"></xref></p>\n")]
         [InlineData("a\n```\nc\n```",
             "<p>a</p>\n<pre><code>c\n</code></pre>")]
         [InlineData(@"* Unordered list item 1
@@ -43,9 +43,10 @@ b:
 -------------------------------------
 ", "<ul>\n<li>Unordered list item 1</li>\n<li>Unordered list item 2</li>\n</ul>\n<h2 id=\"1-this-is-heading-not-ordered-list\">1. This Is Heading, Not Ordered List</h2>\n")]
         [InlineData(@" *hello* abc @api__1",
-            "<p> <em>hello</em> abc <xref href=\"api__1\"></xref></p>\n")]
+            "<p> <em>hello</em> abc <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw=\"@api__1\"></xref></p>\n")]
+        [InlineData("@1abc", "<p>@1abc</p>\n")]
         [InlineData(@"@api1 @api__1 @api!1 @api@a abc@api.com a.b.c@api.com @'a p ';@""a!pi"",@api...@api",
-            "<p><xref href=\"api1\"></xref> <xref href=\"api__1\"></xref> <xref href=\"api!1\"></xref> <xref href=\"api@a\"></xref> abc@api.com a.b.c@api.com <xref href=\"a p \"></xref>;<xref href=\"a!pi\"></xref>,<xref href=\"api\"></xref>...<xref href=\"api\"></xref></p>\n")]
+            "<p><xref href=\"api1\" data-throw-if-not-resolved=\"False\" data-raw=\"@api1\"></xref> <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw=\"@api__1\"></xref> <xref href=\"api!1\" data-throw-if-not-resolved=\"False\" data-raw=\"@api!1\"></xref> <xref href=\"api@a\" data-throw-if-not-resolved=\"False\" data-raw=\"@api@a\"></xref> abc@api.com a.b.c@api.com <xref href=\"a p \" data-throw-if-not-resolved=\"False\" data-raw=\"@&#39;a p &#39;\"></xref>;<xref href=\"a!pi\" data-throw-if-not-resolved=\"False\" data-raw=\"@&quot;a!pi&quot;\"></xref>,<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw=\"@api\"></xref>...<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw=\"@api\"></xref></p>\n")]
         public void TestDfmInGeneral(string source, string expected)
         {
             Assert.Equal(expected, DocfxFlavoredMarked.Markup(source));

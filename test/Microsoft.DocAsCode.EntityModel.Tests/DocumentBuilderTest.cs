@@ -152,7 +152,7 @@ tagRules : [
                         "<h1 id=\"hello-world\">Hello World</h1>",
                         model["rawTitle"]);
                     Assert.Equal(
-                        "\n<p>Test XRef: <xref href=\"XRef1\"></xref>\n" +
+                        "\n<p>Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\"></xref>\n" +
                         "Test link: <a href=\"~/db.documents/test/test.md\">link text</a>\n" +
                         "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a></p>\n" +
                         "<p><p>\n" +
