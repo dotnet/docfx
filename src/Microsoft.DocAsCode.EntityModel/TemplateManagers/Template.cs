@@ -16,14 +16,17 @@ namespace Microsoft.DocAsCode.EntityModel
     public class Template
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
-        private string _script = null;
-        private ITemplateRenderer _renderer  = null;
+        private readonly ITemplateRenderer _renderer;
+        private readonly Engine _engine;
+        private readonly string _script;
+
         public string Name { get; }
         public string Extension { get; }
         public string Type { get; }
         public bool IsPrimary { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
-        public Template(string template, string templateName, string script, ResourceCollection resourceProvider)
+
+        public Template(string template, string templateName, string script, ResourceCollection resourceCollection)
         {
             if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
             if (string.IsNullOrEmpty(template)) throw new ArgumentNullException(nameof(template));
@@ -33,27 +36,18 @@ namespace Microsoft.DocAsCode.EntityModel
             Type = typeAndExtension.Item1;
             IsPrimary = typeAndExtension.Item3;
             _script = script;
-            if (resourceProvider != null)
-            {
-                if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
-                {
-                    _renderer = LiquidTemplateRenderer.Create(resourceProvider, template);
-                }
-                else
-                {
-                    _renderer = new MustacheTemplateRenderer(resourceProvider, template);
-                }
-            }
+            _engine = CreateEngine(script);
 
+            _renderer = CreateRenderer(resourceCollection, templateName, template);
             Resources = ExtractDependentResources();
         }
 
         public TemplateTransformedResult TransformModel(object model, object attrs)
         {
             if (_renderer == null) return null;
-            if (_script != null)
+            if (_engine != null)
             {
-                model = ProcessWithJint(JsonUtility.Serialize(model), attrs);
+                model = ProcessWithJint(model, attrs);
             }
 
             return new TemplateTransformedResult(model, _renderer.Render(model));
@@ -63,41 +57,30 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (_renderer == null) return null;
             object model;
-            if (_script == null)
+            if (_engine == null)
             {
                 model = JsonUtility.Deserialize<object>(modelPath);
             }
             else
             {
-                model = ProcessWithJint(File.ReadAllText(modelPath), attrs);
+                model = ProcessWithJint(JsonUtility.Deserialize<object>(modelPath), attrs);
             }
 
             return _renderer.Render(model);
+        }
+
+        private object ProcessWithJint(object model, object attrs)
+        {
+            var argument1 = JintProcessorHelper.ConvertStrongTypeToJsValue(model);
+            var argument2 = JintProcessorHelper.ConvertStrongTypeToJsValue(attrs);
+            var value = _engine.Invoke("transform", argument1, argument2).ToObject();
+            return value;
         }
 
         private string GetRelativeResourceKey(string relativePath)
         {
             // Make sure resource keys are combined using '/'
             return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
-        }
-
-        private object ProcessWithJint(string model, object attrs)
-        {
-            var engine = new Engine();
-
-            // engine.SetValue("model", stream.ToString());
-            engine.SetValue("console", new
-            {
-                log = new Action<object>(Logger.Log)
-            });
-
-            // throw exception when execution fails
-            engine.Execute(_script);
-            var value = engine.Invoke("transform", model, JsonUtility.Serialize(attrs)).ToObject();
-
-            // var value = engine.GetValue("model").ToObject();
-            // The results generated
-            return value;
         }
 
         private static Tuple<string, string, bool> GetTemplateTypeAndExtension(string templateName)
@@ -142,6 +125,34 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, false);
                 }
+            }
+        }
+
+        private static Engine CreateEngine(string script)
+        {
+            if (string.IsNullOrEmpty(script)) return null;
+            var engine = new Engine();
+
+            engine.SetValue("console", new
+            {
+                log = new Action<object>(Logger.Log)
+            });
+
+            // throw exception when execution fails
+            engine.Execute(script);
+            return engine;
+        }
+
+        private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, string templateName, string template)
+        {
+            if (resourceCollection == null) return null;
+            if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
+            {
+                return LiquidTemplateRenderer.Create(resourceCollection, template);
+            }
+            else
+            {
+                return new MustacheTemplateRenderer(resourceCollection, template);
             }
         }
     }
