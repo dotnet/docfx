@@ -8,6 +8,10 @@
     <AssemblyName>Microsoft.DocAsCode.MarkdownRewriters.Tests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.DocAsCode.Dfm, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\target\Debug\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.DocAsCode.EntityModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\target\Debug\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.dll</HintPath>

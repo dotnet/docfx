@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
 {
+    using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
 
     using Xunit;

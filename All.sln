@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -381,6 +381,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Common"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Common", "src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.xproj", "{D52A63AA-213D-D221-A9F6-815233D136E5}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.MarkdownRewriters", "src\Microsoft.DocAsCode.MarkdownRewriters\Microsoft.DocAsCode.MarkdownRewriters.xproj", "{5FF9B54C-A853-4FA8-A771-40837D062F05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -645,6 +647,14 @@ Global
 		{D52A63AA-213D-D221-A9F6-815233D136E5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D52A63AA-213D-D221-A9F6-815233D136E5}.Release|x86.ActiveCfg = Release|Any CPU
 		{D52A63AA-213D-D221-A9F6-815233D136E5}.Release|x86.Build.0 = Release|Any CPU
+		{5FF9B54C-A853-4FA8-A771-40837D062F05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FF9B54C-A853-4FA8-A771-40837D062F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FF9B54C-A853-4FA8-A771-40837D062F05}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5FF9B54C-A853-4FA8-A771-40837D062F05}.Debug|x86.Build.0 = Debug|Any CPU
+		{5FF9B54C-A853-4FA8-A771-40837D062F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FF9B54C-A853-4FA8-A771-40837D062F05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FF9B54C-A853-4FA8-A771-40837D062F05}.Release|x86.ActiveCfg = Release|Any CPU
+		{5FF9B54C-A853-4FA8-A771-40837D062F05}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -699,5 +709,6 @@ Global
 		{2347BFAB-11BE-425D-8926-51D26331861B} = {38490932-E9E7-4C31-81DD-B4B06BACD1BB}
 		{72225351-32FD-103F-1818-25E3C7DF74A2} = {2DAAC304-36F6-4E4A-A0EA-5821B4B9842A}
 		{D52A63AA-213D-D221-A9F6-815233D136E5} = {38490932-E9E7-4C31-81DD-B4B06BACD1BB}
+		{5FF9B54C-A853-4FA8-A771-40837D062F05} = {38490932-E9E7-4C31-81DD-B4B06BACD1BB}
 	EndGlobalSection
 EndGlobal

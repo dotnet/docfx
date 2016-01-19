@@ -33,7 +33,6 @@
     <Compile Include="AzureEngineBuilder.cs" />
     <Compile Include="AzureInlineTokens\AzureIncludeInlineToken.cs" />
     <Compile Include="AzureMarked.cs" />
-    <Compile Include="DfmMarkdownRenderer.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

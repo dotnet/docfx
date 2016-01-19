@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownRewriters
 {
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Dfm;
 
     public class AzureMarked
     {
