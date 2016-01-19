@@ -16,14 +16,21 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     public class TemplateManagerFixture : IDisposable
     {
         public string OutputFolder { get; }
+        public string InputFolder { get; }
 
         public TemplateManagerFixture()
         {
+            InputFolder = "TemplateManagerUnitTestInput";
             OutputFolder = "TemplateManagerUnitTestOutput";
         }
 
         public void Dispose()
         {
+            if (Directory.Exists(InputFolder))
+            {
+                Directory.Delete(InputFolder, true);
+            }
+
             if (Directory.Exists(OutputFolder))
             {
                 Directory.Delete(OutputFolder, true);
@@ -35,9 +42,12 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     [Trait("EntityType", "TemplateManager")]
     public class TemplateManagerUnitTest : IClassFixture<TemplateManagerFixture>
     {
-        private string _outputFolder;
+        private readonly string _inputFolder;
+        private readonly string _outputFolder;
+
         public TemplateManagerUnitTest(TemplateManagerFixture fixture)
         {
+            _inputFolder = fixture.InputFolder;
             _outputFolder = fixture.OutputFolder;
         }
 
@@ -103,11 +113,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                    new {name = "test2"},
                }
             };
-            var modelFileName = "TestTemplateProcessor_NoScript.yml";
+            var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScript.yml");
             var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.tmpl", template));
 
-            var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
             Assert.Equal(@"
 test1
@@ -143,7 +153,7 @@ test2
                    new {name = "test2"},
                }
             };
-            var modelFileName = "TestTemplateProcessor_NoScriptWithPartial.yml";
+            var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScriptWithPartial.yml");
             var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(
                 templateName,
@@ -155,7 +165,7 @@ test2
                 Tuple.Create("partial1.tmpl.partial", partial1),
                 Tuple.Create("partial2.tmpl.partial", partial2));
 
-            var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
             Assert.Equal(@"
 test1
@@ -174,7 +184,7 @@ test2
         {
             var templateName = "InvalidTemplate.html";
             string inputFolder = null;
-            var modelFileName = "TestTemplateProcessor_InvalidTemplate.yml";
+            var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_InvalidTemplate.yml");
             var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty };
             ProcessTemplate(templateName, inputFolder, new[] { item }, new object(), _outputFolder,
                 Tuple.Create("default.invalidtmpl", string.Empty),
@@ -212,7 +222,7 @@ function transform(model){
                }
             };
 
-            var modelFileName = "TestTemplateProcessor_WithIncludes.yml";
+            var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_WithIncludes.yml");
             string inputFolder = null;
             var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, OriginalFile = modelFileName };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
@@ -312,11 +322,11 @@ test2
                    new {name = "test2"},
                }
             };
-            var modelFileName = "TestLiquidTemplateProcessor_NoScript.yml";
+            var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_NoScript.yml");
             var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.liquid", template));
 
-            var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
             Assert.Equal(@"
 test1
@@ -352,7 +362,7 @@ test2
                    new {name = "test2"},
                }
             };
-            var modelFileName = "TestLiquidTemplateProcessor_NoScriptWithPartial.yml";
+            var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_NoScriptWithPartial.yml");
             var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(
                 templateName,
@@ -364,7 +374,7 @@ test2
                 Tuple.Create("_partial1.liquid", partial1),
                 Tuple.Create("_partial2.liquid", partial2));
 
-            var outputFile = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(modelFileName));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
             Assert.Equal(@"
 test1
@@ -404,7 +414,7 @@ function transform(model){
                }
             };
 
-            var modelFileName = "TestLiquidTemplateProcessor_WithIncludes.yml";
+            var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_WithIncludes.yml");
             string inputFolder = null;
             var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, OriginalFile = modelFileName };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
@@ -502,6 +512,13 @@ test2
                 processor.ProcessDependencies(outputFolder);
                 foreach(var item in items)
                 {
+                    if (item.ResourceFile != null)
+                    {
+                        var dir = Path.GetDirectoryName(item.ResourceFile);
+                        if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                        File.Create(item.ResourceFile).Dispose();
+                    }
+
                     item.Model = new DocAsCode.Plugins.FileModel(new DocAsCode.Plugins.FileAndType(Environment.CurrentDirectory, item.ModelFile, DocAsCode.Plugins.DocumentType.Article, null), model);
                     TemplateProcessor.Transform(context, item, processor.Templates, outputFolder, false, null);
                 }
