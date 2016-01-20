@@ -1,5 +1,13 @@
-Version Notes (Current Version: v1.3.6)
+Version Notes (Current Version: v1.3.7)
 =======================================
+v1.3.7
+------
+1. Fix no link and ref link cannot work issue in markdownlite.
+2. Fix link issue (allow space in link) in markdownlite.
+3. Fix para for list in markdownlite.
+4. Fix tokenize bug in dfm.
+5. Add markdown token validator in dfm.
+
 v1.3.6
 ------
 1. Fix cross domain issue: timeout exception throws when document build takes longer than 15 minutes
