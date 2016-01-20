@@ -164,18 +164,6 @@ This is azure include block.
 ---
 1. nolist item1
 2. nolist item2";
-<<<<<<< HEAD
-            var expected = @"> [!AZURE.NOTE]
-> This is azure note
-> > [!AZURE.WARNING]
-> > This is azure warning
-> > [!AZURE.IMPORTANT]
-> > This is azure Important
-> > > [!AZURE.TIP]
-> > > This is TIP
-> > > [!AZURE.CAUTION]
-> > > This is CAUTION";
-=======
             var expected = @"Hello world
 
 * list [!INCLUDE [include-short-name](../includes/include-file-name.md)]
