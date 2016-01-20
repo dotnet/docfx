@@ -26,7 +26,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var content = match.Groups[1].Value[match.Groups[1].Value.Length - 1] == '\n'
                 ? match.Groups[1].Value.Substring(0, match.Groups[1].Value.Length - 1)
                 : match.Groups[1].Value;
-            return new MarkdownParagraphBlockToken(this, engine.Context, engine.TokenizeInline(content), match.Value);
+            return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+                new MarkdownParagraphBlockToken(t.Rule, t.Context, p.TokenizeInline(content), t.RawMarkdown));
         }
     }
 }

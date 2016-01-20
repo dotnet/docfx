@@ -280,6 +280,25 @@ this should be same line with the above one</p>
 ")]
         [InlineData("[A] (link1)", @"<p><a href=""link1"">A</a></p>
 ")]
+        [InlineData(@"# Test Ref
+For more information about user navigation properties, see the documentation for [User].
+
+[User]: ./entity-and-complex-type-reference.md#UserEntity",
+            @"<h1 id=""test-ref"">Test Ref</h1>
+<p>For more information about user navigation properties, see the documentation for <a href=""./entity-and-complex-type-reference.md#UserEntity"">User</a>.</p>
+")]
+        [InlineData(@"> [abc][1]
+> > [1]
+
+
+[1]: 11111",
+            @"<blockquote>
+<p><a href=""11111"">abc</a></p>
+<blockquote>
+<p><a href=""11111"">1</a></p>
+</blockquote>
+</blockquote>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {

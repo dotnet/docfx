@@ -25,15 +25,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 (match.Groups[1].Value == "pre" || match.Groups[1].Value == "script" || match.Groups[1].Value == "style");
             if (engine.Options.Sanitize)
             {
-                return new MarkdownParagraphBlockToken(this, engine.Context, engine.TokenizeInline(match.Value), match.Value);
+                return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+                    new MarkdownParagraphBlockToken(t.Rule, t.Context, p.TokenizeInline(match.Value), t.RawMarkdown));
             }
             else
             {
-                return new MarkdownHtmlBlockToken(
-                    this,
-                    engine.Context,
-                    isPre ? new InlineContent(new IMarkdownToken[] { new MarkdownRawToken(this, engine.Context, match.Value) }.ToImmutableArray()) : engine.TokenizeInline(match.Value),
-                    match.Value);
+                return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+                    new MarkdownHtmlBlockToken(
+                        t.Rule,
+                        t.Context,
+                        isPre ? new InlineContent(new IMarkdownToken[] { new MarkdownRawToken(this, engine.Context, t.RawMarkdown) }.ToImmutableArray()) : p.TokenizeInline(t.RawMarkdown),
+                        t.RawMarkdown));
             }
         }
     }

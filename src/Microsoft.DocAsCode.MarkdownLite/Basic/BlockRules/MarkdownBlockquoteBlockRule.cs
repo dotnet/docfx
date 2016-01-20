@@ -21,10 +21,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            var capStr = LeadingBlockquote.Replace(match.Value, string.Empty);
-            var blockTokens = engine.Tokenize(capStr);
-            blockTokens = TokenHelper.ParseInlineToken(engine, this, blockTokens, true);
-            return new MarkdownBlockquoteBlockToken(this, engine.Context, blockTokens, match.Value);
+            return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+            {
+                var capStr = LeadingBlockquote.Replace(t.RawMarkdown, string.Empty);
+                var blockTokens = engine.Tokenize(capStr);
+                blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true);
+                return new MarkdownBlockquoteBlockToken(t.Rule, t.Context, blockTokens, match.Value);
+            });
         }
     }
 }

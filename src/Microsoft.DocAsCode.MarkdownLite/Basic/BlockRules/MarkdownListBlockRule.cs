@@ -76,11 +76,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     if (!loose) loose = next;
                 }
 
-                var c = parser.SwitchContext(MarkdownBlockContext.IsTop, false);
-                var blockTokens = parser.Tokenize(item);
-                blockTokens = TokenHelper.ParseInlineToken(parser, this, blockTokens, loose);
-                tokens.Add(new MarkdownListItemBlockToken(this, parser.Context, blockTokens, loose, item));
-                parser.SwitchContext(c);
+                tokens.Add(
+                    new TwoPhaseBlockToken(this, parser.Context, item, (p, t) =>
+                    {
+                        p.SwitchContext(MarkdownBlockContext.IsTop, false);
+                        var blockTokens = p.Tokenize(item);
+                        blockTokens = TokenHelper.ParseInlineToken(p, this, blockTokens, loose);
+                        return new MarkdownListItemBlockToken(t.Rule, t.Context, blockTokens, loose, t.RawMarkdown);
+                    }));
             }
 
             return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), bull.Length > 1, match.Value);

@@ -54,6 +54,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 parser.SwitchContext(context);
             }
             var tokens = parser.Tokenize(Preprocess(markdown));
+            var internalRewriteEngine =
+                new MarkdownRewriteEngine(
+                    this,
+                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
+                        (e, t) => t.Extract(parser)));
+            tokens = internalRewriteEngine.Rewrite(tokens);
             tokens = RewriteEngine.Rewrite(tokens);
             var renderer = Renderer;
             foreach (var token in tokens)
