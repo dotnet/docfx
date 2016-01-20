@@ -149,6 +149,7 @@
     <Compile Include="ArgsParserTest.cs" />
     <Compile Include="BuildCommandTest.cs" />
     <Compile Include="JsonConverterTest.cs" />
+    <Compile Include="BuildCommandFixture.cs" />
     <Compile Include="MetadataCommandFixture.cs" />
     <Compile Include="MetadataCommandTest.cs" />
   </ItemGroup>

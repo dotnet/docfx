@@ -47,6 +47,10 @@ b:
         [InlineData("@1abc", "<p>@1abc</p>\n")]
         [InlineData(@"@api1 @api__1 @api!1 @api@a abc@api.com a.b.c@api.com @'a p ';@""a!pi"",@api...@api",
             "<p><xref href=\"api1\" data-throw-if-not-resolved=\"False\" data-raw=\"@api1\"></xref> <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw=\"@api__1\"></xref> <xref href=\"api!1\" data-throw-if-not-resolved=\"False\" data-raw=\"@api!1\"></xref> <xref href=\"api@a\" data-throw-if-not-resolved=\"False\" data-raw=\"@api@a\"></xref> abc@api.com a.b.c@api.com <xref href=\"a p \" data-throw-if-not-resolved=\"False\" data-raw=\"@&#39;a p &#39;\"></xref>;<xref href=\"a!pi\" data-throw-if-not-resolved=\"False\" data-raw=\"@&quot;a!pi&quot;\"></xref>,<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw=\"@api\"></xref>...<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw=\"@api\"></xref></p>\n")]
+        [InlineData("[name](xref:uid \"title\")", "<p><xref href=\"uid\" title=\"title\" data-throw-if-not-resolved=\"True\" data-raw=\"[name](xref:uid &quot;title&quot;)\">name</xref></p>\n")]
+        [InlineData("[name](@uid \"title\")", "<p><xref href=\"uid\" title=\"title\" data-throw-if-not-resolved=\"True\" data-raw=\"[name](@uid &quot;title&quot;)\">name</xref></p>\n")]
+        [InlineData("<xref:uid>text", "<p><xref href=\"uid\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:uid&gt;\"></xref>text</p>\n")]
+        [InlineData("<xref:'uid with space'>text", "<p><xref href=\"uid with space\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:&#39;uid with space&#39;&gt;\"></xref>text</p>\n")]
         public void TestDfmInGeneral(string source, string expected)
         {
             Assert.Equal(expected, DocfxFlavoredMarked.Markup(source));

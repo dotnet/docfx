@@ -241,103 +241,17 @@ namespace Microsoft.DocAsCode.EntityModel
         }
 
         // TODO: move uid resolve error here
-        private static void UpdateXref(HtmlAgilityPack.HtmlNode xref, Dictionary<string, XRefSpec> internalXRefMap, Dictionary<string, XRefSpec> externalXRefMap, Func<string, string> updater, string language)
+        private static void UpdateXref(HtmlAgilityPack.HtmlNode node, Dictionary<string, XRefSpec> internalXRefMap, Dictionary<string, XRefSpec> externalXRefMap, Func<string, string> updater, string language)
         {
-            var key = xref.GetAttributeValue("href", null);
-            // If name | fullName exists, use the one from xref because spec name is different from name for generic types
-            // e.g. return type: IEnumerable<T>, spec name should be IEnumerable
-            var name = xref.GetAttributeValue("name", null);
-            var fullName = xref.GetAttributeValue("fullName", null);
-            var raw = xref.GetAttributeValue("data-raw", null);
-            string displayName;
-            string href = null;
+            var xref = XrefDetails.From(node);
 
-            XRefSpec spec = null;
-            if (internalXRefMap.TryGetValue(key, out spec))
-            {
-                href = updater(spec.Href);
-                var hashtagIndex = href.IndexOf('#');
-                if (hashtagIndex == -1)
-                {
-                    var htmlId = GetHtmlId(key);
-                    // TODO: What if href is not html?
-                    href = href + "#" + htmlId;
-                }
-            }
-            else if (externalXRefMap.TryGetValue(key, out spec) && !string.IsNullOrEmpty(spec.Href))
-            {
-                href = spec.Href;
-            }
+            // Resolve external xref map first, and then internal xref map.
+            // Internal one overrides external one
+            bool resolved = xref.TryResolve(externalXRefMap, null);
+            resolved = xref.TryResolve(internalXRefMap, updater);
 
-            // If href is not null, use name
-            if (href != null)
-            {
-                if (!string.IsNullOrEmpty(name))
-                {
-                    displayName = name;
-                }
-                else
-                {
-                    displayName = string.IsNullOrEmpty(fullName) ? key : fullName;
-                    if (spec != null)
-                        displayName = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(spec, language, displayName, "name"));
-                }
-
-                var anchorNode = $"<a class=\"xref\" href=\"{href}\">{displayName}</a>";
-                xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(anchorNode), xref);
-            }
-            else
-            {
-                // If href is null, use fullName
-                if (!string.IsNullOrEmpty(fullName))
-                {
-                    displayName = fullName;
-                }
-                else
-                {
-                    displayName = string.IsNullOrEmpty(name) ? key : name;
-                    if (spec != null)
-                        displayName = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(spec, language, displayName, "fullName", "name"));
-                }
-
-                var spanNode = $"<span class=\"xref\">{displayName}</span>";
-                var rawNode = raw == null ? spanNode : raw;
-                xref.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(rawNode), xref);
-            }
-        }
-
-        /// <summary>
-        /// Must be consistent with template input.replace(/\W/g, '_');
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private static Regex HtmlEncodeRegex = new Regex(@"\W", RegexOptions.Compiled);
-        private static string GetHtmlId(string id)
-        {
-            if (string.IsNullOrEmpty(id)) return null;
-            return HtmlEncodeRegex.Replace(id, "_");
-        }
-
-        private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, string defaultValue, params string[] keyInFallbackOrder)
-        {
-            if (keyInFallbackOrder == null || keyInFallbackOrder.Length == 0) throw new ArgumentException("key must be provided!", nameof(keyInFallbackOrder));
-            string suffix = string.Empty;
-            if (!string.IsNullOrEmpty(language)) suffix = "." + language;
-            foreach(var key in keyInFallbackOrder)
-            {
-                string value;
-                var keyWithSuffix = key + suffix;
-                if (spec.TryGetValue(keyWithSuffix, out value))
-                {
-                    return value;
-                }
-                if (spec.TryGetValue(key, out value))
-                {
-                    return value;
-                }
-            }
-
-            return defaultValue;
+            var convertedNode = xref.ConvertToHtmlNode(language);
+            node.ParentNode.ReplaceChild(convertedNode, node);
         }
 
         private static void UpdateHref(HtmlAgilityPack.HtmlNode link, Dictionary<string, string> map, Func<string, string> updater)

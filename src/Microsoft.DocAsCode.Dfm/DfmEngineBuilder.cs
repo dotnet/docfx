@@ -19,11 +19,20 @@ namespace Microsoft.DocAsCode.Dfm
         {
             var inlineRules = InlineRules.ToList();
 
-            var index = inlineRules.FindLastIndex(s => s is MarkdownLinkInlineRule);
+            // xref auto link must be before MarkdownAutoLinkInlineRule
+            var index = inlineRules.FindIndex(s => s is MarkdownAutoLinkInlineRule);
+            if (index < 0) throw new ArgumentException("MarkdownAutoLinkInlineRule should exist!");
+            inlineRules.Insert(index, new DfmXrefAutoLinkInlineRule());
+
+            index = inlineRules.FindLastIndex(s => s is MarkdownLinkInlineRule);
             if (index < 0) throw new ArgumentException("MarkdownLinkInlineRule should exist!");
             inlineRules.Insert(index + 1, new DfmXrefShortcutInlineRule());
             inlineRules.Insert(index + 1, new DfmEmailInlineRule());
+
+            // xref link inline rule must be before MarkdownLinkInlineRule
+            inlineRules.Insert(index, new DfmXrefLinkInlineRule());
             inlineRules.Insert(index, new DfmIncludeInlineRule());
+
             index = inlineRules.FindIndex(s => s is MarkdownTextInlineRule);
             inlineRules[index] = new DfmTextInlineRule();
 
