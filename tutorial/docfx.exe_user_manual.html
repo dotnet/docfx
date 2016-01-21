@@ -63,7 +63,7 @@
 <h2 id="0-introduction">0. Introduction</h2>
 <p><code>docfx.exe</code> is used to generate documentation for programs. It has the ability to:</p>
 <ol>
-<li><p>Extract language metadata for programing languages as defined in <a href="../spec/metadata_format_spec.html">Metadata Format Specification</a>. Currently language <code>VB</code> and <code>CSharp</code> are supported. The language metadata will be saved with <code>YAML</code> format as described in [YAML 1.2][1].</p>
+<li><p>Extract language metadata for programing languages as defined in <a href="../spec/metadata_format_spec.html">Metadata Format Specification</a>. Currently language <code>VB</code> and <code>CSharp</code> are supported. The language metadata will be saved with <code>YAML</code> format as described in <a href="http://yaml.org/">YAML 1.2</a>.</p>
 </li>
 <li><p>Look for available conceptual files as provided and link it with existing programs with syntax described in <a href="../spec/metadata_format_spec.html">Section 3. Work with Metadata in Markdown</a>. Supported conceptual files are <em>plain text</em> files, <em>html</em> files, and <em>markdown</em> files.</p>
 </li>
@@ -95,13 +95,13 @@
 </code></pre><h4 id="2-2-1-optional-projects-argument">2.2.1 Optional <code>&lt;projects&gt;</code> argument</h4>
 <p><code>&lt;projects&gt;</code> specifies the projects to have metadata extracted. There are several approaches to extract language metadata.</p>
 <ol>
-<li><p>From a supported project file or project file list</p>
-<p>Supported project file extensions include <code>.csproj</code>, <code>.vbproj</code>, and <code>.sln</code>.</p>
-<p>Files can be combined using <code>,</code> as seperator, e.g. <code>docfx metadata a.csproj,b.sln</code>.</p>
+<li><p>From a supported project file or project file list
+Supported project file extensions include <code>.csproj</code>, <code>.vbproj</code>, and <code>.sln</code>.
+Files can be combined using <code>,</code> as seperator, e.g. <code>docfx metadata a.csproj,b.sln</code>.</p>
 </li>
-<li><p>From a supported source code file or source code file list</p>
-<p>Supported source code file extensions include <code>.cs</code> and <code>.vb</code>.</p>
-<p>Files can be combined using <code>,</code> as seperator and <em>search pattern</em>.</p>
+<li><p>From a supported source code file or source code file list
+Supported source code file extensions include <code>.cs</code> and <code>.vb</code>.
+Files can be combined using <code>,</code> as seperator and <em>search pattern</em>.</p>
 </li>
 <li><p>From <em>docfx.json</em> file, as described in <strong>Section3</strong>.</p>
 </li>

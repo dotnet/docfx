@@ -89,7 +89,7 @@
               <h3 id="methods">Methods</h3>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownTokenRewriterFactory.cs/#L26">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownTokenRewriterFactory.cs/#L44">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTokenRewriterFactory_Composite_Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter___" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTokenRewriterFactory.Composite(Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter[])">Composite(IMarkdownTokenRewriter[])</h4>
               <div class="markdown level1 summary"></div>
@@ -132,7 +132,7 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownTokenRewriterFactory.cs/#L31">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownTokenRewriterFactory.cs/#L49">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTokenRewriterFactory_Composite_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter__" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTokenRewriterFactory.Composite(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter})">Composite(IEnumerable&lt;IMarkdownTokenRewriter&gt;)</h4>
               <div class="markdown level1 summary"></div>
@@ -218,7 +218,93 @@
               </table>
               
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownTokenRewriterFactory.cs/#L40">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownTokenRewriterFactory.cs/#L35">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTokenRewriterFactory_FromValidators_Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidator___" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTokenRewriterFactory.FromValidators(Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator[])">FromValidators(IMarkdownTokenValidator[])</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public static IMarkdownTokenRewriter FromValidators(params IMarkdownTokenValidator[] validators)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidator">IMarkdownTokenValidator</a>[]</td>
+                    <td><em>validators</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter">IMarkdownTokenRewriter</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownTokenRewriterFactory.cs/#L26">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTokenRewriterFactory_FromValidators_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidator__" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTokenRewriterFactory.FromValidators(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator})">FromValidators(IEnumerable&lt;IMarkdownTokenValidator&gt;)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public static IMarkdownTokenRewriter FromValidators(IEnumerable&lt;IMarkdownTokenValidator&gt; validators)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidator">IMarkdownTokenValidator</a>&gt;</td>
+                    <td><em>validators</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter">IMarkdownTokenRewriter</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Rewriters/MarkdownTokenRewriterFactory.cs/#L58">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTokenRewriterFactory_Loop_Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter_System_Int32_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTokenRewriterFactory.Loop(Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter,System.Int32)">Loop(IMarkdownTokenRewriter, Int32)</h4>
               <div class="markdown level1 summary"></div>
