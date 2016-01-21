@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
             else
             {
-                item.Homepage = tocItem.Href;
+                item.Homepage = ((RelativePath)originalTocFile.File) + ((RelativePath)tocItem.Href);
             }
         }
 

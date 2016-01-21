@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Common
         {
             if (!Replay) return;
 
-            var logLevel = _replayList.FirstOrDefault(s => s.Value.Count > 0).Key;
+            var logLevel = _replayList.LastOrDefault(s => s.Value.Count > 0).Key;
             var buildStatus = GetBuildStatusFromLogLevel(logLevel);
             WriteHeader(buildStatus);
             foreach (var list in _replayList)
