@@ -30,15 +30,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
                   .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
                   .SplitRegex(Regexes.Lexers.TableSplitter);
             }
-            return new MarkdownTableBlockToken(
-                this,
-                engine.Context,
-                (from text in header
-                 select engine.TokenizeInline(text)).ToImmutableArray(),
-                align.ToImmutableArray(),
-                (from row in cells
-                 select (from col in row
-                         select engine.TokenizeInline(col)).ToImmutableArray()).ToImmutableArray());
+            return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+                    new MarkdownTableBlockToken(
+                        t.Rule,
+                        t.Context,
+                        (from text in header
+                         select p.TokenizeInline(text)).ToImmutableArray(),
+                        align.ToImmutableArray(),
+                        (from row in cells
+                         select (from col in row
+                                 select p.TokenizeInline(col)).ToImmutableArray()).ToImmutableArray()));
         }
 
         protected virtual Align[] ParseAligns(string[] aligns)
