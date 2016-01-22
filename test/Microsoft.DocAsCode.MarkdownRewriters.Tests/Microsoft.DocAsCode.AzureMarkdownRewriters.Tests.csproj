@@ -4,8 +4,8 @@
   <PropertyGroup>
     <ProjectGuid>{38ADEED9-CF82-4DC0-A6CF-A13AC3A5797F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.DocAsCode.MarkdownRewriters.Tests</RootNamespace>
-    <AssemblyName>Microsoft.DocAsCode.MarkdownRewriters.Tests</AssemblyName>
+    <RootNamespace>Microsoft.DocAsCode.AzureMarkdownRewriters.Tests</RootNamespace>
+    <AssemblyName>Microsoft.DocAsCode.AzureMarkdownRewriters.Tests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -22,7 +22,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MarkdownRewritersTest.cs" />
+    <Compile Include="AzureMarkdownRewritersTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
@@ -33,9 +33,9 @@
       <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
       <Name>Microsoft.DocAsCode.EntityModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownRewriters\Microsoft.DocAsCode.MarkdownRewriters.csproj">
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownRewriters\Microsoft.DocAsCode.AzureMarkdownRewriters.csproj">
       <Project>{99f0bb91-2ce9-4460-87e0-b99b87f7b193}</Project>
-      <Name>Microsoft.DocAsCode.MarkdownRewriters</Name>
+      <Name>Microsoft.DocAsCode.AzureMarkdownRewriters</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
       <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>

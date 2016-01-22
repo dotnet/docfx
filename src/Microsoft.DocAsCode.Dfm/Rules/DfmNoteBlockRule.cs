@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public virtual string Name => "DfmNoteBlockRule";
 
-        public virtual Regex DfmNoteRegex => new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\]\s*(?:\n|$))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public virtual Regex DfmNoteRegex => new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\] *\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
@@ -24,8 +24,8 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-            return new DfmNoteBlockToken(this, engine.Context, match.Groups["notetype"].Value, match.Groups["rawmarkdown"].Value, match.Value);
+            source = source.Substring(match.Groups["rawmarkdown"].Length);
+            return new DfmNoteBlockToken(this, engine.Context, match.Groups["notetype"].Value, match.Groups["rawmarkdown"].Value, match.Groups["rawmarkdown"].Value);
         }
     }
 }

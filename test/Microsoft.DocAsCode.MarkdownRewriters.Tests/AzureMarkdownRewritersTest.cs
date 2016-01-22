@@ -1,18 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
+namespace Microsoft.DocAsCode.MarkdownAzureRewritersTest.Tests
 {
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.AzureMarkdownRewriters;
 
     using Xunit;
 
-    public class MarkdownRewritersTest
+    public class AzureMarkdownRewritersTest
     {
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_Simple()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_Simple()
         {
             var source = @"Hello world";
             var expected = @"Hello world
@@ -25,8 +26,8 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_NormalBlockquote()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_NormalBlockquote()
         {
             var source = @"> Hello world
 this is new line originally  
@@ -44,8 +45,8 @@ this is new line originally
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_NormalBlockquoteNest()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_NormalBlockquoteNest()
         {
             var source = @"> Hello world
 this is new line originally  
@@ -76,8 +77,8 @@ This is no-nested line
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_AzureNoteBlockquote()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteBlockquote()
         {
             var source = @"> [AZURE.NOTE]
 This is azure note
@@ -98,8 +99,38 @@ This is azure warning";
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_AzureNoteBlockquoteNest()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteBlockquoteTextFollowed()
+        {
+            var source = @"> [AZURE.NOTE]
+This is azure note
+> [AZURE.WARNING] This is azure warning
+> [AZURE.IMPORTANT] This is azure important
+> [AZURE.TIP]
+This is azure TIP";
+            var expected = @"> [!NOTE]
+> This is azure note
+> 
+> [!WARNING]
+> This is azure warning
+> 
+> [!IMPORTANT]
+> This is azure important
+> 
+> [!TIP]
+> This is azure TIP
+> 
+> 
+";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteBlockquoteNest()
         {
             var source = @"> [AZURE.NOTE]
 This is azure note
@@ -137,8 +168,8 @@ This is TIP
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_AzureInclude()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureInclude()
         {
             var source = @"This is azure include [AZURE.INCLUDE [include-short-name](../includes/include-file-name.md)] inline.
 
@@ -158,8 +189,8 @@ This is azure include block.
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_ListWithAzureInclude()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_ListWithAzureInclude()
         {
             var source = @"Hello world
 * list [AZURE.INCLUDE [include-short-name](../includes/include-file-name.md)]
@@ -197,8 +228,8 @@ this should be same line with the above one
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_Heading()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_Heading()
         {
             var source = @"#h1 title
 h1 text
@@ -228,8 +259,8 @@ h2-2 text
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_HeadingWithAzureInclude()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_HeadingWithAzureInclude()
         {
             var source = @"#h1 title [AZURE.INCLUDE [include file](../include-file.md)]
 h1 text
@@ -259,8 +290,8 @@ h2-2 text
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_HrInContent()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_HrInContent()
         {
             var source = @"This is an H1
 ========
@@ -308,8 +339,8 @@ world.
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_HtmlTagWithSimpleContent()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_HtmlTagWithSimpleContent()
         {
             var source = @"# This is an H1
 <div>
@@ -326,8 +357,8 @@ This is text inside html tag
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_HtmlTagWithNotAffectiveBlockTokenContent()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_HtmlTagWithNotAffectiveBlockTokenContent()
         {
             var source = @"# This is an H1
 <div>
@@ -348,8 +379,8 @@ This is text inside html tag
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_HtmlTagWithAffectiveInlineTokenContent()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_HtmlTagWithAffectiveInlineTokenContent()
         {
             var source = @"# This is an H1
 <div>
@@ -366,8 +397,8 @@ This is text inside html tag
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_SimpleStrongEmDel()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_SimpleStrongEmDel()
         {
             var source = @"# Test Simple **Strong** *Em* ~~Del~~
 This is __Strong__
@@ -386,8 +417,8 @@ This is ~~Del~~
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_ComplexStrongEmDel()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_ComplexStrongEmDel()
         {
             var source = @"# Test Complex String Em Del
 __Strong [AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] Text__
@@ -415,8 +446,8 @@ _Em Text_
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriters")]
-        public void TestMarkdownRewriters_Table()
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_Table()
         {
             var source = @"# Test table
 | header-1 | header-2 | header-3 |

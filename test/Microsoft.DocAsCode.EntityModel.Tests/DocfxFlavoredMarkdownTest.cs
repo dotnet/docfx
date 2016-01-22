@@ -143,6 +143,58 @@ hello world";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmNote_NoteWithTextFollow()
+        {
+            var source = @"# Note not in one line
+> [!NOTE]hello
+> world
+> [!WARNING]     Hello world
+this is also warning";
+            var expected = @"<h1 id=""note-not-in-one-line"">Note not in one line</h1>
+<div class=""NOTE""><h5>NOTE</h5><p>hello
+world</p>
+</div>
+<div class=""WARNING""><h5>WARNING</h5><p>Hello world
+this is also warning</p>
+</div>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmNote_NoteWithMix()
+        {
+            var source = @"# Note not in one line
+> [!NOTE]
+> hello
+> world
+> [!WARNING] Hello world
+> [!WARNING]  Hello world this is also warning
+> [!WARNING]
+> Hello world this is also warning
+> [!IMPORTANT]
+> Hello world this IMPORTANT";
+            var expected = @"<h1 id=""note-not-in-one-line"">Note not in one line</h1>
+<div class=""NOTE""><h5>NOTE</h5><p>hello
+world</p>
+</div>
+<div class=""WARNING""><h5>WARNING</h5><p>Hello world</p>
+</div>
+<div class=""WARNING""><h5>WARNING</h5><p>Hello world this is also warning</p>
+</div>
+<div class=""WARNING""><h5>WARNING</h5><p>Hello world this is also warning</p>
+</div>
+<div class=""IMPORTANT""><h5>IMPORTANT</h5><p>Hello world this IMPORTANT</p>
+</div>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
         [Theory]
         [Trait("Related", "DfmMarkdown")]
         [InlineData(@"the following is note type

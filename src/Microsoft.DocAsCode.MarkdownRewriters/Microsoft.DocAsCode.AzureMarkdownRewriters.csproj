@@ -4,8 +4,8 @@
   <PropertyGroup>
     <ProjectGuid>{99F0BB91-2CE9-4460-87E0-B99B87F7B193}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.DocAsCode.MarkdownRewriters</RootNamespace>
-    <AssemblyName>Microsoft.DocAsCode.MarkdownRewriters</AssemblyName>
+    <RootNamespace>Microsoft.DocAsCode.AzureMarkdownRewriters</RootNamespace>
+    <AssemblyName>Microsoft.DocAsCode.AzureMarkdownRewriters</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
