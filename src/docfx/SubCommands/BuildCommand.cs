@@ -153,6 +153,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private static void MergeNewFileRepositoryToConfig(BuildJsonConfig config)
         {
             GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
+            repoInfoFromBaseDirectory.RelativePath = Path.Combine(repoInfoFromBaseDirectory.RelativePath, DocAsCode.Constants.DefaultOverwriteFolderName);
             object newFileRepository;
             if (config.GlobalMetadata.TryGetValue("newFileRepository", out newFileRepository))
             {
