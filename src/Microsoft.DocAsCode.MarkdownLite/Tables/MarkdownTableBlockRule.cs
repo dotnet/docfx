@@ -30,6 +30,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
                   .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
                   .SplitRegex(Regexes.Lexers.TableSplitter);
             }
+
+            var rowNumber = cells.Length - 1;
+            var lastRowColumnNumber = cells[cells.Length - 1].Length;
+            if (header.Length - lastRowColumnNumber > 0)
+            {
+                var cellsList = cells[rowNumber].ToList();
+                for (int i = 0; i < header.Length - lastRowColumnNumber; ++i)
+                {
+                    cellsList.Add(string.Empty);
+                }
+                cells[rowNumber] = cellsList.ToArray();
+            }
+
             return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
                     new MarkdownTableBlockToken(
                         t.Rule,
