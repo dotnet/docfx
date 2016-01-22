@@ -399,6 +399,43 @@ by a blank line.</p>
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestTable_WithRefLink()
+        {
+            // 1. Prepare data
+            var source = @"# Test table
+| header-1 | header-2 | header-3 |
+|:-------- |:--------:| --------:|
+| *1-1* | [User] | test |
+
+[User]: ./entity-and-complex-type-reference.md#UserEntity";
+
+            var expected = @"<h1 id=""test-table"">Test table</h1>
+<table>
+<thead>
+<tr>
+<th style=""text-align:left"">header-1</th>
+<th style=""text-align:center"">header-2</th>
+<th style=""text-align:right"">header-3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=""text-align:left""><em>1-1</em></td>
+<td style=""text-align:center""><a href=""./entity-and-complex-type-reference.md#UserEntity"">User</a></td>
+<td style=""text-align:right"">test</td>
+</tr>
+</tbody>
+</table>
+";
+            var builder = new GfmEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         [Fact]
         [Trait("Related", "Markdown")]
         public void ParseWithBadRewrite()
