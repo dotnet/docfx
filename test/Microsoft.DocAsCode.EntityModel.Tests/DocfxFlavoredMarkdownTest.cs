@@ -127,6 +127,49 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestTable_WithRefLinkAndInclude()
+        {
+            // 1. Prepare data
+            var source = @"# Test table
+| header-1 | header-2 | header-3 |
+|:-------- |:--------:| --------:|
+| *1-1* | [User] | [!include[ref1](ref1.md ""This is root"")] |
+
+# Test Ref
+For more information about user navigation properties, see the documentation for [User].
+
+[User]: ./entity-and-complex-type-reference.md#UserEntity";
+
+            var expected = @"<h1 id=""test-table"">Test table</h1>
+<table>
+<thead>
+<tr>
+<th style=""text-align:left"">header-1</th>
+<th style=""text-align:center"">header-2</th>
+<th style=""text-align:right"">header-3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=""text-align:left""><em>1-1</em></td>
+<td style=""text-align:center""><a href=""./entity-and-complex-type-reference.md#UserEntity"">User</a></td>
+<td style=""text-align:right""><!-- BEGIN INCLUDE: Include content from &quot;ref1.md&quot; -->testref1<!--END INCLUDE --></td>
+</tr>
+</tbody>
+</table>
+<h1 id=""test-ref"">Test Ref</h1>
+<p>For more information about user navigation properties, see the documentation for <a href=""./entity-and-complex-type-reference.md#UserEntity"">User</a>.</p>
+";
+
+            File.WriteAllText("root.md", source);
+            var ref1 = @"testref1";
+            File.WriteAllText("ref1.md", ref1);
+            var marked = DocfxFlavoredMarked.Markup(source, "root.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestYaml_InvalidYamlInsideContent()
         {
             var source = @"# Title
