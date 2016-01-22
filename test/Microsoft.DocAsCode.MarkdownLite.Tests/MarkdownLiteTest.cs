@@ -407,6 +407,7 @@ by a blank line.</p>
             var source = @"# hello
 |  Name |  Type |  Notes |  Read/Write |  Description |
 |:-------|:-------|:-------|:-------|:-------|
+| value | Edm.String |  |  |
 | endDate | Edm.DateTime |  |  | The date and time at which the password expires. |
 | value | Edm.String |  |  |  |
 ";
@@ -423,6 +424,13 @@ by a blank line.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style=""text-align:left"">value</td>
+<td style=""text-align:left"">Edm.String</td>
+<td style=""text-align:left""></td>
+<td style=""text-align:left""></td>
+<td style=""text-align:left""></td>
+</tr>
 <tr>
 <td style=""text-align:left"">endDate</td>
 <td style=""text-align:left"">Edm.DateTime</td>

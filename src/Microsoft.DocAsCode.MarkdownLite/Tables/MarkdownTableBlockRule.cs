@@ -29,18 +29,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 cells[i] = cells[i][0]
                   .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
                   .SplitRegex(Regexes.Lexers.TableSplitter);
-            }
 
-            var rowNumber = cells.Length - 1;
-            var lastRowColumnNumber = cells[cells.Length - 1].Length;
-            if (header.Length - lastRowColumnNumber > 0)
-            {
-                var cellsList = cells[rowNumber].ToList();
-                for (int i = 0; i < header.Length - lastRowColumnNumber; ++i)
+                var cellList = cells[i].ToList();
+                for (int j = 0; j < header.Length - cells[i].Length; j++)
                 {
-                    cellsList.Add(string.Empty);
+                    cellList.Add(string.Empty);
                 }
-                cells[rowNumber] = cellsList.ToArray();
+                cells[i] = cellList.ToArray();
             }
 
             return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
