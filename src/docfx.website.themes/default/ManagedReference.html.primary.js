@@ -70,7 +70,7 @@ function transform(model, _attrs) {
       }
 
       if (refs) {
-        this.item = refs.getViewModel(item.uid, this._lang, util.changeExtension(this._ext));
+        this.item = refs.getViewModel(item.uid, this._lang, util.changeExtension(this._ext), this.newFileRepository);
       }
     }
 
@@ -83,7 +83,7 @@ function transform(model, _attrs) {
         // group children with their type
         var that = this;
         this.item.children.forEach(function (c) {
-          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext));
+          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext), that.newFileRepository);
           var type = c.type;
           if (!grouped.hasOwnProperty(type)) {
             grouped[type] = [];
@@ -117,7 +117,7 @@ function transform(model, _attrs) {
         // group children with their type
         this.item.children.forEach(function (c) {
 
-          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext));
+          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext), that.newFileRepository);
           var type = c.type;
           if (!grouped.hasOwnProperty(type)) {
             grouped[type] = [];
@@ -151,9 +151,9 @@ function transform(model, _attrs) {
       this.getRefvm = getRefvm;
       this.getViewModel = getViewModel;
 
-      function getViewModel(uid, lang, extChanger) {
+      function getViewModel(uid, lang, extChanger, newFileRepository) {
         var vm = getRefvm(uid, lang, extChanger);
-        vm.docurl = getImproveTheDocHref(vm);
+        vm.docurl = getImproveTheDocHref(vm, newFileRepository);
         vm.sourceurl = getViewSourceHref(vm);
 
         if (vm.inheritance) {
@@ -216,15 +216,64 @@ function transform(model, _attrs) {
       /*
         TODO: integrate with zhyan's change
       */
-      function getImproveTheDocHref(item) {
-        if (!item || !item.documentation || !item.documentation.remote) return '';
-        return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1);
+      function getImproveTheDocHref(item, newFileRepository) {
+        if (!item) return '';
+        if (!item.documentation || !item.documentation.remote) {
+          return getNewFileUrl(item.uid, newFileRepository);
+        } else {
+          return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1);
+        }
       }
 
       function getViewSourceHref(item) {
         /* jshint validthis: true */
         if (!item || !item.source || !item.source.remote) return '';
         return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1);
+      }
+
+      function getNewFileUrl(uid, newFileRepository) {
+        // do not support VSO for now
+        if (newFileRepository && newFileRepository.repo) {
+          var repo = newFileRepository.repo;
+          if (repo.substr(-4) === '.git') {
+            repo = repo.substr(0, repo.length - 4);
+          }
+          var path = getGithubUrlPrefix(repo);
+          if (path != '') {
+            path += '/new';
+            path += '/' + newFileRepository.branch;
+            path += '/' + getOverrideFolder(newFileRepository.path);
+            path += '/new?filename=' + getHtmlId(uid) + '.md';
+            path += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
+          }
+          return path;
+        } else {
+          return '';
+        }
+      }
+
+      function getOverrideFolder(path) {
+        if (!path) return "";
+        path = path.replace('\\', '/');
+        if (path.charAt(path.length - 1) == '/') path = path.substring(0, path.length - 1);
+        return path;
+      }
+
+      function getHtmlId(input) {
+        return input.replace(/\W/g, '_');
+      }
+
+      function getOverrideTemplate(uid) {
+        if (!uid) return "";
+        var content = "";
+        content += "---\n";
+        content += "uid: " + uid + "\n";
+        content += "remarks: '*THIS* is remarks overriden in *MARKDOWN* file'\n";
+        content += "---\n";
+        content += "\n";
+        content += "*Please type below more information about this API:*\n";
+        content += "\n";
+        return content;
       }
 
       function getRemoteUrl(remote, startLine) {
@@ -238,19 +287,25 @@ function transform(model, _attrs) {
             // TODO: line not working for vso
             return repo + '#path=/' + remote.path;
           }
-          if (repo.match(/https:\/\/.*github\.com\/.*/g)) {
-            var path = repo + '/blob' + '/' + remote.branch + '/' + remote.path;
+          var path = getGithubUrlPrefix(repo);
+          if (path != '') {
+            path += '/blob' + '/' + remote.branch + '/' + remote.path;
             if (linenum > 0) path += '/#L' + linenum;
-            return path;
           }
-          if (repo.match(/git@.*github\.com:.*/g)) {
-            var path = 'https://' + repo.substr(4).replace(':', '/') + '/blob' + '/' + remote.branch + '/' + remote.path;
-            if (linenum > 0) path += '/#L' + linenum;
-            return path;
-          }
+          return path;
         } else {
           return '';
         }
+      }
+
+      function getGithubUrlPrefix(repo) {
+        if (repo.match(/https:\/\/.*github\.com\/.*/g)) {
+          return repo;
+        }
+        if (repo.match(/git@.*github\.com:.*/g)) {
+          return 'https://' + repo.substr(4).replace(':', '/');
+        }
+        return '';
       }
     }
 
@@ -397,7 +452,7 @@ function transform(model, _attrs) {
         // if ext is empty, remove current extension
         // if path ends with '/' or '\', consider it as a folder, extension not added
         if (!path || ext === undefined || path[path.length - 1] === '/' || path[path.length - 1] === '\\') return path;
-        var pathWithoutExt = path.substring(0, path.lastIndexOf('.'));
+        var pathWithoutExt = path.slice(0, path.lastIndexOf('.'));
         if (ext && ext[0] !== '.') return pathWithoutExt + '.' + ext;
 
         return pathWithoutExt + ext;

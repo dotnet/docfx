@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Utility;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     internal sealed class BuildCommand : ISubCommand
     {
@@ -84,7 +85,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     else
                     {
                         config = new BuildJsonConfig();
-                        MergeOptionsToConfig(options, ref config);
+                        MergeOptionsToConfig(options, config);
                         return config;
                     }
                 }
@@ -99,12 +100,13 @@ namespace Microsoft.DocAsCode.SubCommands
             if (config == null) throw new DocumentException($"Unable to find build subcommand config in file '{configFile}'.");
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
-            MergeOptionsToConfig(options, ref config);
+            MergeOptionsToConfig(options, config);
+            MergeNewFileRepositoryToConfig(config);
 
             return config;
         }
 
-        private static void MergeOptionsToConfig(BuildCommandOptions options, ref BuildJsonConfig config)
+        private static void MergeOptionsToConfig(BuildCommandOptions options, BuildJsonConfig config)
         {
             // base directory for content from command line is current directory
             // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
@@ -146,6 +148,32 @@ namespace Microsoft.DocAsCode.SubCommands
             config.ExportViewModel |= options.ExportViewModel;
             config.FileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
             config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
+        }
+
+        private static void MergeNewFileRepositoryToConfig(BuildJsonConfig config)
+        {
+            GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
+            object newFileRepository;
+            if (config.GlobalMetadata.TryGetValue("newFileRepository", out newFileRepository))
+            {
+                GitDetail repoInfo = null;
+                try
+                {
+                    repoInfo = JObject.FromObject(newFileRepository).ToObject<GitDetail>();
+                }
+                catch (Exception e)
+                {
+                    throw new DocumentException($"Unable to convert newFileRepository to GitDetail in globalMetadata: {e.Message}", e);
+                }
+                if (repoInfo.RelativePath == null) repoInfo.RelativePath = repoInfoFromBaseDirectory.RelativePath;
+                if (repoInfo.RemoteBranch == null) repoInfo.RemoteBranch = repoInfoFromBaseDirectory.RemoteBranch;
+                if (repoInfo.RemoteRepositoryUrl == null) repoInfo.RemoteRepositoryUrl = repoInfoFromBaseDirectory.RemoteRepositoryUrl;
+                config.GlobalMetadata["newFileRepository"] = repoInfo;
+            }
+            else
+            {
+                config.GlobalMetadata["newFileRepository"] = repoInfoFromBaseDirectory;
+            }
         }
 
         internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(string fileMetadataFilePath, Dictionary<string, FileMetadataPairs> fileMetadataFromConfig)

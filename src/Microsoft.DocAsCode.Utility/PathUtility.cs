@@ -96,6 +96,7 @@ namespace Microsoft.DocAsCode.Utility
         {
             if (string.IsNullOrEmpty(basePath)) return absolutePath;
             if (string.IsNullOrEmpty(absolutePath)) return null;
+            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(basePath, absolutePath)) return string.Empty;
 
             // Append / to the directory
             if (basePath[basePath.Length - 1] != '/')

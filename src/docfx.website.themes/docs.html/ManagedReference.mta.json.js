@@ -18,7 +18,11 @@ function transform(model, _attrs){
   } else {
     model.breadcrumb_path = model.metadata.breadcrumb_path
   }
-  model.content_git_url = getImproveTheDocHref(model.items[0]);
+  if (!model.metadata) {
+    model.content_git_url = getContentGitUrl(model.items[0]);
+  } else {
+    model.content_git_url = getContentGitUrl(model.items[0], model.metadata.newFileRepository);
+  }
   model.source_url = getViewSourceHref(model.items[0]);
 
  // Clean up unused predefined properties
@@ -30,15 +34,64 @@ function transform(model, _attrs){
     content: JSON.stringify(model)
   };
 
-  function getImproveTheDocHref(item) {
-    if (!item || !item.documentation || !item.documentation.remote) return '';
-    return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1);
+  function getContentGitUrl(item, newFileRepository) {
+    if (!item) return '';
+    if (!item.documentation || !item.documentation.remote) {
+      return getNewFileUrl(item.uid, newFileRepository);
+    } else {
+      return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1);
+    }
   }
 
   function getViewSourceHref(item) {
     /* jshint validthis: true */
     if (!item || !item.source || !item.source.remote) return '';
     return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1);
+  }
+
+  function getNewFileUrl(uid, newFileRepository) {
+    // do not support VSO for now
+    if (newFileRepository && newFileRepository.repo) {
+      var repo = newFileRepository.repo;
+      if (repo.substr(-4) === '.git') {
+        repo = repo.substr(0, repo.length - 4);
+      }
+      var path = getGithubUrlPrefix(repo);
+      if (path != '') {
+        path += '/new';
+        path += '/' + newFileRepository.branch;
+        path += '/' + getOverrideFolder(newFileRepository.path);
+        path += '/new?filename=' + getHtmlId(uid) + '.md';
+        path += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
+      }
+      return path;
+    } else {
+      return '';
+    }
+  }
+
+  function getOverrideFolder(path) {
+    if (!path) return "";
+    path = path.replace('\\', '/');
+    if (path.charAt(path.length - 1) == '/') path = path.substring(0, path.length - 1);
+    return path;
+  }
+  
+   function getHtmlId(input) {
+     return input.replace(/\W/g, '_');
+   }
+
+  function getOverrideTemplate(uid) {
+    if (!uid) return "";
+    var content = "";
+    content += "---\n";
+    content += "uid: " + uid + "\n";
+    content += "remarks: '*THIS* is remarks overriden in *MARKDOWN* file'\n";
+    content += "---\n";
+    content += "\n";
+    content += "*Please type below more information about this API:*\n";
+    content += "\n";
+    return content;
   }
 
   function getRemoteUrl(remote, startLine) {
@@ -52,18 +105,24 @@ function transform(model, _attrs){
         // TODO: line not working for vso
         return repo + '#path=/' + remote.path;
       }
-      if (repo.match(/https:\/\/.*github\.com\/.*/g)) {
-        var path = repo + '/blob' + '/' + remote.branch + '/' + remote.path;
+      var path = getGithubUrlPrefix(repo);
+      if (path != '') {
+        path += '/blob' + '/' + remote.branch + '/' + remote.path;
         if (linenum > 0) path += '/#L' + linenum;
-        return path;
       }
-      if (repo.match(/git@.*github\.com:.*/g)) {
-        var path = 'https://' + repo.substr(4).replace(':', '/') + '/blob' + '/' + remote.branch + '/' + remote.path;
-        if (linenum > 0) path += '/#L' + linenum;
-        return path;
-      }
+      return path;
     } else {
       return '';
     }
+  }
+
+  function getGithubUrlPrefix(repo) {
+    if (repo.match(/https:\/\/.*github\.com\/.*/g)) {
+      return repo;
+    }
+    if (repo.match(/git@.*github\.com:.*/g)) {
+      return 'https://' + repo.substr(4).replace(':', '/');
+    }
+    return '';
   }
 }
