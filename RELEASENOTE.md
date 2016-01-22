@@ -1,5 +1,8 @@
 Version Notes (Current Version: v1.3.7)
 =======================================
+v1.3.8
+Fix no link and ref link cannot work issue in table
+
 v1.3.7
 ------
 1. Fix no link and ref link cannot work issue in markdownlite.
