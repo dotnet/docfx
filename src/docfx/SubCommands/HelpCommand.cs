@@ -10,6 +10,8 @@ namespace Microsoft.DocAsCode.SubCommands
     internal class HelpCommand : ISubCommand
     {
         private string _message;
+        public bool AllowReplay => false;
+
         public HelpCommand(string message)
         {
             _message = message;

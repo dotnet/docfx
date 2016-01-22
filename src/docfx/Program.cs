@@ -63,10 +63,7 @@ namespace Microsoft.DocAsCode
                 return 1;
             }
 
-            if (!(command is ILoggable))
-            {
-                replayListener.Replay = false;
-            }
+            replayListener.Replay = command.AllowReplay;
 
             var context = new SubCommandRunningContext();
             try

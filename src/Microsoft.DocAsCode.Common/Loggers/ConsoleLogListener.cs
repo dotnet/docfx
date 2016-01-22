@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
+    using System.IO;
 
     public sealed class ConsoleLogListener : ILoggerListener
     {
@@ -21,16 +22,22 @@ namespace Microsoft.DocAsCode.Common
             var file = item.File;
             var line = item.Line;
             if (level < LogLevelThreshold) return;
-            var formatter = level + ": " + message;
+            var formatter = level + ": ";
             if (!string.IsNullOrEmpty(phase))
             {
-                formatter += " in phase " + phase;
+                formatter += $"[{phase}]";
             }
             if (!string.IsNullOrEmpty(file))
             {
-                formatter += " in file " + file;
-                if (!string.IsNullOrEmpty(line)) formatter += " line " + line;
+                string lineInfo = string.Empty;
+                if (!string.IsNullOrEmpty(line))
+                {
+                    lineInfo = $"#L{line}";
+                }
+                formatter += $"(file:///{file.Replace('\\', '/')}{lineInfo})";
             }
+
+            formatter += message;
 
             var foregroundColor = Console.ForegroundColor;
             try

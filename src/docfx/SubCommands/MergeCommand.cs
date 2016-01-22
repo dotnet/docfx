@@ -31,6 +31,7 @@ namespace Microsoft.DocAsCode.SubCommands
             };
 
         public MergeJsonConfig Config { get; }
+        public bool AllowReplay => true;
 
         public MergeCommand(MergeCommandOptions options)
         {

@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Plugins
 {
     public interface ISubCommand
     {
+        bool AllowReplay { get; }
         void Exec(SubCommandRunningContext context);
     }
 }

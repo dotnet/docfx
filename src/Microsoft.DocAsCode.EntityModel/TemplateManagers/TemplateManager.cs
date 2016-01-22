@@ -37,13 +37,15 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public void ProcessTheme(string outputDirectory, bool overwrite)
         {
-            if (_themes == null || _themes.Count == 0)
+            using (new LoggerPhaseScope("Apply Theme"))
             {
-                Logger.Log(LogLevel.Info, "Theme is not specified, no additional theme will be applied to the documentation.");
-                return;
-            }
+                if (_themes != null && _themes.Count > 0)
+                {
+                    TryExportResourceFiles(_themes, outputDirectory, overwrite);
+                }
 
-            TryExportResourceFiles(_themes, outputDirectory, overwrite);
+                Logger.LogInfo("Theme is applied.");
+            }
         }
 
         private bool TryExportResourceFiles(IEnumerable<string> resourceNames, string outputDirectory, bool overwrite, string regexFilter = null)

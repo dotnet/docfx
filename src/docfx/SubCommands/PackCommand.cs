@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.SubCommands
     internal class PackCommand : ISubCommand
     {
         private readonly PackCommandOptions _options;
+        public bool AllowReplay => true;
 
         public PackCommand(PackCommandOptions options)
         {

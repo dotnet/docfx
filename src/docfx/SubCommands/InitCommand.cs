@@ -17,6 +17,8 @@ namespace Microsoft.DocAsCode.SubCommands
     internal sealed class InitCommand : ISubCommand
     {
         private readonly InitCommandOptions _options;
+        public bool AllowReplay => false;
+
         public InitCommand(InitCommandOptions options)
         {
             _options = options;

@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         private readonly ExportCommandOptions _options;
         private readonly MetadataCommand _metadataCommand;
+        public bool AllowReplay => true;
+
         public ExportCommand(ExportCommandOptions options)
         {
             _options = options;

@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class MetadataCommand : ISubCommand
     {
+        public bool AllowReplay => true;
+
         public MetadataJsonConfig Config { get; }
         public IEnumerable<ExtractMetadataInputModel> InputModels { get; }
 

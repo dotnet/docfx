@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal class CompositeCommand : ISubCommand
     {
+        public bool AllowReplay => true;
+
         public IList<ISubCommand> Commands { get; } = new List<ISubCommand>();
 
         public CompositeCommand(string[] args, ISubCommandController controller, CompositeOptions options)

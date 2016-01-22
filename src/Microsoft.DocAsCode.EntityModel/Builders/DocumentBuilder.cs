@@ -51,12 +51,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         {
             using (new LoggerPhaseScope(PhaseName))
             {
-                Logger.LogInfo("Loading plug-in...");
+                Logger.LogVerbose("Loading plug-in...");
                 GetContainer(DefaultAssemblies.Union(assemblies ?? new Assembly[0])).SatisfyImports(this);
-                Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded:");
+                Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
                 foreach (var processor in Processors)
                 {
-                    Logger.LogInfo($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                    Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     parameters.ExternalReferencePackages,
                     parameters.TemplateCollection
                     );
-                Logger.LogInfo("Start building document...");
+                Logger.LogVerbose("Start building document...");
                 IEnumerable<InnerBuildContext> innerContexts = Enumerable.Empty<InnerBuildContext>();
                 try
                 {
@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
                     if (parameters.ExportRawModel)
                     {
-                        Logger.LogInfo("Start exporting raw model...");
+                        Logger.LogInfo($"Exporting {context.Manifest.Count} raw model(s)...");
                         foreach(var item in context.Manifest)
                         {
                             var model = item.Model;
@@ -123,7 +123,11 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         }
                     }
 
-                    Transform(context, parameters.TemplateCollection, parameters.ExportViewModel);
+                    using (new LoggerPhaseScope("Apply Templates"))
+                    {
+                        Logger.LogInfo($"Applying templates to {context.Manifest.Count} model(s)...");
+                        Transform(context, parameters.TemplateCollection, parameters.ExportViewModel);
+                    }
                 }
                 finally
                 {
@@ -137,7 +141,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     }
                 }
 
-                Logger.LogInfo("Building document completed.");
+                Logger.LogInfo($"Building {context.Manifest.Count} file(s) completed.");
             }
         }
 
@@ -154,7 +158,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
             else
             {
-                Logger.LogInfo("Start applying template...");
+                Logger.LogVerbose("Start applying template...");
             }
 
             var outputDirectory = context.BuildOutputFolder;
@@ -177,7 +181,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void BuildCore(HostService hostService, IDocumentProcessor processor, DocumentBuildContext context)
         {
-            Logger.LogInfo($"Plug-in {processor.Name}: Loading document...");
+            Logger.LogVerbose($"Plug-in {processor.Name}: Loading document...");
             hostService.SourceFiles = context.AllSourceFiles;
             foreach (var m in hostService.Models)
             {
@@ -186,14 +190,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File);
                 }
             }
-            Logger.LogInfo($"Plug-in {processor.Name}: Document loaded (count = {hostService.Models.Count}).");
-            Logger.LogInfo($"Plug-in {processor.Name}: Preprocessing...");
+            Logger.LogInfo($"Building {hostService.Models.Count} file(s) with {processor.Name}...");
+            Logger.LogVerbose($"Plug-in {processor.Name}: Preprocessing...");
             Prebuild(processor, hostService);
-            Logger.LogInfo($"Plug-in {processor.Name}: Building...");
+            Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
             BuildArticle(processor, hostService);
-            Logger.LogInfo($"Plug-in {processor.Name}: Postprocessing...");
+            Logger.LogVerbose($"Plug-in {processor.Name}: Postprocessing...");
             Postbuild(processor, hostService);
-            Logger.LogInfo($"Plug-in {processor.Name}: Saving...");
+            Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
             Save(processor, hostService, context);
         }
 
@@ -434,9 +438,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 if (!string.IsNullOrWhiteSpace(spec?.Uid))
                 {
-                    if (context.XRefSpecMap.ContainsKey(spec.Uid))
+                    XRefSpec xref;
+                    if (context.XRefSpecMap.TryGetValue(spec.Uid, out xref))
                     {
-                        Logger.LogWarning($"Uid({spec.Uid}) duplicated.", file: model.LocalPathFromRepoRoot);
+                        Logger.LogWarning($"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.", file: model.LocalPathFromRepoRoot);
                     }
                     else
                     {

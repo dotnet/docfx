@@ -39,6 +39,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public BuildJsonConfig Config { get; }
 
+        public bool AllowReplay => true;
+
         public BuildCommand(BuildCommandOptions options)
         {
             Config = ParseOptions(options);
@@ -484,7 +486,7 @@ namespace Microsoft.DocAsCode.SubCommands
                         try
                         {
                             assembly = Assembly.Load(assemblyName);
-                            Logger.LogInfo($"Scanning assembly file {assemblyFile}...");
+                            Logger.LogVerbose($"Scanning assembly file {assemblyFile}...");
                         }
                         catch (Exception ex) when (ex is BadImageFormatException || ex is FileLoadException || ex is FileNotFoundException)
                         {

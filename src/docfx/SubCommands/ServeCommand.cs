@@ -17,6 +17,8 @@ namespace Microsoft.DocAsCode.SubCommands
     internal sealed class ServeCommand : ISubCommand
     {
         private readonly ServeCommandOptions _options;
+        public bool AllowReplay => false;
+
         public ServeCommand(ServeCommandOptions options)
         {
             _options = options;
