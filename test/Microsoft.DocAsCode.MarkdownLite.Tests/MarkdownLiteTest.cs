@@ -399,6 +399,60 @@ by a blank line.</p>
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestTable_WithEmptyCell()
+        {
+            // 1. Prepare data
+            var source = @"# hello
+|  Name |  Type |  Notes |  Read/Write |  Description |
+|:-------|:-------|:-------|:-------|:-------|
+| value | Edm.String |  |  |
+| endDate | Edm.DateTime |  |  | The date and time at which the password expires. |
+| value | Edm.String |  |  |  |
+";
+
+            var expected = @"<h1 id=""hello"">hello</h1>
+<table>
+<thead>
+<tr>
+<th style=""text-align:left"">Name</th>
+<th style=""text-align:left"">Type</th>
+<th style=""text-align:left"">Notes</th>
+<th style=""text-align:left"">Read/Write</th>
+<th style=""text-align:left"">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=""text-align:left"">value</td>
+<td style=""text-align:left"">Edm.String</td>
+<td style=""text-align:left""></td>
+<td style=""text-align:left""></td>
+<td style=""text-align:left""></td>
+</tr>
+<tr>
+<td style=""text-align:left"">endDate</td>
+<td style=""text-align:left"">Edm.DateTime</td>
+<td style=""text-align:left""></td>
+<td style=""text-align:left""></td>
+<td style=""text-align:left"">The date and time at which the password expires.</td>
+</tr>
+<tr>
+<td style=""text-align:left"">value</td>
+<td style=""text-align:left"">Edm.String</td>
+<td style=""text-align:left""></td>
+<td style=""text-align:left""></td>
+<td style=""text-align:left""></td>
+</tr>
+</tbody>
+</table>
+";
+            var builder = new GfmEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
 
         [Fact]
         [Trait("Related", "Markdown")]

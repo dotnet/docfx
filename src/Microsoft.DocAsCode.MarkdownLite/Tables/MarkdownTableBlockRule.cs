@@ -29,7 +29,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 cells[i] = cells[i][0]
                   .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
                   .SplitRegex(Regexes.Lexers.TableSplitter);
+
+                var cellList = cells[i].ToList();
+                for (int j = 0; j < header.Length - cells[i].Length; j++)
+                {
+                    cellList.Add(string.Empty);
+                }
+                cells[i] = cellList.ToArray();
             }
+
             return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
                     new MarkdownTableBlockToken(
                         t.Rule,
