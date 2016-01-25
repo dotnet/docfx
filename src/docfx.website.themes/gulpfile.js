@@ -47,6 +47,10 @@ var pack = {
     ],
     "vs.html": [
         {
+            "files": files,
+            "cwd": "msdn.html",
+        },
+        {
             "files": files
         }
     ],
