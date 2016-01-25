@@ -1,7 +1,6 @@
 {
   "name": "default.html",
   "description": "This is a docfx template to generate static website",
-  "main": "test.js",
   "authors": [
     "docfx"
   ],
@@ -10,7 +9,7 @@
     "docfx",
     "template"
   ],
-  "homepage": "https://github.com/aspnet/docfx",
+  "homepage": "https://github.com/dotnet/docfx",
   "moduleType": [],
   "private": true,
   "ignore": [

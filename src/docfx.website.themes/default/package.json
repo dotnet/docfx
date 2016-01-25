@@ -1,11 +1,7 @@
 {
-  "name": "default.html",
+  "name": "default",
   "version": "1.0.0",
   "description": "This is a docfx template to generate static website",
-  "main": "test.js",
-  "scripts": {
-    "test": "node test.js "
-  },
   "keywords": [
     "docfx",
     "template"

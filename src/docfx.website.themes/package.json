@@ -1,13 +1,15 @@
 {
   "name": "themes",
   "version": "1.0.0",
-  "private" : true,
+  "private": true,
   "author": "docfx",
   "license": "MIT",
   "devDependencies": {
     "gulp": "^3.9.0",
+    "gulp-unique-files": "^0.1.2",
     "gulp-zip": "^3.0.2",
     "meow": "^3.5.0",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "streamqueue": "^1.1.1"
   }
 }
