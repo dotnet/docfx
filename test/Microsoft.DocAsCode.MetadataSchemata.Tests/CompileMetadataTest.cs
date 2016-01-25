@@ -1,10 +1,12 @@
-﻿namespace Microsoft.DocAsCode.Metadata.Tests
+﻿namespace Microsoft.DocAsCode.MetadataSchemata.Tests
 {
-    using Microsoft.DocAsCode.Metadata;
-    using Newtonsoft.Json;
     using System;
     using System.Text.RegularExpressions;
+
+    using Newtonsoft.Json;
     using Xunit;
+
+    using Microsoft.DocAsCode.MetadataSchemata;
 
     public class CompileMetadataTest
     {

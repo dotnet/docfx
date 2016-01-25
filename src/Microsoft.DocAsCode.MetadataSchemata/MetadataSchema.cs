@@ -1,4 +1,7 @@
-﻿namespace Microsoft.DocAsCode.Metadata
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.MetadataSchemata
 {
     using System;
     using System.Collections.Generic;
@@ -25,6 +28,10 @@
 
         public ValidationResults ValidateMetadata(string metadata)
         {
+            if (metadata == null)
+            {
+                throw new ArgumentNullException(nameof(metadata));
+            }
             return new ValidationResults(
                 from rs in ValidateMetadataCore(JsonConvert.DeserializeObject<JObject>(metadata))
                 from r in rs
@@ -52,11 +59,6 @@
                     }
                 }
             }
-        }
-
-        public ValidationResults ValidateSchema()
-        {
-            throw new NotImplementedException();
         }
     }
 }

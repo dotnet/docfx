@@ -35,14 +35,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata\Microsoft.DocAsCode.Metadata.csproj">
-      <Project>{ac1d8334-f12a-846a-3432-b6f9fa45c533}</Project>
-      <Name>Microsoft.DocAsCode.Metadata</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="MetadataValidationTest.cs" />
     <Compile Include="CompileMetadataTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MetadataSchemata\Microsoft.DocAsCode.MetadataSchemata.csproj">
+      <Project>{ac1d8334-f12a-846a-3432-b6f9fa45c533}</Project>
+      <Name>Microsoft.DocAsCode.MetadataSchemata</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

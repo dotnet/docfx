@@ -3,8 +3,8 @@
   <Import Project="..\Shared\base.props" />
   <PropertyGroup>
     <ProjectGuid>{AC1D8334-F12A-846A-3432-B6F9FA45C533}</ProjectGuid>
-    <RootNamespace>Microsoft.DocAsCode.Metadata</RootNamespace>
-    <AssemblyName>Microsoft.DocAsCode.Metadata</AssemblyName>
+    <RootNamespace>Microsoft.DocAsCode.MetadataSchemata</RootNamespace>
+    <AssemblyName>Microsoft.DocAsCode.MetadataSchemata</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

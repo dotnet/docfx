@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -383,11 +383,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Common"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.MarkdownRewriters", "src\Microsoft.DocAsCode.MarkdownRewriters\Microsoft.DocAsCode.MarkdownRewriters.xproj", "{5FF9B54C-A853-4FA8-A771-40837D062F05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Metadata", "src\Microsoft.DocAsCode.Metadata\Microsoft.DocAsCode.Metadata.csproj", "{AC1D8334-F12A-846A-3432-B6F9FA45C533}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.MetadataSchemata", "src\Microsoft.DocAsCode.MetadataSchemata\Microsoft.DocAsCode.MetadataSchemata.csproj", "{AC1D8334-F12A-846A-3432-B6F9FA45C533}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Metadata", "src\Microsoft.DocAsCode.Metadata\Microsoft.DocAsCode.Metadata.xproj", "{1A0C5D2E-D1C2-43E3-8B4C-1D42A3147A81}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.MetadataSchemata", "src\Microsoft.DocAsCode.MetadataSchemata\Microsoft.DocAsCode.MetadataSchemata.xproj", "{1A0C5D2E-D1C2-43E3-8B4C-1D42A3147A81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Metadata.Tests", "test\Microsoft.DocAsCode.Metadata.Tests\Microsoft.DocAsCode.Metadata.Tests.csproj", "{294CC6A4-1441-A36D-DD28-5F9D5B6D45A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.MetadataSchemata.Tests", "test\Microsoft.DocAsCode.MetadataSchemata.Tests\Microsoft.DocAsCode.MetadataSchemata.Tests.csproj", "{294CC6A4-1441-A36D-DD28-5F9D5B6D45A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

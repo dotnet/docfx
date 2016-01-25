@@ -1,7 +1,8 @@
-﻿namespace Microsoft.DocAsCode.Metadata.SchemaValidators
-{
-    using System.Text.RegularExpressions;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+namespace Microsoft.DocAsCode.MetadataSchemata.SchemaValidators
+{
     using Newtonsoft.Json.Linq;
 
     public class UnknownTypeValidator : IUnknownMetadataValidator

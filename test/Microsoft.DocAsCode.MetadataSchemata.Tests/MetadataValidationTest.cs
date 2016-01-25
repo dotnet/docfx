@@ -1,8 +1,8 @@
-﻿namespace Microsoft.DocAsCode.Metadata.Tests
+﻿namespace Microsoft.DocAsCode.MetadataSchemata.Tests
 {
-    using Microsoft.DocAsCode.Metadata;
-
     using Xunit;
+
+    using Microsoft.DocAsCode.MetadataSchemata;
 
     public class MetadataValidationTest
     {
