@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Shared\base.props" />
+  <PropertyGroup>
+    <ProjectGuid>{AC1D8334-F12A-846A-3432-B6F9FA45C533}</ProjectGuid>
+    <RootNamespace>Microsoft.DocAsCode.MetadataSchemata</RootNamespace>
+    <AssemblyName>Microsoft.DocAsCode.MetadataSchemata</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DisplayNameAttribute.cs" />
+    <Compile Include="IMetadataDefinition.cs" />
+    <Compile Include="IWellknownMetadataValidator.cs" />
+    <Compile Include="IMetadataSchema.cs" />
+    <Compile Include="IUnknownMetadataValidator.cs" />
+    <Compile Include="MetadataCompiler.cs" />
+    <Compile Include="MetadataDefinition.cs" />
+    <Compile Include="MetadataParser.cs" />
+    <Compile Include="MetadataSchema.cs" />
+    <Compile Include="QueryNameAttribute.cs" />
+    <Compile Include="SchemaValidators\DefinitionObjectValidator.cs" />
+    <Compile Include="SchemaValidators\ValidatorFactory.cs" />
+    <Compile Include="SchemaValidators\WellknownChoiceSetValidator.cs" />
+    <Compile Include="SchemaValidators\WellknownTypeValidator.cs" />
+    <Compile Include="SchemaValidators\UnknownNamingValidator.cs" />
+    <Compile Include="SchemaValidators\UnknownTypeValidator.cs" />
+    <Compile Include="ValidationErrorCodes.cs" />
+    <Compile Include="ValidationResult.cs" />
+    <Compile Include="ValidationResults.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

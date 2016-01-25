@@ -1,0 +1,24 @@
+﻿{
+  "version": "1.0.0",
+  "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "Microsoft.CSharp": "",
+        "System.Core": "",
+        "System": "",
+        "System.Runtime": ""
+      }
+    },
+    "dnx451": {
+      "frameworkAssemblies": {
+        "Microsoft.CSharp": "",
+        "System.Core": "",
+        "System": "",
+        "System.Runtime": ""
+      }
+    }
+  },
+  "dependencies": {
+    "Newtonsoft.Json": "7.0.1"
+  }
+}
