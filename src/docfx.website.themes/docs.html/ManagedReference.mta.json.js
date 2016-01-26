@@ -1,35 +1,34 @@
-function transform(model, _attrs){
+function transform(rawModel, _attrs){
+  if (!rawModel.metadata) {
+    var model = {};
+  } else {
+    var model = rawModel.metadata;
+  }
+
   model.layout = "Reference";
-  model.title = model.items[0].name + " " + model.items[0].type;
+  model.title = rawModel.items[0].name + " " + rawModel.items[0].type;
 
   // If toc is not defined in model, read it from __attrs
   if (_attrs._tocPath && _attrs._tocPath.indexOf("~/") == 0){
     _attrs._tocPath = _attrs._tocPath.substring(2);
   }
-  if (!model.toc_asset_id){
+  if (!rawModel.toc_asset_id){
     model.toc_asset_id = _attrs._tocPath;
   }
 
   model.toc_rel = _attrs._tocRel;
-  model.platforms = model.items[0].platform;
-  model.langs = model.items[0].langs;
-  if (!model.metadata || !model.metadata.breadcrumb_path) {
+  model.platforms = rawModel.items[0].platform;
+  model.langs = rawModel.items[0].langs;
+  if (!model.breadcrumb_path) {
     model.breadcrumb_path = "/toc.html";
-  } else {
-    model.breadcrumb_path = model.metadata.breadcrumb_path
   }
-  if (!model.metadata) {
-    model.content_git_url = getContentGitUrl(model.items[0]);
+  if (!rawModel.metadata) {
+    model.content_git_url = getContentGitUrl(rawModel.items[0]);
   } else {
-    model.content_git_url = getContentGitUrl(model.items[0], model.metadata.newFileRepository);
+    model.content_git_url = getContentGitUrl(rawModel.items[0], rawModel.metadata.newFileRepository);
   }
-  model.source_url = getViewSourceHref(model.items[0]);
-  model.ms_asset_id = getMsAssetId(model.items[0]);
-
- // Clean up unused predefined properties
-  model.items = undefined;
-  model.references = undefined;
-  model.metadata = undefined;
+  model.source_url = getViewSourceHref(rawModel.items[0]);
+  model["ms.assetid"] = getMsAssetId(rawModel.items[0]);
 
   return {
     content: JSON.stringify(model)
