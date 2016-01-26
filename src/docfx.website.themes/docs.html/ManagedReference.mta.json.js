@@ -24,6 +24,7 @@ function transform(model, _attrs){
     model.content_git_url = getContentGitUrl(model.items[0], model.metadata.newFileRepository);
   }
   model.source_url = getViewSourceHref(model.items[0]);
+  model.ms_asset_id = getMsAssetId(model.items[0]);
 
  // Clean up unused predefined properties
   model.items = undefined;
@@ -124,5 +125,10 @@ function transform(model, _attrs){
       return 'https://' + repo.substr(4).replace(':', '/');
     }
     return '';
+  }
+
+  function getMsAssetId(item) {
+    if (!item || !item.uid) return '';
+    return item.uid;
   }
 }
