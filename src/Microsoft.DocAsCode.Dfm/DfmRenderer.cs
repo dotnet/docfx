@@ -78,9 +78,9 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     var noteToken = (DfmNoteBlockToken)splitToken.Token;
                     content += "<div class=\"";
-                    content += noteToken.NoteType;
+                    content += noteToken.NoteType.ToUpper();
                     content += "\"><h5>";
-                    content += noteToken.NoteType;
+                    content += noteToken.NoteType.ToUpper();
                     content += "</h5>";
                     foreach (var item in splitToken.InnerTokens)
                     {
