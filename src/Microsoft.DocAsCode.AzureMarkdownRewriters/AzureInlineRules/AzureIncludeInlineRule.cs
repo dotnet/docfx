@@ -11,7 +11,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     {
         public virtual string Name => "AZURE.INCLUDE";
 
-        public virtual Regex AzureIncludeRegex => new Regex(@"^\[AZURE.INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _azureIncludeRegex = new Regex(@"^\[AZURE.INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([\s\S]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public virtual Regex AzureIncludeRegex => _azureIncludeRegex;
 
         public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {

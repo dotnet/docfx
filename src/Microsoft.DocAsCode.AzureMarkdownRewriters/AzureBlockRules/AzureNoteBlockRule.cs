@@ -11,7 +11,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     {
         public virtual string Name => "AZURE.Note";
 
-        public virtual Regex AzureNoteRegex => new Regex(@"^(?<rawmarkdown> *\[(?<notetype>(AZURE.NOTE|AZURE.WARNING|AZURE.TIP|AZURE.IMPORTANT|AZURE.CAUTION))\] *\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _azureNoteRegex = new Regex(@"^(?<rawmarkdown> *\[(?<notetype>(AZURE.NOTE|AZURE.WARNING|AZURE.TIP|AZURE.IMPORTANT|AZURE.CAUTION))\] *\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public virtual Regex AzureNoteRegex => _azureNoteRegex;
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
         {
