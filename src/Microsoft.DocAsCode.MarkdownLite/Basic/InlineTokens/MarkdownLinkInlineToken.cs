@@ -27,8 +27,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public ImmutableArray<IMarkdownToken> Content { get; }
 
-        public bool ShouldApplyInlineRule { get; set; }
-
         public string RawMarkdown { get; set; }
 
         public MarkdownLinkInlineToken Rewrite(IMarkdownRewriteEngine rewriterEngine)

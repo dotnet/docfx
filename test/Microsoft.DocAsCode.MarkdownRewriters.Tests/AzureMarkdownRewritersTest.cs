@@ -476,5 +476,29 @@ header-1 | header-2 | header-3
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AppendMissingMarkdownLinkExtension()
+        {
+            var source = @"#Test Markdownlink extension
+this is a missing extension link [text](missing_extension) file ref
+this is a normal link [text](missing_extension.md) file ref
+this is http link [text](http://www.google.com ""Google"") ref
+this is http escape link [text](http://www.google.com'dd#bookmark ""Google's homepage"") ref
+this is absolute link [text](c:/this/is/markdown ""Local File"") file ref";
+            var expected = @"# Test Markdownlink extension
+this is a missing extension link [text](missing_extension.md) file ref
+this is a normal link [text](missing_extension.md) file ref
+this is http link [text](http://www.google.com ""Google"") ref
+this is http escape link [text](http://www.google.com'dd#bookmark ""Google's homepage"") ref
+this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
+
+";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
     }
 }

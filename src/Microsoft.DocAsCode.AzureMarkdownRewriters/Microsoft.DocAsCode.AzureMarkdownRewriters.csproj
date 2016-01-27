@@ -48,6 +48,10 @@
       <Project>{81AD853E-6176-44CA-A43E-A699EA05CC3E}</Project>
       <Name>Microsoft.DocAsCode.MarkdownLite</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
+      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
+      <Name>Microsoft.DocAsCode.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

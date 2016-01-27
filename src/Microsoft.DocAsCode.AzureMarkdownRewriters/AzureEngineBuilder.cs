@@ -5,13 +5,17 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
     using System;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Utility;
 
     public class AzureEngineBuilder : GfmEngineBuilder
     {
+        private const string MarkdownExtension = ".md";
+
         public AzureEngineBuilder(Options options) : base(options)
         {
             BuildRules();
@@ -73,8 +77,20 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
+                        ),
+                        MarkdownTokenRewriterFactory.FromLambda(
+                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, AppendMissingExtension(t.Href, MarkdownExtension), t.Title, t.Content, t.RawMarkdown)
                         )
                     );
+        }
+
+        private string AppendMissingExtension(string href, string extension)
+        {
+            if (PathUtility.IsRelativePath(href) && string.IsNullOrEmpty(Path.GetExtension(href)))
+            {
+                return $"{href}{extension}";
+            }
+            return href;
         }
     }
 }
