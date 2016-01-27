@@ -1,6 +1,4 @@
-﻿- name: Getting Started
-  href: tutorial/docfx_getting_started.md
-- name: Tutorials
+﻿- name: Tutorials
   href: tutorial/
 - name: Guidelines
   href: guideline/
