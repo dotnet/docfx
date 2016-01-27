@@ -73,16 +73,14 @@ namespace Microsoft.DocAsCode.YamlSerialization
             namingConvention = namingConvention ?? new NullNamingConvention();
 
             _typeDescriptor.TypeDescriptor =
-                new CachedTypeInspector(
-                    new YamlAttributesTypeInspector(
-                        new NamingConventionTypeInspector(
-                            new ReadableAndWritablePropertiesTypeInspector(
-                                new EmitTypeInspector(
-                                    new StaticTypeResolver()
-                                )
-                            ),
-                            namingConvention
-                        )
+                new ExtensibleYamlAttributesTypeInspector(
+                    new ExtensibleNamingConventionTypeInspector(
+                        new ExtensibleReadableAndWritablePropertiesTypeInspector(
+                            new EmitTypeInspector(
+                                new StaticTypeResolver()
+                            )
+                        ),
+                        namingConvention
                     )
                 );
 
@@ -102,7 +100,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
             NodeDeserializers.Add(new EmitGenericCollectionNodeDeserializer(objectFactory));
             NodeDeserializers.Add(new NonGenericListNodeDeserializer(objectFactory));
             NodeDeserializers.Add(new EnumerableNodeDeserializer());
-            NodeDeserializers.Add(new ObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched));
+            NodeDeserializers.Add(new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched));
 
             _tagMappings = new Dictionary<string, Type>(PredefinedTagMappings);
             TypeResolvers = new List<INodeTypeResolver>();

@@ -15,12 +15,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensibleMemberAttribute.cs" />
+    <Compile Include="NodeDeserializers\ExtensibleObjectNodeDeserializer.cs" />
     <Compile Include="TypeInspectors\CachedTypeInspector.cs" />
     <Compile Include="ObjectFactories\DefaultEmitObjectFactory.cs" />
     <Compile Include="NodeDeserializers\EmitGenericDictionaryNodeDeserializer.cs" />
     <Compile Include="NodeDeserializers\EmitArrayNodeDeserializer.cs" />
     <Compile Include="NodeDeserializers\EmitGenericCollectionNodeDeserializer.cs" />
     <Compile Include="Helpers\ReflectionExtensions.cs" />
+    <Compile Include="TypeInspectors\ExtensibleNamingConventionTypeInspector.cs" />
+    <Compile Include="TypeInspectors\ExtensibleReadableAndWritablePropertiesTypeInspector.cs" />
+    <Compile Include="TypeInspectors\ExtensibleTypeInspectorSkeleton.cs" />
+    <Compile Include="TypeInspectors\ExtensibleYamlAttributesTypeInspector.cs" />
+    <Compile Include="TypeInspectors\IExtensibleTypeInspector.cs" />
     <Compile Include="YamlDeserializer.cs" />
     <Compile Include="TypeInspectors\EmitTypeInspector.cs" />
     <Compile Include="ObjectGraphTraversalStrategies\FullObjectGraphTraversalStrategy.cs" />
