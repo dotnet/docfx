@@ -155,7 +155,10 @@ namespace Microsoft.DocAsCode.SubCommands
         private static void MergeNewFileRepositoryToConfig(BuildJsonConfig config)
         {
             GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
-            repoInfoFromBaseDirectory.RelativePath = Path.Combine(repoInfoFromBaseDirectory.RelativePath, DocAsCode.Constants.DefaultOverwriteFolderName);
+            if (repoInfoFromBaseDirectory != null)
+            {
+                repoInfoFromBaseDirectory.RelativePath = Path.Combine(repoInfoFromBaseDirectory.RelativePath, DocAsCode.Constants.DefaultOverwriteFolderName);
+            }
             object newFileRepository;
             if (config.GlobalMetadata.TryGetValue("newFileRepository", out newFileRepository))
             {
@@ -168,9 +171,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     throw new DocumentException($"Unable to convert newFileRepository to GitDetail in globalMetadata: {e.Message}", e);
                 }
-                if (repoInfo.RelativePath == null) repoInfo.RelativePath = repoInfoFromBaseDirectory.RelativePath;
-                if (repoInfo.RemoteBranch == null) repoInfo.RemoteBranch = repoInfoFromBaseDirectory.RemoteBranch;
-                if (repoInfo.RemoteRepositoryUrl == null) repoInfo.RemoteRepositoryUrl = repoInfoFromBaseDirectory.RemoteRepositoryUrl;
+                if (repoInfoFromBaseDirectory != null)
+                {
+                    if (repoInfo.RelativePath == null) repoInfo.RelativePath = repoInfoFromBaseDirectory.RelativePath;
+                    if (repoInfo.RemoteBranch == null) repoInfo.RemoteBranch = repoInfoFromBaseDirectory.RemoteBranch;
+                    if (repoInfo.RemoteRepositoryUrl == null) repoInfo.RemoteRepositoryUrl = repoInfoFromBaseDirectory.RemoteRepositoryUrl;
+                }
                 config.GlobalMetadata["newFileRepository"] = repoInfo;
             }
             else
