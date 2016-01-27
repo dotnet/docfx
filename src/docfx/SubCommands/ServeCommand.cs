@@ -41,6 +41,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 FileSystem = new PhysicalFileSystem(folder),
             };
 
+            // Fix the issue that .JSON file is 404 when running docfx serve
+            fileServerOptions.StaticFileOptions.ServeUnknownFileTypes = true;
+
             if (!File.Exists(Path.Combine(folder, "index.html")) && File.Exists(Path.Combine(folder, "toc.html")))
             {
                 File.Copy(Path.Combine(folder, "toc.html"), Path.Combine(folder, "index.html"));
