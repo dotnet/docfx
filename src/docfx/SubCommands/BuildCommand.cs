@@ -462,13 +462,31 @@ namespace Microsoft.DocAsCode.SubCommands
                         }
                     }
                 }
-                catch (DocumentException ex)
+                catch (Exception e) when (CheckSerializability(e))
                 {
-                    Logger.LogError("Document error occurs:" + ex.Message);
+                    throw;
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    Logger.LogError(ex.ToString());
+                    // For non-serializable exception, wrap it and throw docfx exception instead
+                    throw new DocfxException(e.ToString());
+                }
+            }
+
+            private static bool CheckSerializability(object graph)
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                try
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        binaryFormatter.Serialize(ms, graph);
+                        return true;
+                    }
+                }
+                catch
+                {
+                    return false;
                 }
             }
 

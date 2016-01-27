@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.EntityModel
             return xref;
         }
 
-        public bool TryResolve(Dictionary<string, XRefSpec> xrefMap, Func<string, string> updater)
+        public bool TryResolve(Dictionary<string, XRefSpec> xrefMap)
         {
             XRefSpec spec;
             string href;
@@ -67,7 +67,6 @@ namespace Microsoft.DocAsCode.EntityModel
                 href = spec.Href;
                 if (PathUtility.IsRelativePath(href))
                 {
-                    if (updater != null) href = updater(href);
                     var hashtagIndex = href.IndexOf('#');
                     if (hashtagIndex == -1)
                     {

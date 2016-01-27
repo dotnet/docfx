@@ -336,23 +336,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void UpdateContext(DocumentBuildContext context)
         {
-            //update internal XrefMap
-            if (context.XRefSpecMap != null)
-            {
-                foreach (var pair in context.XRefSpecMap)
-                {
-                    string targetFilePath;
-                    if (context.FileMap.TryGetValue(pair.Value.Href, out targetFilePath))
-                    {
-                        pair.Value.Href = targetFilePath;
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"{pair.Value.Href} is not found in .filemap");
-                    }
-                }
-            }
-
             context.SetExternalXRefSpec();
         }
 

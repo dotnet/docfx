@@ -57,7 +57,6 @@
                 return;
             }
 
-            var missingUids = new List<KeyValuePair<string, HashSet<string>>>();
             if (ExternalReferencePackages.Length > 0)
             {
                 using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages))
@@ -69,32 +68,10 @@
                         {
                             result[uid] = spec;
                         }
-                        else
-                        {
-                            if (missingUids.Count < 100)
-                            {
-                                missingUids.Add(new KeyValuePair<string, HashSet<string>>(uid, xref[uid]));
-                            }
-                        }
                     }
                 }
             }
-            else
-            {
-                missingUids.AddRange(xref.Take(100));
-            }
-            if (missingUids.Count > 0)
-            {
-                var uidLines = string.Join(Environment.NewLine + "\t", missingUids.Select(s => "@" + s.Key + " in files \"" + string.Join(",", s.Value.Select(p => p.ToDisplayPath())) + "\""));
-                if (missingUids.Count < 100)
-                {
-                    Logger.LogWarning($"Missing following definitions of cross-reference:{Environment.NewLine}\t{uidLines}");
-                }
-                else
-                {
-                    Logger.LogWarning($"Too many missing definitions of cross-reference, following is top 100:{Environment.NewLine}\t{uidLines}");
-                }
-            }
+
             ExternalXRefSpec = result;
         }
 

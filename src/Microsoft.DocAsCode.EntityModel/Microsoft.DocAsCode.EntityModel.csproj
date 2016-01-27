@@ -84,6 +84,7 @@
     <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Exceptions\DocfxException.cs" />
+    <Compile Include="Exceptions\CrossReferenceNotResolvedException.cs" />
     <Compile Include="Exceptions\PluginDirectoryAlreadyExistsException.cs" />
     <Compile Include="Exceptions\PluginException.cs" />
     <Compile Include="Exceptions\ResourceDirectoryExceedsMaxDepthException.cs" />
