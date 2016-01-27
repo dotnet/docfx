@@ -180,6 +180,36 @@ namespace Microsoft.DocAsCode.Utility
             return _isFromWorkingFolder;
         }
 
+        public string GetFileNameWithoutExtension()
+        {
+            return Path.GetFileNameWithoutExtension(FileName);
+        }
+
+        public RelativePath ChangeFileName(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentNullException(nameof(fileName));
+            }
+
+            if (fileName.Contains('\\') || fileName.Contains('/') || fileName == ".." || fileName == ".")
+            {
+                throw new ArgumentException($"{fileName} is not a valid file name.");
+            }
+
+            return ChangeFileNameWithNoCheck(fileName);
+        }
+
+        public RelativePath GetDirectoryPath()
+        {
+            if (_parts.Length == 0)
+            {
+                throw new InvalidOperationException($"Unable to get directory path for {this.ToString()}");
+            }
+
+            return ChangeFileNameWithNoCheck(string.Empty);
+        }
+
         public RelativePath GetPathFromWorkingFolder()
         {
             if (_isFromWorkingFolder)
@@ -278,6 +308,13 @@ namespace Microsoft.DocAsCode.Utility
                 throw new ArgumentOutOfRangeException(nameof(skip));
             }
             return _parts.Take(_parts.Length - skip - 1);
+        }
+
+        private RelativePath ChangeFileNameWithNoCheck(string fileName)
+        {
+            var parts = (string[])_parts.Clone();
+            parts[parts.Length - 1] = fileName;
+            return new RelativePath(_isFromWorkingFolder, _parentDirectoryCount, parts);
         }
 
         #endregion

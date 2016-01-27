@@ -124,6 +124,47 @@ namespace Microsoft.DocAsCode.Utility.Tests
             }
         }
 
+        [Theory]
+        [InlineData("a/b/c", "a/b/")]
+        [InlineData("~/a/b/c", "~/a/b/")]
+        [InlineData("~/../a/b/c", "~/../a/b/")]
+        [InlineData("~/../a/", "~/../a/")]
+        [InlineData("~/../", "~/../")]
+        [InlineData("~/a/../b", "~/")]
+        public void TestRelativePathGetDirectoryPath(string file, string expected)
+        {
+            var relativePath = (RelativePath)file;
+            var result = relativePath.GetDirectoryPath();
+            Assert.Equal(expected, result.ToString());
+        }
+
+        [Fact]
+        public void TestRelativePathGetDirectoryPathWithInvalidParentDirectoryShouldFail()
+        {
+            var relativePath = (RelativePath)"~/..";
+            Assert.Throws<InvalidOperationException>(() => relativePath.GetDirectoryPath());
+        }
+
+        [Fact]
+        public void TestRelativePathChangeFileNameWithInvalidFileNameShouldFail()
+        {
+            var relativePath = (RelativePath)"~/a/b/c";
+            Assert.Throws<ArgumentException>(() => relativePath.ChangeFileName("d/"));
+            Assert.Throws<ArgumentException>(() => relativePath.ChangeFileName(".."));
+            Assert.Throws<ArgumentException>(() => relativePath.ChangeFileName("../d/"));
+        }
+
+        [Theory]
+        [InlineData("a/b/c", "d", "a/b/d")]
+        [InlineData("~/a/b/c", "d", "~/a/b/d")]
+        [InlineData("../a/b/c", "d", "../a/b/d")]
+        public void TestRelativePathChangeFileName(string file, string changedFileName, string expected)
+        {
+            var relativePath = (RelativePath)file;
+            var result = relativePath.ChangeFileName(changedFileName);
+            Assert.Equal(expected, result.ToString());
+        }
+
         [Fact]
         public void TestRelativePathOperatorAdd()
         {

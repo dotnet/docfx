@@ -67,6 +67,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             var toc = (TocViewModel)model.Content;
             var path = model.OriginalFileAndType.File;
+
+            // Add current folder to the toc mapping, e.g. `a/` maps to `a/toc`
+            var directory = ((RelativePath)path).GetPathFromWorkingFolder().GetDirectoryPath();
+            context.RegisterToc(path, directory);
+
             if (toc.Count > 0)
             {
                 foreach (var item in toc)

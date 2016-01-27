@@ -3,12 +3,11 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
 
     using Newtonsoft.Json;
 
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Utility;
 
@@ -58,47 +57,75 @@ namespace Microsoft.DocAsCode.EntityModel
         [JsonProperty("_tocRel")]
         public string TocRelativePath { get; set; }
 
-        // TODO: change to IDocumentBuildContext
-        public SystemAttributes(DocumentBuildContext context, ManifestItem item, string lang)
+        public SystemAttributes(IDocumentBuildContext context, ManifestItem item, string lang)
         {
             Language = lang;
-            GetTocInfo(context, item);
-            TocRelativePath = TocPath == null ? null : ((RelativePath)TocPath).MakeRelativeTo((RelativePath)item.ModelFile);
-            RootTocRelativePath = RootTocPath == null ? null : ((RelativePath)RootTocPath).MakeRelativeTo((RelativePath)item.ModelFile);
-            RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo((RelativePath)item.ModelFile);
-            PathFromRoot = ((RelativePath)item.ModelFile).RemoveWorkingFolder();
+            var tuple = GetTocInfo(context, item);
+            TocPath = tuple.ParentToc;
+            RootTocPath = tuple.RootToc;
+            var file = (RelativePath)item.ModelFile;
+            TocRelativePath = tuple.ParentToc == null ? null : tuple.ParentToc.MakeRelativeTo(file);
+            RootTocRelativePath = tuple.RootToc == null ? null : tuple.RootToc.MakeRelativeTo(file);
+            RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo(file);
+            PathFromRoot = file.RemoveWorkingFolder();
         }
 
-        private void GetTocInfo(DocumentBuildContext context, ManifestItem item)
+        /// <summary>
+        /// Root toc should always from working folder
+        /// Parent toc is the first nearest toc
+        /// </summary>
+        /// <param name="context">The document build context</param>
+        /// <param name="item">The manifest item</param>
+        /// <returns>A class containing root toc path and parent toc path</returns>
+        private static TocInfo GetTocInfo(IDocumentBuildContext context, ManifestItem item)
         {
             string relativePath = item.OriginalFile;
-            var tocMap = context.TocMap;
-            var fileMap = context.FileMap;
-            HashSet<string> parentTocs;
-            string parentToc = null;
-            string rootToc = null;
-            string currentPath = ((RelativePath)relativePath).GetPathFromWorkingFolder();
-            while (tocMap.TryGetValue(currentPath, out parentTocs) && parentTocs.Count > 0)
+            string key = GetFileKey(relativePath);
+            RelativePath rootTocPath = null;
+            RelativePath parentTocPath = null;
+            var rootToc = context.GetTocFileKeySet(RelativePath.WorkingFolder)?.FirstOrDefault();
+            var parentToc = context.GetTocFileKeySet(key)?.FirstOrDefault();
+            if (parentToc == null)
             {
-                // Get the first toc only
-                currentPath = parentTocs.First();
-                rootToc = currentPath;
-                if (parentToc == null) parentToc = currentPath;
-                currentPath = ((RelativePath)currentPath).GetPathFromWorkingFolder();
-            }
-            if (rootToc != null)
-            {
-                rootToc = fileMap[((RelativePath)rootToc).GetPathFromWorkingFolder()];
-                PathUtility.TryGetPathFromWorkingFolder(rootToc, out rootToc);
-                RootTocPath = rootToc;
+                // fall back to get the toc file from the same directory
+                var directory = ((RelativePath)key).GetDirectoryPath();
+                parentToc = context.GetTocFileKeySet(directory)?.FirstOrDefault();
             }
 
-            if (parentToc == null) TocPath = RootTocPath;
-            else
+            if (rootToc != null)
             {
-                parentToc = fileMap[((RelativePath)parentToc).GetPathFromWorkingFolder()];
-                PathUtility.TryGetPathFromWorkingFolder(parentToc, out parentToc);
-                TocPath = parentToc;
+                rootTocPath = GetFinalFilePath(rootToc, context);
+            }
+
+            if (parentToc != null)
+            {
+                parentTocPath = GetFinalFilePath(parentToc, context);
+            }
+
+            return new TocInfo(rootTocPath, parentTocPath);
+        }
+
+        private static RelativePath GetFinalFilePath(string key, IDocumentBuildContext context)
+        {
+            var fileKey = GetFileKey(key);
+            return ((RelativePath)context.GetFilePath(fileKey)).RemoveWorkingFolder();
+        }
+
+        private static string GetFileKey(string key)
+        {
+            if (key.StartsWith("~/") || key.StartsWith("~\\")) return key;
+            return ((RelativePath)key).GetPathFromWorkingFolder();
+        }
+
+        private sealed class TocInfo
+        {
+            public RelativePath RootToc { get; }
+            public RelativePath ParentToc { get; }
+
+            public TocInfo(RelativePath rootToc, RelativePath parentToc)
+            {
+                RootToc = rootToc;
+                ParentToc = parentToc;
             }
         }
     }
