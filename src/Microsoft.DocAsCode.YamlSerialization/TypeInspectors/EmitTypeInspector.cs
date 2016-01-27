@@ -6,17 +6,17 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
     using YamlDotNet.Core;
     using YamlDotNet.Serialization;
-    using YamlDotNet.Serialization.TypeInspectors;
 
     using Microsoft.DocAsCode.YamlSerialization.Helpers;
     using Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors;
 
-    public class EmitTypeInspector : TypeInspectorSkeleton
+    public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
     {
         private static ConcurrentDictionary<Type, CachingItem> Cache { get; } =
             new ConcurrentDictionary<Type, CachingItem>();
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             _resolver = resolver;
         }
 
-        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+        protected override IEnumerable<IPropertyDescriptor> GetPropertiesCore(Type type, object container)
         {
             CachingItem ci = Cache.GetOrAdd(type, t => CachingItem.Create(t, _resolver));
             if (ci == null)
@@ -37,9 +37,45 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             return ci.Properies;
         }
 
+        public override IPropertyDescriptor GetProperty(Type type, object container, string name)
+        {
+            CachingItem ci = Cache.GetOrAdd(type, t => CachingItem.Create(t, _resolver));
+            if (ci == null)
+            {
+                throw new NotSupportedException($"Type {type.FullName} is invisible.");
+            }
+            if (ci.ExtensibleProperies.Count == 0)
+            {
+                return null;
+            }
+            return (from ep in ci.ExtensibleProperies
+                    where name.StartsWith(ep.Prefix)
+                    select ep.SetName(name)).FirstOrDefault();
+        }
+
+        public override IEnumerable<string> GetKeys(Type type, object container)
+        {
+            CachingItem ci = Cache.GetOrAdd(type, t => CachingItem.Create(t, _resolver));
+            if (ci == null)
+            {
+                throw new NotSupportedException($"Type {type.FullName} is invisible.");
+            }
+            if (ci.ExtensibleProperies.Count == 0)
+            {
+                return null;
+            }
+            return from ep in ci.ExtensibleProperies
+                   from key in ep.GetAllKeys(container) ?? Enumerable.Empty<string>()
+                   select ep.Prefix + key;
+        }
+
         private sealed class CachingItem
         {
             private CachingItem() { }
+
+            public List<EmitPropertyDescriptor> Properies { get; } = new List<EmitPropertyDescriptor>();
+
+            public List<ExtensiblePropertyDescriptor> ExtensibleProperies { get; } = new List<ExtensiblePropertyDescriptor>();
 
             public static CachingItem Create(Type type, ITypeResolver typeResolver)
             {
@@ -60,20 +96,47 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     {
                         continue;
                     }
-                    var setMethod = prop.GetSetMethod();
                     var propertyType = prop.PropertyType;
-                    result.Properies.Add(new EmitPropertyDescriptor
+                    var extAttr = prop.GetCustomAttribute<ExtensibleMemberAttribute>();
+                    if (extAttr == null)
                     {
-                        CanWrite = setMethod != null,
-                        Name = prop.Name,
-                        Property = prop,
-                        Type = propertyType,
-                        TypeResolver = typeResolver,
-                        Reader = CreateReader(getMethod),
-                        Writer = setMethod == null ? null : CreateWriter(setMethod),
-                    });
+                        var setMethod = prop.GetSetMethod();
+                        result.Properies.Add(new EmitPropertyDescriptor
+                        {
+                            CanWrite = setMethod != null,
+                            Name = prop.Name,
+                            Property = prop,
+                            Type = propertyType,
+                            TypeResolver = typeResolver,
+                            Reader = CreateReader(getMethod),
+                            Writer = setMethod == null ? null : CreateWriter(setMethod),
+                        });
+                    }
+                    else
+                    {
+                        Type valueType = GetGenericValueType(propertyType);
+
+                        if (valueType == null)
+                        {
+                            // ignore.
+                            continue;
+                        }
+
+                        result.ExtensibleProperies.Add(
+                            new ExtensiblePropertyDescriptor
+                            {
+                                KeyReader = CreateDictionaryKeyReader(getMethod, valueType),
+                                Prefix = extAttr.Prefix,
+                                Reader = CreateDictionaryReader(getMethod, valueType),
+                                Writer = CreateDictionaryWriter(getMethod, valueType),
+                                Type = valueType,
+                                TypeResolver = typeResolver,
+                            });
+                    }
                 }
 
+                // order by the length of Prefix descending.
+                result.ExtensibleProperies.Sort((left, right) => right.Prefix.Length - left.Prefix.Length);
                 return result;
             }
 
@@ -125,7 +188,176 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 return (Action<object, object>)dm.CreateDelegate(typeof(Action<object, object>));
             }
 
-            public List<EmitPropertyDescriptor> Properies { get; } = new List<EmitPropertyDescriptor>();
+            private static Type GetGenericValueType(Type propertyType)
+            {
+                Type valueType = null;
+                if (propertyType.IsInterface)
+                {
+                    valueType = GetGenericValueTypeCore(propertyType);
+                }
+                valueType = valueType ??
+                    (from t in propertyType.GetInterfaces()
+                     where t.IsVisible
+                     select GetGenericValueTypeCore(t)).FirstOrDefault(x => x != null);
+                return valueType;
+            }
+
+            private static Type GetGenericValueTypeCore(Type type)
+            {
+                if (type.IsGenericType &&
+                    type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                {
+                    var args = type.GetGenericArguments();
+                    if (args[0] == typeof(string))
+                    {
+                        return args[1];
+                    }
+                }
+                return null;
+            }
+
+            private static Func<object, ICollection<string>> CreateDictionaryKeyReader(MethodInfo getMethod, Type valueType)
+            {
+                var hostType = getMethod.DeclaringType;
+                var propertyType = getMethod.ReturnType;
+                var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
+                var dm = new DynamicMethod(string.Empty, typeof(ICollection<string>), new[] { typeof(object) });
+                var il = dm.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                if (hostType.IsValueType)
+                {
+                    il.Emit(OpCodes.Unbox, hostType);
+                    il.Emit(OpCodes.Call, getMethod);
+                }
+                else
+                {
+                    il.Emit(OpCodes.Castclass, hostType);
+                    il.Emit(OpCodes.Callvirt, getMethod);
+                }
+                if (propertyType.IsValueType)
+                {
+                    il.Emit(OpCodes.Box, propertyType);
+                    il.Emit(OpCodes.Castclass, dictType);
+                }
+                else
+                {
+                    var notNullLabel = il.DefineLabel();
+                    il.DeclareLocal(dictType);
+                    il.Emit(OpCodes.Castclass, dictType);
+                    il.Emit(OpCodes.Stloc_0);
+                    il.Emit(OpCodes.Ldloc_0);
+                    il.Emit(OpCodes.Brtrue_S, notNullLabel);
+                    il.Emit(OpCodes.Ldnull);
+                    il.Emit(OpCodes.Ret);
+                    il.MarkLabel(notNullLabel);
+                    il.Emit(OpCodes.Ldloc_0);
+                }
+                il.Emit(OpCodes.Callvirt, dictType.GetMethod("get_Keys"));
+                il.Emit(OpCodes.Ret);
+
+                return (Func<object, ICollection<string>>)dm.CreateDelegate(typeof(Func<object, ICollection<string>>));
+            }
+
+            private static Func<object, string, object> CreateDictionaryReader(MethodInfo getMethod, Type valueType)
+            {
+                var hostType = getMethod.DeclaringType;
+                var propertyType = getMethod.ReturnType;
+                var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
+                var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object), typeof(string) });
+                // var dict = (IDictionary<string, T>)((HostType)arg0).Property;
+                // if (dict == null) { return null; }
+                // T result;
+                // if (dict.TryGetValue(arg1, out result)) return result;
+                // else return null;
+                var il = dm.GetILGenerator();
+                il.DeclareLocal(valueType);
+                var nullLabel = il.DefineLabel();
+                il.Emit(OpCodes.Ldarg_0);
+                if (hostType.IsValueType)
+                {
+                    il.Emit(OpCodes.Unbox, hostType);
+                    il.Emit(OpCodes.Call, getMethod);
+                }
+                else
+                {
+                    il.Emit(OpCodes.Castclass, hostType);
+                    il.Emit(OpCodes.Callvirt, getMethod);
+                }
+                if (propertyType.IsValueType)
+                {
+                    il.Emit(OpCodes.Box, propertyType);
+                    il.Emit(OpCodes.Castclass, dictType);
+                }
+                else
+                {
+                    il.DeclareLocal(dictType);
+                    il.Emit(OpCodes.Castclass, dictType);
+                    il.Emit(OpCodes.Stloc_1);
+                    il.Emit(OpCodes.Ldloc_1);
+                    il.Emit(OpCodes.Brfalse_S, nullLabel);
+                    il.Emit(OpCodes.Ldloc_1);
+                }
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Ldloca_S, (byte)0);
+                il.Emit(OpCodes.Callvirt, dictType.GetMethod("TryGetValue"));
+                il.Emit(OpCodes.Brfalse_S, nullLabel);
+                il.Emit(OpCodes.Ldloc_0);
+                if (valueType.IsValueType)
+                {
+                    il.Emit(OpCodes.Box, valueType);
+                }
+                il.Emit(OpCodes.Ret);
+                il.MarkLabel(nullLabel);
+                il.Emit(OpCodes.Ldnull);
+                il.Emit(OpCodes.Ret);
+
+                return (Func<object, string, object>)dm.CreateDelegate(typeof(Func<object, string, object>));
+            }
+
+            private static Action<object, string, object> CreateDictionaryWriter(MethodInfo getMethod, Type valueType)
+            {
+                var hostType = getMethod.DeclaringType;
+                var propertyType = getMethod.ReturnType;
+                var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
+                var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(object), typeof(string), typeof(object) });
+                // var dict = (IDictionary<string, T>)((HostType)arg0).Property;
+                // if (dict != null) { dict[arg1] = (T)arg2; }
+                var il = dm.GetILGenerator();
+                var nullLabel = il.DefineLabel();
+                il.Emit(OpCodes.Ldarg_0);
+                if (hostType.IsValueType)
+                {
+                    il.Emit(OpCodes.Unbox, hostType);
+                    il.Emit(OpCodes.Call, getMethod);
+                }
+                else
+                {
+                    il.Emit(OpCodes.Castclass, hostType);
+                    il.Emit(OpCodes.Callvirt, getMethod);
+                }
+                if (propertyType.IsValueType)
+                {
+                    il.Emit(OpCodes.Box, propertyType);
+                    il.Emit(OpCodes.Castclass, dictType);
+                }
+                else
+                {
+                    il.DeclareLocal(dictType);
+                    il.Emit(OpCodes.Castclass, dictType);
+                    il.Emit(OpCodes.Stloc_0);
+                    il.Emit(OpCodes.Ldloc_0);
+                    il.Emit(OpCodes.Brfalse_S, nullLabel);
+                    il.Emit(OpCodes.Ldloc_0);
+                }
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Unbox_Any, valueType);
+                il.Emit(OpCodes.Callvirt, dictType.GetMethod("set_Item"));
+                il.MarkLabel(nullLabel);
+                il.Emit(OpCodes.Ret);
+
+                return (Action<object, string, object>)dm.CreateDelegate(typeof(Action<object, string, object>));
+            }
         }
 
         private sealed class EmitPropertyDescriptor : IPropertyDescriptor
@@ -173,6 +405,68 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             public void Write(object target, object value)
             {
                 Writer(target, value);
+            }
+        }
+
+        private sealed class ExtensiblePropertyDescriptor : IPropertyDescriptor
+        {
+            internal string Prefix { get; set; }
+
+            internal ITypeResolver TypeResolver { get; set; }
+
+            internal Func<object, string, object> Reader { get; set; }
+
+            internal Action<object, string, object> Writer { get; set; }
+
+            internal Func<object, ICollection<string>> KeyReader { get; set; }
+
+            public bool CanWrite => Name != null;
+
+            public string Name { get; private set; }
+
+            public int Order { get; set; }
+
+            public ScalarStyle ScalarStyle { get; set; }
+
+            public Type Type { get; set; }
+
+            public Type TypeOverride { get; set; }
+
+            public T GetCustomAttribute<T>() where T : Attribute
+            {
+                return null;
+            }
+
+            public IObjectDescriptor Read(object target)
+            {
+                var value = Reader(target, Name.Substring(Prefix.Length));
+                return new BetterObjectDescriptor(value, TypeOverride ?? TypeResolver.Resolve(Type, value), Type, ScalarStyle);
+            }
+
+            public void Write(object target, object value)
+            {
+                Writer(target, Name.Substring(Prefix.Length), value);
+            }
+
+            public ICollection<string> GetAllKeys(object target)
+            {
+                if (target == null)
+                {
+                    return null;
+                }
+                return KeyReader(target);
+            }
+
+            public ExtensiblePropertyDescriptor Clone()
+            {
+                return (ExtensiblePropertyDescriptor)MemberwiseClone();
+            }
+
+            public ExtensiblePropertyDescriptor SetName(string name)
+            {
+                var result = Clone();
+                result.Name = name;
+                return result;
             }
         }
     }

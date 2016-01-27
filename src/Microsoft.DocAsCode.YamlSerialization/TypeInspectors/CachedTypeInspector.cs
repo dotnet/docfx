@@ -7,12 +7,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
     using System.Collections.Generic;
 
     using YamlDotNet.Serialization;
-    using YamlDotNet.Serialization.TypeInspectors;
 
     /// <summary>
     /// Wraps another <see cref="ITypeInspector"/> and applies caching.
     /// </summary>
-    public sealed class CachedTypeInspector : TypeInspectorSkeleton
+    public sealed class CachedTypeInspector : ExtensibleTypeInspectorSkeleton
     {
         private readonly ITypeInspector _innerTypeDescriptor;
         private readonly Dictionary<Type, List<IPropertyDescriptor>> _cache =
@@ -27,7 +26,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             _innerTypeDescriptor = innerTypeDescriptor;
         }
 
-        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+        protected override IEnumerable<IPropertyDescriptor> GetPropertiesCore(Type type, object container)
         {
             List<IPropertyDescriptor> list;
             if (!_cache.TryGetValue(type, out list))
@@ -36,6 +35,16 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 _cache[type] = list;
             }
             return list;
+        }
+
+        public override IPropertyDescriptor GetProperty(Type type, object container, string name)
+        {
+            return (_innerTypeDescriptor as IExtensibleTypeInspector)?.GetProperty(type, container, name);
+        }
+
+        public override IEnumerable<string> GetKeys(Type type, object container)
+        {
+            return (_innerTypeDescriptor as IExtensibleTypeInspector)?.GetKeys(type, container);
         }
     }
 }
