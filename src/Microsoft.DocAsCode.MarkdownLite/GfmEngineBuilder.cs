@@ -43,6 +43,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             var builder = ImmutableList<IMarkdownRule>.Empty.ToBuilder();
             builder.Add(new GfmEscapeInlineRule());
+            builder.Add(new MarkdownCommentInlineRule());
             builder.Add(new MarkdownAutoLinkInlineRule());
             builder.Add(new GfmUrlInlineRule());
             builder.Add(new MarkdownTagInlineRule());

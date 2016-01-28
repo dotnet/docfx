@@ -49,8 +49,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public static class Inline
         {
             public static readonly Regex Escape = new Regex(@"^\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled);
+            public static readonly Regex Comment = new Regex(@"^<!--[\s\S]*?-->", RegexOptionCompiled);
             public static readonly Regex AutoLink = new Regex(@"^<([^ >]+(@|:\/)[^ >]+)>", RegexOptionCompiled);
-            public static readonly Regex Tag = new Regex(@"^<!--[\s\S]*?-->|^<\/?\w+(?:""[^""]*""|'[^']*'|[^'"">])*?>", RegexOptionCompiled);
+            public static readonly Regex Tag = new Regex(@"^<\/?\w+(?:""[^""]*""|'[^']*'|[^'"">])*?>", RegexOptionCompiled);
             public static readonly Regex Link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\] *\(\s*<?([\s\S]*?)>?(?:\s+['""]([\s\S]*?)['""])?\s*\)", RegexOptionCompiled);
             public static readonly Regex RefLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]", RegexOptionCompiled);
             public static readonly Regex NoLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]", RegexOptionCompiled);

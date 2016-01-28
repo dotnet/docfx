@@ -79,16 +79,16 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                             (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, AppendMissingExtension(t.Href, MarkdownExtension), t.Title, t.Content, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, AppendDefaultExtension(t.Href, MarkdownExtension), t.Title, t.Content, t.RawMarkdown)
                         )
                     );
         }
 
-        private string AppendMissingExtension(string href, string extension)
+        private string AppendDefaultExtension(string href, string defaultExtension)
         {
             if (PathUtility.IsRelativePath(href) && string.IsNullOrEmpty(Path.GetExtension(href)))
             {
-                return $"{href}{extension}";
+                return $"{href}{defaultExtension}";
             }
             return href;
         }

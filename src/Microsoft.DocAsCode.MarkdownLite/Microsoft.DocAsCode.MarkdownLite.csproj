@@ -18,6 +18,7 @@
   <ItemGroup>
     <Compile Include="Align.cs" />
     <Compile Include="Basic\BlockTokens\TwoPhaseBlockToken.cs" />
+    <Compile Include="Basic\InlineRules\MarkdownCommentInlineRule.cs" />
     <Compile Include="Basic\MarkdownRawToken.cs" />
     <Compile Include="Basic\BlockTokens\MarkdownNonParagraphBlockToken.cs" />
     <Compile Include="Contexts\MarkdownInlineContext.cs" />

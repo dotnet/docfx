@@ -456,6 +456,24 @@ by a blank line.</p>
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestGfmBuilder_CommentRuleShouldeBeforeAutoLink()
+        {
+            // 1. Prepare data
+            var source = @"<!--
+https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
+-->";
+
+            var expected = @"<!--
+https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
+-->";
+            var builder = new GfmEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestTable_WithRefLink()
         {
             // 1. Prepare data
