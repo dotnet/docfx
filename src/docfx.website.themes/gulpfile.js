@@ -37,15 +37,41 @@ var pack = {
     ],
     "msdn.html": [
         {
+            "files": "ManagedReference.html.primary.js",
+            "cwd": "default",
+        },
+        {
+            "files": [
+                "partials/class.tmpl.partial",
+                "partials/namespace.tmpl.partial",
+            ],
+            "cwd": "op.html",
+        },
+        {
             "files": files
         }
     ],
     "op.html": [
         {
+            "files": "ManagedReference.html.primary.js",
+            "cwd": "default",
+        },
+        {
             "files": files
         }
     ],
     "vs.html": [
+        {
+            "files": "ManagedReference.html.primary.js",
+            "cwd": "default",
+        },
+        {
+            "files": [
+                "partials/class.tmpl.partial",
+                "partials/namespace.tmpl.partial",
+            ],
+            "cwd": "op.html",
+        },
         {
             "files": files,
             "cwd": "msdn.html",

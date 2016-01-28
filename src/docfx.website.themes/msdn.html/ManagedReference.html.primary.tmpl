@@ -1,0 +1,89 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+<!DOCTYPE html>
+{{#item}}
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    {{>partials/head}}
+    <link rel="stylesheet" type="text/css" href="https://i-msdn.sec.s-msft.com/Combined.css?resources=0:ImageSprite,0:TopicResponsive,0:TopicResponsive.MediaQueries,1:CodeSnippet,1:ProgrammingSelector,1:ExpandableCollapsibleArea,0:CommunityContent,1:TopicNotInScope,1:FeedViewerBasic,1:ImageSprite,2:Header,2:HeaderFooterSprite,2:Header.MediaQueries,3:Banner.MediaQueries,0:Breadcrumbs,0:Breadcrumbs.MediaQueries,0:ResponsiveToc,0:ResponsiveToc.MediaQueries,1:VersionSelector,0:LibraryMemberFilter,4:SkinnyRating,2:Footer,2:Footer.MediaQueries,5:NewFooterSock,5:NewFooterSock.MediaQueries,5:LinkList,0:BaseResponsive,6:MsdnResponsive,0:Tables.MediaQueries;/Areas/Library/Content:0,/Areas/Epx/Content/Css:1,/Areas/Centers/Themes/StandardDevCenter/Content:2,/Areas/Epx/Shared/Content:3,/Areas/Library/Themes/Base/Content:4,/Areas/Epx/Themes/Base/Content:5,/Areas/Library/Themes/Msdn/Content:6&amp;amp;v=5978582C4B2B19C1E5783340343AED63">
+    <style>
+      ul.tocLevel2{
+        display: none;
+      }
+      ul.tocLevel2.current{
+        display: block;
+      }
+      li.current ul{
+        display: block;
+      }
+      ul[class^="tocLevel"] > li {
+        margin-left: 22px!important;
+      }
+      @media screen and (max-width: 1024px) {
+        #threeColumns > .left {
+        #body > #leftNav {
+          display: inline-block;
+        }
+        #threeColumns > .main {
+        #body > #content {
+          width: calc(100% - 489px);
+          margin-right: 20px;
+          display: inline-block;
+          min-height: 300px;
+        }
+      }
+      .topic h3{
+        border-bottom: 1px solid #ccc;
+      }
+      .inheritance .level0 {
+        margin-left: 0em;
+      }
+      .inheritance .level1 {
+        margin-left: 1em;
+      }
+      .inheritance .level2 {
+        margin-left: 2em;
+      }
+      .inheritance .level3 {
+        margin-left: 3em;
+      }
+      .inheritance .level4 {
+        margin-left: 4em;
+      }
+      .inheritance .level5 {
+        margin-left: 5em;
+      }
+    </style>
+  </head>
+  <body class="library">
+    <div id="page">
+      {{>partials/nav}}
+      <div id="body" style="height: auto;">
+        <div id="leftNav">
+          <div class="tocnav">
+          </div>
+        </div>
+        <div id="content" class="content">
+          <div class="topic">
+            {{#isNamespace}}
+              {{>partials/namespace}}
+            {{/isNamespace}}
+            {{#isClass}}
+              {{>partials/class}}
+            {{/isClass}}
+          </div>
+          <input type="hidden" id="proxyUrl" value="https://apiexproxy.azurewebsites.net/svc">
+          <input type="hidden" id="playgroundUrl" value="https://apisandbox.msdn.microsoft.com/">
+          <input type="hidden" id="ajaxTimeout" value="10000">
+          <input type="hidden" id="supportedLanguagesForPlayground" value="javascript;c#">
+          <input type="hidden" id="authorizationHeader" value="Bearer {token:{resourceName}}">
+        </div>
+        <div id="rightNavigationMenu">
+        </div>
+      </div>
+      {{>partials/footer}}
+    </div>
+    {{>partials/script}}
+  </body>
+</html>
+{{/item}}
