@@ -127,6 +127,35 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestBlockInclude_ShouldExcludeBracketInRegex()
+        {
+            // 1. Prepare data
+            var root = @"[!INCLUDE [azure-probe-intro-include](inc1.md)].
+
+[!INCLUDE [azure-arm-classic-important-include](inc2.md)] [Resource Manager model](inc1.md).
+
+
+[!INCLUDE [azure-ps-prerequisites-include.md](inc3.md)]";
+
+            var expected = @"<p><!-- BEGIN INCLUDE: Include content from &quot;inc1.md&quot; -->inc1<!--END INCLUDE -->.</p>
+<p><!-- BEGIN INCLUDE: Include content from &quot;inc2.md&quot; -->inc2<!--END INCLUDE --> <a href=""inc1.md"">Resource Manager model</a>.</p>
+<!-- BEGIN INCLUDE: Include content from &quot;inc3.md&quot; --><p>inc3</p>
+<!--END INCLUDE -->";
+
+            var inc1 = @"inc1";
+            var inc2 = @"inc2";
+            var inc3 = @"inc3";
+            File.WriteAllText("root.md", root);
+            File.WriteAllText("inc1.md", inc1);
+            File.WriteAllText("inc2.md", inc2);
+            File.WriteAllText("inc3.md", inc3);
+
+            var marked = DocfxFlavoredMarked.Markup(root, "root.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestYaml_InvalidYamlInsideContent()
         {
             var source = @"# Title

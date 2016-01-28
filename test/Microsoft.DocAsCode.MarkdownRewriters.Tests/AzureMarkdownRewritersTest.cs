@@ -500,5 +500,28 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_TransformMultiAzureInclude()
+        {
+            var source = @"[AZURE.INCLUDE [azure-probe-intro-include](../../includes/application-gateway-create-probe-intro-include.md)].
+
+[AZURE.INCLUDE [azure-arm-classic-important-include](../../includes/learn-about-deployment-models-classic-include.md)] [Resource Manager model](application-gateway-create-probe-ps.md).
+
+
+[AZURE.INCLUDE [azure-ps-prerequisites-include.md](../../includes/azure-ps-prerequisites-include.md)]
+";
+            var expected = @"[!INCLUDE [azure-probe-intro-include](../../includes/application-gateway-create-probe-intro-include.md)].
+
+[!INCLUDE [azure-arm-classic-important-include](../../includes/learn-about-deployment-models-classic-include.md)] [Resource Manager model](application-gateway-create-probe-ps.md).
+
+[!INCLUDE [azure-ps-prerequisites-include.md](../../includes/azure-ps-prerequisites-include.md)]
+";
+            var builder = new AzureEngineBuilder(new Options());
+            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
     }
 }
