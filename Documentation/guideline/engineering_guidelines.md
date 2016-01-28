@@ -1,3 +1,7 @@
+---
+uid: engineering_guideline
+---
+
 Engineering Guidelines
 =====================
 
@@ -72,7 +76,7 @@ Solution need to contain solution folders that match the physical folder (`src`,
 The general naming pattern is `Microsoft.DocAsCode.<area>.<subarea>`.
 
 ### Unit tests
-We use *xUnit.net* for all unit testing. 
+We use *xUnit.net* for all unit testing.
 
 Coding Standards
 ------------------

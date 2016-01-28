@@ -33,15 +33,13 @@
 
         public Dictionary<string, string> FileMap { get; private set; } = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-        public Dictionary<string, string> UidMap { get; private set; } = new Dictionary<string, string>();
-
         public Dictionary<string, XRefSpec> XRefSpecMap { get; private set; } = new Dictionary<string, XRefSpec>();
 
         public Dictionary<string, HashSet<string>> TocMap { get; private set; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public List<ManifestItem> Manifest { get; private set; } = new List<ManifestItem>();
 
-        public Dictionary<string, HashSet<string>> XRef { get; } = new Dictionary<string, HashSet<string>>();
+        public HashSet<string> XRef { get; } = new HashSet<string>();
 
         public Dictionary<string, XRefSpec> ExternalXRefSpec { get; private set; } = new Dictionary<string, XRefSpec>();
 
@@ -50,7 +48,7 @@
             var result = new Dictionary<string, XRefSpec>();
 
             // remove internal xref.
-            var xref = XRef.Where(s => !UidMap.ContainsKey(s.Key)).ToDictionary(s => s.Key, s => s.Value);
+            var xref = XRef.Where(s => !XRefSpecMap.ContainsKey(s)).ToList();
 
             if (xref.Count == 0)
             {
@@ -61,7 +59,7 @@
             {
                 using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages))
                 {
-                    foreach (var uid in xref.Keys)
+                    foreach (var uid in xref)
                     {
                         var spec = GetExternalReference(externalReferences, uid);
                         if (spec != null)
@@ -94,19 +92,27 @@
         }
 
         // TODO: use this method instead of directly accessing UidMap
-        public void SetFileKeyWithUid(string uid, string fileKey)
+        public void RegisterInternalXrefSpec(XRefSpec xrefSpec)
         {
-            UidMap[uid] = fileKey;
+            if (xrefSpec == null) throw new ArgumentNullException(nameof(xrefSpec));
+            if (string.IsNullOrEmpty(xrefSpec.Href)) throw new ArgumentException("Href for xref spec must contain value");
+            if (!PathUtility.IsRelativePath(xrefSpec.Href)) throw new ArgumentException("Only relative href path is supported");
+            XRefSpecMap[xrefSpec.Uid] = xrefSpec;
         }
 
-        public string GetFileKeyFromUid(string uid)
+        public XRefSpec GetXrefSpec(string uid)
         {
             if (string.IsNullOrEmpty(uid)) throw new ArgumentNullException(nameof(uid));
 
-            string key;
-            if (UidMap.TryGetValue(uid, out key))
+            XRefSpec xref;
+            if (XRefSpecMap.TryGetValue(uid, out xref))
             {
-                return key;
+                return xref;
+            }
+
+            if (ExternalXRefSpec.TryGetValue(uid, out xref))
+            {
+                return xref;
             }
 
             return null;

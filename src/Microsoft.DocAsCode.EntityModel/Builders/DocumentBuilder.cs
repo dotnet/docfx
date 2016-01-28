@@ -370,26 +370,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private static void HandleUids(DocumentBuildContext context, FileModel model, SaveResult result)
         {
-            foreach (var uid in model.Uids)
-            {
-                // UidMap contains <uid => original file> mapping
-                // only FileMap contains <original file => final file> mapping
-                context.UidMap[uid] = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder();
-            }
             if (result.LinkToUids.Count > 0)
             {
-                foreach(var item in result.LinkToUids)
-                {
-                    HashSet<string> files;
-                    if (context.XRef.TryGetValue(item.Key, out files))
-                    {
-                        files.UnionWith(item.Value);
-                    }
-                    else
-                    {
-                        context.XRef[item.Key] = item.Value;
-                    }
-                }
+                context.XRef.UnionWith(result.LinkToUids);
             }
         }
 

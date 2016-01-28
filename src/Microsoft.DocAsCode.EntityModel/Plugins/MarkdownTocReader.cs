@@ -4,6 +4,7 @@
     using System.IO;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     public static class MarkdownTocReader
@@ -15,6 +16,8 @@
             {
                 new TopicTocParseRule(),
                 new ExternalLinkTocParseRule(),
+                new TopicXrefAutoLinkTocParseRule(),
+                new TopicXrefShortcutTocParseRule(),
                 new ContainerParseRule(),
                 new CommentParseRule(),
                 new WhitespaceParseRule(),
@@ -105,7 +108,7 @@
 
             public abstract ParseState Apply(ParseState state, Match match);
 
-            protected ParseState ApplyCore(ParseState state, int level, string text, string href)
+            protected ParseState ApplyCore(ParseState state, int level, string text, string href, string uid = null)
             {
                 if (level > state.Level + 1)
                 {
@@ -122,6 +125,7 @@
                 {
                     Name = text,
                     Href = href,
+                    Uid = uid
                 };
                 if (state.Parents.Count > 0)
                 {
@@ -146,8 +150,14 @@
             }
         }
 
+        /// <summary>
+        /// 1. # [tocTitle](tocLink)
+        /// 2. # [tocTitle](@uid)
+        /// 3. # [tocTitle](xref:uid)
+        /// </summary>
         internal sealed class TopicTocParseRule : ParseRule
         {
+            private static readonly Regex UidRegex = new Regex(@"^\s*(?:xref:|@)(\s*?\S+?[\s\S]*?)\s*$", RegexOptions.Compiled);
             public static readonly Regex TocRegex =
                 new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)\)( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
 
@@ -155,7 +165,68 @@
 
             public override ParseState Apply(ParseState state, Match match)
             {
-                return ApplyCore(state, match.Groups["headerLevel"].Value.Length, match.Groups["tocTitle"].Value, match.Groups["tocLink"].Value);
+                var tocLink = match.Groups["tocLink"].Value;
+                var tocTitle = match.Groups["tocTitle"].Value;
+                var headerLevel = match.Groups["headerLevel"].Value.Length;
+                var uidMatch = UidRegex.Match(tocLink);
+                if (uidMatch.Length > 0)
+                {
+                    return ApplyCore(state, headerLevel, tocTitle, null, uidMatch.Groups[1].Value);
+                }
+
+                return ApplyCore(state, headerLevel, tocTitle, tocLink);
+            }
+        }
+
+        /// <summary>
+        /// 1. <xref:uid>
+        /// 2. <xref:"uid_containing_spaces_or_greator_than_symbol">
+        /// </summary>
+        internal sealed class TopicXrefAutoLinkTocParseRule : ParseRule
+        {
+            public static readonly Regex XrefAutoLinkTocRegex =
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+            public static readonly Regex XrefAutoLinkWithQuoteTocRegex =
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexWithQuoteString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+
+            public override Match Match(string text)
+            {
+                var match = XrefAutoLinkWithQuoteTocRegex.Match(text);
+                if (match.Length == 0)
+                {
+                    match = XrefAutoLinkTocRegex.Match(text);
+                }
+
+                return match;
+            }
+
+            public override ParseState Apply(ParseState state, Match match)
+            {
+                return ApplyCore(state, match.Groups[1].Value.Length, null, null, match.Groups[3].Value);
+            }
+        }
+
+        internal sealed class TopicXrefShortcutTocParseRule : ParseRule
+        {
+            public static readonly Regex XrefShortcutTocRegex =
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+            public static readonly Regex XrefShortcutTocWithQuoteTocRegex =
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexWithQuoteString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+
+            public override Match Match(string text)
+            {
+                var match = XrefShortcutTocWithQuoteTocRegex.Match(text);
+                if (match.Length == 0)
+                {
+                    match = XrefShortcutTocRegex.Match(text);
+                }
+
+                return match;
+            }
+
+            public override ParseState Apply(ParseState state, Match match)
+            {
+                return ApplyCore(state, match.Groups[1].Value.Length, null, null, match.Groups[3].Value);
             }
         }
 

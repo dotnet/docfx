@@ -14,8 +14,11 @@ namespace Microsoft.DocAsCode.Dfm
     /// </summary>
     public class DfmXrefAutoLinkInlineRule : IMarkdownRule
     {
-        private static readonly Regex XrefAutoLinkRegex = new Regex(@"^(<xref:([^ >]+)>)", RegexOptions.Compiled);
-        private static readonly Regex XrefAutoLinkRegexWithQuote = new Regex(@"^<xref:(['""])(\s*?\S+?[\s\S]*?)\1>", RegexOptions.Compiled);
+        public static readonly string XrefAutoLinkRegexString = @"(<xref:([^ >]+)>)";
+        public static readonly string XrefAutoLinkRegexWithQuoteString = @"<xref:(['""])(\s*?\S+?[\s\S]*?)\1>";
+
+        private static readonly Regex XrefAutoLinkRegex = new Regex("^" + XrefAutoLinkRegexString, RegexOptions.Compiled);
+        private static readonly Regex XrefAutoLinkRegexWithQuote = new Regex("^" + XrefAutoLinkRegexWithQuoteString, RegexOptions.Compiled);
 
         public string Name => "XrefAutoLink";
 

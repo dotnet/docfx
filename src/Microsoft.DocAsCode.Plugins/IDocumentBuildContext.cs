@@ -22,19 +22,21 @@ namespace Microsoft.DocAsCode.Plugins
         /// <returns></returns>
         void SetFilePath(string key, string filePath);
 
+        // string GetXrefName(string key);
+
         /// <summary>
-        /// Get file key from uid of the file
+        /// Get internal xref spec for current uid
         /// </summary>
         /// <param name="uid">The uid of the file</param>
         /// <returns>The file key of current file</returns>
-        string GetFileKeyFromUid(string uid);
+        XRefSpec GetXrefSpec(string uid);
 
         /// <summary>
-        /// Link file key to uid
+        /// Register internal xref spec
         /// </summary>
         /// <param name="uid">The uid of current file</param>
         /// <param name="fileKey">The file key of current file</param>
-        void SetFileKeyWithUid(string uid, string fileKey);
+        void RegisterInternalXrefSpec(XRefSpec xrefSpec);
 
         /// <summary>
         /// Get a set of file key for the toc files that current file belongs to

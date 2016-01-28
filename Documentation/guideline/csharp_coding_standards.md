@@ -1,3 +1,7 @@
+---
+uid: csharp_coding_standards
+---
+
 C# Coding Standards
 ====================
 

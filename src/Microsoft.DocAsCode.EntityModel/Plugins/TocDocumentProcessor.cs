@@ -106,23 +106,39 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             if (item.Uid != null)
             {
-                item.Href = GetPathFromUid(item.Uid, path, context);
+                var xref = GetXrefFromUid(item.Uid, path, context);
+                item.Href = xref.Href;
+                if (string.IsNullOrEmpty(item.Name))
+                {
+                    item.Name = xref.Name;
+                }
+
+                string nameForCSharp;
+                if (string.IsNullOrEmpty(item.NameForCSharp) && xref.TryGetValue("name.csharp", out nameForCSharp))
+                {
+                    item.NameForCSharp = nameForCSharp;
+                }
+                string nameForVB;
+                if (string.IsNullOrEmpty(item.NameForVB) && xref.TryGetValue("name.vb", out nameForVB))
+                {
+                    item.NameForVB = nameForVB;
+                }
             }
 
             if (item.HomepageUid != null)
             {
-                item.Homepage = GetPathFromUid(item.HomepageUid, path, context);
+                item.Homepage = GetXrefFromUid(item.HomepageUid, path, context).Href;
             }
         }
 
-        private string GetPathFromUid(string uid, string path, IDocumentBuildContext context)
+        private XRefSpec GetXrefFromUid(string uid, string path, IDocumentBuildContext context)
         {
-            string href = context.GetFileKeyFromUid(uid);
-            if (string.IsNullOrEmpty(href))
+            var xref = context.GetXrefSpec(uid);
+            if (xref == null)
             {
                 throw new DocumentException($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{path}\"");
             }
-            return href;
+            return xref;
         }
 
         private void RegisterTocMap(TocItemViewModel item, string file, IDocumentBuildContext context)

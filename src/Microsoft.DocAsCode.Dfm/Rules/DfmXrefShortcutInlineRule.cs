@@ -20,8 +20,10 @@ namespace Microsoft.DocAsCode.Dfm
     /// </summary>
     public class DfmXrefShortcutInlineRule : IMarkdownRule
     {
-        private static readonly Regex XrefShortcutRegexWithQuote = new Regex(@"^@(?:(['""])(\s*?\S+?[\s\S]*?)\1)", RegexOptions.Compiled);
-        private static readonly Regex XrefShortcutRegex = new Regex(@"^@((?:([a-z]+?[\S]*?))(?=[.,;:!?~\s]{2,}|[.,;:!?~]*$|\s))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public static readonly string XrefShortcutRegexWithQuoteString = @"@(?:(['""])(\s*?\S+?[\s\S]*?)\1)";
+        public static readonly string XrefShortcutRegexString = @"@((?:([a-z]+?[\S]*?))(?=[.,;:!?~\s]{2,}|[.,;:!?~]*$|\s))";
+        private static readonly Regex XrefShortcutRegexWithQuote = new Regex("^" + XrefShortcutRegexWithQuoteString, RegexOptions.Compiled);
+        private static readonly Regex XrefShortcutRegex = new Regex("^" + XrefShortcutRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public string Name => "XrefShortcut";
 
