@@ -6,10 +6,12 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Utility.EntityMergers;
-    using Newtonsoft.Json;
+    using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
     public class ItemViewModel
@@ -139,6 +141,10 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [YamlMember(Alias = "platform")]
         [JsonProperty("platform")]
         public List<string> Platform { get; set; }
+
+        [ExtensibleMember]
+        [JsonExtensionData]
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
         public static ItemViewModel FromModel(MetadataItem model)
         {

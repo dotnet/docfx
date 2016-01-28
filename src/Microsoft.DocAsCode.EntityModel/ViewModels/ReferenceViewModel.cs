@@ -3,11 +3,15 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
+
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
+
+    using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
     public class ReferenceViewModel
@@ -36,33 +40,99 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [YamlMember(Alias = "name.csharp")]
-        [JsonProperty("name.csharp")]
-        public string NameForCSharp { get; set; }
+        [ExtensibleMember("name.")]
+        [JsonIgnore]
+        public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "name.vb")]
-        [JsonProperty("name.vb")]
-        public string NameForVB { get; set; }
+        [YamlIgnore]
+        [JsonIgnore]
+        public string NameForCSharp
+        {
+            get
+            {
+                string result;
+                NameInDevLangs.TryGetValue("csharp", out result);
+                return result;
+            }
+            set { NameInDevLangs["csharp"] = value; }
+        }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string NameForVB
+        {
+            get
+            {
+                string result;
+                NameInDevLangs.TryGetValue("vb", out result);
+                return result;
+            }
+            set { NameInDevLangs["vb"] = value; }
+        }
 
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
         public string FullName { get; set; }
 
-        [YamlMember(Alias = "fullName.csharp")]
-        [JsonProperty("fullName.csharp")]
-        public string FullNameForCSharp { get; set; }
+        [ExtensibleMember("fullname.")]
+        [JsonIgnore]
+        public SortedList<string, string> FullNameInDevLangs { get; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "fullName.vb")]
-        [JsonProperty("fullName.vb")]
-        public string FullNameForVB { get; set; }
+        [YamlIgnore]
+        [JsonIgnore]
+        public string FullNameForCSharp
+        {
+            get
+            {
+                string result;
+                FullNameInDevLangs.TryGetValue("csharp", out result);
+                return result;
+            }
+            set { FullNameInDevLangs["csharp"] = value; }
+        }
 
-        [YamlMember(Alias = "spec.csharp")]
-        [JsonProperty("spec.csharp")]
-        public List<SpecViewModel> SpecForCSharp { get; set; }
+        [YamlIgnore]
+        [JsonIgnore]
+        public string FullNameForVB
+        {
+            get
+            {
+                string result;
+                FullNameInDevLangs.TryGetValue("vb", out result);
+                return result;
+            }
+            set { FullNameInDevLangs["vb"] = value; }
+        }
 
-        [YamlMember(Alias = "spec.vb")]
-        [JsonProperty("spec.vb")]
-        public List<SpecViewModel> SpecForVB { get; set; }
+        [ExtensibleMember("spec.")]
+        [JsonIgnore]
+        public SortedList<string, List<SpecViewModel>> Specs { get; } = new SortedList<string, List<SpecViewModel>>();
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public List<SpecViewModel> SpecForCSharp
+        {
+            get
+            {
+                List<SpecViewModel> result;
+                Specs.TryGetValue("csharp", out result);
+                return result;
+            }
+            set { Specs["csharp"] = value; }
+        }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public List<SpecViewModel> SpecForVB
+        {
+            get
+            {
+                List<SpecViewModel> result;
+                Specs.TryGetValue("vb", out result);
+                return result;
+            }
+            set { Specs["vb"] = value; }
+        }
 
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
@@ -79,6 +149,39 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [YamlMember(Alias = "platform")]
         [JsonProperty("platform")]
         public List<string> Platform { get; set; }
+
+        [ExtensibleMember]
+        [JsonIgnore]
+        public Dictionary<string, object> Additional { get; } = new Dictionary<string, object>();
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [YamlIgnore]
+        [JsonExtensionData(ReadData = true, WriteData = false)]
+        public Dictionary<string, object> AdditionalJson
+        {
+            get
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (var item in NameInDevLangs)
+                {
+                    dict["name." + item.Key] = item.Value;
+                }
+                foreach (var item in FullNameInDevLangs)
+                {
+                    dict["fullname." + item.Key] = item.Value;
+                }
+                foreach (var item in Specs)
+                {
+                    dict["spec." + item.Key] = item.Value;
+                }
+                foreach (var item in Additional)
+                {
+                    dict[item.Key] = item.Value;
+                }
+                return dict;
+            }
+            set { }
+        }
 
         public static ReferenceViewModel FromModel(KeyValuePair<string, ReferenceItem> model)
         {

@@ -3,11 +3,13 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
 
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
+
+    using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
     public class PageViewModel
@@ -20,9 +22,9 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("references")]
         public List<ReferenceViewModel> References { get; set; } = new List<ReferenceViewModel>();
 
-        [YamlMember(Alias = "metadata")]
-        [JsonProperty("metadata")]
-        public Dictionary<string, object> Metadata { get; set; }
+        [ExtensibleMember]
+        [JsonExtensionData]
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
         public static PageViewModel FromModel(MetadataItem model)
         {
