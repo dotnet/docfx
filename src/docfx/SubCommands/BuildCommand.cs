@@ -35,6 +35,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 return jsonSerializer;
             });
 
+        private readonly string _version;
+
         private readonly TemplateManager _templateManager;
 
         public BuildJsonConfig Config { get; }
@@ -43,13 +45,10 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public BuildCommand(BuildCommandOptions options)
         {
-            Config = ParseOptions(options);
-            if (Config.Templates == null || Config.Templates.Count == 0)
-            {
-                Config.Templates = new ListWithStringFallback { DocAsCode.Constants.DefaultTemplateName };
-            }
-
             var assembly = typeof(Program).Assembly;
+            _version = assembly.GetName().Version.ToString();
+            Config = ParseOptions(options);
+            SetDefaultConfigValue(Config);
             _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
         }
 
@@ -72,6 +71,19 @@ namespace Microsoft.DocAsCode.SubCommands
         }
 
         #region BuildCommand ctor related
+
+        private void SetDefaultConfigValue(BuildJsonConfig config)
+        {
+            if (Config.Templates == null || Config.Templates.Count == 0)
+            {
+                Config.Templates = new ListWithStringFallback { DocAsCode.Constants.DefaultTemplateName };
+            }
+            if (config.GlobalMetadata != null || !config.GlobalMetadata.ContainsKey("_docfxVersion"))
+            {
+                config.GlobalMetadata["_docfxVersion"] = _version;
+            }
+        }
+
         private static BuildJsonConfig ParseOptions(BuildCommandOptions options)
         {
             var configFile = options.ConfigFile;
@@ -104,7 +116,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
             MergeOptionsToConfig(options, config);
             MergeNewFileRepositoryToConfig(config);
-
             return config;
         }
 

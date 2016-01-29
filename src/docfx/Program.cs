@@ -71,6 +71,11 @@ namespace Microsoft.DocAsCode
                 command.Exec(context);
                 return 0;
             }
+            catch (DocumentException de)
+            {
+                Logger.LogError(de.Message);
+                return 1;
+            }
             catch (DocfxException de)
             {
                 Logger.LogError(de.Message);

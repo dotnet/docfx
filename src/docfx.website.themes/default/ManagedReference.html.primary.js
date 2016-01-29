@@ -18,18 +18,9 @@ function transform(model, _attrs) {
   };
 
   model = createViewModel(model, _attrs);
-  if (_attrs._navPath === _attrs._tocPath) {
-    model._allowToc = false;
-  } else {
-    model._allowToc = true;
-  }
 
-  if (!model.hasOwnProperty("_allowAffix")) {
-    model._allowAffix = true;
-  } else {
-    // parse from string to bool
-    model._allowAffix = model._allowAffix === "true"
-  }
+  model._disableToc = model._disableToc || (_attrs._navPath === _attrs._tocPath);
+
   return model;
 
   function createViewModel(model, _attrs) {

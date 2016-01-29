@@ -1,5 +1,4 @@
 ﻿---
-_allowAffix: false
 title: Welcome to Docfx website!
 documentType: index
 ---

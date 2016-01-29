@@ -62,7 +62,6 @@ namespace Microsoft.DocAsCode.EntityModel
             var validInput = _validInput;
             if (validInput == null)
             {
-                Logger.LogWarning($"No valid file is found from input {_rawInput}. Exiting...");
                 return;
             }
 

@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                 foreach (var ep in ci.ExtensibleProperies)
                 {
                     result = result.Concat(
-                        from key in ep.GetAllKeys(container)
+                        from key in ep.GetAllKeys(container) ?? Enumerable.Empty<string>()
                         select ep.SetName(ep.Prefix + key));
                 }
             }
