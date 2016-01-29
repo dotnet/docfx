@@ -3,6 +3,8 @@ Version Notes (Current Version: v1.4)
 v1.4 (Pre-release)
 -----------
 1. Make @uid rule more strict: if `@` is not followed by `'` or `"`, it must be followed by word character (`[a-zA-Z]`)
+2. Update yaml serializion:
+   Add @Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute
 
 v1.3.8
 -------
