@@ -1,6 +1,6 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
-<h1 class="title">{{name}} {{type}}</h1>
+<h1 class="title">{{name.0.value}} {{type}}</h1>
 <div id="mainSection">
   <div id="mainBody">
     <div class="section">
@@ -25,7 +25,7 @@
                 </tr>
                 {{#children}}
                 <tr>
-                  <td>{{{specName}}}</td>
+                  <td>{{{specName.0.value}}}</td>
                   <td>{{{summary}}}</td>
                 </tr>
                 {{/children}}

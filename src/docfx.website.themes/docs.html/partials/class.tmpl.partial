@@ -145,14 +145,18 @@
           <ul class="member-details">
         {{/exceptions.0}}
         {{#exceptions}}
-          <li>
-            <ol class="meta">
-              <li>{{{typ.specName}}}</li>
-            </ol>
-            <section class=description">
-              {{{description}}}
-            </section>
-          </li>
+            <li>
+              <ol class="meta">
+                <li>
+                {{#type.specName}}
+                  <code lang="lang-{{lang}}">{{{value}}}</code>
+                {{/type.specName}}
+                </li>
+              </ol>
+              <section class=description">
+                {{{description}}}
+              </section>
+            </li>
         {{/exceptions}}
         {{#exceptions.0}}
           </ul>

@@ -1,5 +1,4 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-// TODO: support multiple languages: [].concat(langs)
 function transform(model, _attrs) {
   var util = new Utility();
   var namespaceItems = {
@@ -39,7 +38,9 @@ function transform(model, _attrs) {
     // Pickup the first item and display
     var item = model.items[0];
     var refs = new References(model);
-    var mta = model.metadata;
+    var mta = model;
+    mta.items = undefined;
+    mta.references = undefined;
     if (item.type) {
       switch (item.type.toLowerCase()) {
         case 'namespace':
@@ -63,6 +64,7 @@ function transform(model, _attrs) {
           this[key] = _attrs[key];
         }
       }
+
       for (var key in mta) {
         if (mta.hasOwnProperty(key)) {
           this[key] = mta[key];
@@ -70,7 +72,7 @@ function transform(model, _attrs) {
       }
 
       if (refs) {
-        this.item = refs.getViewModel(item.uid, this._lang, util.changeExtension(this._ext), this.newFileRepository);
+        this.item = refs.getViewModel(item.uid, item.langs, util.changeExtension(this._ext), this.newFileRepository);
       }
     }
 
@@ -83,7 +85,7 @@ function transform(model, _attrs) {
         // group children with their type
         var that = this;
         this.item.children.forEach(function (c) {
-          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext), that.newFileRepository);
+          c = refs.getViewModel(c, item.langs, util.changeExtension(that._ext), that.newFileRepository);
           var type = c.type;
           if (!grouped.hasOwnProperty(type)) {
             grouped[type] = [];
@@ -104,7 +106,7 @@ function transform(model, _attrs) {
         this.item.children = children;
       }
       this.item.type = "Namespace";
-      this.title = this.item.type + " " + this.item.name;
+      this.title = this.item.name[0].value + " " + this.item.type;
     }
 
     function ClassViewModel(item, _attrs, refs, mta) {
@@ -116,8 +118,7 @@ function transform(model, _attrs) {
         var that = this;
         // group children with their type
         this.item.children.forEach(function (c) {
-
-          c = refs.getViewModel(c, that._lang, util.changeExtension(that._ext), that.newFileRepository);
+          c = refs.getViewModel(c, item.langs, util.changeExtension(that._ext), that.newFileRepository);
           var type = c.type;
           if (!grouped.hasOwnProperty(type)) {
             grouped[type] = [];
@@ -143,7 +144,7 @@ function transform(model, _attrs) {
         this.item.children = children;
       }
       this.item.type = namespaceItems[this.item.type].name;
-      this.title = this.item.type + " " + this.item.name;
+      this.title = this.item.name[0].value + " " + this.item.type;
     }
 
     function References(model) {
@@ -151,14 +152,14 @@ function transform(model, _attrs) {
       this.getRefvm = getRefvm;
       this.getViewModel = getViewModel;
 
-      function getViewModel(uid, lang, extChanger, newFileRepository) {
-        var vm = getRefvm(uid, lang, extChanger);
+      function getViewModel(uid, langs, extChanger, newFileRepository) {
+        var vm = getRefvm(uid, langs, extChanger);
         vm.docurl = getImproveTheDocHref(vm, newFileRepository);
         vm.sourceurl = getViewSourceHref(vm);
 
         if (vm.inheritance) {
           vm.inheritance = vm.inheritance.map(function (c, i) {
-            var inhe = getRefvm(c, lang, extChanger);
+            var inhe = getRefvm(c, langs, extChanger);
             inhe.index = i;
             return inhe;
           })
@@ -168,36 +169,39 @@ function transform(model, _attrs) {
         if (syntax) {
           if (syntax.parameters) {
             syntax.parameters = syntax.parameters.map(function (currentValue, index, array) {
-              currentValue.type = getRefvm(currentValue.type, lang, extChanger);
+              currentValue.type = getRefvm(currentValue.type, langs, extChanger);
               return currentValue;
             });
           }
           if (syntax.return) {
-            syntax.return.type = getRefvm(syntax.return.type, lang, extChanger);
+            syntax.return.type = getRefvm(syntax.return.type, langs, extChanger);
           }
         }
 
         if (vm.exceptions) {
           vm.exceptions.forEach(function(i) {
-            i.type = getRefvm(i.type, lang, extChanger);
+            i.type = getRefvm(i.type, langs, extChanger);
           });
         }
 
         return vm;
       }
 
-      function getRefvm(uid, lang, extChanger) {
+      function getRefvm(uid, langs, extChanger) {
         if (!util.isString(uid)) {
           console.error("should be uid format: " + uid);
           return uid;
         }
 
         if (references[uid] === undefined) {
+          var xref = getXref(uid);
           return {
-            specName: getXref(uid)
+            specName: langs.map(function(l) {
+              return {"lang": l, "value": xref};
+            })
           }
         };
-        return new Reference(references[uid], this).getReferenceViewModel(lang, extChanger);
+        return new Reference(references[uid], this).getReferenceViewModel(langs, extChanger);
       }
 
       /*
@@ -213,9 +217,6 @@ function transform(model, _attrs) {
         return obj;
       }
 
-      /*
-        TODO: integrate with zhyan's change
-      */
       function getImproveTheDocHref(item, newFileRepository) {
         if (!item) return '';
         if (!item.documentation || !item.documentation.remote) {
@@ -343,8 +344,7 @@ function transform(model, _attrs) {
         return vm;
       }
 
-      function getReferenceViewModel(lang, extChanger) {
-        var name = getLangSpecifiedProperty.call(_obj, "fullName", lang) || getLangSpecifiedProperty.call(_obj, "name", lang);
+      function getReferenceViewModel(langs, extChanger) {
         var vm = {};
 
         // Copy other properties and override name/id
@@ -353,9 +353,9 @@ function transform(model, _attrs) {
             vm[key] = _obj[key];
           }
         }
-        vm.specName = getSpecName(lang, extChanger);
-        vm.name = getLangSpecifiedProperty.call(vm, "name", lang) || vm.uid; // workaround bug for dynamic
-        vm.fullName = getLangSpecifiedProperty.call(vm, "fullName", lang);
+        vm.specName = getSpecNameForAllLang(langs, extChanger);
+        vm.name = getLangFullCoveredProperty.call(vm, "name", langs) || vm.uid; // workaround bug for dynamic
+        vm.fullName = getLangFullCoveredProperty.call(vm, "fullName", langs);
         vm.href = extChanger(vm.href);
         vm.id = getHtmlId(vm.uid);
         vm.summary = vm.summary;
@@ -363,8 +363,8 @@ function transform(model, _attrs) {
         vm.conceptual = vm.conceptual;
 
         vm.level = vm.inheritance ? vm.inheritance.length : 0;
-        if (vm.syntax) {
-          vm.syntax.content = getLangSpecifiedProperty.call(vm.syntax, "content", lang);
+        if (vm.syntax && typeof(vm.syntax.content) != "object") {
+          vm.syntax.content = getLangFullCoveredProperty.call(vm.syntax, "content", langs);
         }
         return vm;
       }
@@ -373,8 +373,13 @@ function transform(model, _attrs) {
         return input.replace(/\W/g, '_');
       }
 
+      function getSpecNameForAllLang(langs, extChanger) {
+        return langs.map(function(l) {
+          return {"lang": l, "value": getSpecName(l, extChanger)};
+        })
+      }
+
       function getSpecName(lang, extChanger) {
-        // spec is always language specific
         var name = '';
         var spec = _obj["spec." + lang];
         if (spec && util.isArray(spec)) {
@@ -392,7 +397,6 @@ function transform(model, _attrs) {
 
       function getCompositeName(lang, extChanger) {
         // If href exists, return name with href, elsewise, return full name
-        var href = this.href;
         var name = getLangSpecifiedProperty.call(this, "name", lang);
         var fullName = getLangSpecifiedProperty.call(this, "fullName", lang) || name;
         // If href does not exists, return full name
@@ -400,9 +404,11 @@ function transform(model, _attrs) {
         return getXref(this.uid, fullName, name);
       }
 
-      function getName(lang) {
-        var fullName = getLangSpecifiedProperty.call(this, "fullName", lang) || getLangSpecifiedProperty.call(this, "name", lang);
-        return fullName;
+      function getLangFullCoveredProperty(key, langs) {
+        var that = this;
+        return langs.map(function(l) {
+          return {"lang": l, "value": getLangSpecifiedProperty.call(that, key, l)};
+        })
       }
 
       function getLangSpecifiedProperty(key, lang) {

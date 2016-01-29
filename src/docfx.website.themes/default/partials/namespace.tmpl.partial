@@ -6,7 +6,7 @@
 {{#sourceurl}}
 <a href="{{sourceurl}}" class="btn btn-primary pull-right mobile-hide">View Source</a>
 {{/sourceurl}}
-<h1 id="{{id}}" data-uid="{{uid}}">{{type}} {{name}}
+<h1 id="{{id}}" data-uid="{{uid}}">{{type}} {{name.0.value}}
 </h1>
 <div class="markdown level0 summary">{{{summary}}}</div>
 <div class="markdown level0 conceptual">{{{conceptual}}}</div>
@@ -14,7 +14,7 @@
 {{#children}}
   <h3 id="{{id}}">{{title}}</h3>
   {{#children}}
-    <h4>{{{specName}}}</h4>
+    <h4>{{{specName.0.value}}}</h4>
     <section>{{{summary}}}</section>
   {{/children}}
 {{/children}}

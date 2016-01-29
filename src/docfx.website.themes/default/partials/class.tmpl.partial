@@ -2,26 +2,26 @@
 
 {{#docurl}}<a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>{{/docurl}}
 {{#sourceurl}}<a href="{{sourceurl}}" class="btn btn-primary pull-right mobile-hide">View Source</a>{{/sourceurl}}
-<h1 id="{{id}}" data-uid="{{uid}}">{{type}} {{name}}</h1>
+<h1 id="{{id}}" data-uid="{{uid}}">{{type}} {{name.0.value}}</h1>
 <div class="markdown level0 summary">{{{summary}}}</div>
 <div class="markdown level0 conceptual">{{{conceptual}}}</div>
 {{#inheritance.0}}
 <div class="inheritance">
   <h5>Inheritance</h5>
 {{#inheritance}}
-    <div class="level{{index}}">{{{specName}}}</div>
+    <div class="level{{index}}">{{{specName.0.value}}}</div>
 {{/inheritance}}
-    <div class="level{{item.level}}"><span class="xref">{{item.name}}</span></div>
+    <div class="level{{item.level}}"><span class="xref">{{item.name.0.value}}</span></div>
 </div>
 {{/inheritance.0}}
 <h6><strong>Namespace</strong>:{{namespace}}</h6>
 <h6><strong>Assembly</strong>:{{assemblies.0}}.dll</h6>
 <h5 id="{{id}}_syntax">Syntax</h5>
 <div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{syntax.content}}</code></pre>
+  <pre><code class="lang-{{_lang}} hljs">{{syntax.content.0.value}}</code></pre>
 </div>
 {{#remarks}}
-<h5 id="{{id}}_remarks"><strong>Remarks<strong></h5>
+<h5 id="{{id}}_remarks"><strong>Remarks</strong></h5>
 <div class="markdown level0 remarks">{{{remarks}}}</div>
 {{/remarks}}
 {{#children}}
@@ -36,7 +36,7 @@
 <span class="small pull-right mobile-hide">
   <a href="{{sourceurl}}">View Source</a>
 </span>{{/sourceurl}}
-<h4 id="{{id}}" data-uid="{{uid}}">{{name}}</h4>
+<h4 id="{{id}}" data-uid="{{uid}}">{{name.0.value}}</h4>
 <div class="markdown level1 summary">{{{summary}}}</div>
 <div class="markdown level1 conceptual">{{{conceptual}}}</div>
 {{#remarks}}
@@ -46,7 +46,7 @@
 <h5 class="decalaration">Declaration</h5>
 {{#syntax}}
 <div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{syntax.content}}</code></pre>
+  <pre><code class="lang-{{_lang}} hljs">{{syntax.content.0.value}}</code></pre>
 </div>
 {{#parameters.0}}
 <h5 class="parameters">Parameters</h5>
@@ -62,7 +62,7 @@
 {{/parameters.0}}
 {{#parameters}}
     <tr>
-      <td>{{{type.specName}}}</td>
+      <td>{{{type.specName.0.value}}}</td>
       <td><em>{{{id}}}</em></td>
       <td>{{{description}}}</td>
     </tr>
@@ -82,7 +82,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{{type.specName}}}</td>
+      <td>{{{type.specName.0.value}}}</td>
       <td>{{{description}}}</td>
     </tr>
   </tbody>
@@ -99,7 +99,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>{{{type.specName}}}</td>
+      <td>{{{type.specName.0.value}}}</td>
       <td>{{{description}}}</td>
     </tr>
   </tbody>
@@ -119,7 +119,7 @@
 {{/exceptions.0}}
 {{#exceptions}}
     <tr>
-      <td>{{{type.specName}}}</td>
+      <td>{{{type.specName.0.value}}}</td>
       <td>{{{description}}}</td>
     </tr>
 {{/exceptions}}

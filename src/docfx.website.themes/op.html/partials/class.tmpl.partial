@@ -1,6 +1,6 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
-<h1 class="title">{{name}} {{type}}</h1>
+<h1 class="title">{{name.0.value}} {{type}}</h1>
 <div id="mainSection">
   <div id="mainBody">
     <div class="section">
@@ -20,9 +20,9 @@
       <div class="sectionblock inheritance">
         <span id="idFamilies"></span>
         {{#inheritance}}
-          <div class="level{{index}}">{{{specName}}}</div>
+          <div class="level{{index}}">{{{specName.0.value}}}</div>
         {{/inheritance}}
-          <div class="level{{item.level}}">{{item.name}}</div>
+          <div class="level{{item.level}}">{{item.name.0.value}}</div>
       </div>
     </div>
     {{/inheritance.0}}
@@ -42,7 +42,7 @@
           <div class="codeSnippetContainerCodeContainer">
             <div class="codeSnippetContainerCode" dir="ltr">
               <div style="color:Black;">
-                <pre>{{syntax.content}}</pre>
+                <pre>{{syntax.content.0.value}}</pre>
               </div>
             </div>
           </div>
@@ -58,7 +58,7 @@
       </h2>
       <div class="sectionblock">
       {{#children}}
-      <h3 id="{{id}}" data-uid="{{uid}}">{{name}}</h3>
+      <h3 id="{{id}}" data-uid="{{uid}}">{{name.0.value}}</h3>
       <div class="markdown level1 summary">{{{summary}}}</div>
       <div class="markdown level1 conceptual">{{{conceptual}}}</div>
       {{#remarks}}
@@ -77,7 +77,7 @@
         <div class="codeSnippetContainerCodeContainer">
           <div class="codeSnippetContainerCode" dir="ltr">
             <div style="color:Black;">
-              <pre>{{syntax.content}}</pre>
+              <pre>{{syntax.content.0.value}}</pre>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@
           <dt><span class="parameter">{{{id}}}</span></dt>
           <dd>
             Type:
-            {{{type.specName}}}
+            {{{type.specName.0.value}}}
             {{{description}}}
           </dd>
         </dl>
@@ -103,7 +103,7 @@
       <div class="section">
         <h5 class="subHeading">Return Value</h5>
         Type:
-            {{{type.specName}}}
+            {{{type.specName.0.value}}}
             {{{description}}}
       </div>
       {{/return}}
@@ -118,7 +118,7 @@
         </thead>
         <tbody>
           <tr>
-            <td>{{{type.specName}}}</td>
+            <td>{{{type.specName.0.value}}}</td>
             <td>{{{description}}}</td>
           </tr>
         </tbody>
@@ -139,7 +139,7 @@
       {{/exceptions.0}}
       {{#exceptions}}
           <tr>
-            <td>{{{type.specName}}}</td>
+            <td>{{{type.specName.0.value}}}</td>
             <td>{{{description}}}</td>
           </tr>
       {{/exceptions}}
