@@ -18,7 +18,7 @@
             this.innerTypeDescriptor = innerTypeDescriptor;
         }
 
-        protected override IEnumerable<IPropertyDescriptor> GetPropertiesCore(Type type, object container)
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
             return innerTypeDescriptor.GetProperties(type, container)
                 .Where(p => p.GetCustomAttribute<YamlIgnoreAttribute>() == null)

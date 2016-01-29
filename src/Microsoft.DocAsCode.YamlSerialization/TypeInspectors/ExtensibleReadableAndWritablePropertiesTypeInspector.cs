@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             _innerTypeDescriptor = innerTypeDescriptor;
         }
 
-        protected override IEnumerable<IPropertyDescriptor> GetPropertiesCore(Type type, object container) =>
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container) =>
             from p in _innerTypeDescriptor.GetProperties(type, container)
             where p.CanWrite
             select p;

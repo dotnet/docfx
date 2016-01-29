@@ -13,19 +13,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
     public abstract class ExtensibleTypeInspectorSkeleton : ITypeInspector, IExtensibleTypeInspector
     {
-        public IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
-        {
-            var result = GetPropertiesCore(type, container);
-            var keys = GetKeys(type, container);
-            if (keys != null)
-            {
-                result = result.Concat(from key in keys
-                                       select GetProperty(type, container, key));
-            }
-            return result;
-        }
-
-        protected abstract IEnumerable<IPropertyDescriptor> GetPropertiesCore(Type type, object container);
+        public abstract IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container);
 
         public IPropertyDescriptor GetProperty(Type type, object container, string name, bool ignoreUnmatched)
         {
@@ -79,7 +67,5 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
         }
 
         public virtual IPropertyDescriptor GetProperty(Type type, object container, string name) => null;
-
-        public virtual IEnumerable<string> GetKeys(Type type, object container) => null;
     }
 }

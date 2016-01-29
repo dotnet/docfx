@@ -27,14 +27,24 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             _resolver = resolver;
         }
 
-        protected override IEnumerable<IPropertyDescriptor> GetPropertiesCore(Type type, object container)
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
             CachingItem ci = Cache.GetOrAdd(type, t => CachingItem.Create(t, _resolver));
             if (ci.Error != null)
             {
                 throw ci.Error;
             }
-            return ci.Properies;
+            IEnumerable<IPropertyDescriptor> result = ci.Properies;
+            if (container != null && ci.ExtensibleProperies.Count > 0)
+            {
+                foreach (var ep in ci.ExtensibleProperies)
+                {
+                    result = result.Concat(
+                        from key in ep.GetAllKeys(container)
+                        select ep.SetName(ep.Prefix + key));
+                }
+            }
+            return result;
         }
 
         public override IPropertyDescriptor GetProperty(Type type, object container, string name)
@@ -51,22 +61,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             return (from ep in ci.ExtensibleProperies
                     where name.StartsWith(ep.Prefix)
                     select ep.SetName(name)).FirstOrDefault();
-        }
-
-        public override IEnumerable<string> GetKeys(Type type, object container)
-        {
-            CachingItem ci = Cache.GetOrAdd(type, t => CachingItem.Create(t, _resolver));
-            if (ci.Error != null)
-            {
-                throw ci.Error;
-            }
-            if (ci.ExtensibleProperies.Count == 0)
-            {
-                return null;
-            }
-            return from ep in ci.ExtensibleProperies
-                   from key in ep.GetAllKeys(container) ?? Enumerable.Empty<string>()
-                   select ep.Prefix + key;
         }
 
         private sealed class CachingItem
@@ -444,21 +438,25 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
             public IObjectDescriptor Read(object target)
             {
+                if (Name == null || Name.Length <= Prefix.Length)
+                {
+                    throw new YamlException($"Invalid read {Name}!");
+                }
                 var value = Reader(target, Name.Substring(Prefix.Length));
                 return new BetterObjectDescriptor(value, TypeOverride ?? TypeResolver.Resolve(Type, value), Type, ScalarStyle);
             }
 
             public void Write(object target, object value)
             {
+                if (Name == null || Name.Length <= Prefix.Length)
+                {
+                    throw new YamlException($"Invalid write {Name}!");
+                }
                 Writer(target, Name.Substring(Prefix.Length), value);
             }
 
             public ICollection<string> GetAllKeys(object target)
             {
-                if (target == null)
-                {
-                    return null;
-                }
                 return KeyReader(target);
             }
 

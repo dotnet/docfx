@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             _innerTypeDescriptor = innerTypeDescriptor;
         }
 
-        protected override IEnumerable<IPropertyDescriptor> GetPropertiesCore(Type type, object container)
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
             List<IPropertyDescriptor> list;
             if (!_cache.TryGetValue(type, out list))
@@ -40,11 +40,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
         public override IPropertyDescriptor GetProperty(Type type, object container, string name)
         {
             return (_innerTypeDescriptor as IExtensibleTypeInspector)?.GetProperty(type, container, name);
-        }
-
-        public override IEnumerable<string> GetKeys(Type type, object container)
-        {
-            return (_innerTypeDescriptor as IExtensibleTypeInspector)?.GetKeys(type, container);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             this.namingConvention = namingConvention;
         }
 
-        protected override IEnumerable<IPropertyDescriptor> GetPropertiesCore(Type type, object container) =>
+        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container) =>
             from p in innerTypeDescriptor.GetProperties(type, container)
             select (IPropertyDescriptor)new PropertyDescriptor(p) { Name = namingConvention.Apply(p.Name) };
 

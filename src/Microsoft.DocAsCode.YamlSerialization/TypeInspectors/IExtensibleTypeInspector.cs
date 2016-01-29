@@ -11,6 +11,5 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
     public interface IExtensibleTypeInspector : ITypeInspector
     {
         IPropertyDescriptor GetProperty(Type type, object container, string name);
-        IEnumerable<string> GetKeys(Type type, object container);
     }
 }
