@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
 
         [ExtensibleMember]
         [JsonIgnore]
-        public Dictionary<string, object> Additional { get; set; }
+        public Dictionary<string, object> Additional { get; set; } = new Dictionary<string, object>();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
