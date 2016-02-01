@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.MarkdownAzureRewritersTest.Tests
 {
+    using System.IO;
+
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.AzureMarkdownRewriters;
@@ -19,9 +21,7 @@ namespace Microsoft.DocAsCode.MarkdownAzureRewritersTest.Tests
             var expected = @"Hello world
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -38,9 +38,7 @@ this is new line originally
 > 
 > 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -70,9 +68,7 @@ This is no-nested line
 > > 
 > 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -92,9 +88,7 @@ This is azure warning";
 > 
 > 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -122,9 +116,7 @@ This is azure TIP";
 > 
 > 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -161,13 +153,11 @@ This is TIP
 > > 
 > 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
-        [Fact]
+        [Fact(Skip = "Disable as Include logic change")]
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureInclude()
         {
@@ -182,18 +172,45 @@ This is azure include block.
 
 [!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")]
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
-        public void TestAzureMarkdownRewriters_ListWithAzureInclude()
+        public void TestAzureMarkdownRewriters_AzureInclude_New()
+        {
+            // Prepare data
+            var root = @"This is azure include [AZURE.INCLUDE [ref1 text](ref1.md)] inline.
+
+This is azure include block.
+
+[AZURE.INCLUDE [ref2 text](ref2.md)]";
+            var ref1 = @"ref1 content";
+            var ref2 = @"ref2 content: [text](./this/fake.md)";
+            File.WriteAllText("root.md", root);
+            File.WriteAllText("ref1.md", ref1);
+            File.WriteAllText("ref2.md", ref2);
+
+            // Expected result
+            var expected = @"This is azure include ref1 content inline.
+
+This is azure include block.
+
+ref2 content: [text](./this/fake.md)
+
+";
+
+            var result = AzureMarked.Markup(root, "root.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_ListWithInlineToken()
         {
             var source = @"Hello world
-* list [AZURE.INCLUDE [include-short-name](../includes/include-file-name.md)]
+* list _system_
   this should be same line with the above one
   
   this should be another line
@@ -207,7 +224,7 @@ This is azure include block.
 2. nolist item2";
             var expected = @"Hello world
 
-* list [!INCLUDE [include-short-name](../includes/include-file-name.md)]
+* list *system*
 this should be same line with the above one
 
   this should be another line
@@ -221,9 +238,7 @@ this should be same line with the above one
 2. nolist item2
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -252,40 +267,36 @@ h3 text
 h2-2 text
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
-        public void TestAzureMarkdownRewriters_HeadingWithAzureInclude()
+        public void TestAzureMarkdownRewriters_HeadingWithInlineToken()
         {
-            var source = @"#h1 title [AZURE.INCLUDE [include file](../include-file.md)]
+            var source = @"#h1 title _system_
 h1 text
 ##h2 title-1
 h2-1 text
-###h3 title [AZURE.INCLUDE [include file](../include-file.md)]
+###h3 title ** system **
 h3 text
 ##h2 title-2
 h2-2 text";
-            var expected = @"# h1 title [!INCLUDE [include file](../include-file.md)]
+            var expected = @"# h1 title *system*
 h1 text
 
 ## h2 title-1
 h2-1 text
 
-### h3 title [!INCLUDE [include file](../include-file.md)]
+### h3 title ** system **
 h3 text
 
 ## h2 title-2
 h2-2 text
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -332,9 +343,7 @@ hr5
 world.
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -350,9 +359,7 @@ This is text inside html tag
 <div>
 This is text inside html tag
 </div>";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -372,9 +379,7 @@ This is text inside html tag
 - list item2
 - list item3
 </div>";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -384,15 +389,13 @@ This is text inside html tag
         {
             var source = @"# This is an H1
 <div>
-[AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")]
+_system_
 </div>";
             var expected = @"# This is an H1
 <div>
-[!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")]
+*system*
 </div>";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -410,9 +413,7 @@ This is *Em*
 This is ~~Del~~
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -421,14 +422,14 @@ This is ~~Del~~
         public void TestAzureMarkdownRewriters_ComplexStrongEmDel()
         {
             var source = @"# Test Complex String Em Del
-__Strong [AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] Text__
+__Strong Text__
 <div>
 _Em Text_
 <div>
 - ~~Del Text~~
 - Simple text";
             var expected = @"# Test Complex String Em Del
-**Strong [!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] Text**
+**Strong Text**
 
 <div>
 *Em Text*
@@ -439,9 +440,7 @@ _Em Text_
 * Simple text
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -453,27 +452,25 @@ _Em Text_
 | header-1 | header-2 | header-3 |
 |:-------- |:--------:| --------:|
 | *1-1* | __1-2__ | ~~1-3~~ |
-| 2-1:[AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] | 2-2 | 2-3 |
+| 2-1:| 2-2 | 2-3 |
 
 header-1 | header-2 | header-3
 -------- |--------:|:--------
 *1-1* | __1-2__ | ~~1-3~~
-2-1:[AZURE.INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] | 2-2 | 2-3";
+2-1: | 2-2 | 2-3";
             var expected = @"# Test table
 | header-1 | header-2 | header-3 |
 |:--- |:---:| ---:|
 | *1-1* |**1-2** |~~1-3~~ |
-| 2-1:[!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] |2-2 |2-3 |
+| 2-1: |2-2 |2-3 |
 
 | header-1 | header-2 | header-3 |
 | --- | ---:|:--- |
 | *1-1* |**1-2** |~~1-3~~ |
-| 2-1:[!INCLUDE [include-short-name](../includes/include-file-name.md ""option title"")] |2-2 |2-3 |
+| 2-1: |2-2 |2-3 |
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -495,13 +492,13 @@ this is http escape link [text](http://www.google.com'dd#bookmark ""Google's hom
 this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+
+
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
-        [Fact]
+        [Fact(Skip = "Disable as Include logic change")]
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_TransformMultiAzureInclude()
         {
@@ -518,9 +515,31 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 
 [!INCLUDE [azure-ps-prerequisites-include.md](../../includes/azure-ps-prerequisites-include.md)]
 ";
-            var builder = new AzureEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new DfmMarkdownRenderer());
-            var result = engine.Markup(source);
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact(Skip = "Not Completed")]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AutoLink()
+        {
+            var source = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)";
+            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact(Skip = "Not Completed")]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_LinkRefWithBracket()
+        {
+            var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
+            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)
+
+";
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
     }

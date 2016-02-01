@@ -5,25 +5,11 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class AzureIncludeBlockToken : IMarkdownToken
+    public class AzureIncludeBlockToken : AzureIncludeBasicToken
     {
-        public IMarkdownRule Rule { get; }
-        public IMarkdownContext Context { get; }
-        public string Src { get; }
-        public string Name { get; }
-        public string Title { get; }
-        public string Raw { get; }
-        public string RawMarkdown { get; set; }
-
         public AzureIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, string rawMarkdown)
+            : base(rule, context, src, name, title, raw, rawMarkdown)
         {
-            Rule = rule;
-            Context = context;
-            Src = src;
-            Name = name;
-            Title = title;
-            Raw = raw;
-            RawMarkdown = rawMarkdown;
         }
     }
 }

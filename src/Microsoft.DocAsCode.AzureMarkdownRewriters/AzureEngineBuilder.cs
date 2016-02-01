@@ -60,18 +60,16 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 throw new ArgumentException($"{nameof(MarkdownLinkInlineRule)} should exist!");
             }
             inlineRules.Insert(index, new AzureIncludeInlineRule());
+
+            // Remove GfmUrlInlineRule from inline rules as rewriter can just regards it as plain text
+            index = inlineRules.FindLastIndex(s => s is GfmUrlInlineRule);
+            inlineRules.RemoveAt(index);
             InlineRules = inlineRules.ToImmutableList();
         }
 
         protected void CreateRewriters()
         {
             Rewriter = MarkdownTokenRewriterFactory.Composite(
-                        MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureIncludeInlineToken t) => new DfmIncludeInlineToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.Raw, t.RawMarkdown)
-                        ),
-                        MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureIncludeBlockToken t) => new DfmIncludeBlockToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.Raw, t.RawMarkdown)
-                        ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureNoteBlockToken t) => new DfmNoteBlockToken(t.Rule, t.Context, t.NoteType.Substring("AZURE.".Length), t.Content, t.RawMarkdown)
                         ),

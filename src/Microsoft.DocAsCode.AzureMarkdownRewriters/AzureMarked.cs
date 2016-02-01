@@ -9,12 +9,12 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     public class AzureMarked
     {
         private static readonly AzureEngineBuilder _builder = new AzureEngineBuilder(new Options() { Mangle = false });
-        private static readonly DfmMarkdownRenderer _renderer = new DfmMarkdownRenderer();
+        private static readonly AzureMarkdownRenderer _renderer = new AzureMarkdownRenderer();
 
-        public static string Markup(string src)
+        public static string Markup(string src, string path = null)
         {
-            var engine = _builder.CreateEngine(_renderer);
-            return engine.Markup(src);
+            var engine = (MarkdownEngine)_builder.CreateEngine(_renderer);
+            return engine.Mark(engine.Normalize(src), engine.Context.CreateContext(engine.Context.Variables.SetItem("path", path)));
         }
     }
 }

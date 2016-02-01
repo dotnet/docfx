@@ -32,7 +32,9 @@
     <Compile Include="AzureBlockRules\AzureIncludeBlockRule.cs" />
     <Compile Include="AzureEngineBuilder.cs" />
     <Compile Include="AzureInlineTokens\AzureIncludeInlineToken.cs" />
+    <Compile Include="AzureMarkdownRenderer.cs" />
     <Compile Include="AzureMarked.cs" />
+    <Compile Include="BasicTokens\AzureIncludeBasicToken.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
