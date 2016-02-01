@@ -19,15 +19,18 @@ Download and unzip [docfx.zip] from https://github.com/dotnet/docfx/releases to 
 ### 2.1 Quick Start
 **Step1.** Run
 ```
-docfx.exe init
+docfx init -q
 ```
-and follow the instructions to generate a `docfx.json` config file.
+
+A `docfx_project` default project will be generated.
 
 **Step2.** Run
 ```
-docfx.exe
+docfx docfx_project\docfx.json --serve
 ```
-and `docfx.exe` will automatically read the `docfx.json` in current folder and generate a documentation website for you in `output folder` which you defined in `init` phase. By default, the website is under `_site` folder.
+
+And you can view the generated website on http://localhost:8080.
+
 
 3. Use `docfx` under Visual Studio IDE
 ---------------

@@ -19,10 +19,14 @@
         "dest": "api"
       },
       {
-        "files": [ "tutorial/**/*.md", "spec/**/*.md", "spec/**/toc.yml", "index.md", "guideline/**/*.md" ]
+        "files": "RELEASENOTE.md",
+        "src": ".."
       },
       {
-        "files": [ "toc.yml", "tutorial/toc.yml" ]
+        "files": [ "tutorial/**/*.md", "spec/**/*.md", "index.md", "guideline/**/*.md" ]
+      },
+      {
+        "files": [ "toc.yml" ]
       }
     ],
     "resource": [

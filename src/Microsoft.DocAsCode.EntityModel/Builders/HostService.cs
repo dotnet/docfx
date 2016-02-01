@@ -121,11 +121,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         anchor = link.Value.Substring(index);
                     }
                     var path = (RelativePath)ft.File + (RelativePath)linkFile;
-                    if (path.ParentDirectoryCount > 0)
-                    {
-                        Logger.LogError($"Cannot refer path: \"{path}\" out of project.", file: ft.File);
-                        throw new DocumentException($"Cannot refer path \"{path}\" out of project in file \"{ft.File}\".");
-                    }
                     var file = path.GetPathFromWorkingFolder();
                     link.Value = file + anchor;
                     linkToFiles.Add(HttpUtility.UrlDecode(file));

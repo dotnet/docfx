@@ -19,7 +19,7 @@ function transform(model, _attrs) {
 
   model = createViewModel(model, _attrs);
 
-  model._disableToc = model._disableToc || (_attrs._navPath === _attrs._tocPath);
+  model._disableToc = model._disableToc ||!_attrs._tocPath || (_attrs._navPath === _attrs._tocPath);
 
   return model;
 

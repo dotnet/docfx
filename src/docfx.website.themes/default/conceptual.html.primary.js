@@ -12,7 +12,7 @@ function transform(model, _attrs){
       vm[key] = model[key];
     }
   }
-  vm._disableToc = vm._disableToc || (vm._navPath === vm._tocPath);
+  vm._disableToc = vm._disableToc || !vm._tocPath || (vm._navPath === vm._tocPath);
   vm.docurl = vm.docurl || getImproveTheDocHref(vm);
   return vm;
 

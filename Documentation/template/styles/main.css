@@ -10,8 +10,16 @@ button, a, .btn-primary {
   color: #90ABB9;
 }
 .hero {
-    background: #385361;
     color: #C1D38B;
+    background-color: #385361;
+    background-image: -webkit-gradient(linear,left bottom,right top,color-stop(0%,#000),color-stop(100%,#385361));
+    background-image: -webkit-linear-gradient(45deg,#000 0,#385361 100%);
+    background-image: -moz-linear-gradient(45deg,#000 0,#385361 100%);
+    background-image: -ms-linear-gradient(45deg,#000 0,#385361 100%);
+    background-image: -o-linear-gradient(45deg,#000 0,#385361 100%);
+    background-image: linear-gradient(45deg,#000 0,#385361 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000', endColorstr='#385361', GradientType=1);
+
 }
 .hero strong {
     color: #e7e7e7;
@@ -42,6 +50,18 @@ svg:hover path {
     fill: #ffffff;
 }
 
+.counter-key-section{
+  color: #fff;
+  background-color: #6E8B60;
+  background-image: -webkit-gradient(linear,left bottom,right top,color-stop(0%,#6E8B60),color-stop(100%,#385361));
+  background-image: -webkit-linear-gradient(45deg,#6E8B60 0,#385361 100%);
+  background-image: -moz-linear-gradient(45deg,#6E8B60 0,#385361 100%);
+  background-image: -ms-linear-gradient(45deg,#6E8B60 0,#385361 100%);
+  background-image: -o-linear-gradient(45deg,#6E8B60 0,#385361 100%);
+  background-image: linear-gradient(45deg,#6E8B60 0,#385361 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6E8B60', endColorstr='#385361', GradientType=1);
+}
+
 /* End Colors */
 
 .value-prop-heading {
@@ -53,10 +73,23 @@ svg:hover path {
 }
 
 .hero {
-    height: 300px;
+    height: 350px;
     margin-top: 50px;
     padding-top: 50px;
     font-weight: 300;
+    text-align: center;
+}
+.key-section{
+  padding: 30px 0;
+}
+.counter-key-section{
+  padding: 30px 0;
+}
+.buttons-unit-small{
+  font-size: 16px;
+}
+.version-link, .github-link{
+  margin: 5px;
 }
 .hero strong {
     font-weight: 400;
@@ -66,7 +99,7 @@ svg:hover path {
     text-align: center;
 }
 .hero .minitext {
-    font-size: 16px;
+    font-size: 20px;
     text-align: center;
     text-transform: uppercase;
 }

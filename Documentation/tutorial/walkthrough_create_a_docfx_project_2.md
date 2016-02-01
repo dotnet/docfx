@@ -3,35 +3,27 @@ Walkthrough Part II: Adding API Documentation to the Website
 
 After completing [Walkthrough Part I: Generate a Simple Documentation Website](walkthrough_create_a_docfx_project.md), we build a website from a set of `.md` files. We call it **Conceptual Documentation**. In this walkthrough, we will learn to build website from .NET source code, which is called **API Documentation**. We will also integrate **Conceptual Documentation** and **API Documentation** into one website, so that we can navigate from **Conceptual** to **API**, or **API** to **Conceptual** seamlessly. Download the files used in this walkthrough [here](artifacts/walkthrough2.zip).
 
-After completing walkthourgh part I, our `D:\docfx_walkthrough` folder is in the following structure:
+After completing walkthourgh part I, our `D:\docfx_walkthrough\docfx_project` folder is in the following structure:
 
 ```
 |- index.md
 |- toc.yml
 |- articles
-|    |- introduction.md
+|    |- intro.md
 |    |- details1.md
 |    |- details2.md
 |    |- details3.md
 |    |- toc.yml
 |- images
-     |- introduction_image1.png
-```
-
-And our root toc file `D:\docfx_walkthrough\toc.yml` is:
-
-```yml
-- name: Home
-  href: index.md
-- name: An introduction
-  href: articles/introduction.md
-- name: Details
-  href: articles/
+     |- details1_image.png
+|- api
+     |- index.md
+     |- toc.yml
 ```
 
 Step1. Add a C# project
 ---------------------------
-1. Create a subfolder `src` under `D:\docfx_walkthrough`. Open *Visual Studio Community 2015* or above and create a **C# Class Library** `HelloDocfx` under folder `src`. In the `Class1.cs`, add some comments and methods to this class, as similar to:
+1. Create a subfolder `src` under `D:\docfx_walkthrough\docfx_project`. Open *Visual Studio Community 2015* or above and create a **C# Class Library** `HelloDocfx` under folder `src`. In the `Class1.cs`, add some comments and methods to this class, as similar to:
 
 ```csharp
 namespace HelloDocfx
@@ -79,23 +71,29 @@ namespace HelloDocfx
 
 Step2. Generate metadata for the C# project
 ----------------------
-Call `docfx metadata` under `D:\docfx_walkthrough`. `docfx metadata` is a sub-command registered in `docfx`, it reads configuration in the `metadata` section from `docfx.json`. `[ "src/**.csproj" ]` in `metadata/src/files` tells `docfx` to search all the `csproj` from `src` subfolder  to generate metadata.
+Call `docfx metadata` under `D:\docfx_walkthrough\docfx_project`. `docfx metadata` is a sub-command registered in `docfx`, it reads configuration in the `metadata` section from `docfx.json`. `[ "src/**.csproj" ]` in `metadata/src/files` tells `docfx` to search all the `csproj` from `src` subfolder to generate metadata.
 
 ```json
 "metadata": [
-{
-    "src": [
     {
-        "files": [ "src/**.csproj" ],
-        "exclude": [ "**/bin/**", "**/obj/**" ]
+      "src": [
+        {
+          "files": [
+            "src/**.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**",
+            "_site/**"
+          ]
+        }
+      ],
+      "dest": "api"
     }
-    ],
-    "dest": "obj/api"
-}
-]
+  ]
 ```
 
-`obj/api` folder is generated. There are several `yml` files generated under the folder. It contains the data model extracted from C# source code file. YAML is the metadata format used in `docfx`. [General Metadata Spec](http://dotnet.github.io/docfx/spec/metadata_format_spec.html) defines the general schema and [.NET Metadata Spec](http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html) defines the metadata schema for .NET languages that `docfx` can consume.
+Several `YAML` files will be generated into `api` folder. The `YAML` file contains the data model extracted from C# source code file. YAML is the metadata format used in `docfx`. [General Metadata Spec](http://dotnet.github.io/docfx/spec/metadata_format_spec.html) defines the general schema and [.NET Metadata Spec](http://dotnet.github.io/docfx/spec/metadata_dotnet_spec.html) defines the metadata schema for .NET languages that `docfx` can consume.
 ```
 |- HelloDocfx.Class1.InnerClass.yml
 |- HelloDocfx.Class1.yml
@@ -103,27 +101,12 @@ Call `docfx metadata` under `D:\docfx_walkthrough`. `docfx metadata` is a sub-co
 |- toc.yml
 ```
 
-Step3. Add the API metadata file into your website
--------------------------
-Update root `toc.yml` to include API metadata files:
-
-```yml
-- name: Home
-  href: index.md
-- name: An introduction
-  href: articles/introduction.md
-- name: Details
-  href: articles/
-- name: Api Documentation
-  href: obj/api/
-```
-
-Step4. Build and preview our website
+Step3. Build and preview our website
 ----------------------------------------------------
 Run command `docfx`. `docfx` reads `docfx.json` and execute subcommands defined in the config file one by one. Our `docfx.json` defines `metadata` and `build`, so by running `docfx`, we are actually excuting `docfx metadata` and `docfx build`, and thus generate the website.
 
 Run `docfx serve _site`, and the website is now:
-![Step4](images/walkthrough2_step4.png).
+![Step3](images/walkthrough2_step3.png).
 
 Conclusion
 ---------
