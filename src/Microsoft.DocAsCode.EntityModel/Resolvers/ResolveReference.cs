@@ -96,7 +96,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 yield return current.Overridden;
             }
 
-            if (current.Inheritance != null && current.Inheritance.Count > 0)
+            if (current.Inheritance?.Count > 0)
             {
                 foreach (var item in current.Inheritance)
                 {
@@ -104,7 +104,15 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
             }
 
-            if (current.InheritedMembers != null && current.InheritedMembers.Count > 0)
+            if (current.Implements?.Count > 0)
+            {
+                foreach (var item in current.Implements)
+                {
+                    yield return item;
+                }
+            }
+
+            if (current.InheritedMembers?.Count > 0)
             {
                 foreach (var item in current.InheritedMembers)
                 {
@@ -112,7 +120,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
             }
 
-            if (current.Exceptions != null && current.Exceptions.Count > 0)
+            if (current.Exceptions?.Count > 0)
             {
                 foreach (var item in current.Exceptions)
                 {
@@ -120,7 +128,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
             }
 
-            if (current.Sees != null && current.Sees.Count > 0)
+            if (current.Sees?.Count > 0)
             {
                 foreach (var item in current.Sees)
                 {
@@ -128,7 +136,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
             }
 
-            if (current.SeeAlsos != null && current.SeeAlsos.Count > 0)
+            if (current.SeeAlsos?.Count > 0)
             {
                 foreach (var item in current.SeeAlsos)
                 {
@@ -138,7 +146,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             if (current.Syntax != null)
             {
-                if (current.Syntax.Parameters != null)
+                if (current.Syntax.Parameters?.Count > 0)
                 {
                     foreach (var item in current.Syntax.Parameters)
                     {
