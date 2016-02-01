@@ -8,6 +8,7 @@
     <title>Walkthrough Part I: Generate a Simple Documentation Website | docfx website</title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part I: Generate a Simple Documentation Website | docfx website">
+    <meta name="generator" content="docfx 1.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -71,82 +72,45 @@
 <ol>
 <li>Create a new folder <code>D:\docfx_walkthrough</code></li>
 <li>Start Command Line under <code>D:\docfx_walkthrough</code></li>
-<li>Call <code>docfx init -q</code>. This command generates a <code>docfx.json</code> file under the same folder. <code>docfx.json</code> is the configuration file <code>docfx</code> uses to generate documentation. <code>-q</code> option means generating <code>docfx.json</code> quitely using default value, you can also try <code>docfx init</code> and follow the instructions to provide your own settings.</li>
+<li>Call <code>docfx init -q</code>. This command generates a <code>docfx_project</code> folder with the default <code>docfx.json</code> file under it. <code>docfx.json</code> is the configuration file <code>docfx</code> uses to generate documentation. <code>-q</code> option means generating the project quitely using default value, you can also try <code>docfx init</code> and follow the instructions to provide your own settings.</li>
 </ol>
-<h2 id="step3-create-the-homepage-for-our-website">Step3. Create the homepage for our website</h2>
-<p>Create a file named <code>index.md</code> and add some content to it. <code>index.md</code> will be the homepage for our website. <code>.md</code> files are written in <em>markdown</em> syntax. <a href="http://daringfireball.net/projects/markdown/">Markdown</a> is a lightweight markup language, and is the syntax <code>docfx</code> supported for writing documentations.</p>
-<pre><code class="lang-md">Welcome to the world of docfx!
-=============================
-
-Hello *everyone*.
-</code></pre>
-<h2 id="step4-build-our-website">Step4. Build our website</h2>
-<p>Run command <code>docfx build</code>. Note that a new subfolder <code>_site</code> is generated under the same folder. This is where the static website is generated.</p>
-<h2 id="step5-preview-our-website">Step5. Preview our website</h2>
-<p>The generated static website can be published to github pages, azure websites, or your own hosting service without any further changes. You can also run command <code>docfx serve _site</code> to preview the website locally.</p>
+<h2 id="step3-build-our-website">Step3. Build our website</h2>
+<p>Run command <code>docfx docfx_project/docfx.json</code>. Note that a new subfolder <code>_site</code> is generated under that folder. This is where the static website is generated.</p>
+<h2 id="step4-preview-our-website">Step4. Preview our website</h2>
+<p>The generated static website can be published to github pages, azure websites, or your own hosting service without any further changes. You can also run command <code>docfx serve docfx_project/_site</code> to preview the website locally.</p>
 <p>If port <code>8080</code> is not in use, <code>docfx</code> will host <code>_site</code> under <code>http://localhost:8080</code>. If <code>8080</code> is in use, you can use <code>docfx serve _site -p &lt;port&gt;</code> to change the port to be used by <code>docfx</code>.</p>
 <p>Congrats! You can now see a simple website similar to:
 <img src="images/walkthrough_simple_homepage.png" alt="Homepage"></p>
 <hr>
-<h2 id="step6-add-more-articles-to-the-website">Step6. Add more articles to the website</h2>
-<ol>
-<li>Create subfolder <code>articles</code> and <code>images</code> under <code>D:\docfx_walkthrough</code></li>
-<li>Place a <code>.md</code> file to <code>articles</code>, e.g. <code>introduction.md</code>. If the file references to any resources, put the resources into <code>images</code> folder.</li>
-<li><p>In order to navigate to this article, we create a file named <code>toc.yml</code> under <code>D:\docfx_walkthrough</code>. This file tells <code>docfx</code> the navigation title for the article, and where is the article. The content of <code>toc.yml</code> is as below:</p>
-<pre><code class="lang-yml"> - name: Home
-   href: index.md
- - name: An introduction
-   href: articles/introduction.md
-</code></pre>
-<p> So now our folder layout is:</p>
-<pre><code> |- index.md
- |- toc.yml
- |- articles
- |    |- introduction.md
- |- images
-     |- introduction_image1.png
-</code></pre></li>
-<li>Run <strong>Step4</strong> and <strong>Step5</strong> again, and the website is now:
-<img src="images/walkthrough_step6.png" alt="Step6">.</li>
-</ol>
-<p>Noticed a navigation bar is shown at the top of the website, the title for the navigation bar is what you set in <code>name</code> in <code>toc.yml</code></p>
-<h2 id="step7-add-a-set-of-articles-to-the-website">Step7. Add a set of articles to the website</h2>
+<h2 id="step5-add-a-set-of-articles-to-the-website">Step5. Add a set of articles to the website</h2>
 <ol>
 <li>Place more <code>.md</code> files to <code>articles</code>, e.g. <code>details1.md</code>, <code>details2.md</code>, <code>details3.md</code>. If the file references to any resources, put the resources into <code>images</code> folder.</li>
-<li><p>In order to organize these articles, we create a file named <code>toc.yml</code> under <code>articles</code> subfolder. The content of <code>toc.yml</code> is as below:</p>
-<pre><code class="lang-yml"> - name: Details 1
+<li><p>In order to organize these articles, we add these files into <code>toc.yml</code> under <code>articles</code> subfolder. The content of <code>toc.yml</code> is as below:</p>
+<pre><code class="lang-yml"> - name: Introduction
+   href: intro.md
+ - name: Details 1
    href: details1.md
  - name: Details 2
    href: details2.md
  - name: Details 3
    href: details3.md
 </code></pre>
-</li>
-<li><p>In order to navigate to the set of articles, we update <code>toc.yml</code> under <code>D:\docfx_walkthrough</code> to as below:</p>
-<pre><code class="lang-yml"> - name: Home
-   href: index.md
- - name: An introduction
-   href: articles/introduction.md
- - name: Details
-   href: articles/
-</code></pre>
-<p> Note that a <code>/</code> must be appended to the folder name so that <code>docfx</code> knows it should contain a set of articles instead of one article.</p>
 <p> So now our folder layout is:</p>
 <pre><code> |- index.md
  |- toc.yml
  |- articles
- |    |- introduction.md
+ |    |- intro.md
  |    |- details1.md
  |    |- details2.md
  |    |- details3.md
  |    |- toc.yml
  |- images
-     |- introduction_image1.png
+     |- details1_image.png
 </code></pre></li>
-<li>Run <strong>Step4</strong> and <strong>Step5</strong> again, and the website is now:
-<img src="images/walkthrough_step7.png" alt="Step7">.</li>
+<li>Run <strong>Step3</strong> and <strong>Step4</strong> again, and the website is now:
+<img src="images/walkthrough_step5.png" alt="Step7">.</li>
 </ol>
-<p>Noticed a new navigation bar named <strong>Details</strong> is shown at the top of the website, and a sidebar is shown on the left side, the title inside the sidebar is exactly what we set in the <code>toc.yml</code> inside <code>articles</code> subfolder.</p>
+<p>Noticed that more items are added to the sidebar for <em>Articles</em> nav page. The title inside the sidebar is exactly what we set in the <code>toc.yml</code> inside <code>articles</code> subfolder.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>In this walkthrough, we build a website from a set of <code>.md</code> files. We call these <code>.md</code> files <strong>Conceptual Documentation</strong>. In walkthrough part 2, we will learn to add <strong>API Documentation</strong> to our website. The <strong>API Documentation</strong> is extracted directly from .NET source code. And in series of advanced walkthroughs, we will learn advanced concepts in <code>docfx</code>, such as <em>cross reference</em> between articles, <em>external reference</em> to other documentations, etc. We will also learn to customize our websites, from theme to layout to metadata extraction.</p>
 <h2 id="read-more">Read more</h2>
@@ -175,7 +139,7 @@ Hello *everyone*.
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
           </div>
         </div>
       </footer>
@@ -183,6 +147,7 @@ Hello *everyone*.
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

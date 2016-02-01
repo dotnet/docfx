@@ -8,6 +8,7 @@
     <title>Welcome to Docfx website! | docfx website</title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Welcome to Docfx website! | docfx website">
+    <meta name="generator" content="docfx 1.4.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -39,155 +40,65 @@
         </nav>
       </header>
       <style type="text/css">
-#note {
-  margin-bottom: 100px;
-}
-#note h1{
-  font-size: 24px;
-}
-#note h2{
-  font-size: 20px;
-}
-#note h3{
-  font-size: 16px
+footer{
+  position: relative;
 }
 </style>
 
-<p><div class="hero">
+<div class="hero">
   <div class="wrap">
     <div class="text">
       <strong>DOCFX</strong>
-  </div>
+    </div>
+    <div class="buttons-unit-small">
+      <a class="version-link" href="RELEASENOTE.html">Version Notes</a><span>|</span><a class="github-link" href="https://github.com/dotnet/docfx">View in Github</a>
+    </div>
     <div class="minitext">
     A documentation generation tool for API reference and markdown files!
     </div>
     <div class="buttons-unit">
-      <a href="tutorial/docfx_getting_started.html" class="button">Get Started</a>
+      <a href="tutorial/docfx_getting_started.html" class="button">Getting Started</a>
       <a href="https://github.com/dotnet/docfx/releases" class="button">Download Latest Docfx!</a>
     </div>
   </div>
-</div></p>
-<div class="container content"><p>  <div id="vp-container">
-    <div id="initial-vps">
-      <div class="row value-props">
-        <div class="col-lg-4 text-center animated fadeInLeft">
-          <strong class="value-prop-heading">API-Documentation</strong>
-          <p>Able to generate API documentation from triple-slash-comments for .NET source code directly!</p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4 text-center animated fadeIn">
-          <strong class="value-prop-heading">Markdown-Documentation</strong>
-          <p>Able to generate HTML from markdown files supporting DFM syntax.</p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4 text-center animated fadeInRight">
-          <strong class="value-prop-heading">Customize</strong>
-          <p>Able to customize templates and themes easily</p>
-        </div><!-- /.col-lg-4 -->
-      </div><!-- /.row -->
+</div>
+<div class="key-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 text-center">
+        <section>
+          <h2>Generate API Documentation</h2>
+          <p class="lead">Able to generate API documentation from triple-slash-comments for .NET source code directly!</p>
+        </section>
+      </div>
     </div>
   </div>
-  <hr></p>
-<div class="row" id="note"><!-- BEGIN INCLUDE: Include content from &quot;../ReleaseNote.md&quot; --><h1 id="version-notes-current-version-v1-3-8-">Version Notes (Current Version: v1.3.8)</h1>
-<h2 id="v1-3-8">v1.3.8</h2>
-<p>Fix no link and ref link cannot work issue in table</p>
-<h2 id="v1-3-7">v1.3.7</h2>
-<ol>
-<li>Fix no link and ref link cannot work issue in markdownlite.</li>
-<li>Fix link issue (allow space in link) in markdownlite.</li>
-<li>Fix para for list in markdownlite.</li>
-<li>Fix tokenize bug in dfm.</li>
-<li>Add markdown token validator in dfm.</li>
-</ol>
-<h2 id="v1-3-6">v1.3.6</h2>
-<ol>
-<li>Fix cross domain issue: timeout exception throws when document build takes longer than 15 minutes</li>
-<li>Fix docfx IOException when calling <code>docfx -l report.txt</code></li>
-</ol>
-<h2 id="v1-3-5">v1.3.5</h2>
-<p>FIX Github pages compatibility issue( Github pages now disallow <em>iframe</em>, however the default template of <code>docfx</code> uses <em>iframe</em> to load side toc): Update <em>default</em> template to use AJAX to load side toc, the original one is renamed to <code>iframe.html</code>. So now we have 2 embedded template, one is <code>default</code> and another is <code>iframe.html</code>.</p>
-<h2 id="v1-3">v1.3</h2>
-<ol>
-<li><code>docfx</code> improvements<ol>
-<li>Add subcommand <code>docfx template</code>. You can now <code>docfx template list</code> and <code>docfx template export -A</code> to list and export all the embeded templates!</li>
-<li>Add subcommand <code>docfx merge</code>. You can use this subcommand to merge <code>platform</code> from multiple APIs with the same <code>uid</code></li>
-<li>Add two options to <code>build</code> subcommand, <code>--exportRawModel</code> and <code>--exportViewModel</code>. <code>--exportRawModel</code> exports the data model to apply templates, <code>--exportViewModel</code> exports the view model after running template&#39;s pre-process scripts.</li>
-<li>Add <code>--globalMetadata</code>, and <code>--globalMetadataFile</code> options to <code>build</code> subcommand. These options allow <code>globalMetadata</code> to be loaded from command line in json format or from a JSON file.</li>
-<li>Add <code>--fileMetadataFile</code> option to <code>build</code> subcommand. This option allows <code>fileMeatdata</code> to be read from an external JSON file.</li>
-<li>Support plugins. You can create your own template with a <code>plugins</code> folder, inside which, you create your own build steps. Refer to <a class="xref" href="api/Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep.html#Microsoft_DocAsCode_EntityModel_Plugins_BaseDocumentBuildStep">BaseDocumentBuildStep</a> for a sample plugin implementation.</li>
-</ol>
-</li>
-<li><em>DFM</em> syntax improvements<ol>
-<li>Support note&amp;div syntax</li>
-<li>Support <em>query</em> format in <em>code snippet</em>
-<code>[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt;&lt;queryoption&gt;&lt;queryoptionvalue&gt; &quot;&lt;title&gt;&quot;)]</code></li>
-<li>Change <em>xref</em> logic:<ol>
-<li>If content after <code>@</code> is wrapped by <code>&#39;</code> or <code>&quot;</code>,  it contains any character including white space</li>
-<li>If content after <code>@</code> is not wrapped by <code>&#39;</code> or <code>&quot;</code>, it ends when:<ol>
-<li>line ends</li>
-<li>meets whitespaces</li>
-<li>line ends with <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
-<li>meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>Code improvements<ol>
-<li>Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.html#Microsoft_DocAsCode_YamlSerialization">Microsoft.DocAsCode.YamlSerialization</a>
-This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotNet</a>. It overrides classes like type converters to improve performance and fix bug existed in <em>YamlDotNet</em></li>
-<li>Refactor markdown engine <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.html#Microsoft_DocAsCode_MarkdownLite">Microsoft.DocAsCode.MarkdownLite</a></li>
-<li>Add <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable`1.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewritable_1">IMarkdownRewritable&lt;T&gt;</a>. It provides a way to operate markdown tokens.</li>
-</ol>
-</li>
-<li>Other improvements<ol>
-<li>Add a new property <code>_path</code> into <code>_attrs</code>, it stands for the relative path from <code>docfx.json</code> to current file</li>
-<li>Improve <em>missing xref</em> warning message to include containing files.</li>
-<li>Add <code>data-uid</code> as attribute to generated html from <em>default</em> template, so that you can now find <code>uid</code> for API much more easily.</li>
-</ol>
-</li>
-</ol>
-<h2 id="v1-2">v1.2</h2>
-<ol>
-<li>Support Liquid template, templates ending with <code>.liquid</code> are considered as using liquid templating language. Liquid contains <code>include</code> tag to support partials, we follow the ruby partials naming convention to have <code>_&lt;partialName&gt;.liquid</code> as partial template. A custom tag <code>ref</code>, e.g. <code>{% ref file1 %}</code> is introduced to specify the resource files that current template depends on.</li>
-<li>DFM include syntax is updated to use <code>[!include[&lt;title&gt;](&lt;filepath&gt;)]</code> syntax</li>
-<li>Disable glob pattern in <code>docfx metadata</code> command line option as it is to some extent confusing, consider using a <code>-g</code> option later to re-enable it.</li>
-</ol>
-<h2 id="v1-1">v1.1</h2>
-<ol>
-<li>Rewrite Glob
- The syntax of glob is:<ol>
-<li><code>**</code> is called globstar, it matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part.</li>
-<li>If <code>**</code> is right behind <code>/</code>, it is a shortcut for <code>**/*</code>.</li>
-<li><code>*</code> matches any number of characters, but not <code>/</code></li>
-<li><code>?</code> matches 1 characters, but not <code>/</code></li>
-<li><code>{}</code> allows for a comma-separated list of &quot;or&quot; expressions, e.g. <code>{a,b}</code> =&gt; <code>a</code> and <code>b</code></li>
-<li><code>!</code> at the beginning of a pattern will negate the match</li>
-<li><code>[...]</code> matches a range of characters, similar to a RegExp range</li>
-<li><code>/</code> is considered as path separator, while <code>\</code> is considered as escape character</li>
-</ol>
-</li>
-<li>Support <code>fileMetadata</code>. You can specify different metadata value using glob pattern</li>
-<li>Improve overwrite functionality.
- Now you can overwrite not only summary/remarks, but also descriptions for parameters. You can even add exceptions.</li>
-<li>Now the latest project.json projects are also supported in DNX version.</li>
-<li>Simple code snippet is now supported, syntax is <code>[!code-REST-i[title](path &quot;optionalTitle&quot;)]</code></li>
-<li>Url is now encoded in markdown link.</li>
-</ol>
-<h2 id="v1-0">v1.0</h2>
-<ol>
-<li>Add section syntax in DFM</li>
-<li>Fix several bugs in DFM</li>
-<li>Update default template: rename css/js file</li>
-<li>Fix several display issue in default template</li>
-</ol>
-<h2 id="v0-3">v0.3</h2>
-<ol>
-<li>Support Static Website Templates</li>
-<li>Schema change to docfx.json</li>
-</ol>
-<!--END INCLUDE --></div>
+</div>
+<div class="counter-key-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 text-center">
+        <section>
+          <h2>Generate Conceptual Documentation</h2>
+          <p class="lead">Able to generate HTML from markdown files supporting DFM syntax.</p>
+        </section>
+      </div>
+    </div>
+  </div>
 </div>
 
+<div class="key-section">
+  <div class="container content">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 text-center">
+        <section>
+          <h2>Easy Customization</h2>
+          <p class="lead">Able to customize templates and themes easily</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
       
       <footer>
         <div class="grad-bottom"></div>
@@ -196,7 +107,7 @@ This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotN
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
           </div>
         </div>
       </footer>
@@ -204,6 +115,7 @@ This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotN
     
     <script type="text/javascript" src="styles/docfx.vendor.js"></script>
     <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

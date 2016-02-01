@@ -5,9 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Namespace Microsoft.DocAsCode.Dfm | docfx website</title>
+    <title>Microsoft.DocAsCode.Dfm Namespace | docfx website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Namespace Microsoft.DocAsCode.Dfm | docfx website">
+    <meta name="title" content="Microsoft.DocAsCode.Dfm Namespace | docfx website">
+    <meta name="generator" content="docfx 1.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -58,6 +59,7 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content">
               
+              <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Dfm.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/FileCacheLite.cs/#L4" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_Dfm" data-uid="Microsoft.DocAsCode.Dfm">Namespace Microsoft.DocAsCode.Dfm
               </h1>
@@ -89,6 +91,8 @@
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmIncludeInlineToken.html#Microsoft_DocAsCode_Dfm_DfmIncludeInlineToken">DfmIncludeInlineToken</a></h4>
                   <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmMarkdownRenderer.html#Microsoft_DocAsCode_Dfm_DfmMarkdownRenderer">DfmMarkdownRenderer</a></h4>
+                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.html#Microsoft_DocAsCode_Dfm_DfmNoteBlockRule">DfmNoteBlockRule</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmNoteBlockToken.html#Microsoft_DocAsCode_Dfm_DfmNoteBlockToken">DfmNoteBlockToken</a></h4>
@@ -103,10 +107,31 @@
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmTextInlineRule.html#Microsoft_DocAsCode_Dfm_DfmTextInlineRule">DfmTextInlineRule</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefInlineRule.html#Microsoft_DocAsCode_Dfm_DfmXrefInlineRule">DfmXrefInlineRule</a></h4>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefAutoLinkInlineRule.html#Microsoft_DocAsCode_Dfm_DfmXrefAutoLinkInlineRule">DfmXrefAutoLinkInlineRule</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefInlineToken.html#Microsoft_DocAsCode_Dfm_DfmXrefInlineToken">DfmXrefInlineToken</a></h4>
                   <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefLinkInlineRule.html#Microsoft_DocAsCode_Dfm_DfmXrefLinkInlineRule">DfmXrefLinkInlineRule</a></h4>
+                  <section><p>Xref Link syntax:</p>
+<ol>
+<li><code>[name](xref:uid &quot;title&quot;)</code></li>
+<li><code>[name](@uid &quot;title&quot;)</code>
+title can be omitted</li>
+</ol>
+</section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.html#Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule">DfmXrefShortcutInlineRule</a></h4>
+                  <section><p>XREF regex:</p>
+<ol>
+<li>If content after <code>@</code> is wrapped by <code>&#39;</code> or <code>&quot;</code>,  it contains any character including white space</li>
+<li>If content after <code>@</code> is not wrapped by <code>&#39;</code> or <code>&quot;</code>,
+It must start with word character <code>a-z</code> or <code>A-Z</code>
+It ends when
+a. line ends
+b. meets whitespaces
+c. line ends with <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code>
+d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
+</ol>
+</section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule">DfmYamlHeaderBlockRule</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockToken.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockToken">DfmYamlHeaderBlockToken</a></h4>
@@ -133,7 +158,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015 Microsoft<br>Powered by Doc-as-Code</span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
           </div>
         </div>
       </footer>
@@ -141,6 +166,7 @@
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>
