@@ -17,7 +17,6 @@
   <ItemGroup>
     <Compile Include="ExtensibleMemberAttribute.cs" />
     <Compile Include="NodeDeserializers\ExtensibleObjectNodeDeserializer.cs" />
-    <Compile Include="TypeInspectors\CachedTypeInspector.cs" />
     <Compile Include="ObjectFactories\DefaultEmitObjectFactory.cs" />
     <Compile Include="NodeDeserializers\EmitGenericDictionaryNodeDeserializer.cs" />
     <Compile Include="NodeDeserializers\EmitArrayNodeDeserializer.cs" />
