@@ -362,8 +362,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     if (!hostService.SourceFiles.ContainsKey(fileLink))
                     {
                         var message = $"Invalid file link({fileLink}) in file \"{model.LocalPathFromRepoRoot}\"";
-                        Logger.LogError(message, file: model.LocalPathFromRepoRoot);
-                        throw new DocumentException(message);
+                        Logger.LogWarning(message, file: model.LocalPathFromRepoRoot);
                     }
                 });
         }
