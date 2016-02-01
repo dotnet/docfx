@@ -1,10 +1,32 @@
 Version Notes (Current Version: v1.4)
 =======================================
-v1.4 (Pre-release)
+v1.4
 -----------
-1. Make @uid rule more strict: if `@` is not followed by `'` or `"`, it must be followed by word character (`[a-zA-Z]`)
+1. Cross-reference related:
+    1. Make @uid rule more strict: if `@` is not followed by `'` or `"`, it must be followed by word character (`[a-zA-Z]`)
+    2. Introduce new syntax for cross-reference:
+        1. similar to autolink: `<xref:uid>`
+        2. similar to link: `[title](xref:uid)` or `[title](@uid)`
+    3. support `uid` in `toc.yml`:
+
+        ```yaml
+        - uid: getting-started
+        - uid: manual
+        ```
+
+    4. support cross reference in `toc.md`
+
+        ```md
+        # <xref:getting-started>
+        # [Override title](@getting-started)
+        ```
+
 2. Update yaml serializion:
    Add @Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute
+3. Improve `docfx init`, now with `docfx init`, a `docfx_project` seed project will will generated.
+4. Several improvements for `default` template:
+    1. Provide properties to customize layout: `_disableNavbar`, `_disableBreadcrumb`, `_disableToc`, `_disableAffix`, `_disableContribution`, `_disableFooter`
+    2. Include empty `main.css` and `main.js` to `head.tmpl.partial` partial template so that there is no need to customize `head.tmpl.partial` when you want to customize website style.
 
 v1.3.8
 -------
