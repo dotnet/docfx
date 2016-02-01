@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
-        [JsonExtensionData(ReadData = true, WriteData = false)]
+        [JsonExtensionData(ReadData = false, WriteData = true)]
         public Dictionary<string, object> AdditionalJson
         {
             get
