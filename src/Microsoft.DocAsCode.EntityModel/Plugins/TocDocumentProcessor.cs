@@ -66,47 +66,47 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         public override void UpdateHref(FileModel model, IDocumentBuildContext context)
         {
             var toc = (TocViewModel)model.Content;
-            var path = model.OriginalFileAndType.File;
+            var key = model.Key;
 
             // Add current folder to the toc mapping, e.g. `a/` maps to `a/toc`
-            var directory = ((RelativePath)path).GetPathFromWorkingFolder().GetDirectoryPath();
-            context.RegisterToc(path, directory);
+            var directory = ((RelativePath)key).GetPathFromWorkingFolder().GetDirectoryPath();
+            context.RegisterToc(key, directory);
 
             if (toc.Count > 0)
             {
                 foreach (var item in toc)
                 {
-                    UpdateTocItemHref(item, path, context);
+                    UpdateTocItemHref(item, model, context);
                 }
             }
         }
 
-        private void UpdateTocItemHref(TocItemViewModel toc, string path, IDocumentBuildContext context)
+        private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
         {
-            ResolveUid(toc, path, context);
-            RegisterTocMap(toc, path, context);
+            ResolveUid(toc, model, context);
+            RegisterTocMap(toc, model.Key, context);
 
             if (!string.IsNullOrEmpty(toc.Homepage))
             {
                 toc.Href = toc.Homepage;
             }
 
-            toc.Href = GetUpdatedHref(toc.Href, path, context);
-            toc.OriginalHref = GetUpdatedHref(toc.OriginalHref, path, context);
+            toc.Href = GetUpdatedHref(toc.Href, model, context);
+            toc.OriginalHref = GetUpdatedHref(toc.OriginalHref, model, context);
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
                 {
-                    UpdateTocItemHref(item, path, context);
+                    UpdateTocItemHref(item, model, context);
                 }
             }
         }
 
-        private void ResolveUid(TocItemViewModel item, string path, IDocumentBuildContext context)
+        private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
         {
             if (item.Uid != null)
             {
-                var xref = GetXrefFromUid(item.Uid, path, context);
+                var xref = GetXrefFromUid(item.Uid, model, context);
                 item.Href = xref.Href;
                 if (string.IsNullOrEmpty(item.Name))
                 {
@@ -127,29 +127,29 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
             if (item.HomepageUid != null)
             {
-                item.Homepage = GetXrefFromUid(item.HomepageUid, path, context).Href;
+                item.Homepage = GetXrefFromUid(item.HomepageUid, model, context).Href;
             }
         }
 
-        private XRefSpec GetXrefFromUid(string uid, string path, IDocumentBuildContext context)
+        private XRefSpec GetXrefFromUid(string uid, FileModel model, IDocumentBuildContext context)
         {
             var xref = context.GetXrefSpec(uid);
             if (xref == null)
             {
-                throw new DocumentException($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{path}\"");
+                throw new DocumentException($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
             }
             return xref;
         }
 
-        private void RegisterTocMap(TocItemViewModel item, string file, IDocumentBuildContext context)
+        private void RegisterTocMap(TocItemViewModel item, string key, IDocumentBuildContext context)
         {
             var href = item.Href; // Should be original href from working folder starting with ~
             if (!PathUtility.IsRelativePath(href)) return;
 
-            context.RegisterToc(file, href);
+            context.RegisterToc(key, href);
         }
 
-        private string GetUpdatedHref(string originalPathToFile, string filePathToRoot, IDocumentBuildContext context)
+        private string GetUpdatedHref(string originalPathToFile, FileModel model, IDocumentBuildContext context)
         {
             if (!PathUtility.IsRelativePath(originalPathToFile)) return originalPathToFile;
 
@@ -157,10 +157,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
             if (href == null)
             {
-                throw new DocumentException($"Unalbe to find file \"{originalPathToFile}\" referenced by TOC file \"{filePathToRoot}\"");
+                throw new DocumentException($"Unalbe to find file \"{originalPathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
             }
 
-            var relativePath = GetRelativePath(href, filePathToRoot);
+            var relativePath = GetRelativePath(href, model.File);
             return relativePath;
         }
 
