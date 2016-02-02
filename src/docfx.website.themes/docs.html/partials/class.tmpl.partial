@@ -36,8 +36,18 @@
 {{/inheritance.0}}
   <section class="secondary">
     <div class="alert alert-minimal">
-      <h5><span class="icon icon-assembly"></span> Assembly</h5>
-      <p><code>{{assemblies.0}}.dll</code></p>
+      {{#assemblies}}
+        <h5><span class="icon icon-assembly"></span> Assembly</h5>
+        <p><code>{{assemblies.0}}.dll</code></p>
+      {{/assemblies}}
+      {{#headerfilename}}
+        <h5><span class="icon icon-assembly"></span> Header</h5>
+        <p><code>
+        {{#headerurl}}<a href="{{headerurl}}">{{/headerurl}}
+        {{headerfilename}}
+        {{#headerurl}}</a>{{/headerurl}}
+        </code></p>
+      {{/headerfilename}}
     </div>
   </section>
 </div>

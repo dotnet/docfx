@@ -62,6 +62,86 @@
       {{/syntax}}
       </section>
     </div>
+    {{#isMethod}}
+    {{#syntax}}
+      <div class="level">
+        {{#parameters.0}}
+        <section class="primary">
+          <h6>Parameters</h6>
+          <ul class="member-details">
+        {{/parameters.0}}
+          {{#parameters}}
+            <li>
+              <ol class="meta">
+                <li><code>{{{id}}}</code></li>
+                <li>
+                  {{#type.specName}}
+                    <code lang="lang-{{lang}}">{{{value}}}</code>
+                  {{/type.specName}}
+                </li>
+              </ol>
+              <section class="description">
+                {{{description}}}
+              </section>
+            </li>
+          {{/parameters}}
+        {{#parameters.0}}
+          </ul>
+        </section>
+        {{/parameters.0}}
+        <section class="secondary">
+        {{#return}}
+          <h6>Returns</h6>
+          <ul class="member-details">
+            <li>
+              <ol class="meta">
+                <li>
+                {{#type.specName}}
+                  <code lang="lang-{{lang}}">{{{value}}}</code>
+                {{/type.specName}}
+                </li>
+              </ol>
+              <section class="description">
+                {{{description}}}
+              </section>
+            </li>
+          </ul>
+        {{/return}}
+        {{#exceptions.0}}
+          <h6>Exceptions</h6>
+          <ul class="member-details">
+        {{/exceptions.0}}
+        {{#exceptions}}
+          <li>
+            <ol class="meta">
+              <li>{{{typ.specName}}}</li>
+            </ol>
+            <section class=description">
+              {{{description}}}
+            </section>
+          </li>
+        {{/exceptions}}
+        {{#exceptions.0}}
+          </ul>
+        {{/exceptions.0}}
+        </section>
+      </div>
+      {{/syntax}}
+      <div class="level">
+        {{#remarks}}
+        <section class="primary">
+          <h6>Remarks</h6>
+          {{{remarks}}}
+        </section>
+        {{/remarks}}
+        {{#example.0}}
+        <section class="secondary">
+          <h6>Example</h6>
+          {{{example}}}
+        </section>
+        {{/example.0}}
+      </div>
+      {{/isMethod}}
   </li>
   {{/children}}
 </ul>
