@@ -117,12 +117,21 @@ namespace Microsoft.DocAsCode.Dfm
                 var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
                 return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
             }
+            catch (DirectoryNotFoundException)
+            {
+                return GenerateReferenceNotFoundErrorMessage(renderer, token);
+            }
             catch (FileNotFoundException)
             {
-                string errorMessage = $"Can not find reference {token.Path}";
-                Logger.LogError(errorMessage);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
+                return GenerateReferenceNotFoundErrorMessage(renderer, token);
             }
+        }
+
+        private static StringBuffer GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesBlockToken token)
+        {
+            string errorMessage = $"Can not find reference {token.Path}";
+            Logger.LogError(errorMessage);
+            return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer engine, DfmNoteBlockToken token, MarkdownBlockContext context)
