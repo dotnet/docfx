@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Web;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.Builders;
@@ -319,7 +320,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     key = key.Remove(anchorIndex);
                 }
 
-                if (map.TryGetValue(key, out href))
+                if (map.TryGetValue(HttpUtility.UrlDecode(key), out href))
                 {
                     href = UpdateFilePath(href, relativePath);
                     href += anchor;
