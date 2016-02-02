@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.4)
+Version Notes (Current Version: v1.4.1)
 =======================================
+v1.4.1
+-----------
+Remove `newFileRepository` from output metadata
+ 
 v1.4
 -----------
 1. Cross-reference related:

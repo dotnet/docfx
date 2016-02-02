@@ -7,6 +7,7 @@ function transform(model, _attrs){
   model.path = undefined;
   model.type = undefined;
   model.source = undefined;
+  model.newFileRepository = undefined;
 
   if (!model.toc_asset_id){
     model.toc_asset_id = _attrs._tocPath;

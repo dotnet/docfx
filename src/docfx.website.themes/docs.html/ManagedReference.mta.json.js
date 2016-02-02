@@ -23,6 +23,7 @@ function transform(model, _attrs){
   // Clean up unused predefined properties
   model.items = undefined;
   model.references = undefined;
+  model.newFileRepository = undefined;
 
   return {
     content: JSON.stringify(model)
