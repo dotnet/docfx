@@ -1,5 +1,8 @@
-Version Notes (Current Version: v1.4.2)
+Version Notes (Current Version: v1.5)
 =======================================
+v1.5 (Pre-release)
+-----------
+
 v1.4.2
 -----------
 1. Fix bug for encoded link file.
