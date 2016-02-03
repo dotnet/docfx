@@ -508,7 +508,6 @@ test2
             {
                 var processor = new TemplateProcessor(resource);
                 var context = new DocumentBuildContext(inputFolder);
-                context.Manifest.AddRange(items);
                 processor.ProcessDependencies(outputFolder);
                 foreach(var item in items)
                 {

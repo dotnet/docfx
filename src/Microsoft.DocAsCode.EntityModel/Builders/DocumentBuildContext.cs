@@ -37,8 +37,6 @@
 
         public Dictionary<string, HashSet<string>> TocMap { get; private set; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-        public List<ManifestItem> Manifest { get; private set; } = new List<ManifestItem>();
-
         public HashSet<string> XRef { get; } = new HashSet<string>();
 
         public Dictionary<string, XRefSpec> ExternalXRefSpec { get; private set; } = new Dictionary<string, XRefSpec>();

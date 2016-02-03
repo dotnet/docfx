@@ -137,11 +137,9 @@ tagRules : [
 
                     Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
                     Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
-                    Assert.Equal(documentsBaseDir + "/test.md", Listener.Items[0].File);
 
                     Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
                     Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
-                    Assert.Equal(documentsBaseDir + "/test/test.md", Listener.Items[1].File);
                 }
 
                 {
