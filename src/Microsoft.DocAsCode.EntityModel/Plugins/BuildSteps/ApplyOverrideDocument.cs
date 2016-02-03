@@ -21,13 +21,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override int BuildOrder => 0x10;
 
-        public override IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
+        public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             if (models.Count > 0)
             {
                 ApplyOverrides(models, host);
             }
-            return models;
         }
 
         #region Private methods

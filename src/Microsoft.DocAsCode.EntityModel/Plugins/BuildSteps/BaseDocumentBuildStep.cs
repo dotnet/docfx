@@ -23,9 +23,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
         }
 
-        public virtual IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
+        public virtual void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
-            return models;
         }
     }
 }

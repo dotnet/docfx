@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override int BuildOrder => 0x20;
 
-        public override IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
+        public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             if (models.Count > 0)
             {
@@ -30,7 +30,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     FillCore((PageViewModel)model.Content, host);
                 }
             }
-            return models;
         }
 
         #region Private methods

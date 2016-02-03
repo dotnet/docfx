@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override int BuildOrder => 1;
 
-        public override IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host)
+        public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             foreach (var model in models)
             {
@@ -30,7 +30,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     content["wordCount"] = WordCounter.CountWord((string)content["conceptual"]);
                 }
             }
-            return models;
         }
     }
 

@@ -12,6 +12,6 @@ namespace Microsoft.DocAsCode.Plugins
         int BuildOrder { get; }
         IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host);
         void Build(FileModel model, IHostService host);
-        IEnumerable<FileModel> Postbuild(ImmutableList<FileModel> models, IHostService host);
+        void Postbuild(ImmutableList<FileModel> models, IHostService host);
     }
 }

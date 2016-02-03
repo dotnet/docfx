@@ -298,12 +298,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 buildStep =>
                     {
                         Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Postprocessing...");
-                        var models = buildStep.Postbuild(hostService.Models, hostService);
-                        if (!object.ReferenceEquals(models, hostService.Models))
-                        {
-                            Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Reloading models...");
-                            hostService.Reload(models);
-                        }
+                        buildStep.Postbuild(hostService.Models, hostService);
                     });
         }
 
