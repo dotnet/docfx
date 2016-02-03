@@ -1,5 +1,10 @@
-Version Notes (Current Version: v1.4.1)
+Version Notes (Current Version: v1.4.2)
 =======================================
+v1.4.2
+-----------
+1. Fix bug for encoded link file.
+2. Fix bug for directory not found.
+
 v1.4.1
 -----------
 Remove `newFileRepository` from output metadata
