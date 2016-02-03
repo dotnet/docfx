@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
                 LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableHashSet(),
                 XRefSpecs = (from item in vm.Items
-                             select GetXRefInfo(item, model.OriginalFileAndType.File)).ToImmutableArray(),
+                             select GetXRefInfo(item, model.Key)).ToImmutableArray(),
             };
         }
 
@@ -158,13 +158,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
         }
 
-        private static XRefSpec GetXRefInfo(ItemViewModel item, string href)
+        private static XRefSpec GetXRefInfo(ItemViewModel item, string key)
         {
             var result = new XRefSpec
             {
                 Uid = item.Uid,
                 Name = item.Name,
-                Href = ((RelativePath)href).GetPathFromWorkingFolder(),
+                Href = key,
             };
             if (!string.IsNullOrEmpty(item.NameForCSharp))
             {

@@ -206,7 +206,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             hostService.Models.RunAll(
                 m =>
                 {
-                    using (new LoggerFileScope(m.OriginalFileAndType.File))
+                    using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                     {
                         Logger.LogVerbose($"Plug-in {processor.Name}: Updating href...");
                         processor.UpdateHref(m, context);
@@ -277,7 +277,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             hostService.Models.RunAll(
                 m =>
                     {
-                        using (new LoggerFileScope(m.OriginalFileAndType.File))
+                        using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                         {
                             Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
                             RunBuildSteps(
@@ -309,7 +309,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 {
                     if (m.Type != DocumentType.Override)
                     {
-                        using (new LoggerFileScope(m.OriginalFileAndType.File))
+                        using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                         {
                             Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
                             m.BaseDir = context.BuildOutputFolder;
@@ -340,7 +340,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             FileModel model,
             SaveResult result)
         {
-            context.FileMap[((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder()] = ((RelativePath)model.File).GetPathFromWorkingFolder();
+            context.FileMap[model.Key] = ((RelativePath)model.File).GetPathFromWorkingFolder();
             DocumentException.RunAll(
                 () => CheckFileLink(hostService, model, result),
                 () => HandleUids(context, model, result),
@@ -418,7 +418,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 DocumentType = result.DocumentType,
                 ModelFile = result.ModelFile,
                 ResourceFile = result.ResourceFile,
-                OriginalFile = model.OriginalFileAndType.File,
+                Key = model.Key,
                 // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
                 LocalPathFromRepoRoot = model.LocalPathFromRepoRoot,
                 Model = model

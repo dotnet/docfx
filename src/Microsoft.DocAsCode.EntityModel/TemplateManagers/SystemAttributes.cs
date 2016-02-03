@@ -79,8 +79,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <returns>A class containing root toc path and parent toc path</returns>
         private static TocInfo GetTocInfo(IDocumentBuildContext context, ManifestItem item)
         {
-            string relativePath = item.OriginalFile;
-            string key = GetFileKey(relativePath);
+            string key = item.Key;
             RelativePath rootTocPath = null;
             RelativePath parentTocPath = null;
             var rootToc = context.GetTocFileKeySet(RelativePath.WorkingFolder)?.FirstOrDefault();

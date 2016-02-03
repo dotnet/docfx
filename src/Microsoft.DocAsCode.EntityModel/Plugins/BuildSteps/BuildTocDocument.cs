@@ -47,11 +47,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             if (!PathUtility.IsRelativePath(item.Href)) return;
             var file = model.File;
-            var originalFile = model.OriginalFileAndType.File;
-            // Special handle for folder ends with '/'
+
             FileAndType originalTocFile = null;
 
             string fileName = Path.GetFileName(item.Href);
+            // Special handle for folder ends with '/'
             if (string.IsNullOrEmpty(fileName))
             {
                 var href = item.Href + "toc.yml";

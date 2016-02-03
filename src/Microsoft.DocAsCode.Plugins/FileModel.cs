@@ -20,6 +20,16 @@ namespace Microsoft.DocAsCode.Plugins
         public FileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)
         {
             OriginalFileAndType = original ?? ft;
+
+            if (OriginalFileAndType.File.StartsWith("~/"))
+            {
+                Key = OriginalFileAndType.File;
+            }
+            else
+            {
+                Key = "~/" + OriginalFileAndType.File;
+            }
+
             FileAndType = ft;
             _content = content;
             _serializer = serializer;
@@ -93,8 +103,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         public DocumentType Type => FileAndType.Type;
 
-        // TODO: update to use Key instead of OriginalFileAndType.File
-        public string Key => OriginalFileAndType.File;
+        public string Key { get; }
 
         public Func<string, string> PathRewriter => FileAndType.PathRewriter;
 

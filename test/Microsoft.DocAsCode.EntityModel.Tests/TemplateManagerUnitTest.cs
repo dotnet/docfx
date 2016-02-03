@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScript.yml");
-            var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
+            var item = new ManifestItem { DocumentType = string.Empty, Key = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.tmpl", template));
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
@@ -154,7 +154,7 @@ test2
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScriptWithPartial.yml");
-            var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
+            var item = new ManifestItem { DocumentType = string.Empty, Key = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(
                 templateName,
                 null,
@@ -224,7 +224,7 @@ function transform(model){
 
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_WithIncludes.yml");
             string inputFolder = null;
-            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, OriginalFile = modelFileName };
+            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, Key = modelFileName };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", template),
                 Tuple.Create("default.html.js", script),
@@ -274,8 +274,8 @@ function transform(model){
             };
 
             string inputFolder = null;
-            var item1 = new ManifestItem { ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType1.yml", OriginalFile = "x.yml", DocumentType = "Conceptual" };
-            var item2 = new ManifestItem { DocumentType = string.Empty, ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType2.yml", OriginalFile = "y.yml" };
+            var item1 = new ManifestItem { ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType1.yml", Key = "x.yml", DocumentType = "Conceptual" };
+            var item2 = new ManifestItem { DocumentType = string.Empty, ModelFile = "TestTemplateProcessor_TemplateFolderWithDifferentType2.yml", Key = "y.yml" };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", defaultTemplate),
                 Tuple.Create($"{templateName}/conceptual.md.tmpl", conceptualTemplate),
@@ -323,7 +323,7 @@ test2
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_NoScript.yml");
-            var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
+            var item = new ManifestItem { DocumentType = string.Empty, Key = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.liquid", template));
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
@@ -363,7 +363,7 @@ test2
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_NoScriptWithPartial.yml");
-            var item = new ManifestItem { DocumentType = string.Empty, OriginalFile = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
+            var item = new ManifestItem { DocumentType = string.Empty, Key = modelFileName, ModelFile = modelFileName, ResourceFile = modelFileName };
             ProcessTemplate(
                 templateName,
                 null,
@@ -416,7 +416,7 @@ function transform(model){
 
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_WithIncludes.yml");
             string inputFolder = null;
-            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, OriginalFile = modelFileName };
+            var item = new ManifestItem { ModelFile = modelFileName, DocumentType = string.Empty, Key = modelFileName };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
                 Tuple.Create("default.html.liquid", template),
                 Tuple.Create("default.html.js", script),
@@ -471,8 +471,8 @@ function transform(model){
             };
 
             string inputFolder = null;
-            var item1 = new ManifestItem { ModelFile = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1.yml", OriginalFile = "x.yml", DocumentType = "Conceptual" };
-            var item2 = new ManifestItem { DocumentType = string.Empty, ModelFile = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2.yml", OriginalFile = "y.yml" };
+            var item1 = new ManifestItem { ModelFile = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1.yml", Key = "x.yml", DocumentType = "Conceptual" };
+            var item2 = new ManifestItem { DocumentType = string.Empty, ModelFile = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2.yml", Key = "y.yml" };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.liquid", defaultTemplate),
                 Tuple.Create($"{templateName}/conceptual.md.liquid", conceptualTemplate),

@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         public string LocalPathFromRepoRoot { get; set; }
         [YamlMember(Alias = "original")]
         [JsonProperty("original")]
-        public string OriginalFile { get; set; }
+        public string Key { get; set; }
         [YamlMember(Alias = "resource")]
         [JsonProperty("resource")]
         public string ResourceFile { get; set; }

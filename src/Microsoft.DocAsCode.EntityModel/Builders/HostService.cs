@@ -275,7 +275,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.OriginalFileAndType.File);
+                Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.LocalPathFromRepoRoot);
             }
         }
     }
