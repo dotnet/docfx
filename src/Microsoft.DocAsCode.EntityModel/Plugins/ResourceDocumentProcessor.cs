@@ -83,15 +83,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override SaveResult Save(FileModel model)
         {
-            if (model.FileAndType != model.OriginalFileAndType)
-            {
-                var targetFile = Path.Combine(model.BaseDir, model.File);
-                Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
-                File.Copy(
-                    Path.Combine(model.OriginalFileAndType.BaseDir, model.OriginalFileAndType.File),
-                    targetFile,
-                    true);
-            }
             var result = new SaveResult
             {
                 DocumentType = "Resource",

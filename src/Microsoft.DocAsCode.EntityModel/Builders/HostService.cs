@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     internal sealed class HostService : IHostService, IDisposable
     {
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
-        private readonly LruList<FileModel> _lru = LruList<FileModel>.Create(0xC00, OnLruRemoving);
+        private readonly LruList<ModelWithCache> _lru = LruList<ModelWithCache>.Create(0xC00, OnLruRemoving);
         private DfmEngineBuilder _engine = DocfxFlavoredMarked.CreateBuilder();
 
         public ImmutableList<FileModel> Models { get; private set; }
@@ -264,10 +264,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private void ContentAccessedHandler(object sender, EventArgs e)
         {
-            _lru.Access((FileModel)sender);
+            _lru.Access((ModelWithCache)sender);
         }
 
-        private static void OnLruRemoving(FileModel m)
+        private static void OnLruRemoving(ModelWithCache m)
         {
             try
             {
@@ -275,7 +275,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.LocalPathFromRepoRoot);
+                Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.File);
             }
         }
     }
