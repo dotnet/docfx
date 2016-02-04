@@ -80,6 +80,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\DocumentBuilder.cs" />
+    <Compile Include="Models\FileMetadata.cs" />
+    <Compile Include="Models\FileMetadataItem.cs" />
     <Compile Include="Builders\DocumentBuildParameters.cs" />
     <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Constants.cs" />
@@ -108,6 +110,9 @@
     <Compile Include="Plugins\BuildSteps\CountWord.cs" />
     <Compile Include="Plugins\BuildSteps\FillReferenceInformation.cs" />
     <Compile Include="Plugins\BuildSteps\MergeManagedReferenceDocument.cs" />
+    <Compile Include="TemplateManagers\Settings\ApplyTemplateOptions.cs" />
+    <Compile Include="TemplateManagers\Settings\ExportSettings.cs" />
+    <Compile Include="TemplateManagers\Settings\ApplyTemplateSettings.cs" />
     <Compile Include="TemplateManagers\JintProcessorHelper.cs" />
     <Compile Include="TemplateManagers\XrefDetails.cs" />
     <Compile Include="TemplateManagers\TemplateTransformedResult.cs" />

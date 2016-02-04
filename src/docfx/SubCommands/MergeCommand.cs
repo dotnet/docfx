@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.MetadataMergers;
     using Microsoft.DocAsCode.Plugins;

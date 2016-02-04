@@ -517,10 +517,12 @@ test2
                         if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                         File.Create(item.ResourceFile).Dispose();
                     }
-
-                    item.Model = new DocAsCode.Plugins.FileModel(new DocAsCode.Plugins.FileAndType(Environment.CurrentDirectory, item.ModelFile, DocAsCode.Plugins.DocumentType.Article, null), model);
-                    TemplateProcessor.Transform(context, item, processor.Templates, outputFolder, false, null);
+                    if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Environment.CurrentDirectory;
+                    item.Model = new DocAsCode.Plugins.ModelWithCache(model);
                 }
+
+                var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
+                TemplateProcessor.Transform(items, context, settings, processor.Templates).ToList();
             }
         }
 

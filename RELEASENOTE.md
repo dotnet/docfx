@@ -2,6 +2,10 @@ Version Notes (Current Version: v1.5)
 =======================================
 v1.5 (Pre-release)
 -----------
+1. Add 3 options to `build` subcommand:
+    1. `--rawModelOutputFolder`: to specify the output folder for raw model if `--exportRawModel`. If the value is not set, raw model will be in the same folder as the output documenation.
+    2. `--viewModelOutputFolder`: to specify the output folder for view model if `--exportViewModel`. If the value is not set, view model will be in the same folder as the output documenation.
+    3. `--dryRun`: if this option is set, `docfx` will go through all the build processes for all the documents, however, no documentation will generated.
 
 v1.4.2
 -----------

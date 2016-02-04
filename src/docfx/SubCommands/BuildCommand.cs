@@ -159,6 +159,10 @@ namespace Microsoft.DocAsCode.SubCommands
             config.Force |= options.ForceRebuild;
             config.ExportRawModel |= options.ExportRawModel;
             config.ExportViewModel |= options.ExportViewModel;
+            if (!string.IsNullOrEmpty(options.RawModelOutputFolder)) config.RawModelOutputFolder = Path.GetFullPath(options.RawModelOutputFolder);
+            if (!string.IsNullOrEmpty(options.ViewModelOutputFolder)) config.ViewModelOutputFolder = Path.GetFullPath(options.ViewModelOutputFolder);
+            config.DryRun |= options.DryRun;
+
             config.FileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
             config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
         }
@@ -548,8 +552,25 @@ namespace Microsoft.DocAsCode.SubCommands
                     Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
                     Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
                     Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
-                parameters.ExportViewModel = config.ExportViewModel == true;
-                parameters.ExportRawModel = config.ExportRawModel == true;
+
+                var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory)
+                {
+                    TransformDocument = config.DryRun != true,
+                };
+
+                applyTemplateSettings.RawModelExportSettings.Export = config.ExportRawModel == true;
+                if (!string.IsNullOrEmpty(config.RawModelOutputFolder))
+                {
+                    applyTemplateSettings.RawModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.RawModelOutputFolder);
+                }
+
+                applyTemplateSettings.ViewModelExportSettings.Export = config.ExportViewModel == true;
+                if (!string.IsNullOrEmpty(config.ViewModelOutputFolder))
+                {
+                    applyTemplateSettings.ViewModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.ViewModelOutputFolder);
+                }
+
+                parameters.ApplyTemplateSettings = applyTemplateSettings;
                 return parameters;
             }
 

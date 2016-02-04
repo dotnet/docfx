@@ -66,7 +66,16 @@ namespace Microsoft.DocAsCode
         [JsonProperty("exportRawModel")]
         public bool? ExportRawModel { get; set; }
 
+        [JsonProperty("rawModelOutputFolder")]
+        public string RawModelOutputFolder { get; set; }
+
         [JsonProperty("exportViewModel")]
         public bool? ExportViewModel { get; set; }
+
+        [JsonProperty("viewModelOutputFolder")]
+        public string ViewModelOutputFolder { get; set; }
+
+        [JsonProperty("dryRun")]
+        public bool? DryRun { get; set; }
     }
 }

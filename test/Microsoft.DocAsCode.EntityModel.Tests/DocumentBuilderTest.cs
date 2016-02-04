@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         {
             const string documentsBaseDir = "db.documents";
             const string outputBaseDir = "db.output";
-
+            const string RawModelFileExtension = ".raw.json";
             #region Prepare test data
             if (Directory.Exists(documentsBaseDir))
             {
@@ -118,17 +118,19 @@ tagRules : [
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
                 using (var builder = new DocumentBuilder())
                 {
-                    builder.Build(
-                        new DocumentBuildParameters
+                    var applyTemplateSettings = new ApplyTemplateSettings(documentsBaseDir, outputBaseDir);
+                    applyTemplateSettings.RawModelExportSettings.Export = true;
+                    var parameters = new DocumentBuildParameters
+                    {
+                        Files = files,
+                        OutputBaseDir = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
+                        ApplyTemplateSettings = applyTemplateSettings,
+                        Metadata = new Dictionary<string, object>
                         {
-                            Files = files,
-                            OutputBaseDir = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
-                            ExportRawModel = true,
-                            Metadata = new Dictionary<string, object>
-                            {
-                                ["meta"] = "Hello world!",
-                            }.ToImmutableDictionary()
-                        });
+                            ["meta"] = "Hello world!",
+                        }.ToImmutableDictionary()
+                    };
+                    builder.Build(parameters);
                 }
 
                 {
@@ -144,8 +146,8 @@ tagRules : [
 
                 {
                     // check conceptual.
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".raw.model.json"))));
-                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".raw.model.json")));
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
                     Assert.Equal(
                         "<h1 id=\"hello-world\">Hello World</h1>",
                         model["rawTitle"]);
@@ -163,15 +165,16 @@ tagRules : [
 
                 {
                     // check mref.
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.Console.csyml", ".raw.model.json"))));
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.ConsoleColor.csyml", ".raw.model.json"))));
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.Console.csyml", RawModelFileExtension))));
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.ConsoleColor.csyml", RawModelFileExtension))));
                 }
 
                 {
                     // check resource.
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(resourceFile, ".raw.model.json"))));
-                    var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(resourceFile, ".raw.model.json")));
+                    // as there is no template, resource file will not be copied
+                    Assert.True(!File.Exists(Path.Combine(outputBaseDir, resourceFile)));
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + RawModelFileExtension)));
+                    var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + RawModelFileExtension));
                     Assert.Equal(3, meta.Count);
                     Assert.True(meta.ContainsKey("meta"));
                     Assert.Equal("Hello world!", meta["meta"]);

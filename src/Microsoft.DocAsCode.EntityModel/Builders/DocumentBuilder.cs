@@ -106,25 +106,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     // Use manifest from now on
                     UpdateContext(context);
                     UpdateHref(manifest, context);
-
-                    if (parameters.ExportRawModel)
-                    {
-                        Logger.LogInfo($"Exporting {manifest.Count} raw model(s)...");
-                        foreach(var item in manifest)
-                        {
-                            var model = item.Item;
-                            if (model.Model.Content != null)
-                            {
-                                var rawModelPath = Path.Combine(parameters.OutputBaseDir, Path.ChangeExtension(model.ModelFile, RawModelExtension));
-                                JsonUtility.Serialize(rawModelPath, model.Model.Content);
-                            }
-                        }
-                    }
-
                     using (new LoggerPhaseScope("Apply Templates"))
                     {
                         Logger.LogInfo($"Applying templates to {manifest.Count} model(s)...");
-                        Transform(manifest.Select(s => s.Item), context, parameters.TemplateCollection, parameters.ExportViewModel);
+                        Transform(manifest.Select(s => s.Item).ToList(), context, parameters.TemplateCollection, parameters.ApplyTemplateSettings);
                     }
 
                     Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
@@ -148,33 +133,44 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             hostService.Models.RunAll(m => m.Dispose());
         }
 
-        private void Transform(IEnumerable<ManifestItem> manifest, DocumentBuildContext context, TemplateCollection templateCollection, bool exportMetadata)
+        private void Transform(List<ManifestItem> manifest, DocumentBuildContext context, TemplateCollection templateCollection, ApplyTemplateSettings settings)
         {
             if (templateCollection == null || templateCollection.Count == 0)
             {
                 Logger.LogWarning("No template is found.");
             }
-            else
+
+            // If only export raw model is needed, simply export raw model and return
+            if (settings.Options == ApplyTemplateOptions.ExportRawModel || (templateCollection == null || templateCollection.Count == 0))
             {
-                Logger.LogVerbose("Start applying template...");
+                Logger.LogInfo($"Exporting {manifest.Count} raw model(s)...");
+                foreach (var item in manifest)
+                {
+                    TemplateProcessor.ExportModel(item.Model.Content, item.ModelFile, settings.RawModelExportSettings);
+                }
+                return;
             }
+
+            Logger.LogVerbose("Start applying template...");
 
             var outputDirectory = context.BuildOutputFolder;
 
-            List<TemplateManifestItem> templateManifest = new List<TemplateManifestItem>();
+            var templateManifest = TemplateProcessor.Transform(manifest, context, settings, templateCollection).ToList();
 
-            // Model can apply multiple template with different extension, so append the view model extension instead of change extension
-            Func<string, string> metadataPathProvider = (s) => { return s + ViewModelExtension; };
-            foreach (var item in manifest)
+            if (templateManifest.Count > 0)
             {
-                var manifestItem = TemplateProcessor.Transform(context, item, templateCollection, outputDirectory, exportMetadata, metadataPathProvider);
-                templateManifest.Add(manifestItem);
+                // Save manifest from template
+                var manifestPath = Path.Combine(outputDirectory, ManifestFileName);
+                JsonUtility.Serialize(manifestPath, templateManifest);
+                Logger.Log(LogLevel.Verbose, $"Manifest file saved to {manifestPath}.");
             }
-
-            // Save manifest from template
-            var manifestPath = Path.Combine(outputDirectory, ManifestFileName);
-            JsonUtility.Serialize(manifestPath, templateManifest);
-            Logger.Log(LogLevel.Verbose, $"Manifest file saved to {manifestPath}.");
+            else
+            {
+                if (!settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+                {
+                    Logger.LogInfo("Dryrun, no template will be applied to the documents.");
+                }
+            }
         }
 
         private IEnumerable<ManifestItemWithContext> BuildCore(InnerBuildContext buildContext, DocumentBuildContext context)

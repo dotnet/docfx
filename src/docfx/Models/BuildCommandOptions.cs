@@ -66,7 +66,16 @@ namespace Microsoft.DocAsCode
         [Option("exportRawModel", HelpText = "If set to true, data model to run template script will be extracted in .raw.model.json extension")]
         public bool ExportRawModel { get; set; }
 
+        [Option("rawModelOutputFolder", HelpText = "Specify the output folder for the raw model. If not set, the raw model will be generated to the same folder as the output documentation")]
+        public string RawModelOutputFolder { get; set; }
+
+        [Option("viewModelOutputFolder", HelpText = "Specify the output folder for the view model. If not set, the view model will be generated to the same folder as the output documentation")]
+        public string ViewModelOutputFolder { get; set; }
+
         [Option("exportViewModel", HelpText = "If set to true, data model to apply template will be extracted in .view.model.json extension")]
         public bool ExportViewModel { get; set; }
+
+        [Option("dryRun", HelpText = "If set to true, template will not be actually applied to the documents. This option is always used with --exportRawModel or --exportViewModel is set so that only raw model files or view model files are generated.")]
+        public bool DryRun { get; set; }
     }
 }

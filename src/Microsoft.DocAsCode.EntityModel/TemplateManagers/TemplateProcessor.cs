@@ -52,9 +52,39 @@ namespace Microsoft.DocAsCode.EntityModel
             return Path.ChangeExtension(path, defaultTemplate.Extension);
         }
 
-        // TODO: change to use IDocumentBuildContext
-        public static TemplateManifestItem Transform(DocumentBuildContext context, ManifestItem item, TemplateCollection templateCollection, string outputDirectory, bool exportMetadata, Func<string, string> metadataFilePathProvider)
+        public static void ExportModel(object model, string modelFileRelativePath, ExportSettings settings)
         {
+            if (model == null) return;
+            var outputFolder = settings.OutputFolder;
+
+            string rawModelPath = Path.Combine(outputFolder ?? string.Empty, settings.PathRewriter(modelFileRelativePath));
+
+            JsonUtility.Serialize(rawModelPath, model);
+        }
+
+        public static IEnumerable<TemplateManifestItem> Transform(IEnumerable<ManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings, TemplateCollection templates)
+        {
+            var documentTypes = items.Select(s => s.DocumentType).Distinct().Where(s => s != "Resource" && templates[s] == null);
+            if (documentTypes.Any())
+            {
+                Logger.LogWarning($"There is no template processing document type(s): {documentTypes.ToDelimitedString()}");
+            }
+
+            foreach (var item in items)
+            {
+                var manifestItem = TransformItem(item, context, settings, templates);
+                if (manifestItem != null) yield return manifestItem;
+            }
+        }
+
+        // TODO: change to use IDocumentBuildContext
+        private static TemplateManifestItem TransformItem(ManifestItem item, DocumentBuildContext context, ApplyTemplateSettings settings, TemplateCollection templateCollection)
+        {
+            if (settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
+            {
+                ExportModel(item.Model.Content, item.ModelFile, settings.RawModelExportSettings);
+            }
+
             if (item.Model == null || item.Model.Content == null) throw new ArgumentNullException("Content for item.Model should not be null!");
             var manifestItem = new TemplateManifestItem
             {
@@ -63,107 +93,106 @@ namespace Microsoft.DocAsCode.EntityModel
                 OutputFiles = new Dictionary<string, string>()
             };
             HashSet<string> missingUids = new HashSet<string>();
-            if (templateCollection == null || templateCollection.Count == 0)
+            if (templateCollection != null && templateCollection.Count > 0)
+            {
+                try
+                {
+                    var model = item.Model.Content;
+                    var templates = templateCollection[item.DocumentType];
+                    var outputDirectory = settings.OutputFolder ?? Environment.CurrentDirectory;
+
+                    // 1. process model
+                    if (templates != null)
+                    {
+                        var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
+                        foreach (var template in templates)
+                        {
+                            var extension = template.Extension;
+                            string outputFile = Path.ChangeExtension(item.ModelFile, extension);
+                            string outputPath = Path.Combine(outputDirectory, outputFile);
+                            var dir = Path.GetDirectoryName(outputPath);
+                            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                            var result = template.TransformModel(model, systemAttrs);
+
+                            if (settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
+                            {
+                                ExportModel(result.Model, outputFile, settings.ViewModelExportSettings);
+                            }
+
+                            if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+                            {
+                                string transformed = result.Result;
+                                if (!string.IsNullOrWhiteSpace(transformed))
+                                {
+                                    if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        try
+                                        {
+                                            TranformHtml(context, transformed, item.ModelFile, outputPath);
+                                        }
+                                        catch (AggregateException e)
+                                        {
+                                            e.Handle(s =>
+                                            {
+                                                var xrefExcetpion = s as CrossReferenceNotResolvedException;
+                                                if (xrefExcetpion != null)
+                                                {
+                                                    missingUids.Add(xrefExcetpion.UidRawText);
+                                                    return true;
+                                                }
+                                                else
+                                                {
+                                                    return false;
+                                                }
+                                            });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(outputPath, transformed, Encoding.UTF8);
+                                    }
+
+                                    Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.ModelFile}\" to \"{outputPath}\".");
+                                }
+                                else
+                                {
+                                    // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
+                                    Logger.LogWarning($"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
+                                    File.WriteAllText(outputPath, string.Empty);
+                                }
+                                manifestItem.OutputFiles.Add(extension, outputFile);
+                            }
+                        }
+                    }
+
+                    // 2. process resource
+                    if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument) && item.ResourceFile != null)
+                    {
+                        PathUtility.CopyFile(Path.Combine(item.InputFolder, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
+                        manifestItem.OutputFiles.Add("resource", item.ResourceFile);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError($"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
+                    throw;
+                }
+
+                if (missingUids.Count > 0)
+                {
+                    var uids = string.Join(", ", missingUids.Select(s => $"\"{s}\""));
+                    Logger.LogWarning($"Unable to resolve cross-reference {uids} for \"{manifestItem.OriginalFile.ToDisplayPath()}\"");
+                }
+            }
+
+            if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
             {
                 return manifestItem;
             }
-            try
+            else
             {
-                var model = item.Model.Content;
-                var templates = templateCollection[item.DocumentType];
-                // 1. process model
-                if (templates == null)
-                {
-                    // Logger.LogWarning($"There is no template processing {item.DocumentType} document \"{item.LocalPathFromRepoRoot}\"");
-                }
-                else
-                {
-                    var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
-                    foreach (var template in templates)
-                    {
-                        var extension = template.Extension;
-                        string outputFile = Path.ChangeExtension(item.ModelFile, extension);
-                        string outputPath = Path.Combine(outputDirectory ?? string.Empty, outputFile);
-                        var dir = Path.GetDirectoryName(outputPath);
-                        if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                        string transformed;
-                        var result = template.TransformModel(model, systemAttrs);
-
-                        if (exportMetadata)
-                        {
-                            if (metadataFilePathProvider == null)
-                            {
-                                throw new ArgumentNullException(nameof(metadataFilePathProvider));
-                            }
-
-                            JsonUtility.Serialize(metadataFilePathProvider(outputPath), result.Model);
-                        }
-
-                        transformed = result.Result;
-
-
-                        if (!string.IsNullOrWhiteSpace(transformed))
-                        {
-                            if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
-                            {
-                                try
-                                {
-                                    TranformHtml(context, transformed, item.ModelFile, outputPath);
-                                }
-                                catch (AggregateException e)
-                                {
-                                    e.Handle(s =>
-                                    {
-                                        var xrefExcetpion = s as CrossReferenceNotResolvedException;
-                                        if (xrefExcetpion != null)
-                                        {
-                                            missingUids.Add(xrefExcetpion.UidRawText);
-                                            return true;
-                                        }
-                                        else
-                                        {
-                                            return false;
-                                        }
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                File.WriteAllText(outputPath, transformed, Encoding.UTF8);
-                            }
-
-                            Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.ModelFile}\" to \"{outputPath}\".");
-                        }
-                        else
-                        {
-                            // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
-                            Logger.LogWarning($"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
-                            File.WriteAllText(outputPath, string.Empty);
-                        }
-                        manifestItem.OutputFiles.Add(extension, outputFile);
-                    }
-                }
-
-                // 2. process resource
-                if (item.ResourceFile != null)
-                {
-                    PathUtility.CopyFile(Path.Combine(item.InputFolder, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
-                    manifestItem.OutputFiles.Add("resource", item.ResourceFile);
-                }
+                return null;
             }
-            catch (Exception e)
-            {
-                Logger.LogError($"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
-                throw;
-            }
-
-            if (missingUids.Count > 0)
-            {
-                var uids = string.Join(", ", missingUids.Select(s => $"\"{s}\""));
-                Logger.LogWarning($"Unable to resolve cross-reference {uids} for \"{manifestItem.OriginalFile.ToDisplayPath()}\"");
-            }
-
-            return manifestItem;
         }
 
         private static void TranformHtml(DocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
