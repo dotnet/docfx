@@ -56,7 +56,6 @@ namespace Microsoft.DocAsCode.EntityModel
         public static TemplateManifestItem Transform(DocumentBuildContext context, ManifestItem item, TemplateCollection templateCollection, string outputDirectory, bool exportMetadata, Func<string, string> metadataFilePathProvider)
         {
             if (item.Model == null || item.Model.Content == null) throw new ArgumentNullException("Content for item.Model should not be null!");
-            var baseDirectory = context.BuildOutputFolder ?? string.Empty;
             var manifestItem = new TemplateManifestItem
             {
                 DocumentType = item.DocumentType,
@@ -148,7 +147,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 // 2. process resource
                 if (item.ResourceFile != null)
                 {
-                    PathUtility.CopyFile(Path.Combine(baseDirectory, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
+                    PathUtility.CopyFile(Path.Combine(item.InputFolder, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
                     manifestItem.OutputFiles.Add("resource", item.ResourceFile);
                 }
             }
