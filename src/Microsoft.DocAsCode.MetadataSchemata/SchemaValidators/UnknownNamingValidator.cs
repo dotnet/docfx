@@ -9,7 +9,12 @@ namespace Microsoft.DocAsCode.MetadataSchemata.SchemaValidators
 
     public class UnknownNamingValidator : IUnknownMetadataValidator
     {
-        private static readonly Regex Regex = new Regex("^[a-z][a-z0-9_]*$", RegexOptions.Compiled);
+        private static readonly Regex Regex =
+#if NetCore
+            new Regex("^[a-z][a-z0-9_]*$");
+#else
+            new Regex("^[a-z][a-z0-9_]*$", RegexOptions.Compiled);
+#endif
 
         public ValidationResult Validate(string name, JToken value)
         {
