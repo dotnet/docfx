@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata.SchemaValidators
                     return ValidationResult.Success;
                 case JTokenType.Object:
                 default:
-                    return ValidationResult.Fail(ValidationErrorCodes.UnknownMetadata.UnexpectedType, "Invalid type for property {name}.", name);
+                    return ValidationResult.Fail(ValidationErrorCodes.UnknownMetadata.UnexpectedType, $"Invalid type for property {name}.", name);
             }
         }
 

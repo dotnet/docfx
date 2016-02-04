@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata.SchemaValidators
             }
             else
             {
-                return ValidationResult.Fail(ValidationErrorCodes.UnknownMetadata.BadNaming, "Bad naming for unknown metadata {name}.", name);
+                return ValidationResult.Fail(ValidationErrorCodes.UnknownMetadata.BadNaming, $"Bad naming for unknown metadata {name}.", name);
             }
         }
     }
