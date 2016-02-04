@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata
         public bool IsVisible { get; set; }
         [JsonProperty("query_name", Required = Required.Default)]
         public string QueryName { get; set; }
-        [JsonProperty("display_name", Required = Required.Always)]
+        [JsonProperty("display_name", Required = Required.Default)]
         public string DisplayName { get; set; }
         [JsonProperty("choice_set", Required = Required.Default)]
         public List<JValue> ChoiceSet { get; set; }

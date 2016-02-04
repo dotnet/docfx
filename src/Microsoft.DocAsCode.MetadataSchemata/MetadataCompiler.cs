@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata
             prop.SetCustomAttribute(
                 new CustomAttributeBuilder(
                     DisplayNameAttribute_Ctor,
-                    new object[] { pair.Value.DisplayName }));
+                    new object[] { pair.Value.DisplayName ?? pair.Key }));
 
             if (pair.Value.IsQueryable)
             {
