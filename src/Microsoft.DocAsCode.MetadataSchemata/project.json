@@ -7,6 +7,9 @@
         "System.Core": "",
         "System": "",
         "System.Runtime": ""
+      },
+      "dependencies": {
+        "Newtonsoft.Json": "7.0.1"
       }
     },
     "dnx451": {
@@ -15,10 +18,30 @@
         "System.Core": "",
         "System": "",
         "System.Runtime": ""
+      },
+      "dependencies": {
+        "Newtonsoft.Json": "7.0.1"
+      }
+    },
+    "netcore45": {
+      "frameworkAssemblies": {
+        "mscorlib": "",
+        "Microsoft.CSharp": "",
+        "System": "",
+        "System.Core": "",
+        "System.Collections": "",
+        "System.Linq": "",
+        "System.Net": "",
+        "System.Runtime": "",
+        "System.Runtime.Extensions": "",
+        "System.Text.RegularExpressions": ""
+      },
+      "dependencies": {
+        "Newtonsoft.Json": "6.0.8"
+      },
+      "compilationOptions": {
+        "define": ["NetCore"]
       }
     }
-  },
-  "dependencies": {
-    "Newtonsoft.Json": "7.0.1"
   }
 }
