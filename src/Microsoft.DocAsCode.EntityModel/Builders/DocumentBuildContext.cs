@@ -13,19 +13,16 @@
 
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
-        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, null) { }
+        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty) { }
 
-        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, TemplateCollection templateCollection)
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages)
         {
             BuildOutputFolder = buildOutputFolder;
             AllSourceFiles = allSourceFiles.ToImmutableDictionary(ft => ((RelativePath)ft.File).GetPathFromWorkingFolder(), FilePathComparer.OSPlatformSensitiveStringComparer);
-            TemplateCollection = templateCollection;
             ExternalReferencePackages = externalReferencePackages;
         }
 
         public string BuildOutputFolder { get; }
-
-        public TemplateCollection TemplateCollection { get; }
 
         public ImmutableArray<string> ExternalReferencePackages { get; }
 

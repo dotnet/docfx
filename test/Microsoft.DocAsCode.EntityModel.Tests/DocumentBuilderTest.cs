@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
+    [Collection("docfx STA")]
     public class DocumentBuilderTest
     {
         private TestLoggerListener Listener { get; set; }

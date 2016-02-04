@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
     [Trait("EntityType", "Model")]
+    [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest
     {
         private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();

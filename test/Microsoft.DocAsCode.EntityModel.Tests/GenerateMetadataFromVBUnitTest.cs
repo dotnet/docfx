@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "VB")]
     [Trait("EntityType", "Model")]
+    [Collection("docfx STA")]
     public class GenerateMetadataFromVBUnitTest
     {
         private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();

@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
         public FileMetadata FileMetadata { get; set; }
-        public TemplateCollection TemplateCollection { get; set; }
+        public TemplateManager TemplateManager { get; set; }
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
     }
 }

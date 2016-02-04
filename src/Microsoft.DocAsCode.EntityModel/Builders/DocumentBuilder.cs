@@ -89,30 +89,29 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 var context = new DocumentBuildContext(
                     Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
                     parameters.Files.EnumerateFiles(),
-                    parameters.ExternalReferencePackages,
-                    parameters.TemplateCollection
+                    parameters.ExternalReferencePackages
                     );
                 Logger.LogVerbose("Start building document...");
                 IEnumerable<InnerBuildContext> innerContexts = Enumerable.Empty<InnerBuildContext>();
                 try
                 {
-                    innerContexts = GetInnerContexts(parameters, Processors).ToList();
-                    var manifest = new List<ManifestItemWithContext>();
-                    foreach (var item in innerContexts)
+                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor())
                     {
-                        manifest.AddRange(BuildCore(item, context));
-                    }
+                        innerContexts = GetInnerContexts(parameters, Processors, processor).ToList();
+                        var manifest = new List<ManifestItemWithContext>();
+                        foreach (var item in innerContexts)
+                        {
+                            manifest.AddRange(BuildCore(item, context));
+                        }
 
-                    // Use manifest from now on
-                    UpdateContext(context);
-                    UpdateHref(manifest, context);
-                    using (new LoggerPhaseScope("Apply Templates"))
-                    {
-                        Logger.LogInfo($"Applying templates to {manifest.Count} model(s)...");
-                        Transform(manifest.Select(s => s.Item).ToList(), context, parameters.TemplateCollection, parameters.ApplyTemplateSettings);
-                    }
+                        // Use manifest from now on
+                        UpdateContext(context);
+                        UpdateHref(manifest, context);
 
-                    Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
+                        TemplateProcessor.Transform(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
+
+                        Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
+                    }
                 }
                 finally
                 {
@@ -131,46 +130,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         private void Cleanup(HostService hostService)
         {
             hostService.Models.RunAll(m => m.Dispose());
-        }
-
-        private void Transform(List<ManifestItem> manifest, DocumentBuildContext context, TemplateCollection templateCollection, ApplyTemplateSettings settings)
-        {
-            if (templateCollection == null || templateCollection.Count == 0)
-            {
-                Logger.LogWarning("No template is found.");
-            }
-
-            // If only export raw model is needed, simply export raw model and return
-            if (settings.Options == ApplyTemplateOptions.ExportRawModel || (templateCollection == null || templateCollection.Count == 0))
-            {
-                Logger.LogInfo($"Exporting {manifest.Count} raw model(s)...");
-                foreach (var item in manifest)
-                {
-                    TemplateProcessor.ExportModel(item.Model.Content, item.ModelFile, settings.RawModelExportSettings);
-                }
-                return;
-            }
-
-            Logger.LogVerbose("Start applying template...");
-
-            var outputDirectory = context.BuildOutputFolder;
-
-            var templateManifest = TemplateProcessor.Transform(manifest, context, settings, templateCollection).ToList();
-
-            if (templateManifest.Count > 0)
-            {
-                // Save manifest from template
-                var manifestPath = Path.Combine(outputDirectory, ManifestFileName);
-                JsonUtility.Serialize(manifestPath, templateManifest);
-                Logger.Log(LogLevel.Verbose, $"Manifest file saved to {manifestPath}.");
-            }
-            else
-            {
-                if (!settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
-                {
-                    Logger.LogInfo("Dryrun, no template will be applied to the documents.");
-                }
-            }
         }
 
         private IEnumerable<ManifestItemWithContext> BuildCore(InnerBuildContext buildContext, DocumentBuildContext context)
@@ -305,6 +264,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         {
             var hostService = buildContext.HostService;
             var processor = buildContext.Processor;
+            var templateProcessor = buildContext.TemplateProcessor;
             var manifestItems = new List<ManifestItemWithContext>();
             hostService.Models.RunAll(
                 m =>
@@ -322,8 +282,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                             var result = processor.Save(m);
                             if (result != null)
                             {
-                                m.File = TemplateProcessor.UpdateFilePath(m.File, result.DocumentType, context.TemplateCollection);
-                                result.ModelFile = TemplateProcessor.UpdateFilePath(result.ModelFile, result.DocumentType, context.TemplateCollection);
+                                if (templateProcessor != null)
+                                {
+                                    m.File = templateProcessor.UpdateFileExtension(m.File, result.DocumentType);
+                                    result.ModelFile = templateProcessor.UpdateFileExtension(result.ModelFile, result.DocumentType);
+                                }
+
                                 var item = HandleSaveResult(context, hostService, m, result);
                                 manifestItems.Add(new ManifestItemWithContext(item, m, processor));
                             }
@@ -442,7 +406,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
         }
 
-        private static IEnumerable<InnerBuildContext> GetInnerContexts(DocumentBuildParameters parameters, IEnumerable<IDocumentProcessor> processors)
+        private static IEnumerable<InnerBuildContext> GetInnerContexts(DocumentBuildParameters parameters, IEnumerable<IDocumentProcessor> processors, TemplateProcessor templateProcessor)
         {
             var filesGroupedByProcessor =
                     from file in parameters.Files.EnumerateFiles()
@@ -470,7 +434,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 yield return new InnerBuildContext(new HostService(
                     from file in item
                     select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file)),
-                    item.Key);
+                    item.Key,
+                    templateProcessor);
             }
         }
 
@@ -478,11 +443,13 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         {
             public HostService HostService { get; }
             public IDocumentProcessor Processor { get; }
+            public TemplateProcessor TemplateProcessor { get; }
 
-            public InnerBuildContext(HostService hostService, IDocumentProcessor processor)
+            public InnerBuildContext(HostService hostService, IDocumentProcessor processor, TemplateProcessor templateProcessor)
             {
                 HostService = hostService;
                 Processor = processor;
+                TemplateProcessor = templateProcessor;
             }
         }
 

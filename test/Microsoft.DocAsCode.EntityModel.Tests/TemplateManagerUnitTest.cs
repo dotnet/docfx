@@ -508,8 +508,7 @@ test2
             {
                 var processor = new TemplateProcessor(resource);
                 var context = new DocumentBuildContext(inputFolder);
-                processor.ProcessDependencies(outputFolder);
-                foreach(var item in items)
+                foreach (var item in items)
                 {
                     if (item.ResourceFile != null)
                     {
@@ -520,9 +519,8 @@ test2
                     if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Environment.CurrentDirectory;
                     item.Model = new DocAsCode.Plugins.ModelWithCache(model);
                 }
-
                 var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
-                TemplateProcessor.Transform(items, context, settings, processor.Templates).ToList();
+                TemplateProcessor.Transform(processor, items.ToList(), context, settings);
             }
         }
 

@@ -40,10 +40,10 @@ namespace Microsoft.DocAsCode.EntityModel
             Templates = new TemplateCollection(resourceProvider);
         }
 
-        public static string UpdateFilePath(string path, string documentType, TemplateCollection templateCollection)
+        public string UpdateFileExtension(string path, string documentType)
         {
-            if (templateCollection == null) return path;
-            var templates = templateCollection[documentType];
+            if (IsEmpty) return path;
+            var templates = Templates[documentType];
 
             // Get default template extension
             if (templates == null || templates.Count == 0) return path;
@@ -52,7 +52,73 @@ namespace Microsoft.DocAsCode.EntityModel
             return Path.ChangeExtension(path, defaultTemplate.Extension);
         }
 
-        public static void ExportModel(object model, string modelFileRelativePath, ExportSettings settings)
+        public static void Transform(TemplateProcessor processor, List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings)
+        {
+            if (settings.Options == ApplyTemplateOptions.ExportRawModel || processor == null)
+            {
+                ExportRawModel(manifest, settings);
+                return;
+            }
+
+            using (new LoggerPhaseScope("Apply Templates"))
+            {
+                Logger.LogInfo($"Applying templates to {manifest.Count} model(s)...");
+
+                processor.ProcessDependencies(settings.OutputFolder);
+                if (processor.IsEmpty)
+                {
+                    Logger.LogWarning("No template is found.");
+                    ExportRawModel(manifest, settings);
+                    return;
+                }
+
+                Logger.LogVerbose("Start applying template...");
+
+                var outputDirectory = context.BuildOutputFolder;
+
+                var templateManifest = processor.Transform(manifest, context, settings).ToList();
+
+                if (!settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+                {
+                    Logger.LogInfo("Dryrun, no template will be applied to the documents.");
+                }
+
+                if (templateManifest.Count > 0)
+                {
+                    // Save manifest from template
+                    var manifestPath = Path.Combine(outputDirectory ?? string.Empty, ManifestFileName);
+                    JsonUtility.Serialize(manifestPath, templateManifest);
+                    Logger.LogInfo($"Manifest file saved to {manifestPath}.");
+                }
+            }
+        }
+
+        public IEnumerable<TemplateManifestItem> Transform(IEnumerable<ManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings)
+        {
+            var documentTypes = items.Select(s => s.DocumentType).Distinct().Where(s => s != "Resource" && Templates[s] == null);
+            if (documentTypes.Any())
+            {
+                Logger.LogWarning($"There is no template processing document type(s): {documentTypes.ToDelimitedString()}");
+            }
+
+            foreach (var item in items)
+            {
+                var manifestItem = TransformItem(item, context, settings);
+                if (manifestItem != null) yield return manifestItem;
+            }
+        }
+
+        private static void ExportRawModel(List<ManifestItem> manifest, ApplyTemplateSettings settings)
+        {
+            if (!settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel)) return;
+            Logger.LogInfo($"Exporting {manifest.Count} raw model(s)...");
+            foreach (var item in manifest)
+            {
+                ExportModel(item.Model.Content, item.ModelFile, settings.RawModelExportSettings);
+            }
+        }
+
+        private static void ExportModel(object model, string modelFileRelativePath, ExportSettings settings)
         {
             if (model == null) return;
             var outputFolder = settings.OutputFolder;
@@ -62,23 +128,8 @@ namespace Microsoft.DocAsCode.EntityModel
             JsonUtility.Serialize(rawModelPath, model);
         }
 
-        public static IEnumerable<TemplateManifestItem> Transform(IEnumerable<ManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings, TemplateCollection templates)
-        {
-            var documentTypes = items.Select(s => s.DocumentType).Distinct().Where(s => s != "Resource" && templates[s] == null);
-            if (documentTypes.Any())
-            {
-                Logger.LogWarning($"There is no template processing document type(s): {documentTypes.ToDelimitedString()}");
-            }
-
-            foreach (var item in items)
-            {
-                var manifestItem = TransformItem(item, context, settings, templates);
-                if (manifestItem != null) yield return manifestItem;
-            }
-        }
-
         // TODO: change to use IDocumentBuildContext
-        private static TemplateManifestItem TransformItem(ManifestItem item, DocumentBuildContext context, ApplyTemplateSettings settings, TemplateCollection templateCollection)
+        private TemplateManifestItem TransformItem(ManifestItem item, DocumentBuildContext context, ApplyTemplateSettings settings)
         {
             if (settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
             {
@@ -92,14 +143,14 @@ namespace Microsoft.DocAsCode.EntityModel
                 OriginalFile = item.LocalPathFromRepoRoot,
                 OutputFiles = new Dictionary<string, string>()
             };
-            HashSet<string> missingUids = new HashSet<string>();
-            if (templateCollection != null && templateCollection.Count > 0)
+            var outputDirectory = settings.OutputFolder ?? Environment.CurrentDirectory;
+            if (!IsEmpty)
             {
+                HashSet<string> missingUids = new HashSet<string>();
                 try
                 {
                     var model = item.Model.Content;
-                    var templates = templateCollection[item.DocumentType];
-                    var outputDirectory = settings.OutputFolder ?? Environment.CurrentDirectory;
+                    var templates = Templates[item.DocumentType];
 
                     // 1. process model
                     if (templates != null)
@@ -152,7 +203,7 @@ namespace Microsoft.DocAsCode.EntityModel
                                         File.WriteAllText(outputPath, transformed, Encoding.UTF8);
                                     }
 
-                                    Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.ModelFile}\" to \"{outputPath}\".");
+                                    Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.LocalPathFromRepoRoot}\" to \"{outputPath}\".");
                                 }
                                 else
                                 {
@@ -163,13 +214,6 @@ namespace Microsoft.DocAsCode.EntityModel
                                 manifestItem.OutputFiles.Add(extension, outputFile);
                             }
                         }
-                    }
-
-                    // 2. process resource
-                    if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument) && item.ResourceFile != null)
-                    {
-                        PathUtility.CopyFile(Path.Combine(item.InputFolder, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
-                        manifestItem.OutputFiles.Add("resource", item.ResourceFile);
                     }
                 }
                 catch (Exception e)
@@ -185,14 +229,14 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
             }
 
-            if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+            // 2. process resource
+            if (item.ResourceFile != null)
             {
-                return manifestItem;
+                PathUtility.CopyFile(Path.Combine(item.InputFolder, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
+                manifestItem.OutputFiles.Add("resource", item.ResourceFile);
             }
-            else
-            {
-                return null;
-            }
+
+            return manifestItem;
         }
 
         private static void TranformHtml(DocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
@@ -246,7 +290,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        public void ProcessDependencies(string outputDirectory)
+        private void ProcessDependencies(string outputDirectory)
         {
             if (!IsEmpty)
             {

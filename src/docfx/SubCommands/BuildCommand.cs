@@ -350,17 +350,17 @@ namespace Microsoft.DocAsCode.SubCommands
                 created = _templateManager.TryExportTemplateFiles(pluginFilePath, @"^plugins/.*");
                 if (created)
                 {
-                    BuildDocumentWithPlugin(Config, baseDirectory, outputDirectory, pluginBaseFolder, Path.Combine(pluginFilePath, "plugins"));
+                    BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, pluginBaseFolder, Path.Combine(pluginFilePath, "plugins"));
                 }
                 else
                 {
                     if (Directory.Exists(defaultPluginFolderPath))
                     {
-                        BuildDocumentWithPlugin(Config, baseDirectory, outputDirectory, pluginBaseFolder, defaultPluginFolderPath);
+                        BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, pluginBaseFolder, defaultPluginFolderPath);
                     }
                     else
                     {
-                        DocumentBuilderWrapper.BuildDocument(Config, baseDirectory, outputDirectory, null);
+                        DocumentBuilderWrapper.BuildDocument(Config, _templateManager, baseDirectory, outputDirectory, null);
                     }
                 }
             }
@@ -385,7 +385,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static void BuildDocumentWithPlugin(BuildJsonConfig config, string baseDirectory, string outputDirectory, string applicationBaseDirectory, string pluginDirectory)
+        private static void BuildDocumentWithPlugin(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string applicationBaseDirectory, string pluginDirectory)
         {
             AppDomain builderDomain = null;
             try
@@ -402,7 +402,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
                 builderDomain = AppDomain.CreateDomain("document builder domain", null, setup);
                 builderDomain.UnhandledException += (s, e) => { };
-                builderDomain.DoCallBack(new DocumentBuilderWrapper(config, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener()).BuildDocument);
+                builderDomain.DoCallBack(new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener()).BuildDocument);
             }
             finally
             {
@@ -421,8 +421,9 @@ namespace Microsoft.DocAsCode.SubCommands
             private readonly string _outputDirectory;
             private readonly BuildJsonConfig _config;
             private readonly CrossAppDomainListener _listener;
+            private readonly TemplateManager _manager;
 
-            public DocumentBuilderWrapper(BuildJsonConfig config, string baseDirectory, string outputDirectory, string pluginDirectory, CrossAppDomainListener listener)
+            public DocumentBuilderWrapper(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string pluginDirectory, CrossAppDomainListener listener)
             {
                 if (config == null)
                 {
@@ -434,6 +435,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 _outputDirectory = outputDirectory;
                 _config = config;
                 _listener = listener;
+                _manager = manager;
             }
 
             public void BuildDocument()
@@ -446,7 +448,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 try
                 {
-                    BuildDocument(_config, _baseDirectory, _outputDirectory, _pluginDirectory);
+                    BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory);
                 }
                 finally
                 {
@@ -454,27 +456,20 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            public static void BuildDocument(BuildJsonConfig config, string baseDirectory, string outputDirectory, string pluginDirectory)
+            public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory)
             {
                 try
                 {
-                    var templateManager = new TemplateManager(typeof(DocumentBuilderWrapper).Assembly, "Template", config.Templates, config.Themes, config.BaseDirectory);
-
                     using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
                     {
-                        var parameters = ConfigToParameter(config, baseDirectory, outputDirectory);
+                        var parameters = ConfigToParameter(config, templateManager, baseDirectory, outputDirectory);
                         if (parameters.Files.Count == 0)
                         {
                             Logger.LogWarning("No files found, nothing is to be generated");
                             return;
                         }
 
-                        using (var processor = templateManager.GetTemplateProcessor())
-                        {
-                            parameters.TemplateCollection = processor.Templates;
-                            processor.ProcessDependencies(parameters.OutputBaseDir);
-                            builder.Build(parameters);
-                        }
+                        builder.Build(parameters);
                     }
                 }
                 catch (Exception e) when (CheckSerializability(e))
@@ -540,7 +535,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config, string baseDirectory, string outputDirectory)
+            private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory)
             {
                 var parameters = new DocumentBuildParameters();
                 parameters.OutputBaseDir = outputDirectory;
@@ -571,6 +566,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
 
                 parameters.ApplyTemplateSettings = applyTemplateSettings;
+                parameters.TemplateManager = templateManager;
                 return parameters;
             }
 

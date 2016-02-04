@@ -10,9 +10,9 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Utility;
 
+    [Serializable]
     public class TemplateManager
     {
         private readonly List<string> _templates = new List<string>();

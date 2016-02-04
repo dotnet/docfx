@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Microsoft.DocAsCode.Common;
 
+    [Serializable]
     public class ResourceFinder
     {
         private IEnumerable<string> _embeddedResourceNames;
