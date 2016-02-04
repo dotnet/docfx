@@ -58,32 +58,23 @@ namespace Microsoft.DocAsCode.EntityModel
             return xref;
         }
 
-        public bool TryResolve(Dictionary<string, XRefSpec> xrefMap)
+        public void ApplyXrefSpec(XRefSpec spec)
         {
-            XRefSpec spec;
-            string href;
-            if (xrefMap.TryGetValue(Uid, out spec))
+            if (spec == null) return;
+            var href = spec.Href;
+            if (PathUtility.IsRelativePath(href))
             {
-                href = spec.Href;
-                if (PathUtility.IsRelativePath(href))
+                var hashtagIndex = href.IndexOf('#');
+                if (hashtagIndex == -1)
                 {
-                    var hashtagIndex = href.IndexOf('#');
-                    if (hashtagIndex == -1)
-                    {
-                        // TODO: hashtag from tempalte
-                        var htmlId = GetHtmlId(Uid);
-                        // TODO: What if href is not html?
-                        href = href + "#" + htmlId;
-                    }
+                    // TODO: hashtag from tempalte
+                    var htmlId = GetHtmlId(Uid);
+                    // TODO: What if href is not html?
+                    href = href + "#" + htmlId;
                 }
-                Href = href;
-                Spec = spec;
-                return true;
             }
-            else
-            {
-                return false;
-            }
+            Href = href;
+            Spec = spec;
         }
 
         /// <summary>

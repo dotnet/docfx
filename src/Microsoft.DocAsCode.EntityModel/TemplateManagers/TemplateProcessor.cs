@@ -128,8 +128,7 @@ namespace Microsoft.DocAsCode.EntityModel
             JsonUtility.Serialize(rawModelPath, model);
         }
 
-        // TODO: change to use IDocumentBuildContext
-        private TemplateManifestItem TransformItem(ManifestItem item, DocumentBuildContext context, ApplyTemplateSettings settings)
+        private TemplateManifestItem TransformItem(ManifestItem item, IDocumentBuildContext context, ApplyTemplateSettings settings)
         {
             if (settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
             {
@@ -239,11 +238,9 @@ namespace Microsoft.DocAsCode.EntityModel
             return manifestItem;
         }
 
-        private static void TranformHtml(DocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
+        private static void TranformHtml(IDocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
         {
             // Update HREF and XREF
-            var internalXref = context.XRefSpecMap;
-            var externalXref = context.ExternalXRefSpec;
             HtmlAgilityPack.HtmlDocument html = new HtmlAgilityPack.HtmlDocument();
             html.LoadHtml(transformed);
 
@@ -255,7 +252,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     try
                     {
-                        UpdateXref(xref, internalXref, externalXref, Language);
+                        UpdateXref(xref, context, Language);
                     }
                     catch (CrossReferenceNotResolvedException e)
                     {
@@ -268,7 +265,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (srcNodes != null)
                 foreach (var link in srcNodes)
                 {
-                    UpdateHref(link, "src", context.FileMap, relativeModelPath);
+                    UpdateHref(link, "src", context, relativeModelPath);
                 }
 
             var hrefNodes = html.DocumentNode.SelectNodes("//*/@href");
@@ -276,7 +273,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 foreach (var link in hrefNodes)
                 {
-                    UpdateHref(link, "href", context.FileMap, relativeModelPath);
+                    UpdateHref(link, "href", context, relativeModelPath);
                 }
             }
 
@@ -355,14 +352,15 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static void UpdateXref(HtmlAgilityPack.HtmlNode node, Dictionary<string, XRefSpec> internalXRefMap, Dictionary<string, XRefSpec> externalXRefMap, string language)
+        private static void UpdateXref(HtmlAgilityPack.HtmlNode node, IDocumentBuildContext context, string language)
         {
             var xref = XrefDetails.From(node);
 
             // Resolve external xref map first, and then internal xref map.
             // Internal one overrides external one
-            bool resolved = xref.TryResolve(externalXRefMap);
-            resolved |= xref.TryResolve(internalXRefMap);
+            var xrefSpec = context.GetXrefSpec(xref.Uid);
+            xref.ApplyXrefSpec(xrefSpec);
+            bool resolved = xrefSpec != null;
 
             var convertedNode = xref.ConvertToHtmlNode(language);
             node.ParentNode.ReplaceChild(convertedNode, node);
@@ -375,7 +373,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, Dictionary<string, string> map, string relativePath)
+        private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, IDocumentBuildContext context, string relativePath)
         {
             var key = link.GetAttributeValue(attribute, null);
             string path;
@@ -392,7 +390,8 @@ namespace Microsoft.DocAsCode.EntityModel
                     key = key.Remove(anchorIndex);
                 }
 
-                if (map.TryGetValue(HttpUtility.UrlDecode(key), out href))
+                href = context.GetFilePath(HttpUtility.UrlDecode(key));
+                if (href != null)
                 {
                     href = UpdateFilePath(href, relativePath);
                     href += anchor;
