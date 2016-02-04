@@ -110,17 +110,7 @@ namespace Microsoft.DocAsCode.Plugins
                 OnUidsChanged(nameof(Uids), original, value);
             }
         }
-
-        public bool Serialize()
-        {
-            return ModelWithCache.Serialize();
-        }
-
-        public bool Deserialize()
-        {
-            return ModelWithCache.Deserialize();
-        }
-
+        
         public event EventHandler<PropertyChangedEventArgs<ImmutableArray<string>>> UidsChanged;
 
         public event EventHandler FileOrBaseDirChanged;
