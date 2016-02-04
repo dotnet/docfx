@@ -11,12 +11,8 @@ namespace Microsoft.DocAsCode.Plugins
 
     public sealed class FileModel : IDisposable
     {
-        private readonly WeakReference<object> _weakRef = new WeakReference<object>(null);
-        private readonly IFormatter _serializer;
         private ImmutableArray<string> _uids = ImmutableArray<string>.Empty;
-        private object _content;
-        private FileStream _tempFile;
-
+        
         public FileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)
         {
             OriginalFileAndType = original ?? ft;
@@ -31,41 +27,22 @@ namespace Microsoft.DocAsCode.Plugins
             }
 
             FileAndType = ft;
-            _content = content;
-            _serializer = serializer;
+            ModelWithCache = new ModelWithCache(content, serializer);
         }
 
         public FileAndType FileAndType { get; private set; }
 
         public FileAndType OriginalFileAndType { get; private set; }
-
+        public ModelWithCache ModelWithCache { get; }
         public object Content
         {
             get
             {
-                if (_content == null &&
-                    _serializer != null &&
-                    !_weakRef.TryGetTarget(out _content) &&
-                    _tempFile != null)
-                {
-                    Deserialize();
-                }
-                OnContentAccessed();
-                return _content;
+                return ModelWithCache.Content;
             }
             set
             {
-                if (_content == value)
-                {
-                    return;
-                }
-                _content = value;
-                if (_tempFile != null)
-                {
-                    _tempFile.Close();
-                    _tempFile = null;
-                }
-                OnContentAccessed();
+                ModelWithCache.Content = value;
             }
         }
 
@@ -109,7 +86,17 @@ namespace Microsoft.DocAsCode.Plugins
 
         public dynamic Properties { get; } = new ExpandoObject();
 
-        public string LocalPathFromRepoRoot { get; set; }
+        public string LocalPathFromRepoRoot
+        {
+            get
+            {
+                return ModelWithCache.File;
+            }
+            set
+            {
+                ModelWithCache.File = value;
+            }
+        }
 
         public string DocumentType { get; set; }
 
@@ -126,55 +113,33 @@ namespace Microsoft.DocAsCode.Plugins
 
         public bool Serialize()
         {
-            if (_content == null || _serializer == null)
-            {
-                return false;
-            }
-            if (_tempFile == null)
-            {
-                _tempFile = CreateTempFile();
-            }
-            else
-            {
-                _tempFile.Seek(0, SeekOrigin.Begin);
-                _tempFile.SetLength(0);
-            }
-            _serializer.Serialize(_tempFile, _content);
-            _weakRef.SetTarget(_content);
-            _content = null;
-            return true;
+            return ModelWithCache.Serialize();
         }
 
         public bool Deserialize()
         {
-            if (_tempFile == null || _serializer == null)
-            {
-                return false;
-            }
-            _tempFile.Seek(0, SeekOrigin.Begin);
-            _content = _serializer.Deserialize(_tempFile);
-            _weakRef.SetTarget(null);
-            return true;
+            return ModelWithCache.Deserialize();
         }
 
         public event EventHandler<PropertyChangedEventArgs<ImmutableArray<string>>> UidsChanged;
 
         public event EventHandler FileOrBaseDirChanged;
 
-        public event EventHandler ContentAccessed;
-
-        public void Dispose()
+        public event EventHandler ContentAccessed
         {
-            if (_tempFile != null)
+            add
             {
-                _tempFile.Close();
-                _tempFile = null;
+                ModelWithCache.ContentAccessed += value;
+            }
+            remove
+            {
+                ModelWithCache.ContentAccessed -= value;
             }
         }
 
-        private FileStream CreateTempFile()
+        public void Dispose()
         {
-            return new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose | FileOptions.SequentialScan);
+            ModelWithCache.Dispose();
         }
 
         private void OnUidsChanged(string propertyName, ImmutableArray<string> original, ImmutableArray<string> current)
@@ -189,15 +154,6 @@ namespace Microsoft.DocAsCode.Plugins
         private void OnFileOrBaseDirChanged()
         {
             var handler = FileOrBaseDirChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
-        }
-
-        private void OnContentAccessed()
-        {
-            var handler = ContentAccessed;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);

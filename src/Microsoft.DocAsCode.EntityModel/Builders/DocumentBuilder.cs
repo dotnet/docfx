@@ -97,29 +97,26 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 try
                 {
                     innerContexts = GetInnerContexts(parameters, Processors).ToList();
-                    var manifest = new List<ManifestItem>();
+                    var manifest = new List<ManifestItemWithContext>();
                     foreach (var item in innerContexts)
                     {
-                        manifest.AddRange(BuildCore(item.HostService, item.Processor, context));
+                        manifest.AddRange(BuildCore(item, context));
                     }
 
+                    // Use manifest from now on
                     UpdateContext(context);
-
-                    foreach (var item in innerContexts)
-                    {
-                        UpdateHref(item.HostService, item.Processor, context);
-                    }
+                    UpdateHref(manifest, context);
 
                     if (parameters.ExportRawModel)
                     {
                         Logger.LogInfo($"Exporting {manifest.Count} raw model(s)...");
                         foreach(var item in manifest)
                         {
-                            var model = item.Model;
-                            if (model.Content != null)
+                            var model = item.Item;
+                            if (model.Model.Content != null)
                             {
-                                var rawModelPath = Path.Combine(model.BaseDir, Path.ChangeExtension(model.File, RawModelExtension));
-                                JsonUtility.Serialize(rawModelPath, model.Content);
+                                var rawModelPath = Path.Combine(parameters.OutputBaseDir, Path.ChangeExtension(model.ModelFile, RawModelExtension));
+                                JsonUtility.Serialize(rawModelPath, model.Model.Content);
                             }
                         }
                     }
@@ -127,7 +124,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     using (new LoggerPhaseScope("Apply Templates"))
                     {
                         Logger.LogInfo($"Applying templates to {manifest.Count} model(s)...");
-                        Transform(manifest, context,  parameters.TemplateCollection, parameters.ExportViewModel);
+                        Transform(manifest.Select(s => s.Item), context, parameters.TemplateCollection, parameters.ExportViewModel);
                     }
 
                     Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
@@ -180,8 +177,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             Logger.Log(LogLevel.Verbose, $"Manifest file saved to {manifestPath}.");
         }
 
-        private IEnumerable<ManifestItem> BuildCore(HostService hostService, IDocumentProcessor processor, DocumentBuildContext context)
+        private IEnumerable<ManifestItemWithContext> BuildCore(InnerBuildContext buildContext, DocumentBuildContext context)
         {
+            var processor = buildContext.Processor;
+            var hostService = buildContext.HostService;
             Logger.LogVerbose($"Plug-in {processor.Name}: Loading document...");
             hostService.SourceFiles = context.AllSourceFiles;
             foreach (var m in hostService.Models)
@@ -199,20 +198,23 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             Logger.LogVerbose($"Plug-in {processor.Name}: Postprocessing...");
             Postbuild(processor, hostService);
             Logger.LogVerbose($"Plug-in {processor.Name}: Generating manifest...");
-            return ExportManifest(processor, hostService, context);
+            return ExportManifest(buildContext, context);
         }
 
-        private void UpdateHref(HostService hostService, IDocumentProcessor processor, DocumentBuildContext context)
+        private void UpdateHref(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
         {
-            hostService.Models.RunAll(
-                m =>
+            Logger.LogVerbose($"Updating href...");
+            manifest.RunAll(m =>
+            {
+                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
                 {
-                    using (new LoggerFileScope(m.LocalPathFromRepoRoot))
-                    {
-                        Logger.LogVerbose($"Plug-in {processor.Name}: Updating href...");
-                        processor.UpdateHref(m, context);
-                    }
-                });
+                    Logger.LogVerbose($"Plug-in {m.Processor.Name}: Updating href...");
+                    m.Processor.UpdateHref(m.FileModel, context);
+
+                    // reset model after updating href
+                    m.Item.Model = m.FileModel.ModelWithCache;
+                }
+            });
         }
 
         private static FileModel Load(
@@ -303,9 +305,11 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     });
         }
 
-        private IEnumerable<ManifestItem> ExportManifest(IDocumentProcessor processor, HostService hostService, DocumentBuildContext context)
+        private IEnumerable<ManifestItemWithContext> ExportManifest(InnerBuildContext buildContext, DocumentBuildContext context)
         {
-            var manifestItems = new List<ManifestItem>();
+            var hostService = buildContext.HostService;
+            var processor = buildContext.Processor;
+            var manifestItems = new List<ManifestItemWithContext>();
             hostService.Models.RunAll(
                 m =>
                 {
@@ -325,7 +329,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                                 m.File = TemplateProcessor.UpdateFilePath(m.File, result.DocumentType, context.TemplateCollection);
                                 result.ModelFile = TemplateProcessor.UpdateFilePath(result.ModelFile, result.DocumentType, context.TemplateCollection);
                                 var item = HandleSaveResult(context, hostService, m, result);
-                                manifestItems.Add(item);
+                                manifestItems.Add(new ManifestItemWithContext(item, m, processor));
                             }
                         }
                     }
@@ -426,7 +430,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 Key = model.Key,
                 // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
                 LocalPathFromRepoRoot = model.LocalPathFromRepoRoot,
-                Model = model
+                Model = model.ModelWithCache,
+                InputFolder = model.OriginalFileAndType.BaseDir
             };
         }
 
@@ -491,6 +496,19 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 Logger.LogVerbose($"Disposing processor {processor.Name} ...");
                 (processor as IDisposable)?.Dispose();
+            }
+        }
+
+        private sealed class ManifestItemWithContext
+        {
+            public ManifestItem Item { get; }
+            public FileModel FileModel { get; }
+            public IDocumentProcessor Processor { get; }
+            public ManifestItemWithContext(ManifestItem item, FileModel model, IDocumentProcessor processor)
+            {
+                Item = item;
+                FileModel = model;
+                Processor = processor;
             }
         }
     }

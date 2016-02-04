@@ -10,23 +10,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
     public class ManifestItem
     {
-        [YamlMember(Alias = "type")]
-        [JsonProperty("type")]
         public string DocumentType { get; set; }
-        [YamlMember(Alias = "model")]
-        [JsonProperty("model")]
-        public string ModelFile { get; set; }
-        [YamlMember(Alias = "pathFromRoot")]
-        [JsonProperty("pathFromRoot")]
         public string LocalPathFromRepoRoot { get; set; }
-        [YamlMember(Alias = "original")]
-        [JsonProperty("original")]
         public string Key { get; set; }
-        [YamlMember(Alias = "resource")]
-        [JsonProperty("resource")]
+        public string ModelFile { get; set; }
         public string ResourceFile { get; set; }
-        [JsonIgnore]
-        [YamlIgnore]
-        public FileModel Model { get; set; }
+        public string InputFolder { get; set; }
+        public ModelWithCache Model { get; set; }
     }
 }
