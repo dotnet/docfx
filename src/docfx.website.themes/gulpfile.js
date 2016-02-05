@@ -57,6 +57,13 @@ var pack = {
             "cwd": "default",
         },
         {
+            "files": [
+                "ManagedReference.mta.json.tmpl",
+                "conceptual.mta.json.tmpl",
+            ],
+            "cwd": "docs.html",
+        },
+        {
             "files": files
         }
     ],
