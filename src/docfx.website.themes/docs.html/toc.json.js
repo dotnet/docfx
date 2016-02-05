@@ -2,6 +2,14 @@ function transform(model, _attrs){
   var transformed = [];
   var level = 1;
   var length = model.length;
+
+  var path = _attrs._path;
+  var directory = "";
+  var index = path.lastIndexOf('/');
+  if (index > -1){
+    directory = path.substr(0, index + 1); // keep '/'
+  }
+
   for (var i = 0; i<length; i++) {
     transformed.push(transformItem(model[i], level));
   };
@@ -20,6 +28,7 @@ function transform(model, _attrs){
       }else{
         if (item.href.indexOf('~/') == 0) item.href = item.href.substring(2);
         item.href = removeExtension(item.href);
+        item.relative_path_in_depot = directory + removeExtension(item.href);
       }
     }
     if (item.items && item.items.length > 0){
