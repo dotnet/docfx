@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         [Trait("Related", "DfmMarkdown")]
         [InlineData("", "")]
         [InlineData("<address@example.com>", "<p><a href=\"mailto:address@example.com\">address@example.com</a></p>\n")]
+        [InlineData(" https://github.com/dotnet/docfx/releases ", "<p> <a href=\"https://github.com/dotnet/docfx/releases\">https://github.com/dotnet/docfx/releases</a> </p>\n")]
         [InlineData(@"<Insert OneGet Details - meeting on 10/30 for details.>", @"<Insert OneGet Details - meeting on 10/30 for details.>")]
         [InlineData("<http://example.com/>", "<p><a href=\"http://example.com/\">http://example.com/</a></p>\n")]
         [InlineData("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
