@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public static class DocumentExceptionExtensions
     {
@@ -63,6 +65,41 @@
                     }
                 }
             }
+            if (firstException != null)
+            {
+                throw new DocumentException(firstException.Message, firstException);
+            }
+        }
+
+        public static void RunAll<TElement>(this IReadOnlyList<TElement> elements, Action<TElement> action, int parallelism)
+        {
+            if (elements == null)
+            {
+                throw new ArgumentNullException(nameof(elements));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+            if (parallelism <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(parallelism));
+            }
+            DocumentException firstException = null;
+            Parallel.ForEach(
+                elements,
+                new ParallelOptions { MaxDegreeOfParallelism = parallelism },
+                s =>
+                {
+                    try
+                    {
+                        action(s);
+                    }
+                    catch (DocumentException ex)
+                    {
+                        Interlocked.CompareExchange(ref firstException, ex, null);
+                    }
+                });
             if (firstException != null)
             {
                 throw new DocumentException(firstException.Message, firstException);

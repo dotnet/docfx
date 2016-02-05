@@ -26,6 +26,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         private const string RawModelExtension = ".raw.model.json";
         private const string ViewModelExtension = ".view.model.json";
 
+        private const int Parallelism = 16;
+
         private static readonly Assembly[] DefaultAssemblies = { typeof(DocumentBuilder).Assembly };
 
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
@@ -219,34 +221,35 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             RunBuildSteps(
                 processor.BuildSteps,
                 buildStep =>
+                {
+                    Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Preprocessing...");
+                    var models = buildStep.Prebuild(hostService.Models, hostService);
+                    if (!object.ReferenceEquals(models, hostService.Models))
                     {
-                        Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Preprocessing...");
-                        var models = buildStep.Prebuild(hostService.Models, hostService);
-                        if (!object.ReferenceEquals(models, hostService.Models))
-                        {
-                            Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Reloading models...");
-                            hostService.Reload(models);
-                        }
-                    });
+                        Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Reloading models...");
+                        hostService.Reload(models);
+                    }
+                });
         }
 
         private void BuildArticle(IDocumentProcessor processor, HostService hostService)
         {
             hostService.Models.RunAll(
                 m =>
+                {
+                    using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                     {
-                        using (new LoggerFileScope(m.LocalPathFromRepoRoot))
-                        {
-                            Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
-                            RunBuildSteps(
-                                processor.BuildSteps,
-                                buildStep =>
-                                    {
-                                        Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Building...");
-                                        buildStep.Build(m, hostService);
-                                    });
-                        }
-                    });
+                        Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
+                        RunBuildSteps(
+                            processor.BuildSteps,
+                            buildStep =>
+                            {
+                                Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Building...");
+                                buildStep.Build(m, hostService);
+                            });
+                    }
+                },
+                Parallelism);
         }
 
         private void Postbuild(IDocumentProcessor processor, HostService hostService)
@@ -254,10 +257,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             RunBuildSteps(
                 processor.BuildSteps,
                 buildStep =>
-                    {
-                        Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Postprocessing...");
-                        buildStep.Postbuild(hostService.Models, hostService);
-                    });
+                {
+                    Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Postprocessing...");
+                    buildStep.Postbuild(hostService.Models, hostService);
+                });
         }
 
         private IEnumerable<ManifestItemWithContext> ExportManifest(InnerBuildContext buildContext, DocumentBuildContext context)
@@ -266,34 +269,33 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             var processor = buildContext.Processor;
             var templateProcessor = buildContext.TemplateProcessor;
             var manifestItems = new List<ManifestItemWithContext>();
-            hostService.Models.RunAll(
-                m =>
+            hostService.Models.RunAll(m =>
+            {
+                if (m.Type != DocumentType.Override)
                 {
-                    if (m.Type != DocumentType.Override)
+                    using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                     {
-                        using (new LoggerFileScope(m.LocalPathFromRepoRoot))
+                        Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
+                        m.BaseDir = context.BuildOutputFolder;
+                        if (m.PathRewriter != null)
                         {
-                            Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
-                            m.BaseDir = context.BuildOutputFolder;
-                            if (m.PathRewriter != null)
+                            m.File = m.PathRewriter(m.File);
+                        }
+                        var result = processor.Save(m);
+                        if (result != null)
+                        {
+                            if (templateProcessor != null)
                             {
-                                m.File = m.PathRewriter(m.File);
+                                m.File = templateProcessor.UpdateFileExtension(m.File, result.DocumentType);
+                                result.ModelFile = templateProcessor.UpdateFileExtension(result.ModelFile, result.DocumentType);
                             }
-                            var result = processor.Save(m);
-                            if (result != null)
-                            {
-                                if (templateProcessor != null)
-                                {
-                                    m.File = templateProcessor.UpdateFileExtension(m.File, result.DocumentType);
-                                    result.ModelFile = templateProcessor.UpdateFileExtension(result.ModelFile, result.DocumentType);
-                                }
 
-                                var item = HandleSaveResult(context, hostService, m, result);
-                                manifestItems.Add(new ManifestItemWithContext(item, m, processor));
-                            }
+                            var item = HandleSaveResult(context, hostService, m, result);
+                            manifestItems.Add(new ManifestItemWithContext(item, m, processor));
                         }
                     }
-                });
+                }
+            });
             return manifestItems;
         }
 
@@ -320,15 +322,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private static void CheckFileLink(HostService hostService, SaveResult result)
         {
-            result.LinkToFiles.RunAll(
-                fileLink =>
+            result.LinkToFiles.RunAll(fileLink =>
+            {
+                if (!hostService.SourceFiles.ContainsKey(fileLink))
                 {
-                    if (!hostService.SourceFiles.ContainsKey(fileLink))
-                    {
-                        var message = $"Invalid file link({fileLink})";
-                        Logger.LogWarning(message);
-                    }
-                });
+                    var message = $"Invalid file link({fileLink})";
+                    Logger.LogWarning(message);
+                }
+            });
         }
 
         private static void HandleUids(DocumentBuildContext context, SaveResult result)
@@ -409,12 +410,12 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         private static IEnumerable<InnerBuildContext> GetInnerContexts(DocumentBuildParameters parameters, IEnumerable<IDocumentProcessor> processors, TemplateProcessor templateProcessor)
         {
             var filesGroupedByProcessor =
-                    from file in parameters.Files.EnumerateFiles()
-                    group file by (from processor in processors
-                                   let priority = processor.GetProcessingPriority(file)
-                                   where priority != ProcessingPriority.NotSupportted
-                                   orderby priority descending
-                                   select processor).FirstOrDefault();
+                (from file in parameters.Files.EnumerateFiles()
+                 group file by (from processor in processors
+                                let priority = processor.GetProcessingPriority(file)
+                                where priority != ProcessingPriority.NotSupportted
+                                orderby priority descending
+                                select processor).FirstOrDefault()).ToList();
             var toHandleItems = filesGroupedByProcessor.Where(s => s.Key != null);
             var notToHandleItems = filesGroupedByProcessor.Where(s => s.Key == null);
             foreach (var item in notToHandleItems)
@@ -429,14 +430,13 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 Logger.LogWarning(sb.ToString());
             }
 
-            foreach (var item in toHandleItems)
-            {
-                yield return new InnerBuildContext(new HostService(
-                    from file in item
-                    select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file)),
-                    item.Key,
-                    templateProcessor);
-            }
+            return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(Parallelism)
+                   select new InnerBuildContext(
+                       new HostService(
+                           from file in item
+                           select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file)),
+                       item.Key,
+                       templateProcessor);
         }
 
         private sealed class InnerBuildContext

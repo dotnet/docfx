@@ -22,8 +22,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     [Export(typeof(IHostService))]
     internal sealed class HostService : IHostService, IDisposable
     {
+        private readonly object _syncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
-        private readonly LruList<ModelWithCache> _lru = LruList<ModelWithCache>.Create(0xC00, OnLruRemoving);
+        private readonly LruList<ModelWithCache> _lru = LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
         private DfmEngineBuilder _engine = DocfxFlavoredMarked.CreateBuilder();
 
         public ImmutableList<FileModel> Models { get; private set; }
@@ -50,17 +51,23 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         public ImmutableHashSet<string> GetAllUids()
         {
-            return _uidIndex.Keys.ToImmutableHashSet();
+            lock (_syncRoot)
+            {
+                return _uidIndex.Keys.ToImmutableHashSet();
+            }
         }
 
         public ImmutableList<FileModel> LookupByUid(string uid)
         {
-            List<FileModel> result;
-            if (_uidIndex.TryGetValue(uid, out result))
+            lock (_syncRoot)
             {
-                return result.ToImmutableList();
+                List<FileModel> result;
+                if (_uidIndex.TryGetValue(uid, out result))
+                {
+                    return result.ToImmutableList();
+                }
+                return ImmutableList<FileModel>.Empty;
             }
-            return ImmutableList<FileModel>.Empty;
         }
 
         public MarkupResult Markup(string markdown, FileAndType ft)
@@ -178,7 +185,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         public void Reload(IEnumerable<FileModel> models)
         {
-            LoadCore(models);
+            lock (_syncRoot)
+            {
+                LoadCore(models);
+            }
         }
 
         private void LoadCore(IEnumerable<FileModel> models)
@@ -227,26 +237,29 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 return;
             }
-            var common = e.Original.Intersect(e.Current).ToList();
-            foreach (var added in e.Current.Except(common))
+            lock (_syncRoot)
             {
-                List<FileModel> list;
-                if (!_uidIndex.TryGetValue(added, out list))
+                var common = e.Original.Intersect(e.Current).ToList();
+                foreach (var added in e.Current.Except(common))
                 {
-                    list = new List<FileModel>();
-                    _uidIndex.Add(added, list);
-                }
-                list.Add(m);
-            }
-            foreach (var removed in e.Original.Except(common))
-            {
-                List<FileModel> list;
-                if (_uidIndex.TryGetValue(removed, out list))
-                {
-                    list.Remove(m);
-                    if (list.Count == 0)
+                    List<FileModel> list;
+                    if (!_uidIndex.TryGetValue(added, out list))
                     {
-                        _uidIndex.Remove(removed);
+                        list = new List<FileModel>();
+                        _uidIndex.Add(added, list);
+                    }
+                    list.Add(m);
+                }
+                foreach (var removed in e.Original.Except(common))
+                {
+                    List<FileModel> list;
+                    if (_uidIndex.TryGetValue(removed, out list))
+                    {
+                        list.Remove(m);
+                        if (list.Count == 0)
+                        {
+                            _uidIndex.Remove(removed);
+                        }
                     }
                 }
             }
@@ -259,7 +272,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 return;
             }
-            FileMap[m.OriginalFileAndType] = m.FileAndType;
+            lock (_syncRoot)
+            {
+                FileMap[m.OriginalFileAndType] = m.FileAndType;
+            }
         }
 
         private void ContentAccessedHandler(object sender, EventArgs e)

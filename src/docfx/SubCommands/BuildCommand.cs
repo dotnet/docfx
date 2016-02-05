@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-    using System.Linq;
     using System.Reflection;
     using System.Runtime.Remoting.Lifetime;
     using System.Threading;
@@ -422,6 +421,7 @@ namespace Microsoft.DocAsCode.SubCommands
             private readonly BuildJsonConfig _config;
             private readonly CrossAppDomainListener _listener;
             private readonly TemplateManager _manager;
+            private readonly LogLevel _logLevel;
 
             public DocumentBuilderWrapper(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string pluginDirectory, CrossAppDomainListener listener)
             {
@@ -436,6 +436,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 _config = config;
                 _listener = listener;
                 _manager = manager;
+                _logLevel = Logger.LogLevelThreshold;
             }
 
             public void BuildDocument()
@@ -443,6 +444,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 var sponsor = new ClientSponsor();
                 if (_listener != null)
                 {
+                    Logger.LogLevelThreshold = _logLevel;
                     Logger.RegisterListener(_listener);
                     sponsor.Register(_listener);
                 }

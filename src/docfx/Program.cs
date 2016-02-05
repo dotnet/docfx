@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode
 {
     using System;
+    using System.Threading;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
@@ -68,6 +69,7 @@ namespace Microsoft.DocAsCode
             var context = new SubCommandRunningContext();
             try
             {
+                ThreadPool.SetMinThreads(16, 16);
                 command.Exec(context);
                 return 0;
             }
