@@ -39,8 +39,12 @@ namespace Microsoft.DocAsCode.SubCommands
                     {
                         All = options.All,
                         OutputFolder = options.OutputFolder,
-                        Templates = options.Commands.Skip(1)
+                        Templates = options.Commands.Skip(1).ToArray()
                     };
+                    if (_exportTemplateConfig.Templates.Length == 0)
+                    {
+                        _exportTemplateConfig.All = true;
+                    }
                     break;
                 default:
                     break;
@@ -74,7 +78,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var outputFolder = string.IsNullOrEmpty(_exportTemplateConfig.OutputFolder) ? DefaultOutputFolder : _exportTemplateConfig.OutputFolder;
             if (!Directory.Exists(outputFolder)) Directory.CreateDirectory(outputFolder);
 
-            List<string> templates = (_exportTemplateConfig.All ? ExistingTemplates : _exportTemplateConfig.Templates).ToList();
+            var templates = _exportTemplateConfig.All ? ExistingTemplates : _exportTemplateConfig.Templates;
             foreach (var template in templates)
             {
                 Logger.LogInfo($"Exporting {template} to {outputFolder}");
@@ -98,7 +102,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private sealed class ExportTemplateConfig
         {
-            public IEnumerable<string> Templates { get; set; }
+            public string[] Templates { get; set; }
 
             public string OutputFolder { get; set; }
 

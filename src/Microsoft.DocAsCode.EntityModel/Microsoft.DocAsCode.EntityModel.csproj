@@ -115,7 +115,6 @@
     <Compile Include="TemplateManagers\Settings\ApplyTemplateSettings.cs" />
     <Compile Include="TemplateManagers\JintProcessorHelper.cs" />
     <Compile Include="TemplateManagers\XrefDetails.cs" />
-    <Compile Include="TemplateManagers\TemplateTransformedResult.cs" />
     <Compile Include="TreeIterator.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageCollection.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />

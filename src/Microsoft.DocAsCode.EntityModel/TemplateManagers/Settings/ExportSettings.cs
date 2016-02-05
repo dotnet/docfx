@@ -11,5 +11,15 @@ namespace Microsoft.DocAsCode.EntityModel
         public string OutputFolder { get; set; }
         public string Extension { get; set; }
         public Func<string, string> PathRewriter { get; set; }
+
+        public ExportSettings() { }
+
+        public ExportSettings(ExportSettings settings)
+        {
+            Export = settings.Export;
+            OutputFolder = settings.OutputFolder;
+            Extension = settings.Extension;
+            PathRewriter = settings.PathRewriter;
+        }
     }
 }

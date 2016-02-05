@@ -21,11 +21,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         public const string PhaseName = "Build Document";
 
-        private const string ManifestFileName = ".manifest";
-
-        private const string RawModelExtension = ".raw.model.json";
-        private const string ViewModelExtension = ".view.model.json";
-
         private const int Parallelism = 16;
 
         private static readonly Assembly[] DefaultAssemblies = { typeof(DocumentBuilder).Assembly };
