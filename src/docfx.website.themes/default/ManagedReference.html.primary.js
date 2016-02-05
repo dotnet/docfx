@@ -6,7 +6,8 @@ function transform(model, _attrs) {
     "struct":       { name: "Struct",     title: "Structs",     id: "structs" },
     "interface":    { name: "Interface",  title: "Interfaces",  id: "interfaces" },
     "enum":         { name: "Enum",       title: "Enums",       id: "enums" },
-    "delegate":     { name: "Delegate",   title: "Delegates",   id: "delegates" }
+    "delegate":     { name: "Delegate",   title: "Delegates",   id: "delegates" },
+    "method":       { name: "Function",   title: "Functions",   id: "functions" }
   };
   var classItems = {
     "constructor":  { title: "Constructors",  id: "constructors" },
@@ -87,6 +88,7 @@ function transform(model, _attrs) {
         for (var key in namespaceItems){
           if (namespaceItems.hasOwnProperty(key) && grouped.hasOwnProperty(key)){
             var namespaceItem = namespaceItems[key];
+            namespaceItem.isMethod = key == "method";
             var items = namespaceItem.children = grouped[key];
             if (items && items.length > 0) {
               children.push(namespaceItem);
@@ -174,6 +176,9 @@ function transform(model, _attrs) {
             i.type = getRefvm(i.type, langs, extChanger);
           });
         }
+
+        vm.headerurl = getHeaderHref(vm);
+        vm.headerfilename = getHeaderFilename(vm);
 
         return vm;
       }
@@ -288,6 +293,18 @@ function transform(model, _attrs) {
         } else {
           return '';
         }
+      }
+
+      function getHeaderHref(item) {
+          /* jshint validthis: true */
+          if (!item || !item.header || !item.header.remote) return '';
+          return getRemoteUrl(item.header.remote, 1);
+      }
+
+      function getHeaderFilename(item) {
+          /* jshint validthis: true */
+          if (!item || !item.header || !item.header.path) return '';
+          return item.header.path.replace(/^.*(\\|\/|\:)/, '');
       }
 
       function getGithubUrlPrefix(repo) {
