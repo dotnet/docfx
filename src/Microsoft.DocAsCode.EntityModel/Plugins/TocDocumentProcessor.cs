@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
-    using System.Linq;
+    using System.Web;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
@@ -161,7 +161,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
 
             var relativePath = GetRelativePath(href, model.File);
-            return relativePath;
+            return ((RelativePath)relativePath).UrlEncode();
         }
 
         private string GetRelativePath(string pathFromWorkingFolder, string relativeToPath)

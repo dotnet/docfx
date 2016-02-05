@@ -393,7 +393,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 href = context.GetFilePath(HttpUtility.UrlDecode(key));
                 if (href != null)
                 {
-                    href = UpdateFilePath(href, relativePath);
+                    href = ((RelativePath)UpdateFilePath(href, relativePath)).UrlEncode();
                     href += anchor;
                     link.SetAttributeValue(attribute, href);
                 }
