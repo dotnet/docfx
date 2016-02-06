@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             ResolveUid(toc, model, context);
             RegisterTocMap(toc, model.Key, context);
 
-            if (!string.IsNullOrEmpty(toc.Homepage))
+            if (!string.IsNullOrEmpty(toc.Homepage) && PathUtility.IsRelativePath(toc.Href))
             {
                 toc.Href = toc.Homepage;
             }

@@ -28,7 +28,11 @@ function transform(model, _attrs){
       }else{
         if (item.href.indexOf('~/') == 0) item.href = item.href.substring(2);
         item.href = removeExtension(item.href);
-        item.relative_path_in_depot = directory + removeExtension(item.href);
+        if (item.href.indexOf('/') == 0) {
+          item.relative_path_in_depot = item.href;
+        } else {
+          item.relative_path_in_depot = directory + item.href;
+        }
       }
     }
     if (item.items && item.items.length > 0){
