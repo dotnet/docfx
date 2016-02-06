@@ -7,8 +7,14 @@ namespace Microsoft.DocAsCode.YamlSerialization.Helpers
 
     internal static class Regexes
     {
-        public static readonly Regex BooleanLike = new Regex(@"^(true|false)$", RegexOptions.Compiled);
-        public static readonly Regex IntegerLike = new Regex(@"^-?(0|[1-9][0-9]*)$", RegexOptions.Compiled);
-        public static readonly Regex DoubleLike = new Regex(@"^-?(0|[1-9][0-9]*)(\.[0-9]*)?([eE][-+]?[0-9]+)?$", RegexOptions.Compiled);
+        private const RegexOptions RegexOptionsCompiled =
+#if NetCore
+            RegexOptions.None;
+#else
+            RegexOptions.Compiled;
+#endif
+        public static readonly Regex BooleanLike = new Regex(@"^(true|false)$", RegexOptionsCompiled);
+        public static readonly Regex IntegerLike = new Regex(@"^-?(0|[1-9][0-9]*)$", RegexOptionsCompiled);
+        public static readonly Regex DoubleLike = new Regex(@"^-?(0|[1-9][0-9]*)(\.[0-9]*)?([eE][-+]?[0-9]+)?$", RegexOptionsCompiled);
     }
 }

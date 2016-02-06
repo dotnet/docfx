@@ -18,8 +18,12 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
     public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
     {
         private static readonly MethodInfo DeserializeHelperMethod =
+#if NetCore
+            typeof(EmitGenericCollectionNodeDeserializer).GetTypeInfo().GetDeclaredMethod(nameof(DeserializeHelper));
+#else
             typeof(EmitGenericCollectionNodeDeserializer).GetMethod(nameof(DeserializeHelper));
-        private readonly IObjectFactory _objectFactory;
+#endif
+            private readonly IObjectFactory _objectFactory;
         private readonly Dictionary<Type, Type> _gpCache =
             new Dictionary<Type, Type>();
         private readonly Dictionary<Type, Action<EventReader, Type, Func<EventReader, Type, object>, object>> _actionCache =
@@ -38,7 +42,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
                 var collectionType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(ICollection<>));
                 if (collectionType != null)
                 {
+#if NetCore
+                    gp = collectionType.GetTypeInfo().GenericTypeParameters[0];
+#else
                     gp = collectionType.GetGenericArguments()[0];
+#endif
                 }
                 _gpCache[expectedType] = gp;
             }
