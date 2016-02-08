@@ -331,7 +331,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         {
             if (result.LinkToUids.Count > 0)
             {
-                context.XRef.UnionWith(result.LinkToUids);
+                context.XRef.UnionWith(result.LinkToUids.Where(s => s != null));
             }
         }
 
