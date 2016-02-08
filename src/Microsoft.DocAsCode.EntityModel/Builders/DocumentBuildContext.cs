@@ -63,6 +63,8 @@
                         }
                     }
                 }
+
+                Logger.LogInfo($"{result.Count} external references found in {ExternalReferencePackages.Length} packages.");
             }
 
             ExternalXRefSpec = result;
