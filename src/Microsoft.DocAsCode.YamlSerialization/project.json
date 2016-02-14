@@ -29,7 +29,7 @@
         "System.Text.RegularExpressions": ""
       },
       "dependencies": {
-        "System.Reflection.Emit.Lightweight": "4.0.1-rc3-23805"
+        "System.Reflection.Emit.Lightweight": "4.0.0"
       },
       "compilationOptions": {
         "define": ["NetCore"]
