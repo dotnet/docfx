@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if !NetCore
 namespace Microsoft.DocAsCode.MetadataSchemata
 {
     using System;
     using System.Collections.Generic;
+#if NetCore
+    using System.Linq;
+#endif
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -14,11 +16,20 @@ namespace Microsoft.DocAsCode.MetadataSchemata
 
     public class MetadataCompiler
     {
-        private static readonly ConstructorInfo JsonPropertyAttributeCtor = typeof(JsonPropertyAttribute).GetConstructor(new[] { typeof(string) });
-        private static readonly PropertyInfo JsonPropertyAttribute_Required = typeof(JsonPropertyAttribute).GetProperty(nameof(JsonPropertyAttribute.Required));
-        private static readonly ConstructorInfo JsonExtensionDataAttributeCtor = typeof(JsonExtensionDataAttribute).GetConstructor(Type.EmptyTypes);
-        private static readonly ConstructorInfo DisplayNameAttribute_Ctor = typeof(DisplayNameAttribute).GetConstructor(new[] { typeof(string) });
-        private static readonly ConstructorInfo QueryNameAttribute_Ctor = typeof(QueryNameAttribute).GetConstructor(new[] { typeof(string) });
+        private static readonly ConstructorInfo JsonPropertyAttributeCtor =
+            typeof(JsonPropertyAttribute).GetConstructor(new[] { typeof(string) });
+        private static readonly PropertyInfo JsonPropertyAttribute_Required =
+#if NetCore
+            typeof(JsonPropertyAttribute).GetTypeInfo().GetDeclaredProperty(nameof(JsonPropertyAttribute.Required));
+#else
+            typeof(JsonPropertyAttribute).GetProperty(nameof(JsonPropertyAttribute.Required));
+#endif
+        private static readonly ConstructorInfo JsonExtensionDataAttributeCtor =
+            typeof(JsonExtensionDataAttribute).GetConstructor(EmptyTypes);
+        private static readonly ConstructorInfo DisplayNameAttribute_Ctor =
+            typeof(DisplayNameAttribute).GetConstructor(new[] { typeof(string) });
+        private static readonly ConstructorInfo QueryNameAttribute_Ctor =
+            typeof(QueryNameAttribute).GetConstructor(new[] { typeof(string) });
 
         public Func<string, string> Namer { get; set; }
 
@@ -28,6 +39,13 @@ namespace Microsoft.DocAsCode.MetadataSchemata
 
         public Type CollectionType { get; set; } = typeof(List<>);
 
+#if NetCore
+        public static Type[] EmptyTypes { get; } = new Type[0];
+#else
+        public static Type[] EmptyTypes => Type.EmptyTypes;
+#endif
+
+#if !NetCore
         public void Compile(IMetadataSchema schema, string assemblyName, string @namespace, string typeName)
         {
             if (schema == null)
@@ -69,6 +87,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata
             CompileCore(schema, module, @namespace, typeName);
             assembly.Save(file);
         }
+#endif
 
         public Type Compile(IMetadataSchema schema, ModuleBuilder module, string @namespace, string typeName)
         {
@@ -113,7 +132,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata
                 var pt = GetMetadataType(pair.Value);
                 var name = Namer?.Invoke(pair.Key) ?? pair.Key;
                 var field = type.DefineField("$field$" + (++index).ToString(), pt, FieldAttributes.Private);
-                var prop = type.DefineProperty(name, PropertyAttributes.None, pt, Type.EmptyTypes);
+                var prop = type.DefineProperty(name, PropertyAttributes.None, pt, EmptyTypes);
                 SetAttributes(pair, prop);
                 prop.SetGetMethod(CreateGetMethod(type, pt, name, field));
                 prop.SetSetMethod(CreateSetMethod(type, pt, name, field));
@@ -126,7 +145,11 @@ namespace Microsoft.DocAsCode.MetadataSchemata
                 }
                 CreateAdditional(type, ++index);
             }
+#if NetCore
+            return type.CreateTypeInfo().AsType();
+#else
             return type.CreateType();
+#endif
         }
 
         private void ValidateProperties()
@@ -175,7 +198,13 @@ namespace Microsoft.DocAsCode.MetadataSchemata
                     result = CollectionType.MakeGenericType(result);
                 }
             }
-            else if (!definition.IsRequired && result.IsValueType)
+            else if (!definition.IsRequired &&
+#if NetCore
+                result.GetTypeInfo().IsValueType
+#else
+                result.IsValueType
+#endif
+                )
             {
                 result = typeof(Nullable<>).MakeGenericType(result);
             }
@@ -204,7 +233,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata
             var getMethod = type.DefineMethod(
                 "get_" + name,
                 MethodAttributes.NewSlot | MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.Virtual);
-            getMethod.SetParameters(Type.EmptyTypes);
+            getMethod.SetParameters(EmptyTypes);
             getMethod.SetReturnType(pt);
             var il = getMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
@@ -238,7 +267,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata
                 NameOfAdditional,
                 PropertyAttributes.None,
                 typeof(IDictionary<string, JToken>),
-                Type.EmptyTypes);
+                EmptyTypes);
             prop.SetCustomAttribute(
                 new CustomAttributeBuilder(
                     JsonExtensionDataAttributeCtor,
@@ -257,5 +286,30 @@ namespace Microsoft.DocAsCode.MetadataSchemata
                     field));
         }
     }
-}
+
+#if NetCore
+    internal static class ReflectionHelper
+    {
+        public static ConstructorInfo GetConstructor(this Type type, Type[] parameterTypes)
+            => type
+                .GetTypeInfo()
+                .DeclaredConstructors
+                .First(ctor =>
+                {
+                    var parameters = ctor.GetParameters();
+                    if (parameters.Length != parameterTypes.Length)
+                    {
+                        return false;
+                    }
+                    for (int i = 0; i < parameters.Length; i++)
+                    {
+                        if (parameters[i].ParameterType != parameterTypes[i])
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+    }
 #endif
+}
