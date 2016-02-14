@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+#if !NetCore
 namespace Microsoft.DocAsCode.Common
 {
     using System;
@@ -38,3 +39,4 @@ namespace Microsoft.DocAsCode.Common
         }
     }
 }
+#endif

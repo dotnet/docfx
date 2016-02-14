@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Common
             serializer.Value.Serialize(writer, graph);
         }
 
+#if !NetCore
         public static void Serialize(string path, object graph)
         {
             var directory = Path.GetDirectoryName(path);
@@ -33,16 +34,19 @@ namespace Microsoft.DocAsCode.Common
                 Serialize(writer, graph);
             }
         }
+#endif
 
         public static T Deserialize<T>(TextReader reader)
         {
             return deserializer.Value.Deserialize<T>(reader);
         }
 
+#if !NetCore
         public static T Deserialize<T>(string path)
         {
             using (StreamReader reader = new StreamReader(path))
                 return Deserialize<T>(reader);
         }
+#endif
     }
 }
