@@ -14,8 +14,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
             RegexOptions.Compiled;
 #endif
 
-        public static readonly Regex Noop = new Regex("", RegexOptionCompiled);
-
         public static class Block
         {
             public static readonly Regex Newline = new Regex(@"^\n+", RegexOptionCompiled);
@@ -52,7 +50,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex Comment = new Regex(@"^<!--[\s\S]*?-->", RegexOptionCompiled);
             public static readonly Regex AutoLink = new Regex(@"^<([^ >]+(@|:\/)[^ >]+)>", RegexOptionCompiled);
             public static readonly Regex Tag = new Regex(@"^<\/?\w+(?:""[^""]*""|'[^']*'|[^'"">])*?>", RegexOptionCompiled);
-            public static readonly Regex Link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\] *\(\s*<?([\s\S]*?)>?(?:\s+['""]([\s\S]*?)['""])?\s*\)", RegexOptionCompiled);
+            public static readonly Regex Link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\] *\( *<?([\s\S]*?(?:\([\s\S]*?\)[\s\S]*?)*?)>?(?: +(['""])([\s\S]*?)\3)?\s*\)", RegexOptionCompiled);
             public static readonly Regex RefLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]", RegexOptionCompiled);
             public static readonly Regex NoLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]", RegexOptionCompiled);
             public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)", RegexOptionCompiled);
