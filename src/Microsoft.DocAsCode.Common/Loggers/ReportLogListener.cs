@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Common
 
         public LogLevel LogLevelThreshold { get; set; }
 
+#if !NetCore
         public ReportLogListener(string reportPath)
         {
             var dir = Path.GetDirectoryName(reportPath);
@@ -22,6 +23,16 @@ namespace Microsoft.DocAsCode.Common
                 Directory.CreateDirectory(dir);
             }
             _writer = new StreamWriter(reportPath, true);
+        }
+#endif
+
+        public ReportLogListener(StreamWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+            _writer = writer;
         }
 
         public void WriteLine(ILogItem item)

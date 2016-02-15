@@ -9,10 +9,10 @@
    </h1>
 </header>
 <div class="level">
-{{#inheritance.0}}
   <section class="primary">
     <div class="alert alert-minimal inheritance">
       <h5><span class="icon icon-inheritance"></span> Inheritance Hierarchy</h5>
+      {{#inheritance.0}}
       <ul>
       {{#inheritance}}
         <li class="l{{index}}">
@@ -31,9 +31,12 @@
           </span>
         </li>
       </ul>
+      {{/inheritance.0}}
+      {{^inheritance.0}}
+      <p><code>None</code></p>
+      {{/inheritance.0}}
     </div>
   </section>
-{{/inheritance.0}}
   <section class="secondary">
     <div class="alert alert-minimal">
       <h5><span class="icon icon-assembly"></span> Assembly</h5>

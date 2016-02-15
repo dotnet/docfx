@@ -36,6 +36,10 @@
     ],
     "overwrite": "apispec/*.md",
     "externalReference": [
+      { 
+        "files": "content/*.rpk",
+        "cwd": "../src/nuspec/msdn.4.5.2/"
+      }
     ],
     "globalMetadata": {
       "_appTitle": "docfx website"

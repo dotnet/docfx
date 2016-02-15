@@ -25,7 +25,11 @@ function transform(model, _attrs){
       if (isAbsolutePath(item.href)){
         item.external_link = item.href;
       }else{
-        item.relative_path_in_depot = directory + item.href;
+        if (item.href.indexOf('/') == 0) {
+          item.relative_path_in_depot = item.href;
+        } else {
+          item.relative_path_in_depot = directory + item.href;
+        }
       }
       item.href = undefined;
     }

@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System;
     using System.Collections.Generic;
     using System.Composition;
+    using System.Linq;
     using System.IO;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
@@ -46,22 +47,41 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         }
 
         #region Private methods
-
+        private static IEnumerable<string> EmptyEnumerable = Enumerable.Empty<string>();
         private void BuildItem(IHostService host, ItemViewModel item, FileModel model)
         {
+            var linkToUids = new HashSet<string>();
             item.Summary = Markup(host, item.Summary, model);
             item.Remarks = Markup(host, item.Remarks, model);
             item.Conceptual = Markup(host, item.Conceptual, model);
-            if (item.Syntax?.Return?.Description != null)
+            linkToUids.UnionWith(item.Inheritance ?? EmptyEnumerable);
+            linkToUids.UnionWith(item.InheritedMembers ?? EmptyEnumerable);
+            linkToUids.UnionWith(item.Implements ?? EmptyEnumerable);
+            linkToUids.UnionWith(item.SeeAlsos?.Select(s => s.Type) ?? EmptyEnumerable);
+            linkToUids.UnionWith(item.Sees?.Select(s => s.Type) ?? EmptyEnumerable);
+
+            if (item.Overridden != null)
             {
-                item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, model);
+                linkToUids.Add(item.Overridden);
             }
+            
+            if (item.Syntax?.Return != null)
+            {
+                if (item.Syntax.Return.Description != null)
+                {
+                    item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, model);
+                }
+
+                linkToUids.Add(item.Syntax.Return.Type);
+            }
+
             var parameters = item.Syntax?.Parameters;
             if (parameters != null)
             {
                 foreach (var parameter in parameters)
                 {
                     parameter.Description = Markup(host, parameter.Description, model);
+                    linkToUids.Add(parameter.Type);
                 }
             }
             if (item.Exceptions != null)
@@ -69,8 +89,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 foreach (var exception in item.Exceptions)
                 {
                     exception.Description = Markup(host, exception.Description, model);
+                    linkToUids.Add(exception.Type);
                 }
             }
+
+            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(linkToUids);
         }
 
         private string Markup(IHostService host, string markdown, FileModel model)

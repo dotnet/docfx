@@ -36,6 +36,7 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
+#if !NetCore
         public static void Serialize(string path, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
             var directory = Path.GetDirectoryName(path);
@@ -49,7 +50,9 @@ namespace Microsoft.DocAsCode.Common
                 Serialize(writer, graph, formatting);
             }
         }
+#endif
 
+#if !NetCore
         public static T Deserialize<T>(string path, JsonSerializer serializer = null)
         {
             using (StreamReader reader = new StreamReader(path))
@@ -57,6 +60,7 @@ namespace Microsoft.DocAsCode.Common
                 return Deserialize<T>(reader, serializer);
             }
         }
+#endif
 
         public static T Deserialize<T>(TextReader reader, JsonSerializer serializer = null)
         {
@@ -64,7 +68,6 @@ namespace Microsoft.DocAsCode.Common
             {
                 return (serializer ?? _serializer.Value).Deserialize<T>(json);
             }
-
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private readonly string _script;
 
         public string Name { get; }
+        public string ScriptName { get; }
         public string Extension { get; }
         public string Type { get; }
         public bool IsPrimary { get; }
@@ -36,21 +37,39 @@ namespace Microsoft.DocAsCode.EntityModel
             Type = typeAndExtension.Item1;
             IsPrimary = typeAndExtension.Item3;
             _script = script;
+            if (script != null)
+            {
+                ScriptName = templateName + ".js";
+            }
             _engine = CreateEngine(script);
 
             _renderer = CreateRenderer(resourceCollection, templateName, template);
             Resources = ExtractDependentResources();
         }
 
-        public TemplateTransformedResult TransformModel(object model, object attrs)
+        /// <summary>
+        /// Transform from raw model to view model
+        /// TODO: refactor to merge model & attrs into one input model
+        /// </summary>
+        /// <param name="model">The raw model</param>
+        /// <param name="attrs">The system generated attributes</param>
+        /// <returns>The view model</returns>
+        public object TransformModel(object model, object attrs)
         {
-            if (_renderer == null) return null;
-            if (_engine != null)
-            {
-                model = ProcessWithJint(model, attrs);
-            }
+            if (_engine == null) return model;
+            return ProcessWithJint(model, attrs);
+        }
 
-            return new TemplateTransformedResult(model, _renderer.Render(model));
+        /// <summary>
+        /// Transform from view model to the final result using template
+        /// Supported template languages are mustache and liquid
+        /// </summary>
+        /// <param name="model">The input view model</param>
+        /// <returns>The output after applying template</returns>
+        public string Transform(object model)
+        {
+            if (_renderer == null || model == null) return null;
+            return _renderer.Render(model);
         }
 
         private object ProcessWithJint(object model, object attrs)

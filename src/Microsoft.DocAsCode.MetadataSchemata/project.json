@@ -37,6 +37,7 @@
         "System.Text.RegularExpressions": ""
       },
       "dependencies": {
+        "System.Reflection.Emit":  "4.0.0",
         "Newtonsoft.Json": "6.0.8"
       },
       "compilationOptions": {

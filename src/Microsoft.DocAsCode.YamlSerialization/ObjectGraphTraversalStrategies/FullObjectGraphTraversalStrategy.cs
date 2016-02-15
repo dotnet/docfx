@@ -7,7 +7,9 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
+#if !NetCore
     using System.Globalization;
+#endif
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -24,7 +26,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
     public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     {
         private static MethodInfo TraverseGenericDictionaryHelperMethod { get; } =
+#if NetCore
+            typeof(FullObjectGraphTraversalStrategy).GetTypeInfo().GetDeclaredMethod(nameof(TraverseGenericDictionaryHelper));
+#else
             typeof(FullObjectGraphTraversalStrategy).GetMethod(nameof(TraverseGenericDictionaryHelper));
+#endif
         protected YamlSerializer Serializer { get; }
         private readonly int _maxRecursion;
         private readonly ITypeInspector _typeDescriptor;
@@ -79,6 +85,45 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                 return;
             }
 
+#if NetCore
+            if (value.Type == typeof(bool) ||
+                value.Type == typeof(byte) ||
+                value.Type == typeof(short) ||
+                value.Type == typeof(int) ||
+                value.Type == typeof(long) ||
+                value.Type == typeof(sbyte) ||
+                value.Type == typeof(ushort) ||
+                value.Type == typeof(uint) ||
+                value.Type == typeof(ulong) ||
+                value.Type == typeof(float) ||
+                value.Type == typeof(double) ||
+                value.Type == typeof(decimal) ||
+                value.Type == typeof(string) ||
+                value.Type == typeof(char) ||
+                value.Type == typeof(DateTime) ||
+                value.Type == typeof(TimeSpan))
+            {
+                visitor.VisitScalar(value);
+            }
+            else if (value.Value == null)
+            {
+                visitor.VisitScalar(new BetterObjectDescriptor(null, typeof(object), typeof(object)));
+            }
+            else
+            {
+                var underlyingType = Nullable.GetUnderlyingType(value.Type);
+                if (underlyingType != null)
+                {
+                    // This is a nullable type, recursively handle it with its underlying type.
+                    // Note that if it contains null, the condition above already took care of it
+                    Traverse(new BetterObjectDescriptor(value.Value, underlyingType, value.Type, value.ScalarStyle), visitor, currentDepth);
+                }
+                else
+                {
+                    TraverseObject(value, visitor, currentDepth);
+                }
+            }
+#else
             var typeCode = Type.GetTypeCode(value.Type);
             switch (typeCode)
             {
@@ -99,14 +144,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                 case TypeCode.DateTime:
                     visitor.VisitScalar(value);
                     break;
-
                 case TypeCode.DBNull:
                     visitor.VisitScalar(new BetterObjectDescriptor(null, typeof(object), typeof(object)));
                     break;
-
                 case TypeCode.Empty:
                     throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, "TypeCode.{0} is not supported.", typeCode));
-
                 default:
                     if (value.Value == null || value.Type == typeof(TimeSpan))
                     {
@@ -127,6 +169,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                     }
                     break;
             }
+#endif
         }
 
         protected virtual void TraverseObject(IObjectDescriptor value, IObjectGraphVisitor visitor, int currentDepth)
@@ -134,7 +177,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
             Action<IObjectDescriptor, IObjectGraphVisitor, int> action;
             if (!_behaviorCache.TryGetValue(value.Type, out action))
             {
+#if NetCore
+                if (typeof(IDictionary).GetTypeInfo().IsAssignableFrom(value.Type.GetTypeInfo()))
+#else
                 if (typeof(IDictionary).IsAssignableFrom(value.Type))
+#endif
                 {
                     action = TraverseDictionary;
                 }
@@ -145,7 +192,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                     {
                         action = (v, vi, d) => TraverseGenericDictionary(v, dictionaryType, vi, d);
                     }
+#if NetCore
+                    else if (typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(value.Type.GetTypeInfo()))
+#else
                     else if (typeof(IEnumerable).IsAssignableFrom(value.Type))
+#endif
                     {
                         action = TraverseList;
                     }
@@ -180,7 +231,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
 
         private void TraverseGenericDictionary(IObjectDescriptor dictionary, Type dictionaryType, IObjectGraphVisitor visitor, int currentDepth)
         {
+#if NetCore
+            var entryTypes = dictionaryType.GetTypeInfo().GenericTypeParameters;
+#else
             var entryTypes = dictionaryType.GetGenericArguments();
+#endif
 
             // dictionaryType is IDictionary<TKey, TValue>
             visitor.VisitMappingStart(dictionary, entryTypes[0], entryTypes[1]);
@@ -236,7 +291,13 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
         private void TraverseList(IObjectDescriptor value, IObjectGraphVisitor visitor, int currentDepth)
         {
             var enumerableType = ReflectionUtility.GetImplementedGenericInterface(value.Type, typeof(IEnumerable<>));
-            var itemType = enumerableType != null ? enumerableType.GetGenericArguments()[0] : typeof(object);
+            var itemType = enumerableType != null ?
+#if NetCore
+                enumerableType.GetTypeInfo().GenericTypeParameters[0]
+#else
+                enumerableType.GetGenericArguments()[0]
+#endif
+                : typeof(object);
 
             visitor.VisitSequenceStart(value, itemType);
 

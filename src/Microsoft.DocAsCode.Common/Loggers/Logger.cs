@@ -59,11 +59,19 @@ namespace Microsoft.DocAsCode.Common
         {
             Log(new LogItem
             {
+#if NetCore
+                File = file,
+#else
                 File = file ?? LoggerFileScope.GetFileName(),
+#endif
                 Line = line,
                 LogLevel = level,
                 Message = message,
+#if NetCore
+                Phase = phase,
+#else
                 Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
+#endif
             });
         }
 
@@ -104,7 +112,9 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
+#if !NetCore
         [Serializable]
+#endif
         private class LogItem : ILogItem
         {
             public string File { get; set; }

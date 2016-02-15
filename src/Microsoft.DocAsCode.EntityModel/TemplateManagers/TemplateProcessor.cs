@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private const string ManifestFileName = ".manifest";
         private const string Language = "csharp"; // TODO: how to handle multi-language
+
         private ResourceCollection _resourceProvider = null;
 
         public TemplateCollection Templates { get; }
@@ -76,7 +77,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
                 var outputDirectory = context.BuildOutputFolder;
 
-                var templateManifest = processor.Transform(manifest, context, settings).ToList();
+                var templateManifest = processor.Transform(manifest, context, settings);
 
                 if (!settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
                 {
@@ -93,19 +94,21 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        public IEnumerable<TemplateManifestItem> Transform(IEnumerable<ManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings)
+        public List<TemplateManifestItem> Transform(List<ManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings)
         {
             var documentTypes = items.Select(s => s.DocumentType).Distinct().Where(s => s != "Resource" && Templates[s] == null);
             if (documentTypes.Any())
             {
                 Logger.LogWarning($"There is no template processing document type(s): {documentTypes.ToDelimitedString()}");
             }
-
-            foreach (var item in items)
+            var manifest = new List<TemplateManifestItem>();
+            items.RunAll(item =>
             {
                 var manifestItem = TransformItem(item, context, settings);
-                if (manifestItem != null) yield return manifestItem;
-            }
+                if (manifestItem != null) manifest.Add(manifestItem);
+            });
+
+            return manifest;
         }
 
         private static void ExportRawModel(List<ManifestItem> manifest, ApplyTemplateSettings settings)
@@ -118,14 +121,15 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static void ExportModel(object model, string modelFileRelativePath, ExportSettings settings)
+        private static string ExportModel(object model, string modelFileRelativePath, ExportSettings settings)
         {
-            if (model == null) return;
+            if (model == null) return null;
             var outputFolder = settings.OutputFolder;
 
-            string rawModelPath = Path.Combine(outputFolder ?? string.Empty, settings.PathRewriter(modelFileRelativePath));
+            string modelPath = Path.Combine(outputFolder ?? string.Empty, settings.PathRewriter(modelFileRelativePath));
 
-            JsonUtility.Serialize(rawModelPath, model);
+            JsonUtility.Serialize(modelPath, model);
+            return modelPath.ToDisplayPath();
         }
 
         private TemplateManifestItem TransformItem(ManifestItem item, IDocumentBuildContext context, ApplyTemplateSettings settings)
@@ -146,79 +150,68 @@ namespace Microsoft.DocAsCode.EntityModel
             if (!IsEmpty)
             {
                 HashSet<string> missingUids = new HashSet<string>();
-                try
+                var model = item.Model.Content;
+                var templates = Templates[item.DocumentType];
+
+                // 1. process model
+                if (templates != null)
                 {
-                    var model = item.Model.Content;
-                    var templates = Templates[item.DocumentType];
-
-                    // 1. process model
-                    if (templates != null)
+                    var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
+                    foreach (var template in templates)
                     {
-                        var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
-                        foreach (var template in templates)
+                        var extension = template.Extension;
+                        string outputFile = Path.ChangeExtension(item.ModelFile, extension);
+                        string outputPath = Path.Combine(outputDirectory, outputFile);
+                        var dir = Path.GetDirectoryName(outputPath);
+                        if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                        object viewModel = null;
+                        try
                         {
-                            var extension = template.Extension;
-                            string outputFile = Path.ChangeExtension(item.ModelFile, extension);
-                            string outputPath = Path.Combine(outputDirectory, outputFile);
-                            var dir = Path.GetDirectoryName(outputPath);
-                            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                            var result = template.TransformModel(model, systemAttrs);
+                            viewModel = template.TransformModel(model, systemAttrs);
+                        }
+                        catch (Exception e)
+                        {
+                            // save raw model for further investigation:
+                            var exportSettings = ApplyTemplateSettings.RawModelExportSettingsForDebug;
+                            var rawModelPath = ExportModel(item.Model, item.ModelFile, exportSettings);
+                            throw new DocumentException($"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRepoRoot}\" using \"{template.ScriptName}\": {e.Message}");
+                        }
 
-                            if (settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
+                        string result;
+                        try
+                        {
+                            result = template.Transform(viewModel);
+                        }
+                        catch (Exception e)
+                        {
+                            // save view model for further investigation:
+                            var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
+                            var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
+                            throw new DocumentException($"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRepoRoot}\": {e.Message}");
+                        }
+
+                        if (settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
+                        {
+                            ExportModel(viewModel, outputFile, settings.ViewModelExportSettings);
+                        }
+
+                        if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+                        {
+                            if (string.IsNullOrWhiteSpace(result))
                             {
-                                ExportModel(result.Model, outputFile, settings.ViewModelExportSettings);
+                                // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
+                                Logger.LogWarning($"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
+                                File.WriteAllText(outputPath, string.Empty);
+                            }
+                            else
+                            {
+                                TransformDocument(result, extension, context, outputPath, item.ModelFile, missingUids);
+                                Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.LocalPathFromRepoRoot}\" to \"{outputPath}\".");
                             }
 
-                            if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
-                            {
-                                string transformed = result.Result;
-                                if (!string.IsNullOrWhiteSpace(transformed))
-                                {
-                                    if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        try
-                                        {
-                                            TranformHtml(context, transformed, item.ModelFile, outputPath);
-                                        }
-                                        catch (AggregateException e)
-                                        {
-                                            e.Handle(s =>
-                                            {
-                                                var xrefExcetpion = s as CrossReferenceNotResolvedException;
-                                                if (xrefExcetpion != null)
-                                                {
-                                                    missingUids.Add(xrefExcetpion.UidRawText);
-                                                    return true;
-                                                }
-                                                else
-                                                {
-                                                    return false;
-                                                }
-                                            });
-                                        }
-                                    }
-                                    else
-                                    {
-                                        File.WriteAllText(outputPath, transformed, Encoding.UTF8);
-                                    }
-
-                                    Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.LocalPathFromRepoRoot}\" to \"{outputPath}\".");
-                                }
-                                else
-                                {
-                                    // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
-                                    Logger.LogWarning($"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
-                                    File.WriteAllText(outputPath, string.Empty);
-                                }
-                                manifestItem.OutputFiles.Add(extension, outputFile);
-                            }
+                            manifestItem.OutputFiles.Add(extension, outputFile);
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    Logger.LogError($"Unable to transform {item.ModelFile}: {e.Message}. Ignored.");
-                    throw;
                 }
 
                 if (missingUids.Count > 0)
@@ -236,6 +229,37 @@ namespace Microsoft.DocAsCode.EntityModel
             }
 
             return manifestItem;
+        }
+
+        private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string outputPath, string relativeOutputPath, HashSet<string> missingUids)
+        {
+            if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    TranformHtml(context, result, relativeOutputPath, outputPath);
+                }
+                catch (AggregateException e)
+                {
+                    e.Handle(s =>
+                    {
+                        var xrefExcetpion = s as CrossReferenceNotResolvedException;
+                        if (xrefExcetpion != null)
+                        {
+                            missingUids.Add(xrefExcetpion.UidRawText);
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+                }
+            }
+            else
+            {
+                File.WriteAllText(outputPath, result, Encoding.UTF8);
+            }
         }
 
         private static void TranformHtml(IDocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)

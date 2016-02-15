@@ -2,7 +2,6 @@
   "version": "1.0.0",
   "dependencies": {
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
-    "Newtonsoft.Json": "7.0.1",
     "YamlDotNet.Signed": "3.7.0",
     "System.Collections.Immutable": "1.1.37"
   },
@@ -13,14 +12,36 @@
         "System.Threading.Tasks": "",
         "System.Globalization": "",
         "System.Runtime": ""
+      },
+      "dependencies": {
+        "Newtonsoft.Json": "7.0.1"
       }
     },
     "net45": {
       "frameworkAssemblies": {
         "System.Collections": "",
-        "System.Threading.Tasks": "",
         "System.Globalization": "",
-        "System.Runtime": ""
+        "System.Runtime": "",
+        "System.Threading.Tasks": ""
+      },
+      "dependencies": {
+        "Newtonsoft.Json": "7.0.1"
+      }
+    },
+    "netcore45": {
+      "frameworkAssemblies": {
+        "System.Collections": "",
+        "System.Globalization": "",
+        "System.IO": "",
+        "System.Runtime": "",
+        "System.Runtime.Extensions": "",
+        "System.Threading.Tasks": ""
+      },
+      "dependencies": {
+        "Newtonsoft.Json": "6.0.8"
+      },
+      "compilationOptions": {
+        "define": ["NetCore"]
       }
     }
   }

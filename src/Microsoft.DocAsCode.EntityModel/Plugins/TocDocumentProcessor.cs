@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             ResolveUid(toc, model, context);
             RegisterTocMap(toc, model.Key, context);
 
-            if (!string.IsNullOrEmpty(toc.Homepage))
+            if (!string.IsNullOrEmpty(toc.Homepage) && PathUtility.IsRelativePath(toc.Href))
             {
                 toc.Href = toc.Homepage;
             }
@@ -157,7 +157,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
             if (href == null)
             {
-                throw new DocumentException($"Unalbe to find file \"{originalPathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                throw new DocumentException($"Unable to find file \"{originalPathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
             }
 
             var relativePath = GetRelativePath(href, model.File);
