@@ -96,6 +96,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RestApiDocumentProcessorFixture.cs" />
+    <Compile Include="RestApiDocumentProcessorTest.cs" />
     <Compile Include="YamlSerializationTest.cs" />
     <Compile Include="ExtractSearchDataTest.cs" />
     <Compile Include="DocfxFlavoredMarkdownTest.cs" />
@@ -114,6 +116,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="tmpl\tmpl1.zip" />
+    <None Include="TestData\contacts_swagger2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\System.Console.csyml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
