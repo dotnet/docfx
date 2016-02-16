@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.EntityModel.Plugins;
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
@@ -55,10 +56,21 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             Directory.CreateDirectory(documentsBaseDir);
             Directory.CreateDirectory(documentsBaseDir + "/test");
             Directory.CreateDirectory(outputBaseDir);
+            var tocFile = Path.Combine(documentsBaseDir, "toc.md");
             var conceptualFile = Path.Combine(documentsBaseDir, "test.md");
             var conceptualFile2 = Path.Combine(documentsBaseDir, "test/test.md");
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
             var resourceMetaFile = resourceFile + ".meta";
+            File.WriteAllLines(
+                tocFile,
+                new[]
+                {
+                    "# [test1](test.md)",
+                    "## [test2](test/test.md)",
+                    "# Api",
+                    "## [Console](@System.Console)",
+                    "## [ConsoleColor](xref:System.ConsoleColor)",
+                });
             File.WriteAllLines(
                 conceptualFile,
                 new[]
@@ -108,7 +120,7 @@ tagRules : [
 ]
 }");
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
-            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
@@ -143,6 +155,25 @@ tagRules : [
 
                     Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
                     Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
+                }
+
+                {
+                    // check toc.
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<TocViewModel>(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension)));
+                    Assert.NotNull(model);
+                    Assert.Equal("test1", model[0].Name);
+                    Assert.Equal("test.json", model[0].Href);
+                    Assert.NotNull(model[0].Items);
+                    Assert.Equal("test2", model[0].Items[0].Name);
+                    Assert.Equal("test/test.json", model[0].Items[0].Href);
+                    Assert.Equal("Api", model[1].Name);
+                    Assert.Null(model[1].Href);
+                    Assert.NotNull(model[1].Items);
+                    Assert.Equal("Console", model[1].Items[0].Name);
+                    Assert.Equal("../System.Console.json", model[1].Items[0].Href);
+                    Assert.Equal("ConsoleColor", model[1].Items[1].Name);
+                    Assert.Equal("../System.ConsoleColor.json", model[1].Items[1].Href);
                 }
 
                 {
