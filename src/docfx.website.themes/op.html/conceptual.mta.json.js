@@ -12,7 +12,6 @@ function transform(model, _attrs){
   model._op_clientId = undefined;
   model._op_clientSecret = undefined;
   model._op_gitContributorInformation = undefined;
-  model._op_gitContributorInformation = undefined;
   model._op_gitCommitHistory = undefined;
   model.newFileRepository = undefined;
 
