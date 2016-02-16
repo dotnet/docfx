@@ -1,0 +1,69 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+{{^_disableContribution}}
+{{#docurl}}<a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>{{/docurl}}
+{{#sourceurl}}<a href="{{sourceurl}}" class="btn btn-primary pull-right mobile-hide">View Source</a>{{/sourceurl}}
+{{/_disableContribution}}
+<h1 id="{{htmlId}}" data-uid="{{uid}}" class="text-capitalize">{{name}}</h1>
+<div class="markdown level0 summary">{{{summary}}}</div>
+<div class="markdown level0 description">{{{description}}}</div>
+{{#children}}
+{{^_disableContribution}}
+{{#docurl}}
+<span class="small pull-right mobile-hide">
+  <span class="divider">|</span>
+  <a href="{{docurl}}">Improve this Doc</a>
+</span>{{/docurl}}
+{{#sourceurl}}
+<span class="small pull-right mobile-hide">
+  <a href="{{sourceurl}}">View Source</a>
+</span>{{/sourceurl}}
+{{/_disableContribution}}
+<h3 id="{{htmlId}}" data-uid="{{uid}}" class="text-capitalize">{{operationId}}</h3>
+<div class="markdown level1 summary">{{{summary}}}</div>
+<div class="markdown level1 description">{{{description}}}</div>
+<h5>Sample request</h5>
+<div class="codewrapper">
+  <pre><code class="lang-restApi hljs">{{operation}} {{path}}</code></pre>
+</div>
+{{#parameters.0}}
+<h5 class="parameters">Parameters</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Value</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+{{/parameters.0}}
+{{#parameters}}
+    <tr>
+      <td><em>{{#required}}*{{/required}}{{name}}</em></td>
+      <td>{{type}}</td>
+      <td>{{default}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+  {{/parameters}}
+  {{#parameters.0}}
+  </tbody>
+</table>
+{{/parameters.0}}
+{{#responses.0}}
+{{/responses.0}}
+{{#responses}}
+<h5 class="response">Sample response</h5>
+<div class="status-code">
+  <i>Status code: </i><span class="status">{{statusCode}}</span>
+</div>
+<div class="markdown level2 description">{{{description}}}</div>
+{{#examples}}
+<div class="mime-type">
+  <i>Mime type: </i><span class="mime">{{mimeType}}</span>
+</div>
+<pre class="response-json"><code class="lang-js json hljs">{{content}}</code></pre>
+{{/examples}}
+{{/responses}}
+{{/children}}

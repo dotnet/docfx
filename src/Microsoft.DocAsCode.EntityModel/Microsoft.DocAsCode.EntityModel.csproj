@@ -80,6 +80,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\DocumentBuilder.cs" />
+    <Compile Include="Models\Swagger\ParameterObject.cs" />
+    <Compile Include="Models\Swagger\OperationObject.cs" />
+    <Compile Include="Models\Swagger\PathsObject.cs" />
+    <Compile Include="Models\Swagger\InfoObject.cs" />
+    <Compile Include="Models\Swagger\ResponseObject.cs" />
+    <Compile Include="Models\Swagger\PathItemObject.cs" />
+    <Compile Include="Models\Swagger\SwaggerModel.cs" />
     <Compile Include="Models\FileMetadata.cs" />
     <Compile Include="Models\FileMetadataItem.cs" />
     <Compile Include="Builders\DocumentBuildParameters.cs" />
@@ -97,6 +104,8 @@
     <Compile Include="Incremental\BuildInfo.cs" />
     <Compile Include="Incremental\CacheBase.cs" />
     <Compile Include="Incremental\ProjectLevelCache.cs" />
+    <Compile Include="Plugins\BuildSteps\BuildRestApiDocument.cs" />
+    <Compile Include="Plugins\RestApiDocumentProcessor.cs" />
     <Compile Include="Plugins\DisposableDocumentProcessor.cs" />
     <Compile Include="MetadataMergers\MetadataMergeParameters.cs" />
     <Compile Include="MetadataMergers\MetadataMerger.cs" />
@@ -156,6 +165,11 @@
     <Compile Include="TemplateManagers\TemplateCollection.cs" />
     <Compile Include="TemplateManagers\TemplateProcessor.cs" />
     <Compile Include="TemplateManagers\TemplateManager.cs" />
+    <Compile Include="ViewModels\RestApi\RestApiItemViewModel.cs" />
+    <Compile Include="ViewModels\RestApi\RestApiResponseExampleViewModel.cs" />
+    <Compile Include="ViewModels\RestApi\RestApiResponseViewModel.cs" />
+    <Compile Include="ViewModels\RestApi\RestApiParameterViewModel.cs" />
+    <Compile Include="ViewModels\RestApi\RestApiViewModel.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\ReferenceViewModel.cs" />
