@@ -50,7 +50,40 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex Comment = new Regex(@"^<!--[\s\S]*?-->", RegexOptionCompiled);
             public static readonly Regex AutoLink = new Regex(@"^<([^ >]+(@|:\/)[^ >]+)>", RegexOptionCompiled);
             public static readonly Regex Tag = new Regex(@"^<\/?\w+(?:""[^""]*""|'[^']*'|[^'"">])*?>", RegexOptionCompiled);
-            public static readonly Regex Link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\] *\( *<?([\s\S]*?(?:\([\s\S]*?\)[\s\S]*?)*?)>?(?: +(['""])([\s\S]*?)\3)?\s*\)", RegexOptionCompiled);
+            /// <summary>
+            /// <![CDATA[
+            /// ^                                           start of string
+            /// !?                                          '!' 0~1
+            /// \[                                          '['
+            /// ((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)    group 1: text
+            /// \]                                          ']'
+            /// \s*                                         white spaces
+            /// \(                                          '('
+            /// \s*                                         white spaces
+            /// <?                                          '<' 0~1
+            /// (                                           start group 2: link
+            ///     (?:                                     start non-capturing group
+            ///         [^()]                               any chararacter but '(' or ')'
+            ///         |                                   or
+            ///         \((?<DEPTH>)                        '(' with depth++
+            ///         |                                   or
+            ///         \)(?<-DEPTH>)                       ')' with depth--
+            ///     )                                       end non-capturing group
+            ///     +?                                      lazy 1~
+            ///     (?(DEPTH)(?!))                          require depth = 0
+            /// )                                           end group 2: link
+            /// >?                                          '>' 0~1
+            /// (?:                                         start non-capturing group
+            ///     \s+                                     white spaces
+            ///     (['""])                                 group 3: quotes
+            ///     ([\s\S]*?)                              group 4: title
+            ///     \3                                      ref group 3
+            /// )?                                          end non-capturing group 0~1
+            /// \s*                                         white spaces
+            /// \)                                          ')'
+            /// ]]>
+            /// </summary>
+            public static readonly Regex Link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\(\s*<?((?:[^()]|\((?<DEPTH>)|\)(?<-DEPTH>))+?(?(DEPTH)(?!)))>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)", RegexOptionCompiled);
             public static readonly Regex RefLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]", RegexOptionCompiled);
             public static readonly Regex NoLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]", RegexOptionCompiled);
             public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)", RegexOptionCompiled);

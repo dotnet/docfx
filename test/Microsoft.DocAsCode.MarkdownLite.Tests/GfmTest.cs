@@ -299,6 +299,9 @@ For more information about user navigation properties, see the documentation for
         [InlineData(@"[a](a(b).c)",
             @"<p><a href=""a(b).c"">a</a></p>
 ")]
+        [InlineData(@"[a](a(b(c)).d 'text')",
+            @"<p><a href=""a(b(c)).d"" title=""text"">a</a></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
