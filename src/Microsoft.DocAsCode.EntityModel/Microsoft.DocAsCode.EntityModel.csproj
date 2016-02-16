@@ -97,6 +97,7 @@
     <Compile Include="Incremental\BuildInfo.cs" />
     <Compile Include="Incremental\CacheBase.cs" />
     <Compile Include="Incremental\ProjectLevelCache.cs" />
+    <Compile Include="Plugins\BuildSteps\ApplyApiScan.cs" />
     <Compile Include="Plugins\DisposableDocumentProcessor.cs" />
     <Compile Include="MetadataMergers\MetadataMergeParameters.cs" />
     <Compile Include="MetadataMergers\MetadataMerger.cs" />
