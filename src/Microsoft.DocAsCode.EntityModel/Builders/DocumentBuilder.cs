@@ -142,7 +142,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
                 }
             }
-            Logger.LogInfo($"Building {hostService.Models.Count} file(s) with {processor.Name}...");
+            var steps = string.Join("=>", processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
+            Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {processor.Name}({steps})...");
             Logger.LogVerbose($"Plug-in {processor.Name}: Preprocessing...");
             Prebuild(processor, hostService);
             Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
