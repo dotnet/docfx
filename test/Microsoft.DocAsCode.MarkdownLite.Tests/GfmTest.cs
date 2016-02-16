@@ -3,14 +3,11 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
-    using System;
-    using System.Collections.Immutable;
-
     using Microsoft.DocAsCode.MarkdownLite;
 
     using Xunit;
-    using System.Linq;
-    public class MarkdownLiteTest
+
+    public class GfmTest
     {
         [Theory]
         [Trait("Related", "Markdown")]
@@ -313,97 +310,6 @@ For more information about user navigation properties, see the documentation for
 
         [Fact]
         [Trait("Related", "Markdown")]
-        public void TestGfmWithValidator()
-        {
-            const string source = "#Hello World";
-            const string expected = "<h1 id=\"hello-world\">Hello World</h1>\n";
-            const string expectedMessage = "a space is expected after '#'";
-            string message = null;
-            var builder = new GfmEngineBuilder(new Options());
-            builder.Rewriter =
-                MarkdownTokenRewriterFactory.FromValidators(
-                    MarkdownTokenValidatorFactory.FromLambda(
-                        (MarkdownHeadingBlockToken token) =>
-                        {
-                            if (!token.RawMarkdown.StartsWith("# "))
-                            {
-                                message = expectedMessage;
-                            }
-                        }));
-            var engine = builder.CreateEngine(new HtmlRenderer());
-            var result = engine.Markup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), result);
-            Assert.Equal(expectedMessage, message);
-        }
-
-        [Fact]
-        [Trait("Related", "Markdown")]
-        public void TestGfmWithRewrite()
-        {
-            const string source = @"
-Heading
-=======
- 
-Sub-heading
------------
-  
-### Another deeper heading
-  
-Paragraphs are separated
-by a blank line.
- 
-Leave 2 spaces at the end of a line to do a  
-line break
- 
-Text attributes *italic*, **bold**, 
-`monospace`, ~~strikethrough~~ .
- 
-A [link](http://example.com).
-
-Shopping list:
- 
-* apples
-* oranges
-* pears
- 
-Numbered list:
- 
-1. apples
-2. oranges
-3. pears
-";
-            const string expected = @"<p>Paragraphs are separated
-by a blank line.</p>
-<p>Leave 2 spaces at the end of a line to do a<br>line break</p>
-<p>Text attributes <em>italic</em>, <strong>bold</strong>, 
-<code>monospace</code>, <del>strikethrough</del> .</p>
-<p>A <a href=""http://example.com"">link</a>.</p>
-<p>Shopping list:</p>
-<ul>
-<li>apples</li>
-<li>oranges</li>
-<li>pears</li>
-</ul>
-<p>Numbered list:</p>
-<ol>
-<li>apples</li>
-<li>oranges</li>
-<li>pears</li>
-</ol>
-";
-
-            var builder = new GfmEngineBuilder(new Options());
-            builder.Rewriter =
-                MarkdownTokenRewriterFactory.FromLambda(
-                    (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context, t.RawMarkdown) // ignore all heading
-                );
-            var engine = builder.CreateEngine(new HtmlRenderer());
-            var result = engine.Markup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), result);
-        }
-
-        [Fact]
-        [Trait("Related", "Markdown")]
         public void TestTable_WithEmptyCell()
         {
             // 1. Prepare data
@@ -451,10 +357,7 @@ by a blank line.</p>
 </tbody>
 </table>
 ";
-            var builder = new GfmEngineBuilder(new Options());
-            var engine = builder.CreateEngine(new HtmlRenderer());
-            var result = engine.Markup(source);
-            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            TestGfmInGeneral(source, expected);
         }
 
         [Fact]
@@ -501,101 +404,6 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 </table>
 ";
             TestGfmInGeneral(source, expected);
-        }
-
-        [Fact]
-        [Trait("Related", "Markdown")]
-        public void ParseWithBadRewrite()
-        {
-            const string source = @"
-# Heading
-";
-
-            var builder = new GfmEngineBuilder(new Options());
-            builder.Rewriter =
-                MarkdownTokenRewriterFactory.Loop(
-                    MarkdownTokenRewriterFactory.Composite(
-                        MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown, t.RawMarkdown)
-                        ),
-                        MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa", 1, t.RawMarkdown)
-                        )
-                    ),
-                10);
-            var engine = builder.CreateEngine(new HtmlRenderer());
-            Assert.Throws<InvalidOperationException>(() => engine.Markup(source));
-        }
-
-        [Fact]
-        [Trait("Related", "Markdown")]
-        [Trait("Related", "Perf")]
-        public void TestPerf()
-        {
-            const string source = @"
-Heading
-=======
- 
-Sub-heading
------------
-  
-### Another deeper heading
-  
-Paragraphs are separated
-by a blank line.
- 
-Leave 2 spaces at the end of a line to do a  
-line break
- 
-Text attributes *italic*, **bold**, 
-`monospace`, ~~strikethrough~~ .
- 
-A [link](http://example.com).
-
-Shopping list:
- 
-* apples
-* oranges
-* pears
- 
-Numbered list:
- 
-1. apples
-2. oranges
-3. pears
-";
-            const string expected = @"<h1 id=""heading"">Heading</h1>
-<h2 id=""sub-heading"">Sub-heading</h2>
-<h3 id=""another-deeper-heading"">Another deeper heading</h3>
-<p>Paragraphs are separated
-by a blank line.</p>
-<p>Leave 2 spaces at the end of a line to do a<br>line break</p>
-<p>Text attributes <em>italic</em>, <strong>bold</strong>, 
-<code>monospace</code>, <del>strikethrough</del> .</p>
-<p>A <a href=""http://example.com"">link</a>.</p>
-<p>Shopping list:</p>
-<ul>
-<li>apples</li>
-<li>oranges</li>
-<li>pears</li>
-</ul>
-<p>Numbered list:</p>
-<ol>
-<li>apples</li>
-<li>oranges</li>
-<li>pears</li>
-</ol>
-";
-
-            var builder = new GfmEngineBuilder(new Options());
-            var source1000 = string.Concat(Enumerable.Repeat(source, 1000));
-            var expected1000 = string.Concat(Enumerable.Repeat(expected.Replace("\r\n", "\n"), 1000));
-            var engine = builder.CreateEngine(new HtmlRenderer());
-            for (int i = 0; i < 2; i++)
-            {
-                var result = engine.Markup(source1000);
-                Assert.Equal(expected1000, result);
-            }
         }
     }
 }
