@@ -5,16 +5,11 @@ namespace Microsoft.DocAsCode.SubCommands
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
-    using System.Reflection;
-    using System.Runtime.Remoting.Lifetime;
-    using System.Threading;
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -24,16 +19,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class BuildCommand : ISubCommand
     {
-        private static readonly ThreadLocal<JsonSerializer> _toObjectSerializer = new ThreadLocal<JsonSerializer>(
-            () =>
-            {
-                var jsonSerializer = new JsonSerializer();
-                jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
-                jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-                jsonSerializer.Converters.Add(new JObjectDictionaryToObjectDictionaryConverter());
-                return jsonSerializer;
-            });
-
         private readonly string _version;
 
         private readonly TemplateManager _templateManager;
@@ -240,7 +225,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     try
                     {
-                        globalMetadata = JsonUtility.Deserialize<Dictionary<string, object>>(sr, _toObjectSerializer.Value);
+                        globalMetadata = JsonUtility.Deserialize<Dictionary<string, object>>(sr, GetToObjectSerializer());
                     }
                     catch (JsonException e)
                     {
@@ -277,6 +262,16 @@ namespace Microsoft.DocAsCode.SubCommands
                 new DictionaryMergeContext<object>("globalMetadata from config file", globalMetadataFromConfig),
                 new DictionaryMergeContext<object>("globalMetadata command option", globalMetadata));
         }
+
+        private static JsonSerializer GetToObjectSerializer()
+        {
+            var jsonSerializer = new JsonSerializer();
+            jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
+            jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+            jsonSerializer.Converters.Add(new JObjectDictionaryToObjectDictionaryConverter());
+            return jsonSerializer;
+        }
+
 
         private static Dictionary<string, T> MergeDictionary<T>(DictionaryMergeContext<T> item, DictionaryMergeContext<T> overrideItem)
         {
@@ -409,218 +404,6 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     AppDomain.Unload(builderDomain);
                 }
-            }
-        }
-
-        [Serializable]
-        private sealed class DocumentBuilderWrapper
-        {
-            private readonly string _pluginDirectory;
-            private readonly string _baseDirectory;
-            private readonly string _outputDirectory;
-            private readonly BuildJsonConfig _config;
-            private readonly CrossAppDomainListener _listener;
-            private readonly TemplateManager _manager;
-            private readonly LogLevel _logLevel;
-
-            public DocumentBuilderWrapper(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string pluginDirectory, CrossAppDomainListener listener)
-            {
-                if (config == null)
-                {
-                    throw new ArgumentNullException(nameof(config));
-                }
-
-                _pluginDirectory = pluginDirectory;
-                _baseDirectory = baseDirectory;
-                _outputDirectory = outputDirectory;
-                _config = config;
-                _listener = listener;
-                _manager = manager;
-                _logLevel = Logger.LogLevelThreshold;
-            }
-
-            public void BuildDocument()
-            {
-                var sponsor = new ClientSponsor();
-                if (_listener != null)
-                {
-                    Logger.LogLevelThreshold = _logLevel;
-                    Logger.RegisterListener(_listener);
-                    sponsor.Register(_listener);
-                }
-                try
-                {
-                    BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory);
-                }
-                finally
-                {
-                    sponsor.Close();
-                }
-            }
-
-            public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory)
-            {
-                try
-                {
-                    using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
-                    {
-                        var parameters = ConfigToParameter(config, templateManager, baseDirectory, outputDirectory);
-                        if (parameters.Files.Count == 0)
-                        {
-                            Logger.LogWarning("No files found, nothing is to be generated");
-                            return;
-                        }
-
-                        builder.Build(parameters);
-                    }
-                }
-                catch (Exception e) when (CheckSerializability(e))
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    // For non-serializable exception, wrap it and throw docfx exception instead
-                    throw new DocfxException(e.ToString());
-                }
-            }
-
-            private static bool CheckSerializability(object graph)
-            {
-                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                try
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        binaryFormatter.Serialize(ms, graph);
-                        return true;
-                    }
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-
-            private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
-            {
-                if (pluginDirectory == null || !Directory.Exists(pluginDirectory))
-                {
-                    yield break;
-                }
-
-                Logger.LogInfo($"Searching custom plugins in directory {pluginDirectory}...");
-
-                foreach (var assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
-                {
-                    Assembly assembly = null;
-
-                    // assume assembly name is the same with file name without extension
-                    string assemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
-                    if (!string.IsNullOrEmpty(assemblyName))
-                    {
-                        try
-                        {
-                            assembly = Assembly.Load(assemblyName);
-                            Logger.LogVerbose($"Scanning assembly file {assemblyFile}...");
-                        }
-                        catch (Exception ex) when (ex is BadImageFormatException || ex is FileLoadException || ex is FileNotFoundException)
-                        {
-                            Logger.LogWarning($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
-                        }
-
-                        if (assembly != null)
-                        {
-                            yield return assembly;
-                        }
-                    }
-                }
-            }
-
-            private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory)
-            {
-                var parameters = new DocumentBuildParameters();
-                parameters.OutputBaseDir = outputDirectory;
-                if (config.GlobalMetadata != null) parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
-                if (config.FileMetadata != null) parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
-                parameters.ExternalReferencePackages = GetFilesFromFileMapping(GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference)).ToImmutableArray();
-                parameters.Files = GetFileCollectionFromFileMapping(
-                    baseDirectory,
-                    Tuple.Create(DocumentType.Article, GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
-                    Tuple.Create(DocumentType.Override, GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite)),
-                    Tuple.Create(DocumentType.Resource, GlobUtility.ExpandFileMapping(baseDirectory, config.Resource)));
-
-                var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory)
-                {
-                    TransformDocument = config.DryRun != true,
-                };
-
-                applyTemplateSettings.RawModelExportSettings.Export = config.ExportRawModel == true;
-                if (!string.IsNullOrEmpty(config.RawModelOutputFolder))
-                {
-                    applyTemplateSettings.RawModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.RawModelOutputFolder);
-                }
-
-                applyTemplateSettings.ViewModelExportSettings.Export = config.ExportViewModel == true;
-                if (!string.IsNullOrEmpty(config.ViewModelOutputFolder))
-                {
-                    applyTemplateSettings.ViewModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.ViewModelOutputFolder);
-                }
-
-                parameters.ApplyTemplateSettings = applyTemplateSettings;
-                parameters.TemplateManager = templateManager;
-                return parameters;
-            }
-
-            private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
-            {
-                var result = new Dictionary<string, ImmutableArray<FileMetadataItem>>();
-                foreach (var item in fileMetadata)
-                {
-                    var list = new List<FileMetadataItem>();
-                    foreach (var pair in item.Value.Items)
-                    {
-                        list.Add(new FileMetadataItem(pair.Glob, item.Key, pair.Value));
-                    }
-                    result.Add(item.Key, list.ToImmutableArray());
-                }
-
-                return new FileMetadata(baseDirectory, result);
-            }
-
-            private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)
-            {
-                if (mapping == null) yield break;
-                foreach (var file in mapping.Items)
-                {
-                    foreach (var item in file.Files)
-                    {
-                        yield return Path.Combine(file.SourceFolder ?? Environment.CurrentDirectory, item);
-                    }
-                }
-            }
-
-            private static FileCollection GetFileCollectionFromFileMapping(string baseDirectory, params Tuple<DocumentType, FileMapping>[] files)
-            {
-                var fileCollection = new FileCollection(baseDirectory);
-                foreach (var file in files)
-                {
-                    if (file.Item2 != null)
-                    {
-                        foreach (var mapping in file.Item2.Items)
-                        {
-                            fileCollection.Add(file.Item1, mapping.Files, s => ConvertToDestinationPath(Path.Combine(baseDirectory, s), mapping.SourceFolder, mapping.DestinationFolder));
-                        }
-                    }
-                }
-
-                return fileCollection;
-            }
-
-            private static string ConvertToDestinationPath(string path, string src, string dest)
-            {
-                var relativePath = PathUtility.MakeRelativePath(src, path);
-                return Path.Combine(dest ?? string.Empty, relativePath);
             }
         }
 
