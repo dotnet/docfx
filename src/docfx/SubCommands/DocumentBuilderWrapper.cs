@@ -61,10 +61,6 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory);
                 }
-                catch (Exception e) when (CheckSerializability(e))
-                {
-                    throw;
-                }
                 catch (Exception e)
                 {
                     // For non-serializable exception, wrap it and throw docfx exception instead
