@@ -221,13 +221,13 @@ namespace Microsoft.DocAsCode.SubCommands
             FileMapping resources)
         {
             var fileCollection = new FileCollection(baseDirectory);
-            AddFileMapping(fileCollection, DocumentType.Article, articles);
-            AddFileMapping(fileCollection, DocumentType.Override, overrides);
-            AddFileMapping(fileCollection, DocumentType.Resource, resources);
+            AddFileMapping(fileCollection, baseDirectory, DocumentType.Article, articles);
+            AddFileMapping(fileCollection, baseDirectory, DocumentType.Override, overrides);
+            AddFileMapping(fileCollection, baseDirectory, DocumentType.Resource, resources);
             return fileCollection;
         }
 
-        private static void AddFileMapping(FileCollection fileCollection, DocumentType type, FileMapping mapping)
+        private static void AddFileMapping(FileCollection fileCollection, string baseDirectory, DocumentType type, FileMapping mapping)
         {
             if (mapping != null)
             {
@@ -236,15 +236,15 @@ namespace Microsoft.DocAsCode.SubCommands
                     fileCollection.Add(
                         type,
                         item.Files,
-                        s => RewritePath(fileCollection, s, item));
+                        s => RewritePath(baseDirectory, s, item));
                 }
             }
         }
 
-        private static string RewritePath(FileCollection fileCollection, string sourcePath, FileMappingItem item)
+        private static string RewritePath(string baseDirectory, string sourcePath, FileMappingItem item)
         {
             return ConvertToDestinationPath(
-                Path.Combine(fileCollection.DefaultBaseDir, sourcePath),
+                Path.Combine(baseDirectory, sourcePath),
                 item.SourceFolder,
                 item.DestinationFolder);
         }

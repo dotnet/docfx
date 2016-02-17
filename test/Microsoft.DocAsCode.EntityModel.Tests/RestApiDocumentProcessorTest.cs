@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "RestApiDocumentProcessor")]
+    [Collection("docfx STA")]
     public class RestApiDocumentProcessorTest : IClassFixture<RestApiDocumentProcessorFixture>
     {
         private string _outputFolder;
