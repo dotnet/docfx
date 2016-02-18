@@ -141,14 +141,17 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     vm.Children.Add(itemVm);
                 }
             }
-            var result = new FileModel(file, vm, serializer: new BinaryFormatter())
+            var displayLocalPath = repoInfo?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+            return new FileModel(file, vm, serializer: new BinaryFormatter())
             {
-                Uids = new string[] { vm.Uid }.Concat(from item in vm.Children select item.Uid).ToImmutableArray(),
-                LocalPathFromRepoRoot = repoInfo?.RelativePath
+                Uids = new UidDefinition[] { new UidDefinition(vm.Uid, displayLocalPath) }.Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
+                LocalPathFromRepoRoot = displayLocalPath,
+                Properties =
+                {
+                    LinkToFiles = new HashSet<string>(),
+                    LinkToUids = new HashSet<string>(),
+                },
             };
-            result.Properties.LinkToFiles = new HashSet<string>();
-            result.Properties.LinkToUids = new HashSet<string>();
-            return result;
         }
 
         public override SaveResult Save(FileModel model)

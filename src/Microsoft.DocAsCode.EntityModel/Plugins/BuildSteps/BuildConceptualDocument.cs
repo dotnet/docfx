@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         var uid = item.Value as string;
                         if (!string.IsNullOrWhiteSpace(uid))
                         {
-                            model.Uids = new[] { uid }.ToImmutableArray();
+                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRepoRoot) }.ToImmutableArray();
                             content["uid"] = item.Value;
                         }
                     }
@@ -69,8 +69,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 model.Properties.XrefSpec = new XRefSpec
                 {
-                    Uid = model.Uids[0],
-                    Name = TitleThumbnail(content["title"].ToString() ?? model.Uids[0], TitleThumbnailMaxLength),
+                    Uid = model.Uids[0].Name,
+                    Name = TitleThumbnail(content["title"].ToString() ?? model.Uids[0].Name, TitleThumbnailMaxLength),
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }

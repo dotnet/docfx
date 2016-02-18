@@ -45,12 +45,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             TocViewModel toc = LoadSingleToc(filePath);
 
             var repoDetail = GitUtility.GetGitDetail(filePath);
-
+            var displayLocalPath = repoDetail?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+            
             // todo : metadata.
             return new FileModel(file, toc)
             {
-                Uids = new[] { file.File }.ToImmutableArray(),
-                LocalPathFromRepoRoot = repoDetail?.RelativePath
+                Uids = new[] { new UidDefinition(file.File, displayLocalPath) }.ToImmutableArray(),
+                LocalPathFromRepoRoot = displayLocalPath
             };
         }
 

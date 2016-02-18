@@ -73,11 +73,11 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
             var filePath = Path.Combine(file.BaseDir, file.File);
             var repoDetail = GitUtility.GetGitDetail(filePath);
-
+            var displayLocalPath = repoDetail?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
             return new FileModel(file, content)
             {
-                Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<string>.Empty : ImmutableArray<string>.Empty.Add(uid),
-                LocalPathFromRepoRoot = repoDetail?.RelativePath
+                Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<UidDefinition>.Empty : ImmutableArray<UidDefinition>.Empty.Add(new UidDefinition(uid, displayLocalPath)),
+                LocalPathFromRepoRoot = displayLocalPath
             };
         }
 

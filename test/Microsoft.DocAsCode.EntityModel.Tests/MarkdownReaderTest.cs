@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.EntityModel.Plugins;
+    using Microsoft.DocAsCode.EntityModel.ViewModels;
 
     public class MarkdownReaderTest
     {
@@ -23,7 +24,7 @@ remarks: Hello
 This is unit test!";
             const string FileName = "ut_ReadMarkdownAsOverride.md";
             File.WriteAllText(FileName, Content);
-            var results = MarkdownReader.ReadMarkdownAsOverride(Environment.CurrentDirectory, FileName);
+            var results = MarkdownReader.ReadMarkdownAsOverride<ItemViewModel>(Environment.CurrentDirectory, FileName);
             Assert.NotNull(results);
             Assert.Equal(1, results.Count);
             Assert.Equal("Test", results[0].Uid);

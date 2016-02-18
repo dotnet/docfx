@@ -13,9 +13,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     public class MarkdownReader
     {
-        public static List<ItemViewModel> ReadMarkdownAsOverride(string baseDir, string file)
+        public static List<T> ReadMarkdownAsOverride<T>(string baseDir, string file) where T : IOverrideDocumentViewModel
         {
-            return ReadMarkDownCore(Path.Combine(baseDir, file)).ToList();
+            return ReadMarkDownCore<T>(Path.Combine(baseDir, file)).ToList();
         }
 
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
@@ -31,12 +31,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        private static IEnumerable<ItemViewModel> ReadMarkDownCore(string file)
+        private static IEnumerable<T> ReadMarkDownCore<T>(string file) where T : IOverrideDocumentViewModel
         {
             var content = File.ReadAllText(file);
             var repoInfo = GitUtility.GetGitDetail(file);
             var lineIndex = GetLineIndex(content).ToList();
             var yamlDetails = YamlHeaderParser.Select(content);
+            if (yamlDetails == null) yield break;
             var sections = from detail in yamlDetails
                            let id = detail.Id
                            from ms in detail.MatchedSections
@@ -55,7 +56,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         YamlUtility.Serialize(sw, item.Detail.Properties);
                         using (var sr = new StringReader(sw.ToString()))
                         {
-                            var vm = YamlUtility.Deserialize<ItemViewModel>(sr);
+                            var vm = YamlUtility.Deserialize<T>(sr);
                             vm.Conceptual = content.Substring(start, end - start + 1);
                             vm.Documentation = new SourceDetail { Remote = repoInfo, StartLine = item.Location.EndLocation.Line, EndLine = currentEnd.Line };
                             vm.Uid = item.Id;

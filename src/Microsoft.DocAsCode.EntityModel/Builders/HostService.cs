@@ -194,7 +194,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         private void LoadCore(IEnumerable<FileModel> models)
         {
             EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
-            EventHandler<PropertyChangedEventArgs<ImmutableArray<string>>> uidsChangedHandler = HandleUidsChanged;
+            EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
             EventHandler contentAccessedHandler = ContentAccessedHandler;
             if (Models != null)
             {
@@ -216,10 +216,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 foreach (var uid in m.Uids)
                 {
                     List<FileModel> list;
-                    if (!_uidIndex.TryGetValue(uid, out list))
+                    if (!_uidIndex.TryGetValue(uid.Name, out list))
                     {
                         list = new List<FileModel>();
-                        _uidIndex.Add(uid, list);
+                        _uidIndex.Add(uid.Name, list);
                     }
                     list.Add(m);
                 }
@@ -230,7 +230,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
         }
 
-        private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<string>> e)
+        private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<UidDefinition>> e)
         {
             var m = sender as FileModel;
             if (m == null)
@@ -239,8 +239,8 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
             lock (_syncRoot)
             {
-                var common = e.Original.Intersect(e.Current).ToList();
-                foreach (var added in e.Current.Except(common))
+                var common = e.Original.Select(s=>s.Name).Intersect(e.Current.Select(s => s.Name)).ToList();
+                foreach (var added in e.Current.Select(s => s.Name).Except(common))
                 {
                     List<FileModel> list;
                     if (!_uidIndex.TryGetValue(added, out list))
@@ -250,7 +250,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     }
                     list.Add(m);
                 }
-                foreach (var removed in e.Original.Except(common))
+                foreach (var removed in e.Original.Select(s => s.Name).Except(common))
                 {
                     List<FileModel> list;
                     if (_uidIndex.TryGetValue(removed, out list))

@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     host.LogWarning("Unknown model without uid.", file: m.File);
                     return m;
                 }
-                var mainUid = m.Uids[0];
+                var mainUid = m.Uids[0].Name;
                 if (processedUid.Contains(mainUid))
                 {
                     return null;

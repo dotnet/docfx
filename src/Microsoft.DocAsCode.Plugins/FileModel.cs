@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Plugins
 
     public sealed class FileModel : IDisposable
     {
-        private ImmutableArray<string> _uids = ImmutableArray<string>.Empty;
+        private ImmutableArray<UidDefinition> _uids = ImmutableArray<UidDefinition>.Empty;
         
         public FileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)
         {
@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         public string DocumentType { get; set; }
 
-        public ImmutableArray<string> Uids
+        public ImmutableArray<UidDefinition> Uids
         {
             get { return _uids; }
             set
@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.Plugins
             }
         }
         
-        public event EventHandler<PropertyChangedEventArgs<ImmutableArray<string>>> UidsChanged;
+        public event EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> UidsChanged;
 
         public event EventHandler FileOrBaseDirChanged;
 
@@ -132,12 +132,12 @@ namespace Microsoft.DocAsCode.Plugins
             ModelWithCache.Dispose();
         }
 
-        private void OnUidsChanged(string propertyName, ImmutableArray<string> original, ImmutableArray<string> current)
+        private void OnUidsChanged(string propertyName, ImmutableArray<UidDefinition> original, ImmutableArray<UidDefinition> current)
         {
             var handler = UidsChanged;
             if (handler != null)
             {
-                handler(this, new PropertyChangedEventArgs<ImmutableArray<string>>(propertyName, original, current));
+                handler(this, new PropertyChangedEventArgs<ImmutableArray<UidDefinition>>(propertyName, original, current));
             }
         }
 

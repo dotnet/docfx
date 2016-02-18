@@ -72,24 +72,37 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                             }
                         }
                     }
-                    var result = new FileModel(file, page, serializer: new BinaryFormatter())
+                    var displayLocalPath = page.Items.FirstOrDefault()?.Source?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+                    return new FileModel(file, page, serializer: new BinaryFormatter())
                     {
-                        Uids = (from item in page.Items select item.Uid).ToImmutableArray(),
-                    };
-                    result.Properties.LinkToFiles = new HashSet<string>();
-                    result.Properties.LinkToUids = new HashSet<string>();
-                    return result;
-                case DocumentType.Override:
-                    var overrides = MarkdownReader.ReadMarkdownAsOverride(file.BaseDir, file.File);
-                    return new FileModel(file, overrides, serializer: new BinaryFormatter())
-                    {
-                        Uids = (from item in overrides
-                                select item.Uid).ToImmutableArray(),
+                        Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
+
                         Properties =
                         {
                             LinkToFiles = new HashSet<string>(),
                             LinkToUids = new HashSet<string>(),
-                        }
+                        },
+                        LocalPathFromRepoRoot = displayLocalPath,
+                    };
+                case DocumentType.Override:
+                    var overrides = MarkdownReader.ReadMarkdownAsOverride<ItemViewModel>(file.BaseDir, file.File);
+                    if (overrides == null || overrides.Count == 0) return null;
+                    
+                    displayLocalPath = overrides[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+                    return new FileModel(file, overrides, serializer: new BinaryFormatter())
+                    {
+                        Uids = (from item in overrides
+                                select new UidDefinition(
+                                    item.Uid,
+                                    displayLocalPath,
+                                    item.Documentation.StartLine + 1
+                                    )).ToImmutableArray(),
+                        Properties =
+                        {
+                            LinkToFiles = new HashSet<string>(),
+                            LinkToUids = new HashSet<string>(),
+                        },
+                        LocalPathFromRepoRoot = displayLocalPath,
                     };
                 default:
                     throw new NotSupportedException();

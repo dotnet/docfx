@@ -165,6 +165,7 @@
     <Compile Include="TemplateManagers\TemplateCollection.cs" />
     <Compile Include="TemplateManagers\TemplateProcessor.cs" />
     <Compile Include="TemplateManagers\TemplateManager.cs" />
+    <Compile Include="ViewModels\IOverrideDocumentViewModel.cs" />
     <Compile Include="ViewModels\RestApi\RestApiItemViewModel.cs" />
     <Compile Include="ViewModels\RestApi\RestApiResponseExampleViewModel.cs" />
     <Compile Include="ViewModels\RestApi\RestApiResponseViewModel.cs" />

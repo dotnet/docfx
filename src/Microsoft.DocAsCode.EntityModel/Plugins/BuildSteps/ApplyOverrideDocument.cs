@@ -36,24 +36,33 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             foreach (var uid in host.GetAllUids())
             {
                 var ms = host.LookupByUid(uid);
-                var od = ms.SingleOrDefault(m => m.Type == DocumentType.Override);
-                if (od != null)
+                var od = ms.Where(m => m.Type == DocumentType.Override).ToList();
+                var articles = ms.Except(od).ToList();
+                if (articles.Count == 0 || od.Count == 0)
                 {
-                    var ovm = ((List<ItemViewModel>)od.Content).Single(vm => vm.Uid == uid);
-                    foreach (
-                        var pair in
-                            from model in ms
-                            where model.Type == DocumentType.Article
-                            from item in ((PageViewModel)model.Content).Items
-                            where item.Uid == uid
-                            select new { model, item })
-                    {
-                        var vm = pair.item;
-                        // todo : fix file path
-                        Merger.Merge(ref vm, ovm);
-                        ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od.Properties.LinkToUids);
-                        ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od.Properties.LinkToFiles);
-                    }
+                    continue;
+                }
+
+                if (od.Count > 1)
+                {
+                    var uidDefinitions = od[0].Uids.Where(u => u.Name == uid);
+                    var errorMessage = string.Join(",", uidDefinitions.Select(s => $"\"{s.File}\"" + (s.Line.HasValue ? $"Line {s.Line}" : string.Empty)));
+                    throw new DocumentException($"UID \"{uid}\" is defined in multiple places: {errorMessage}. Only one overwrite document is allowed per particular UID.");
+                }
+
+                var ovm = ((List<ItemViewModel>)od[0].Content).Single(vm => vm.Uid == uid);
+                foreach (
+                    var pair in
+                        from model in articles
+                        from item in ((PageViewModel)model.Content).Items
+                        where item.Uid == uid
+                        select new { model, item })
+                {
+                    var vm = pair.item;
+                    // todo : fix file path
+                    Merger.Merge(ref vm, ovm);
+                    ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od[0].Properties.LinkToUids);
+                    ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od[0].Properties.LinkToFiles);
                 }
             }
         }

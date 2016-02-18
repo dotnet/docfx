@@ -19,6 +19,7 @@
     <Compile Include="DocumentExceptionExtensions.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FileAndType.cs" />
+    <Compile Include="UidDefinition.cs" />
     <Compile Include="ModelWithCache.cs" />
     <Compile Include="FileModel.cs" />
     <Compile Include="IDocumentBuildContext.cs" />
