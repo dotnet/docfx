@@ -405,15 +405,19 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         private static IEnumerable<InnerBuildContext> GetInnerContexts(DocumentBuildParameters parameters, IEnumerable<IDocumentProcessor> processors, TemplateProcessor templateProcessor)
         {
-            var filesGroupedByProcessor =
-                (from file in parameters.Files.EnumerateFiles()
-                 group file by (from processor in processors
-                                let priority = processor.GetProcessingPriority(file)
-                                where priority != ProcessingPriority.NotSupportted
-                                orderby priority descending
-                                select processor).FirstOrDefault()).ToList();
-            var toHandleItems = filesGroupedByProcessor.Where(s => s.Key != null);
-            var notToHandleItems = filesGroupedByProcessor.Where(s => s.Key == null);
+            var k = from fileItem in (
+                from file in parameters.Files.EnumerateFiles()
+                from p in (from processor in processors
+                           let priority = processor.GetProcessingPriority(file)
+                           where priority != ProcessingPriority.NotSupportted
+                           group processor by priority into ps
+                           orderby ps.Key descending
+                           select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
+                select new { file, p })
+                    group fileItem by fileItem.p;
+                    
+            var toHandleItems = k.Where(s => s.Key != null);
+            var notToHandleItems = k.Where(s => s.Key == null);
             foreach (var item in notToHandleItems)
             {
                 var sb = new StringBuilder();
@@ -421,7 +425,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 foreach (var f in item)
                 {
                     sb.Append("\t");
-                    sb.AppendLine(f.File);
+                    sb.AppendLine(f.file.File);
                 }
                 Logger.LogWarning(sb.ToString());
             }
@@ -430,7 +434,10 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                    select new InnerBuildContext(
                        new HostService(
                            from file in item
-                           select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file)),
+                           select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file.file)
+                           into model
+                           where model != null
+                           select model),
                        item.Key,
                        templateProcessor);
         }

@@ -4,7 +4,12 @@
 {{#docurl}}<a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>{{/docurl}}
 {{#sourceurl}}<a href="{{sourceurl}}" class="btn btn-primary pull-right mobile-hide">View Source</a>{{/sourceurl}}
 {{/_disableContribution}}
+{{#conceptual}}
+  <div class="markdown level0 conceptual">{{{conceptual}}}</div>
+{{/conceptual}}
+{{^conceptual}}
 <h1 id="{{htmlId}}" data-uid="{{uid}}" class="text-capitalize">{{name}}</h1>
+{{/conceptual}}
 <div class="markdown level0 summary">{{{summary}}}</div>
 <div class="markdown level0 description">{{{description}}}</div>
 {{#children}}
@@ -19,7 +24,12 @@
   <a href="{{sourceurl}}">View Source</a>
 </span>{{/sourceurl}}
 {{/_disableContribution}}
-<h3 id="{{htmlId}}" data-uid="{{uid}}" class="text-capitalize">{{operationId}}</h3>
+{{#conceptual}}
+  <div class="markdown level1 conceptual">{{{conceptual}}}</div>
+{{/conceptual}}
+{{^conceptual}}
+ <h3 id="{{htmlId}}" data-uid="{{uid}}" class="text-capitalize">{{operationId}}</h3>
+{{/conceptual}}
 <div class="markdown level1 summary">{{{summary}}}</div>
 <div class="markdown level1 description">{{{description}}}</div>
 <h5>Sample request</h5>

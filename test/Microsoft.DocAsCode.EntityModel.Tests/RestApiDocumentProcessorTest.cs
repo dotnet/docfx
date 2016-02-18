@@ -61,13 +61,13 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             // Check REST API
             var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
             Assert.True(File.Exists(outputRawModelPath));
-            var model = RestApiDocumentProcessor.GetModelWithoutRef<RestApiViewModel>(outputRawModelPath);
-            Assert.Equal("graph.windows.net//myorganization/Contacts", model.Uid);
-            Assert.Equal("graph_windows_net__myorganization_Contacts", model.HtmlId);
+            var model = RestApiDocumentProcessor.GetModelWithoutRef<RestApiItemViewModel>(File.ReadAllText(outputRawModelPath));
+            Assert.Equal("graph.windows.net/myorganization/Contacts", model.Uid);
+            Assert.Equal("graph_windows_net_myorganization_Contacts", model.HtmlId);
             Assert.Equal(9, model.Children.Count);
             Assert.Equal("Hello world!", model.Metadata["meta"]);
             var item1 = model.Children[0];
-            Assert.Equal("graph.windows.net//myorganization/Contacts/get contacts", item1.Uid);
+            Assert.Equal("graph.windows.net/myorganization/Contacts/get contacts", item1.Uid);
             Assert.Equal("<p>You can get a collection of contacts from your tenant.</p>\n", item1.Summary);
             Assert.Equal(1, item1.Parameters.Count);
             Assert.Equal("1.6", item1.Parameters[0].Metadata["default"]);

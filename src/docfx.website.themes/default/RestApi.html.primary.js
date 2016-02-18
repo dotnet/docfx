@@ -18,11 +18,22 @@ function transform(model, _attrs) {
     vm.docurl = vm.docurl || getImproveTheDocHref(vm, vm.newFileRepository);
     vm.sourceurl = vm.sourceurl || getViewSourceHref(vm);
     if (vm.children) {
+        var ordered = [];
         for (var i = 0; i < vm.children.length; i++) {
             var child = vm.children[i];
             child.docurl = child.docurl || getImproveTheDocHref(child, vm.newFileRepository);
             child.sourceurl = child.sourceurl || getViewSourceHref(child);
+            child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
+            if (vm._displayItems && child.uid) {
+                var index = vm._displayItems.indexOf(child.uid);
+                if (index > -1) {
+                    ordered[index] = child;
+                }
+            }
         };
+        if (vm._displayItems) {
+            vm.children = ordered;
+        }
     }
 
     return vm;

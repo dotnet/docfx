@@ -25,19 +25,32 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             switch (model.Type)
             {
                 case DocumentType.Article:
-                    var restApi = (RestApiViewModel)model.Content;
-                    var linkToUids = new HashSet<string>();
-                    restApi.Summary = Markup(host, restApi.Summary, model);
-                    restApi.Description = Markup(host, restApi.Description, model);
-                    foreach (var item in restApi.Children)
+                    var restApi = (RestApiItemViewModel)model.Content;
+                    BuildItem(host, restApi, model);
+                    if (restApi.Children != null)
                     {
-                        item.Summary = Markup(host, item.Summary, model);
-                        item.Description = Markup(host, item.Description, model);
+                        foreach (var item in restApi.Children)
+                        {
+                            BuildItem(host, item, model);
+                        }
                     }
                     break;
+                case DocumentType.Override:
+                    foreach (var item in (List<RestApiItemViewModel>)model.Content)
+                    {
+                        BuildItem(host, item, model);
+                    }
+                    return;
                 default:
                     throw new NotSupportedException();
             }
+        }
+
+        private void BuildItem(IHostService host, RestApiItemViewModel item, FileModel model)
+        {
+            item.Summary = Markup(host, item.Summary, model);
+            item.Description = Markup(host, item.Description, model);
+            item.Conceptual = Markup(host, item.Conceptual, model);
         }
 
         private string Markup(IHostService host, string markdown, FileModel model)

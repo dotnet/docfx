@@ -104,6 +104,7 @@
     <Compile Include="Incremental\BuildInfo.cs" />
     <Compile Include="Incremental\CacheBase.cs" />
     <Compile Include="Incremental\ProjectLevelCache.cs" />
+    <Compile Include="Plugins\BuildSteps\ApplyOverrideDocumentForRestApi.cs" />
     <Compile Include="Plugins\BuildSteps\BuildRestApiDocument.cs" />
     <Compile Include="Plugins\RestApiDocumentProcessor.cs" />
     <Compile Include="Plugins\DisposableDocumentProcessor.cs" />
@@ -170,7 +171,6 @@
     <Compile Include="ViewModels\RestApi\RestApiResponseExampleViewModel.cs" />
     <Compile Include="ViewModels\RestApi\RestApiResponseViewModel.cs" />
     <Compile Include="ViewModels\RestApi\RestApiParameterViewModel.cs" />
-    <Compile Include="ViewModels\RestApi\RestApiViewModel.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\ReferenceViewModel.cs" />

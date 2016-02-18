@@ -15,6 +15,13 @@ namespace Microsoft.DocAsCode.EntityModel.Swagger
     public class SwaggerModel
     {
         /// <summary>
+        /// The original swagger.json cpntent
+        /// </summary>
+        [YamlIgnore]
+        [JsonIgnore]
+        public string Raw { get; set; }
+
+        /// <summary>
         /// Required. Provides metadata about the API. The metadata can be used by the clients if needed.
         /// </summary>
         [YamlMember(Alias = "info")]
@@ -49,6 +56,27 @@ namespace Microsoft.DocAsCode.EntityModel.Swagger
         [YamlMember(Alias = "summary")]
         [JsonProperty("summary")]
         public string Summary { get; set; }
+
+        /// <summary>
+        /// An object to hold data types produced and consumed by operations.
+        /// </summary>
+        [YamlMember(Alias = "definitions")]
+        [JsonProperty("definitions")]
+        public object Defintions { get; set; }
+
+        /// <summary>
+        /// An object to hold parameters that can be used across operations. This property does not define global parameters for all operations
+        /// </summary>
+        [YamlMember(Alias = "parameters")]
+        [JsonProperty("parameters")]
+        public object Parameters { get; set; }
+
+        /// <summary>
+        /// An object to hold responses that can be used across operations. This property does not define global responses for all operations.
+        /// </summary>
+        [YamlMember(Alias = "responses")]
+        [JsonProperty("responses")]
+        public object Responses { get; set; }
 
         [ExtensibleMember]
         [JsonExtensionData]

@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     {
         private const string RestApiDocumentType = "RestApi";
         private const string DocumentTypeKey = "documentType";
+
         /// <summary>
         /// TODO: resolve JSON reference $ref
         /// </summary>
@@ -71,6 +72,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         return ProcessingPriority.Normal;
                     }
                     break;
+                case DocumentType.Override:
+                    if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ProcessingPriority.Normal;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -79,79 +86,56 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
-            if (file.Type != DocumentType.Article)
+            switch (file.Type)
             {
-                throw new NotSupportedException();
-            }
-            var filePath = Path.Combine(file.BaseDir, file.File);
-            var swagger = GetModelWithoutRef<SwaggerModel>(filePath);
-            swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
-            var repoInfo = GitUtility.GetGitDetail(filePath);
-            if (repoInfo != null)
-            {
-                swagger.Metadata["source"] = new SourceDetail() { Remote = repoInfo };
-            }
-
-            var uid = GetUid(swagger);
-            var vm = new RestApiViewModel
-            {
-                Name = swagger.Info.Title,
-                Uid = uid,
-                HtmlId = GetHtmlId(uid),
-                Metadata = MergeMetadata(swagger.Metadata, metadata),
-                Description = swagger.Description,
-                Summary = swagger.Summary
-            };
-            foreach (var path in swagger.Paths)
-            {
-                foreach (var op in path.Value)
-                {
-                    var itemUid = uid + "/" + op.Value.OperationId;
-                    var itemVm = new RestApiItemViewModel
+                case DocumentType.Article:
+                    var filePath = Path.Combine(file.BaseDir, file.File);
+                    var swaggerContent = File.ReadAllText(filePath);
+                    var swagger = GetModelWithoutRef<SwaggerModel>(swaggerContent);
+                    swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
+                    swagger.Raw = swaggerContent;
+                    var repoInfo = GitUtility.GetGitDetail(filePath);
+                    if (repoInfo != null)
                     {
-                        Path = path.Key,
-                        OperationName = op.Key,
-                        OperationId = op.Value.OperationId,
-                        HtmlId = GetHtmlId(itemUid),
-                        Uid = itemUid,
-                        Metadata = op.Value.Metadata,
-                        Description = op.Value.Description,
-                        Summary = op.Value.Summary,
-                        Parameters = op.Value.Parameters?.Select(s => new RestApiParameterViewModel
-                        {
-                            Description = s.Description,
-                            Metadata = s.Metadata
-                        }).ToList(),
-                        Responses = op.Value.Responses?.Select(s => new RestApiResponseViewModel
-                        {
-                            Metadata = s.Value.Metadata,
-                            Description = s.Value.Description,
-                            Summary = s.Value.Summary,
-                            HttpStatusCode = s.Key,
-                            Examples = s.Value.Examples.Select(example => new RestApiResponseExampleViewModel
-                            {
-                                MimeType = example.Key,
-                                Content = example.Value != null ? JsonUtility.Serialize(example.Value) : null,
-                            }).ToList(),
-                        }).ToList(),
-                    };
+                        swagger.Metadata["source"] = new SourceDetail() { Remote = repoInfo };
+                    }
 
-                    // TODO: line number
-                    itemVm.Metadata["source"] = swagger.Metadata["source"];
-                    vm.Children.Add(itemVm);
-                }
+                    swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
+                    var vm = RestApiItemViewModel.FromSwaggerModel(swagger);
+                    var displayLocalPath = repoInfo?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+                    return new FileModel(file, vm, serializer: new BinaryFormatter())
+                    {
+                        Uids = new UidDefinition[] { new UidDefinition(vm.Uid, displayLocalPath) }.Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
+                        LocalPathFromRepoRoot = displayLocalPath,
+                        Properties =
+                        {
+                            LinkToFiles = new HashSet<string>(),
+                            LinkToUids = new HashSet<string>(),
+                        },
+                    };
+                case DocumentType.Override:
+                    var overrides = MarkdownReader.ReadMarkdownAsOverride<RestApiItemViewModel>(file.BaseDir, file.File);
+                    if (overrides == null || overrides.Count == 0) return null;
+
+                    displayLocalPath = overrides[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+                    return new FileModel(file, overrides, serializer: new BinaryFormatter())
+                    {
+                        Uids = (from item in overrides
+                                select new UidDefinition(
+                                    item.Uid,
+                                    displayLocalPath,
+                                    item.Documentation.StartLine + 1
+                                    )).ToImmutableArray(),
+                        Properties =
+                        {
+                            LinkToFiles = new HashSet<string>(),
+                            LinkToUids = new HashSet<string>(),
+                        },
+                        LocalPathFromRepoRoot = displayLocalPath,
+                    };
+                default:
+                    throw new NotSupportedException();
             }
-            var displayLocalPath = repoInfo?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
-            return new FileModel(file, vm, serializer: new BinaryFormatter())
-            {
-                Uids = new UidDefinition[] { new UidDefinition(vm.Uid, displayLocalPath) }.Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
-                LocalPathFromRepoRoot = displayLocalPath,
-                Properties =
-                {
-                    LinkToFiles = new HashSet<string>(),
-                    LinkToUids = new HashSet<string>(),
-                },
-            };
         }
 
         public override SaveResult Save(FileModel model)
@@ -160,7 +144,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 throw new NotSupportedException();
             }
-            var vm = (RestApiViewModel)model.Content;
+            var vm = (RestApiItemViewModel)model.Content;
             string documentType = null;
             object documentTypeObject;
             if (vm.Metadata.TryGetValue(DocumentTypeKey, out documentTypeObject))
@@ -176,24 +160,15 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        internal static T GetModelWithoutRef<T>(string path)
+        internal static T GetModelWithoutRef<T>(string content)
         {
-            return JsonUtility.Deserialize<T>(path, _serializer.Value);
+            using(var sr = new StringReader(content))
+            {
+                return JsonUtility.Deserialize<T>(sr, _serializer.Value);
+            }
         }
 
         #region Private methods
-        private static Regex HtmlEncodeRegex = new Regex(@"\W", RegexOptions.Compiled);
-
-        /// <summary>
-        /// TODO: merge with the one in XrefDetails
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private static string GetHtmlId(string id)
-        {
-            if (string.IsNullOrEmpty(id)) return null;
-            return HtmlEncodeRegex.Replace(id, "_");
-        }
 
         private static Dictionary<string, object> MergeMetadata(IDictionary<string, object> item, IDictionary<string, object> overrideItem)
         {
@@ -208,21 +183,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 result[pair.Key] = pair.Value;
             }
             return result;
-        }
-
-        private static string GetUid(SwaggerModel swagger)
-        {
-            var uid = string.Empty;
-            if (!string.IsNullOrEmpty(swagger.Host))
-            {
-                uid += swagger.Host + "/";
-            }
-            if (!string.IsNullOrEmpty(swagger.BasePath))
-            {
-                uid += swagger.BasePath + "/";
-            }
-            uid += swagger.Info.Title;
-            return uid;
         }
 
         #endregion
