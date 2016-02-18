@@ -6,6 +6,11 @@ v1.5 (Pre-release)
     1. `--rawModelOutputFolder`: to specify the output folder for raw model if `--exportRawModel`. If the value is not set, raw model will be in the same folder as the output documenation.
     2. `--viewModelOutputFolder`: to specify the output folder for view model if `--exportViewModel`. If the value is not set, view model will be in the same folder as the output documenation.
     3. `--dryRun`: if this option is set, `docfx` will go through all the build processes for all the documents, however, no documentation will generated.
+2. Improve markdown:
+    1. Allow paired parentheses in link target, e.g. `[text](paired(parentheses(are)supported)now "title")`.
+3. Improve performance for document build.
+4. Breaking changes:
+    1. modify interface @Microsoft.DocAsCode.Plugins.IDocumentBuildStep.
 
 v1.4.2
 -----------
