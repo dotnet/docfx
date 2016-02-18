@@ -27,9 +27,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
         public RestApiDocumentProcessorTest(RestApiDocumentProcessorFixture fixture)
         {
-            _outputFolder = fixture.OutputFolder;
-            _inputFolder = fixture.InputFolder;
-            _templateFolder = fixture.TemplateFolder;
+            _outputFolder = Path.GetFullPath(fixture.OutputFolder);
+            _inputFolder = Path.GetFullPath(fixture.InputFolder);
+            _templateFolder = Path.GetFullPath(fixture.TemplateFolder);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 var parameters = new DocumentBuildParameters
                 {
                     Files = files,
-                    OutputBaseDir = Path.Combine(Environment.CurrentDirectory, _outputFolder),
+                    OutputBaseDir = _outputFolder,
                     ApplyTemplateSettings = applyTemplateSettings,
                     Metadata = new Dictionary<string, object>
                     {
