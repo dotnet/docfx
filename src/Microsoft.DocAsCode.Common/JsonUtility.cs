@@ -69,5 +69,17 @@ namespace Microsoft.DocAsCode.Common
                 return (serializer ?? _serializer.Value).Deserialize<T>(json);
             }
         }
+
+        public static string ToJsonString(this object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
+        {
+            var sw = new StringWriter();
+            Serialize(sw, graph, formatting, serializer);
+            return sw.ToString();
+        }
+
+        public static T FromJsonString<T>(this string json, JsonSerializer serializer = null)
+        {
+            return Deserialize<T>(new StringReader(json), serializer);
+        }
     }
 }
