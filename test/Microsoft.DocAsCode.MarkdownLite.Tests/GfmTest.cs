@@ -302,6 +302,9 @@ For more information about user navigation properties, see the documentation for
         [InlineData(@"[a](a(b(c)).d 'text')",
             @"<p><a href=""a(b(c)).d"" title=""text"">a</a></p>
 ")]
+        [InlineData(@"__a__*b*__c__",
+            @"<p><strong>a</strong><em>b</em><strong>c</strong></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
@@ -365,7 +368,7 @@ For more information about user navigation properties, see the documentation for
 
         [Fact]
         [Trait("Related", "Markdown")]
-        public void TestGfmBuilder_CommentRuleShouldeBeforeAutoLink()
+        public void TestGfmBuilder_CommentRuleShouldBeforeAutoLink()
         {
             var source = @"<!--
 https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
