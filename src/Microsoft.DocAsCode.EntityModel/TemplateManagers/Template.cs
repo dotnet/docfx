@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.EntityModel
     public class Template
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
+        private readonly object _locker = new object();
         private readonly ITemplateRenderer _renderer;
         private readonly Engine _engine;
         private readonly string _script;
@@ -76,7 +77,13 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             var argument1 = JintProcessorHelper.ConvertStrongTypeToJsValue(model);
             var argument2 = JintProcessorHelper.ConvertStrongTypeToJsValue(attrs);
-            return _engine.Invoke("transform", argument1, argument2).ToObject();
+            Jint.Native.JsValue result;
+            lock (_locker)
+            {
+                result = _engine.Invoke("transform", argument1, argument2);
+            }
+
+            return result.ToObject();
         }
 
         private string GetRelativeResourceKey(string relativePath)

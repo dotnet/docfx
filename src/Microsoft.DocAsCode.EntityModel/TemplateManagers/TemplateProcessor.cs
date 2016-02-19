@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -101,14 +102,14 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 Logger.LogWarning($"There is no template processing document type(s): {documentTypes.ToDelimitedString()}");
             }
-            var manifest = new List<TemplateManifestItem>();
+            var manifest = new ConcurrentBag<TemplateManifestItem>();
             items.RunAll(item =>
             {
                 var manifestItem = TransformItem(item, context, settings);
                 if (manifestItem != null) manifest.Add(manifestItem);
-            });
+            }, 16);
 
-            return manifest;
+            return manifest.ToList();
         }
 
         private static void ExportRawModel(List<ManifestItem> manifest, ApplyTemplateSettings settings)

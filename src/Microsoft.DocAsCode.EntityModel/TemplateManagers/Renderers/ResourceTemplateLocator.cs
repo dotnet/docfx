@@ -3,13 +3,14 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
 
     internal sealed class ResourceTemplateLocator
     {
         private const string PartialTemplateExtension = ".tmpl.partial";
-        private readonly Dictionary<string, Nustache.Core.Template> _templateCache = new Dictionary<string, Nustache.Core.Template>();
+        private readonly ConcurrentDictionary<string, Nustache.Core.Template> _templateCache = new ConcurrentDictionary<string, Nustache.Core.Template>();
         private readonly ResourceCollection _resourceProvider;
         public ResourceTemplateLocator(ResourceCollection resourceProvider)
         {
@@ -20,25 +21,24 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (_resourceProvider == null) return null;
             var resourceName = name + PartialTemplateExtension;
-            Nustache.Core.Template template;
-            if (!_templateCache.TryGetValue(resourceName, out template))
-            {
-                using (var stream = _resourceProvider.GetResourceStream(resourceName))
+            Nustache.Core.Template template =
+                _templateCache.GetOrAdd(resourceName, s =>
                 {
-                    if (stream == null)
+                    using (var stream = _resourceProvider.GetResourceStream(s))
                     {
-                        return null;
-                    }
+                        if (stream == null)
+                        {
+                            return null;
+                        }
 
-                    template = new Nustache.Core.Template(name);
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        template.Load(reader);
+                        template = new Nustache.Core.Template(name);
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            template.Load(reader);
+                        }
+                        return template;
                     }
-
-                    _templateCache[resourceName] = template;
-                }
-            }
+                });
 
             return template;
         }

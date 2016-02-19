@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode.EntityModel
         public string InputFolder { get; }
         public string OutputFolder { get; }
         public bool TransformDocument { get; set; } = true;
-        public ExportSettings RawModelExportSettings { get; set; } = DefaultRawModelExportSettings;
-        public ExportSettings ViewModelExportSettings { get; set; } = DefaultViewModelExportSettings;
+        public ExportSettings RawModelExportSettings { get; set; } = new ExportSettings(DefaultRawModelExportSettings);
+        public ExportSettings ViewModelExportSettings { get; set; } = new ExportSettings(DefaultViewModelExportSettings);
 
         public ApplyTemplateSettings(string inputFolder, string outputFolder)
         {

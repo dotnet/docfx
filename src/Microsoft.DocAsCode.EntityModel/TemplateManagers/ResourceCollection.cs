@@ -118,6 +118,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     public sealed class CompositeResourceCollectionWithOverridden : ResourceCollection
     {
+        private readonly object _locker = new object();
         private ResourceCollection[] _collectionsInOverriddenOrder = null;
         private bool disposed = false;
         public override string Name => "Composite";
@@ -140,13 +141,16 @@ namespace Microsoft.DocAsCode.EntityModel
         public override Stream GetResourceStream(string name)
         {
             if (IsEmpty) return null;
-            for (int i = _collectionsInOverriddenOrder.Length - 1; i > -1; i--)
+            lock (_locker)
             {
-                var stream = _collectionsInOverriddenOrder[i].GetResourceStream(name);
-                if (stream != null)
+                for (int i = _collectionsInOverriddenOrder.Length - 1; i > -1; i--)
                 {
-                    Logger.LogVerbose($"Resource \"{name}\" is found from \"{_collectionsInOverriddenOrder[i].Name}\"");
-                    return stream;
+                    var stream = _collectionsInOverriddenOrder[i].GetResourceStream(name);
+                    if (stream != null)
+                    {
+                        Logger.LogVerbose($"Resource \"{name}\" is found from \"{_collectionsInOverriddenOrder[i].Name}\"");
+                        return stream;
+                    }
                 }
             }
 
