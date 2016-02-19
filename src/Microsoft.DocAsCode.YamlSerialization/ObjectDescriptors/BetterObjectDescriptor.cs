@@ -47,6 +47,10 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
                     }
+                    else if (s.StartsWith("\r\n") || s.StartsWith("\n"))
+                    {
+                        scalarStyle = ScalarStyle.DoubleQuoted;
+                    }
                 }
             }
             ScalarStyle = scalarStyle;

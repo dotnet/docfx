@@ -27,6 +27,7 @@
   "frameworks": {
     "dnx451": {
       "frameworkAssemblies": {
+        "System.Xml.Linq": "",
         "System.Collections": "",
         "System.Threading.Tasks": "",
         "System.Globalization": ""

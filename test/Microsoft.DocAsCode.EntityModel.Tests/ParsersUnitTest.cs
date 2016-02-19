@@ -17,45 +17,50 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         public void TestTripleSlashParser()
         {
             string input = @"
-      <member name='T:TestClass1.Partial1'>
+<member name='T:TestClass1.Partial1'>
+    <summary>
+        Parital classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies,
+    
 
-          <summary>Parital classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies, ```Classes in assemblies are by definition complete.```
-          </summary>
+        ```
+        Classes in assemblies are by definition complete.
+        ```
+    </summary>
     <remarks>
-    <para>This is a sample of exception node</para>
+    <para>This is <paramref name='ref'/> <paramref />a sample of exception node</para>
     </remarks>
-          <returns>Task<see cref='T:System.AccessViolationException'/> returns</returns>
+    <returns>Task<see cref='T:System.AccessViolationException'/> returns</returns>
 
-              <param name='input'>This is <see cref='T:System.AccessViolationException'/>the input</param>
+        <param name='input'>This is <see cref='T:System.AccessViolationException'/>the input</param>
 
-              <param name = 'output' > This is the output </param >
-     <exception cref='T:System.Xml.XmlException'>This is a sample of exception node</exception>
-     <exception cref='System.Xml.XmlException'>This is a sample of exception node with invalid cref</exception>
-     <exception cref=''>This is a sample of invalid exception node</exception>
-     <exception >This is a sample of another invalid exception node</exception>
+        <param name = 'output' > This is the output </param >
+        <exception cref='T:System.Xml.XmlException'>This is a sample of exception node</exception>
+        <exception cref='System.Xml.XmlException'>This is a sample of exception node with invalid cref</exception>
+        <exception cref=''>This is a sample of invalid exception node</exception>
+        <exception >This is a sample of another invalid exception node</exception>
 
-            <example> 
-            This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)""/> method.
-            <code>
-            class TestClass
-            {
-                static int Main()
-                {
-                    return GetExceptions(null, null).Count();
-                }
-            } 
-            </code> 
-            </example>
+    <example>
+    This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)""/> method.
+    <code>
+   class TestClass
+    {
+        static int Main()
+        {
+            return GetExceptions(null, null).Count();
+        }
+    } 
+    </code> 
+    </example>
 
-            <example>
-            This is another example
-            </example>
-            <see cref=""T:Microsoft.DocAsCode.EntityModel.SpecIdHelper""/>
-            <see cref=""T:System.Diagnostics.SourceSwitch""/>
-            <seealso cref=""T:System.IO.WaitForChangedResult""/>
-            <seealso cref=""!:http://google.com"">ABCS</seealso>
+    <example>
+    This is another example
+    </example>
+    <see cref=""T:Microsoft.DocAsCode.EntityModel.SpecIdHelper""/>
+    <see cref=""T:System.Diagnostics.SourceSwitch""/>
+    <seealso cref=""T:System.IO.WaitForChangedResult""/>
+    <seealso cref=""!:http://google.com"">ABCS</seealso>
 
-           </member>";
+</member>";
             var context = new TripleSlashCommentParserContext
             {
                 AddReferenceDelegate = null,
@@ -67,7 +72,14 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             var commentModel = TripleSlashCommentModel.CreateModel(input, context);
 
             var summary = commentModel.Summary;
-            Assert.Equal("Parital classes <xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref><xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref>can not cross assemblies, ```Classes in assemblies are by definition complete.```", summary);
+            Assert.Equal(@"
+    Parital classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies,
+
+
+    ```
+    Classes in assemblies are by definition complete.
+    ```
+", summary);
 
             var returns = commentModel.Returns;
             Assert.Equal("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);
@@ -76,7 +88,9 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             Assert.Equal("This is <xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref>the input", paramInput);
 
             var remarks = commentModel.Remarks;
-            Assert.Equal("<para>This is a sample of exception node</para>", remarks);
+            Assert.Equal(@"
+<para>This is *ref* a sample of exception node</para>
+", remarks);
 
             var exceptions = commentModel.Exceptions;
             Assert.Equal(1, exceptions.Count);
@@ -88,19 +102,23 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             Assert.Null(commentModel.SeeAlsos);
 
             var example = commentModel.Examples;
-            Assert.Equal(new List<string> {
-@"This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)"" /> method.
+            var expected = new List<string> {
+@"
+This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)"" /> method.
 <code>
 class TestClass
 {
-static int Main()
-{
-return GetExceptions(null, null).Count();
-}
-}
-</code>",
-"This is another example"
-            }, example);
+    static int Main()
+    {
+        return GetExceptions(null, null).Count();
+    }
+} 
+</code> 
+",
+@"
+This is another example
+"};
+            Assert.Equal(expected, example);
 
             context.PreserveRawInlineComments = true;
             commentModel = TripleSlashCommentModel.CreateModel(input, context);

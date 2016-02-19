@@ -73,6 +73,7 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="YamlDotNet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
@@ -104,6 +105,8 @@
     <Compile Include="Incremental\BuildInfo.cs" />
     <Compile Include="Incremental\CacheBase.cs" />
     <Compile Include="Incremental\ProjectLevelCache.cs" />
+    <Compile Include="Parsers\ITripleSlashCommentParserContext.cs" />
+    <Compile Include="Parsers\TripleSlashCommentParserContext.cs" />
     <Compile Include="Plugins\BuildSteps\ApplyOverrideDocumentForRestApi.cs" />
     <Compile Include="Plugins\BuildSteps\BuildRestApiDocument.cs" />
     <Compile Include="Plugins\RestApiDocumentProcessor.cs" />
@@ -142,7 +145,7 @@
     <Compile Include="Parsers\YamlHeaderParser.cs" />
     <Compile Include="Parsers\CodeSnippetParser.cs" />
     <Compile Include="Parsers\MatchDetail.cs" />
-    <Compile Include="Parsers\TripleSlashCommentParser.cs" />
+    <Compile Include="Parsers\TripleSlashCommentModel.cs" />
     <Compile Include="Builders\DocumentBuildContext.cs" />
     <Compile Include="Plugins\IResourceFileConfig.cs" />
     <Compile Include="Plugins\ResourceDocumentProcessor.cs" />
