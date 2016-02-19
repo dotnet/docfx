@@ -15,7 +15,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
     public class ApplyOverrideDocument : BaseDocumentBuildStep
     {
-        private readonly ReflectionEntityMerger Merger = new ReflectionEntityMerger();
+        private readonly MergerFacade Merger = new MergerFacade(
+            new KeyedListMerger(
+                new ReflectionEntityMerger()));
 
         public override string Name => nameof(ApplyOverrideDocument);
 

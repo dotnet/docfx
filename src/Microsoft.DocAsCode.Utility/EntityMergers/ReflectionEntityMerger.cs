@@ -15,13 +15,6 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
         private readonly ConcurrentDictionary<Type, PropertyMergerImpl> _cache =
             new ConcurrentDictionary<Type, PropertyMergerImpl>();
 
-        public void Merge<T>(ref T source, T overrides, IReadOnlyDictionary<string, object> data = null) where T : class
-        {
-            object s = source;
-            Merge(ref s, overrides, typeof(T), new MergeContext(this, data));
-            source = (T)s;
-        }
-
         private void Merge(ref object source, object overrides, Type type, IMergeContext context)
         {
             if (source == null)
@@ -33,25 +26,6 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
             {
                 source = overrides;
                 return;
-            }
-            if (source is IEnumerable)
-            {
-                foreach (var it in type.GetInterfaces())
-                {
-                    if (it.IsGenericType &&
-                        it.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                    {
-                        if (overrides == null)
-                        {
-                            return;
-                        }
-                        if (it.IsAssignableFrom(overrides.GetType()))
-                        {
-                            new ListMergerImpl(it.GetGenericArguments()[0]).Merge((IEnumerable)source, (IEnumerable)overrides, context);
-                            return;
-                        }
-                    }
-                }
             }
             if (type.IsValueType)
             {
@@ -194,40 +168,6 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
                     var o = p.Prop.GetValue(overrides);
                     return object.Equals(s, o);
                 });
-            }
-
-        }
-
-        private sealed class ListMergerImpl
-        {
-            public Type ElementType { get; }
-
-            public ListMergerImpl(Type elementType)
-            {
-                ElementType = elementType;
-            }
-
-            public void Merge(IEnumerable source, IEnumerable overrides, IMergeContext context)
-            {
-                foreach (var oi in overrides)
-                {
-                    if (oi == null)
-                    {
-                        continue;
-                    }
-                    foreach (var si in source)
-                    {
-                        if (si == null)
-                        {
-                            continue;
-                        }
-                        if (context.Merger.TestKey(si, oi, ElementType, context))
-                        {
-                            object s = si;
-                            context.Merger.Merge(ref s, oi, ElementType, context);
-                        }
-                    }
-                }
             }
         }
     }

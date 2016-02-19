@@ -37,7 +37,10 @@ namespace Microsoft.DocAsCode.Utility.Tests
                     Nested = new BasicSample(),
                 }
             };
-            new ReflectionEntityMerger().Merge(ref sample, overrides);
+            new MergerFacade(
+                new KeyedListMerger(
+                    new ReflectionEntityMerger()))
+                .Merge(ref sample, overrides);
             Assert.Equal(10, sample.IntValue);
             Assert.Equal(2, sample.NullableIntValue);
             Assert.Equal("abc", sample.Text);
@@ -82,7 +85,10 @@ namespace Microsoft.DocAsCode.Utility.Tests
                     Text = "Wow!",
                 }
             };
-            new ReflectionEntityMerger().Merge(ref sample, overrides);
+            new MergerFacade(
+                new KeyedListMerger(
+                    new ReflectionEntityMerger()))
+                .Merge(ref sample, overrides);
             Assert.Equal(10, sample.IntValue);
             Assert.Equal(2, sample.NullableIntValue);
             Assert.Null(sample.Text);
@@ -125,10 +131,13 @@ namespace Microsoft.DocAsCode.Utility.Tests
                 new ListItemSample { Key1 = "asd", Key2 = 1, Text = "N2" },
                 new ListItemSample { Key1 = "asd", Key2 = 2, Text = "N3" },
             };
-            new ReflectionEntityMerger().Merge(
-                ref sample,
-                overrides,
-                new Dictionary<string, object> { { "separator", "->" }, });
+            new MergerFacade(
+                new KeyedListMerger(
+                    new ReflectionEntityMerger()))
+                .Merge(
+                    ref sample,
+                    overrides,
+                    new Dictionary<string, object> { { "separator", "->" }, });
             Assert.Equal("O1", sample[0].Text);
             Assert.Equal("O2->N2", sample[1].Text);
             Assert.Equal("O3->N3", sample[2].Text);
