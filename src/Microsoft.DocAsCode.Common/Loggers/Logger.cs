@@ -4,31 +4,42 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     public static class Logger
     {
-        private static ImmutableList<ILoggerListener> _listeners = ImmutableList<ILoggerListener>.Empty;
         private static readonly object _sync = new object();
+        private static ImmutableList<ILoggerListener> _listeners = ImmutableList<ILoggerListener>.Empty;
 
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
 
         public static void RegisterListener(ILoggerListener listener)
         {
-            if (listener == null) throw new ArgumentNullException(nameof(listener));
+            if (listener == null)
+            {
+                throw new ArgumentNullException(nameof(listener));
+            }
+
             _listeners = _listeners.Add(listener);
         }
 
         public static ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
             return _listeners.Find(predicate);
         }
 
         public static void UnregisterListener(ILoggerListener listener)
         {
-            if (listener == null) throw new ArgumentNullException(nameof(listener));
+            if (listener == null)
+            {
+                throw new ArgumentNullException(nameof(listener));
+            }
+
             listener.Dispose();
             _listeners = _listeners.Remove(listener);
         }
@@ -45,7 +56,11 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Log(ILogItem result)
         {
-            if (result.LogLevel < LogLevelThreshold) return;
+            if (result.LogLevel < LogLevelThreshold)
+            {
+                return;
+            }
+
             lock (_sync)
             {
                 foreach (var listener in _listeners)
@@ -97,7 +112,10 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Log(object result)
         {
-            if (result == null) throw new ArgumentNullException(nameof(result));
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
             Log(LogLevel.Info, result.ToString());
         }
 
