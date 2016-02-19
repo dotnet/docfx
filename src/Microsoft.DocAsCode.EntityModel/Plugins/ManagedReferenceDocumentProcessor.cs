@@ -72,7 +72,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                             }
                         }
                     }
-                    var displayLocalPath = page.Items.FirstOrDefault()?.Source?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+
+                    // Item's source is the path for the original code, should not be used here
+                    var displayLocalPath = Path.Combine(file.BaseDir, file.File).ToDisplayPath();
                     return new FileModel(file, page, serializer: new BinaryFormatter())
                     {
                         Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
