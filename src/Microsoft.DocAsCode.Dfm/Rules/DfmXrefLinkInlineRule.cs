@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Dfm
             var xref = match.Groups[2].Value;
             var title = match.Groups[4].Value;
 
-            return new DfmXrefInlineToken(this, engine.Context, xref, name, title, true, match.Value);
+            return new DfmXrefInlineToken(this, engine.Context, xref, engine.Tokenize(name), title, true, match.Value);
         }
     }
 }

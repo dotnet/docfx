@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -44,7 +45,7 @@ namespace Microsoft.DocAsCode.Dfm
             // @String=>cap[2]=String, @'string'=>cap[2]=string
             // For cross-reference, add ~/ prefix
             var content = match.Groups[2].Value;
-            return new DfmXrefInlineToken(this, engine.Context, content, null, null, false, match.Value);
+            return new DfmXrefInlineToken(this, engine.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, false, match.Value);
         }
     }
 }

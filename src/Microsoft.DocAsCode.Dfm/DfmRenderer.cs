@@ -25,9 +25,9 @@ namespace Microsoft.DocAsCode.Dfm
             result = AppendAttribute(result, "data-raw", token.RawMarkdown);
             
             result += ">";
-            if (token.Name != null)
+            foreach (var item in token.Content)
             {
-                result += StringHelper.HtmlEncode(token.Name);
+                result += renderer.Render(item);
             }
 
             result += "</xref>";

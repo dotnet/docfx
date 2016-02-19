@@ -3,27 +3,39 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System.Collections.Immutable;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmXrefInlineToken : IMarkdownToken
+    public class DfmXrefInlineToken : IMarkdownToken, IMarkdownRewritable<DfmXrefInlineToken>
     {
         public IMarkdownRule Rule { get; }
         public IMarkdownContext Context { get; }
         public string Href { get; }
-        public string Name { get; }
+        public ImmutableArray<IMarkdownToken> Content { get; }
         public string Title { get; }
         public bool ThrowIfNotResolved { get; }
         public string RawMarkdown { get; set; }
 
-        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string name, string title, bool throwIfNotResolved, string rawMarkdown)
+        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, ImmutableArray<IMarkdownToken> content, string title, bool throwIfNotResolved, string rawMarkdown)
         {
             Rule = rule;
             Context = context;
             Href = href;
-            Name = name;
+            Content = content;
             Title = title;
             ThrowIfNotResolved = throwIfNotResolved;
             RawMarkdown = rawMarkdown;
+        }
+
+        public DfmXrefInlineToken Rewrite(IMarkdownRewriteEngine rewriteEngine)
+        {
+            var tokens = rewriteEngine.Rewrite(Content);
+            if (tokens == Content)
+            {
+                return this;
+            }
+            return new DfmXrefInlineToken(Rule, Context, Href, tokens, Title, ThrowIfNotResolved, RawMarkdown);
         }
     }
 }

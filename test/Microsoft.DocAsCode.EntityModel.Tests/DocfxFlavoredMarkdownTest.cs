@@ -52,9 +52,13 @@ b:
         [InlineData("[name](@uid \"title\")", "<p><xref href=\"uid\" title=\"title\" data-throw-if-not-resolved=\"True\" data-raw=\"[name](@uid &quot;title&quot;)\">name</xref></p>\n")]
         [InlineData("<xref:uid>text", "<p><xref href=\"uid\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:uid&gt;\"></xref>text</p>\n")]
         [InlineData("<xref:'uid with space'>text", "<p><xref href=\"uid with space\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:&#39;uid with space&#39;&gt;\"></xref>text</p>\n")]
+        [InlineData(
+            @"[*a*](xref:uid)",
+            @"<p><xref href=""uid"" data-throw-if-not-resolved=""True"" data-raw=""[*a*](xref:uid)""><em>a</em></xref></p>
+")]
         public void TestDfmInGeneral(string source, string expected)
         {
-            Assert.Equal(expected, DocfxFlavoredMarked.Markup(source));
+            Assert.Equal(expected.Replace("\r\n", "\n"), DocfxFlavoredMarked.Markup(source));
         }
 
         [Fact]
