@@ -42,7 +42,6 @@ var pack = {
         },
         {
             "files": [
-                "partials/class.tmpl.partial",
                 "partials/namespace.tmpl.partial",
             ],
             "cwd": "op.html",

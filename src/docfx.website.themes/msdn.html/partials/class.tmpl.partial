@@ -34,7 +34,18 @@
     <div class="sectionblock">
       {{#syntax}}
       <div class="tabbedCodeSnippets">
-        {{#content}}<pre><code class="lang-{{lang}}">{{value}}</code></pre>{{/content}}
+        <ul class="nav nav-tabs" role="tablist">
+        {{#content}}
+          <li class=""><a role="tab" data-toggle="tab" href="#{{lang}}_{{id}}">{{lang}}</a></li>
+        {{/content}}
+        </ul>
+        <div class="tab-content">
+        {{#content}}
+          <div class="tab-pane" id="{{lang}}_{{id}}">
+            <pre><code class="{{lang}}">{{value}}</code></pre>
+          </div>
+        {{/content}}
+        </div>
       </div>
       {{/syntax}}
     </div>
@@ -60,9 +71,20 @@
     <div class="sectionblock">
       {{#syntax}}
       <div class="tabbedCodeSnippets">
-        {{#content}}<pre><code class="lang-{{lang}}">{{value}}</code></pre>{{/content}}
+        <ul class="nav nav-tabs" role="tablist">
+        {{#content}}
+          <li class=""><a role="tab" data-toggle="tab" href="#{{lang}}_{{id}}">{{lang}}</a></li>
+        {{/content}}
+        </ul>
+        <div class="tab-content">
+        {{#content}}
+          <div class="tab-pane" id="{{lang}}_{{id}}">
+            <pre><code class="{{lang}}">{{value}}</code></pre>
+          </div>
+        {{/content}}
+        </div>
+        {{/syntax}}
       </div>
-      {{/syntax}}
     {{#parameters.0}}
     <div class="section">
       <h4 class="subHeading">Parameters</h4>
