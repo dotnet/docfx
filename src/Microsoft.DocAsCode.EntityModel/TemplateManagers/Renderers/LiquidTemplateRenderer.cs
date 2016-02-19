@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
@@ -81,7 +82,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// </summary>
         private sealed class ResourceFileSystem : DotLiquid.FileSystems.IFileSystem
         {
-            private readonly Dictionary<string, string> _templateCache = new Dictionary<string, string>();
+            private readonly ConcurrentDictionary<string, string> _templateCache = new ConcurrentDictionary<string, string>();
             private readonly ResourceCollection _resourceProvider;
 
             public ResourceFileSystem(ResourceCollection resourceProvider)
@@ -92,10 +93,9 @@ namespace Microsoft.DocAsCode.EntityModel
             public string ReadTemplateFile(DotLiquid.Context context, string templateName)
             {
                 if (_resourceProvider == null) return null;
-                string template;
-                if (!_templateCache.TryGetValue(templateName, out template))
-                {
 
+                return _templateCache.GetOrAdd(templateName, s =>
+                {
                     string resourceName;
                     var slashIndex = templateName.LastIndexOf('/');
                     if (slashIndex > -1)
@@ -108,11 +108,8 @@ namespace Microsoft.DocAsCode.EntityModel
                         resourceName = $"_{templateName}.liquid";
                     }
 
-                    template = _resourceProvider.GetResource(resourceName);
-                    _templateCache[templateName] = template;
-                }
-
-                return template;
+                    return _resourceProvider.GetResource(resourceName);
+                });
             }
         }
     }

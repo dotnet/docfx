@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.EntityModel
 {
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.IO;
 
     internal sealed class ResourceTemplateLocator
@@ -21,8 +20,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (_resourceProvider == null) return null;
             var resourceName = name + PartialTemplateExtension;
-            Nustache.Core.Template template =
-                _templateCache.GetOrAdd(resourceName, s =>
+            return _templateCache.GetOrAdd(resourceName, s =>
                 {
                     using (var stream = _resourceProvider.GetResourceStream(s))
                     {
@@ -31,7 +29,7 @@ namespace Microsoft.DocAsCode.EntityModel
                             return null;
                         }
 
-                        template = new Nustache.Core.Template(name);
+                        var template = new Nustache.Core.Template(name);
                         using (StreamReader reader = new StreamReader(stream))
                         {
                             template.Load(reader);
@@ -39,8 +37,6 @@ namespace Microsoft.DocAsCode.EntityModel
                         return template;
                     }
                 });
-
-            return template;
         }
     }
 }
