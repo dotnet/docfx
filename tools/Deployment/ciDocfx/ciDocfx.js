@@ -42,7 +42,8 @@ program
 .option('--step1', 'clear artifacts/Release')
 .option('--step2', 'build docfx')
 .option('--step3', 'run e2e tests')
-.option('--step4', 'upload myget.org')
+.option('--step4a', 'upload to myget.org/docfx-dev')
+.option('--step4b', 'upload to myget.org/docfx')
 .option('--step5', 'generate gh-pages')
 .option('--step6', 'zip docfx.exe')
 .option('--step7', 'update gh-pages')
@@ -57,8 +58,11 @@ if (program.step2) {
 if (program.step3) {
   ciUtil.exec(".", tools["msbuild"], [docfxConfig['e2eproj'], "/p:Configuration=Release"]);
 }
-if (program.step4) {
-  uploadMyget(mygetConfig['nugetExe'], docfxConfig['releaseFolder'], mygetConfig['apiKey'], mygetConfig['sourceUrl']);
+if (program.step4a) {
+  uploadMyget(mygetConfig['nugetExe'], docfxConfig['releaseFolder'], mygetConfig['apiKey'], mygetConfig['devSourceUrl']);
+}
+if (program.step4b) {
+  uploadMyget(mygetConfig['nugetExe'], docfxConfig['releaseFolder'], mygetConfig['apiKey'], mygetConfig['masterSourceUrl']);
 }
 if (program.step5) {
   ciUtil.exec(docfxConfig['docFolder'], path.resolve(docfxConfig['docfxExe']), []);

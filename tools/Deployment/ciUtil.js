@@ -25,6 +25,9 @@ exports.exec = function(workDir, command, args, done) {
         done();
       }
     }
+    if (code !== 0) {
+      process.exit(1);
+    }
   });
 }
 

@@ -13,7 +13,8 @@
   "myget": {
     "nugetExe": "C:/nuget.exe",
     "apiKey": "248ef281-79ba-4db1-b15a-f7b735935861",
-    "sourceUrl": "https://www.myget.org/F/docfx-dev/api/v2/package"
+    "devSourceUrl": "https://www.myget.org/F/docfx-dev/api/v2/package",
+    "masterSourceUrl": "https://www.myget.org/F/docfx/api/v2/package"
   },
   "tools": {
     "msbuild": "C:/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe"
