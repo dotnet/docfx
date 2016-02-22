@@ -10,6 +10,7 @@ config.add('configuration', {type: 'file', file: path.join(__dirname, 'config.js
 var docfxConfig = config.get('docfx');
 var gitConfig = config.get('git');
 var mygetConfig = config.get('myget');
+var tools = config.get('tools');
 
 var uploadMyget = function(nugetExe, releaseFolder, apiKey, sourceUrl) {
   fs.readdirSync(releaseFolder).forEach(function(file, index) {
@@ -54,7 +55,7 @@ if (program.step2) {
   ciUtil.exec(docfxConfig['homeFolder'], 'build.cmd', ["Release", "PROD"]);
 }
 if (program.step3) {
-  ciUtil.exec(".", "msbuild", [docfxConfig['e2eproj'], "/p:Configuration=Release"]);
+  ciUtil.exec(".", tools["msbuild"], [docfxConfig['e2eproj'], "/p:Configuration=Release"]);
 }
 if (program.step4) {
   uploadMyget(mygetConfig['nugetExe'], docfxConfig['releaseFolder'], mygetConfig['apiKey'], mygetConfig['sourceUrl']);
