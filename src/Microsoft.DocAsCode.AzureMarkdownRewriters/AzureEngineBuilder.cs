@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Text;
+    using System.Web;
 
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
@@ -40,6 +42,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
             blockRules.Insert(index + 1, new AzureIncludeBlockRule());
             blockRules.Insert(index + 2, new AzureNoteBlockRule());
+            blockRules.Insert(index + 3, new AzureSelectorBlockRule());
 
             var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
             blockRules[gfmIndex] = new AzureParagraphBlockRule();
@@ -78,6 +81,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, AppendDefaultExtension(t.Href, MarkdownExtension), t.Title, t.Content, t.RawMarkdown)
+                        ),
+                        MarkdownTokenRewriterFactory.FromLambda(
+                            (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.RawMarkdown)
                         )
                     );
         }
@@ -89,6 +95,29 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 return $"{href}{defaultExtension}";
             }
             return href;
+        }
+
+        private string GenerateAzureSelectorAttributes(string selectorType, string selectorConditions)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (string.Equals(selectorType, "AZURE.SELECTOR", StringComparison.OrdinalIgnoreCase))
+            {
+                sb.Append("class=\"op_single_selector\"");
+            }
+            else if (string.Equals(selectorType, "AZURE.SELECTOR-LIST", StringComparison.OrdinalIgnoreCase))
+            {
+                sb.Append("class=\"op_multi_selector\"");
+                if (!string.IsNullOrEmpty(selectorConditions))
+                {
+                    var conditions = selectorConditions.Split('|').Select(c => c.Trim());
+                    int i = 0;
+                    foreach(var condition in conditions)
+                    {
+                        sb.Append($" title{++i}=\"{HttpUtility.HtmlEncode(condition)}\"");
+                    }
+                }
+            }
+            return sb.ToString();
         }
     }
 }

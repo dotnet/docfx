@@ -14,6 +14,7 @@
       <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -23,10 +24,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureBlockRules\AzureBlockquoteBlockRule.cs" />
+    <Compile Include="AzureBlockRules\AzureSelectorBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureNoteBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureParagraphBlockRule.cs" />
     <Compile Include="AzureBlockTokens\AzureBlockquoteBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureIncludeBlockToken.cs" />
+    <Compile Include="AzureBlockTokens\AzureSelectorBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureNoteBlockToken.cs" />
     <Compile Include="AzureInlineRules\AzureIncludeInlineRule.cs" />
     <Compile Include="AzureBlockRules\AzureIncludeBlockRule.cs" />

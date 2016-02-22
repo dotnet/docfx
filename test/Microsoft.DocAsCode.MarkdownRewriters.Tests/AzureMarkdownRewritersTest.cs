@@ -542,5 +542,67 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureSingleSelector()
+        {
+            var source = @"> [AZURE.SELECTOR]
+- [Universal Windows](../articles/notification-hubs-windows-store-dotnet-get-started/)
+- [Windows Phone](../articles/notification-hubs-windows-phone-get-started/)
+- [iOS](../articles/notification-hubs-ios-get-started/)
+- [Android](../articles/notification-hubs-android-get-started/)
+- [Kindle](../articles/notification-hubs-kindle-get-started/)
+- [Baidu](../articles/notification-hubs-baidu-get-started/)
+- [Xamarin.iOS](../articles/partner-xamarin-notification-hubs-ios-get-started/)
+- [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started/)";
+            var expected = @"> [!div class=""op_single_selector""]
+> * [Universal Windows](../articles/notification-hubs-windows-store-dotnet-get-started/.md)
+> * [Windows Phone](../articles/notification-hubs-windows-phone-get-started/.md)
+> * [iOS](../articles/notification-hubs-ios-get-started/.md)
+> * [Android](../articles/notification-hubs-android-get-started/.md)
+> * [Kindle](../articles/notification-hubs-kindle-get-started/.md)
+> * [Baidu](../articles/notification-hubs-baidu-get-started/.md)
+> * [Xamarin.iOS](../articles/partner-xamarin-notification-hubs-ios-get-started/.md)
+> * [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started/.md)
+> 
+> 
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureMultiSelectors()
+        {
+            var source = @"> [AZURE.SELECTOR-LIST (Platform | Backend )]
+- [(iOS | .NET)](./mobile-services-dotnet-backend-ios-get-started-push.md)
+- [(iOS | JavaScript)](./mobile-services-javascript-backend-ios-get-started-push.md)
+- [(Windows universal C# | .NET)](./mobile-services-dotnet-backend-windows-universal-dotnet-get-started-push.md)
+- [(Windows universal C# | Javascript)](./mobile-services-javascript-backend-windows-universal-dotnet-get-started-push.md)
+- [(Windows Phone | .NET)](./mobile-services-dotnet-backend-windows-phone-get-started-push.md)
+- [(Windows Phone | Javascript)](./mobile-services-javascript-backend-windows-phone-get-started-push.md)
+- [(Android | .NET)](./mobile-services-dotnet-backend-android-get-started-push.md)
+- [(Android | Javascript)](./mobile-services-javascript-backend-android-get-started-push.md)
+- [(Xamarin iOS | Javascript)](./partner-xamarin-mobile-services-ios-get-started-push.md)
+- [(Xamarin Android | Javascript)](./partner-xamarin-mobile-services-android-get-started-push.md)";
+            var expected = @"> [!div class=""op_multi_selector"" title1=""Platform"" title2=""Backend""]
+> * [(iOS | .NET)](./mobile-services-dotnet-backend-ios-get-started-push.md)
+> * [(iOS | JavaScript)](./mobile-services-javascript-backend-ios-get-started-push.md)
+> * [(Windows universal C# | .NET)](./mobile-services-dotnet-backend-windows-universal-dotnet-get-started-push.md)
+> * [(Windows universal C# | Javascript)](./mobile-services-javascript-backend-windows-universal-dotnet-get-started-push.md)
+> * [(Windows Phone | .NET)](./mobile-services-dotnet-backend-windows-phone-get-started-push.md)
+> * [(Windows Phone | Javascript)](./mobile-services-javascript-backend-windows-phone-get-started-push.md)
+> * [(Android | .NET)](./mobile-services-dotnet-backend-android-get-started-push.md)
+> * [(Android | Javascript)](./mobile-services-javascript-backend-android-get-started-push.md)
+> * [(Xamarin iOS | Javascript)](./partner-xamarin-mobile-services-ios-get-started-push.md)
+> * [(Xamarin Android | Javascript)](./partner-xamarin-mobile-services-android-get-started-push.md)
+> 
+> 
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
     }
 }

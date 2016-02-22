@@ -385,6 +385,74 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestSection_AzureSingleSelector()
+        {
+            var source = @"> [!div class=""op_single_selector""]
+> * [Universal Windows](../articles/notification-hubs-windows-store-dotnet-get-started/.md)
+> * [Windows Phone](../articles/notification-hubs-windows-phone-get-started/.md)
+> * [iOS](../articles/notification-hubs-ios-get-started/.md)
+> * [Android](../articles/notification-hubs-android-get-started/.md)
+> * [Kindle](../articles/notification-hubs-kindle-get-started/.md)
+> * [Baidu](../articles/notification-hubs-baidu-get-started/.md)
+> * [Xamarin.iOS](../articles/partner-xamarin-notification-hubs-ios-get-started/.md)
+> * [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started/.md)
+> 
+> 
+";
+            var expected = @"<div class=""op_single_selector""><ul>
+<li><a href=""../articles/notification-hubs-windows-store-dotnet-get-started/.md"">Universal Windows</a></li>
+<li><a href=""../articles/notification-hubs-windows-phone-get-started/.md"">Windows Phone</a></li>
+<li><a href=""../articles/notification-hubs-ios-get-started/.md"">iOS</a></li>
+<li><a href=""../articles/notification-hubs-android-get-started/.md"">Android</a></li>
+<li><a href=""../articles/notification-hubs-kindle-get-started/.md"">Kindle</a></li>
+<li><a href=""../articles/notification-hubs-baidu-get-started/.md"">Baidu</a></li>
+<li><a href=""../articles/partner-xamarin-notification-hubs-ios-get-started/.md"">Xamarin.iOS</a></li>
+<li><a href=""../articles/partner-xamarin-notification-hubs-android-get-started/.md"">Xamarin.Android</a></li>
+</ul>
+</div>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestSection_AzureMultiSelector()
+        {
+            var source = @"> [!div class=""op_multi_selector"" title1=""Platform"" title2=""Backend""]
+> * [(iOS | .NET)](./mobile-services-dotnet-backend-ios-get-started-push.md)
+> * [(iOS | JavaScript)](./mobile-services-javascript-backend-ios-get-started-push.md)
+> * [(Windows universal C# | .NET)](./mobile-services-dotnet-backend-windows-universal-dotnet-get-started-push.md)
+> * [(Windows universal C# | Javascript)](./mobile-services-javascript-backend-windows-universal-dotnet-get-started-push.md)
+> * [(Windows Phone | .NET)](./mobile-services-dotnet-backend-windows-phone-get-started-push.md)
+> * [(Windows Phone | Javascript)](./mobile-services-javascript-backend-windows-phone-get-started-push.md)
+> * [(Android | .NET)](./mobile-services-dotnet-backend-android-get-started-push.md)
+> * [(Android | Javascript)](./mobile-services-javascript-backend-android-get-started-push.md)
+> * [(Xamarin iOS | Javascript)](./partner-xamarin-mobile-services-ios-get-started-push.md)
+> * [(Xamarin Android | Javascript)](./partner-xamarin-mobile-services-android-get-started-push.md)
+> 
+> 
+";
+            var expected = @"<div class=""op_multi_selector"" title1=""Platform"" title2=""Backend""><ul>
+<li><a href=""./mobile-services-dotnet-backend-ios-get-started-push.md"">(iOS | .NET)</a></li>
+<li><a href=""./mobile-services-javascript-backend-ios-get-started-push.md"">(iOS | JavaScript)</a></li>
+<li><a href=""./mobile-services-dotnet-backend-windows-universal-dotnet-get-started-push.md"">(Windows universal C# | .NET)</a></li>
+<li><a href=""./mobile-services-javascript-backend-windows-universal-dotnet-get-started-push.md"">(Windows universal C# | Javascript)</a></li>
+<li><a href=""./mobile-services-dotnet-backend-windows-phone-get-started-push.md"">(Windows Phone | .NET)</a></li>
+<li><a href=""./mobile-services-javascript-backend-windows-phone-get-started-push.md"">(Windows Phone | Javascript)</a></li>
+<li><a href=""./mobile-services-dotnet-backend-android-get-started-push.md"">(Android | .NET)</a></li>
+<li><a href=""./mobile-services-javascript-backend-android-get-started-push.md"">(Android | Javascript)</a></li>
+<li><a href=""./partner-xamarin-mobile-services-ios-get-started-push.md"">(Xamarin iOS | Javascript)</a></li>
+<li><a href=""./partner-xamarin-mobile-services-android-get-started-push.md"">(Xamarin Android | Javascript)</a></li>
+</ul>
+</div>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
             var builder = new DfmEngineBuilder(new Options() { Mangle = false });
