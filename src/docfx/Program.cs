@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode
             var context = new SubCommandRunningContext();
             try
             {
-                ThreadPool.SetMinThreads(16, 16);
+                ThreadPool.SetMinThreads(4, 4);
                 command.Exec(context);
                 return 0;
             }

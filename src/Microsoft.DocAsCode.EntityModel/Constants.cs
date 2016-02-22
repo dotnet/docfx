@@ -9,6 +9,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public const string MapFileExtension = ".map";
 
-        public const int DefaultParallelism = 16;
+        public const int DefaultParallelism = 4;
     }
 }
