@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Utility
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Net;
 
     /// <summary>
     /// relative path
@@ -234,7 +233,7 @@ namespace Microsoft.DocAsCode.Utility
             var parts = new string[_parts.Length];
             for (int i = 0; i < parts.Length; i++)
             {
-                parts[i] = WebUtility.UrlEncode(_parts[i]).Replace("+", "%20");
+                parts[i] = Uri.EscapeDataString(_parts[i]);
             }
             return new RelativePath(_isFromWorkingFolder, _parentDirectoryCount, parts);
         }
@@ -244,7 +243,7 @@ namespace Microsoft.DocAsCode.Utility
             var parts = new string[_parts.Length];
             for (int i = 0; i < parts.Length; i++)
             {
-                parts[i] = WebUtility.UrlDecode(_parts[i]);
+                parts[i] = Uri.UnescapeDataString(_parts[i]);
             }
             return new RelativePath(_isFromWorkingFolder, _parentDirectoryCount, parts);
         }
