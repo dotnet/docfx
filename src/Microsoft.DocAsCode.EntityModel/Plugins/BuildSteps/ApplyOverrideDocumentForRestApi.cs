@@ -15,7 +15,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
     public class ApplyOverrideDocumentForRestApi : BaseDocumentBuildStep
     {
-        private readonly ReflectionEntityMerger Merger = new ReflectionEntityMerger();
+        private readonly MergerFacade Merger =
+            new MergerFacade(
+                new KeyedListMerger(
+                    new ReflectionEntityMerger()));
 
         public override string Name => nameof(ApplyOverrideDocumentForRestApi);
 
