@@ -53,11 +53,11 @@ namespace Microsoft.DocAsCode.Utility
         }
 
         /// <summary>
-        /// Attempts to get the value associated with the specified key from the ConcurrentDictionary<TKey, Lazy<Task<TValue>>>.
+        /// Attempts to get the value associated with the specified key in cache.
         /// </summary>
         /// <param name="key">The key of the element</param>
         /// <param name="value">The task to generate value for the key</param>
-        /// <returns>true if the key was found in the ConcurrentDictionary<TKey, Lazy<Task<TValue>>>; otherwise, false.</returns>
+        /// <returns>true if the task was found; otherwise, false.</returns>
         public bool TryGetValue(TKey key, out Task<TValue> value)
         {
             Lazy<Task<TValue>> lazyValue;
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.Utility
         }
 
         /// <summary>
-        /// Gets a List containing the values in the ConcurrentDictionary<TKey, Lazy<Task<TValue>>>.
+        /// Gets a list of tasks in cache.
         /// </summary>
         public List<Task<TValue>> Values
         {

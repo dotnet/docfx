@@ -282,7 +282,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         }
 
         /// <summary>
-        /// Lines & Columns start at 0 to leverage default value, NOTE that IDE start at 1, need to +1 at the outermost
+        /// Lines and Columns start at 0 to leverage default value, NOTE that IDE start at 1, need to +1 at the outermost
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>

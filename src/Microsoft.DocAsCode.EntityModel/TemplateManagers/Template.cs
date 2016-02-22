@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         /// <summary>
         /// Transform from raw model to view model
-        /// TODO: refactor to merge model & attrs into one input model
+        /// TODO: refactor to merge model and attrs into one input model
         /// </summary>
         /// <param name="model">The raw model</param>
         /// <param name="attrs">The system generated attributes</param>

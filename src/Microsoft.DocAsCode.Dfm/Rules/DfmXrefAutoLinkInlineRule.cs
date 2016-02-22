@@ -10,8 +10,8 @@ namespace Microsoft.DocAsCode.Dfm
 
     /// <summary>
     /// Xref auto link syntax: 
-    /// 1. `<xref:uid>`
-    /// 2. `<xref:"uid with space">`
+    /// 1. `&lt;xref:uid>`
+    /// 2. `&lt;xref:"uid with space">`
     /// </summary>
     public class DfmXrefAutoLinkInlineRule : IMarkdownRule
     {
