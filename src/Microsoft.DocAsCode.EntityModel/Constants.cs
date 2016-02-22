@@ -8,5 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public const string YamlExtension = ".yml";
 
         public const string MapFileExtension = ".map";
+
+        public const int DefaultParallelism = 16;
     }
 }

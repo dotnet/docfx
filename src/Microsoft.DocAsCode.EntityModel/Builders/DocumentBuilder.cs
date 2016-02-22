@@ -21,8 +21,6 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
     {
         public const string PhaseName = "Build Document";
 
-        private const int Parallelism = 16;
-
         private static readonly Assembly[] DefaultAssemblies = { typeof(DocumentBuilder).Assembly };
 
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
@@ -245,7 +243,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                             });
                     }
                 },
-                Parallelism);
+                Constants.DefaultParallelism);
         }
 
         private void Postbuild(IDocumentProcessor processor, HostService hostService)
@@ -430,7 +428,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 Logger.LogWarning(sb.ToString());
             }
 
-            return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(Parallelism)
+            return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(Constants.DefaultParallelism)
                    select new InnerBuildContext(
                        new HostService(
                            from file in item

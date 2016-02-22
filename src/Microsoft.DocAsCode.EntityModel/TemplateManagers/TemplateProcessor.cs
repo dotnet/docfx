@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public TemplateCollection Templates { get; }
 
-        public bool IsEmpty { get { return Templates.Count == 0; } }
+        public bool IsEmpty => Templates.Count == 0;
 
         /// <summary>
         /// TemplateName can be either file or folder
@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 var manifestItem = TransformItem(item, context, settings);
                 if (manifestItem != null) manifest.Add(manifestItem);
-            }, 16);
+            }, Constants.DefaultParallelism);
 
             return manifest.ToList();
         }
