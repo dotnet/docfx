@@ -1,5 +1,8 @@
-Version Notes (Current Version: v1.5)
+Version Notes (Current Version: v1.6)
 =======================================
+v1.6 (Pre-release)
+-----------
+
 v1.5
 -----------
 1. Add 3 options to `build` subcommand:
