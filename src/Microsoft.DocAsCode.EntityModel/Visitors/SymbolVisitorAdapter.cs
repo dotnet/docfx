@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
-
+    using Common;
     public class SymbolVisitorAdapter
         : SymbolVisitor<MetadataItem>
     {
@@ -114,8 +114,14 @@ namespace Microsoft.DocAsCode.EntityModel
             };
             item.Type = MemberType.Assembly;
             _references = new Dictionary<string, ReferenceItem>();
+            var namespaces = symbol.GlobalNamespace.GetNamespaceMembers().ToList();
+            if (namespaces.Count == 0)
+            {
+                Logger.LogWarning($"No namespace is found in assembly {symbol.MetadataName}. DocFX currently only supports generating metadata with namespace defined.");
+            }
+
             item.Items = VisitDescendants(
-                symbol.GlobalNamespace.GetNamespaceMembers(),
+                namespaces,
                 ns => ns.GetMembers().OfType<INamespaceSymbol>(),
                 ns => ns.GetMembers().OfType<INamedTypeSymbol>().Any(t => VisitorHelper.CanVisit(t)));
             item.References = _references;
