@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Utility.EntityMergers
 
         public override void Merge(ref object source, object overrides, Type type, IMergeContext context)
         {
-            if (source is IEnumerable && !(source is string))
+            if (source is IEnumerable && type != typeof(string))
             {
                 foreach (var it in type.GetInterfaces())
                 {

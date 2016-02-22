@@ -38,8 +38,7 @@ namespace Microsoft.DocAsCode.Utility.Tests
                 }
             };
             new MergerFacade(
-                new KeyedListMerger(
-                    new ReflectionEntityMerger()))
+                new ReflectionEntityMerger())
                 .Merge(ref sample, overrides);
             Assert.Equal(10, sample.IntValue);
             Assert.Equal(2, sample.NullableIntValue);
@@ -161,6 +160,85 @@ namespace Microsoft.DocAsCode.Utility.Tests
                 var o = (string)overrides;
                 source = s + context["separator"] + o;
             }
+        }
+
+        [Fact]
+        public void TestMergeDictionary()
+        {
+            var sample = new Dictionary<string, BasicSample>
+            {
+                ["a"] = new BasicSample
+                {
+                    IntValue = 1,
+                    NullableIntValue = 2,
+                    Text = "abc",
+                    Nested = new BasicSample
+                    {
+                        IntValue = 1,
+                        NullableIntValue = 2,
+                        Text = null,
+                    }
+                },
+                ["b"] = new BasicSample
+                {
+                    IntValue = 101,
+                    NullableIntValue = null,
+                    Text = "xyz",
+                    Nested = new BasicSample
+                    {
+                        IntValue = 102,
+                        NullableIntValue = 2,
+                        Text = null,
+                    }
+                },
+            };
+            var overrides = new Dictionary<string, BasicSample>
+            {
+                ["a"] = new BasicSample
+                {
+                    IntValue = 10,
+                    Nested = new BasicSample
+                    {
+                        NullableIntValue = 22,
+                        Text = "Wow!",
+                        Nested = new BasicSample(),
+                    }
+                },
+                ["c"] = new BasicSample
+                {
+                    IntValue = 10,
+                    Nested = new BasicSample
+                    {
+                        NullableIntValue = 22,
+                        Text = "Wow!",
+                        Nested = new BasicSample(),
+                    }
+                }
+            };
+            new MergerFacade(
+                new DictionaryMerger(
+                    new ReflectionEntityMerger()))
+                .Merge(
+                    ref sample,
+                    overrides);
+
+            Assert.Equal(10, sample["a"].IntValue);
+            Assert.Equal(2, sample["a"].NullableIntValue);
+            Assert.Equal("abc", sample["a"].Text);
+            Assert.Equal(1, sample["a"].Nested.IntValue);
+            Assert.Equal(22, sample["a"].Nested.NullableIntValue);
+            Assert.Equal("Wow!", sample["a"].Nested.Text);
+            Assert.Same(overrides["a"].Nested.Nested, sample["a"].Nested.Nested);
+
+            Assert.Equal(101, sample["b"].IntValue);
+            Assert.Null(sample["b"].NullableIntValue);
+            Assert.Equal("xyz", sample["b"].Text);
+            Assert.Equal(102, sample["b"].Nested.IntValue);
+            Assert.Equal(2, sample["b"].Nested.NullableIntValue);
+            Assert.Null(sample["b"].Nested.Text);
+            Assert.Null(sample["b"].Nested.Nested);
+
+            Assert.Same(overrides["c"], sample["c"]);
         }
     }
 }

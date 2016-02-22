@@ -38,6 +38,7 @@
     <Compile Include="AsyncConcurrentCache.cs" />
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="ConvertToObjectHelper.cs" />
+    <Compile Include="EntityMergers\DictionaryMerger.cs" />
     <Compile Include="EntityMergers\KeyedListMerger.cs" />
     <Compile Include="EntityMergers\MergerDecorator.cs" />
     <Compile Include="EntityMergers\IMergeContext.cs" />
