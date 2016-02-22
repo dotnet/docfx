@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
@@ -33,6 +34,7 @@ namespace Microsoft.DocAsCode
                 {
                     var currentSrcFullPath = string.IsNullOrEmpty(src) ? Environment.CurrentDirectory : Path.GetFullPath(src);
                     Logger.LogInfo($"No files are found with glob pattern {item.Files.ToDelimitedString() ?? "<none>"}, excluding {item.Exclude.ToDelimitedString() ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
+                    CheckPatterns(item.Files);
                 }
                 expandedFileMapping.Add(
                     new FileMappingItem
@@ -56,6 +58,19 @@ namespace Microsoft.DocAsCode
             if (!(item?.DisableGlobStar ?? false)) options |= GlobMatcherOptions.AllowGlobStar;
             if (!(item?.DisableNegate ?? false)) options |= GlobMatcherOptions.AllowNegate;
             return options;
+        }
+
+        private static void CheckPatterns(IEnumerable<string> patterns)
+        {
+            if (patterns.Any(s => s.Contains('\\')))
+            {
+                Logger.LogInfo("NOTE that `\\` in glob pattern is used as Escape character. DONOT use it as path separator.");
+            }
+
+            if (patterns.Any(s => s.Contains("../")))
+            {
+                Logger.LogWarning("NOTE that `../` is currently not supported in glob pattern, please use `../` in `cwd` option instead.");
+            }
         }
     }
 }
