@@ -251,7 +251,7 @@ $(function () {
           var id = e.id;
           if (!id) continue; // For affix, id is a must-have
           var item = {
-            name: e.innerHTML,
+            name: htmlEncode($(e).text()),
             href: "#" + id,
             items: []
           };
@@ -262,7 +262,7 @@ $(function () {
             $(header[j]).siblings(currentSelector).each(function (index, e) {
               if (e.id) {
                 item.items.push({
-                  name: e.innerHTML, // innerText decodes text while innerHTML not
+                  name: htmlEncode($(e).text()), // innerText decodes text while innerHTML not
                   href: "#" + e.id
 
                 })
@@ -276,6 +276,24 @@ $(function () {
       };
       hierarchy.reverse();
       return hierarchy;
+    }
+
+    function htmlEncode(str) {
+      return String(str)
+              .replace(/&/g, '&amp;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#39;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;');
+    }
+
+    function htmlDecode(value){
+      return String(value)
+              .replace(/&quot;/g, '"')
+              .replace(/&#39;/g, "'")
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&amp;/g, '&');
     }
   })();
 

@@ -8,7 +8,7 @@
     <title>Microsoft.DocAsCode.Dfm Namespace | docfx website</title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Microsoft.DocAsCode.Dfm Namespace | docfx website">
-    <meta name="generator" content="docfx 1.4.2.0">
+    <meta name="generator" content="docfx 1.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -121,17 +121,15 @@ title can be omitted</li>
 </section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.html#Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule">DfmXrefShortcutInlineRule</a></h4>
                   <section><p>XREF regex:</p>
-<ol>
-<li>If content after <code>@</code> is wrapped by <code>&#39;</code> or <code>&quot;</code>,  it contains any character including white space</li>
-<li>If content after <code>@</code> is not wrapped by <code>&#39;</code> or <code>&quot;</code>,
-It must start with word character <code>a-z</code> or <code>A-Z</code>
-It ends when
-a. line ends
-b. meets whitespaces
-c. line ends with <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code>
-d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
-</ol>
-</section>
+<pre><code>1. If content after `@` is wrapped by `&#39;` or `&quot;`,  it contains any character including white space
+2. If content after `@` is not wrapped by `&#39;` or `&quot;`,
+   It must start with word character `a-z` or `A-Z`
+   It ends when
+    a. line ends
+    b. meets whitespaces
+    c. line ends with `.`, `,`, `;`, `:`, `!`, `?` and `~`
+    d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
+</code></pre></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule">DfmYamlHeaderBlockRule</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockToken.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockToken">DfmYamlHeaderBlockToken</a></h4>

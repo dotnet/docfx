@@ -8,7 +8,7 @@
     <title>DfmXrefShortcutInlineRule Class | docfx website</title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DfmXrefShortcutInlineRule Class | docfx website">
-    <meta name="generator" content="docfx 1.4.2.0">
+    <meta name="generator" content="docfx 1.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -60,24 +60,22 @@
             <article class="content wrap" id="_content">
               
               <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L21" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L22" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule" data-uid="Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule">Class DfmXrefShortcutInlineRule</h1>
               <div class="markdown level0 summary"><p>XREF regex:</p>
-<ol>
-<li>If content after <code>@</code> is wrapped by <code>&#39;</code> or <code>&quot;</code>,  it contains any character including white space</li>
-<li>If content after <code>@</code> is not wrapped by <code>&#39;</code> or <code>&quot;</code>,
-It must start with word character <code>a-z</code> or <code>A-Z</code>
-It ends when
-a. line ends
-b. meets whitespaces
-c. line ends with <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code>
-d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
-</ol>
-</div>
+<pre><code>1. If content after `@` is wrapped by `&#39;` or `&quot;`,  it contains any character including white space
+2. If content after `@` is not wrapped by `&#39;` or `&quot;`,
+   It must start with word character `a-z` or `A-Z`
+   It ends when
+    a. line ends
+    b. meets whitespaces
+    c. line ends with `.`, `,`, `;`, `:`, `!`, `?` and `~`
+    d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
+</code></pre></div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritance">
                 <h5>Inheritance</h5>
-                  <div class="level0"><span class="xref">System.Object</span></div>
+                  <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><span class="xref">DfmXrefShortcutInlineRule</span></div>
               </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Dfm</h6>
@@ -92,7 +90,7 @@ d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule_XrefShortcutRegexString.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.XrefShortcutRegexString%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L24">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L25">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule_XrefShortcutRegexString" data-uid="Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.XrefShortcutRegexString">XrefShortcutRegexString</h4>
               <div class="markdown level1 summary"></div>
@@ -106,7 +104,7 @@ d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule_XrefShortcutRegexWithQuoteString.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.XrefShortcutRegexWithQuoteString%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L23">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L24">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule_XrefShortcutRegexWithQuoteString" data-uid="Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.XrefShortcutRegexWithQuoteString">XrefShortcutRegexWithQuoteString</h4>
               <div class="markdown level1 summary"></div>
@@ -121,7 +119,7 @@ d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.Name%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L28">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L29">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule_Name" data-uid="Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.Name">Name</h4>
               <div class="markdown level1 summary"></div>
@@ -140,7 +138,7 @@ d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.String</span></td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -151,7 +149,7 @@ d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser%2CSystem.String%40)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L30">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmXrefShortcutInlineRule.cs/#L31">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String__" data-uid="Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String@)">TryMatch(IMarkdownParser, ref String)</h4>
               <div class="markdown level1 summary"></div>
@@ -176,7 +174,7 @@ d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:
                     <td></td>
                   </tr>
                   <tr>
-                    <td><span class="xref">System.String</span></td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
                     <td><em>source</em></td>
                     <td></td>
                   </tr>
