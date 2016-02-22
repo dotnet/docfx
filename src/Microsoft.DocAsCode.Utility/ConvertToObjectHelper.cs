@@ -63,5 +63,22 @@ namespace Microsoft.DocAsCode.Utility
                 }
             }
         }
+
+        public static object ConvertStrongTypeToJObject(object raw)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (StreamWriter sw = new StreamWriter(ms))
+                {
+                    JsonUtility.Serialize(sw, raw);
+                    sw.Flush();
+                    ms.Seek(0, SeekOrigin.Begin);
+                    using (StreamReader sr = new StreamReader(ms))
+                    {
+                        return JsonUtility.Deserialize<object>(sr);
+                    }
+                }
+            }
+        }
     }
 }

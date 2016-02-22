@@ -151,7 +151,9 @@ namespace Microsoft.DocAsCode.EntityModel
             if (!IsEmpty)
             {
                 HashSet<string> missingUids = new HashSet<string>();
-                var model = item.Model.Content;
+
+                // Must convert to JObject first as we leverage JsonProperty as the property name for the model
+                var model = ConvertToObjectHelper.ConvertStrongTypeToJObject(item.Model.Content);
                 var templates = Templates[item.DocumentType];
 
                 // 1. process model
