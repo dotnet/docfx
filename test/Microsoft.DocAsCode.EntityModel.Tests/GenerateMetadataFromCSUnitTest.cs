@@ -342,7 +342,6 @@ namespace Test1
             Assert.Equal("Bar<T>", bar.DisplayNames[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Bar<T>", bar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public class Bar<T> : Foo<T[]>, IFoo, IBar", bar.Syntax.Content[SyntaxLanguage.CSharp]);
-            Console.WriteLine(string.Join(",", bar.Inheritance));
             Assert.Equal(new[] { "System.Object", "Test1.Foo{{T}[]}" }, bar.Inheritance);
             Assert.Equal(new[] { "Test1.IFoo", "Test1.IBar" }, bar.Implements);
 
@@ -351,7 +350,6 @@ namespace Test1
             Assert.Equal("FooBar", foobar.DisplayNames[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.FooBar", foobar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public class FooBar : Bar<string>, IFooBar, IFoo, IBar", foobar.Syntax.Content[SyntaxLanguage.CSharp]);
-            Console.WriteLine(string.Join(",", foobar.Inheritance));
             Assert.Equal(new[] { "System.Object", "Test1.Foo{System.String[]}", "Test1.Bar{System.String}" }, foobar.Inheritance);
             Assert.Equal(new[] { "Test1.IFoo", "Test1.IBar", "Test1.IFooBar" }.OrderBy(s => s), foobar.Implements.OrderBy(s => s));
 

@@ -416,7 +416,6 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             Assert.Equal(new[] { "System.Object.GetHashCode" }, inheritedMembers.ToList());
 
             Assert.NotNull(vm.References);
-            Console.WriteLine(string.Join(";", from r in vm.References select r.Uid));
             Assert.Equal(
                 new[]
                 {
