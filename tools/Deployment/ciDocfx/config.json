@@ -1,0 +1,23 @@
+{
+  "docfx": {
+    "repoUrl": "git@github.com:dotnet/docfx.git",
+    "homeFolder": "docfx",
+    "releaseFolder": "docfx/artifacts/Release",
+    "docFolder": "docfx/Documentation",
+    "docSiteFolder": "docfx/Documentation/_site",
+    "docfxExe": "docfx/target/Release/docfx/docfx.exe",
+    "e2eproj": "docfx/test/docfx.E2E.Tests/docfx.E2E.Tests.csproj",
+    "zipSrcFolder": "docfx/target/Release/docfx",
+    "zipDestFolder": "docfx/Documentation/_site/tutorial/artifacts/docfx.zip"
+    },
+  "myget": {
+    "nugetExe": "C:/nuget.exe",
+    "apiKey": "248ef281-79ba-4db1-b15a-f7b735935861",
+    "sourceUrl": "https://www.myget.org/F/docfx-dev/api/v2/package"
+  },
+  "git": {
+    "username": "CI",
+    "email": "marzin.zhu@gmail.com",
+    "msg": "CI Updates"
+  }
+}

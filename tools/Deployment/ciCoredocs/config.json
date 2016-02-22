@@ -1,0 +1,18 @@
+{
+  "coredocs": {
+    "coreapiRepo": "git@github.com:docascode/coreapi.git",
+    "coreapiFolder": "coreapi",
+    "coreclrFolder": "coreclr",
+    "coredocsFolder": "coredocs",
+    "apiFolder": "coredocs/api",
+    "coredocsSiteRepo": "git@github.com:qinezh/qinezh.github.io.git",
+    "coredocsSiteRepoFolder": "dotnet",
+    "siteFolder": "coredocs/_site",
+    "copyExcludeFile": "coredocs/exclude.list"
+    },
+  "tool": {
+    "MergeDeveloperComments": "C:/MergeDeveloperComments/MergeDeveloperComments.exe",
+    "MergeSourceInfo": "C:/MergeSourceInfo/MergeSourceInfo.exe",
+    "intellisense": "intellisense"
+  }
+}
