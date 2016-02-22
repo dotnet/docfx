@@ -51,7 +51,7 @@ if (program.step1) {
   ciUtil.remove(docfxConfig["releaseFolder"]);
 }
 if (program.step2) {
-  ciUtil.exec(docfxConfig['homeFolder'], 'build.cmd', ["Release PROD"]);
+  ciUtil.exec(docfxConfig['homeFolder'], 'build.cmd', ["Release", "PROD"]);
 }
 if (program.step3) {
   ciUtil.exec(".", "msbuild", [docfxConfig['e2eproj'], "/p:Configuration=Release"]);
