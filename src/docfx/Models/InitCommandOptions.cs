@@ -14,7 +14,10 @@ namespace Microsoft.DocAsCode
         [Option('q', "quiet", HelpText = "Quietly generate the default docfx.json")]
         public bool Quiet { get; set; }
 
-        [Option('o', "output", HelpText = "Specify the output folder of the config file. If not specified, the config file will be saved to a new folder docfx_project", DefaultValue = "docfx_project")]
+        [Option('o', "output", HelpText = "Specify the output folder of the config file. If not specified, the config file will be saved to a new folder docfx_project")]
         public string OutputFolder { get; set; }
+
+        [Option('f', "file", HelpText = "Generate config file docfx.json only, no project folder will be generated")]
+        public bool OnlyConfigFile { get; set; }
     }
 }

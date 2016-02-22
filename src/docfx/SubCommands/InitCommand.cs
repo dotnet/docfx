@@ -23,9 +23,9 @@ namespace Microsoft.DocAsCode.SubCommands
         private const string ConfigName = Constants.ConfigFileName;
         private const string DefaultOutputFolder = "docfx_project";
         private const string DefaultMetadataOutputFolder = "api";
-        private static readonly string[] DefaultExcludeFiles = new string[] { "**/bin/**", "**/obj/**", "_site/**" };
+        private static readonly string[] DefaultExcludeFiles = new string[] { "obj/**" };
+        private static readonly string[] DefaultSrcExcludeFiles = new string[] { "**/obj/**", "**/bin/**" };
         private readonly InitCommandOptions _options;
-
         private static readonly IEnumerable<IQuestion> _metadataQuestions = new IQuestion[]
         {
             new MultiAnswerQuestion(
@@ -33,7 +33,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     if (s != null)
                     {
-                        var item = new FileMapping(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
+                        var exclude = new FileItems(DefaultSrcExcludeFiles);
+                        if(!string.IsNullOrEmpty(m.Build.Destination))
+                        {
+                            exclude.Add($"{m.Build.Destination}/**");
+                        }
+                        var item = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
                         m.Metadata.Add(new MetadataJsonItemConfig
                         {
                              Source = item,
@@ -55,7 +60,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     if (s != null)
                     {
-                        m.Build.Overwrite = new FileMapping(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
+                        var exclude = new FileItems(DefaultExcludeFiles);
+                        if(!string.IsNullOrEmpty(m.Build.Destination))
+                        {
+                            exclude.Add($"{m.Build.Destination}/**");
+                        }
+                        m.Build.Overwrite = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
                     }
                 },
                 new string[] { "apidoc/**.md" }) {
@@ -68,16 +78,22 @@ namespace Microsoft.DocAsCode.SubCommands
             },
         };
 
-        private static readonly IEnumerable<IQuestion> _buildQuestions = new IQuestion[]
+        private static readonly IEnumerable<IQuestion> _overallQuestion = new IQuestion[]
         {
             new SingleAnswerQuestion(
-                "Where to save the generated documenation?", (s, m, c) => m.Build.Destination = s,
+                "Where to save the generated documenation?", (s, m, c) => {
+                    m.Build.Destination = s;
+                },
                 "_site") {
                 Descriptions = new string[]
                 {
                     Hints.Enter,
                 }
             },
+        };
+
+        private static readonly IEnumerable<IQuestion> _buildQuestions = new IQuestion[]
+        {
             // TODO: Check if the input glob pattern matches any files
             // IF no matching: WARN [init]: There is no file matching this pattern.
             new MultiAnswerQuestion(
@@ -90,7 +106,13 @@ namespace Microsoft.DocAsCode.SubCommands
                             m.Build.Content = new FileMapping();
                         }
 
-                        m.Build.Content.Add(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
+                        var exclude = new FileItems(DefaultExcludeFiles);
+                        if(!string.IsNullOrEmpty(m.Build.Destination))
+                        {
+                            exclude.Add($"{m.Build.Destination}/**");
+                        }
+
+                        m.Build.Content.Add(new FileMappingItem(s) { Exclude = exclude });
                     }
                 },
                 new string[] { "articles/**.md", "articles/**/toc.yml", "toc.yml", "*.md" }) {
@@ -106,7 +128,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     if (s != null)
                     {
-                        m.Build.Resource = new FileMapping(new FileMappingItem(s) { Exclude = new FileItems(DefaultExcludeFiles) });
+                        var exclude = new FileItems(DefaultExcludeFiles);
+                        if(!string.IsNullOrEmpty(m.Build.Destination))
+                        {
+                            exclude.Add($"{m.Build.Destination}/**");
+                        }
+                        m.Build.Resource = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
                     }
                 },
                 new string[] { "images/**" }) {
@@ -187,6 +214,11 @@ namespace Microsoft.DocAsCode.SubCommands
                     question.Process(config, questionContext);
                 }
 
+                foreach (var question in _overallQuestion)
+                {
+                    question.Process(config, questionContext);
+                }
+
                 if (questionContext.ContainsMetadata)
                 {
                     foreach (var question in _metadataQuestions)
@@ -200,28 +232,13 @@ namespace Microsoft.DocAsCode.SubCommands
                     question.Process(config, questionContext);
                 }
 
-                outputFolder = Path.GetFullPath(string.IsNullOrEmpty(_options.OutputFolder) ? DefaultOutputFolder : _options.OutputFolder).ToDisplayPath();
-                bool generate = true;
-                if (Directory.Exists(outputFolder))
+                if (_options.OnlyConfigFile)
                 {
-                    var overrideQuestion = new YesOrNoQuestion(
-                        $"Output folder \"{outputFolder}\" already exists, do you still want to generate files into this folder?",
-                        (s, m, c) =>
-                            {
-                                if (!s)
-                                {
-                                    generate = false;
-                                }
-                            });
-                    overrideQuestion.Process(null, new QuestionContext());
+                    GenerateConfigFile(_options.OutputFolder, config);
                 }
                 else
                 {
-                    Directory.CreateDirectory(outputFolder);
-                }
-
-                if (generate)
-                {
+                    outputFolder = Path.GetFullPath(string.IsNullOrEmpty(_options.OutputFolder) ? DefaultOutputFolder : _options.OutputFolder).ToDisplayPath();
                     GenerateSeedProject(outputFolder, config);
                 }
             }
@@ -231,8 +248,35 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static void GenerateSeedProject(string outputFolder, object config)
+        private static void GenerateConfigFile(string outputFolder, object config)
         {
+            var path = Path.Combine(outputFolder ?? string.Empty, ConfigName).ToDisplayPath();
+            if (File.Exists(path))
+            {
+                if (!ProcessOverrideQuestion($"Config file \"{path}\" already exists, do you want to overwrite this file?"))
+                {
+                    return;
+                }
+            }
+
+            SaveConfigFile(path, config);
+            $"Successfully generated default docfx config file to {path}".WriteLineToConsole(ConsoleColor.Green);
+        }
+
+        private static void GenerateSeedProject(string outputFolder, DefaultConfigModel config)
+        {
+            if (Directory.Exists(outputFolder))
+            {
+                if (!ProcessOverrideQuestion($"Output folder \"{outputFolder}\" already exists, do you still want to generate files into this folder? You can use -o command option to specify the folder name"))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(outputFolder);
+            }
+
             // 1. Create default files
             var srcFolder = Path.Combine(outputFolder, "src");
             var apiFolder = Path.Combine(outputFolder, "api");
@@ -246,11 +290,14 @@ namespace Microsoft.DocAsCode.SubCommands
                 $"Created folder {folder.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Gray);
             }
 
-            // 3. Create default files
+            // 2. Create default files
             // a. toc.yml
             // b. index.md
             // c. articles/toc.yml
             // d. articles/index.md
+            // e. .gitignore
+            // f. api/.gitignore
+            // TODO: move api/index.md out to some other folder
             var tocYaml = Tuple.Create("toc.yml", @"
 - name: Articles
   href: articles/
@@ -280,8 +327,24 @@ TODO: Add .NET projects to *src* folder and run `docfx` to generate a **REAL** *
             var articleMarkdownFile = Tuple.Create("articles/intro.md", @"
 # Add your introductions here!
 ");
-
-            var files = new Tuple<string, string>[] { tocYaml, indexMarkdownFile, apiTocFile, apiIndexFile, articleTocFile, articleMarkdownFile };
+            var gitignore = Tuple.Create(".gitignore", $@"
+###############
+#    folder   #
+###############
+/**/DROP/
+/**/TEMP/
+/**/packages/
+/**/bin/
+/**/obj/
+{config.Build.Destination}
+");
+            var apiGitignore = Tuple.Create("api/.gitignore", $@"
+###############
+#  temp file  #
+###############
+*.yml
+");
+            var files = new Tuple<string, string>[] { tocYaml, indexMarkdownFile, apiTocFile, apiIndexFile, articleTocFile, articleMarkdownFile, gitignore, apiGitignore };
             foreach(var file in files)
             {
                 var filePath = Path.Combine(outputFolder, file.Item1);
@@ -296,14 +359,35 @@ TODO: Add .NET projects to *src* folder and run `docfx` to generate a **REAL** *
             }
 
             // 2. Create docfx.json
-            var path = Path.Combine(outputFolder, ConfigName);
-            JsonUtility.Serialize(path, config, Formatting.Indented);
+            var path = Path.Combine(outputFolder ?? string.Empty, ConfigName);
+            SaveConfigFile(path, config);
             $"Created config file {path.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Gray);
-
             $"Successfully generated default docfx project to {outputFolder.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Green);
             "Please run:".WriteLineToConsole(ConsoleColor.Gray);
             $"\tdocfx \"{path.ToDisplayPath()}\" --serve".WriteLineToConsole(ConsoleColor.White);
             "To generate a default docfx website.".WriteLineToConsole(ConsoleColor.Gray);
+        }
+
+        private static void SaveConfigFile(string path, object config)
+        {
+            JsonUtility.Serialize(path, config, Formatting.Indented);
+        }
+
+        private static bool ProcessOverrideQuestion(string message)
+        {
+            bool overrides = true;
+            var overrideQuestion = new YesOrNoQuestion(
+                message,
+                (s, m, c) =>
+                {
+                    if (!s)
+                    {
+                        overrides = false;
+                    }
+                });
+            overrideQuestion.Process(null, new QuestionContext());
+
+            return overrides;
         }
 
         #region Question classes
