@@ -56,7 +56,7 @@ if (program.step2) {
   ciUtil.exec(docfxConfig['homeFolder'], 'build.cmd', ["Release", "PROD"]);
 }
 if (program.step3) {
-  ciUtil.exec(".", tools["msbuild"], [docfxConfig['e2eproj'], "/p:Configuration=Release"]);
+  ciUtil.exec(".", tools["msbuild"], [docfxConfig['e2eproj'], "/p:Configuration=Release", "/t:Clean;Build"]);
 }
 if (program.step4a) {
   uploadMyget(mygetConfig['nugetExe'], docfxConfig['releaseFolder'], mygetConfig['apiKey'], mygetConfig['devSourceUrl']);

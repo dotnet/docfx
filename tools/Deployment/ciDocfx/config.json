@@ -6,7 +6,7 @@
     "docFolder": "docfx/Documentation",
     "docSiteFolder": "docfx/Documentation/_site",
     "docfxExe": "docfx/target/Release/docfx/docfx.exe",
-    "e2eproj": "docfx/test/docfx.E2E.Tests/docfx.E2E.Tests.csproj",
+    "e2eproj": "docfx/test/RunE2ETests/RunE2ETests.csproj",
     "zipSrcFolder": "docfx/target/Release/docfx",
     "zipDestFolder": "docfx/Documentation/_site/tutorial/artifacts/docfx.zip"
     },
