@@ -305,6 +305,47 @@ For more information about user navigation properties, see the documentation for
         [InlineData(@"__a__*b*__c__",
             @"<p><strong>a</strong><em>b</em><strong>c</strong></p>
 ")]
+        [InlineData(@"1. a
+2. b
+
+3. c
+
+
+
+
+
+4. d
+",
+            @"<ol>
+<li>a</li>
+<li><p>b</p>
+</li>
+<li><p>c</p>
+</li>
+<li><p>d</p>
+</li>
+</ol>
+")]
+        [InlineData(@"1.  a
+2.  b
+
+3.  c
+
+break list!
+1.  d
+",
+            @"<ol>
+<li>a</li>
+<li><p>b</p>
+</li>
+<li><p>c</p>
+</li>
+</ol>
+<p>break list!</p>
+<ol>
+<li>d</li>
+</ol>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
