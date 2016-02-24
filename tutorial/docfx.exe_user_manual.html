@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | docfx website</title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | docfx website">
-    <meta name="generator" content="docfx 1.5.0.0">
+    <meta name="generator" content="docfx 1.5.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -96,10 +96,14 @@
 </code></pre><h4 id="2-2-1-optional-projects-argument">2.2.1 Optional <code>&lt;projects&gt;</code> argument</h4>
 <p><code>&lt;projects&gt;</code> specifies the projects to have metadata extracted. There are several approaches to extract language metadata.</p>
 <ol>
-<li><p>From a supported project file or project file list
-Supported project file extensions include <code>.csproj</code>, <code>.vbproj</code>, and <code>.sln</code>.
-Files can be combined using <code>,</code> as seperator, e.g. <code>docfx metadata a.csproj,b.sln</code>.</p>
-</li>
+<li>From a supported project file or project file list
+Supported project file extensions include <code>.csproj</code>, <code>.vbproj</code>, <code>.sln</code>, and <code>project.json</code>.</li>
+</ol>
+<blockquote><p><em>Note</em></p>
+<p><code>project.json</code> (<em>DNX</em> project file) is only supported in <em>DNX</em> version of <em>DocFX</em>. Please refer to <a href="docfx_getting_started.html#4-use-docfx-under-dnx">Getting Started</a> for how to use <em>DocFX</em> in <em>DNX</em>.</p>
+</blockquote>
+<p>Files can be combined using <code>,</code> as seperator, e.g. <code>docfx metadata a.csproj,b.sln</code>.</p>
+<ol>
 <li><p>From a supported source code file or source code file list
 Supported source code file extensions include <code>.cs</code> and <code>.vb</code>.
 Files can be combined using <code>,</code> as seperator and <em>search pattern</em>.</p>
