@@ -1,5 +1,14 @@
-function transform(model, _attrs){
-  return setArrayLength(model);
+function transform(model, _attrs, _global){
+  var result = setArrayLength(model);
+  if (_global) {
+    result.__global = {};
+    for (var key in _global) {
+      if (_global.hasOwnProperty(key)) {
+        result.__global[key] = _global[key];
+      }
+    }
+  }
+  return result;
 }
 
 function setArrayLength(entity)

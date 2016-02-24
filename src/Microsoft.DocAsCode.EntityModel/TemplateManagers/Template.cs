@@ -55,10 +55,10 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <param name="model">The raw model</param>
         /// <param name="attrs">The system generated attributes</param>
         /// <returns>The view model</returns>
-        public object TransformModel(object model, object attrs)
+        public object TransformModel(object model, object attrs, object global)
         {
             if (_engine == null) return model;
-            return ProcessWithJint(model, attrs);
+            return ProcessWithJint(model, attrs, global);
         }
 
         /// <summary>
@@ -73,14 +73,15 @@ namespace Microsoft.DocAsCode.EntityModel
             return _renderer.Render(model);
         }
 
-        private object ProcessWithJint(object model, object attrs)
+        private object ProcessWithJint(object model, object attrs, object global)
         {
             var argument1 = JintProcessorHelper.ConvertStrongTypeToJsValue(model);
             var argument2 = JintProcessorHelper.ConvertStrongTypeToJsValue(attrs);
+            var argument3 = JintProcessorHelper.ConvertStrongTypeToJsValue(global);
             Jint.Native.JsValue result;
             lock (_locker)
             {
-                result = _engine.Invoke("transform", argument1, argument2);
+                result = _engine.Invoke("transform", argument1, argument2, argument3);
             }
 
             return result.ToObject();

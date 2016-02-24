@@ -13,13 +13,13 @@
   <span class="contributorSplitter">|</span>
   {{/author}}
   {{#update_at}}
-  <span class="contributorsLabel">Last Updated: {{{update_at}}}</span>
+  <span class="contributorsLabel">{{__global.lastUpdated}}: {{{update_at}}}</span>
   {{/update_at}}
   {{#contributors.length}}
   <div id="contributorList">
     <span class="contributorSplitter">|</span>
     <div class="contributors">
-      {{#contributors.1}}<span class="contributorsLabel">{{contributors.length}} Contributors</span>{{/contributors.1}}
+      {{#contributors.1}}<span class="contributorsLabel">{{contributors.length}} {{__global.contributors}}</span>{{/contributors.1}}
       {{^contributors.1}}<span class="contributorsLabel">1 Contributor</span>{{/contributors.1}}
       <ul>
         {{#contributors}}

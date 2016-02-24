@@ -77,12 +77,12 @@
           <div class="main">
             <div id="oaContent" class="row">
               <div class="api-doc-contents">
-                {{#isNamespace}}
+                {{#isNamespaceView}}
                   {{>partials/namespace}}
-                {{/isNamespace}}
-                {{#isClass}}
+                {{/isNamespaceView}}
+                {{#isClassView}}
                   {{>partials/class}}
-                {{/isClass}}
+                {{/isClassView}}
               </div>
               <input type="hidden" id="proxyUrl" value="https://apiexproxy.azurewebsites.net/svc">
               <input type="hidden" id="playgroundUrl" value="https://apisandbox.msdn.microsoft.com/">

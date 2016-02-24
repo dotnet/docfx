@@ -2,12 +2,12 @@
 {{#item}}
 <div>
   <div class="content">
-    {{#isNamespace}}
+    {{#isNamespaceView}}
       {{>partials/namespace}}
-    {{/isNamespace}}
-    {{#isClass}}
+    {{/isNamespaceView}}
+    {{#isClassView}}
       {{>partials/class}}
-    {{/isClass}}
+    {{/isClassView}}
   </div>
 </div>
 {{/item}}

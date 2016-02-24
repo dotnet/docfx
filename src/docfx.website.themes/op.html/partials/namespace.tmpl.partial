@@ -1,6 +1,6 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
-<h1 class="title">{{name.0.value}} {{type}}</h1>
+<h1 class="title">{{>partials/title}}</h1>
 <div id="mainSection">
   <div id="mainBody">
     <div class="section">
@@ -12,15 +12,15 @@
       <div>
         <h2 >
           <div>
-            <span>{{title}}</span>
+            <span>{{>partials/namespaceSubtitle}}</span>
           </div>
         </h2>
         <div class="sectionblock">
           <div class="contentTableWrapper">
-            <table id="id{{title}}">
+            <table id="id{{>partials/namespaceSubtitle}}">
               <tbody>
                 <tr>
-                  <th class="nameColumn">{{title}}</th>
+                  <th class="nameColumn">{{>partials/namespaceSubtitle}}</th>
                   <th class="descriptionColumn">Description</th>
                 </tr>
                 {{#children}}

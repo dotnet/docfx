@@ -18,10 +18,16 @@ var files = [
     "*.js",
     "*.tmpl",
     "favicon.ico",
-    "logo.svg"];
+    "logo.svg",
+    "global.json"];
 
 var pack = {
     "default": [
+        {
+            "files": files,
+        }
+    ],
+    "default(zh-cn)": [
         {
             "files": files,
         }
@@ -37,12 +43,18 @@ var pack = {
     ],
     "msdn.html": [
         {
-            "files": "ManagedReference.html.primary.js",
+            "files": [
+                "ManagedReference.html.primary.js",
+                "partials/classSubtitle.tmpl.partial",
+                "partials/namespaceSubtitle.tmpl.partial",
+            ],
             "cwd": "default",
         },
         {
             "files": [
+                "partials/title.tmpl.partial",
                 "partials/namespace.tmpl.partial",
+                "global.json",
             ],
             "cwd": "op.html",
         },
@@ -52,7 +64,11 @@ var pack = {
     ],
     "op.html": [
         {
-            "files": "ManagedReference.html.primary.js",
+            "files": [
+                "ManagedReference.html.primary.js",
+                "partials/classSubtitle.tmpl.partial",
+                "partials/namespaceSubtitle.tmpl.partial",
+            ],
             "cwd": "default",
         },
         {
@@ -66,15 +82,38 @@ var pack = {
             "files": files
         }
     ],
+     "op(zh-cn).html": [
+        {
+            "files": "partials/title.tmpl.partial",
+            "cwd": "default(zh-cn)"
+        },
+        {
+            "files": files,
+        }
+    ],
+    "op(ar-SA).html": [
+        {
+            "files": "partials/title.tmpl.partial",
+            "cwd": "op.html"
+        },
+        {
+            "files": files,
+        }
+    ],
     "vs.html": [
         {
-            "files": "ManagedReference.html.primary.js",
+            "files": [
+                "ManagedReference.html.primary.js",
+                "partials/classSubtitle.tmpl.partial",
+                "partials/namespaceSubtitle.tmpl.partial",
+            ],
             "cwd": "default",
         },
         {
             "files": [
-                "partials/class.tmpl.partial",
+                "partials/title.tmpl.partial",
                 "partials/namespace.tmpl.partial",
+                "global.json",
             ],
             "cwd": "op.html",
         },
@@ -88,8 +127,18 @@ var pack = {
     ],
     "docs.html": [
          {
-            "files": "ManagedReference.html.primary.js",
+            "files": [
+                "ManagedReference.html.primary.js",
+                "partials/classSubtitle.tmpl.partial",
+                "partials/namespaceSubtitle.tmpl.partial",
+            ],
             "cwd": "default",
+        },
+        {
+            "files": [
+                "global.json",
+            ],
+            "cwd": "op.html",
         },
         {
             "files": files

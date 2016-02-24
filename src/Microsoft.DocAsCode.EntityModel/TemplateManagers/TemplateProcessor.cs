@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private const string Language = "csharp"; // TODO: how to handle multi-language
 
         private ResourceCollection _resourceProvider = null;
+        private object _global = null;
 
         public TemplateCollection Templates { get; }
 
@@ -39,6 +40,7 @@ namespace Microsoft.DocAsCode.EntityModel
         public TemplateProcessor(ResourceCollection resourceProvider)
         {
             _resourceProvider = resourceProvider;
+            _global = LoadGlobalJson(resourceProvider);
             Templates = new TemplateCollection(resourceProvider);
         }
 
@@ -112,6 +114,16 @@ namespace Microsoft.DocAsCode.EntityModel
             return manifest.ToList();
         }
 
+        private object LoadGlobalJson(ResourceCollection resource)
+        {
+            var globalJson = resource.GetResource("global.json");
+            if (!string.IsNullOrEmpty(globalJson))
+            {
+                return JsonUtility.FromJsonString<object>(globalJson);
+            }
+            return null;
+        }
+
         private static void ExportRawModel(List<ManifestItem> manifest, ApplyTemplateSettings settings)
         {
             if (!settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel)) return;
@@ -170,7 +182,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         object viewModel = null;
                         try
                         {
-                            viewModel = template.TransformModel(model, systemAttrs);
+                            viewModel = template.TransformModel(model, systemAttrs, _global);
                         }
                         catch (Exception e)
                         {

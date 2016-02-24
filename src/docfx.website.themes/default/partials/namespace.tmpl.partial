@@ -2,19 +2,18 @@
 
 {{^_disableContribution}}
 {{#docurl}}
-<a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+<a href="{{docurl}}" class="btn btn-primary pull-right mobile-hide">{{__global.improveThisDoc}}</a>
 {{/docurl}}
 {{#sourceurl}}
-<a href="{{sourceurl}}" class="btn btn-primary pull-right mobile-hide">View Source</a>
+<a href="{{sourceurl}}" class="btn btn-primary pull-right mobile-hide">{{__global.viewSource}}</a>
 {{/sourceurl}}
 {{/_disableContribution}}
-<h1 id="{{id}}" data-uid="{{uid}}">{{type}} {{name.0.value}}
-</h1>
+<h1 id="{{id}}" data-uid="{{uid}}">{{>partials/title}}</h1>
 <div class="markdown level0 summary">{{{summary}}}</div>
 <div class="markdown level0 conceptual">{{{conceptual}}}</div>
 <div class="markdown level0 remarks">{{{remarks}}}</div>
 {{#children}}
-  <h3 id="{{id}}">{{title}}</h3>
+  <h3 id="{{id}}">{{>partials/namespaceSubtitle}}</h3>
   {{#children}}
     <h4>{{{specName.0.value}}}</h4>
     <section>{{{summary}}}</section>

@@ -1,0 +1,19 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+{{#isNamespaceView}}
+{{name.0.value}} Namespace
+{{/isNamespaceView}}
+{{#isClass}}
+{{name.0.value}} Class
+{{/isClass}}
+{{#isStruct}}
+{{name.0.value}} Struct
+{{/isStruct}}
+{{#isInterface}}
+{{name.0.value}} Interface
+{{/isInterface}}
+{{#isEnum}}
+{{name.0.value}} Enum
+{{/isEnum}}
+{{#isDelegate}}
+{{name.0.value}} Delegate
+{{/isDelegate}}

@@ -1,29 +1,29 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-function transform(model, _attrs) {
+function transform(model, _attrs, _global) {
   var util = new Utility();
   var namespaceItems = {
-    "class":        { name: "Class",      title: "Classes",     id: "classes" },
-    "struct":       { name: "Struct",     title: "Structs",     id: "structs" },
-    "interface":    { name: "Interface",  title: "Interfaces",  id: "interfaces" },
-    "enum":         { name: "Enum",       title: "Enums",       id: "enums" },
-    "delegate":     { name: "Delegate",   title: "Delegates",   id: "delegates" }
+    "class":        { isClass: true,        typePropertyName: "isClass",        id: "classes" },
+    "struct":       { isStruct: true,       typePropertyName: "isStruct",       id: "structs" },
+    "interface":    { isInterface: true,    typePropertyName: "isInterface",    id: "interfaces" },
+    "enum":         { isEnum: true,         typePropertyName: "isEnum",         id: "enums" },
+    "delegate":     { isDelegate: true,     typePropertyName: "isDelegate",     id: "delegates" }
   };
   var classItems = {
-    "constructor":  { title: "Constructors",  id: "constructors" },
-    "field":        { title: "Fields",        id: "fields" },
-    "property":     { title: "Properties",    id: "properties" },
-    "method":       { title: "Methods",       id: "methods" },
-    "event":        { title: "Events",        id: "events" },
-    "operator":     { title: "Operators",     id: "operators" }
+    "constructor":  { isConstructor: true,  typePropertyName: "isConstructor",  id: "constructors" },
+    "field":        { isField: true,        typePropertyName: "isField",        id: "fields" },
+    "property":     { isProperty: true,     typePropertyName: "isProperty",     id: "properties" },
+    "method":       { isMethod: true,       typePropertyName: "isMethod",       id: "methods" },
+    "event":        { isEvent: true,        typePropertyName: "isEvent",        id: "events" },
+    "operator":     { isOperator: true,     typePropertyName: "isOperator",     id: "operators" }
   };
 
-  model = createViewModel(model, _attrs);
+  model = createViewModel(model, _attrs, _global);
 
   model._disableToc = model._disableToc ||!_attrs._tocPath || (_attrs._navPath === _attrs._tocPath);
 
   return model;
 
-  function createViewModel(model, _attrs) {
+  function createViewModel(model, _attrs, _global) {
     if (!model || !model.items || model.items.length === 0) return null;
 
     // Pickup the first item and display
@@ -35,21 +35,30 @@ function transform(model, _attrs) {
     if (item.type) {
       switch (item.type.toLowerCase()) {
         case 'namespace':
-          return new NamespaceViewModel(item, _attrs, refs, mta);
+          return new NamespaceViewModel(item, _attrs, _global, refs, mta);
         case 'class':
         case 'interface':
         case 'struct':
         case 'delegate':
         case 'enum':
-          return new ClassViewModel(item, _attrs, refs, mta);
+          return new ClassViewModel(item, _attrs, _global, refs, mta);
         default:
           break;
       }
     }
 
-    return new GeneralViewModel(item, _attrs, refs, mta);
+    return new GeneralViewModel(item, _attrs, _global, refs, mta);
 
-    function GeneralViewModel(item, _attrs, refs, mta) {
+    function GeneralViewModel(item, _attrs, _global, refs, mta) {
+      if (_global) {
+        this.__global = {};
+        for (var key in _global) {
+          if (_global.hasOwnProperty(key)) {
+            this.__global[key] = _global[key];
+          }
+        }
+      }
+      
       for (var key in _attrs) {
         if (_attrs.hasOwnProperty(key)) {
           this[key] = _attrs[key];
@@ -67,9 +76,9 @@ function transform(model, _attrs) {
       }
     }
 
-    function NamespaceViewModel(item, _attrs, refs, mta) {
-      GeneralViewModel.call(this, item, _attrs, refs, mta);
-      this.isNamespace = true;
+    function NamespaceViewModel(item, _attrs, _global, refs, mta) {
+      GeneralViewModel.call(this, item, _attrs, _global, refs, mta);
+      this.isNamespaceView = true;
 
       if (this.item.children) {
         var grouped = {};
@@ -96,13 +105,12 @@ function transform(model, _attrs) {
 
         this.item.children = children;
       }
-      this.item.type = "Namespace";
       this.title = this.item.name[0].value + " " + this.item.type;
     }
 
-    function ClassViewModel(item, _attrs, refs, mta) {
-      GeneralViewModel.call(this, item, _attrs, refs, mta);
-      this.isClass = true;
+    function ClassViewModel(item, _attrs, _global, refs, mta) {
+      GeneralViewModel.call(this, item, _attrs, _global, refs, mta);
+      this.isClassView = true;
 
       if (this.item.children) {
         var grouped = {};
@@ -134,8 +142,7 @@ function transform(model, _attrs) {
 
         this.item.children = children;
       }
-      this.item.type = namespaceItems[this.item.type].name;
-      this.title = this.item.name[0].value + " " + this.item.type;
+      this[namespaceItems[this.item.type].typePropertyName] = true;
     }
 
     function References(model) {

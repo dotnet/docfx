@@ -1,0 +1,37 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+{{#isNamespaceView}}
+  {{#name}}
+  <span class="lang-{{lang}}">{{value}}</span>
+  {{/name}}
+  Namespace
+{{/isNamespaceView}}
+{{#isClass}}
+  {{#name}}
+  <span class="lang-{{lang}}">{{value}}</span>
+  {{/name}}
+  Class
+{{/isClass}}
+{{#isStruct}}
+  {{#name}}
+  <span class="lang-{{lang}}">{{value}}</span>
+  {{/name}}
+  Struct
+{{/isStruct}}
+{{#isInterface}}
+  {{#name}}
+  <span class="lang-{{lang}}">{{value}}</span>
+  {{/name}}
+  Interface
+{{/isInterface}}
+{{#isEnum}}
+  {{#name}}
+  <span class="lang-{{lang}}">{{value}}</span>
+  {{/name}}
+  Enum
+{{/isEnum}}
+{{#isDelegate}}
+  {{#name}}
+  <span class="lang-{{lang}}">{{value}}</span>
+  {{/name}}
+  Delegate
+{{/isDelegate}}
