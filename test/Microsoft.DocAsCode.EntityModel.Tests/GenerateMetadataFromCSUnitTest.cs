@@ -3,18 +3,20 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Tests
 {
-    using DocAsCode.EntityModel;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.Emit;
-    using Microsoft.CodeAnalysis.MSBuild;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using Xunit;
-    using static DocAsCode.EntityModel.ExtractMetadataWorker;
+
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.Emit;
+    using Microsoft.CodeAnalysis.MSBuild;
+    using Microsoft.DocAsCode.EntityModel;
+
+    using static Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
@@ -30,8 +32,17 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             string code = @"
 namespace Test1
 {
+    /// <summary>
+    /// This is a test
+    /// </summary>
+    /// <seealso cref=""Func1(int)""/>
     public class Class1
     {
+        /// <summary>
+        /// This is a function
+        /// </summary>
+        /// <param name=""i"">This is a param as <see cref=""int""/></param>
+        /// <seealso cref=""int""/>
         public void Func1(int i)
         {
             return;
@@ -40,11 +51,25 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var @class = output.Items[0].Items[0];
+            Assert.NotNull(@class);
+            Assert.Equal("Class1", @class.DisplayNames.First().Value);
+            Assert.Equal("Test1.Class1", @class.DisplayQualifiedNames.First().Value);
+            Assert.Equal(@"
+This is a test
+", @class.Summary);
+            Assert.Equal("Test1.Class1.Func1(System.Int32)", @class.SeeAlsos[0].Type);
+
             var function = output.Items[0].Items[0].Items[0];
             Assert.NotNull(function);
             Assert.Equal("Func1(Int32)", function.DisplayNames.First().Value);
             Assert.Equal("Test1.Class1.Func1(System.Int32)", function.DisplayQualifiedNames.First().Value);
             Assert.Equal("Test1.Class1.Func1(System.Int32)", function.Name);
+            Assert.Equal(@"
+This is a function
+", function.Summary);
+            Assert.Equal("System.Int32", function.SeeAlsos[0].Type);
+            Assert.Equal("This is a param as <xref href=\"System.Int32\" data-throw-if-not-resolved=\"false\"></xref>", function.Syntax.Parameters[0].Description);
             Assert.Equal(1, output.Items.Count);
             var parameter = function.Syntax.Parameters[0];
             Assert.Equal("i", parameter.Name);
@@ -59,6 +84,7 @@ namespace Test1
             string code = @"
 namespace Test1.Test2
 {
+    /// <seealso cref=""Class1""/>
     public class Class1
     {
     }

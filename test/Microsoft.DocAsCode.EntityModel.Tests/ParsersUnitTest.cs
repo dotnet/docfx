@@ -97,10 +97,6 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             Assert.Equal("System.Xml.XmlException", exceptions[0].Type);
             Assert.Equal("This is a sample of exception node", exceptions[0].Description);
 
-            // If not preserving raw comments, sees & seeAlsos are both transformed to cross reference now
-            Assert.Null(commentModel.Sees);
-            Assert.Null(commentModel.SeeAlsos);
-
             var example = commentModel.Examples;
             var expected = new List<string> {
 @"

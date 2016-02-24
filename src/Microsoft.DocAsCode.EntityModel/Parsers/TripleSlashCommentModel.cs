@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
         private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+        private readonly string[] _lines;
 
         public string Summary { get; private set; }
         public string Remarks { get; private set; }
@@ -31,7 +32,29 @@ namespace Microsoft.DocAsCode.EntityModel
         public Dictionary<string, string> Parameters { get; private set; }
         public Dictionary<string, string> TypeParameters { get; private set; }
 
-        private TripleSlashCommentModel() { }
+        private TripleSlashCommentModel(string xml, ITripleSlashCommentParserContext context)
+        {
+            // Normalize xml line ending before load into xml
+            XDocument doc = XDocument.Parse(xml, LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
+            if (!context.PreserveRawInlineComments)
+            {
+                ResolveSeeCref(doc, context.AddReferenceDelegate);
+                ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
+                ResolveParameterRef(doc);
+            }
+            var nav = doc.CreateNavigator();
+            _lines = doc.ToString().Split('\n');
+            Summary = GetSummary(nav, context);
+            Remarks = GetRemarks(nav, context);
+            Returns = GetReturns(nav, context);
+
+            Exceptions = GetExceptions(nav, context);
+            Sees = GetSees(nav, context);
+            SeeAlsos = GetSeeAlsos(nav, context);
+            Examples = GetExamples(nav, context);
+            Parameters = GetParameters(nav, context);
+            TypeParameters = GetTypeParameters(nav, context);
+        }
 
         public static TripleSlashCommentModel CreateModel(string xml, ITripleSlashCommentParserContext context)
         {
@@ -45,27 +68,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
             try
             {
-                // Normalize xml line ending before load into xml
-                XDocument doc = XDocument.Parse(xml, LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
-                if (!context.PreserveRawInlineComments)
-                {
-                    ResolveSeeCref(doc, context.AddReferenceDelegate);
-                    ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
-                    ResolveParameterRef(doc);
-                }
-                var nav = doc.CreateNavigator();
-
-                var model = new TripleSlashCommentModel();
-                model.Summary = GetSummary(nav, context);
-                model.Remarks = GetRemarks(nav, context);
-                model.Returns = GetReturns(nav, context);
-
-                model.Exceptions = GetExceptions(nav, context);
-                model.Sees = GetSees(nav, context);
-                model.SeeAlsos = GetSeeAlsos(nav, context);
-                model.Examples = GetExamples(nav, context);
-                model.Parameters = GetParameters(nav, context);
-                model.TypeParameters = GetTypeParameters(nav, context);
+                var model = new TripleSlashCommentModel(xml, context);
                 return model;
             }
             catch (XmlException)
@@ -106,7 +109,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <example>
         /// <code> <see cref="Hello"/></code>
         /// </example>
-        private static string GetSummary(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private string GetSummary(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
@@ -123,13 +126,13 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-        private static string GetRemarks(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private string GetRemarks(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/remarks";
             return GetSingleNodeValue(nav, selector);
         }
 
-        private static string GetReturns(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private string GetReturns(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
@@ -144,7 +147,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-        private static List<CrefInfo> GetExceptions(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private List<CrefInfo> GetExceptions(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/exception";
             var result = GetMulitpleCrefInfo(nav, selector).ToList();
@@ -160,7 +163,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <returns></returns>
         /// <see cref="SpecIdHelper"/>
         /// <see cref="SourceSwitch"/>
-        private static List<CrefInfo> GetSees(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private List<CrefInfo> GetSees(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             var result = GetMulitpleCrefInfo(nav, "/member/see").ToList();
             if (result.Count == 0) return null;
@@ -175,7 +178,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <returns></returns>
         /// <seealso cref="WaitForChangedResult"/>
         /// <seealso cref="http://google.com">ABCS</seealso>
-        private static List<CrefInfo> GetSeeAlsos(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private List<CrefInfo> GetSeeAlsos(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             var result = GetMulitpleCrefInfo(nav, "/member/seealso").ToList();
             if (result.Count == 0) return null;
@@ -200,14 +203,14 @@ namespace Microsoft.DocAsCode.EntityModel
         /// } 
         /// </code> 
         /// </example>
-        private static List<string> GetExamples(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private List<string> GetExamples(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             return GetMultipleExampleNodes(nav, "/member/example").ToList();
         }
 
-        private static Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, ITripleSlashCommentParserContext context)
+        private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, ITripleSlashCommentParserContext context)
         {
             var iterator = navigator.Select(xpath);
             var result = new Dictionary<string, string>();
@@ -233,20 +236,16 @@ namespace Microsoft.DocAsCode.EntityModel
             return result;
         }
 
-        private static Dictionary<string, string> GetParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
+        private Dictionary<string, string> GetParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
         {
             return GetListContent(navigator, "/member/param", "parameter", context);
         }
 
-        private static Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
+        private Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
         {
             return GetListContent(navigator, "/member/typeparam", "type parameter", context);
         }
 
-        /// <summary>
-        /// <paramref name="Hello"/>
-        /// </summary>
-        /// <param name="node"></param>
         private static void ResolveParameterRef(XDocument node)
         {
             var paramRefs = node.Descendants("paramref").ToList();
@@ -293,8 +292,14 @@ namespace Microsoft.DocAsCode.EntityModel
                     if (CommentIdRegex.IsMatch(value))
                     {
                         value = value.Substring(2);
-                        var replacement = XElement.Parse($"<xref href=\"{WebUtility.HtmlEncode(value)}\" data-throw-if-not-resolved=\"false\"></xref>");
-                        item.ReplaceWith(replacement);
+
+                        // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
+                        if (item.Parent?.Parent != null)
+                        {
+                            var replacement = XElement.Parse($"<xref href=\"{WebUtility.HtmlEncode(value)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                            item.ReplaceWith(replacement);
+                        }
+
                         if (addReference != null)
                         {
                             addReference(value);
@@ -311,7 +316,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static IEnumerable<string> GetMultipleExampleNodes(XPathNavigator navigator, string selector)
+        private IEnumerable<string> GetMultipleExampleNodes(XPathNavigator navigator, string selector)
         {
             var iterator = navigator.Select(selector);
             if (iterator == null) yield break;
@@ -322,7 +327,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static IEnumerable<CrefInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector)
+        private IEnumerable<CrefInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector)
         {
             var iterator = navigator.Clone().Select(selector);
             if (iterator == null) yield break;
@@ -344,7 +349,7 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static string GetSingleNodeValue(XPathNavigator nav, string selector)
+        private string GetSingleNodeValue(XPathNavigator nav, string selector)
         {
             var node = nav.Clone().SelectSingleNode(selector);
             if (node == null)
@@ -364,85 +369,55 @@ namespace Microsoft.DocAsCode.EntityModel
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private static string GetXmlValue(XPathNavigator node)
+        private string GetXmlValue(XPathNavigator node)
         {
             // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
             // e.g.
             // <remarks><para>Value</para></remarks>
             // decode InnerXml as it encodes
             var lineInfo = node as IXmlLineInfo;
-            var column = lineInfo.LinePosition;
+            var lineNumber = lineInfo.LineNumber - 1;
+            var line = _lines[lineNumber];
+            int column = GetNonWhitespaceIndex(line);
+
             var content = WebUtility.HtmlDecode(node.InnerXml);
-            var allLines = GetLines(content);
+            var lines = GetLines(content, column);
 
-            // Save Crlf/Lf to LineInfo so that the original line ending is saved
-            var lines = allLines.Select(s => new { content = NormalizeLine(s.Content, column, s.StartIndex), prefix = s.Prefix }).SelectMany(s => new string[] { s.prefix, s.content });
-
-            return string.Join(string.Empty, lines);
+            return string.Join("\n", lines);
         }
 
-        private const string Crlf = "\r\n";
-        private const string Lf = "\n";
-
-        /// <summary>
-        /// The line position from XElement contains line ending from previous line
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        private static IEnumerable<LineInfo> GetLines(string content)
+        private static IEnumerable<string> GetLines(string content, int column)
         {
-            var lines = content.Split(new string[] { Crlf }, StringSplitOptions.None);
-            var firstLine = lines[0];
-            var firstLineInfo = new LineInfo(lines[0], 0, string.Empty);
-            foreach (var line in GetLfLinesFromLine(firstLineInfo))
-            {
-                yield return line;
-            }
+            var lines = content.Split('\n');
+            yield return lines[0];
             for (var i = 1; i < lines.Length; i++)
             {
-                var crlfLine = new LineInfo(lines[i], Crlf.Length, Crlf);
-                foreach (var line in GetLfLinesFromLine(crlfLine))
-                {
-                    yield return line;
-                }
+                yield return NormalizeLine(lines[i], column);
             }
         }
 
-        private static IEnumerable<LineInfo> GetLfLinesFromLine(LineInfo info)
+        private static string NormalizeLine(string line, int column)
         {
-            var content = info.Content;
-            var lines = content.Split(Lf[0]);
-            yield return new LineInfo(lines[0], info.StartIndex, info.Prefix);
-            for (var i = 1; i < lines.Length; i++)
-            {
-                yield return new LineInfo(lines[i], Lf.Length, Lf);
-            }
-        }
+            int trimIndex = Math.Min(column, GetNonWhitespaceIndex(line));
 
-        private static string NormalizeLine(string line, int column, int startIndex)
-        {
-            int trimIndex = 0;
-            column = column - startIndex;
-            while (trimIndex < column && trimIndex < line.Length && char.IsWhiteSpace(line[trimIndex]))
+            // special handle for \r
+            if (trimIndex > 0 && line[trimIndex - 1] == '\r')
             {
-                trimIndex++;
+                trimIndex--;
             }
 
             return line.Substring(trimIndex);
         }
 
-        private sealed class LineInfo
+        private static int GetNonWhitespaceIndex(string line)
         {
-            public string Content { get; }
-            public int StartIndex { get; }
-
-            public string Prefix { get; }
-            public LineInfo(string content, int startIndex, string prefix)
+            int index = 0;
+            while (index < line.Length && char.IsWhiteSpace(line[index]))
             {
-                Content = content;
-                StartIndex = startIndex;
-                Prefix = prefix;
+                index++;
             }
+
+            return index;
         }
     }
 }
