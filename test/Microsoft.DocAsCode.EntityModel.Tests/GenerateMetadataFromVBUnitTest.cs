@@ -51,6 +51,7 @@ End Namespace
                 Assert.Equal("Test1.Class1", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Class1", type.Name);
                 Assert.Equal(@"Public Class Class1", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Class" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -61,6 +62,7 @@ End Namespace
                 Assert.Equal(@"Public Class Class2(Of T)
     Inherits List(Of T)
     Implements IList(Of T), ICollection(Of T), IList, ICollection, IReadOnlyList(Of T), IReadOnlyCollection(Of T), IEnumerable(Of T), IEnumerable", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Class" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[2];
@@ -69,6 +71,7 @@ End Namespace
                 Assert.Equal("Test1.Class3(Of T1, T2)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Class3`2", type.Name);
                 Assert.Equal(@"Public Class Class3(Of T1, T2 As T1)", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Class" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[3];
@@ -77,6 +80,7 @@ End Namespace
                 Assert.Equal("Test1.Class4(Of T1, T2)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Class4`2", type.Name);
                 Assert.Equal(@"Public Class Class4(Of T1 As {Structure, IEnumerable(Of T2)}, T2 As {Class, New})", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Class" }, type.Modifiers[SyntaxLanguage.VB]);
             }
         }
 
@@ -102,6 +106,7 @@ End Namespace
                 Assert.Equal("Test1.Enum1", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Enum1", type.Name);
                 Assert.Equal(@"Public Enum Enum1", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Enum" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -110,6 +115,7 @@ End Namespace
                 Assert.Equal("Test1.Enum2", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Enum2", type.Name);
                 Assert.Equal(@"Public Enum Enum2 As Byte", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Enum" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[2];
@@ -118,6 +124,7 @@ End Namespace
                 Assert.Equal("Test1.Enum3", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Enum3", type.Name);
                 Assert.Equal(@"Public Enum Enum3", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Enum" }, type.Modifiers[SyntaxLanguage.VB]);
             }
         }
 
@@ -145,6 +152,7 @@ End Namespace
                 Assert.Equal("Test1.IA", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IA", type.Name);
                 Assert.Equal(@"Public Interface IA", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Interface" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -153,6 +161,7 @@ End Namespace
                 Assert.Equal("Test1.IB(Of T)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IB`1", type.Name);
                 Assert.Equal(@"Public Interface IB(Of T As Class)", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Interface" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[2];
@@ -162,6 +171,7 @@ End Namespace
                 Assert.Equal("Test1.IC`1", type.Name);
                 Assert.Equal(@"Public Interface IC(Of TItem As {IA, New})
     Inherits IA, IB(Of TItem())", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Interface" }, type.Modifiers[SyntaxLanguage.VB]);
             }
         }
 
@@ -193,6 +203,7 @@ End Namespace
                 Assert.Equal("Test1.S1", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.S1", type.Name);
                 Assert.Equal(@"Public Structure S1", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Structure" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -201,6 +212,7 @@ End Namespace
                 Assert.Equal("Test1.S2(Of T)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.S2`1", type.Name);
                 Assert.Equal(@"Public Structure S2(Of T As Class)", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Structure" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[2];
@@ -210,6 +222,7 @@ End Namespace
                 Assert.Equal("Test1.S3`2", type.Name);
                 Assert.Equal(@"Public Structure S3(Of T1 As {Class, IA, New}, T2 As IB(Of T1))
     Implements IA, IB(Of T1())", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Structure" }, type.Modifiers[SyntaxLanguage.VB]);
             }
         }
 
@@ -233,6 +246,7 @@ End Namespace
                 Assert.Equal("Test1.D1", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.D1", type.Name);
                 Assert.Equal(@"Public Delegate Sub D1", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Delegate" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -241,6 +255,7 @@ End Namespace
                 Assert.Equal("Test1.D2(Of T)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.D2`1", type.Name);
                 Assert.Equal(@"Public Delegate Sub D2(Of T As Class)(x As Integer())", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Delegate" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[2];
@@ -249,6 +264,7 @@ End Namespace
                 Assert.Equal("Test1.D3(Of T1, T2)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.D3`2", type.Name);
                 Assert.Equal(@"Public Delegate Function D3(Of T1 As Class, T2 As {T1, New})(ByRef x As T1) As T2", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Delegate" }, type.Modifiers[SyntaxLanguage.VB]);
             }
         }
 
@@ -296,6 +312,7 @@ End Namespace
                 Assert.Equal("Test1.Foo(Of T).M1(System.Int32, System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.M1(System.Int32,System.Int32[])", method.Name);
                 Assert.Equal("Public Overridable Sub M1(x As Integer, ParamArray y As Integer())", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Overridable" }, method.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[1];
@@ -304,6 +321,7 @@ End Namespace
                 Assert.Equal("Test1.Foo(Of T).M2(Of T1, T2)(T1, ByRef T2())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.M2``2(``0,``1[]@)", method.Name);
                 Assert.Equal("Public MustOverride Sub M2(Of T1 As Class, T2 As Foo(Of T1))(x As T1, ByRef y As T2())", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "MustOverride" }, method.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[2];
@@ -312,6 +330,7 @@ End Namespace
                 Assert.Equal("Test1.Foo(Of T).M3()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.M3", method.Name);
                 Assert.Equal("Public Sub M3", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public" }, method.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[3];
@@ -320,6 +339,7 @@ End Namespace
                 Assert.Equal("Test1.Foo(Of T).M4(Of T1)(T)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.M4``1(`0)", method.Name);
                 Assert.Equal("Protected Shared Function M4(Of T1 As Class)(x As T) As T1", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Protected", "Shared" }, method.Modifiers[SyntaxLanguage.VB]);
             }
             // Bar
             {
@@ -329,6 +349,7 @@ End Namespace
                 Assert.Equal("Test1.Bar.M1(System.Int32, System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.M1(System.Int32,System.Int32[])", method.Name);
                 Assert.Equal("Public Overrides Sub M1(x As Integer, y As Integer())", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Overrides" }, method.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[1].Items[1];
@@ -337,6 +358,7 @@ End Namespace
                 Assert.Equal("Test1.Bar.M2(Of T1, T2)(T1, ByRef T2())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.M2``2(``0,``1[]@)", method.Name);
                 Assert.Equal("Public NotOverridable Overrides Sub M2(Of T1 As Class, T2 As Foo(Of T1))(x As T1, ByRef y As T2())", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Overrides", "NotOverridable" }, method.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[1].Items[2];
@@ -345,6 +367,7 @@ End Namespace
                 Assert.Equal("Test1.Bar.M3()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.M3", method.Name);
                 Assert.Equal("Public Sub M3", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public" }, method.Modifiers[SyntaxLanguage.VB]);
             }
             // IFooBar
             {
@@ -354,6 +377,7 @@ End Namespace
                 Assert.Equal("Test1.IFooBar.M1(System.Int32, System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.M1(System.Int32,System.Int32[])", method.Name);
                 Assert.Equal("Sub M1(x As Integer, ParamArray y As Integer())", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[2].Items[1];
@@ -362,6 +386,7 @@ End Namespace
                 Assert.Equal("Test1.IFooBar.M2(Of T1, T2)(T1, ByRef T2())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.M2``2(``0,``1[]@)", method.Name);
                 Assert.Equal("Sub M2(Of T1 As Class, T2 As Foo(Of T1))(x As T1, ByRef y As T2())", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[2].Items[2];
@@ -370,6 +395,7 @@ End Namespace
                 Assert.Equal("Test1.IFooBar.M3()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.M3", method.Name);
                 Assert.Equal("Sub M3", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.VB]);
             }
             // inheritance of Foo<T>
             {

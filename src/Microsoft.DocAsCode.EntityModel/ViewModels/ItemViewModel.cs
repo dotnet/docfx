@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
 
     using Newtonsoft.Json;
@@ -46,25 +47,109 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [YamlMember(Alias = "name.csharp")]
-        [JsonProperty("name.csharp")]
-        public string NameForCSharp { get; set; }
+        [ExtensibleMember("name.")]
+        [JsonIgnore]
+        public SortedList<string, string> Names { get; set; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "name.vb")]
-        [JsonProperty("name.vb")]
-        public string NameForVB { get; set; }
+        [YamlIgnore]
+        [JsonIgnore]
+        public string NameForCSharp
+        {
+            get
+            {
+                string result;
+                Names.TryGetValue("csharp", out result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    Names.Remove("csharp");
+                }
+                else
+                {
+                    Names["csharp"] = value;
+                }
+            }
+        }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string NameForVB
+        {
+            get
+            {
+                string result;
+                Names.TryGetValue("vb", out result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    Names.Remove("vb");
+                }
+                else
+                {
+                    Names["vb"] = value;
+                }
+            }
+        }
 
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
         public string FullName { get; set; }
 
-        [YamlMember(Alias = "fullName.csharp")]
-        [JsonProperty("fullName.csharp")]
-        public string FullNameForCSharp { get; set; }
+        [ExtensibleMember("fullName.")]
+        [JsonIgnore]
+        public SortedList<string, string> FullNames { get; set; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "fullName.vb")]
-        [JsonProperty("fullName.vb")]
-        public string FullNameForVB { get; set; }
+        [YamlIgnore]
+        [JsonIgnore]
+        public string FullNameForCSharp
+        {
+            get
+            {
+                string result;
+                FullNames.TryGetValue("csharp", out result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    FullNames.Remove("csharp");
+                }
+                else
+                {
+                    FullNames["csharp"] = value;
+                }
+            }
+        }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string FullNameForVB
+        {
+            get
+            {
+                string result;
+                FullNames.TryGetValue("vb", out result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    FullNames.Remove("vb");
+                }
+                else
+                {
+                    FullNames["vb"] = value;
+                }
+            }
+        }
 
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
@@ -134,6 +219,11 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("inheritedMembers")]
         public List<string> InheritedMembers { get; set; }
 
+        [ExtensibleMember("modifiers.")]
+        [MergeOption(MergeOption.Ignore)] // todo : merge more children
+        [JsonIgnore]
+        public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
+
         [YamlMember(Alias = "conceptual")]
         [JsonProperty("conceptual")]
         public string Conceptual { get; set; }
@@ -143,8 +233,36 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         public List<string> Platform { get; set; }
 
         [ExtensibleMember]
-        [JsonExtensionData]
+        [JsonIgnore]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [YamlIgnore]
+        [JsonExtensionData(WriteData = true, ReadData = false)]
+        public Dictionary<string, object> ExtensionData
+        {
+            get
+            {
+                var result = new Dictionary<string, object>();
+                foreach (var item in Names)
+                {
+                    result["name." + item.Key] = item.Value;
+                }
+                foreach (var item in FullNames)
+                {
+                    result["fullName." + item.Key] = item.Value;
+                }
+                foreach (var item in Modifiers)
+                {
+                    result["modifier." + item.Key] = item.Value;
+                }
+                foreach (var item in Metadata)
+                {
+                    result[item.Key] = item.Value;
+                }
+                return result;
+            }
+        }
 
         public static ItemViewModel FromModel(MetadataItem model)
         {
@@ -199,6 +317,17 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
             if (result.FullName != fullnameForVB)
             {
                 result.FullNameForVB = fullnameForVB;
+            }
+
+            var modifierCSharp = model.Modifiers.GetLanguageProperty(SyntaxLanguage.CSharp);
+            if (modifierCSharp?.Count > 0)
+            {
+                result.Modifiers["csharp"] = modifierCSharp;
+            }
+            var modifierForVB = model.Modifiers.GetLanguageProperty(SyntaxLanguage.VB);
+            if (modifierForVB?.Count > 0)
+            {
+                result.Modifiers["vb"] = modifierForVB;
             }
 
             return result;

@@ -10,7 +10,9 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
-    using Common;
+
+    using Microsoft.DocAsCode.Common;
+
     public class SymbolVisitorAdapter
         : SymbolVisitor<MetadataItem>
     {

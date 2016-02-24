@@ -3,9 +3,9 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Microsoft.CodeAnalysis;
     using System.Diagnostics;
-    using System.Linq;
+
+    using Microsoft.CodeAnalysis;
 
     public abstract class SimpleYamlModelGenerator : YamlModelGenerator
     {

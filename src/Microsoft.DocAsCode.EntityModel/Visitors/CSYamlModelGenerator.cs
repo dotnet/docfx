@@ -3,13 +3,14 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Text.RegularExpressions;
+
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     public class CSYamlModelGenerator : SimpleYamlModelGenerator
     {
@@ -27,6 +28,230 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             item.DisplayNames[SyntaxLanguage.CSharp] = NameVisitorCreator.GetCSharp(NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
             item.DisplayQualifiedNames[SyntaxLanguage.CSharp] = NameVisitorCreator.GetCSharp(NameOptions.Qualified | NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
+        }
+
+        public override void GenerateNamedType(INamedTypeSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            base.GenerateNamedType(symbol, item, adapter);
+
+            var modifiers = new List<string>();
+            var visiblity = GetVisiblity(symbol.DeclaredAccessibility);
+            if (visiblity != null)
+            {
+                modifiers.Add(visiblity);
+            }
+            if (symbol.TypeKind == TypeKind.Class)
+            {
+                if (symbol.IsAbstract && symbol.IsSealed)
+                {
+                    modifiers.Add("static");
+                }
+                else if (symbol.IsAbstract)
+                {
+                    modifiers.Add("abstract");
+                }
+                else if (symbol.IsSealed)
+                {
+                    modifiers.Add("sealed");
+                }
+            }
+            switch (symbol.TypeKind)
+            {
+                case TypeKind.Class:
+                    modifiers.Add("class");
+                    break;
+                case TypeKind.Delegate:
+                    modifiers.Add("delegate");
+                    break;
+                case TypeKind.Enum:
+                    modifiers.Add("enum");
+                    break;
+                case TypeKind.Interface:
+                    modifiers.Add("interface");
+                    break;
+                case TypeKind.Struct:
+                    modifiers.Add("struct");
+                    break;
+                default:
+                    break;
+            }
+            item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
+        }
+
+        public override void GenerateMethod(IMethodSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            base.GenerateMethod(symbol, item, adapter);
+
+            var modifiers = new List<string>();
+            if (symbol.ContainingType.TypeKind != TypeKind.Interface)
+            {
+                var visiblity = GetVisiblity(symbol.DeclaredAccessibility);
+                if (visiblity != null)
+                {
+                    modifiers.Add(visiblity);
+                }
+                if (symbol.IsStatic)
+                {
+                    modifiers.Add("static");
+                }
+                if (symbol.IsAbstract)
+                {
+                    modifiers.Add("abstract");
+                }
+                if (symbol.IsOverride)
+                {
+                    modifiers.Add("override");
+                }
+                if (symbol.IsVirtual && symbol.IsSealed)
+                {
+                }
+                else if (symbol.IsVirtual)
+                {
+                    modifiers.Add("virtual");
+                }
+                else if (symbol.IsSealed)
+                {
+                    modifiers.Add("sealed");
+                }
+            }
+            item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
+        }
+
+        public override void GenerateField(IFieldSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            base.GenerateField(symbol, item, adapter);
+
+            var modifiers = new List<string>();
+            var visiblity = GetVisiblity(symbol.DeclaredAccessibility);
+            if (visiblity != null)
+            {
+                modifiers.Add(visiblity);
+            }
+            if (symbol.IsConst)
+            {
+                modifiers.Add("const");
+            }
+            if (symbol.IsStatic)
+            {
+                modifiers.Add("static");
+            }
+            if (symbol.IsReadOnly)
+            {
+                modifiers.Add("readonly");
+            }
+            if (symbol.IsVolatile)
+            {
+                modifiers.Add("volatile");
+            }
+            item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
+        }
+
+        public override void GenerateProperty(IPropertySymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            base.GenerateProperty(symbol, item, adapter);
+
+            var modifiers = new List<string>();
+            var propertyVisiblity = GetVisiblity(symbol.DeclaredAccessibility);
+            if (symbol.ContainingType.TypeKind != TypeKind.Interface)
+            {
+                if (propertyVisiblity != null)
+                {
+                    modifiers.Add(propertyVisiblity);
+                }
+                if (symbol.IsStatic)
+                {
+                    modifiers.Add("static");
+                }
+                if (symbol.IsAbstract)
+                {
+                    modifiers.Add("abstract");
+                }
+                if (symbol.IsOverride)
+                {
+                    modifiers.Add("override");
+                }
+                if (symbol.IsVirtual && symbol.IsSealed)
+                {
+                }
+                else if (symbol.IsVirtual)
+                {
+                    modifiers.Add("virtual");
+                }
+                else if (symbol.IsSealed)
+                {
+                    modifiers.Add("sealed");
+                }
+            }
+            if (symbol.GetMethod != null)
+            {
+                var getMethodVisiblity = GetVisiblity(symbol.GetMethod.DeclaredAccessibility);
+                if (getMethodVisiblity == null)
+                {
+                }
+                else if (getMethodVisiblity != propertyVisiblity)
+                {
+                    modifiers.Add($"{getMethodVisiblity} get");
+                }
+                else
+                {
+                    modifiers.Add("get");
+                }
+            }
+            if (symbol.SetMethod != null)
+            {
+                var setMethodVisiblity = GetVisiblity(symbol.SetMethod.DeclaredAccessibility);
+                if (setMethodVisiblity == null)
+                {
+                }
+                else if (setMethodVisiblity != propertyVisiblity)
+                {
+                    modifiers.Add($"{setMethodVisiblity} set");
+                }
+                else
+                {
+                    modifiers.Add("set");
+                }
+            }
+            item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
+        }
+
+        public override void GenerateEvent(IEventSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            base.GenerateEvent(symbol, item, adapter);
+
+            var modifiers = new List<string>();
+            if (symbol.ContainingType.TypeKind != TypeKind.Interface)
+            {
+                var visiblity = GetVisiblity(symbol.DeclaredAccessibility);
+                if (visiblity != null)
+                {
+                    modifiers.Add(visiblity);
+                }
+                if (symbol.IsStatic)
+                {
+                    modifiers.Add("static");
+                }
+                if (symbol.IsAbstract)
+                {
+                    modifiers.Add("abstract");
+                }
+                if (symbol.IsOverride)
+                {
+                    modifiers.Add("override");
+                }
+                if (symbol.IsVirtual && symbol.IsSealed)
+                {
+                }
+                else if (symbol.IsVirtual)
+                {
+                    modifiers.Add("virtual");
+                }
+                else if (symbol.IsSealed)
+                {
+                    modifiers.Add("sealed");
+                }
+            }
+            item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
         }
 
         protected override string GetSyntaxContent(MemberType typeKind, ISymbol symbol, SymbolVisitorAdapter adapter)
@@ -1000,6 +1225,20 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             var name = NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter).GetName(type);
             return SyntaxFactory.ParseTypeName(name);
+        }
+
+        private static string GetVisiblity(Accessibility accessibility)
+        {
+            switch (accessibility)
+            {
+                case Accessibility.Protected:
+                case Accessibility.ProtectedOrInternal:
+                    return "protected";
+                case Accessibility.Public:
+                    return "public";
+                default:
+                    return null;
+            }
         }
 
         #endregion

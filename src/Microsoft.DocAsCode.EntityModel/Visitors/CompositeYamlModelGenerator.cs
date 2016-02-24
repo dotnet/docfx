@@ -38,6 +38,46 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
+        public override void GenerateNamedType(INamedTypeSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            foreach (var generator in _generators)
+            {
+                generator.GenerateNamedType(symbol, item, adapter);
+            }
+        }
+
+        public override void GenerateMethod(IMethodSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            foreach (var generator in _generators)
+            {
+                generator.GenerateMethod(symbol, item, adapter);
+            }
+        }
+
+        public override void GenerateField(IFieldSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            foreach (var generator in _generators)
+            {
+                generator.GenerateField(symbol, item, adapter);
+            }
+        }
+
+        public override void GenerateProperty(IPropertySymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            foreach (var generator in _generators)
+            {
+                generator.GenerateProperty(symbol, item, adapter);
+            }
+        }
+
+        public override void GenerateEvent(IEventSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        {
+            foreach (var generator in _generators)
+            {
+                generator.GenerateEvent(symbol, item, adapter);
+            }
+        }
+
         internal override void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter)
         {
             foreach (var generator in _generators)

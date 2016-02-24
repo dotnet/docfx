@@ -3,9 +3,10 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
     public class MetadataItem : ICloneable
@@ -103,6 +104,10 @@ namespace Microsoft.DocAsCode.EntityModel
         [YamlMember(Alias = "inheritedMembers")]
         [JsonProperty("inheritedMembers")]
         public List<string> InheritedMembers { get; set; }
+
+        [YamlMember(Alias = "modifiers")]
+        [JsonProperty("modifiers")]
+        public SortedList<SyntaxLanguage, List<string>> Modifiers { get; set; } = new SortedList<SyntaxLanguage, List<string>>();
 
         [YamlMember(Alias = "items")]
         [JsonProperty("items")]
