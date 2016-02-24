@@ -196,13 +196,17 @@
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
       <LogicalName>$(AssemblyName).Template.op.html.zip</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Template\op(en-us).html.zip">
+      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
+      <LogicalName>$(AssemblyName).Template.op(en-us).html.zip</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Template\op(zh-cn).html.zip">
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
       <LogicalName>$(AssemblyName).Template.op(zh-cn).html.zip</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Template\op(ar-SA).html.zip">
+    <EmbeddedResource Include="Template\op(ar-sa).html.zip">
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Template.op(ar-SA).html.zip</LogicalName>
+      <LogicalName>$(AssemblyName).Template.op(ar-sa).html.zip</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Template\vs.html.zip">
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
