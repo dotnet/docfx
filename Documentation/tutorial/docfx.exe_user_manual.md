@@ -63,7 +63,12 @@ docfx metadata [<projects>] [-o:<output_path>]
 `<projects>` specifies the projects to have metadata extracted. There are several approaches to extract language metadata.
 
 1. From a supported project file or project file list
-Supported project file extensions include `.csproj`, `.vbproj`, and `.sln`.
+Supported project file extensions include `.csproj`, `.vbproj`, `.sln`, and `project.json`.
+
+> *Note*
+
+> `project.json` (*DNX* project file) is only supported in *DNX* version of *DocFX*. Please refer to [Getting Started](docfx_getting_started.md#4-use-docfx-under-dnx) for how to use *DocFX* in *DNX*.
+
 Files can be combined using `,` as seperator, e.g. `docfx metadata a.csproj,b.sln`.
 
 2. From a supported source code file or source code file list
