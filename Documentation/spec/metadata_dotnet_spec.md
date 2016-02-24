@@ -17,24 +17,24 @@ The following .NET elements are defined as *items* in metadata:
 2. Types, including class, struct, interface, enum, delegate
 3. Type members, including field, property, method, event
 
-Other elements like parameters, generic parameters are not standalone *items*, they're part of other *items*.
+Other elements such as parameters and generic parameters are not standalone *items*, they're part of other *items*.
 
 2. Identifiers
 --------------
 
 ### 2.1 Unique Identifiers
 
-For any *item* in .NET languages, its *UID* is defined by concatenating its parent's *UID* and its own *ID* by dot.
-The *ID* for each kind of item is defined in following sections. The basic prinicple here is to make *ID* format close to source code and easy for human reading.
+For any *item* in .NET languages, its *UID* is defined by concatenating its *parent*'s *UID* and its own *ID* with a dot.
+The *ID* for each kind of item is defined in following sections. The basic principle here is to make *ID* format close to source code and easy for human reading.
 
-*UID* is similar with document comment id, document comment id is started with type prefix, e.g. `T:`, or `M:`, but *UID* do not.
+*UID* is similar to the document comment id, which is started with type prefix, for example, `T:`, or `M:`, but *UID* do not.
 
 There **MUST NOT** be any whitespace between method name, parentheses, parameters, and commas.
 
 ### 2.2 Spec Identifiers
 
 Spec identifier is another form of *UID*.
-It can spec a generic type with type arguments, e.g. for parameters, return types or inheritances, and these *UID*s are unique in one yaml file. 
+It can spec a generic type with type arguments (for example, for parameters, return types or inheritances) and these *UID*s are unique in one yaml file. 
 
 It is a simple modified Unique Identifiers, when it contains generic type arguments, it will use `{Name}` instead `` `N ``.
 For type parameter, it will be `{Name}`.
@@ -94,8 +94,8 @@ The children of namespace are all the visible types in the namespace.
 
 Types include classes, structs, interfaces, enums, and delegates.
 They have following properties: summary, remarks, syntax, namespace, assemblies, inheritance.
-The parent of types are namespaces.
-The children of types are members.
+The *parents* of types are namespaces.
+The *children* of types are members.
 
 #### ID
 *ID* for a type is also its *name*.
@@ -139,7 +139,7 @@ The children of types are members.
 
 #### 4.1 ID for Nested Types
 
-For nested types, *ID* is defined by concatenating the *ID* of all its containing types and the *ID* of itself, separated by dot.
+For nested types, *ID* is defined by concatenating the *ID* of all its containing types and the *ID* of itself, separated by a dot.
 
 The parent type of a nested type is its containing namespace, rather than its containing type.
 
@@ -165,7 +165,7 @@ The parent type of a nested type is its containing namespace, rather than its co
 
 #### 4.2 Inheritance
 
-Only class contains inheritance, the inheritance is a list of spec id.
+Only class contains inheritance, and the inheritance is a list of spec id.
 
 > Example 4.2 Inheritance
 >
@@ -189,24 +189,24 @@ Only class contains inheritance, the inheritance is a list of spec id.
 
 #### 4.3 Syntax
 
-The syntax part for type contains special languages declaration, and descriptions of type parameters .
-For delegate, it also contains descriptions of paramters and return type.
+The syntax part for type contains a special language declaration, and descriptions of type parameters .
+For delegates, it also contains descriptions of parameters and a return type.
 
 5. Members
 ----------
 
-Members include fields, properties, methods, events.
-They have following properties: summary, remarks, exceptions, syntax.
-The parent of memebers are types.
-All members do not have any children.
-All parameter types or return types are spec id.
+Members include fields, properties, methods, and events.
+They have the following properties: summary, remarks, exceptions, and syntax.
+The parents of members are types.
+Members never have children, and
+all parameter types or return types are spec id.
 
 #### 5.1 Constructors
 
 The *ID* of a constructor is defined by `#ctor`, followed by the list of the *UIDs* of its parameter types:
 When a constructor does not have parameter, its *ID* **MUST NOT** end with parentheses.
 
-The syntax part for constructors contains special languages declaration, and descriptions of paramters.
+The syntax part for constructors contains a special language declaration, and descriptions of parameters.
 
 > Example 5.1 Constructor
 >
@@ -235,14 +235,14 @@ The syntax part for constructors contains special languages declaration, and des
 
 #### 5.2 Methods
 
-The *ID* of a method are defined by its name, followed by the list of the *UIDs* of its parameter types:
+The *ID* of a method is defined by its name, followed by the list of the *UIDs* of its parameter types:
 ```yaml
 method_name(param1,param2,...)
 ```
 
 When a method does not have parameter, its *ID* **MUST** end with parentheses.
 
-The syntax part for method contains special languages declaration, and descriptions of type parameters for generic method, descriptions of paramters and return type.
+The syntax part for method contains a special language declaration, and descriptions of type parameters for generic method, descriptions of parameters and return type.
 
 > Example 5.2 Method
 >
@@ -297,13 +297,13 @@ The *ID* of an explicit interface implementation (EII) member **MUST** be prefix
 
 #### 5.4 Operator Overloads
 
-The ids of operator overloads are same with the metadata name, e.g. `op_Equality`.
-The names of operator overloads are similar to msdn, just remove `op_` from the metadata name of the method.
+The *IDs* of operator overloads are same with the metadata name (for example, `op_Equality`).
+The names of operator overloads are similar to MSDN, just remove `op_` from the metadata name of the method.
 For instance, the name of the equals (`==`) operator is `Equality`.
 
-Type conversion operator can be considered as a special operator whose name is the UID of the target type, with one parameter of the source type. For example, an operator that converts from string to int should be `Explicit(System.String to System.Int32)`.
+Type conversion operator can be considered a special operator whose name is the UID of the target type, with one parameter of the source type. For example, an operator that converts from string to int should be `Explicit(System.String to System.Int32)`.
 
-The syntax part for methods contains special languages declaration, descriptions of paramters and return type.
+The syntax part for methods contains a special language declaration, descriptions of parameters and return type.
 
 > Example 5.4 Operator overload
 >
@@ -338,9 +338,9 @@ Please check [overloadable operators][1] for all overloadable operators.
 #### 5.5 Field, Property or Event
 
 The *ID* of field, property or event is its name.
-The syntax part for field contains special languages declaration, descriptions of field type.
-For property, it contains special languages declaration, descriptions of paramters and return type.
-For event, it contains special languages declaration, descriptions of event handler type.
+The syntax part for field contains a special language declaration and descriptions of field type.
+For property, it contains a special language declaration, descriptions of parameters, and return type.
+For event, it contains a special language declaration and descriptions of event handler type.
 
 > Example 5.5 Field, Property and Event
 >
@@ -402,7 +402,7 @@ Indexer operator's name is metadata name, by default, it is `Item`, with bracket
 6. Generics
 -----------
 
-The *ID* of a generic type is its name with followed by `` `n ``, `n` the count of generic type count, same as the rule for document comment id.
+The *ID* of a generic type is its name with followed by `` `n ``, `n` and the count of generic type count, which is the same as the rule for document comment ID.
 For example, ``Dictionary`2``.
 
 The *ID* of a generic method uses postfix ``` ``n ```, `n` is the count of in method parameters, for example, ```System.Tuple.Create``1(``0)```.
@@ -434,11 +434,11 @@ The *ID* of a generic method uses postfix ``` ``n ```, `n` is the count of in me
 7. Reference
 ------------
 
-The reference contains following member:
+The reference contains the following members:
   name, fullName, summary, isExternal, href, and more.
 
 The *UID* in reference can be a *Spec Id*, then it contains one more member: spec.
-The *spec* in reference is very like a list of lightweight references, it describes how to compose the gerenic type in some special language.
+The *spec* in reference is very like a list of lightweight references, it describes how to compose the generic type in some special language.
 
 > Example 7 *spec* for references
 
