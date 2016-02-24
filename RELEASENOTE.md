@@ -1,7 +1,11 @@
-Version Notes (Current Version: v1.6)
+Version Notes (Current Version: v1.5.1)
 =======================================
-v1.6 (Pre-release)
+v1.5.1
 -----------
+1. Improve `docfx init`
+	1. Fix #145
+2. Fix multi-threading issue when applying template
+3. Fix list behavior in markdown syntax to be consistent with GFM
 
 v1.5
 -----------
