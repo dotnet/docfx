@@ -1,4 +1,4 @@
-{
+﻿{
   "version": "1.0.0",
   "dependencies": {
     "Microsoft.DocAsCode.Common": "1.0.0",
@@ -14,8 +14,8 @@
         "System.Xml.Linq": ""
       }
     }
-  },
+    },
   "commands": {
-    "mergeDeveloperComments": "mergeDeveloperComments"
+    "mergeSourceInfo": "mergeSourceInfo"
   }
 }
