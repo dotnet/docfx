@@ -16,11 +16,14 @@
         <span>Inheritance Hierarchy</span>
       </div>
     </h2>
-    <div class="sectionblock inheritance">
+    <div class="sectionblock fxInheritance">
       {{#inheritance}}
-        <div class="level{{index}}">{{{specName.0.value}}}</div>
+        <div class="level{{index}}">{{{specName.0.value}}}
       {{/inheritance}}
         <div class="level{{item.level}}">{{item.name.0.value}}</div>
+      {{#inheritance}}
+        </div>
+      {{/inheritance}}
     </div>
   </div>
   {{/inheritance.0}}

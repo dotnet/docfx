@@ -298,10 +298,10 @@ function transform(model, _attrs, _global) {
       }
 
       function getGithubUrlPrefix(repo) {
-        if (repo.match(/https:\/\/.*github\.com\/.*/g)) {
+        if (repo.match(/https:\/\/(|\S+\.)github\.com\/.*/g)) {
           return repo;
         }
-        if (repo.match(/git@.*github\.com:.*/g)) {
+        if (repo.match(/git@(|\S+\.)github\.com:.*/g)) {
           return 'https://' + repo.substr(4).replace(':', '/');
         }
         return '';
