@@ -22,19 +22,22 @@ namespace Microsoft.DocAsCode.EntityModel
             var resourceName = name + PartialTemplateExtension;
             return _templateCache.GetOrAdd(resourceName, s =>
                 {
-                    using (var stream = _resourceProvider.GetResourceStream(s))
+                    lock (_resourceProvider)
                     {
-                        if (stream == null)
+                        using (var stream = _resourceProvider.GetResourceStream(s))
                         {
-                            return null;
-                        }
+                            if (stream == null)
+                            {
+                                return null;
+                            }
 
-                        var template = new Nustache.Core.Template(name);
-                        using (StreamReader reader = new StreamReader(stream))
-                        {
-                            template.Load(reader);
+                            var template = new Nustache.Core.Template(name);
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                template.Load(reader);
+                            }
+                            return template;
                         }
-                        return template;
                     }
                 });
         }

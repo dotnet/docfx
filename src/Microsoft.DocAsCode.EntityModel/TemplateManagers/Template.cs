@@ -17,8 +17,9 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
         private readonly object _locker = new object();
-        private readonly ITemplateRenderer _renderer;
-        private readonly Engine _engine;
+        private readonly ResourcePoolManager<ITemplateRenderer> _rendererPool = null;
+
+        private readonly ResourcePoolManager<Engine> _enginePool = null;
         private readonly string _script;
 
         public string Name { get; }
@@ -41,10 +42,14 @@ namespace Microsoft.DocAsCode.EntityModel
             if (script != null)
             {
                 ScriptName = templateName + ".js";
+                _enginePool = ResourcePool.Create(() => CreateEngine(script), Constants.DefaultParallelism);
             }
-            _engine = CreateEngine(script);
 
-            _renderer = CreateRenderer(resourceCollection, templateName, template);
+            if (resourceCollection != null)
+            {
+                _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, templateName, template), Constants.DefaultParallelism);
+            }
+
             Resources = ExtractDependentResources();
         }
 
@@ -57,7 +62,7 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <returns>The view model</returns>
         public object TransformModel(object model, object attrs, object global)
         {
-            if (_engine == null) return model;
+            if (_enginePool == null) return model;
             return ProcessWithJint(model, attrs, global);
         }
 
@@ -69,8 +74,11 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <returns>The output after applying template</returns>
         public string Transform(object model)
         {
-            if (_renderer == null || model == null) return null;
-            return _renderer.Render(model);
+            if (_rendererPool == null || model == null) return null;
+            using (var lease = _rendererPool.Rent())
+            {
+                return lease.Resource.Render(model);
+            }
         }
 
         private object ProcessWithJint(object model, object attrs, object global)
@@ -78,13 +86,10 @@ namespace Microsoft.DocAsCode.EntityModel
             var argument1 = JintProcessorHelper.ConvertStrongTypeToJsValue(model);
             var argument2 = JintProcessorHelper.ConvertStrongTypeToJsValue(attrs);
             var argument3 = JintProcessorHelper.ConvertStrongTypeToJsValue(global);
-            Jint.Native.JsValue result;
-            lock (_locker)
+            using (var lease = _enginePool.Rent())
             {
-                result = _engine.Invoke("transform", argument1, argument2, argument3);
+                return lease.Resource.Invoke("transform", argument1, argument2, argument3).ToObject();
             }
-
-            return result.ToObject();
         }
 
         private string GetRelativeResourceKey(string relativePath)
@@ -119,28 +124,33 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <param name="template"></param>
         private IEnumerable<TemplateResourceInfo> ExtractDependentResources()
         {
-            if (_renderer == null || _renderer.Dependencies == null) yield break;
-            foreach (var dependency in _renderer.Dependencies)
+            if (_rendererPool == null) yield break;
+            using (var lease = _rendererPool.Rent())
             {
-                string filePath = dependency;
-                if (string.IsNullOrWhiteSpace(filePath)) continue;
-                if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
-                var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
-                if (regexPatternMatch.Groups.Count > 1)
+                var _renderer = lease.Resource;
+                if (_renderer.Dependencies == null) yield break;
+                foreach (var dependency in _renderer.Dependencies)
                 {
-                    filePath = regexPatternMatch.Groups[1].Value;
-                    yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, true);
-                }
-                else
-                {
-                    yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, false);
+                    string filePath = dependency;
+                    if (string.IsNullOrWhiteSpace(filePath)) continue;
+                    if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
+                    var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
+                    if (regexPatternMatch.Groups.Count > 1)
+                    {
+                        filePath = regexPatternMatch.Groups[1].Value;
+                        yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, true);
+                    }
+                    else
+                    {
+                        yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, false);
+                    }
                 }
             }
         }
 
         private static Engine CreateEngine(string script)
         {
-            if (string.IsNullOrEmpty(script)) return null;
+            if (string.IsNullOrEmpty(script)) throw new ArgumentNullException(nameof(script));
             var engine = new Engine();
 
             engine.SetValue("console", new
@@ -155,7 +165,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, string templateName, string template)
         {
-            if (resourceCollection == null) return null;
+            if (resourceCollection == null) throw new ArgumentNullException(nameof(resourceCollection));
             if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
             {
                 return LiquidTemplateRenderer.Create(resourceCollection, template);
