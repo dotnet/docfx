@@ -1,7 +1,7 @@
 Walkthrough Overview
 ===================================
 
-By completing these walkthroughs, you'll create a static website, containing both **Conceptual Documentation** which comes from `.md` files and **API Documentation** which comes from .NET source code. You'll also be able to customize your website with your own styles and even template!
+By completing these walkthroughs, you'll create a static website, containing both **Conceptual Documentation** which comes from `.md` files and **API Documentation** which comes from .NET source code. You'll also be able to customize your website with your own styles and templates!
 
 List of Articles
 ---------
