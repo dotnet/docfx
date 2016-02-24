@@ -29,6 +29,14 @@ namespace Microsoft.DocAsCode.Dfm
             return $"[!{token.NoteType}]\n";
         }
 
+        public virtual StringBuffer Render(IMarkdownRenderer render, DfmYamlHeaderBlockToken token, MarkdownBlockContext context)
+        {
+            StringBuffer content = "---\n";
+            content += token.Content;
+            content += "\n---\n";
+            return content;
+        }
+
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmSectionBlockToken token, MarkdownBlockContext context)
         {
             return string.IsNullOrEmpty(token.Attributes)

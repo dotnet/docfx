@@ -604,5 +604,95 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
+
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_MetadataTransform()
+        {
+            var source = @"---
+foo: ""bar""
+baz: 
+  - ""qux""
+  - ""quxx""
+corge: null
+grault: 1
+garply: true
+waldo: ""false""
+fred: ""undefined""
+emptyArray: []
+emptyObject: {}
+emptyString: """"
+---";
+            var expected = @"---
+foo: ""bar""
+baz: 
+  - ""qux""
+  - ""quxx""
+corge: null
+grault: 1
+garply: true
+waldo: ""false""
+fred: ""undefined""
+emptyArray: []
+emptyObject: {}
+emptyString: """"
+---
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureProperties()
+        {
+            var source = @"<properties
+   pageTitle=""Azure Container Service Introduction | Microsoft Azure""
+   description=""Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.""
+   services=""virtual-machines""
+   documentationCenter=""""
+   authors=""rgardler""
+   manager=""nepeters""
+   editor=""""
+   tags=""acs, azure-container-service""
+   keywords=""Docker, Containers, Micro-services, Mesos, Azure""/>
+
+<tags
+   ms.service=""virtual-machines""
+   ms.devlang=""na""
+   ms.topic=""home-page""
+   ms.tgt_pltfrm=""na""
+   ms.workload=""na""
+   ms.date=""12/02/2015""
+   ms.author=""rogardle""/>
+
+# Azure Container Service Introduction
+";
+            var expected = @"---
+pagetitle: Azure Container Service Introduction | Microsoft Azure
+description: Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.
+services: virtual-machines
+documentationcenter: 
+authors: rgardler
+manager: nepeters
+editor: 
+tags: acs, azure-container-service
+keywords: Docker, Containers, Micro-services, Mesos, Azure
+
+ms.service: virtual-machines
+ms.devlang: na
+ms.topic: home-page
+ms.tgt_pltfrm: na
+ms.workload: na
+ms.date: 12/02/2015
+ms.author: rogardle
+
+---
+# Azure Container Service Introduction
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
     }
 }

@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -11,6 +12,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     using System.Web;
 
     using Microsoft.DocAsCode.Dfm;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 
@@ -40,9 +42,17 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             {
                 throw new ArgumentException($"{nameof(MarkdownNewLineBlockRule)} should exist!");
             }
-            blockRules.Insert(index + 1, new AzureIncludeBlockRule());
-            blockRules.Insert(index + 2, new AzureNoteBlockRule());
-            blockRules.Insert(index + 3, new AzureSelectorBlockRule());
+            blockRules.Insert(index + 1, new DfmYamlHeaderBlockRule());
+            blockRules.Insert(index + 2, new AzureIncludeBlockRule());
+            blockRules.Insert(index + 3, new AzureNoteBlockRule());
+            blockRules.Insert(index + 4, new AzureSelectorBlockRule());
+
+            index = blockRules.FindLastIndex(s => s is MarkdownHtmlBlockRule);
+            if (index < 1)
+            {
+                throw new ArgumentException($"{nameof(MarkdownHtmlBlockRule)} should exist and shouldn't be the first one rule!");
+            }
+            blockRules.Insert(index - 1, new AzureHtmlMetadataBlockRule());
 
             var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
             blockRules[gfmIndex] = new AzureParagraphBlockRule();
@@ -84,6 +94,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.RawMarkdown)
+                        ),
+                        MarkdownTokenRewriterFactory.FromLambda(
+                            (IMarkdownRewriteEngine e, AzureHtmlMetadataBlockToken t) => new DfmYamlHeaderBlockToken(t.Rule, t.Context, GenerateYamlHeaderContent(t.Properties, t.Tags), t.RawMarkdown)
                         )
                     );
         }
@@ -118,6 +131,15 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 }
             }
             return sb.ToString();
+        }
+
+        private string GenerateYamlHeaderContent(IReadOnlyDictionary<string, string> properties, IReadOnlyDictionary<string, string> tags)
+        {
+            var propertiesSw = new StringWriter();
+            YamlUtility.Serialize(propertiesSw, properties);
+            var tagsSw = new StringWriter();
+            YamlUtility.Serialize(tagsSw, tags);
+            return MarkdownEngine.StaticNormalize(propertiesSw.ToString() + "\n" + tagsSw.ToString());
         }
     }
 }

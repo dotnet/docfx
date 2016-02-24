@@ -36,6 +36,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public Dictionary<string, LinkObj> Links { get; }
 
+        public static string StaticNormalize(string markdown)
+        {
+            return markdown
+                .ReplaceRegex(Regexes.Lexers.NormalizeNewLine, "\n")
+                .Replace("\t", "    ")
+                .Replace("\u00a0", " ")
+                .Replace("\u2424", "\n");
+        }
+
         public string Normalize(string markdown)
         {
             return markdown

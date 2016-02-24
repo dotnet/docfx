@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     using MarkdownLite;
 
-    class AzureBlockquoteBlockToken : MarkdownBlockquoteBlockToken
+    public class AzureBlockquoteBlockToken : MarkdownBlockquoteBlockToken
     {
         public AzureBlockquoteBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, string rawMarkdown)
             : base(rule, context, tokens, rawMarkdown)

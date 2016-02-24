@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownHtmlBlockRule : IMarkdownRule
     {
-        public string Name => "Html";
+        public virtual string Name => "Html";
 
         public virtual Regex Html => Regexes.Block.Html;
 
