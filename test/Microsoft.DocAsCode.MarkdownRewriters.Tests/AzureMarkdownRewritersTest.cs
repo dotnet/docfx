@@ -670,7 +670,7 @@ emptyString: """"
 # Azure Container Service Introduction
 ";
             var expected = @"---
-pagetitle: Azure Container Service Introduction | Microsoft Azure
+title: Azure Container Service Introduction | Microsoft Azure
 description: Azure Container Service (ACS) provides a way to simplify the creation, configuration, and management of a cluster of virtual machines that are preconfigured to run containerized applications.
 services: virtual-machines
 documentationcenter: 
