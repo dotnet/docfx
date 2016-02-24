@@ -94,7 +94,7 @@ EXIT /B %ERRORLEVEL%
 :RestorePackage
 
 :RestoreDnuPackage
-FOR /D %%x IN ("src","Documentation","test") DO (
+FOR /D %%x IN ("src","Documentation","test","tools") DO (
 PUSHD %%x
 CMD /C dnu restore --parallel
 POPD
