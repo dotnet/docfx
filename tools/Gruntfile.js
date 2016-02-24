@@ -103,7 +103,7 @@ module.exports = function(grunt) {
     },
   updateVersion: {
     // All project.json
-    projectJson : { src:'../src/**/project.json', options: {
+    projectJson : { src:['../src/**/project.json', '../tools/**/project.json'], options: {
       type: 'json'
     }}
   }
