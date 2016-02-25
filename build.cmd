@@ -96,6 +96,7 @@ EXIT /B %ERRORLEVEL%
 :RestoreDnuPackage
 FOR /D %%x IN ("src","Documentation","test","tools") DO (
 PUSHD %%x
+ECHO CMD /C dnu restore --parallel
 CMD /C dnu restore --parallel
 POPD
 )
@@ -109,7 +110,8 @@ powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreferenc
 
 :Restore
 :: Currently has corpnet dependency
-nuget restore "%BuildProj%"
+%LocalAppData%\NuGet\NuGet.exe help
+%LocalAppData%\NuGet\NuGet.exe restore "%BuildProj%"
 
 :Exit
 POPD
