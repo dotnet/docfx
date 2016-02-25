@@ -74,8 +74,8 @@ module.exports = function(grunt) {
         }
       },
       js:{
-        src: ["**/*.js", "!src/lunr.min.js"],
-        cwd: "../src/docfx.website.themes/default/app",
+        src: ["**/*.js", "!**/*.min.js", "!**/*.vendor.js"],
+        cwd: "../src/docfx.website.themes/",
         expand: true,
         options: {
           content: "// Copyright (c) Microsoft. All rights reserved.\
@@ -84,7 +84,7 @@ module.exports = function(grunt) {
       },
       html:{
         src: ["**/*.html"],
-        cwd: "../src/docfx.website.themes/default/app",
+        cwd: "../src/docfx.website.themes/",
         expand: true,
         options: {
           content: "<!-- Copyright (c) Microsoft Corporation. All Rights Reserved.\
@@ -93,7 +93,7 @@ module.exports = function(grunt) {
       },
       css:{
         src: "**/*.less",
-        cwd: "../src/docfx.website.themes/default/app",
+        cwd: "../src/docfx.website.themes/",
         expand: true,
         options: {
           content: "/* Copyright (c) Microsoft Corporation. All Rights Reserved.\

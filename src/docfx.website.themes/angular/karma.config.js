@@ -1,3 +1,4 @@
+// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // Karma configuration
 // Generated on Wed Apr 22 2015 20:44:53 GMT+0800 (China Standard Time)
 

@@ -1,3 +1,4 @@
+// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 function transform(model, _attrs){
   model.layout = "Reference";
   model.title = model.items[0].name + " " + model.items[0].type;

@@ -1,3 +1,4 @@
+// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 function transform(model, _attrs) {
     var vm = {};
     // Copy default _attrs and override name/id
