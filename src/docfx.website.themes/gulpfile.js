@@ -132,6 +132,7 @@ var pack = {
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
+                "RestApi.html.primary.js",
             ],
             "cwd": "default",
         },
