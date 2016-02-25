@@ -1,5 +1,5 @@
 ﻿---
-title: Welcome to Docfx website!
+title: Welcome to DocFX website!
 documentType: index
 ---
 <style type="text/css">
