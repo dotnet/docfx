@@ -4,7 +4,7 @@ var util = require('util');
 var program = require('commander');
 var jszip = require('jszip');
 var config = require('nconf');
-var ciUtil = require('../ciUtil');
+var ciUtil = require('./ciUtil');
 
 config.add('configuration', {type: 'file', file: path.join(__dirname, 'config.json')});
 var docfxConfig = config.get('docfx');
