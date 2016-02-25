@@ -254,7 +254,7 @@ Please refer to [How to Create Custom Templates](howto_create_custom_template.md
     "externalReference": [
     ],
     "globalMetadata": {
-      "_appTitle": "docfx website"
+      "_appTitle": "DocFX website"
     },
     "dest": "_site",
     "template": "default"
