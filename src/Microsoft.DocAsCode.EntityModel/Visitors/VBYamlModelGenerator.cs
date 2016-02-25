@@ -129,7 +129,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 modifiers.Add("Const");
             }
-            if (symbol.IsStatic)
+            else if (symbol.IsStatic)
             {
                 modifiers.Add("Shared");
             }
@@ -180,14 +180,37 @@ namespace Microsoft.DocAsCode.EntityModel
                     modifiers.Add("NotOverridable");
                 }
             }
-            if (symbol.GetMethod != null)
+            bool hasGetMethod = symbol.GetMethod != null;
+            bool hasSetMethod = symbol.SetMethod != null;
+            var getMethodVisiblity = hasGetMethod ? GetVisiblity(symbol.GetMethod.DeclaredAccessibility) : null;
+            var setMethodVisiblity = hasSetMethod ? GetVisiblity(symbol.SetMethod.DeclaredAccessibility) : null;
+            if (hasGetMethod ^ hasSetMethod)
             {
-                var getMethodVisiblity = GetVisiblity(symbol.GetMethod.DeclaredAccessibility);
+                if (hasGetMethod)
+                {
+                    modifiers.Add("ReadOnly");
+                }
+                else
+                {
+                    modifiers.Add("WriteOnly");
+                }
+            }
+            else if (propertyVisiblity != null &&
+                (getMethodVisiblity == null ^ setMethodVisiblity == null))
+            {
+                if (setMethodVisiblity == null)
+                {
+                    modifiers.Add("ReadOnly");
+                }
                 if (getMethodVisiblity == null)
                 {
                     modifiers.Add("WriteOnly");
                 }
-                else if (getMethodVisiblity != propertyVisiblity)
+            }
+            else if (getMethodVisiblity != propertyVisiblity ||
+                setMethodVisiblity != propertyVisiblity)
+            {
+                if (getMethodVisiblity != propertyVisiblity)
                 {
                     modifiers.Add($"{getMethodVisiblity} Get");
                 }
@@ -195,15 +218,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     modifiers.Add("Get");
                 }
-            }
-            if (symbol.SetMethod != null)
-            {
-                var setMethodVisiblity = GetVisiblity(symbol.SetMethod.DeclaredAccessibility);
-                if (setMethodVisiblity == null)
-                {
-                    modifiers.Add("ReadOnly");
-                }
-                else if (setMethodVisiblity != propertyVisiblity)
+                if (setMethodVisiblity != propertyVisiblity)
                 {
                     modifiers.Add($"{setMethodVisiblity} Set");
                 }

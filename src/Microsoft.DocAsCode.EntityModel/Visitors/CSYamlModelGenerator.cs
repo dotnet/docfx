@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 modifiers.Add("const");
             }
-            if (symbol.IsStatic)
+            else if (symbol.IsStatic)
             {
                 modifiers.Add("static");
             }
@@ -185,7 +185,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (symbol.GetMethod != null)
             {
                 var getMethodVisiblity = GetVisiblity(symbol.GetMethod.DeclaredAccessibility);
-                if (getMethodVisiblity == null)
+                if (propertyVisiblity != null && getMethodVisiblity == null)
                 {
                 }
                 else if (getMethodVisiblity != propertyVisiblity)
@@ -200,7 +200,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (symbol.SetMethod != null)
             {
                 var setMethodVisiblity = GetVisiblity(symbol.SetMethod.DeclaredAccessibility);
-                if (setMethodVisiblity == null)
+                if (propertyVisiblity != null && setMethodVisiblity == null)
                 {
                 }
                 else if (setMethodVisiblity != propertyVisiblity)
