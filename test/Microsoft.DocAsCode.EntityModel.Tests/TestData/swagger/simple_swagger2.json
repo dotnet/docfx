@@ -1,0 +1,40 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts"
+  },
+  "paths": {
+    "/contacts": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Indicates success. The results are returned in the response body.",
+            "examples": {
+              "application/json": {
+                "odata.metadata": "contact",
+                "value": [
+                  {
+                    "odata.type": "Microsoft.DirectoryServices.Contact",
+                    "objectType": "Contact"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "operationId": "get contacts"
+      }
+    }
+  },
+  "host": "graph.windows.net",
+  "basePath": "/myorganization"
+}

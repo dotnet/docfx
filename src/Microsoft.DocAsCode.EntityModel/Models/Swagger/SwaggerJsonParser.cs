@@ -1,0 +1,37 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.EntityModel.Swagger
+{
+    using System.IO;
+    using System.Threading;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
+    using Microsoft.DocAsCode.EntityModel.Swagger.Internal;
+
+    internal class SwaggerJsonParser
+    {
+        private static readonly ThreadLocal<JsonSerializer> _serializer = new ThreadLocal<JsonSerializer>(
+            () =>
+            {
+                var jsonSerializer = new JsonSerializer();
+                jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
+                jsonSerializer.MetadataPropertyHandling = MetadataPropertyHandling.Ignore;
+                jsonSerializer.Converters.Add(new SwaggerObjectConverter());
+                return jsonSerializer;
+            });
+
+        public static SwaggerModel Parse(string json)
+        {
+            using (JsonReader reader = new JsonTextReader(new StringReader(json)))
+            {
+                var builder = new SwaggerJsonBuilder();
+                var swagger = builder.Read(reader);
+                var token = JToken.FromObject(swagger, _serializer.Value);
+                return token.ToObject<SwaggerModel>(_serializer.Value);
+            }
+        }
+    }
+}

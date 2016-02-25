@@ -27,28 +27,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         private const string RestApiDocumentType = "RestApi";
         private const string DocumentTypeKey = "documentType";
 
-        /// <summary>
-        /// TODO: resolve JSON reference $ref
-        /// </summary>
-        private static readonly ThreadLocal<JsonSerializer> _serializer = new ThreadLocal<JsonSerializer>(
-            () =>
-            {
-                var jsonSerializer = new JsonSerializer();
-                jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
-                jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-
-                // Newtonsoft JSON Reference object does not allow additional content together with $ref however swagger allows:
-                // "schema": {
-                //           "$ref": "#/definitions/contact",
-                //           "example": {
-                //               "department": "Sales",
-                //               "jobTitle": "Sales Rep"
-                //           }
-                //       }
-                jsonSerializer.MetadataPropertyHandling = MetadataPropertyHandling.Ignore;
-                return jsonSerializer;
-            });
-
         [ImportMany(nameof(RestApiDocumentProcessor))]
         public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
 
@@ -86,7 +64,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 case DocumentType.Article:
                     var filePath = Path.Combine(file.BaseDir, file.File);
                     var swaggerContent = File.ReadAllText(filePath);
-                    var swagger = GetModelWithoutRef<SwaggerModel>(swaggerContent);
+                    var swagger = SwaggerJsonParser.Parse(swaggerContent);
                     swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
                     swagger.Raw = swaggerContent;
                     var repoInfo = GitUtility.GetGitDetail(filePath);
@@ -153,14 +131,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
                 LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableHashSet(),
             };
-        }
-
-        internal static T GetModelWithoutRef<T>(string content)
-        {
-            using(var sr = new StringReader(content))
-            {
-                return JsonUtility.Deserialize<T>(sr, _serializer.Value);
-            }
         }
 
         #region Private methods

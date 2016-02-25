@@ -10,8 +10,8 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
     using Xunit;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.Builders;
-    using Microsoft.DocAsCode.EntityModel.Plugins;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             // Check REST API
             var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
             Assert.True(File.Exists(outputRawModelPath));
-            var model = RestApiDocumentProcessor.GetModelWithoutRef<RestApiItemViewModel>(File.ReadAllText(outputRawModelPath));
+            var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
             Assert.Equal("graph.windows.net/myorganization/Contacts", model.Uid);
             Assert.Equal("graph_windows_net_myorganization_Contacts", model.HtmlId);
             Assert.Equal(9, model.Children.Count);

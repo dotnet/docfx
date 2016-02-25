@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RestApiDocumentProcessorFixture.cs" />
+    <Compile Include="SwaggerJsonParserTest.cs" />
     <Compile Include="RestApiDocumentProcessorTest.cs" />
     <Compile Include="YamlSerializationTest.cs" />
     <Compile Include="ExtractSearchDataTest.cs" />
@@ -117,6 +118,15 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="tmpl\tmpl1.zip" />
     <None Include="TestData\contacts_swagger2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\swagger\loopref_swagger2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\swagger\ref_swagger2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\swagger\simple_swagger2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestData\System.Console.csyml">

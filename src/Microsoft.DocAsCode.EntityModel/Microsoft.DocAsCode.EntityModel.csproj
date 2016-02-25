@@ -81,12 +81,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\DocumentBuilder.cs" />
+    <Compile Include="Models\Swagger\Internal\SwaggerObjectConverter.cs" />
+    <Compile Include="Models\Swagger\Internal\SwaggerObjectType.cs" />
+    <Compile Include="Models\Swagger\Internal\SwaggerObjectBase.cs" />
+    <Compile Include="Models\Swagger\Internal\SwaggerObject.cs" />
+    <Compile Include="Models\Swagger\Internal\SwaggerArray.cs" />
+    <Compile Include="Models\Swagger\Internal\SwaggerValue.cs" />
     <Compile Include="Models\Swagger\ParameterObject.cs" />
     <Compile Include="Models\Swagger\OperationObject.cs" />
     <Compile Include="Models\Swagger\PathsObject.cs" />
     <Compile Include="Models\Swagger\InfoObject.cs" />
     <Compile Include="Models\Swagger\ResponseObject.cs" />
     <Compile Include="Models\Swagger\PathItemObject.cs" />
+    <Compile Include="Models\Swagger\SwaggerJsonParser.cs" />
+    <Compile Include="Models\Swagger\Internal\SwaggerJsonBuilder.cs" />
+    <Compile Include="Models\Swagger\Internal\SwaggerReferenceObject.cs" />
     <Compile Include="Models\Swagger\SwaggerModel.cs" />
     <Compile Include="Models\FileMetadata.cs" />
     <Compile Include="Models\FileMetadataItem.cs" />
