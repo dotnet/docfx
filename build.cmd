@@ -32,11 +32,6 @@ IF '%Environment%'=='PROD' (
     )
 )
 
-SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
-
-:: node.js nuget wrapper requires nuget.exe path in %PATH%
-SET PATH=%PATH%;%LocalAppData%\NuGet
-
 :: Check if DNU exists globally
 :: DNU is OPTIONAL
 WHERE dnu >NUL
@@ -94,24 +89,32 @@ EXIT /B %ERRORLEVEL%
 :RestorePackage
 
 :RestoreDnuPackage
-FOR /D %%x IN ("src","Documentation","test","tools") DO (
-PUSHD %%x
-ECHO CMD /C dnu restore --parallel
-CMD /C dnu restore --parallel
-POPD
+FOR /D %%x IN ("src","test","tools") DO (
+    PUSHD %%x
+    CMD /C dnu restore --parallel
+    POPD
 )
 
 :RestoreNormalPackage
-SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
+:: Currently version 3.3 is not compatible with our build, force to use v2.8.6
+SET CachedNuget=%LocalAppData%\NuGet\v2.8.6\NuGet.exe
 IF EXIST "%CachedNuget%" GOTO :Restore
-ECHO Downloading latest version of NuGet.exe...
-IF NOT EXIST "%LocalAppData%\NuGet" MD "%LocalAppData%\NuGet"
-powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://www.nuget.org/nuget.exe' -OutFile '%CachedNuget%'"
+ECHO Downloading NuGet.exe v2.8.6...
+IF NOT EXIST "%LocalAppData%\NuGet\v2.8.6" MD "%LocalAppData%\NuGet\v2.8.6"
+powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/v2.8.6/nuget.exe' -OutFile '%CachedNuget%'"
+
+IF NOT '%ErrorLevel%'=='0' (
+    ECHO ERROR: Failed downloading NuGet.exe
+    GOTO :Exit
+)
 
 :Restore
-:: Currently has corpnet dependency
-%LocalAppData%\NuGet\NuGet.exe help
-%LocalAppData%\NuGet\NuGet.exe restore "%BuildProj%"
+%CachedNuget% restore "%BuildProj%"
+
+IF NOT '%ErrorLevel%'=='0' (
+    ECHO ERROR: Error when restoring packages for %BuildProj%
+    GOTO :Exit
+)
 
 :Exit
 POPD
