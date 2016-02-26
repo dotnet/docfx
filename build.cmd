@@ -101,7 +101,7 @@ SET CachedNuget=%LocalAppData%\NuGet\v2.8.6\NuGet.exe
 IF EXIST "%CachedNuget%" GOTO :Restore
 ECHO Downloading NuGet.exe v2.8.6...
 IF NOT EXIST "%LocalAppData%\NuGet\v2.8.6" MD "%LocalAppData%\NuGet\v2.8.6"
-powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/v2.8.6/nuget.exe' -OutFile '%CachedNuget%'"
+powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; [Net.WebRequest]::DefaultWebProxy.Credentials = [Net.CredentialCache]::DefaultCredentials; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/v2.8.6/nuget.exe' -OutFile '%CachedNuget%'"
 
 IF NOT '%ErrorLevel%'=='0' (
     ECHO ERROR: Failed downloading NuGet.exe
