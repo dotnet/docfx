@@ -4,11 +4,11 @@
     <div class="col-sm-9 col-md-10">
       <article>
         <div id="article-header">
-          <a ng-if="model.map && model.map.remote" ng-href="{{getImproveTheDocHref(model.map)}}" class="btn btn-primary pull-right mobile-hide">
-            <!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc
+          <a ng-if="model.map && model.map.remote" ng-href="{{getImproveTheDocHref(model.map)}}" class="pull-right mobile-hide">
+            <!--<span class="glyphicon glyphicon-edit">&nbsp;</span>--><span class="fa fa-github"></span>Improve this Doc
           </a>
-          <a ng-if="model.source && model.source.remote" class="btn btn-primary pull-right mobile-hide" ng-href={{getViewSourceHref(model)}}>
-            <!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>-->View Source
+          <a ng-if="model.source && model.source.remote" class="pull-right mobile-hide" ng-href={{getViewSourceHref(model)}}>
+            <!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>--><span class="fa fa-github"></span>View Source
           </a>
           <h1>{{model.type}} {{getDisplayName(model, lang)}}</h1>
           <section>
@@ -49,11 +49,11 @@
     <div class="col-md-10">
       <article>
         <div id="article-header">
-          <a ng-if="model.map && model.map.remote" ng-href="{{getImproveTheDocHref(model.map)}}" class="btn btn-primary pull-right mobile-hide">
-            <!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc
+          <a ng-if="model.map && model.map.remote" ng-href="{{getImproveTheDocHref(model.map)}}" class="pull-right mobile-hide">
+            <!--<span class="glyphicon glyphicon-edit">&nbsp;</span>--><span class="fa fa-github"></span>Improve this Doc
           </a>
-          <a ng-if="model.source && model.source.remote" class="btn btn-primary pull-right mobile-hide" ng-href="{{getViewSourceHref(model)}}">
-            <!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>-->View Source
+          <a ng-if="model.source && model.source.remote" class="pull-right mobile-hide" ng-href="{{getViewSourceHref(model)}}">
+            <!--<span class="glyphicon glyphicon-eye-open">&nbsp;</span>--><span class="fa fa-github"></span>View Source
           </a>
           <h1>{{model.type}} {{model.name}}</h1>
           <section>
