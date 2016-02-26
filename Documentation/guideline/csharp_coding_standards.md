@@ -7,7 +7,7 @@ C# Coding Standards
 
 Introduction
 ----------------
-The coding standard will be used in conjunction with customized version of *StyleCop* and *FxCop* [**TODO**] during both development and build process. This will help ensure that the standard is followed by all developers on the team in a consistent manner.
+The coding C# Coding Standards will be used in conjunction with customized versions of *StyleCop* and *FxCop* [**TODO**] during both development and build process. This will help ensure that all developers on the team in a consistent manner.
 
 >"Any fool can write code that a computer can understand. Good programmers write code that humans understand".
 >
@@ -15,31 +15,31 @@ The coding standard will be used in conjunction with customized version of *Styl
 
 ### Purpose
 
-The aim of this section is to define a set of C# coding standards to be used by CAPS build team to guarantee maximum legibility, reliability, re-usability and homogeneity of our code. Each section is marked *Mandatory* or *Recommended*. *Mandatory* sections, will be enforced during code reviews as well as tools like *StyleCop* and *FxCop*, and code will not be considered complete until it is compliant.
+This section defines a set of C# coding standards to be used by the CAPS build team to guarantee maximum legibility, reliability, re-usability and homogeneity of our code. Each section is marked *Mandatory* or *Recommended*. *Mandatory* sections will be enforced during code reviews as well as tools like *StyleCop* and *FxCop*, and code will not be considered complete until it is compliant.
 
 ### Scope
 
-This section contains general C# coding standards which can be applied to any type of application developed in C#, based on *[Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx)*.
+This section contains general C# coding standards that can be applied to any type of application developed in C#, based upon *[Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx)*.
 
-It does not pretend to be a tutorial on C#. It only includes a set of limitations and recommendations focused on clarifying the development.
+This section is not intended to be a tutorial on C#. Instead, it includes a set of limitations and recommendations focused on clarifying the development.
 
 Tools
 ----------------
 
-* [Resharper](http://www.jetbrains.com/resharper/) is a great 3rd party code cleanup and style tool.
-* [StyleCop](http://stylecop.codeplex.com/) analyzes C# srouce code to enforce a set of style and consistency rules and has been integrated into many 3rd party development tools such as Resharper.
+* [ReSharper](http://www.jetbrains.com/resharper/) is a useful third-party code cleanup and style tool.
+* [StyleCop](http://stylecop.codeplex.com/) analyzes C# source code to enforce a set of style and consistency rules and has been integrated into many third-party development tools such as ReSharper.
 * [FxCop](http://codebox/SDLFxCop) is an application that analyzes managed code assemblies (code that targets the .NET Framework common language runtime) and reports information about the assemblies, such as possible design, localization, performance, and security improvements.
 * [C# Stylizer](http://toolbox/22561) does many of the style rules automatically
 
 Highlights of Coding Standards
 ------------------------------
 
-This section is not intended to give a summary of all the coding standards that enabled by our customized StyleCop, but to give a highlight of some rules one will possibly meet in daily coding life. It also provides some recommended however not mandatory(which means not enabled in StyleCop) coding standards.
+This section is not intended to give a summary of all the coding standards enabled by our customized StyleCop, but to give a highlight of some rules one will possibly meet in daily coding life. It also provides some coding standards that are recommended but not mandatory (that is, not enabled by StyleCop).
 
 ### File Layout (Recommended)
 Only one public class is allowed per file.
 
-The file name is derived from the class name.
+The file name is derives from the class name.
 
     Class   : Observer
     Filename: Observer.cs
@@ -49,11 +49,11 @@ The file name is derived from the class name.
 The class definition contains class members in the following order, from *less* restricted scope (public) to *more* restrictive (private):
 
 * ~~~ Nested types, e.g. classes, enum, struct, etc.~~~ Non-private nested types are not allowed.
-* Field members, e.g. member variables, const, etc.
+* Field members (for example, member variables, const, etc.)
 * Member functions
   * Constructors
   * Finalizer (Do not use unless absolutely necessary)
-  * Methods (Properties, Events, Operations, Overridables, Static)
+  * Methods (Properties, Events, Operations, Overridables and Static)
   * Private nested types
 
 
@@ -64,18 +64,18 @@ The class definition contains class members in the following order, from *less* 
     PropertyDescriptor
     HtmlTag
     IOStream
-**NOTE**: A special case is made for two-letter acronyms in which both letters are capitalized, e.g. *IOStream*
+**NOTE**: A special case is made for two-letter acronyms in which both letters are capitalized (for example, *IOStream*)
 * **DO** use camelCasing for parameter names.
 
     propertyDescriptor
     htmlTag
     ioStream
 
-* **DO** start with underscore for private fields
+* **DO** start with underscore for private fields:
 
     private readonly Guid _userId = Guid.NewGuid();
 
-* **DO** start static readonly fields, constants with capitalized case
+* **DO** start static readonly fields, constants with capitalized case:
 
     private static readonly IEntityAccessor EntityAccessor = null;
         private const string MetadataName = "MetadataName";
@@ -105,27 +105,27 @@ The class definition contains class members in the following order, from *less* 
   2. `if (a == b)`
 
 ### Performace Consideration
-* **DO** use `sealed` for private classes if it is not to be inherited.
-* **DO** add `readonly` to fields if they are not tend to be changed.
-* **DO** use `static` methods if it is not instance relavant.
+* **DO** use `sealed` for private classes if they are not to be inherited.
+* **DO** add `readonly` to fields if they do not tend to be changed.
+* **DO** use `static` methods if it is not instance relevant.
 * **DO** use `RegexOptions.Compiled` for `readonly` `Regex`.
 
 ### Cross-platform coding
-Our code should supports multiple operating systems. Don't assume we only run (and develop) on Windows. Code should be sensitvie to the differences between OS's. Here are some specifics to consider.
+Our code can and should support multiple operating systems in addition to Windows. Code should be sensitvie to the differences between Operating Systems. Here are some specifics to consider:
 
 * **DO** use `Enviroment.NewLine` instead of hard-coding the line break instead of `\r\n`, as Windows uses `\r\n` and OSX/Linux uses `\n`.
 
 > **Note**
 >
-> Be aware that thes line-endings may cause problems in code when using `@""` text blocks with line breaks.
+> Be aware that these line endings may cause problems in code when using `@""` text blocks with line breaks.
 
-* **DO** Use `Path.Combine()` or `Path.DirectorySeparatorChar` to separate directories. If this is not possible (such as in scripting), use a forward slash `/`. Windows is more forgiving than Linux in this regard.
+* **DO** Use `Path.Combine()` or `Path.DirectorySeparatorChar` to separate directories. If this is not possible (such as in scripting), use a forward slash `/`. Windows is more flexible than Linux in this regard.
 
 ### Unit tests and functional tests
 #### Assembly naming
 The unit tests for the `Microsoft.Foo` assembly live in the `Microsoft.Foo.Tests` assembly.
 
-The functional tests for the `Microsoft.Foo` assmebly live in the `Microsoft.Foo.FunctionalTests` assmebly.
+The functional tests for the `Microsoft.Foo` assmebly live in the `Microsoft.Foo.FunctionalTests` assembly.
 
 In general there should be exactly one unit test assebmly for each product runtime assembly. In general there should be one functional test assembly per repo. Exceptions can be made for both.
 
@@ -133,7 +133,7 @@ In general there should be exactly one unit test assebmly for each product runti
 Test class names end with `Test` and live in the same namespace as the class being tested. For example, the unit tests for the `Microsoft.Foo.Boo` class would be in a `Microsoft.Foo.Boo` class in the test assembly.
 
 #### Unit test method naming
-Unit test method names must be descriptive about *what is being tested, under what conditions, and what the expectations are*. Pascal casing and underscores can be used to improve readability. The following test names are correct:
+Unit test method names must be descriptive about *what developers are testing, under what conditions, and what the expectations are*. Pascal casing and underscores can be used to improve readability. The following test names are correct:
 
 ```cs
 PublicApiArgumentsShouldHaveNotNullAnnotation
@@ -158,13 +158,13 @@ The contents of every unit test should be split into three distinct stages, opti
 // Assert
 ```
 
-The crucial thing here is the `Act` stage is exactly one statement. That one statement is nothing more than a call to the one method that you are trying to test. keeping that one statement as simple as possible is also very important. For example, this is not ideal:
+The crucial thing here is the `Act` stage is exactly one statement. That one statement calls only the one method that you are trying to test. Keeping that one statement as simple as possible is also very important. For example, this is not ideal:
 
 ```cs
 int result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexParam3());
 ```
 
-This style is not recomended because way too many things can go wrong in this one statement. All the `GetComplexParamN()` calls can throw for a variety of reasons unrelated to the test itself. It is thus unclear to someone running into a problem why the failure occured.
+This style is not recommended because too much can go wrong in this one statement. All the `GetComplexParamN()` calls can throw exceptions for a variety of reasons unrelated to the test itself. It is thus unclear to someone running into a problem why the failure occurred.
 
 The ideal pattern is to move the complex parameter building into the `Arrange section:
 
@@ -181,11 +181,11 @@ int result = myObj.CallSomeMethod(p1, p2, p3);
 Assert.AreEqual(1234, result);
 ```
 
-Now the only reason the line with `CallSomeMethod()` can fail is if the method itself blew up.
+Now the only reason the line with `CallSomeMethod()` can fail is if the method itself throws an error.
 
 #### Testing exception messages
 
-In general testing the specific exception message in a unit test is important. This ensures that the exact desired exception is what is being tested rather than a different exception of the same type. In order to verify the exact exception it is important to verify the message.
+Testing the specific exception message in a unit test is important. This ensures that the desired exception is being tested rather than a different exception of the same type. In order to verify the exact exception, it is important to verify the message.
 
 ```cs
 var ex = Assert.Throws<InvalidOperationException>(
@@ -196,7 +196,7 @@ Assert.Equal(
 ```
 
 #### Use xUnit.net's plethora of built-in assertions
-xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This will make the tests a lot more readable and also allow the test runner report the best possible errors (whether it's local or the CI machine). For example, these are bad:
+xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This will make the tests much more readable and also allows the test runner to report the best possible errors (whether it's local or the CI machine). For example, these are bad:
 
 ```cs
 Assert.Equal(true, someBool);
@@ -226,6 +226,6 @@ Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
 ```
 
 #### Parallel tests
-By default all unit test assemblies should run in parallel mode, which is the default. Unit tests shouldn't depend on any shared state, and so should generally be runnable in parallel. If the tests fail in parallel, the first thing to do is to figure out why; do not just disable parallel tests!
+By default all unit test assemblies should run in parallel mode. Unit tests shouldn't depend on any shared state, and so should generally be runnable in parallel. If the tests fail in parallel, the first thing to do is to figure out why; do not just disable parallel tests!
 
-For functional tests it is reasonable to disable parallel tests.
+For functional tests, you can disable parallel tests.

@@ -74,8 +74,8 @@
     var template =
       '<div>' +
       '<div ng-class="{\'col-sm-9\':affixModel, \'col-md-10\':affixModel}">' +
-      '<a ng-if="href" ng-href="{{href}}" class="btn btn-primary pull-right mobile-hide">' +
-      '<!--<span class="glyphicon glyphicon-edit">&nbsp;</span>-->Improve this Doc' +
+      '<a ng-if="href" ng-href="{{href}}" class="pull-right mobile-hide">' +
+      '<!--<span class="glyphicon glyphicon-edit">&nbsp;</span>--><span class="fa fa-github"></span>Improve this Doc' +
       '</a>' +
       '<article></article>' +
       '</div>' +
