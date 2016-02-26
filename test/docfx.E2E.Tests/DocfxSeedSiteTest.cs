@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.E2E.Tests
@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.NotEmpty(_driver.FindElements(By.XPath("//article[@id='_content']")));
 
             // check "Improve this Doc" button
-            _driver.FindElement(By.LinkText("Improve this Doc")).Click();
+            _driver.FindElement(By.PartialLinkText("Improve this Doc")).Click();
             Assert.Contains("GitHub", _driver.Title);
             _driver.Navigate().Back();
 
@@ -133,12 +133,12 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.Equal("NOTE This is a CAT class", element.Text);
 
             // check "View Source" button
-            _driver.FindElement(By.LinkText("View Source")).Click();
+            _driver.FindElement(By.PartialLinkText("View Source")).Click();
             Assert.Contains("GitHub", _driver.Title);
             _driver.Navigate().Back();
 
             // check "Improve This Doc" button
-            _driver.FindElement(By.LinkText("Improve this Doc")).Click();
+            _driver.FindElement(By.PartialLinkText("Improve this Doc")).Click();
             Assert.Contains("GitHub", _driver.Title);
             _driver.Navigate().Back();
 
