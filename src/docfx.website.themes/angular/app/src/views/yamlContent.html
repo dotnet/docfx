@@ -155,10 +155,10 @@
               <div class="item-section">
                 <div class="item-header">
                   <div class="pull-right mobile-hide">
-                    <a ng-if="item.source && item.source.remote"  ng-href="{{getViewSourceHref(item)}}">View Source</a>
+                    <a ng-if="item.source && item.source.remote"  ng-href="{{getViewSourceHref(item)}}"><span class="fa fa-github"></span>View Source</a>
                     <span ng-if="item.map && item.map.remote">
                       <span class="divider">|</span>
-                      <a ng-href="{{getImproveTheDocHref(item.map)}}">Improve this Doc</a>
+                      <a ng-href="{{getImproveTheDocHref(item.map)}}"><span class="fa fa-github"></span>Improve this Doc</a>
                     </span>
                   </div>
                   <a class="item-toggle" ng-init="item.showDetail = true" ng-click="item.showDetail = !item.showDetail">
