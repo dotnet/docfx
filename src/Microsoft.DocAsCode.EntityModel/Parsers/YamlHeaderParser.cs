@@ -32,15 +32,10 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (string.IsNullOrEmpty(input)) return null;
             var yamlHeader = YamlHeaderRegex.Matches(input);
-            if (yamlHeader.Count == 0) return null;
-
-            var details = new MatchDetailCollection();
-            var singles = (from Match item in yamlHeader select SelectSingle(item, input));
-            details.Merge(singles);
-            return details.Values.ToList();
+            return (from Match item in yamlHeader select SelectSingle(item, input)).ToList();
         }
 
-        private static MatchSingleDetail SelectSingle(Match match, string input)
+        private static MatchDetail SelectSingle(Match match, string input)
         {
             var wholeMatch = match.Groups[0];
 
@@ -58,8 +53,8 @@ namespace Microsoft.DocAsCode.EntityModel
             // Get one character larger then the actual match
             var location = Location.GetLocation(input, wholeMatch.Index - 1, wholeMatch.Length + 2);
 
-            return new MatchSingleDetail
-                       {
+            return new MatchDetail
+            {
                            Id = properties["uid"].ToString(),
                            MatchedSection =
                                new Section { Key = wholeMatch.Value, Locations = new List<Location> { location } },

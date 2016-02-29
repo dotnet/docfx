@@ -141,7 +141,7 @@ This is another example
                             ---
                             ";
             var yamlHeaders = YamlHeaderParser.Select(input);
-            Assert.Equal(1, yamlHeaders.Count());
+            Assert.Equal(1, yamlHeaders.Count);
             Assert.Equal("abc", yamlHeaders[0].Id);
 
             // --- Should also work
@@ -150,7 +150,7 @@ This is another example
                             ---
                             ";
             yamlHeaders = YamlHeaderParser.Select(input);
-            Assert.Equal(1, yamlHeaders.Count());
+            Assert.Equal(1, yamlHeaders.Count);
             Assert.Equal("abc", yamlHeaders[0].Id);
 
             // --- should be start with uid
@@ -160,28 +160,7 @@ This is another example
                             ---
                             ";
             yamlHeaders = YamlHeaderParser.Select(input);
-            Assert.Null(yamlHeaders);
-        }
-
-        [Trait("Related", "CodeSnippet")]
-        [Fact]
-        public void TestCodeSnippetParser()
-        {
-            // spaces are allowed
-            string input = @" {{'relativePath'[1-2] }}";
-            var codeSnippet = CodeSnippetParser.Select(input);
-            Assert.Equal(1, codeSnippet.Count());
-            Assert.Equal("relativePath", codeSnippet[0].Path);
-
-            input = @" {{'relativePath' }}";
-            codeSnippet = CodeSnippetParser.Select(input);
-            Assert.Equal(1, codeSnippet.Count());
-            Assert.Equal("relativePath", codeSnippet[0].Path);
-            Assert.Equal(-1, codeSnippet[0].EndLine);
-
-            input = @" {{'<code_source_file_path>'[1-2] }}";
-            codeSnippet = CodeSnippetParser.Select(input);
-            Assert.Equal(0, codeSnippet.Count());
+            Assert.Equal(0, yamlHeaders.Count);
         }
     }
 }

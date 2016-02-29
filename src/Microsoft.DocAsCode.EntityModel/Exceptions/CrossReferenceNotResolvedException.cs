@@ -14,20 +14,17 @@ namespace Microsoft.DocAsCode.Exceptions
     {
         public string Uid { get; }
         public string UidRawText { get; }
-        public string File { get; set; }
 
         public CrossReferenceNotResolvedException(string uid, string uidRawText, string file) : base()
         {
             Uid = uid;
             UidRawText = uidRawText;
-            File = file;
         }
 
         protected CrossReferenceNotResolvedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             Uid = info.GetString(nameof(Uid));
             UidRawText = info.GetString(nameof(UidRawText));
-            File = info.GetString(nameof(File));
         }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
@@ -37,7 +34,6 @@ namespace Microsoft.DocAsCode.Exceptions
             base.GetObjectData(info, context);
             info.AddValue(nameof(Uid), Uid);
             info.AddValue(nameof(UidRawText), UidRawText);
-            info.AddValue(nameof(File), File);
         }
     }
 }

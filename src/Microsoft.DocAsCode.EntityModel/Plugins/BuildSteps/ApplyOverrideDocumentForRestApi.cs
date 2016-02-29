@@ -15,10 +15,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
     public class ApplyOverrideDocumentForRestApi : BaseDocumentBuildStep
     {
-        private readonly MergerFacade Merger =
-            new MergerFacade(
-                new KeyedListMerger(
-                    new ReflectionEntityMerger()));
+        private readonly MergerFacade Merger = new MergerFacade(
+                new DictionaryMerger(
+                    new KeyedListMerger(
+                        new ReflectionEntityMerger())));
 
         public override string Name => nameof(ApplyOverrideDocumentForRestApi);
 
@@ -68,21 +68,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 {
                     var vm = pair.item;
                     Merger.Merge(ref vm, ovm);
-                    vm.Metadata = MergeMetadata(vm.Metadata, ovm.Metadata);
                     ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od[0].Properties.LinkToUids);
                     ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od[0].Properties.LinkToFiles);
                 }
             }
-        }
-
-        private static Dictionary<string, object> MergeMetadata(IDictionary<string, object> item, IDictionary<string, object> overrideItem)
-        {
-            var result = new Dictionary<string, object>(item);
-            foreach (var pair in overrideItem)
-            {
-                result[pair.Key] = pair.Value;
-            }
-            return result;
         }
         #endregion
     }

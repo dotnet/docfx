@@ -29,6 +29,11 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             }
         }
 
+        public FileCollection(FileCollection collection) : this(collection.DefaultBaseDir)
+        {
+            _files = new List<FileAndType>(collection._files);
+        }
+
         public string DefaultBaseDir { get; set; }
 
         public void Add(DocumentType type, IEnumerable<string> files, Func<string, string> pathRewriter = null)

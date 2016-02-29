@@ -15,7 +15,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     {
         public static List<T> ReadMarkdownAsOverride<T>(string baseDir, string file) where T : IOverrideDocumentViewModel
         {
-            return ReadMarkDownCore<T>(Path.Combine(baseDir, file)).ToList();
+            // Order the list from top to bottom
+            var list = ReadMarkDownCore<T>(Path.Combine(baseDir, file)).ToList();
+            list.Reverse();
+            return list;
         }
 
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
@@ -37,11 +40,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var repoInfo = GitUtility.GetGitDetail(file);
             var lineIndex = GetLineIndex(content).ToList();
             var yamlDetails = YamlHeaderParser.Select(content);
-            if (yamlDetails == null) yield break;
             var sections = from detail in yamlDetails
                            let id = detail.Id
-                           from ms in detail.MatchedSections
-                           from location in ms.Value.Locations
+                           from location in detail.MatchedSection.Locations
                            orderby location.StartLocation descending
                            select new { Detail = detail, Id = id, Location = location };
             var currentEnd = Coordinate.GetCoordinate(content);

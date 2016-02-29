@@ -143,7 +143,6 @@
     <Compile Include="Models\ApiReferenceModel.cs" />
     <Compile Include="Models\ReferenceItem.cs" />
     <Compile Include="Parsers\YamlHeaderParser.cs" />
-    <Compile Include="Parsers\CodeSnippetParser.cs" />
     <Compile Include="Parsers\MatchDetail.cs" />
     <Compile Include="Parsers\TripleSlashCommentModel.cs" />
     <Compile Include="Builders\DocumentBuildContext.cs" />

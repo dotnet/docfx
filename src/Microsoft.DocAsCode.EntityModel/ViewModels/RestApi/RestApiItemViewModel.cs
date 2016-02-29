@@ -25,6 +25,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
 
         [YamlMember(Alias = "htmlId")]
         [JsonProperty("htmlId")]
+        [MergeOption(MergeOption.Ignore)]
         public string HtmlId { get; set; }
 
         [YamlMember(Alias = "name")]
@@ -57,6 +58,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         /// </summary>
         [YamlMember(Alias = "_raw")]
         [JsonProperty("_raw")]
+        [MergeOption(MergeOption.Ignore)]
         public string Raw { get; set; }
 
         [YamlMember(Alias = "documentation")]
