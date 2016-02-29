@@ -2,19 +2,19 @@
 function transform(model, _attrs, _global) {
   var util = new Utility();
   var namespaceItems = {
-    "class":        { isClass: true,        typePropertyName: "isClass",        id: "classes" },
-    "struct":       { isStruct: true,       typePropertyName: "isStruct",       id: "structs" },
-    "interface":    { isInterface: true,    typePropertyName: "isInterface",    id: "interfaces" },
-    "enum":         { isEnum: true,         typePropertyName: "isEnum",         id: "enums" },
-    "delegate":     { isDelegate: true,     typePropertyName: "isDelegate",     id: "delegates" }
+    "class":        { inClass: true,        typePropertyName: "inClass",        id: "classes" },
+    "struct":       { inStruct: true,       typePropertyName: "inStruct",       id: "structs" },
+    "interface":    { inInterface: true,    typePropertyName: "inInterface",    id: "interfaces" },
+    "enum":         { inEnum: true,         typePropertyName: "inEnum",         id: "enums" },
+    "delegate":     { inDelegate: true,     typePropertyName: "inDelegate",     id: "delegates" }
   };
   var classItems = {
-    "constructor":  { isConstructor: true,  typePropertyName: "isConstructor",  id: "constructors" },
-    "field":        { isField: true,        typePropertyName: "isField",        id: "fields" },
-    "property":     { isProperty: true,     typePropertyName: "isProperty",     id: "properties" },
-    "method":       { isMethod: true,       typePropertyName: "isMethod",       id: "methods" },
-    "event":        { isEvent: true,        typePropertyName: "isEvent",        id: "events" },
-    "operator":     { isOperator: true,     typePropertyName: "isOperator",     id: "operators" }
+    "constructor":  { inConstructor: true,  typePropertyName: "inConstructor",  id: "constructors" },
+    "field":        { inField: true,        typePropertyName: "inField",        id: "fields" },
+    "property":     { inProperty: true,     typePropertyName: "inProperty",     id: "properties" },
+    "method":       { inMethod: true,       typePropertyName: "inMethod",       id: "methods" },
+    "event":        { inEvent: true,        typePropertyName: "inEvent",        id: "events" },
+    "operator":     { inOperator: true,     typePropertyName: "inOperator",     id: "operators" }
   };
 
   model = createViewModel(model, _attrs, _global);
@@ -78,7 +78,7 @@ function transform(model, _attrs, _global) {
 
     function NamespaceViewModel(item, _attrs, _global, refs, mta) {
       GeneralViewModel.call(this, item, _attrs, _global, refs, mta);
-      this.isNamespaceView = true;
+      this.isNamespace = true;
 
       if (this.item.children) {
         var grouped = {};
@@ -110,7 +110,7 @@ function transform(model, _attrs, _global) {
 
     function ClassViewModel(item, _attrs, _global, refs, mta) {
       GeneralViewModel.call(this, item, _attrs, _global, refs, mta);
-      this.isClassView = true;
+      this.isClass = true;
 
       if (this.item.children) {
         var grouped = {};

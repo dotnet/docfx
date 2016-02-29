@@ -33,12 +33,12 @@
           <div class="col-md-10">
           {{/_disableAffix}}
             <article class="content wrap" id="_content">
-            {{#isNamespaceView}}
+            {{#isNamespace}}
               {{>partials/namespace}}
-            {{/isNamespaceView}}
-            {{#isClassView}}
+            {{/isNamespace}}
+            {{#isClass}}
               {{>partials/class}}
-            {{/isClassView}}
+            {{/isClass}}
             </article>
           </div>
           {{^_disableAffix}}

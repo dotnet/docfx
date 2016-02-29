@@ -1,19 +1,19 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
-{{#isNamespaceView}}
+{{#isNamespace}}
 {{name.0.value}} 命名空间
-{{/isNamespaceView}}
-{{#isClass}}
+{{/isNamespace}}
+{{#inClass}}
 {{name.0.value}} 类
-{{/isClass}}
-{{#isStruct}}
+{{/inClass}}
+{{#inStruct}}
 {{name.0.value}} 结构
-{{/isStruct}}
-{{#isInterface}}
+{{/inStruct}}
+{{#inInterface}}
 {{name.0.value}} 接口
-{{/isInterface}}
-{{#isEnum}}
+{{/inInterface}}
+{{#inEnum}}
 {{name.0.value}} 枚举
-{{/isEnum}}
-{{#isDelegate}}
+{{/inEnum}}
+{{#inDelegate}}
 {{name.0.value}} 委托
-{{/isDelegate}}
+{{/inDelegate}}
