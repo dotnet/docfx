@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -393,6 +393,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MergeDeveloperComments", "t
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MergeSourceInfo", "tools\MergeSourceInfo\MergeSourceInfo.xproj", "{12750776-11E6-413F-96EE-BC47FD70FA0E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzureMarkdownRewriterTool", "AzureMarkdownRewriterTool", "{367AC9E2-3E47-40AE-93C8-6B07F4847C4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureMarkdownRewriterTool", "tools\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.csproj", "{233933A5-5B94-472B-A1B6-D98870267FA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -697,6 +701,14 @@ Global
 		{12750776-11E6-413F-96EE-BC47FD70FA0E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{12750776-11E6-413F-96EE-BC47FD70FA0E}.Release|x86.ActiveCfg = Release|Any CPU
 		{12750776-11E6-413F-96EE-BC47FD70FA0E}.Release|x86.Build.0 = Release|Any CPU
+		{233933A5-5B94-472B-A1B6-D98870267FA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{233933A5-5B94-472B-A1B6-D98870267FA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{233933A5-5B94-472B-A1B6-D98870267FA4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{233933A5-5B94-472B-A1B6-D98870267FA4}.Debug|x86.Build.0 = Debug|Any CPU
+		{233933A5-5B94-472B-A1B6-D98870267FA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{233933A5-5B94-472B-A1B6-D98870267FA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{233933A5-5B94-472B-A1B6-D98870267FA4}.Release|x86.ActiveCfg = Release|Any CPU
+		{233933A5-5B94-472B-A1B6-D98870267FA4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -757,5 +769,7 @@ Global
 		{2190AD24-CC6A-0DD1-D17B-169012B32AAD} = {54945137-EB1C-4944-AACE-72AF532FBAFB}
 		{42F122A7-B2A1-194B-7E38-AAA14461AEF5} = {44D07CFA-7A9F-4AD3-9497-FCEAF0E7E95E}
 		{12750776-11E6-413F-96EE-BC47FD70FA0E} = {EB3337F2-D7A5-4C43-B3DF-DDFEC814DB7F}
+		{367AC9E2-3E47-40AE-93C8-6B07F4847C4B} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
+		{233933A5-5B94-472B-A1B6-D98870267FA4} = {367AC9E2-3E47-40AE-93C8-6B07F4847C4B}
 	EndGlobalSection
 EndGlobal
