@@ -83,24 +83,6 @@ var pack = {
             "files": files
         }
     ],
-    "op(zh-cn).html": [
-        {
-            "files": "partials/title.tmpl.partial",
-            "cwd": "default(zh-cn)"
-        },
-        {
-            "files": files,
-        }
-    ],
-    "op(ar-sa).html": [
-        {
-            "files": "partials/title.tmpl.partial",
-            "cwd": "op.html"
-        },
-        {
-            "files": files,
-        }
-    ],
     "vs.html": [
         {
             "files": [
