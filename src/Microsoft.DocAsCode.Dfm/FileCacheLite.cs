@@ -12,9 +12,9 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class FileCacheLite : IDisposable
     {
-        private IDictionary<string, FileCacheModel> _cache;
+        public static readonly FileCacheLite Default = new FileCacheLite(new FilePathComparer());
 
-        public static FileCacheLite Default = new FileCacheLite(new FilePathComparer());
+        private readonly IDictionary<string, FileCacheModel> _cache;
 
         public FileCacheLite(IEqualityComparer<string> keyComparer)
         {
@@ -23,8 +23,14 @@ namespace Microsoft.DocAsCode.Dfm
 
         public void Add(string key, string value)
         {
-            if (key == null) throw new ArgumentNullException(key);
-            if (value == null) throw new ArgumentNullException(value);
+            if (key == null)
+            {
+                throw new ArgumentNullException(key);
+            }
+            if (value == null)
+            {
+                throw new ArgumentNullException(value);
+            }
             FileCacheModel fm;
             if (!_cache.TryGetValue(key, out fm))
             {
@@ -38,18 +44,14 @@ namespace Microsoft.DocAsCode.Dfm
         public string Get(string key)
         {
             string value;
-            if (TryGet(key, out value))
-            {
-                return value;
-            }
-
-            return null;
+            TryGet(key, out value);
+            return value;
         }
 
         public bool Remove(string key)
         {
             FileCacheModel fm;
-            if ( _cache.TryGetValue(key, out fm))
+            if (_cache.TryGetValue(key, out fm))
             {
                 fm.Dispose();
                 return _cache.Remove(key);
@@ -78,54 +80,54 @@ namespace Microsoft.DocAsCode.Dfm
                 fm.Value.Dispose();
             }
         }
-    }
 
-    internal sealed class FileCacheModel : IDisposable
-    {
-        private readonly WeakReference<string> _weakReference;
-        private FileStream _fs;
-
-        public string Content
+        private sealed class FileCacheModel : IDisposable
         {
-            get
+            private readonly WeakReference<string> _weakReference;
+            private readonly FileStream _fs;
+
+            public string Content
             {
-                string content;
-                if (!_weakReference.TryGetTarget(out content))
+                get
                 {
-                    _fs.Seek(0, SeekOrigin.Begin);
-                    using (StreamReader reader = new StreamReader(_fs, Encoding.UTF8, true, 4096, true))
+                    string content;
+                    if (!_weakReference.TryGetTarget(out content))
                     {
-                        string result = reader.ReadToEnd();
-                        _weakReference.SetTarget(result);
-                        return result;
+                        _fs.Seek(0, SeekOrigin.Begin);
+                        using (StreamReader reader = new StreamReader(_fs, Encoding.UTF8, true, 4096, true))
+                        {
+                            string result = reader.ReadToEnd();
+                            _weakReference.SetTarget(result);
+                            return result;
+                        }
                     }
+
+                    return content;
                 }
-
-                return content;
+                set
+                {
+                    _weakReference.SetTarget(value);
+                    _fs.SetLength(0);
+                    using (StreamWriter writer = new StreamWriter(_fs, Encoding.UTF8, 4096, true))
+                        writer.Write(value);
+                }
             }
-            set
+
+            public FileCacheModel()
             {
-                _weakReference.SetTarget(value);
-                _fs.SetLength(0);
-                using (StreamWriter writer = new StreamWriter(_fs, Encoding.UTF8, 4096, true))
-                    writer.Write(value);
+                _weakReference = new WeakReference<string>(null);
+                _fs = CreateTempFile();
             }
-        }
 
-        public FileCacheModel()
-        {
-            _weakReference = new WeakReference<string>(null);
-            _fs = CreateTempFile();
-        }
+            private FileStream CreateTempFile()
+            {
+                return new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose | FileOptions.SequentialScan);
+            }
 
-        private FileStream CreateTempFile()
-        {
-            return new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose | FileOptions.SequentialScan);
-        }
-
-        public void Dispose()
-        {
-            _fs.Dispose();
+            public void Dispose()
+            {
+                _fs.Dispose();
+            }
         }
     }
 }
