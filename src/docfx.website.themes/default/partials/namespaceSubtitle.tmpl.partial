@@ -8,9 +8,9 @@
 {{#inInterface}}
 {{__global.interfacesInSubtitle}}
 {{/inInterface}}
-{{#inEnums}}
+{{#inEnum}}
 {{__global.enumsInSubtitle}}
-{{/inEnums}}
+{{/inEnum}}
 {{#inDelegate}}
 {{__global.delegatesInSubtitle}}
 {{/inDelegate}}
