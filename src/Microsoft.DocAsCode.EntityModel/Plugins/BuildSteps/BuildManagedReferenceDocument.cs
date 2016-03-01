@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
                     model.File = Path.ChangeExtension(model.File, ".json");
                     break;
-                case DocumentType.Override:
+                case DocumentType.Overwrite:
                     foreach (var item in (List<ItemViewModel>)model.Content)
                     {
                         BuildItem(host, item, model);

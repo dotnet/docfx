@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Plugins
     public enum DocumentType
     {
         Article,
-        Override,
+        Overwrite,
         Resource,
         Metadata,
     }

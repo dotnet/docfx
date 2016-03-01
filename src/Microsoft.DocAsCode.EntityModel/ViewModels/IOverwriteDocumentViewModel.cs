@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel.ViewModels
 {
-    public interface IOverrideDocumentViewModel
+    public interface IOverwriteDocumentViewModel
     {
         string Uid { get; set; }
         string Conceptual { get; set; }

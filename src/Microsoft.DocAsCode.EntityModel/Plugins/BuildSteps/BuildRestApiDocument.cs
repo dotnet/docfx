@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         }
                     }
                     break;
-                case DocumentType.Override:
+                case DocumentType.Overwrite:
                     foreach (var item in (List<RestApiItemViewModel>)model.Content)
                     {
                         BuildItem(host, item, model);

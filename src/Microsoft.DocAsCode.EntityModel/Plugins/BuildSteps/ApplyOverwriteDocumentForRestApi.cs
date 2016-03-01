@@ -13,14 +13,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverrideDocumentForRestApi : BaseDocumentBuildStep
+    public class ApplyOverwriteDocumentForRestApi : BaseDocumentBuildStep
     {
         private readonly MergerFacade Merger = new MergerFacade(
                 new DictionaryMerger(
                     new KeyedListMerger(
                         new ReflectionEntityMerger())));
 
-        public override string Name => nameof(ApplyOverrideDocumentForRestApi);
+        public override string Name => nameof(ApplyOverwriteDocumentForRestApi);
 
         public override int BuildOrder => 0x10;
 
@@ -28,23 +28,23 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             if (models.Count > 0)
             {
-                ApplyOverrides(models, host);
+                ApplyOverwrites(models, host);
             }
         }
 
         #region Private methods
 
         /// <summary>
-        /// TODO: extract to base class together with class ApplyOverrideDocument
+        /// TODO: extract to base class together with class ApplyOverwriteDocument
         /// </summary>
         /// <param name="models"></param>
         /// <param name="host"></param>
-        private void ApplyOverrides(ImmutableList<FileModel> models, IHostService host)
+        private void ApplyOverwrites(ImmutableList<FileModel> models, IHostService host)
         {
             foreach (var uid in host.GetAllUids())
             {
                 var ms = host.LookupByUid(uid);
-                var od = ms.Where(m => m.Type == DocumentType.Override).ToList();
+                var od = ms.Where(m => m.Type == DocumentType.Overwrite).ToList();
                 var articles = ms.Except(od).ToList();
                 if (articles.Count == 0 || od.Count == 0)
                 {

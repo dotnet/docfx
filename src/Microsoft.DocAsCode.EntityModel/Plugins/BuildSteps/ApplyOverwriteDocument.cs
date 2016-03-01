@@ -13,14 +13,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverrideDocument : BaseDocumentBuildStep
+    public class ApplyOverwriteDocument : BaseDocumentBuildStep
     {
         private readonly MergerFacade Merger = new MergerFacade(
                 new DictionaryMerger(
                     new KeyedListMerger(
                         new ReflectionEntityMerger())));
 
-        public override string Name => nameof(ApplyOverrideDocument);
+        public override string Name => nameof(ApplyOverwriteDocument);
 
         public override int BuildOrder => 0x10;
 
@@ -28,18 +28,18 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             if (models.Count > 0)
             {
-                ApplyOverrides(models, host);
+                ApplyOverwrites(models, host);
             }
         }
 
         #region Private methods
 
-        private void ApplyOverrides(ImmutableList<FileModel> models, IHostService host)
+        private void ApplyOverwrites(ImmutableList<FileModel> models, IHostService host)
         {
             foreach (var uid in host.GetAllUids())
             {
                 var ms = host.LookupByUid(uid);
-                var od = ms.Where(m => m.Type == DocumentType.Override).ToList();
+                var od = ms.Where(m => m.Type == DocumentType.Overwrite).ToList();
                 var articles = ms.Except(od).ToList();
                 if (articles.Count == 0 || od.Count == 0)
                 {

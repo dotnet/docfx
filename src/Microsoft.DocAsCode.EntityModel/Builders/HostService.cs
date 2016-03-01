@@ -223,7 +223,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                     }
                     list.Add(m);
                 }
-                if (m.Type != DocumentType.Override)
+                if (m.Type != DocumentType.Overwrite)
                 {
                     FileMap[m.FileAndType] = m.FileAndType;
                 }

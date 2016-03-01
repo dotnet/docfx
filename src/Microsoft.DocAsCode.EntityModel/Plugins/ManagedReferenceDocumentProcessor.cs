@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         return ProcessingPriority.Normal;
                     }
                     break;
-                case DocumentType.Override:
+                case DocumentType.Overwrite:
                     if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                     {
                         return ProcessingPriority.Normal;
@@ -86,14 +86,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         },
                         LocalPathFromRepoRoot = displayLocalPath,
                     };
-                case DocumentType.Override:
-                    var overrides = MarkdownReader.ReadMarkdownAsOverride<ItemViewModel>(file.BaseDir, file.File);
-                    if (overrides == null || overrides.Count == 0) return null;
+                case DocumentType.Overwrite:
+                    var overwrites = MarkdownReader.ReadMarkdownAsOverwrite<ItemViewModel>(file.BaseDir, file.File);
+                    if (overwrites == null || overwrites.Count == 0) return null;
                     
-                    displayLocalPath = overrides[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
-                    return new FileModel(file, overrides, serializer: new BinaryFormatter())
+                    displayLocalPath = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+                    return new FileModel(file, overwrites, serializer: new BinaryFormatter())
                     {
-                        Uids = (from item in overrides
+                        Uids = (from item in overwrites
                                 select new UidDefinition(
                                     item.Uid,
                                     displayLocalPath,

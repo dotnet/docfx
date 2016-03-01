@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
-    public class RestApiItemViewModel : IOverrideDocumentViewModel
+    public class RestApiItemViewModel : IOverwriteDocumentViewModel
     {
         [YamlMember(Alias = "uid")]
         [JsonProperty("uid")]

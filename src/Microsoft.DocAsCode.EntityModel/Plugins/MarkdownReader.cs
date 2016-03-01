@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     public class MarkdownReader
     {
-        public static List<T> ReadMarkdownAsOverride<T>(string baseDir, string file) where T : IOverrideDocumentViewModel
+        public static List<T> ReadMarkdownAsOverwrite<T>(string baseDir, string file) where T : IOverwriteDocumentViewModel
         {
             // Order the list from top to bottom
             var list = ReadMarkDownCore<T>(Path.Combine(baseDir, file)).ToList();
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        private static IEnumerable<T> ReadMarkDownCore<T>(string file) where T : IOverrideDocumentViewModel
+        private static IEnumerable<T> ReadMarkDownCore<T>(string file) where T : IOverwriteDocumentViewModel
         {
             var content = File.ReadAllText(file);
             var repoInfo = GitUtility.GetGitDetail(file);

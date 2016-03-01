@@ -217,12 +217,12 @@ namespace Microsoft.DocAsCode.SubCommands
         private static FileCollection GetFileCollectionFromFileMapping(
             string baseDirectory,
             FileMapping articles,
-            FileMapping overrides,
+            FileMapping overwrites,
             FileMapping resources)
         {
             var fileCollection = new FileCollection(baseDirectory);
             AddFileMapping(fileCollection, baseDirectory, DocumentType.Article, articles);
-            AddFileMapping(fileCollection, baseDirectory, DocumentType.Override, overrides);
+            AddFileMapping(fileCollection, baseDirectory, DocumentType.Overwrite, overwrites);
             AddFileMapping(fileCollection, baseDirectory, DocumentType.Resource, resources);
             return fileCollection;
         }

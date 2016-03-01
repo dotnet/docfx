@@ -54,11 +54,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override string Name => nameof(RestApiDocumentProcessor);
 
-        /// <summary>
-        /// TODO: override document
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public override ProcessingPriority GetProcessingPriority(FileAndType file)
         {
             switch (file.Type)
@@ -72,7 +67,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         return ProcessingPriority.Normal;
                     }
                     break;
-                case DocumentType.Override:
+                case DocumentType.Overwrite:
                     if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                     {
                         return ProcessingPriority.Normal;
@@ -113,14 +108,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                             LinkToUids = new HashSet<string>(),
                         },
                     };
-                case DocumentType.Override:
-                    var overrides = MarkdownReader.ReadMarkdownAsOverride<RestApiItemViewModel>(file.BaseDir, file.File);
-                    if (overrides == null || overrides.Count == 0) return null;
+                case DocumentType.Overwrite:
+                    var overwrites = MarkdownReader.ReadMarkdownAsOverwrite<RestApiItemViewModel>(file.BaseDir, file.File);
+                    if (overwrites == null || overwrites.Count == 0) return null;
 
-                    displayLocalPath = overrides[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
-                    return new FileModel(file, overrides, serializer: new BinaryFormatter())
+                    displayLocalPath = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+                    return new FileModel(file, overwrites, serializer: new BinaryFormatter())
                     {
-                        Uids = (from item in overrides
+                        Uids = (from item in overwrites
                                 select new UidDefinition(
                                     item.Uid,
                                     displayLocalPath,
@@ -170,14 +165,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         #region Private methods
 
-        private static Dictionary<string, object> MergeMetadata(IDictionary<string, object> item, IDictionary<string, object> overrideItem)
+        private static Dictionary<string, object> MergeMetadata(IDictionary<string, object> item, IDictionary<string, object> overwriteItems)
         {
             var result = new Dictionary<string, object>(item);
-            foreach (var pair in overrideItem)
+            foreach (var pair in overwriteItems)
             {
                 if (result.ContainsKey(pair.Key))
                 {
-                    Logger.LogWarning($"Metadata \"{pair.Key}\" inside rest api is overridden.");
+                    Logger.LogWarning($"Metadata \"{pair.Key}\" inside rest api is overwritten.");
                 }
 
                 result[pair.Key] = pair.Value;

@@ -107,7 +107,7 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 
 1. A basic C# project under `src`.
 2. Several conceptual files under `articles`.
-3. An override file to add extra content to API under `specs`.
+3. An overwrite file to add extra content to API under `specs`.
 4. `toc.yml` under root folder. It will be rendered as the navbar of the website.
 5. `docfx.json` under root folder. It is the configuration file that `docfx` depends on.
 

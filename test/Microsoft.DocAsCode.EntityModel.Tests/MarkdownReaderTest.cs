@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     public class MarkdownReaderTest
     {
         [Fact]
-        public void TestReadMarkdownAsOverride()
+        public void TestReadMarkdownAsOverwrite()
         {
             const string Content = @"---
 uid: Test
@@ -22,9 +22,9 @@ remarks: Hello
 ---
 
 This is unit test!";
-            const string FileName = "ut_ReadMarkdownAsOverride.md";
+            const string FileName = "ut_ReadMarkdownAsOverwrite.md";
             File.WriteAllText(FileName, Content);
-            var results = MarkdownReader.ReadMarkdownAsOverride<ItemViewModel>(Environment.CurrentDirectory, FileName);
+            var results = MarkdownReader.ReadMarkdownAsOverwrite<ItemViewModel>(Environment.CurrentDirectory, FileName);
             Assert.NotNull(results);
             Assert.Equal(1, results.Count);
             Assert.Equal("Test", results[0].Uid);

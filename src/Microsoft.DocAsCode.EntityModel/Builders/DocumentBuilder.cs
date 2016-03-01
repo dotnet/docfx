@@ -265,7 +265,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             var manifestItems = new List<ManifestItemWithContext>();
             hostService.Models.RunAll(m =>
             {
-                if (m.Type != DocumentType.Override)
+                if (m.Type != DocumentType.Overwrite)
                 {
                     using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                     {

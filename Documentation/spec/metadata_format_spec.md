@@ -230,7 +230,7 @@ You can multiple YAML sections inside a single markdown file, but in a single YA
 
 The YAML metadata section does not have to contain all *properties*. The only *property* that **MUST** appear is "uid", which is used to match the same *item* in metadata file.
 
-The most common scenario for using YAML section is to specify which *item* the markdown doc belongs to. But you can also override *item* *property* by defining one with the same name in YAML section. In the above example, the *property* "summary" will override the same one in metadata.
+The most common scenario for using YAML section is to specify which *item* the markdown doc belongs to. But you can also overwrite *item* *property* by defining one with the same name in YAML section. In the above example, the *property* "summary" will overwrite the same one in metadata.
 
 Same as language context, the following *properties* **SHALL NOT** be overridden: uid, id, alias, children, parent.
 
