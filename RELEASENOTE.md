@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.5.1)
+Version Notes (Current Version: v1.5.2)
 =======================================
+v1.5.2
+----------
+Revert the breaking change in template introduced in v1.5.1
+
 v1.5.1
 -----------
 1. Improve `docfx init`
@@ -27,7 +31,7 @@ v1.4.2
 v1.4.1
 -----------
 Remove `newFileRepository` from output metadata
- 
+
 v1.4
 -----------
 1. Cross-reference related:
