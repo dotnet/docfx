@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Runtime.Serialization.Formatters.Binary;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.EntityModel.Plugins.ViewModels;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -118,7 +119,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 throw new NotSupportedException();
             }
             var vm = (PageViewModel)model.Content;
-
+            model.Content = ApiPageViewModel.FromModel(vm); // Fill in details
             return new SaveResult
             {
                 DocumentType = "ManagedReference",
