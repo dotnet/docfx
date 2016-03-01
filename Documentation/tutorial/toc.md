@@ -3,4 +3,6 @@
 ## [Part II: Adding API Documentation to the Website](walkthrough_create_a_docfx_project_2.md)
 ## [🔧 Advanced: Customize Your Website](advanced_walkthrough.md)
 # [User Manual](docfx.exe_user_manual.md)
+# [HowTo: Create Custom Plugin(howto_create_custom_plugin.md)
+## [🔧 Advanced: Support Hyper Link](advanced_support_hyper_link.md)
 # [HowTo: Create Custom Template](howto_create_custom_template.md)
