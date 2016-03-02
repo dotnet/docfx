@@ -3,18 +3,29 @@
 
 namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
+    using System.Collections.Generic;
+
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Dfm;
 
     public class AzureMarked
     {
         private static readonly AzureEngineBuilder _builder = new AzureEngineBuilder(new Options() { Mangle = false });
         private static readonly AzureMarkdownRenderer _renderer = new AzureMarkdownRenderer();
 
-        public static string Markup(string src, string path = null)
+        public static string Markup(string src, string path = null, IReadOnlyDictionary<string, AzureFileInfo> azureFileInfoMapping = null)
         {
             var engine = (MarkdownEngine)_builder.CreateEngine(_renderer);
-            return engine.Mark(engine.Normalize(src), engine.Context.CreateContext(engine.Context.Variables.SetItem("path", path)));
+            var context = engine.Context;
+            if (path != null)
+            {
+                context = engine.Context.CreateContext(engine.Context.Variables.SetItem("path", path));
+            }
+
+            if (azureFileInfoMapping != null)
+            {
+                context = context.CreateContext(context.Variables.SetItem("azureFileInfoMapping", azureFileInfoMapping));
+            }
+            return engine.Mark(engine.Normalize(src), context);
         }
     }
 }

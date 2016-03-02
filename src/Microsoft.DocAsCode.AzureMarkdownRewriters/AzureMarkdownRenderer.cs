@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             if (!context.Variables.TryGetValue("path", out path))
             {
                 Logger.LogWarning($"Can't get path for the file that ref azure include file {token.Src}. Raw: {token.RawMarkdown}");
-                return null;
+                return token.RawMarkdown;
             }
 
             if (PathUtility.IsRelativePath(token.Src))
@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 if (!File.Exists(includeFilePath))
                 {
                     Logger.LogWarning($"Can't get include file in path {includeFilePath}. Raw: {token.RawMarkdown}");
-                    return null;
+                    return token.RawMarkdown;
                 }
 
                 // TODO: We should handle Azure syntax in the include file. Such as Azure Selector

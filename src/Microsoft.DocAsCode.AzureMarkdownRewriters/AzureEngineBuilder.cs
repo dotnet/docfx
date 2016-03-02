@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                             (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, AppendDefaultExtension(t.Href, MarkdownExtension), t.Title, t.Content, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.RawMarkdown), t.Title, t.Content, t.RawMarkdown)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.RawMarkdown)
@@ -101,11 +101,46 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                     );
         }
 
+        private string NormalizeAzureLink(string href, string defaultExtension, IMarkdownContext context, string rawMarkdown)
+        {
+            var link = AppendDefaultExtension(href, defaultExtension);
+            link = GenerateAzureLinkHref(context, link, rawMarkdown);
+            return link;
+        }
+
         private string AppendDefaultExtension(string href, string defaultExtension)
         {
-            if (PathUtility.IsRelativePath(href) && string.IsNullOrEmpty(Path.GetExtension(href)))
+            if (PathUtility.IsRelativePath(href))
             {
-                return $"{href}{defaultExtension}";
+                var index = href.IndexOf('#');
+                if (index == -1)
+                {
+                    if (string.IsNullOrEmpty(Path.GetExtension(href)))
+                    {
+                        return $"{href}{defaultExtension}";
+                    }
+                    else
+                    {
+                        return href;
+                    }
+                }
+                else if (index == 0)
+                {
+                    return href;
+                }
+                else
+                {
+                    var hrefWithoutAnchor = href.Remove(index);
+                    var anchor = href.Substring(index);
+                    if (string.IsNullOrEmpty(Path.GetExtension(href)))
+                    {
+                        return $"{hrefWithoutAnchor}{defaultExtension}{anchor}";
+                    }
+                    else
+                    {
+                        return href;
+                    }
+                }
             }
             return href;
         }
@@ -140,6 +175,63 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             var tagsSw = new StringWriter();
             YamlUtility.Serialize(tagsSw, tags);
             return MarkdownEngine.StaticNormalize(propertiesSw.ToString() + "\n" + tagsSw.ToString());
+        }
+
+        private string GenerateAzureLinkHref(IMarkdownContext context, string href, string rawMarkdown)
+        {
+            StringBuffer content = StringBuffer.Empty;
+
+            // If the context doesn't have necessary, return the original href
+            if (!context.Variables.ContainsKey("path") || !context.Variables.ContainsKey("azureFileInfoMapping"))
+            {
+                return href;
+            }
+
+            // if the href is not relative path, return it
+            if (!PathUtility.IsRelativePath(href))
+            {
+                return href;
+            }
+
+            // deal with bookmark. Get file name and anchor
+            string hrefFileName = string.Empty;
+            string anchor = string.Empty;
+            var index = href.IndexOf('#');
+            if (index == -1)
+            {
+                hrefFileName = Path.GetFileName(href);
+            }
+            else if (index == 0)
+            {
+                return href;
+            }
+            else
+            {
+                hrefFileName = Path.GetFileName(href.Remove(index));
+                anchor = href.Substring(index);
+            }
+
+            // deal with different kinds of relative paths
+            var currentFilePath = (string)context.Variables["path"];
+            var azureFileInfoMapping = (IReadOnlyDictionary<string, AzureFileInfo>)context.Variables["azureFileInfoMapping"];
+            if (!azureFileInfoMapping.ContainsKey(hrefFileName))
+            {
+                Logger.LogWarning($"Can't fild reference file: {href} in azure file system for file {currentFilePath}. Raw: {rawMarkdown}");
+                return href;
+            }
+
+            string azureHref = null;
+            var azureFileInfo = azureFileInfoMapping[hrefFileName];
+            if (azureFileInfo.NeedTransformToExternalLink)
+            {
+                azureHref = $"{azureFileInfo.UriPrefix}/{Path.GetFileNameWithoutExtension(hrefFileName)}{anchor}";
+            }
+            else
+            {
+                azureHref = string.Format("{0}{1}", PathUtility.MakeRelativePath(Path.GetDirectoryName(currentFilePath), azureFileInfo.FilePath), anchor);
+            }
+
+            return azureHref;
         }
     }
 }

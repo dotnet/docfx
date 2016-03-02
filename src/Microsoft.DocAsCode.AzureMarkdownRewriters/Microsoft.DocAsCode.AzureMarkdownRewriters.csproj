@@ -42,6 +42,7 @@
     <Compile Include="AzureBlockTokens\AzureIncludeBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureSelectorBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureNoteBlockToken.cs" />
+    <Compile Include="AzureFileInfo.cs" />
     <Compile Include="AzureInlineRules\AzureIncludeInlineRule.cs" />
     <Compile Include="AzureBlockRules\AzureIncludeBlockRule.cs" />
     <Compile Include="AzureEngineBuilder.cs" />

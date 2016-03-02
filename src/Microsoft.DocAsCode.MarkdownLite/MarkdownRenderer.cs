@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
     using System.Linq;
-    using System.Collections.Immutable;
 
     public class MarkdownRenderer
     {

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownAzureRewritersTest.Tests
 {
+    using System.Collections.Generic;
     using System.IO;
 
     using Microsoft.DocAsCode.Dfm;
@@ -481,18 +482,21 @@ header-1 | header-2 | header-3
             var source = @"#Test Markdownlink extension
 this is a missing extension link [text](missing_extension) file ref
 this is a normal link [text](missing_extension.md) file ref
+this is a missing extension link with bookmark [text](missing_extension#bookmark) file ref
+this is a normal link with bookmark [text](missing_extension.md#bookmark) file ref
 this is http link [text](http://www.google.com ""Google"") ref
 this is http escape link [text](http://www.google.com'dd#bookmark ""Google's homepage"") ref
 this is absolute link [text](c:/this/is/markdown ""Local File"") file ref";
             var expected = @"# Test Markdownlink extension
 this is a missing extension link [text](missing_extension.md) file ref
 this is a normal link [text](missing_extension.md) file ref
+this is a missing extension link with bookmark [text](missing_extension.md#bookmark) file ref
+this is a normal link with bookmark [text](missing_extension.md#bookmark) file ref
 this is http link [text](http://www.google.com ""Google"") ref
 this is http escape link [text](http://www.google.com'dd#bookmark ""Google's homepage"") ref
 this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 
 ";
-
 
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -692,6 +696,141 @@ ms.author: rogardle
 # Azure Container Service Introduction
 ";
             var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInsideDocset()
+        {
+            var azureFileInfoMapping =
+                new Dictionary<string, AzureFileInfo>{
+                    {
+                        "unique.md",
+                        new AzureFileInfo
+                        {
+                            FileName = "unique.md",
+                            FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
+                            NeedTransformToExternalLink = false,
+                            UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
+                        }
+                    }
+                };
+            var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
+            var source = @"[azure file link](unique.md)";
+            var expected = @"[azure file link](../../folder1/subfolder1/unique.md)
+
+";
+
+            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInsideDocsetWithOnlyBookmark()
+        {
+            var azureFileInfoMapping =
+                new Dictionary<string, AzureFileInfo>{
+                    {
+                        "unique.md",
+                        new AzureFileInfo
+                        {
+                            FileName = "unique.md",
+                            FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
+                            NeedTransformToExternalLink = false,
+                            UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
+                        }
+                    }
+                };
+            var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
+            var source = @"[azure file link](#bookmark_test)";
+            var expected = @"[azure file link](#bookmark_test)
+
+";
+
+            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInsideDocsetWithBookmark()
+        {
+            var azureFileInfoMapping =
+                new Dictionary<string, AzureFileInfo>{
+                    {
+                        "unique.md",
+                        new AzureFileInfo
+                        {
+                            FileName = "unique.md",
+                            FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
+                            NeedTransformToExternalLink = false,
+                            UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
+                        }
+                    }
+                };
+            var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
+            var source = @"[azure file link](unique.md#bookmark_test)";
+            var expected = @"[azure file link](../../folder1/subfolder1/unique.md#bookmark_test)
+
+";
+
+            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeOutsideDocset()
+        {
+            var azureFileInfoMapping =
+                new Dictionary<string, AzureFileInfo>{
+                    {
+                        "unique.md",
+                        new AzureFileInfo
+                        {
+                            FileName = "unique.md",
+                            FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
+                            NeedTransformToExternalLink = true,
+                            UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
+                        }
+                    }
+                };
+            var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
+            var source = @"[azure file link](unique.md)";
+            var expected = @"[azure file link](https://azure.microsoft.com/en-us/documentation/articles/unique)
+
+";
+
+            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkOutsideDocsetWithBookmark()
+        {
+            var azureFileInfoMapping =
+                new Dictionary<string, AzureFileInfo>{
+                    {
+                        "unique.md",
+                        new AzureFileInfo
+                        {
+                            FileName = "unique.md",
+                            FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
+                            NeedTransformToExternalLink = true,
+                            UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
+                        }
+                    }
+                };
+            var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
+            var source = @"[azure file link](unique.md#bookmark_test)";
+            var expected = @"[azure file link](https://azure.microsoft.com/en-us/documentation/articles/unique#bookmark_test)
+
+";
+
+            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
     }
