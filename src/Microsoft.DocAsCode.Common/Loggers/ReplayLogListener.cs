@@ -110,8 +110,7 @@ namespace Microsoft.DocAsCode.Common
 
         private void WriteFooter(BuildStatus status)
         {
-            var detail = string.Join(", ", _replayList.Select(s => $"{s.Value.Count} {s.Key}(s)"));
-            var footer = $"{Environment.NewLine}{Environment.NewLine}There are totally {detail}";
+            var footer = string.Join(Environment.NewLine, _replayList.Select(s => $"\t{s.Value.Count} {s.Key}(s)"));
 #if !NetCore
             WriteToConsole(footer, status);
 #endif
