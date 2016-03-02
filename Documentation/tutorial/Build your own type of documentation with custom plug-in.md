@@ -1,17 +1,7 @@
-How-to: Create Custom Plug-in
+How-to: Build your own type of documentation with custom plug-in
 ====================================
 
 In this topic, we will create a plug-in to build some simple [rich text format](https://en.wikipedia.org/wiki/Rich_Text_Format) files to html documents.
-
-Agenda
-------
-* [Goal and limitation](#goal-and-limitation)
-* [Preparation](#Preparation)
-* [Create a document processor](#create-a-document-processor)
-* [Create a document build step](#create-a-document-build-step)
-* [Enable plug-in 1](#enable-plug-in-1)
-* [Enable plug-in 2](#enable-plug-in-2)
-* [Build document](#build-document)
 
 Goal and limitation
 -------------------
@@ -45,8 +35,19 @@ Preparation
 
 Create a document processor
 ---------------------------
+
+Document processor is responsible for:
+
+* Declare which file can handle.
+* Load from file to object model.
+* Provider builder steps.
+* Report document type, file links and xref links in document.
+* Update references.
+
+Create our RtfDocumentProcessor:
+
 1.  Create a new class (RtfDocumentProcessor.cs) with following code:
-    ```c#
+    ```csharp
     [Export(typeof(IDocumentProcessor))]
     public class RtfDocumentProcessor : IDocumentProcessor
     {
@@ -56,64 +57,46 @@ Create a document processor
     
 2.  Declare we can handle `.rtf` file:
 
-    ```c#
-    public ProcessingPriority GetProcessingPriority(FileAndType file)
-    {
-        if (file.Type == DocumentType.Article && ".rtf".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-        {
-            return ProcessingPriority.Normal;
-        }
-        return ProcessingPriority.NotSupportted;
-    }
-    ```
+    [!Code-csharp[GetProcessingPriority](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
 
     Here we declare this processor can handle any `.rtf` file in article category with normal priority.
     When two or more processors declare for same file, DocFX will give it to the higher priority one.
+    *Unexpected*: two or more processor declare for the same file with same priority.
 
 3.  Load our rtf file by read all text:
-    ```c#
-    public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
-    {
-        var content = new Dictionary<string, object>
-        {
-            ["conceptual"] = File.ReadAllText(Path.Combine(file.BaseDir, file.File)),
-            ["type"] = "Conceptual",
-            ["path"] = file.File,
-        };
-        return new FileModel(file, content);
-    }
-    ```
-    Since we want to threat `.rtf` file as markdown conceptual file, so we use same data structure with markdown conceptual - `Dictionary<string, object>`.
+    [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
+
+    we use `Dictionary<string, object>` as the data model, as similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs) store the content of markdown files.
 
 4.  Implements `Save` method as following:
-    ```c#
-    public override SaveResult Save(FileModel model)
-    {
-        return new SaveResult
-        {
-            DocumentType = "Conceptual",
-            ModelFile = model.File,
-        };
-    }
-    ```
+    [!Code-csharp[Save](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
 
-5.  `BuildSteps` property is next important property, we suggest implement as following:
-    ```c#
-    [ImportMany(nameof(RtfDocumentProcessor))]
-    public IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
-    ```
+5.  `BuildSteps` property can give severial build steps for model, we suggest implement as following:
+    [!Code-csharp[BuildSteps](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
 
-6.  Implements other methods:
-    ```c#
-    public string Name => nameof(RtfDocumentProcessor);
+6.  `Name` property is used to display in log, so give any constant string as you like.  
+    e.g.:  
+    [!Code-csharp[Name](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
 
-    public void UpdateHref(FileModel model, IDocumentBuildContext context) => { }
-    ```
+7.  Since we don't support hyperlink, keep `UpdateHref` method empty.
+    [!Code-csharp[UpdateHref](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
+
+View final [RtfDocumentProcessor.cs](../codesnippet/Rtf/RtfDocumentProcessor.cs)
+
 
 Create a document build step
 ----------------------------
+
+Build step is responsible for:
+
+* Reconstruction documents via `Prebuild` method.
+* Transform document content via `Build` method.
+* Do transform which require all document done via `PostBuild` method.
+
+Create our RtfBuildStep:
+
 1.  Create a new class (RtfBuildStep.cs), and declare it is for `RtfDocumentProcessor`:
-    ```c#
+    ```csharp
     [Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
     public class RtfBuildStep : IDocumentBuildStep
     {
@@ -122,32 +105,13 @@ Create a document build step
     ```
 
 2.  In `Build` method, convert rtf to html:
-    ```c#
-    private readonly TaskFactory _taskFactory = new TaskFactory(new StaTaskScheduler(1));
-
-    public void Build(FileModel model, IHostService host)
-    {
-        string content = (string)((Dictionary<string, object>)model.Content)["conceptual"];
-        content = _taskFactory.StartNew(() => RtfToHtmlConverter.ConvertRtfToHtml(content)).Result;
-        ((Dictionary<string, object>)model.Content)["conceptual"] = content;
-    }
-    ```
+    [!Code-csharp[Build](../codesnippet/Rtf/RtfBuildStep.cs)]
 
 3.  Implements other methods:
-    ```c#
-    public int BuildOrder => 0;
+    [!Code-csharp[Others](../codesnippet/Rtf/RtfBuildStep.cs)]
 
-    public string Name => nameof(RtfBuildStep);
+View final [RtfBuildStep.cs](../codesnippet/Rtf/RtfBuildStep.cs)
 
-    public void Postbuild(ImmutableList<FileModel> models, IHostService host)
-    {
-    }
-
-    public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-    {
-        return models;
-    }
-    ```
 
 Enable plug-in 1
 ----------------
