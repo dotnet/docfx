@@ -1,47 +1,51 @@
-How-to: Create Build Custom Document
+How-to: Create Custom Plug-in
 ====================================
 
-In this topic, we will create a plug-in to build some simple rtf files to documents.
+In this topic, we will create a plug-in to build some simple [rich text format](https://en.wikipedia.org/wiki/Rich_Text_Format) files to html documents.
 
 Agenda
 ------
 * [Goal and limitation](#goal-and-limitation)
-* [Prepare](#prepare)
+* [Preparation](#Preparation)
 * [Create a document processor](#create-a-document-processor)
 * [Create a document build step](#create-a-document-build-step)
-* [Enable plug-in](#enable-plug-in)
+* [Enable plug-in 1](#enable-plug-in-1)
+* [Enable plug-in 2](#enable-plug-in-2)
 * [Build document](#build-document)
 
 Goal and limitation
 -------------------
 1.  In scope:
     1.  Our input will be a set of rtf files, with `.rtf` extension file name.
-    2.  The rtf files will be build as conceptual document.
+    2.  The rtf files will be build as html document.
 2.  Out of scope:
     1.  No picture or other object in rtf files.
-    2.  No hyper link in rtf files.
-    3.  No metadata.
+    2.  No hyperlink in rtf files. (in [advanced tutorial](advanced_support_hyperlink.md), we will support it.)
+    3.  No metadata. (in advanced tutorial, we will support it.)
 
-Prepare
--------
-1.  Create a new library project in `Visual Studio`.
+Preparation
+-----------
+1.  Create a new c# class library project in `Visual Studio`.
 
 2.  Add nuget packages:  
     * `System.Collections.Immutable` with version 1.1.37
     * `System.Composition`with version 1.0.27
 
-3.  Add nuget package `Microsoft.DocAsCode.Plugins` same version with DocFX, or reference the project.
+3.  Add `Microsoft.DocAsCode.Plugins`
+    If build DocFX from source code, add reference to the project.
+    Otherwise, add nuget package `Microsoft.DocAsCode.Plugins` same version with DocFX.
 
 4.  Add framework assembly reference:
     `PresentationCore`, `PresentationFramework`, `WindowsBase`
 
-5.  Include some code files:
-    rtf to html converter: [MarkupConverter](https://github.com/mmanela/MarkupConverter)
-    sta task scheduler: [ParExtSamples](https://code.msdn.microsoft.com/ParExtSamples)
+5.  Add project for convert rtf to html:
+    Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), then reference it.
+
+6.  Add code file StaTaskScheduler.cs from [ParExtSamples](https://code.msdn.microsoft.com/ParExtSamples)
 
 Create a document processor
 ---------------------------
-1.  Create a new class (RefDocumentProcessor.cs) with following code:
+1.  Create a new class (RtfDocumentProcessor.cs) with following code:
     ```c#
     [Export(typeof(IDocumentProcessor))]
     public class RtfDocumentProcessor : IDocumentProcessor
@@ -93,18 +97,17 @@ Create a document processor
     }
     ```
 
-5.  Keep `UpdateHref` method empty.
-
-6.  `Name` property is used to display in log, so give any constant string as you like.
-    e.g.:
-    ```c#
-    public string Name => nameof(RtfDocumentProcessor);
-    ```
-
-7.  `BuildSteps` property is next important property, we suggest implement as following:
+5.  `BuildSteps` property is next important property, we suggest implement as following:
     ```c#
     [ImportMany(nameof(RtfDocumentProcessor))]
     public IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
+    ```
+
+6.  Implements other methods:
+    ```c#
+    public string Name => nameof(RtfDocumentProcessor);
+
+    public void UpdateHref(FileModel model, IDocumentBuildContext context) => { }
     ```
 
 Create a document build step
@@ -146,13 +149,19 @@ Create a document build step
     }
     ```
 
-Enable plug-in
---------------
+Enable plug-in 1
+----------------
 1.  Build our project.
-2.  Copy the output dll file.
+2.  Copy the output dll files.
 3.  Open DocFX.exe folder.
 4.  Create a folder with name `Plugins`.
 5.  Paste our dll file.
+
+Enable plug-in 2
+----------------
+1.  Build our project.
+2.  Copy the output dll files to any folder.
+3.  Run `DocFX build` command with `-t Default,{plugin folder}`
 
 Build document
 --------------

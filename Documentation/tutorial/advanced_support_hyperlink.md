@@ -1,16 +1,16 @@
-﻿🔧 Advanced: Support Hyper Link
+﻿🔧 Advanced: Support Hyperlink
 ===============================
 
-In this topic, we will support hyper link in rtf files.
+In this topic, we will support hyperlink in rtf files.
 
 Agenda
 ------
-* [Rules for hyper link](#rules-for-hyper-link)
+* [Rules for hyperlink](#rules-for-hyperlink)
 * [Prepare](#prepare)
 * [Update rtf document processor](#update-rtf-document-processor)
 * [Test and verify](#test-and-verify)
 
-Rules for hyper link
+Rules for hyperlink
 --------------------
 1.  For relative path, always from working folder, i.e. start with `~/`.
 2.  Do NOT contain `..` or `//` in parts.
@@ -32,7 +32,7 @@ Prepare
 
 Update rtf document processor
 -----------------------------
-1.  Following rules for hyper link, add `FixLink` help method:
+1.  Following rules for hyperlink, add `FixLink` help method:
     ```c#
     private static void FixLink(XAttribute link, RelativePath filePath, HashSet<string> linkToFiles)
     {
@@ -106,6 +106,6 @@ Test and verify
 ---------------
 1.  Build project.
 2.  Copy dll to `Plugins` folder.
-3.  Modify rtf file, create hyper link (`Word` can create it), link to another rtf file, and save.
+3.  Modify rtf file, create hyperlink (`Word` can create it), link to another rtf file, and save.
 4.  Build with command `DocFX build`.
 5.  Verify output html file.

@@ -4,5 +4,5 @@
 ## [🔧 Advanced: Customize Your Website](advanced_walkthrough.md)
 # [User Manual](docfx.exe_user_manual.md)
 # [HowTo: Create Custom Plugin(howto_create_custom_plugin.md)
-## [🔧 Advanced: Support Hyper Link](advanced_support_hyper_link.md)
+## [🔧 Advanced: Support Hyper Link](advanced_support_hyperlink.md)
 # [HowTo: Create Custom Template](howto_create_custom_template.md)
