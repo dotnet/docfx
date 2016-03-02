@@ -5,12 +5,11 @@
   <div>{{{conceptual}}}</div>
   {{/conceptual}}
   {{^conceptual}}
-  <h1 id="{{htmlId}}" data-uid="{{uid}}">{{name}}</h1>
+  <h2 id="{{htmlId}}" data-uid="{{uid}}">{{name}}</h2>
   {{/conceptual}}
 </header>
 {{#children}}
 <header class="header" id="{{operationId}}">
-  <!--todo: update inline toc after discussion-->
   {{#conceptual}}
   <div>{{{conceptual}}}</div>
   {{/conceptual}}
@@ -25,8 +24,7 @@
   <section class="primary">
     <h4>Request</h4>
     <div>
-      <!--todo: change language according to highlight.js-->
-      <pre><code class="lang-cplusplus">{{operation}} {{path}}</code></pre>
+      <pre><code class="lang-http">{{operation}} {{path}}</code></pre>
     </div>
     {{#parameters.0}}
     <h4>Properties</h4>
@@ -72,13 +70,12 @@
     {{/responses.0}}
   </section>
   <section class="secondary">
-    <!--todo: swagger url-->
     <div class="api-example"
     {{#tryFeature}}
     data-api-interactive
     {{/tryFeature}}
     data-api-example-endpoint="{{_mockServerUrl}}"
-    data-api-swagger-url=""
+    data-api-swagger-url="{{_fileNameWithoutExt}}.json"
     data-api-operation-id="{{operationId}}"/>
   </section>
 </div>

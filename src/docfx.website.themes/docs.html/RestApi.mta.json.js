@@ -2,10 +2,8 @@
 function transform(model, _attrs) {
     var vm = {};
     vm.title = model.name;
-
-    // todo: update layout and langs
-    vm.layout = "Reference";
-    vm.langs = ["cplusplus"];
+    vm.layout = "Rest";
+    vm.langs = ["http"];
 
     if (!model.toc_asset_id) {
         vm.toc_asset_id = _attrs._tocPath;
@@ -97,13 +95,13 @@ function transform(model, _attrs) {
         }
     }
 
-    function getGithubUrlPrefix(repo) {
-        if (repo.match(/https:\/\/.*github\.com\/.*/g)) {
-            return repo;
-        }
-        if (repo.match(/git@.*github\.com:.*/g)) {
-            return 'https://' + repo.substr(4).replace(':', '/');
-        }
-        return '';
+  function getGithubUrlPrefix(repo) {
+    if (repo.match(/https:\/\/(|\S+\.)github\.com\/.*/g)) {
+      return repo;
     }
+    if (repo.match(/git@(|\S+\.)github\.com:.*/g)) {
+      return 'https://' + repo.substr(4).replace(':', '/');
+    }
+    return '';
+  }
 }
