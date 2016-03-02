@@ -236,7 +236,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public static SourceDetail GetSourceDetail(ISymbol symbol)
         {
-            if (symbol == null)
+            // For namespace, definition is meaningless
+            if (symbol == null || symbol.Kind == SymbolKind.Namespace)
             {
                 return null;
             }
