@@ -63,7 +63,6 @@ In general:
 
 * `master` has the code for the latest release on NuGet.org. (e.g. `1.0.0`, `1.1.0`)
 * `dev` has the code that is being worked on but not yet released. This is the branch into which devs normally submit pull requests and merge changes into. We run daily CI towards `dev` branch and generate pre-release nuget package, e.g. `1.0.1-alpha-9-abcdefsd`.
-* `hotfix` has the code for fixing `master` bug after it is released. `hotfix` changes will be merged back to `master` and `dev` once it is verified.
 
 ### Solution and project folder structure and naming
 Solution files go in the repo root. The default entry point is `All.sln`.
