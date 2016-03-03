@@ -13,7 +13,8 @@ function transform(model, _attrs) {
             vm[key] = model[key];
         }
     }
-    vm._fileNameWithoutExt = getFileNameWithoutExtension(_attrs._path);
+    var _fileNameWithoutExt = getFileNameWithoutExtension(_attrs._path);
+    vm._jsonPath = _fileNameWithoutExt + ".json";
     vm._disableToc = vm._disableToc || !vm._tocPath || (vm._navPath === vm._tocPath);
     vm.title = vm.title || vm.name;
 
@@ -134,7 +135,7 @@ function transform(model, _attrs) {
 
     function getFileNameWithoutExtension(path) {
         if (!path || path[path.length - 1] === '/' || path[path.length - 1] === '\\') return '';
-        var fileName = path.replace(/^.*[\\\/]/, '');
+        var fileName = path.split('\\').pop().split('/').pop();
         return fileName.slice(0, fileName.lastIndexOf('.'));
     }
 }

@@ -75,7 +75,7 @@
     data-api-interactive
     {{/tryFeature}}
     data-api-example-endpoint="{{_mockServerUrl}}"
-    data-api-swagger-url="{{_fileNameWithoutExt}}.json"
+    data-api-swagger-url="{{_jsonPath}}"
     data-api-operation-id="{{operationId}}"/>
   </section>
 </div>
