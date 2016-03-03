@@ -15,7 +15,7 @@
   {{#update_at}}
   <span class="contributorsLabel">{{__global.lastUpdated}}: {{{update_at}}}</span>
   {{/update_at}}
-  {{#contributors.length}}
+  {{#contributors.0}}
   <div id="contributorList">
     <span class="contributorSplitter">|</span>
     <div class="contributors">
@@ -28,10 +28,10 @@
             <span class="contributor-img" style="background-image:url('https://avatars.githubusercontent.com/u/{{id}}?v=3&amp;s=25')"/>
           </a>
         </li>
-      {{/contributors}}
+        {{/contributors}}
       </ul>
     </div>
   </div>
-  {{/contributors.length}}
+  {{/contributors.0}}
 </div>
 {{/_op_gitContributorInformation}}
