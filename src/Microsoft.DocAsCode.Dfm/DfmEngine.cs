@@ -25,16 +25,10 @@ namespace Microsoft.DocAsCode.Dfm
             return InternalMarkup(src, ImmutableStack<string>.Empty.Push(path));
         }
 
-        public string InternalMarkup(string src, ImmutableStack<string> parents)
-        {
-            DfmEngine engine = new DfmEngine(Context, Rewriter, Renderer, Options);
-            return Mark(Normalize(src), Context.SetFilePathStack(parents)).ToString();
-        }
+        internal string InternalMarkup(string src, ImmutableStack<string> parents) =>
+            InternalMarkup(src, Context.SetFilePathStack(parents));
 
-        public string InternalMarkup(string src, IMarkdownContext context)
-        {
-            DfmEngine engine = new DfmEngine(context, Rewriter, Renderer, Options);
-            return Mark(Normalize(src), context).ToString();
-        }
+        internal string InternalMarkup(string src, IMarkdownContext context) =>
+            Mark(Normalize(src), context).ToString();
     }
 }
