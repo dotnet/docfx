@@ -38,16 +38,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public int MaxExtractCount { get; set; } = 1;
 
-        public static string StaticNormalize(string markdown)
-        {
-            return markdown
-                .ReplaceRegex(Regexes.Lexers.NormalizeNewLine, "\n")
-                .Replace("\t", "    ")
-                .Replace("\u00a0", " ")
-                .Replace("\u2424", "\n");
-        }
-
-        public string Normalize(string markdown)
+        public static string Normalize(string markdown)
         {
             return markdown
                 .ReplaceRegex(Regexes.Lexers.NormalizeNewLine, "\n")

@@ -174,7 +174,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             YamlUtility.Serialize(propertiesSw, properties);
             var tagsSw = new StringWriter();
             YamlUtility.Serialize(tagsSw, tags);
-            return MarkdownEngine.StaticNormalize(propertiesSw.ToString() + "\n" + tagsSw.ToString());
+            return MarkdownEngine.Normalize(propertiesSw.ToString() + "\n" + tagsSw.ToString());
         }
 
         private string GenerateAzureLinkHref(IMarkdownContext context, string href, string rawMarkdown)
