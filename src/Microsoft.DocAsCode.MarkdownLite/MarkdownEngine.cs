@@ -36,6 +36,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public Dictionary<string, LinkObj> Links { get; }
 
+        public int MaxExtractCount { get; set; } = 1;
+
         public static string StaticNormalize(string markdown)
         {
             return markdown
@@ -66,8 +68,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var internalRewriteEngine =
                 new MarkdownRewriteEngine(
                     this,
-                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
-                        (e, t) => t.Extract(parser)));
+                    MarkdownTokenRewriterFactory.Loop(
+                        MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
+                            (e, t) => t.Extract(parser)),
+                    MaxExtractCount + 1));
             tokens = internalRewriteEngine.Rewrite(tokens);
             tokens = RewriteEngine.Rewrite(tokens);
             var renderer = Renderer;
