@@ -106,6 +106,34 @@ by a blank line.</p>
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestGfmWithSequenceRewrite()
+        {
+            const string source = @"
+# A
+## B
+### C";
+            const string expected = @"<h2 id=""a"">A</h2>
+<h4 id=""b"">B</h4>
+<h4 id=""c"">C</h4>
+";
+
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownTokenRewriterFactory.Sequence(
+                    MarkdownTokenRewriterFactory.FromLambda(
+                        (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) =>
+                            t.Depth <= 2 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.RawMarkdown) : null),
+                    MarkdownTokenRewriterFactory.FromLambda(
+                        (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) =>
+                            t.Depth == 3 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.RawMarkdown) : null)
+                );
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void ParseWithBadRewrite()
         {
             const string source = @"

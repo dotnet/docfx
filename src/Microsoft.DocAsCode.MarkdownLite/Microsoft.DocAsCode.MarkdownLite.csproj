@@ -59,6 +59,7 @@
     <Compile Include="Basic\BlockRules\MarkdownHrBlockRule.cs" />
     <Compile Include="Basic\BlockRules\MarkdownHtmlBlockRule.cs" />
     <Compile Include="Rewriters\MarkdownLambdaTokenRewriter.cs" />
+    <Compile Include="Rewriters\MarkdownSequenceTokenRewriter.cs" />
     <Compile Include="Rewriters\MarkdownNullTokenRewriter.cs" />
     <Compile Include="Rewriters\MarkdownLoopTokenRewriter.cs" />
     <Compile Include="Rewriters\MarkdownTokenRewriterFactory.cs" />
