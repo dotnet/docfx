@@ -33,6 +33,7 @@ function transform(model, _attrs) {
                     ordered[index] = child;
                 }
             }
+            vm.children[i] = transformReference(vm.children[i]);
         };
         if (vm._displayItems) {
             vm.children = ordered;
@@ -40,6 +41,50 @@ function transform(model, _attrs) {
     }
 
     return vm;
+
+    function transformReference(obj) {
+        if(Array.isArray(obj)) {
+            for(var i = 0; i < obj.length; i++) {
+                obj[i] = transformReference(obj[i]);
+            }
+        }
+        else if(typeof obj === "object") {
+            for(var key in obj) {
+                if(obj.hasOwnProperty(key)) {
+                    if(key === "schema") {
+                        // transform schema.properties from obj to key value pair
+                        obj[key] = transformProperties(obj[key]);
+                    }
+                    else {
+                        obj[key] = transformReference(obj[key]);
+                    }
+                }
+            }
+        }
+        return obj;
+    }
+
+    function transformProperties(obj) {
+        if(obj.properties) {
+            var array = [];
+            for(var key in obj.properties) {
+                if(obj.properties.hasOwnProperty(key)) {
+                    var value =  obj.properties[key];
+                    value = transformPropertiesValue(value);
+                    array.push({key:key, value:value});
+                }
+            }
+            obj.properties = array;
+        }
+        return obj;
+    }
+
+    function transformPropertiesValue(obj) {
+        if (obj.type === "array" && obj.items && obj.items.properties) {
+            obj.items = transformProperties(obj.items);
+        }
+        return obj;
+    }
 
     function getImproveTheDocHref(item, newFileRepository) {
         if (!item) return '';
