@@ -67,5 +67,25 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return new MarkdownLoopTokenRewriter(rewriter, maxLoopCount);
         }
+
+        public static IMarkdownTokenRewriter Sequence(params IMarkdownTokenRewriter[] rewriters)
+        {
+            if (rewriters == null)
+            {
+                throw new ArgumentNullException(nameof(rewriters));
+            }
+            if (rewriters.Length == 0)
+            {
+                throw new ArgumentException("Empty array is not allowed.", nameof(rewriters));
+            }
+            for (int i = 0; i < rewriters.Length; i++)
+            {
+                if (rewriters[i] == null)
+                {
+                    throw new ArgumentException("Null item is not allowed.", nameof(rewriters));
+                }
+            }
+            return new MarkdownSequenceTokenRewriter(rewriters.ToImmutableArray());
+        }
     }
 }
