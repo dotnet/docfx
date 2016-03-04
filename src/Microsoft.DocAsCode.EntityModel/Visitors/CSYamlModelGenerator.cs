@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -261,18 +262,7 @@ namespace Microsoft.DocAsCode.EntityModel
             {
                 case MemberType.Class:
                     {
-                        var typeSymbol = (INamedTypeSymbol)symbol;
-                        syntaxStr = SyntaxFactory.ClassDeclaration(
-                            new SyntaxList<AttributeListSyntax>(),
-                            SyntaxFactory.TokenList(GetTypeModifiers(typeSymbol)),
-                            SyntaxFactory.Identifier(typeSymbol.Name),
-                            GetTypeParameters(typeSymbol),
-                            GetBaseTypeList(typeSymbol),
-                            SyntaxFactory.List(GetTypeParameterConstraints(typeSymbol)),
-                            new SyntaxList<MemberDeclarationSyntax>())
-                            .NormalizeWhitespace()
-                            .ToString();
-                        syntaxStr = RemoveBraces(syntaxStr);
+                        syntaxStr = GetClassSyntax(symbol);
                         break;
                     }
                 case MemberType.Enum:
@@ -524,6 +514,74 @@ namespace Microsoft.DocAsCode.EntityModel
 
         #region Private methods
 
+        private string GetClassSyntax(ISymbol symbol)
+        {
+            var typeSymbol = (INamedTypeSymbol)symbol;
+            var result = SyntaxFactory.ClassDeclaration(
+                GetAttributes(symbol),
+                SyntaxFactory.TokenList(GetTypeModifiers(typeSymbol)),
+                SyntaxFactory.Identifier(typeSymbol.Name),
+                GetTypeParameters(typeSymbol),
+                GetBaseTypeList(typeSymbol),
+                SyntaxFactory.List(GetTypeParameterConstraints(typeSymbol)),
+                new SyntaxList<MemberDeclarationSyntax>())
+                .NormalizeWhitespace()
+                .ToString();
+            result = RemoveBraces(result);
+            return result;
+        }
+
+        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol)
+        {
+            var attrs = symbol.GetAttributes();
+            if (attrs.Length > 0)
+            {
+                var attrList = (from attr in attrs
+                                where VisitorHelper.CanVisit(attr.AttributeConstructor)
+                                select GetAttributeSyntax(attr)).ToList();
+                if (attrList.Count > 0)
+                {
+                    return SyntaxFactory.List(
+                        from attr in attrList
+                        select SyntaxFactory.AttributeList(
+                            SyntaxFactory.SingletonSeparatedList(attr)));
+                }
+            }
+            return new SyntaxList<AttributeListSyntax>();
+        }
+
+        private static AttributeSyntax GetAttributeSyntax(AttributeData attr)
+        {
+            var attrTypeName = NameVisitorCreator.GetCSharp(NameOptions.None).GetName(attr.AttributeClass);
+            if (attrTypeName.EndsWith(nameof(Attribute)))
+            {
+                attrTypeName = attrTypeName.Remove(attrTypeName.Length - nameof(Attribute).Length);
+            }
+            if (attr.ConstructorArguments.Length == 0 && attr.NamedArguments.Length == 0)
+            {
+                return SyntaxFactory.Attribute(SyntaxFactory.ParseName(attrTypeName));
+            }
+            return SyntaxFactory.Attribute(
+                SyntaxFactory.ParseName(attrTypeName),
+                SyntaxFactory.AttributeArgumentList(
+                    SyntaxFactory.SeparatedList(
+                        (from item in attr.ConstructorArguments
+                         select SyntaxFactory.AttributeArgument(GetLiteralExpression(item.Value))
+                        ).Concat(
+                            from item in attr.NamedArguments
+                            select SyntaxFactory.AttributeArgument(
+                                SyntaxFactory.NameEquals(
+                                    SyntaxFactory.IdentifierName(item.Key)
+                                ),
+                                SyntaxFactory.NameColon("="),
+                                GetLiteralExpression(item.Value)
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
         private static string GetMemberName(IMethodSymbol symbol)
         {
             string name = symbol.Name;
@@ -680,109 +738,104 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static EqualsValueClauseSyntax GetDefaultValueClauseCore(object value)
         {
+            var expr = GetLiteralExpression(value);
+            if (expr != null)
+            {
+                return SyntaxFactory.EqualsValueClause(expr);
+            }
+            return null;
+        }
+
+        private static LiteralExpressionSyntax GetLiteralExpression(object value)
+        {
             if (value == null)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NullLiteralExpression,
-                        SyntaxFactory.Token(SyntaxKind.NullKeyword)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NullLiteralExpression,
+                    SyntaxFactory.Token(SyntaxKind.NullKeyword));
             }
             if (value is bool)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        (bool)value ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression));
+                return SyntaxFactory.LiteralExpression(
+                    (bool)value ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
             }
             if (value is long)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((long)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((long)value));
             }
             if (value is ulong)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((ulong)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((ulong)value));
             }
             if (value is int)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((int)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((int)value));
             }
             if (value is uint)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((uint)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((uint)value));
             }
             if (value is short)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((short)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((short)value));
             }
             if (value is ushort)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((ushort)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((ushort)value));
             }
             if (value is byte)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((byte)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((byte)value));
             }
             if (value is sbyte)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((sbyte)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((sbyte)value));
             }
             if (value is double)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((double)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((double)value));
             }
             if (value is float)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((float)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((float)value));
             }
             if (value is decimal)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((decimal)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((decimal)value));
             }
             if (value is char)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.CharacterLiteralExpression,
-                        SyntaxFactory.Literal((char)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.CharacterLiteralExpression,
+                    SyntaxFactory.Literal((char)value));
             }
             if (value is string)
             {
-                return SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(
-                        SyntaxKind.StringLiteralExpression,
-                        SyntaxFactory.Literal((string)value)));
+                return SyntaxFactory.LiteralExpression(
+                    SyntaxKind.StringLiteralExpression,
+                    SyntaxFactory.Literal((string)value));
             }
             Debug.Fail("Unknown default value!");
             return null;

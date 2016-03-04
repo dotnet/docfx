@@ -30,12 +30,15 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         public void TestGenereateMetadataAsyncWithFuncVoidReturn()
         {
             string code = @"
+using System;
+
 namespace Test1
 {
     /// <summary>
     /// This is a test
     /// </summary>
     /// <seealso cref=""Func1(int)""/>
+    [Serializable]
     public class Class1
     {
         /// <summary>
@@ -59,6 +62,8 @@ namespace Test1
 This is a test
 ", @class.Summary);
             Assert.Equal("Test1.Class1.Func1(System.Int32)", @class.SeeAlsos[0].Type);
+            Assert.Equal(@"[Serializable]
+public class Class1", @class.Syntax.Content[SyntaxLanguage.CSharp]);
 
             var function = output.Items[0].Items[0].Items[0];
             Assert.NotNull(function);
