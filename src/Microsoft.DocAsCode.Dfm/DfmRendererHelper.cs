@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
