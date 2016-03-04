@@ -103,8 +103,8 @@
 
             var currentFolderTocPath = Path.Combine(rootFolder.FullName, "TOC.md");
             var currentFolderMdFiles = rootFolder.EnumerateFiles("*.md", SearchOption.TopDirectoryOnly)
-                                        .Where(fileInfo => !string.Equals(fileInfo.Name, "TOC.md", StringComparison.OrdinalIgnoreCase));
-            if (currentFolderMdFiles.Count() == 0)
+                                        .Where(fileInfo => !string.Equals(fileInfo.Name, "TOC.md", StringComparison.OrdinalIgnoreCase)).ToList();
+            if (currentFolderMdFiles.Count == 0)
             {
                 return;
             }

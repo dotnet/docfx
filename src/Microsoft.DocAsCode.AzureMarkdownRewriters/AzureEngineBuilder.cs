@@ -59,6 +59,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
             var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
             blockRules[markdownBlockQuoteIndex] = new AzureBlockquoteBlockRule();
+            blockRules.Insert(markdownBlockQuoteIndex, new AzureVideoBlockRule());
 
             BlockRules = blockRules.ToImmutableList();
         }
@@ -214,7 +215,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             // deal with different kinds of relative paths
             var currentFilePath = (string)context.Variables["path"];
             var azureFileInfoMapping = (IReadOnlyDictionary<string, AzureFileInfo>)context.Variables["azureFileInfoMapping"];
-            if (!azureFileInfoMapping.ContainsKey(hrefFileName))
+            if (azureFileInfoMapping == null || !azureFileInfoMapping.ContainsKey(hrefFileName))
             {
                 Logger.LogWarning($"Can't fild reference file: {href} in azure file system for file {currentFilePath}. Raw: {rawMarkdown}");
                 return href;

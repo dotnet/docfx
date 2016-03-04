@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
+    using System.Collections.Generic;
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
@@ -20,6 +21,36 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         public virtual StringBuffer Render(IMarkdownRenderer render, AzureIncludeBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = RenderAzureIncludeToken(token, context);
+            return content + "\n\n";
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, AzureVideoBlockToken token, MarkdownBlockContext context)
+        {
+            StringBuffer content = StringBuffer.Empty;
+
+            object path;
+            if (!context.Variables.TryGetValue("path", out path))
+            {
+                path = string.Empty;
+            }
+
+            if (!context.Variables.ContainsKey("azureVideoInfoMapping"))
+            {
+                Logger.LogWarning($"Can't fild azure video info mapping. Raw: {token.RawMarkdown}");
+                content = token.RawMarkdown;
+                return content + "\n\n";
+            }
+
+            var azureVideoInfoMapping = (IReadOnlyDictionary<string, AzureVideoInfo>)context.Variables["azureVideoInfoMapping"];
+            if (azureVideoInfoMapping == null || !azureVideoInfoMapping.ContainsKey(token.VideoId))
+            {
+                Logger.LogWarning($"Can't fild azure video info mapping for file {path}. Raw: {token.RawMarkdown}");
+                content = token.RawMarkdown;
+                return content + "\n\n";
+            }
+
+            var azureVideoInfo = azureVideoInfoMapping[token.VideoId];
+            content += $@"<iframe width=""{azureVideoInfo.Width}"" height=""{azureVideoInfo.Height}"" src=""{azureVideoInfo.Link}"" frameborder=""0"" allowfullscreen=""true""></iframe>";
             return content + "\n\n";
         }
 
