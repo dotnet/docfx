@@ -43,15 +43,15 @@ function transform(model, _attrs) {
     return vm;
 
     function transformReference(obj) {
-        if(Array.isArray(obj)) {
-            for(var i = 0; i < obj.length; i++) {
+        if (Array.isArray(obj)) {
+            for (var i = 0; i < obj.length; i++) {
                 obj[i] = transformReference(obj[i]);
             }
         }
-        else if(typeof obj === "object") {
-            for(var key in obj) {
-                if(obj.hasOwnProperty(key)) {
-                    if(key === "schema") {
+        else if (typeof obj === "object") {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    if (key === "schema") {
                         // transform schema.properties from obj to key value pair
                         obj[key] = transformProperties(obj[key]);
                     }
@@ -65,11 +65,25 @@ function transform(model, _attrs) {
     }
 
     function transformProperties(obj) {
-        if(obj.properties) {
+        if (obj.properties) {
+            if (obj.required && Array.isArray(obj.required)) {
+                for (var i = 0; i < obj.required.length; i++) {
+                    var field = obj.required[i];
+                    if (obj.properties[field]) {
+                        // add required field as property
+                        obj.properties[field].required = true;
+                    }
+                }
+                delete obj.required;
+            }
             var array = [];
-            for(var key in obj.properties) {
-                if(obj.properties.hasOwnProperty(key)) {
-                    var value =  obj.properties[key];
+            for (var key in obj.properties) {
+                if (obj.properties.hasOwnProperty(key)) {
+                    var value = obj.properties[key];
+                    if (!value.description) {
+                        // set description to null incase mustache looks up
+                        value.description = null;
+                    }
                     value = transformPropertiesValue(value);
                     array.push({key:key, value:value});
                 }
