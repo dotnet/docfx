@@ -61,9 +61,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory);
                 }
+                catch (Exception e) when (e is DocfxException || e is DocumentException)
+                {
+                    throw new DocfxException(e.Message);
+                }
                 catch (Exception e)
                 {
-                    // For non-serializable exception, wrap it and throw docfx exception instead
                     throw new DocfxException(e.ToString());
                 }
             }
@@ -85,23 +88,6 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
 
                 builder.Build(parameters);
-            }
-        }
-
-        private static bool CheckSerializability(object graph)
-        {
-            var binaryFormatter = new BinaryFormatter();
-            try
-            {
-                using (var ms = new MemoryStream())
-                {
-                    binaryFormatter.Serialize(ms, graph);
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
             }
         }
 

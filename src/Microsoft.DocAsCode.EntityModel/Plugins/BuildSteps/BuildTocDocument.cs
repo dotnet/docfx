@@ -64,9 +64,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     tocPath = absHref.GetPathFromWorkingFolder();
                     if (!hostService.SourceFiles.TryGetValue(tocPath, out originalTocFile))
                     {
-                        var error = $"Unable to find either toc.yml or toc.md inside {item.Href}. Make sure the file is included in config file docfx.json!";
-                        Logger.LogError(error, file: model.LocalPathFromRepoRoot);
-                        throw new DocumentException(error);
+                        var message = $"Unable to find either toc.yml or toc.md inside {item.Href}. Make sure the file is included in config file docfx.json!";
+                        Logger.LogWarning(message, file: model.LocalPathFromRepoRoot);
+                        return;
                     }
                 }
 

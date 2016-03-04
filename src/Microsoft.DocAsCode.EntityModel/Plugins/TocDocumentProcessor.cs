@@ -108,27 +108,30 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             if (item.Uid != null)
             {
                 var xref = GetXrefFromUid(item.Uid, model, context);
-                item.Href = xref.Href;
-                if (string.IsNullOrEmpty(item.Name))
+                if (xref != null)
                 {
-                    item.Name = xref.Name;
-                }
+                    item.Href = xref.Href;
+                    if (string.IsNullOrEmpty(item.Name))
+                    {
+                        item.Name = xref.Name;
+                    }
 
-                string nameForCSharp;
-                if (string.IsNullOrEmpty(item.NameForCSharp) && xref.TryGetValue("name.csharp", out nameForCSharp))
-                {
-                    item.NameForCSharp = nameForCSharp;
-                }
-                string nameForVB;
-                if (string.IsNullOrEmpty(item.NameForVB) && xref.TryGetValue("name.vb", out nameForVB))
-                {
-                    item.NameForVB = nameForVB;
+                    string nameForCSharp;
+                    if (string.IsNullOrEmpty(item.NameForCSharp) && xref.TryGetValue("name.csharp", out nameForCSharp))
+                    {
+                        item.NameForCSharp = nameForCSharp;
+                    }
+                    string nameForVB;
+                    if (string.IsNullOrEmpty(item.NameForVB) && xref.TryGetValue("name.vb", out nameForVB))
+                    {
+                        item.NameForVB = nameForVB;
+                    }
                 }
             }
 
             if (item.HomepageUid != null)
             {
-                item.Homepage = GetXrefFromUid(item.HomepageUid, model, context).Href;
+                item.Homepage = GetXrefFromUid(item.HomepageUid, model, context)?.Href;
             }
         }
 
@@ -137,7 +140,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var xref = context.GetXrefSpec(uid);
             if (xref == null)
             {
-                throw new DocumentException($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                Logger.LogWarning($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
             }
             return xref;
         }
@@ -158,7 +161,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
             if (href == null)
             {
-                throw new DocumentException($"Unable to find file \"{originalPathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                Logger.LogWarning($"Unable to find file \"{originalPathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                return originalPathToFile;
             }
 
             var relativePath = GetRelativePath(href, model.File);

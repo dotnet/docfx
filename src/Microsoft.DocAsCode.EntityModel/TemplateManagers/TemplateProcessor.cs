@@ -239,7 +239,7 @@ namespace Microsoft.DocAsCode.EntityModel
             // 2. process resource
             if (item.ResourceFile != null)
             {
-                PathUtility.CopyFile(Path.Combine(item.InputFolder, item.ResourceFile), Path.Combine(outputDirectory, item.ResourceFile), true);
+                // Resource file has already been processed in its plugin
                 manifestItem.OutputFiles.Add("resource", item.ResourceFile);
             }
 
@@ -438,7 +438,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 }
                 else
                 {
-                    Logger.LogWarning($"File {path} is not found.");
+                    Logger.LogWarning($"File {path} is not found in {relativePath}.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
                     link.SetAttributeValue(attribute, path);

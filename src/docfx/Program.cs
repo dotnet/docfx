@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode
                 Logger.UnregisterAllListeners();
             }
         }
-        
+
         private static int ExecSubCommand(string[] args)
         {
             var consoleLogListener = new ConsoleLogListener();
