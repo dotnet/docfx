@@ -2,17 +2,61 @@
 ===============================
 
 In this topic, we will support hyperlink in rtf files.
-E.g. open `foo.rtf` by `Word`, add a hyperlink in content, set the link target to an existed `bar.rtf`, then save the document.
 
-Rules for hyperlink
---------------------
-1.  For relative path, always from working folder, i.e. start with `~/`.
-2.  Do NOT contain `..` or `//` in parts.
-3.  Do NOT use `\`.
-4.  Report link while saving.
-5.  ONLY report relative path and from working folder.
-6.  Do NOT encode while reporting.
-7.  Do NOT report anchor.
+Create hyperlink in rtf file:
+1.  Open `foo.rtf` by `Word`.
+2.  Add a hyperlink in content
+3.  Set the link target to an existed `bar.rtf`
+4.  Save the document.
+
+About link
+----------
+For document, writer can write any valid hyperlink, and `DocFX build` need to update file links.
+
+### What is file link:
+1.  The hyperlink must be relative path and not rooted.
+    * valid: `foo\bar.rtf`, `../foobar.rtf`
+    * invalid: `/foo.rtf`, `c:\foo\bar.rtf`, `http://foo.bar/`, `mailto:foo@bar.foobar`
+2.  File must be existed.
+
+### Why update file link:
+
+The story is:
+1.  In `foo.rtf`, has a file link to `bar.rtf`.
+2.  In document build, `bar.rtf` generate a file with name `bar.html`.
+3.  But in `foo.rtf`, the link target is still `bar.rtf`, and in output folder we cannot find this file, we will get a broken link.
+4.  To resolve the broken link, we need to update the link target from `bar.rtf` to `bar.html`.
+
+File link is relative path, but we cannot tracking relative path easily.
+So we track *normalized file path* instead.
+
+### What is *normalized file path*:
+1.  Always from working folder (the folder contains `docfx.json`), and we write it as `~/`.
+2.  No `../` or `./` or `//`
+3.  Replace `\` to `/`.
+4.  No url encoding, must be same as it in file system.
+5.  No anchor.
+
+Finally, a valid *normalized file path* looks like: `~/foo/bar.rtf`.
+
+* Pros
+  * Same form in different documents when target is same file.
+
+    When file structure is:
+    ```
+    z:\a\b\foo.rtf
+    z:\a\b\c\bar.rtf
+    z:\a\b\c\foobar.rtf
+    ```
+    Link target `c/foobar.rtf` in `foo.rtf` and link target `foobar.rtf` in `bar.rtf` is the same file.
+    When working folder is `z:\a\`, link target is always `~/b/c/foobar.rtf`.
+
+  * Avoid difference writing for same file.
+
+    For example, following hyperlinks target a same file: `a/foo.rtf`, `./a/foo.rtf`, `a/b/../foo.rtf`, `a//foo.rtf`, `a\foo.rtf`
+
+* Cons
+  * folder with name `~` is not supported.
 
 Prepare
 -------
@@ -46,6 +90,6 @@ Test and verify
 ---------------
 1.  Build project.
 2.  Copy dll to `Plugins` folder.
-3.  Modify rtf file, create hyperlink (`Word` can create it), link to another rtf file, and save.
+3.  Modify rtf file, create hyperlink, link to another rtf file, and save.
 4.  Build with command `DocFX build`.
 5.  Verify output html file.

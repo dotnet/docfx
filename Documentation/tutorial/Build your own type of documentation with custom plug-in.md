@@ -10,8 +10,8 @@ Goal and limitation
     2.  The rtf files will be build as html document.
 2.  Out of scope:
     1.  No picture or other object in rtf files.
-    2.  No hyperlink in rtf files. (in [advanced tutorial](advanced_support_hyperlink.md), we will support it.)
-    3.  No metadata. (in advanced tutorial, we will support it.)
+    2.  No hyperlink in rtf files. (in [advanced tutorial](advanced_support_hyperlink.md), we will describe how to support hyperlinks in custom plugin.)
+    3.  No metadata.
 
 Preparation
 -----------
@@ -23,20 +23,20 @@ Preparation
 
 3.  Add `Microsoft.DocAsCode.Plugins`
     If build DocFX from source code, add reference to the project.
-    Otherwise, add nuget package `Microsoft.DocAsCode.Plugins` same version with DocFX.
+    Otherwise, add nuget package `Microsoft.DocAsCode.Plugins` with the same version of DocFX.
 
 4.  Add framework assembly reference:
     `PresentationCore`, `PresentationFramework`, `WindowsBase`
 
 5.  Add project for convert rtf to html:
-    Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), then reference it.
+    Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), and reference it.
 
-6.  Add code file StaTaskScheduler.cs from [ParExtSamples](https://code.msdn.microsoft.com/ParExtSamples)
+6.  Copy code file StaTaskScheduler.cs from [ParExtSamples](https://code.msdn.microsoft.com/ParExtSamples)
 
 Create a document processor
 ---------------------------
 
-Document processor is responsible for:
+### The responsibility of document processor
 
 * Declare which file can handle.
 * Load from file to object model.
@@ -44,7 +44,7 @@ Document processor is responsible for:
 * Report document type, file links and xref links in document.
 * Update references.
 
-Create our RtfDocumentProcessor:
+### Create our RtfDocumentProcessor
 
 1.  Create a new class (RtfDocumentProcessor.cs) with following code:
     ```csharp
@@ -87,13 +87,32 @@ View final [RtfDocumentProcessor.cs](../codesnippet/Rtf/RtfDocumentProcessor.cs)
 Create a document build step
 ----------------------------
 
-Build step is responsible for:
+### The responsibility of build step
 
-* Reconstruction documents via `Prebuild` method.
-* Transform document content via `Build` method.
-* Do transform which require all document done via `PostBuild` method.
+* Reconstruction documents via `Prebuild` method, e.g.: remove some document by certain rule.
+* Transform document content via `Build` method, e.g.: transform rtf content to html content.
+* Transform more content which require all document done via `PostBuild` method, e.g.: abstract title in other document.
 
-Create our RtfBuildStep:
+* About build order:
+  1. For all documents in one processor always `Prebuild` -> `Build` -> `Postbuild`.
+  2. For all documents in one processor always invoke `Prebuild` by `BuildOrder`.
+  3. For each document in one processor always invoke `Build` by `BuildOrder`.
+  4. For all documents in one processor always invoke `Postbuild` by `BuildOrder`.
+
+  e.g.: document processor *X* have two step: A (with BuildOrder=1), B (with BuildOrder=2), when *X* handling documents [D1, D2, D3], the invoke order can be following:
+  ```
+  A.Prebuild([D1, D2, D3])
+  B.Prebuild([D1, D2, D3])
+  Parallel(
+    A.Build(D1) -> B.Build(D1),
+    A.Build(D2) -> B.Build(D2),
+    A.Build(D3) -> B.Build(D3)
+  )
+  A.Postbuild([D1, D2, D3])
+  B.Postbuild([D1, D2, D3])
+  ```
+
+### Create our RtfBuildStep:
 
 1.  Create a new class (RtfBuildStep.cs), and declare it is for `RtfDocumentProcessor`:
     ```csharp
@@ -113,21 +132,16 @@ Create our RtfBuildStep:
 View final [RtfBuildStep.cs](../codesnippet/Rtf/RtfBuildStep.cs)
 
 
-Enable plug-in 1
-----------------
+Enable plug-in
+--------------
 1.  Build our project.
-2.  Copy the output dll files.
-3.  Open DocFX.exe folder.
-4.  Create a folder with name `Plugins`.
-5.  Paste our dll file.
+2.  Copy the output dll files to:
+    * Global: the folder with name `Plugins` under DocFX.exe
+    * Non-global: the folder with name `Plugins` under a template folder, then run `DocFX build` command with parameter `-t {template}`.
 
-Enable plug-in 2
-----------------
-1.  Build our project.
-2.  Copy the output dll files to any folder.
-3.  Run `DocFX build` command with `-t Default,{plugin folder}`
+      *Hint*: DocFX can merge templates, that means create a template only contains `Plugins` folder, then run command `DocFX build` with parameter `-t {templateForRender},{templateForPlugins}`. 
 
 Build document
 --------------
-1. Run command `DocFX init` or modify `docfx.json` file, add `"**.rtf"` in `build/content/files`.
+1. Run command `DocFX init`, set source article with `**.rtf`.
 2. Run command `DocFX build`.

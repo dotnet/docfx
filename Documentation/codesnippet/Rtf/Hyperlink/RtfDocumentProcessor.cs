@@ -73,9 +73,11 @@ namespace RtfDocumentProcessors
             {
                 FixLink(link, path, linkToFiles);
             }
-            var sw = new StringWriter();
-            doc.Save(sw);
-            ((Dictionary<string, object>)model.Content)["conceptual"] = sw.ToString();
+            using (var sw = new StringWriter())
+            {
+                doc.Save(sw);
+                ((Dictionary<string, object>)model.Content)["conceptual"] = sw.ToString();
+            }
             return linkToFiles;
         }
         #endregion
