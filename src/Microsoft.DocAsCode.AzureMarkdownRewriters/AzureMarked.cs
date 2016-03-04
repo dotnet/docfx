@@ -12,7 +12,11 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         private static readonly AzureEngineBuilder _builder = new AzureEngineBuilder(new Options() { Mangle = false });
         private static readonly AzureMarkdownRenderer _renderer = new AzureMarkdownRenderer();
 
-        public static string Markup(string src, string path = null, IReadOnlyDictionary<string, AzureFileInfo> azureFileInfoMapping = null)
+        public static string Markup(
+            string src,
+            string path = null,
+            IReadOnlyDictionary<string, AzureFileInfo> azureFileInfoMapping = null,
+            IReadOnlyDictionary<string, AzureVideoInfo> azureVideoInfoMapping = null)
         {
             var engine = (MarkdownEngine)_builder.CreateEngine(_renderer);
             var context = engine.Context;
@@ -25,6 +29,12 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             {
                 context = context.CreateContext(context.Variables.SetItem("azureFileInfoMapping", azureFileInfoMapping));
             }
+
+            if (azureVideoInfoMapping != null)
+            {
+                context = context.CreateContext(context.Variables.SetItem("azureVideoInfoMapping", azureVideoInfoMapping));
+            }
+
             return engine.Mark(MarkdownEngine.Normalize(src), context);
         }
     }

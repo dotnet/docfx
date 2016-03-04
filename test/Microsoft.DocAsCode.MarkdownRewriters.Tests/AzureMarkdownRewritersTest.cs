@@ -38,6 +38,7 @@ this is new line originally
 > This is a new line
 > 
 > 
+
 ";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -67,7 +68,10 @@ This is no-nested line
 > > > 
 > > > 
 > > 
+> > 
 > 
+> 
+
 ";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -88,6 +92,7 @@ This is azure warning";
 > This is azure warning
 > 
 > 
+
 ";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -116,6 +121,7 @@ This is azure TIP";
 > This is azure TIP
 > 
 > 
+
 ";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -152,7 +158,10 @@ This is TIP
 > > > 
 > > > 
 > > 
+> > 
 > 
+> 
+
 ";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -571,6 +580,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 > * [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started/.md)
 > 
 > 
+
 ";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -604,6 +614,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 > * [(Xamarin Android | Javascript)](./partner-xamarin-mobile-services-android-get-started-push.md)
 > 
 > 
+
 ";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -831,6 +842,46 @@ ms.author: rogardle
 ";
 
             var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureVideoLink()
+        {
+            var azureVideoInfoMapping =
+                new Dictionary<string, AzureVideoInfo>{
+                    {
+                        "azure-ad--introduction-to-dynamic-memberships-for-groups",
+                        new AzureVideoInfo
+                        {
+                            Id = "azure-ad--introduction-to-dynamic-memberships-for-groups",
+                            Link = "https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/"
+                        }
+                    }
+                };
+
+            var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+            var expected = @"<iframe width=""0"" height=""0"" src=""https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/"" frameborder=""0"" allowfullscreen=""true""></iframe>
+
+";
+
+            var result = AzureMarked.Markup(source, null, null, azureVideoInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_NormalBlockquoteWith()
+        {
+            var source = @"> [Just a test for blockquote]";
+            var expected = @"> [Just a test for blockquote]
+> 
+> 
+
+";
+
+            var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
     }

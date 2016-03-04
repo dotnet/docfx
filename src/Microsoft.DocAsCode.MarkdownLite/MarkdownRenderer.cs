@@ -212,7 +212,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     content += item;
                 }
             }
-            return content + "\n";
+            return content + "\n\n";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownListBlockToken token, MarkdownBlockContext context)

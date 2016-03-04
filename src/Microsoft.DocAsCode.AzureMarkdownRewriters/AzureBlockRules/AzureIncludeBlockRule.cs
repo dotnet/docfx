@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     public class AzureIncludeBlockRule : IMarkdownRule
     {
-        public virtual string Name => "AZURE.INCLUDE";
+        public virtual string Name => "AZURE.INCLUDE.BLOCK";
 
         private static readonly Regex _azureIncludeRegex = new Regex(@"^\[AZURE.INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([^)]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

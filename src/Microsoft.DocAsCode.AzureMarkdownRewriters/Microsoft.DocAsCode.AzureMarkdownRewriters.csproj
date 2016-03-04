@@ -37,11 +37,13 @@
     <Compile Include="AzureBlockRules\AzureSelectorBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureNoteBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureParagraphBlockRule.cs" />
+    <Compile Include="AzureBlockRules\AzureVideoBlockRule.cs" />
     <Compile Include="AzureBlockTokens\AzureBlockquoteBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureHtmlMetadataBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureIncludeBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureSelectorBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureNoteBlockToken.cs" />
+    <Compile Include="AzureBlockTokens\AzureVideoBlockToken.cs" />
     <Compile Include="AzureFileInfo.cs" />
     <Compile Include="AzureInlineRules\AzureIncludeInlineRule.cs" />
     <Compile Include="AzureBlockRules\AzureIncludeBlockRule.cs" />
@@ -49,6 +51,7 @@
     <Compile Include="AzureInlineTokens\AzureIncludeInlineToken.cs" />
     <Compile Include="AzureMarkdownRenderer.cs" />
     <Compile Include="AzureMarked.cs" />
+    <Compile Include="AzureVideoInfo.cs" />
     <Compile Include="BasicTokens\AzureIncludeBasicToken.cs" />
   </ItemGroup>
   <ItemGroup>
