@@ -25,7 +25,27 @@ namespace Microsoft.DocAsCode.Dfm
                 var name = string.IsNullOrEmpty(token.Name) ? null : $" name=\"{StringHelper.HtmlEncode(token.Name)}\"";
                 var title = string.IsNullOrEmpty(token.Title) ? null : $" title=\"{StringHelper.HtmlEncode(token.Title)}\"";
 
-                renderedCodeLines = $"<pre><code{lang}{name}{title}>{StringHelper.HtmlEncode(string.Join("\n", codeLines))}\n</code></pre>";
+                var nonBlank  = codeLines.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+                var trimChars = 0;
+
+                while (nonBlank.Count > 0)
+                {
+                    // thisChar is whatever the first string has in this position
+                    var thisChar = nonBlank[0][trimChars];
+
+                    // if we're not dealing with a space or a tab, then we can be done now
+                    if (thisChar != ' ' && thisChar != '\t')
+                        break;
+
+                    // if one of the lines doesn't have thisChar at the current position, then we can be done
+                    if (!nonBlank.All(s => s[trimChars] == thisChar))
+                        break;
+
+                    // otherwise, advance our position
+                    trimChars++;
+                }
+
+                renderedCodeLines = $"<pre><code{lang}{name}{title}>{StringHelper.HtmlEncode(string.Join("\n", codeLines.Select(l => l.Length >= trimChars ? l.Substring(trimChars) : l)))}\n</code></pre>";
             }
 
             return $"{renderedErrorMessage}{renderedCodeLines}";
