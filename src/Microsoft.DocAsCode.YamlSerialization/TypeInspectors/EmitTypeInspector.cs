@@ -455,7 +455,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
         private sealed class EmitPropertyDescriptor : IPropertyDescriptor
         {
-            private readonly Dictionary<Type, Attribute> _attributeCache = new Dictionary<Type, Attribute>();
+            private readonly ConcurrentDictionary<Type, Attribute> _attributeCache = new ConcurrentDictionary<Type, Attribute>();
 
             internal PropertyInfo Property { get; set; }
 
@@ -479,14 +479,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
             public T GetCustomAttribute<T>() where T : Attribute
             {
-                Attribute attribute;
-                if (_attributeCache.TryGetValue(typeof(T), out attribute))
-                {
-                    return (T)attribute;
-                }
-                var result = Property.GetCustomAttribute<T>();
-                _attributeCache[typeof(T)] = result;
-                return result;
+                return (T)_attributeCache.GetOrAdd(typeof(T), (s) => Property.GetCustomAttribute<T>());
             }
 
             public IObjectDescriptor Read(object target)
