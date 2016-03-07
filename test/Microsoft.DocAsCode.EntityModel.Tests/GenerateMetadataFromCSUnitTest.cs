@@ -27,6 +27,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();
 
         [Fact]
+        [Trait("Related", "Attribute")]
         public void TestGenereateMetadataAsyncWithFuncVoidReturn()
         {
             string code = @"
@@ -2159,6 +2160,33 @@ namespace Test1
                 Assert.Equal(1, type.Inheritance.Count);
                 Assert.Equal("System.Object", type.Inheritance[0]);
             }
+        }
+
+        [Fact]
+        [Trait("Related", "Attribute")]
+        public void TestGenereateMetadataAsyncWithAttributes()
+        {
+            string code = @"
+using System;
+using System.ComponentModel;
+
+namespace Test1
+{
+    [Serializable]
+    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    public class TestAttribute : Attribute
+    {
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var @class = output.Items[0].Items[0];
+            Assert.NotNull(@class);
+            Assert.Equal("TestAttribute", @class.DisplayNames.First().Value);
+            Assert.Equal("Test1.TestAttribute", @class.DisplayQualifiedNames.First().Value);
+            Assert.Equal(@"[Serializable]
+[AttributeUsage(4, Inherited = true)]
+public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)

@@ -573,8 +573,8 @@ namespace Microsoft.DocAsCode.EntityModel
                                 SyntaxFactory.NameEquals(
                                     SyntaxFactory.IdentifierName(item.Key)
                                 ),
-                                SyntaxFactory.NameColon("="),
-                                GetLiteralExpression(item.Value)
+                                null,
+                                GetLiteralExpression(item.Value.Value)
                             )
                         )
                     )
