@@ -203,8 +203,7 @@ tagRules : [
 
                 {
                     // check resource.
-                    // as there is no template, resource file will not be copied
-                    Assert.True(!File.Exists(Path.Combine(outputBaseDir, resourceFile)));
+                    Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
                     Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + RawModelFileExtension)));
                     var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + RawModelFileExtension));
                     Assert.Equal(3, meta.Count);
