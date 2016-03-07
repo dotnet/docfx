@@ -712,7 +712,7 @@ ms.author: rogardle
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
-        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInsideDocset()
+        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInSameDocset()
         {
             var azureFileInfoMapping =
                 new Dictionary<string, AzureFileInfo>{
@@ -721,15 +721,15 @@ ms.author: rogardle
                         new AzureFileInfo
                         {
                             FileName = "unique.md",
-                            FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
-                            NeedTransformToExternalLink = false,
+                            FilePath = @"c:\root\parent\folder2\subfolder1\unique.md",
+                            NeedTransformToAzureExternalLink = false,
                             UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
                         }
                     }
                 };
             var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
             var source = @"[azure file link](unique.md)";
-            var expected = @"[azure file link](../../folder1/subfolder1/unique.md)
+            var expected = @"[azure file link](unique.md)
 
 ";
 
@@ -749,7 +749,7 @@ ms.author: rogardle
                         {
                             FileName = "unique.md",
                             FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
-                            NeedTransformToExternalLink = false,
+                            NeedTransformToAzureExternalLink = false,
                             UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
                         }
                     }
@@ -766,7 +766,34 @@ ms.author: rogardle
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
-        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInsideDocsetWithBookmark()
+        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInSameDocsetWithBookmark()
+        {
+            var azureFileInfoMapping =
+                new Dictionary<string, AzureFileInfo>{
+                    {
+                        "unique.md",
+                        new AzureFileInfo
+                        {
+                            FileName = "unique.md",
+                            FilePath = @"c:\root\parent\folder2\subfolder1\unique.md",
+                            NeedTransformToAzureExternalLink = false,
+                            UriPrefix = "https://docsmsftstage.azurewebsites.net/parent"
+                        }
+                    }
+                };
+            var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
+            var source = @"[azure file link](unique.md#bookmark_test)";
+            var expected = @"[azure file link](unique.md#bookmark_test)
+
+";
+
+            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInDifferentDocsetWithBookmark()
         {
             var azureFileInfoMapping =
                 new Dictionary<string, AzureFileInfo>{
@@ -776,14 +803,14 @@ ms.author: rogardle
                         {
                             FileName = "unique.md",
                             FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
-                            NeedTransformToExternalLink = false,
-                            UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
+                            NeedTransformToAzureExternalLink = false,
+                            UriPrefix = "https://docsmsftstage.azurewebsites.net/parent"
                         }
                     }
                 };
             var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
             var source = @"[azure file link](unique.md#bookmark_test)";
-            var expected = @"[azure file link](../../folder1/subfolder1/unique.md#bookmark_test)
+            var expected = @"[azure file link](https://docsmsftstage.azurewebsites.net/parent/unique#bookmark_test)
 
 ";
 
@@ -803,7 +830,7 @@ ms.author: rogardle
                         {
                             FileName = "unique.md",
                             FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
-                            NeedTransformToExternalLink = true,
+                            NeedTransformToAzureExternalLink = true,
                             UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
                         }
                     }
@@ -830,7 +857,7 @@ ms.author: rogardle
                         {
                             FileName = "unique.md",
                             FilePath = @"c:\root\parent\folder1\subfolder1\unique.md",
-                            NeedTransformToExternalLink = true,
+                            NeedTransformToAzureExternalLink = true,
                             UriPrefix = "https://azure.microsoft.com/en-us/documentation/articles"
                         }
                     }

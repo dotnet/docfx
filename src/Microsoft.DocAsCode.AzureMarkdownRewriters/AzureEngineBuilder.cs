@@ -222,14 +222,29 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
 
             string azureHref = null;
-            var azureFileInfo = azureFileInfoMapping[hrefFileName];
-            if (azureFileInfo.NeedTransformToExternalLink)
+            var hrefFileInfo = azureFileInfoMapping[hrefFileName];
+
+            // Not in docsets and transform to azure external link
+            if (hrefFileInfo.NeedTransformToAzureExternalLink)
             {
-                azureHref = $"{azureFileInfo.UriPrefix}/{Path.GetFileNameWithoutExtension(hrefFileName)}{anchor}";
+                azureHref = $"{hrefFileInfo.UriPrefix}/{Path.GetFileNameWithoutExtension(hrefFileName)}{anchor}";
             }
             else
             {
-                azureHref = string.Format("{0}{1}", PathUtility.MakeRelativePath(Path.GetDirectoryName(currentFilePath), azureFileInfo.FilePath), anchor);
+                var hrefPath = hrefFileInfo.FilePath;
+
+                // It is correct for Azure strucuture. Azure articles are all under same folder
+                var isHrefInsameDocset = PathUtility.IsPathUnderSpecificFolder(hrefPath, Path.GetDirectoryName(currentFilePath));
+
+                // In same docset with current file, use relative path. Otherwise, use docset link prefix
+                if (isHrefInsameDocset)
+                {
+                    azureHref = string.Format("{0}{1}", PathUtility.MakeRelativePath(Path.GetDirectoryName(currentFilePath), hrefFileInfo.FilePath), anchor);
+                }
+                else
+                {
+                    azureHref = $"{hrefFileInfo.UriPrefix}/{Path.GetFileNameWithoutExtension(hrefFileName)}{anchor}";
+                }
             }
 
             return azureHref;

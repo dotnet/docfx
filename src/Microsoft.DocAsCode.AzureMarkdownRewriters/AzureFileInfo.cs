@@ -19,10 +19,10 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         /// Indicate whether the current relative path need to be changed to external link.
         /// If the current file is in docset, then false. Otherwise true.
         /// </summary>
-        public bool NeedTransformToExternalLink { get; set; }
+        public bool NeedTransformToAzureExternalLink { get; set; }
 
         /// <summary>
-        /// Indicate the uriprefix except the asset id
+        /// Indicate the uri prefix except the asset id
         /// </summary>
         public string UriPrefix { get; set; }
     }

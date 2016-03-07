@@ -251,5 +251,23 @@ namespace Microsoft.DocAsCode.Utility
             pathFromWorkingFolder = path;
             return false;
         }
+
+        public static bool IsPathUnderSpecificFolder(string path, string folder)
+        {
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(folder))
+            {
+                return false;
+            }
+            return NormalizePath(path).StartsWith(NormalizePath(folder) + Path.AltDirectorySeparatorChar);
+        }
+
+        public static string NormalizePath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return path;
+            }
+            return Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        }
     }
 }
