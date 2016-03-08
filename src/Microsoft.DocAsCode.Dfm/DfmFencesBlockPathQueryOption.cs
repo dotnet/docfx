@@ -5,9 +5,9 @@ namespace Microsoft.DocAsCode.Dfm
 {
     public class DfmFencesBlockPathQueryOption
     {
-        public long? StartLine { get; set; }
+        public int? StartLine { get; set; }
 
-        public long? EndLine { get; set; }
+        public int? EndLine { get; set; }
 
         public string TagName { get; set; }
     }

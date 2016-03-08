@@ -41,6 +41,10 @@ namespace Microsoft.DocAsCode.Dfm
         // Javascript code snippet block: <!-- <[/]snippetname> -->
         private static readonly Regex JavaScriptSnippetExtractorRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        private static readonly string RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
+
+        private static readonly List<char> AllowedIndentCharacters = new List<char> { ' ', '\t' };
+
         // Language names and aliases fllow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
@@ -116,7 +120,7 @@ namespace Microsoft.DocAsCode.Dfm
                     return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = resolveResult.ErrorMessage, FencesCodeLines = fencesCode };
                 }
 
-                return GetFencesCodeCore(fencesCode, resolveResult.StartLine, resolveResult.EndLine, resolveResult.ExcludesLines);
+                return GetFencesCodeCore(fencesCode, resolveResult.StartLine, resolveResult.EndLine, resolveResult.IndentLength, resolveResult.ExcludesLines);
             }
             else
             {
@@ -128,15 +132,20 @@ namespace Microsoft.DocAsCode.Dfm
                     return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = errorMessage, FencesCodeLines = fencesCode };
                 }
 
-                return GetFencesCodeCore(fencesCode, token.PathQueryOption?.StartLine, token.PathQueryOption?.EndLine);
+                int startLine = token.PathQueryOption?.StartLine ?? 1;
+                int endLine = token.PathQueryOption?.EndLine ?? fencesCode.Length;
+                int indentLength = (from line in fencesCode.Skip(startLine - 1).Take(endLine - startLine + 1)
+                                    where !string.IsNullOrEmpty(line) && !string.IsNullOrWhiteSpace(line)
+                                    select (int?)GetIndentLength(line)).Min() ?? 0;
+                return GetFencesCodeCore(fencesCode, startLine, endLine, indentLength);
             }
         }
 
-        private DfmExtractCodeResult GetFencesCodeCore(string[] codeLines, long? startLine, long? endLine, HashSet<long> excludedLines = null)
+        private DfmExtractCodeResult GetFencesCodeCore(string[] codeLines, int startLine, int endLine, int indentLength, HashSet<int> excludedLines = null)
         {
             long totalLines = codeLines.Length;
             var includedLines = new List<string>();
-            for (long i = (startLine ?? 1); i <= Math.Min((endLine ?? totalLines), totalLines); i++)
+            for (int i = startLine; i <= Math.Min(endLine, totalLines); i++)
             {
                 if (excludedLines == null || !excludedLines.Contains(i))
                 {
@@ -144,7 +153,11 @@ namespace Microsoft.DocAsCode.Dfm
                 }
             }
 
-            return new DfmExtractCodeResult { IsSuccessful = true, FencesCodeLines = includedLines.ToArray() };
+            return new DfmExtractCodeResult
+            {
+                IsSuccessful = true,
+                FencesCodeLines = (indentLength == 0 ? includedLines : includedLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, indentLength), string.Empty))).ToArray()
+            };
         }
 
         private DfmTagNameResolveResult ResolveTagNamesFromPath(string fencesPath, string[] fencesCodeLines, string tagName, Regex regexToExtractCode)
@@ -154,8 +167,8 @@ namespace Microsoft.DocAsCode.Dfm
                     path => new Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>(
                             () =>
                             {
-                                var linesOfSnippetComment = new Dictionary<long, string>();
-                                for (long i = 0; i < fencesCodeLines.Length; i++)
+                                var linesOfSnippetComment = new Dictionary<int, string>();
+                                for (int i = 0; i < fencesCodeLines.Length; i++)
                                 {
                                     var match = regexToExtractCode.Match(fencesCodeLines[i]);
                                     if (match.Success)
@@ -164,7 +177,7 @@ namespace Microsoft.DocAsCode.Dfm
                                     }
                                 }
 
-                                var excludedLines = new HashSet<long>(linesOfSnippetComment.Keys);
+                                var excludedLines = new HashSet<int>(linesOfSnippetComment.Keys);
 
                                 var dictionary = new ConcurrentDictionary<string, DfmTagNameResolveResult>(StringComparer.OrdinalIgnoreCase);
 
@@ -179,7 +192,8 @@ namespace Microsoft.DocAsCode.Dfm
                                             IsSuccessful = true,
                                             StartLine = lineNumbers[0] + 1,
                                             EndLine = lineNumbers[1] - 1,
-                                            ExcludesLines = excludedLines
+                                            ExcludesLines = excludedLines,
+                                            IndentLength = GetIndentLength(fencesCodeLines[lineNumbers[0]])
                                         };
                                     }
                                     else
@@ -206,7 +220,7 @@ namespace Microsoft.DocAsCode.Dfm
                     : new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"Tag name {tagName} is not found" };
         }
 
-        private static bool CheckLineRange(long totalLines, long? startLine, long? endLine, out string errorMessage)
+        private static bool CheckLineRange(int totalLines, int? startLine, int? endLine, out string errorMessage)
         {
             errorMessage = string.Empty;
 
@@ -236,15 +250,19 @@ namespace Microsoft.DocAsCode.Dfm
             return !string.IsNullOrEmpty(token.Lang) ? token.Lang : Path.GetExtension(token.Path);
         }
 
+        private static int GetIndentLength(string s) => s.TakeWhile(c => AllowedIndentCharacters.Contains(c)).Count();
+
         #region Private class
 
         private class DfmTagNameResolveResult
         {
-            public long StartLine { get; set; }
+            public int StartLine { get; set; }
 
-            public long EndLine { get; set; }
+            public int EndLine { get; set; }
 
-            public HashSet<long> ExcludesLines { get; set; }
+            public int IndentLength { get; set; }
+
+            public HashSet<int> ExcludesLines { get; set; }
 
             public bool IsSuccessful { get; set; }
 

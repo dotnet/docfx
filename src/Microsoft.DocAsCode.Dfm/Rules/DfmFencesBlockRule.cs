@@ -45,12 +45,12 @@ namespace Microsoft.DocAsCode.Dfm
                 return null;
             }
 
-            long startLine, endLine;
+            int startLine, endLine;
             if (queryOption == "#")
             {
                 // check if line number representation
                 var match = _dfmFencesSharpQueryStringRegex.Match(queryString);
-                if (match.Success && long.TryParse(match.Groups["start"].Value, out startLine) && long.TryParse(match.Groups["end"].Value, out endLine))
+                if (match.Success && int.TryParse(match.Groups["start"].Value, out startLine) && int.TryParse(match.Groups["end"].Value, out endLine))
                 {
                     return new DfmFencesBlockPathQueryOption { StartLine = startLine, EndLine = endLine };
                 }
@@ -73,8 +73,8 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     return new DfmFencesBlockPathQueryOption
                     {
-                        StartLine = long.TryParse(start, out startLine) ? startLine : (long?)null,
-                        EndLine = long.TryParse(end, out endLine) ? endLine : (long?)null
+                        StartLine = int.TryParse(start, out startLine) ? startLine : (int?)null,
+                        EndLine = int.TryParse(end, out endLine) ? endLine : (int?)null
                     };
                 }
             }

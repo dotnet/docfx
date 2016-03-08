@@ -539,11 +539,11 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
     // &lt;/snippetprogram&gt;
 }
 </code></pre>")]
-        [InlineData(@"[!code[Main](Program.cs#L12-L16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">        static void Main(string[] args)
-        {
-            string s = &quot;test&quot;;
-            int i = 100;
-        }
+        [InlineData(@"[!code[Main](Program.cs#L12-L16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">static void Main(string[] args)
+{
+    string s = &quot;test&quot;;
+    int i = 100;
+}
 </code></pre>")]
         [InlineData(@"[!code[Main](Program.cs#L12-L100 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">        static void Main(string[] args)
         {
@@ -554,41 +554,41 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
     // &lt;/snippetprogram&gt;
 }
 </code></pre>")]
-        [InlineData(@"[!code-csharp[Main](Program.cs#namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">    using System;
-    using System.Collections.Generic;
-    using System.IO;
+        [InlineData(@"[!code-csharp[Main](Program.cs#namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
+using System.Collections.Generic;
+using System.IO;
 </code></pre>")]
-        [InlineData(@"[!code-csharp[Main](Program.cs#NAMESPACE ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">    using System;
-    using System.Collections.Generic;
-    using System.IO;
+        [InlineData(@"[!code-csharp[Main](Program.cs#NAMESPACE ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
+using System.Collections.Generic;
+using System.IO;
 </code></pre>")]
-        [InlineData(@"[!code-csharp[Main](Program.cs#program ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">    class Program
+        [InlineData(@"[!code-csharp[Main](Program.cs#program ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">class Program
+{
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            string s = &quot;test&quot;;
-            int i = 100;
-        }
+        string s = &quot;test&quot;;
+        int i = 100;
     }
+}
 </code></pre>")]
-        [InlineData(@"[!code-csharp[Main](Program.cs#snippetprogram ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">    class Program
+        [InlineData(@"[!code-csharp[Main](Program.cs#snippetprogram ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">class Program
+{
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            string s = &quot;test&quot;;
-            int i = 100;
-        }
+        string s = &quot;test&quot;;
+        int i = 100;
     }
+}
 </code></pre>")]
-        [InlineData(@"[!code-csharp[Main](Program.cs?name=namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">    using System;
-    using System.Collections.Generic;
-    using System.IO;
+        [InlineData(@"[!code-csharp[Main](Program.cs?name=namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
+using System.Collections.Generic;
+using System.IO;
 </code></pre>")]
-        [InlineData(@"[!code[Main](Program.cs?start=5&end=9 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">    using System.Collections.Generic;
-    using System.IO;
-    // &lt;/namespace&gt;
+        [InlineData(@"[!code[Main](Program.cs?start=5&end=9 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">using System.Collections.Generic;
+using System.IO;
+// &lt;/namespace&gt;
 
-    // &lt;snippetprogram&gt;
+// &lt;snippetprogram&gt;
 </code></pre>")]
         public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
         {
