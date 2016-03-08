@@ -431,6 +431,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(Constants.DefaultParallelism)
                    select new InnerBuildContext(
                        new HostService(
+                           parameters.Files.DefaultBaseDir,
                            from file in item
                            select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file.file)
                            into model

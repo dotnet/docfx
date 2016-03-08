@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
         private readonly LruList<ModelWithCache> _lru = LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
-        private DfmEngineBuilder _engine = DocfxFlavoredMarked.CreateBuilder();
+        private DfmEngineBuilder _engine;
 
         public ImmutableList<FileModel> Models { get; private set; }
 
@@ -33,8 +33,9 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
 
         public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();
 
-        public HostService(IEnumerable<FileModel> models)
+        public HostService(string baseDir, IEnumerable<FileModel> models)
         {
+            _engine = DocfxFlavoredMarked.CreateBuilder(baseDir);
             LoadCore(models);
         }
 

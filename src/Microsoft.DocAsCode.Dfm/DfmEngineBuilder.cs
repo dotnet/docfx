@@ -15,17 +15,23 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
-        public DfmEngineBuilder(Options options) : base(options)
+        public DfmEngineBuilder(Options options, string baseDir = null) : base(options)
         {
             var inlineRules = InlineRules.ToList();
 
             // xref auto link must be before MarkdownAutoLinkInlineRule
             var index = inlineRules.FindIndex(s => s is MarkdownAutoLinkInlineRule);
-            if (index < 0) throw new ArgumentException("MarkdownAutoLinkInlineRule should exist!");
+            if (index < 0)
+            {
+                throw new ArgumentException("MarkdownAutoLinkInlineRule should exist!");
+            }
             inlineRules.Insert(index, new DfmXrefAutoLinkInlineRule());
 
             index = inlineRules.FindLastIndex(s => s is MarkdownLinkInlineRule);
-            if (index < 0) throw new ArgumentException("MarkdownLinkInlineRule should exist!");
+            if (index < 0)
+            {
+                throw new ArgumentException("MarkdownLinkInlineRule should exist!");
+            }
             inlineRules.Insert(index + 1, new DfmXrefShortcutInlineRule());
             inlineRules.Insert(index + 1, new DfmEmailInlineRule());
 
@@ -34,11 +40,18 @@ namespace Microsoft.DocAsCode.Dfm
             inlineRules.Insert(index, new DfmIncludeInlineRule());
 
             index = inlineRules.FindIndex(s => s is MarkdownTextInlineRule);
+            if (index < 0)
+            {
+                throw new ArgumentException("MarkdownTextInlineRule should exist!");
+            }
             inlineRules[index] = new DfmTextInlineRule();
 
             var blockRules = BlockRules.ToList();
             index = blockRules.FindLastIndex(s => s is MarkdownNewLineBlockRule);
-            if (index < 0) throw new ArgumentException("MarkdownNewLineBlockRule should exist!");
+            if (index < 0)
+            {
+                throw new ArgumentException("MarkdownNewLineBlockRule should exist!");
+            }
             blockRules.Insert(index + 1, new DfmIncludeBlockRule());
             blockRules.Insert(index + 2, new DfmYamlHeaderBlockRule());
             blockRules.Insert(index + 3, new DfmSectionBlockRule());
@@ -46,15 +59,23 @@ namespace Microsoft.DocAsCode.Dfm
             blockRules.Insert(index + 5, new DfmNoteBlockRule());
 
             var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
+            if (gfmIndex < 0)
+            {
+                throw new ArgumentException("GfmParagraphBlockRule should exist!");
+            }
             blockRules[gfmIndex] = new DfmParagraphBlockRule();
 
             var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
+            if (markdownBlockQuoteIndex < 0)
+            {
+                throw new ArgumentException("MarkdownBlockquoteBlockRule should exist!");
+            }
             blockRules[markdownBlockQuoteIndex] = new DfmBlockquoteBlockRule();
 
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
 
-            Rewriter = InitMarkdownStyle(GetContainer());
+            Rewriter = InitMarkdownStyle(GetContainer(), baseDir);
         }
 
         private CompositionHost GetContainer()
@@ -68,13 +89,18 @@ namespace Microsoft.DocAsCode.Dfm
                 .CreateContainer();
         }
 
-        private static IMarkdownTokenRewriter InitMarkdownStyle(CompositionHost host)
+        private static IMarkdownTokenRewriter InitMarkdownStyle(CompositionHost host, string baseDir)
         {
             try
             {
-                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                if (string.IsNullOrEmpty(baseDir))
                 {
-                    var config = JsonUtility.Deserialize<MarkdownSytleConfig>(MarkdownSytleConfig.MarkdownStyleFileName);
+                    return null;
+                }
+                var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
+                if (File.Exists(configFile))
+                {
+                    var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
                     var builder = new MarkdownValidatorBuilder(host);
                     builder.AddValidators(from r in config.Rules where !r.Disable select r.RuleName);
                     builder.AddTagValidators(config.TagRules);

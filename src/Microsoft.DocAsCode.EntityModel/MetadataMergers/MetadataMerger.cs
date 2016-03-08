@@ -55,6 +55,7 @@ namespace Microsoft.DocAsCode.EntityModel.MetadataMergers
         {
             var p = new ManagedReferenceDocumentProcessor();
             var host = new HostService(
+                parameters.Files.DefaultBaseDir,
                 from f in files
                 where f.Type == DocumentType.Article && !"toc.yml".Equals(Path.GetFileName(f.File), StringComparison.OrdinalIgnoreCase)
                 select Load(p, parameters.Metadata, parameters.FileMetadata, f));

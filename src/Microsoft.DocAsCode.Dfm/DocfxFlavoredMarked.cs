@@ -9,15 +9,15 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public static DfmRenderer Renderer { get; } = new DfmRenderer();
 
-        public static DfmEngineBuilder CreateBuilder()
+        public static DfmEngineBuilder CreateBuilder(string baseDir)
         {
             // TODO: currently disable mangle as a quick workaround for OP Build Service compatibility
-            return new DfmEngineBuilder(new Options() { Mangle = false });
+            return new DfmEngineBuilder(new Options() { Mangle = false }, baseDir);
         }
 
         public static string Markup(string src, string path = null)
         {
-            var engine = CreateBuilder().CreateDfmEngine(Renderer);
+            var engine = CreateBuilder(null).CreateDfmEngine(Renderer);
             return engine.Markup(src, path);
         }
     }
