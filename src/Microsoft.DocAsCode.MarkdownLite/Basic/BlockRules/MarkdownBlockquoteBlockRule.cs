@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
             {
                 var capStr = LeadingBlockquote.Replace(t.RawMarkdown, string.Empty);
-                var blockTokens = engine.Tokenize(capStr);
+                var blockTokens = p.Tokenize(capStr);
                 blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true);
                 return new MarkdownBlockquoteBlockToken(t.Rule, t.Context, blockTokens, match.Value);
             });

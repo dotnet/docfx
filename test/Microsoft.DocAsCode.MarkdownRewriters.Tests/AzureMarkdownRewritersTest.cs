@@ -217,6 +217,44 @@ ref2 content: [text](./this/fake.md)
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureIncludeWithAzureNote()
+        {
+            // Prepare data
+            var root = @"This is azure include [AZURE.INCLUDE [ref1 text](ref1.md)] inline.
+
+This is azure include block.
+
+[AZURE.INCLUDE [ref2 text](ref2.md)]";
+            var ref1 = @"ref1 content";
+            var ref2 = @"> [AZURE.NOTE]
+This is azure note
+> [AZURE.WARNING]
+This is azure warning";
+            File.WriteAllText("root.md", root);
+            File.WriteAllText("ref1.md", ref1);
+            File.WriteAllText("ref2.md", ref2);
+
+            // Expected result
+            var expected = @"This is azure include ref1 content inline.
+
+This is azure include block.
+
+> [!NOTE]
+> This is azure note
+> 
+> [!WARNING]
+> This is azure warning
+> 
+> 
+
+";
+
+            var result = AzureMarked.Markup(root, "root.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_ListWithInlineToken()
         {
             var source = @"Hello world
@@ -810,7 +848,7 @@ ms.author: rogardle
                 };
             var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
             var source = @"[azure file link](unique.md#bookmark_test)";
-            var expected = @"[azure file link](https://docsmsftstage.azurewebsites.net/parent/unique#bookmark_test)
+            var expected = @"[azure file link](https://docsmsftstage.azurewebsites.net/parent/unique.html#bookmark_test)
 
 ";
 
@@ -893,7 +931,7 @@ ms.author: rogardle
 
 ";
 
-            var result = AzureMarked.Markup(source, null, null, azureVideoInfoMapping);
+            var result = AzureMarked.Markup(source, "sourceFile.md", null, azureVideoInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 

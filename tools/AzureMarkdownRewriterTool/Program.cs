@@ -24,6 +24,42 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
         public readonly string _srcDirectory;
         public readonly string _destDirectory;
         public readonly Dictionary<string, AzureFileInfo> _azureFileInfoMapping;
+        public readonly Dictionary<string, AzureVideoInfo> _azureVideoInfoMapping
+            = new Dictionary<string, AzureVideoInfo>
+            {
+                ["azure-ad--introduction-to-dynamic-memberships-for-groups"] =
+                    new AzureVideoInfo
+                    {
+                        Id = "azure-ad--introduction-to-dynamic-memberships-for-groups",
+                        Link = "https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/",
+                        Height = 360,
+                        Width = 640
+                    },
+                ["enable-single-sign-on-to-google-apps-in-2-minutes-with-azure-ad"] =
+                    new AzureVideoInfo
+                    {
+                        Id = "enable-single-sign-on-to-google-apps-in-2-minutes-with-azure-ad",
+                        Link = "https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Enable-single-sign-on-to-Google-Apps-in-2-minutes-with-Azure-AD/player/",
+                        Height = 360,
+                        Width = 640
+                    },
+                ["integrating-salesforce-with-azure-ad-how-to-enable-single-sign-on"] =
+                    new AzureVideoInfo
+                    {
+                        Id = "integrating-salesforce-with-azure-ad-how-to-enable-single-sign-on",
+                        Link = "http://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Integrating-Salesforce-with-Azure-AD-How-to-enable-Single-Sign-On-12/player/",
+                        Height = 360,
+                        Width = 640
+                    },
+                ["integrating-salesforce-with-azure-ad-how-to-automate-user-provisioning"] =
+                    new AzureVideoInfo
+                    {
+                        Id = "integrating-salesforce-with-azure-ad-how-to-automate-user-provisioning",
+                        Link = "http://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Integrating-Salesforce-with-Azure-AD-How-to-automate-User-Provisioning-22/player/",
+                        Height = 360,
+                        Width = 640
+                    }
+            };
 
         private const string MarkdownExtension = ".md";
 
@@ -100,7 +136,6 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
         private static Dictionary<string, AzureFileInfo> GenerateAzureFileInfo(string repositoryRoot, List<AzureTransformArguments> azureTransformArgumentsList, string azureDocumentUriPrefix)
         {
             var azureFileInfoMapping = new ConcurrentDictionary<string, AzureFileInfo>();
-            //var azureFileInfoMapping = new Dictionary<string, AzureFileInfo>();
             var repositoryRootPathLength = repositoryRoot.Length;
             var files = Directory.EnumerateFiles(repositoryRoot, "*.md", SearchOption.AllDirectories);
             Parallel.ForEach(
@@ -189,7 +224,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             var sourceDirInfo = new DirectoryInfo(_srcDirectory);
             var fileInfos = sourceDirInfo.EnumerateFiles("*.md", SearchOption.AllDirectories);
 
-            Console.WriteLine("Start at {0}", DateTime.UtcNow);
+            Console.WriteLine("Start transform dir '{0}' to dest dir '{1}' at {2}", _srcDirectory, _destDirectory, DateTime.UtcNow);
             Parallel.ForEach(
                 fileInfos,
                 new ParallelOptions() { MaxDegreeOfParallelism = 8 },
@@ -206,7 +241,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     {
                         Console.WriteLine("Convert article {0}", fileInfo.FullName);
                         var source = File.ReadAllText(fileInfo.FullName);
-                        var result = AzureMarked.Markup(source, fileInfo.FullName, _azureFileInfoMapping);
+                        var result = AzureMarked.Markup(source, fileInfo.FullName, _azureFileInfoMapping, _azureVideoInfoMapping);
                         File.WriteAllText(outputPath, result);
                     }
                     else
@@ -215,7 +250,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                         //File.Copy(fileInfo.FullName, outputPath, true);
                     }
                 });
-            Console.WriteLine("End at {0}", DateTime.UtcNow);
+            Console.WriteLine("End transform dir '{0}' to dest dir '{1}' at {2}", _srcDirectory, _destDirectory, DateTime.UtcNow);
         }
 
         private void GenerateTocForEveryFolder(DirectoryInfo rootFolder)

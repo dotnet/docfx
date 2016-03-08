@@ -3,9 +3,12 @@
 
 namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
+    using System.IO;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Utility;
 
     public class AzureIncludeBlockRule : IMarkdownRule
     {
@@ -32,7 +35,32 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             var value = match.Groups[1].Value;
             var title = match.Groups[4].Value;
 
-            return new AzureIncludeBlockToken(this, engine.Context, path, value, title, match.Groups[0].Value, match.Value);
+            if (!PathUtility.IsRelativePath(path))
+            {
+                Logger.LogWarning($"Azure inline include path {path} is not a relative path, can't expand it");
+                return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
+            }
+
+            object currentFilePath;
+            if (!engine.Context.Variables.TryGetValue("path", out currentFilePath))
+            {
+                Logger.LogWarning($"Can't get path for the file that ref azure block include file, return MarkdownTextToken. Raw: {match.Value}");
+                return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
+            }
+
+            var includeFilePath = PathUtility.NormalizePath(Path.Combine(Path.GetDirectoryName(currentFilePath.ToString()), path));
+            if (!File.Exists(includeFilePath))
+            {
+                Logger.LogWarning($"Can't get include file path {includeFilePath} in the file {currentFilePath}, return MarkdownTextToken. Raw: {match.Value}");
+                return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
+            }
+
+            return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+            {
+                var blockTokens = p.Tokenize(MarkdownEngine.Normalize(File.ReadAllText(includeFilePath)));
+                blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true);
+                return new AzureIncludeBlockToken(t.Rule, t.Context, path, value, title, blockTokens, match.Groups[0].Value, match.Value);
+            });
         }
     }
 }

@@ -3,13 +3,25 @@
 
 namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
+    using System.Collections.Immutable;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class AzureIncludeBlockToken : AzureIncludeBasicToken
+    public class AzureIncludeBlockToken : AzureIncludeBasicToken, IMarkdownRewritable<AzureIncludeBlockToken>
     {
-        public AzureIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, string rawMarkdown)
-            : base(rule, context, src, name, title, raw, rawMarkdown)
+        public AzureIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, ImmutableArray<IMarkdownToken> tokens, string raw, string rawMarkdown)
+            : base(rule, context, src, name, title, tokens, raw, rawMarkdown)
         {
+        }
+
+        public AzureIncludeBlockToken Rewrite(IMarkdownRewriteEngine rewriteEngine)
+        {
+            var tokens = rewriteEngine.Rewrite(Tokens);
+            if (tokens == Tokens)
+            {
+                return this;
+            }
+            return new AzureIncludeBlockToken(Rule, Context, Src, Name, Title, tokens, Raw, RawMarkdown);
         }
     }
 }

@@ -3,13 +3,26 @@
 
 namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
+    using System;
+    using System.Collections.Immutable;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class AzureIncludeInlineToken : AzureIncludeBasicToken
+    public class AzureIncludeInlineToken : AzureIncludeBasicToken, IMarkdownRewritable<AzureIncludeInlineToken>
     {
-        public AzureIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, string rawMarkdown)
-            : base(rule, context, src, name, title, raw, rawMarkdown)
+        public AzureIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, ImmutableArray<IMarkdownToken> tokens, string raw, string rawMarkdown)
+            : base(rule, context, src, name, title, tokens, raw, rawMarkdown)
         {
+        }
+
+        public AzureIncludeInlineToken Rewrite(IMarkdownRewriteEngine rewriteEngine)
+        {
+            var tokens = rewriteEngine.Rewrite(Tokens);
+            if (tokens == Tokens)
+            {
+                return this;
+            }
+            return new AzureIncludeInlineToken(Rule, Context, Src, Name, Title, tokens, Raw, RawMarkdown);
         }
     }
 }

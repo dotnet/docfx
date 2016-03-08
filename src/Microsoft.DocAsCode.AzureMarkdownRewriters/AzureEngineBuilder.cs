@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     public class AzureEngineBuilder : GfmEngineBuilder
     {
         private const string MarkdownExtension = ".md";
+        private const string HtmlExtension = ".html";
 
         public AzureEngineBuilder(Options options) : base(options)
         {
@@ -79,6 +80,13 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             index = inlineRules.FindLastIndex(s => s is GfmUrlInlineRule);
             inlineRules.RemoveAt(index);
             InlineRules = inlineRules.ToImmutableList();
+        }
+
+        public override IMarkdownEngine CreateEngine(object renderer)
+        {
+            var engine = (MarkdownEngine)base.CreateEngine(renderer);
+            engine.MaxExtractCount = 100;
+            return engine;
         }
 
         protected void CreateRewriters()
@@ -243,7 +251,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 }
                 else
                 {
-                    azureHref = $"{hrefFileInfo.UriPrefix}/{Path.GetFileNameWithoutExtension(hrefFileName)}{anchor}";
+                    azureHref = $"{hrefFileInfo.UriPrefix}/{Path.GetFileNameWithoutExtension(hrefFileName)}{HtmlExtension}{anchor}";
                 }
             }
 
