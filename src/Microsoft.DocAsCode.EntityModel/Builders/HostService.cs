@@ -97,7 +97,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
             {
                 using (var sr = new StringReader(StringHelper.HtmlDecode(node.InnerHtml)))
                 {
-                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr).ToImmutableDictionary();
+                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr)?.ToImmutableDictionary();
                 }
                 node.Remove();
             }
