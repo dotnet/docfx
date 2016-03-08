@@ -2175,21 +2175,30 @@ using System.ComponentModel;
 namespace Test1
 {
     [Serializable]
-    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Parameter, Inherited = true)]
+    [TypeConverter(typeof(TestAttribute))]
+    [Test(""test"")]
+    [Test(new int[]{1,2,3})]
+    [Test(new object[]{null, ""abc"", 'd', 1.1f, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7u, 8l, 9ul, new int[]{ 10, 11, 12 })]
     public class TestAttribute : Attribute
     {
+        public TestAttribute(object obj){}
     }
 }
 ";
             CSYamlModelGenerator.GenerateAttribute = true;
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromFile(typeof(System.ComponentModel.TypeConverterAttribute).Assembly.Location)));
             CSYamlModelGenerator.GenerateAttribute = false;
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
-            Assert.Equal("TestAttribute", @class.DisplayNames.First().Value);
-            Assert.Equal("Test1.TestAttribute", @class.DisplayQualifiedNames.First().Value);
+            Assert.Equal("TestAttribute", @class.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.TestAttribute", @class.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal(@"[Serializable]
-[AttributeUsage(4, Inherited = true)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Parameter, Inherited = true)]
+[TypeConverter(typeof (TestAttribute))]
+[Test(""test"")]
+[Test(new int[]{1, 2, 3})]
+[Test(new object[]{null, ""abc"", 'd', 1.1F, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7U, 8L, 9UL, new int[]{10, 11, 12}})]
 public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 

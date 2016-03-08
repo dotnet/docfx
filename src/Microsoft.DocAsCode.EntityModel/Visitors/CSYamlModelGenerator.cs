@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         #region Fields
         public static bool GenerateAttribute = false;
-        private static readonly Regex BracesRegex = new Regex(@"\s*\{(\S|\s)*", RegexOptions.Compiled);
+        private static readonly Regex BracesRegex = new Regex(@"\s*\{(;|\s)*\}\s*$", RegexOptions.Compiled);
         #endregion
 
         public CSYamlModelGenerator() : base(SyntaxLanguage.CSharp)
@@ -528,8 +528,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 new SyntaxList<MemberDeclarationSyntax>())
                 .NormalizeWhitespace()
                 .ToString();
-            result = RemoveBraces(result);
-            return result;
+            return RemoveBraces(result);
         }
 
         private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, bool inOneList = false)
@@ -577,15 +576,19 @@ namespace Microsoft.DocAsCode.EntityModel
                 SyntaxFactory.AttributeArgumentList(
                     SyntaxFactory.SeparatedList(
                         (from item in attr.ConstructorArguments
-                         select SyntaxFactory.AttributeArgument(GetLiteralExpression(item.Value))
+                         select GetLiteralExpression(item) into expr
+                         where expr != null
+                         select SyntaxFactory.AttributeArgument(expr)
                         ).Concat(
                             from item in attr.NamedArguments
+                            let expr = GetLiteralExpression(item.Value)
+                            where expr != null
                             select SyntaxFactory.AttributeArgument(
                                 SyntaxFactory.NameEquals(
                                     SyntaxFactory.IdentifierName(item.Key)
                                 ),
                                 null,
-                                GetLiteralExpression(item.Value.Value)
+                                expr
                             )
                         )
                     )
@@ -733,7 +736,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (symbol.HasExplicitDefaultValue)
             {
-                return GetDefaultValueClauseCore(symbol.ExplicitDefaultValue);
+                return GetDefaultValueClauseCore(symbol.ExplicitDefaultValue, symbol.Type);
             }
             return null;
         }
@@ -742,14 +745,18 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             if (symbol.IsConst)
             {
-                return GetDefaultValueClauseCore(symbol.ConstantValue);
+                if (symbol.ContainingType.TypeKind == TypeKind.Enum)
+                {
+                    return GetDefaultValueClauseCore(symbol.ConstantValue, ((INamedTypeSymbol)symbol.Type).EnumUnderlyingType);
+                }
+                return GetDefaultValueClauseCore(symbol.ConstantValue, symbol.Type);
             }
             return null;
         }
 
-        private static EqualsValueClauseSyntax GetDefaultValueClauseCore(object value)
+        private static EqualsValueClauseSyntax GetDefaultValueClauseCore(object value, ITypeSymbol type)
         {
-            var expr = GetLiteralExpression(value);
+            var expr = GetLiteralExpression(value, type);
             if (expr != null)
             {
                 return SyntaxFactory.EqualsValueClause(expr);
@@ -757,7 +764,60 @@ namespace Microsoft.DocAsCode.EntityModel
             return null;
         }
 
-        private static LiteralExpressionSyntax GetLiteralExpression(object value)
+        private static ExpressionSyntax GetLiteralExpression(TypedConstant constant)
+        {
+            if (constant.Type.TypeKind == TypeKind.Array)
+            {
+                var items = (from value in constant.Values
+                             select GetLiteralExpression(value)).ToList();
+                if (items.TrueForAll(x => x != null))
+                {
+                    return SyntaxFactory.ArrayCreationExpression(
+                        (ArrayTypeSyntax)GetTypeSyntax(constant.Type),
+                        SyntaxFactory.InitializerExpression(
+                            SyntaxKind.ArrayInitializerExpression,
+                            SyntaxFactory.SeparatedList(
+                                from value in constant.Values
+                                select GetLiteralExpression(value))));
+                }
+                return SyntaxFactory.ArrayCreationExpression(
+                    (ArrayTypeSyntax)GetTypeSyntax(constant.Type));
+            }
+
+            var expr = GetLiteralExpression(constant.Value, constant.Type);
+            if (expr == null)
+            {
+                return null;
+            }
+
+            switch (constant.Type.SpecialType)
+            {
+                case SpecialType.System_SByte:
+                    return SyntaxFactory.CastExpression(
+                        SyntaxFactory.PredefinedType(
+                            SyntaxFactory.Token(SyntaxKind.SByteKeyword)),
+                        expr);
+                case SpecialType.System_Byte:
+                    return SyntaxFactory.CastExpression(
+                        SyntaxFactory.PredefinedType(
+                            SyntaxFactory.Token(SyntaxKind.ByteKeyword)),
+                        expr);
+                case SpecialType.System_Int16:
+                    return SyntaxFactory.CastExpression(
+                        SyntaxFactory.PredefinedType(
+                            SyntaxFactory.Token(SyntaxKind.ShortKeyword)),
+                        expr);
+                case SpecialType.System_UInt16:
+                    return SyntaxFactory.CastExpression(
+                        SyntaxFactory.PredefinedType(
+                            SyntaxFactory.Token(SyntaxKind.UShortKeyword)),
+                        expr);
+                default:
+                    return expr;
+            }
+        }
+
+        private static ExpressionSyntax GetLiteralExpression(object value, ITypeSymbol type)
         {
             if (value == null)
             {
@@ -765,91 +825,213 @@ namespace Microsoft.DocAsCode.EntityModel
                     SyntaxKind.NullLiteralExpression,
                     SyntaxFactory.Token(SyntaxKind.NullKeyword));
             }
-            if (value is bool)
+            var result = GetLiteralExpressionCore(value, type);
+            if (result != null)
             {
-                return SyntaxFactory.LiteralExpression(
-                    (bool)value ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
+                return result;
             }
-            if (value is long)
+            if (type.TypeKind == TypeKind.Enum)
             {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((long)value));
+                var namedType = (INamedTypeSymbol)type;
+                var enumType = GetTypeSyntax(namedType);
+                var isFlags = namedType.GetAttributes().Any(attr => attr.AttributeClass.GetDocumentationCommentId() == "T:System.FlagsAttribute");
+
+                var pairs = from member in namedType.GetMembers().OfType<IFieldSymbol>()
+                            where member.IsConst && member.HasConstantValue
+                            select new { member.Name, member.ConstantValue };
+                if (isFlags)
+                {
+                    var exprs = (from pair in pairs
+                                 where HasFlag(namedType.EnumUnderlyingType, value, pair.ConstantValue)
+                                 select SyntaxFactory.MemberAccessExpression(
+                                     SyntaxKind.SimpleMemberAccessExpression,
+                                     enumType,
+                                     SyntaxFactory.IdentifierName(pair.Name))).ToList();
+                    if (exprs.Count > 0)
+                    {
+                        return exprs.Aggregate<ExpressionSyntax>((x, y) =>
+                            SyntaxFactory.BinaryExpression(SyntaxKind.BitwiseOrExpression, x, y));
+                    }
+                }
+                else
+                {
+                    var expr = (from pair in pairs
+                                where object.Equals(value, pair.ConstantValue)
+                                select SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    enumType,
+                                    SyntaxFactory.IdentifierName(pair.Name))).FirstOrDefault();
+                    if (expr != null)
+                    {
+                        return expr;
+                    }
+                }
+                return SyntaxFactory.CastExpression(
+                    enumType,
+                    GetLiteralExpressionCore(
+                        value,
+                        namedType.EnumUnderlyingType));
             }
-            if (value is ulong)
+            if (value is ITypeSymbol)
             {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((ulong)value));
-            }
-            if (value is int)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((int)value));
-            }
-            if (value is uint)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((uint)value));
-            }
-            if (value is short)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((short)value));
-            }
-            if (value is ushort)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((ushort)value));
-            }
-            if (value is byte)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((byte)value));
-            }
-            if (value is sbyte)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((sbyte)value));
-            }
-            if (value is double)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((double)value));
-            }
-            if (value is float)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((float)value));
-            }
-            if (value is decimal)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((decimal)value));
-            }
-            if (value is char)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.CharacterLiteralExpression,
-                    SyntaxFactory.Literal((char)value));
-            }
-            if (value is string)
-            {
-                return SyntaxFactory.LiteralExpression(
-                    SyntaxKind.StringLiteralExpression,
-                    SyntaxFactory.Literal((string)value));
+                return SyntaxFactory.TypeOfExpression(
+                    GetTypeSyntax((ITypeSymbol)value));
             }
             Debug.Fail("Unknown default value!");
             return null;
+        }
+
+        private static bool HasFlag(ITypeSymbol type, object value, object constantValue)
+        {
+            switch (type.SpecialType)
+            {
+                case SpecialType.System_SByte:
+                    {
+                        var v = (sbyte)value;
+                        var cv = (sbyte)constantValue;
+                        if (cv == 0)
+                        {
+                            return v == 0;
+                        }
+                        return (v & cv) == cv;
+                    }
+                case SpecialType.System_Byte:
+                    {
+                        var v = (byte)value;
+                        var cv = (byte)constantValue;
+                        if (cv == 0)
+                        {
+                            return v == 0;
+                        }
+                        return (v & cv) == cv;
+                    }
+                case SpecialType.System_Int16:
+                    {
+                        var v = (short)value;
+                        var cv = (short)constantValue;
+                        if (cv == 0)
+                        {
+                            return v == 0;
+                        }
+                        return (v & cv) == cv;
+                    }
+                case SpecialType.System_UInt16:
+                    {
+                        var v = (ushort)value;
+                        var cv = (ushort)constantValue;
+                        if (cv == 0)
+                        {
+                            return v == 0;
+                        }
+                        return (v & cv) == cv;
+                    }
+                case SpecialType.System_Int32:
+                    {
+                        var v = (int)value;
+                        var cv = (int)constantValue;
+                        if (cv == 0)
+                        {
+                            return v == 0;
+                        }
+                        return (v & cv) == cv;
+                    }
+                case SpecialType.System_UInt32:
+                    {
+                        var v = (uint)value;
+                        var cv = (uint)constantValue;
+                        if (cv == 0)
+                        {
+                            return v == 0;
+                        }
+                        return (v & cv) == cv;
+                    }
+                case SpecialType.System_Int64:
+                    {
+                        var v = (long)value;
+                        var cv = (long)constantValue;
+                        if (cv == 0)
+                        {
+                            return v == 0;
+                        }
+                        return (v & cv) == cv;
+                    }
+                case SpecialType.System_UInt64:
+                    {
+                        var v = (ulong)value;
+                        var cv = (ulong)constantValue;
+                        if (cv == 0)
+                        {
+                            return v == 0;
+                        }
+                        return (v & cv) == cv;
+                    }
+                default:
+                    return false;
+            }
+        }
+
+        public static ExpressionSyntax GetLiteralExpressionCore(object value, ITypeSymbol type)
+        {
+            switch (type.SpecialType)
+            {
+                case SpecialType.System_Boolean:
+                    return SyntaxFactory.LiteralExpression(
+                        (bool)value ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
+                case SpecialType.System_Char:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.CharacterLiteralExpression,
+                        SyntaxFactory.Literal((char)value));
+                case SpecialType.System_SByte:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((sbyte)value));
+                case SpecialType.System_Byte:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((byte)value));
+                case SpecialType.System_Int16:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((short)value));
+                case SpecialType.System_UInt16:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((ushort)value));
+                case SpecialType.System_Int32:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((int)value));
+                case SpecialType.System_UInt32:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((uint)value));
+                case SpecialType.System_Int64:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((long)value));
+                case SpecialType.System_UInt64:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((ulong)value));
+                case SpecialType.System_Decimal:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((decimal)value));
+                case SpecialType.System_Single:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((float)value));
+                case SpecialType.System_Double:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((double)value));
+                case SpecialType.System_String:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.StringLiteralExpression,
+                        SyntaxFactory.Literal((string)value));
+                default:
+                    return null;
+            }
         }
 
         private static IEnumerable<TypeParameterConstraintClauseSyntax> GetTypeParameterConstraints(INamedTypeSymbol symbol)
