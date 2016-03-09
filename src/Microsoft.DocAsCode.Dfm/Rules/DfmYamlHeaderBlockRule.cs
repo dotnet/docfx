@@ -31,7 +31,13 @@ namespace Microsoft.DocAsCode.Dfm
             try
             {
                 using (StringReader reader = new StringReader(value))
-                    YamlUtility.Deserialize<Dictionary<string, object>>(reader);
+                {
+                    var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
+                    if(result == null)
+                    {
+                        return null;
+                    }
+                }
             }
             catch (Exception)
             {

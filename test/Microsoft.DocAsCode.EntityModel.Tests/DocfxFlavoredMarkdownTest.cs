@@ -239,6 +239,43 @@ world</p>
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmYamlHeader_YamlUtilityReturnNull()
+        {
+            var source = @"---
+
+### /Unconfigure
+
+---";
+            var expected = @"<hr>
+<h3 id=""-unconfigure"">/Unconfigure</h3>
+<hr>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfm_InvalidYamlHeader_YamlUtilityThrowException()
+        {
+            var source = @"---
+- Jon Schlinkert
+- Brian Woodward
+
+---";
+            var expected = @"<hr>
+<ul>
+<li>Jon Schlinkert</li>
+<li>Brian Woodward</li>
+</ul>
+<hr>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
         [Theory]
         [Trait("Related", "DfmMarkdown")]
         [InlineData(@"the following is note type
