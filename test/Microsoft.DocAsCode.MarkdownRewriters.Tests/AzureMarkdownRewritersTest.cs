@@ -616,14 +616,14 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 - [Xamarin.iOS](../articles/partner-xamarin-notification-hubs-ios-get-started/)
 - [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started/)";
             var expected = @"> [!div class=""op_single_selector""]
-> * [Universal Windows](../articles/notification-hubs-windows-store-dotnet-get-started/.md)
-> * [Windows Phone](../articles/notification-hubs-windows-phone-get-started/.md)
-> * [iOS](../articles/notification-hubs-ios-get-started/.md)
-> * [Android](../articles/notification-hubs-android-get-started/.md)
-> * [Kindle](../articles/notification-hubs-kindle-get-started/.md)
-> * [Baidu](../articles/notification-hubs-baidu-get-started/.md)
-> * [Xamarin.iOS](../articles/partner-xamarin-notification-hubs-ios-get-started/.md)
-> * [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started/.md)
+> * [Universal Windows](../articles/notification-hubs-windows-store-dotnet-get-started.md)
+> * [Windows Phone](../articles/notification-hubs-windows-phone-get-started.md)
+> * [iOS](../articles/notification-hubs-ios-get-started.md)
+> * [Android](../articles/notification-hubs-android-get-started.md)
+> * [Kindle](../articles/notification-hubs-kindle-get-started.md)
+> * [Baidu](../articles/notification-hubs-baidu-get-started.md)
+> * [Xamarin.iOS](../articles/partner-xamarin-notification-hubs-ios-get-started.md)
+> * [Xamarin.Android](../articles/partner-xamarin-notification-hubs-android-get-started.md)
 > 
 > 
 
