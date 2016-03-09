@@ -17,7 +17,7 @@ For document, writer can write any valid hyperlink, and `DocFX build` need to up
 1.  The hyperlink must be relative path and not rooted.
     * valid: `foo\bar.rtf`, `../foobar.rtf`
     * invalid: `/foo.rtf`, `c:\foo\bar.rtf`, `http://foo.bar/`, `mailto:foo@bar.foobar`
-2.  File must be existed.
+2.  File must exist.
 
 ### Why update file link:
 

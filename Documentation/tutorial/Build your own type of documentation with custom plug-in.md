@@ -9,13 +9,13 @@ Goal and limitation
     1.  Our input will be a set of rtf files, with `.rtf` extension file name.
     2.  The rtf files will be build as html document.
 2.  Out of scope:
-    1.  No picture or other object in rtf files.
-    2.  No hyperlink in rtf files. (in [advanced tutorial](advanced_support_hyperlink.md), we will describe how to support hyperlinks in custom plugin.)
-    3.  No metadata.
+    1.  Picture or other object in rtf files.
+    2.  Hyperlink in rtf files. (in [advanced tutorial](advanced_support_hyperlink.md), we will describe how to support hyperlinks in custom plugin.)
+    3.  Metadata and title.
 
 Preparation
 -----------
-1.  Create a new c# class library project in `Visual Studio`.
+1.  Create a new C# class library project in `Visual Studio`.
 
 2.  Add nuget packages:  
     * `System.Collections.Immutable` with version 1.1.37
@@ -40,7 +40,7 @@ Create a document processor
 
 * Declare which file can handle.
 * Load from file to object model.
-* Provider builder steps.
+* Provide build steps.
 * Report document type, file links and xref links in document.
 * Update references.
 
@@ -89,9 +89,9 @@ Create a document build step
 
 ### The responsibility of build step
 
-* Reconstruction documents via `Prebuild` method, e.g.: remove some document by certain rule.
+* Reconstruct documents via `Prebuild` method, e.g.: remove some document by certain rule.
 * Transform document content via `Build` method, e.g.: transform rtf content to html content.
-* Transform more content which require all document done via `PostBuild` method, e.g.: abstract title in other document.
+* Transform more content which require all document done via `PostBuild` method, e.g.: extract link text from the title of another document.
 
 * About build order:
   1. For all documents in one processor always `Prebuild` -> `Build` -> `Postbuild`.
@@ -101,8 +101,8 @@ Create a document build step
 
   e.g.: document processor *X* have two step: A (with BuildOrder=1), B (with BuildOrder=2), when *X* handling documents [D1, D2, D3], the invoke order can be following:
   ```
-  A.Prebuild([D1, D2, D3])
-  B.Prebuild([D1, D2, D3])
+  A.Prebuild([D1, D2, D3]) returns [D1, D2, D3]
+  B.Prebuild([D1, D2, D3]) returns [D1, D2, D3]
   Parallel(
     A.Build(D1) -> B.Build(D1),
     A.Build(D2) -> B.Build(D2),
@@ -114,7 +114,7 @@ Create a document build step
 
 ### Create our RtfBuildStep:
 
-1.  Create a new class (RtfBuildStep.cs), and declare it is for `RtfDocumentProcessor`:
+1.  Create a new class (RtfBuildStep.cs), and declare it is a build step for `RtfDocumentProcessor`:
     ```csharp
     [Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
     public class RtfBuildStep : IDocumentBuildStep
