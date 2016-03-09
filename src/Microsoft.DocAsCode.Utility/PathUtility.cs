@@ -198,7 +198,14 @@ namespace Microsoft.DocAsCode.Utility
         public static bool IsRelativePath(string path)
         {
             if (string.IsNullOrEmpty(path)) return false;
-            if (Uri.IsWellFormedUriString(path, UriKind.Absolute)) return false;
+
+            // IsWellFormedUriString does not try to escape characters such as '\' ' ', '(', ')' and etc. first. Use TryCreate instead
+            Uri absoluteUri;
+            if (Uri.TryCreate(path, UriKind.Absolute, out absoluteUri))
+            {
+                return false;
+            }
+
             if (path.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) return false;
             // it is possible that mailto: is mangled(encoded) to prevent spammers
             if (HttpUtility.HtmlDecode(path).StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) return false;

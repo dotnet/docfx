@@ -578,7 +578,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
-        [Fact(Skip = "Not Completed")]
+        [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AutoLink()
         {
@@ -590,12 +590,24 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
-        [Fact(Skip = "Not Completed")]
+        [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_LinkRefWithBracket()
         {
             var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
-            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)
+            var expected = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_LinkRefWithBackslash()
+        {
+            var source = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\/archive/complete.zip)";
+            var expected = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\/archive/complete.zip)
 
 ";
             var result = AzureMarked.Markup(source);

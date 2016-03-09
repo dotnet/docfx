@@ -490,6 +490,17 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestPathUtility_AbsoluteLinkWithBracketAndBrackt()
+        {
+            var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
+            var expected = @"<p><a href=""http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx"">User-Defined Date/Time Formats (Format Function)</a></p>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
             var builder = new DfmEngineBuilder(new Options() { Mangle = false });
