@@ -58,7 +58,7 @@ function transform(model, _attrs, _global) {
           }
         }
       }
-      
+
       for (var key in _attrs) {
         if (_attrs.hasOwnProperty(key)) {
           this[key] = _attrs[key];
@@ -86,7 +86,7 @@ function transform(model, _attrs, _global) {
         var that = this;
         this.item.children.forEach(function (c) {
           c = refs.getViewModel(c, item.langs, util.changeExtension(that._ext), that.newFileRepository);
-          var type = c.type;
+          var type = c.type.toLowerCase();
           if (!grouped.hasOwnProperty(type)) {
             grouped[type] = [];
           }
@@ -118,12 +118,12 @@ function transform(model, _attrs, _global) {
         // group children with their type
         this.item.children.forEach(function (c) {
           c = refs.getViewModel(c, item.langs, util.changeExtension(that._ext), that.newFileRepository);
-          var type = c.type;
+          var type = c.type.toLowerCase();
           if (!grouped.hasOwnProperty(type)) {
             grouped[type] = [];
           }
           // special handle for property
-          if (type === "Property" && c.syntax) {
+          if (type === "property" && c.syntax) {
             c.syntax.propertyValue = c.syntax.return;
             c.syntax.return = undefined;
           }
@@ -182,7 +182,65 @@ function transform(model, _attrs, _global) {
           });
         }
 
+        if (vm.supported_platforms) {
+            vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);
+        }
+
+        if (vm.requirements) {
+            var type = vm.type.toLowerCase();
+            if (type == "method") {
+                vm.requirements_method = transformDictionaryToArray(vm.requirements);
+            } else {
+                vm.requirements = transformDictionaryToArray(vm.requirements);
+            }
+        }
+
+        if (vm.seealso) {
+            vm.seealso = vm.seealso.map(function (currentValue, index, array) {
+              currentValue.type = getRefvm(currentValue.type, langs, extChanger);
+              return currentValue;
+            });
+        }
+
+        if (vm && vm.langs) {
+            if (shouldHideTitleType(vm)) {
+                vm.hideTitleType = true;
+            } else {
+                vm.hideTitleType = false;
+            }
+
+            if (shouldHideSubtitle(vm)) {
+                vm.hideSubtitle = true;
+            } else {
+                vm.hideSubtitle = false;
+            }
+        }
+
         return vm;
+      }
+
+      function shouldHideTitleType(vm) {
+          var type = vm.type.toLowerCase();
+          var langs = vm.langs;
+          return ((type === 'namespace' && langs.length == 1 && (langs[0] === 'objectivec' || langs[0] === 'java' || langs[0] === 'c'))
+          || ((type === 'class' || type === 'enum') && langs.length == 1 && langs[0] === 'c'));
+      }
+
+      function shouldHideSubtitle(vm) {
+          var type = vm.type.toLowerCase();
+          var langs = vm.langs;
+          return (type === 'class' || type === 'namespace') && langs.length == 1 && langs[0] === 'c';
+      }
+
+      function transformDictionaryToArray(dic) {
+        var array = [];
+        for(var key in dic) {
+            if (dic.hasOwnProperty(key)) {
+                array.push({"name": key, "value": dic[key]})
+            }
+        }
+
+        return array;
       }
 
       function getRefvm(uid, langs, extChanger) {
@@ -359,6 +417,7 @@ function transform(model, _attrs, _global) {
         vm.summary = vm.summary;
         vm.remarks = vm.remarks;
         vm.conceptual = vm.conceptual;
+        vm.syntax = vm.syntax;
 
         vm.level = vm.inheritance ? vm.inheritance.length : 0;
         if (vm.syntax && typeof(vm.syntax.content) != "object") {

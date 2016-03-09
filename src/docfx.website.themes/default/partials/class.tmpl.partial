@@ -93,7 +93,7 @@
 </table>
 {{/return}}
 {{#propertyValue}}
-<h5 class="propertyValue">{{__global.provertyValue}}</h5>
+<h5 class="propertyValue">{{__global.propertyValue}}</h5>
 <table class="table table-bordered table-striped table-condensed">
   <thead>
     <tr>

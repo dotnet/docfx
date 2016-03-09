@@ -2,7 +2,12 @@
 
 <header class="header" id="overview">
   <h1>
+    {{^hideTitleType}}
     {{>partials/title}}
+    {{/hideTitleType}}
+    {{#hideTitleType}}
+    {{>partials/titleWithoutType}}
+    {{/hideTitleType}}
   </h1>
 </header>
 {{#summary}}
@@ -35,7 +40,9 @@
 {{/remarks}}
 {{#children}}
 <header class="header" id="{{id}}">
+  {{^hideSubtitle}}
   <h2>{{>partials/namespaceSubtitle}}</h2>
+  {{/hideSubtitle}}
 </header>
 <ul class="list-clean">
   {{#children}}
