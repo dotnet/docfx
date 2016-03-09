@@ -258,252 +258,33 @@ namespace Microsoft.DocAsCode.EntityModel
 
         protected override string GetSyntaxContent(MemberType typeKind, ISymbol symbol, SymbolVisitorAdapter adapter)
         {
-            string syntaxStr = null;
             switch (typeKind)
             {
                 case MemberType.Class:
-                    {
-                        syntaxStr = GetClassSyntax(symbol);
-                        break;
-                    }
+                    return GetClassSyntax((INamedTypeSymbol)symbol);
                 case MemberType.Enum:
-                    {
-                        var typeSymbol = (INamedTypeSymbol)symbol;
-                        syntaxStr = SyntaxFactory.EnumDeclaration(
-                            new SyntaxList<AttributeListSyntax>(),
-                            SyntaxFactory.TokenList(GetTypeModifiers(typeSymbol)),
-                            SyntaxFactory.Identifier(typeSymbol.Name),
-                            GetEnumBaseTypeList(typeSymbol),
-                            new SeparatedSyntaxList<EnumMemberDeclarationSyntax>())
-                            .NormalizeWhitespace()
-                            .ToString();
-                        syntaxStr = RemoveBraces(syntaxStr);
-                        break;
-                    }
+                    return GetEnumSyntax((INamedTypeSymbol)symbol);
                 case MemberType.Interface:
-                    {
-                        var typeSymbol = (INamedTypeSymbol)symbol;
-                        syntaxStr = SyntaxFactory.InterfaceDeclaration(
-                            new SyntaxList<AttributeListSyntax>(),
-                            SyntaxFactory.TokenList(GetTypeModifiers(typeSymbol)),
-                            SyntaxFactory.Identifier(typeSymbol.Name),
-                            GetTypeParameters(typeSymbol),
-                            GetBaseTypeList(typeSymbol),
-                            SyntaxFactory.List(GetTypeParameterConstraints(typeSymbol)),
-                            new SyntaxList<MemberDeclarationSyntax>())
-                            .NormalizeWhitespace()
-                            .ToString();
-                        syntaxStr = RemoveBraces(syntaxStr);
-                        break;
-                    }
+                    return GetInterfaceSyntax((INamedTypeSymbol)symbol);
                 case MemberType.Struct:
-                    {
-                        var typeSymbol = (INamedTypeSymbol)symbol;
-                        syntaxStr = SyntaxFactory.StructDeclaration(
-                            new SyntaxList<AttributeListSyntax>(),
-                            SyntaxFactory.TokenList(GetTypeModifiers(typeSymbol)),
-                            SyntaxFactory.Identifier(typeSymbol.Name),
-                            GetTypeParameters(typeSymbol),
-                            GetBaseTypeList(typeSymbol),
-                            SyntaxFactory.List(GetTypeParameterConstraints(typeSymbol)),
-                            new SyntaxList<MemberDeclarationSyntax>())
-                            .NormalizeWhitespace()
-                            .ToString();
-                        syntaxStr = RemoveBraces(syntaxStr);
-                        break;
-                    }
+                    return GetStructSyntax((INamedTypeSymbol)symbol);
                 case MemberType.Delegate:
-                    {
-                        var typeSymbol = (INamedTypeSymbol)symbol;
-                        syntaxStr = SyntaxFactory.DelegateDeclaration(
-                            new SyntaxList<AttributeListSyntax>(),
-                            SyntaxFactory.TokenList(GetTypeModifiers(typeSymbol)),
-                            GetTypeSyntax(typeSymbol.DelegateInvokeMethod.ReturnType),
-                            SyntaxFactory.Identifier(typeSymbol.Name),
-                            GetTypeParameters(typeSymbol),
-                            SyntaxFactory.ParameterList(
-                                SyntaxFactory.SeparatedList(
-                                    from p in typeSymbol.DelegateInvokeMethod.Parameters
-                                    select GetParameter(p))),
-                            SyntaxFactory.List(GetTypeParameterConstraints(typeSymbol)))
-                            .NormalizeWhitespace()
-                            .ToString();
-                        break;
-                    }
+                    return GetDelegateSyntax((INamedTypeSymbol)symbol);
                 case MemberType.Method:
-                    {
-                        var methodSymbol = (IMethodSymbol)symbol;
-                        ExplicitInterfaceSpecifierSyntax eii = null;
-                        if (methodSymbol.ExplicitInterfaceImplementations.Length > 0)
-                        {
-                            eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(methodSymbol)));
-                        }
-                        syntaxStr = SyntaxFactory.MethodDeclaration(
-                            new SyntaxList<AttributeListSyntax>(),
-                            SyntaxFactory.TokenList(GetMemberModifiers(methodSymbol)),
-                            GetTypeSyntax(methodSymbol.ReturnType),
-                            eii,
-                            SyntaxFactory.Identifier(GetMemberName(methodSymbol)),
-                            GetTypeParameters(methodSymbol),
-                            SyntaxFactory.ParameterList(
-                                SyntaxFactory.SeparatedList(
-                                    from p in methodSymbol.Parameters
-                                    select GetParameter(p))),
-                            SyntaxFactory.List(GetTypeParameterConstraints(methodSymbol)),
-                            null,
-                            null)
-                            .NormalizeWhitespace()
-                            .ToString();
-                        break;
-                    }
+                    return GetMethodSyntax((IMethodSymbol)symbol);
                 case MemberType.Operator:
-                    {
-                        var methodSymbol = (IMethodSymbol)symbol;
-                        var operatorToken = GetOperatorToken(methodSymbol);
-                        if (operatorToken == null)
-                        {
-                            syntaxStr = "Not supported in c#";
-                        }
-                        else if (operatorToken.Value.Kind() == SyntaxKind.ImplicitKeyword || operatorToken.Value.Kind() == SyntaxKind.ExplicitKeyword)
-                        {
-                            syntaxStr = SyntaxFactory.ConversionOperatorDeclaration(
-                                new SyntaxList<AttributeListSyntax>(),
-                                SyntaxFactory.TokenList(GetMemberModifiers(methodSymbol)),
-                                operatorToken.Value,
-                                GetTypeSyntax(methodSymbol.ReturnType),
-                                SyntaxFactory.ParameterList(
-                                    SyntaxFactory.SeparatedList(
-                                        from p in methodSymbol.Parameters
-                                        select GetParameter(p))),
-                                null,
-                                null)
-                                .NormalizeWhitespace()
-                                .ToString();
-                        }
-                        else
-                        {
-                            syntaxStr = SyntaxFactory.OperatorDeclaration(
-                                new SyntaxList<AttributeListSyntax>(),
-                                SyntaxFactory.TokenList(GetMemberModifiers(methodSymbol)),
-                                GetTypeSyntax(methodSymbol.ReturnType),
-                                operatorToken.Value,
-                                SyntaxFactory.ParameterList(
-                                    SyntaxFactory.SeparatedList(
-                                        from p in methodSymbol.Parameters
-                                        select GetParameter(p))),
-                                null,
-                                null)
-                                .NormalizeWhitespace()
-                                .ToString();
-                        }
-                        break;
-                    }
+                    return GetOperatorSyntax((IMethodSymbol)symbol);
                 case MemberType.Constructor:
-                    {
-                        var methodSymbol = (IMethodSymbol)symbol;
-                        syntaxStr = SyntaxFactory.ConstructorDeclaration(
-                            new SyntaxList<AttributeListSyntax>(),
-                            SyntaxFactory.TokenList(GetMemberModifiers(methodSymbol)),
-                            SyntaxFactory.Identifier(methodSymbol.ContainingType.Name),
-                            SyntaxFactory.ParameterList(
-                                SyntaxFactory.SeparatedList(
-                                    from p in methodSymbol.Parameters
-                                    select GetParameter(p))),
-                            null,
-                            null)
-                            .NormalizeWhitespace()
-                            .ToString();
-                        break;
-                    };
+                    return GetConstructorSyntax((IMethodSymbol)symbol);
                 case MemberType.Field:
-                    {
-                        var fieldSymbol = (IFieldSymbol)symbol;
-                        if (fieldSymbol.ContainingType.TypeKind == TypeKind.Enum)
-                        {
-                            syntaxStr = SyntaxFactory.EnumMemberDeclaration(
-                                new SyntaxList<AttributeListSyntax>(),
-                                SyntaxFactory.Identifier(fieldSymbol.Name),
-                                GetDefaultValueClause(fieldSymbol))
-                                .NormalizeWhitespace()
-                                .ToString();
-                        }
-                        else
-                        {
-                            syntaxStr = SyntaxFactory.FieldDeclaration(
-                                new SyntaxList<AttributeListSyntax>(),
-                                SyntaxFactory.TokenList(GetMemberModifiers(fieldSymbol)),
-                                SyntaxFactory.VariableDeclaration(
-                                    GetTypeSyntax(fieldSymbol.Type),
-                                    SyntaxFactory.SingletonSeparatedList(
-                                        SyntaxFactory.VariableDeclarator(
-                                            SyntaxFactory.Identifier(fieldSymbol.Name)))))
-                                .NormalizeWhitespace()
-                                .ToString()
-                                .TrimEnd(';');
-                        }
-                        break;
-                    };
+                    return GetFieldSyntax((IFieldSymbol)symbol);
                 case MemberType.Event:
-                    {
-                        var eventSymbol = (IEventSymbol)symbol;
-                        ExplicitInterfaceSpecifierSyntax eii = null;
-                        if (eventSymbol.ExplicitInterfaceImplementations.Length > 0)
-                        {
-                            eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(eventSymbol)));
-                        }
-                        syntaxStr = SyntaxFactory.EventDeclaration(
-                            new SyntaxList<AttributeListSyntax>(),
-                            SyntaxFactory.TokenList(GetMemberModifiers(eventSymbol)),
-                            SyntaxFactory.Token(SyntaxKind.EventKeyword),
-                            GetTypeSyntax(eventSymbol.Type),
-                            eii,
-                            SyntaxFactory.Identifier(GetMemberName(eventSymbol)),
-                            SyntaxFactory.AccessorList())
-                            .NormalizeWhitespace()
-                            .ToString();
-                        syntaxStr = RemoveBraces(syntaxStr);
-                        break;
-                    };
+                    return GetEventSyntax((IEventSymbol)symbol);
                 case MemberType.Property:
-                    {
-                        var propertySymbol = (IPropertySymbol)symbol;
-                        ExplicitInterfaceSpecifierSyntax eii = null;
-                        if (propertySymbol.ExplicitInterfaceImplementations.Length > 0)
-                        {
-                            eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(propertySymbol)));
-                        }
-                        if (propertySymbol.IsIndexer)
-                        {
-                            syntaxStr = SyntaxFactory.IndexerDeclaration(
-                                new SyntaxList<AttributeListSyntax>(),
-                                SyntaxFactory.TokenList(GetMemberModifiers(propertySymbol)),
-                                GetTypeSyntax(propertySymbol.Type),
-                                eii,
-                                SyntaxFactory.BracketedParameterList(
-                                    SyntaxFactory.SeparatedList(
-                                        from p in propertySymbol.Parameters
-                                        select GetParameter(p))),
-                                SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(propertySymbol))))
-                                .NormalizeWhitespace()
-                                .ToString();
-                        }
-                        else
-                        {
-                            syntaxStr = SyntaxFactory.PropertyDeclaration(
-                                new SyntaxList<AttributeListSyntax>(),
-                                SyntaxFactory.TokenList(GetMemberModifiers(propertySymbol)),
-                                GetTypeSyntax(propertySymbol.Type),
-                                eii,
-                                SyntaxFactory.Identifier(GetMemberName(propertySymbol)),
-                                SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(propertySymbol))))
-                                .NormalizeWhitespace()
-                                .ToString();
-                        }
-                        break;
-                    };
+                    return GetPropertySyntax((IPropertySymbol)symbol);
+                default:
+                    return null;
             }
-
-            return syntaxStr;
         }
 
         protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter)
@@ -515,23 +296,272 @@ namespace Microsoft.DocAsCode.EntityModel
 
         #region Private methods
 
-        private string GetClassSyntax(ISymbol symbol)
-        {
-            var typeSymbol = (INamedTypeSymbol)symbol;
-            var result = SyntaxFactory.ClassDeclaration(
-                GetAttributes(symbol),
-                SyntaxFactory.TokenList(GetTypeModifiers(typeSymbol)),
-                SyntaxFactory.Identifier(typeSymbol.Name),
-                GetTypeParameters(typeSymbol),
-                GetBaseTypeList(typeSymbol),
-                SyntaxFactory.List(GetTypeParameterConstraints(typeSymbol)),
-                new SyntaxList<MemberDeclarationSyntax>())
+        #region Syntax
+
+        private string GetClassSyntax(INamedTypeSymbol symbol) =>
+            RemoveBraces(
+                SyntaxFactory.ClassDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(GetTypeModifiers(symbol)),
+                    SyntaxFactory.Identifier(symbol.Name),
+                    GetTypeParameters(symbol),
+                    GetBaseTypeList(symbol),
+                    SyntaxFactory.List(GetTypeParameterConstraints(symbol)),
+                    new SyntaxList<MemberDeclarationSyntax>()
+                ).NormalizeWhitespace().ToString()
+            );
+
+        private string GetEnumSyntax(INamedTypeSymbol symbol) =>
+            RemoveBraces(
+                SyntaxFactory.EnumDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(GetTypeModifiers(symbol)),
+                    SyntaxFactory.Identifier(symbol.Name),
+                    GetEnumBaseTypeList(symbol),
+                    new SeparatedSyntaxList<EnumMemberDeclarationSyntax>()
+                )
                 .NormalizeWhitespace()
-                .ToString();
-            return RemoveBraces(result);
+                .ToString()
+            );
+
+        private string GetInterfaceSyntax(INamedTypeSymbol symbol) =>
+            RemoveBraces(
+                SyntaxFactory.InterfaceDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(
+                        GetTypeModifiers(symbol)
+                    ),
+                    SyntaxFactory.Identifier(symbol.Name),
+                    GetTypeParameters(symbol),
+                    GetBaseTypeList(symbol),
+                    SyntaxFactory.List(
+                        GetTypeParameterConstraints(symbol)
+                    ),
+                    new SyntaxList<MemberDeclarationSyntax>()
+                ).NormalizeWhitespace().ToString()
+            );
+
+        private string GetStructSyntax(INamedTypeSymbol symbol) =>
+            RemoveBraces(
+                SyntaxFactory.StructDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(
+                        GetTypeModifiers(symbol)
+                    ),
+                    SyntaxFactory.Identifier(symbol.Name),
+                    GetTypeParameters(symbol),
+                    GetBaseTypeList(symbol),
+                    SyntaxFactory.List(
+                        GetTypeParameterConstraints(symbol)
+                    ),
+                    new SyntaxList<MemberDeclarationSyntax>()
+                ).NormalizeWhitespace().ToString()
+            );
+
+        private string GetDelegateSyntax(INamedTypeSymbol symbol) =>
+            SyntaxFactory.DelegateDeclaration(
+                GetAttributes(symbol),
+                SyntaxFactory.TokenList(
+                    GetTypeModifiers(symbol)
+                ),
+                GetTypeSyntax(symbol.DelegateInvokeMethod.ReturnType),
+                SyntaxFactory.Identifier(symbol.Name),
+                GetTypeParameters(symbol),
+                SyntaxFactory.ParameterList(
+                    SyntaxFactory.SeparatedList(
+                        from p in symbol.DelegateInvokeMethod.Parameters
+                        select GetParameter(p)
+                    )
+                ),
+                SyntaxFactory.List(
+                    GetTypeParameterConstraints(symbol)
+                )
+            ).NormalizeWhitespace().ToString();
+
+        private string GetMethodSyntax(IMethodSymbol symbol)
+        {
+            ExplicitInterfaceSpecifierSyntax eii = null;
+            if (symbol.ExplicitInterfaceImplementations.Length > 0)
+            {
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol)));
+            }
+            return SyntaxFactory.MethodDeclaration(
+                GetAttributes(symbol),
+                SyntaxFactory.TokenList(
+                    GetMemberModifiers(symbol)
+                ),
+                GetTypeSyntax(symbol.ReturnType),
+                eii,
+                SyntaxFactory.Identifier(
+                    GetMemberName(symbol)
+                ),
+                GetTypeParameters(symbol),
+                SyntaxFactory.ParameterList(
+                    SyntaxFactory.SeparatedList(
+                        from p in symbol.Parameters
+                        select GetParameter(p)
+                    )
+                ),
+                SyntaxFactory.List(
+                    GetTypeParameterConstraints(symbol)
+                ),
+                null,
+                null
+            ).NormalizeWhitespace().ToString();
         }
 
-        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, bool inOneList = false)
+        private string GetOperatorSyntax(IMethodSymbol symbol)
+        {
+            var operatorToken = GetOperatorToken(symbol);
+            if (operatorToken == null)
+            {
+                return "Not supported in c#";
+            }
+            else if (operatorToken.Value.Kind() == SyntaxKind.ImplicitKeyword || operatorToken.Value.Kind() == SyntaxKind.ExplicitKeyword)
+            {
+                return SyntaxFactory.ConversionOperatorDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(
+                        GetMemberModifiers(symbol)
+                    ),
+                    operatorToken.Value,
+                    GetTypeSyntax(symbol.ReturnType),
+                    SyntaxFactory.ParameterList(
+                        SyntaxFactory.SeparatedList(
+                            from p in symbol.Parameters
+                            select GetParameter(p)
+                        )
+                    ),
+                    null,
+                    null
+                ).NormalizeWhitespace().ToString();
+            }
+            else
+            {
+                return SyntaxFactory.OperatorDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(
+                        GetMemberModifiers(symbol)
+                    ),
+                    GetTypeSyntax(symbol.ReturnType),
+                    operatorToken.Value,
+                    SyntaxFactory.ParameterList(
+                        SyntaxFactory.SeparatedList(
+                            from p in symbol.Parameters
+                            select GetParameter(p)
+                        )
+                    ),
+                    null,
+                    null
+                ).NormalizeWhitespace().ToString();
+            }
+        }
+
+        private string GetConstructorSyntax(IMethodSymbol symbol) =>
+            SyntaxFactory.ConstructorDeclaration(
+                GetAttributes(symbol),
+                SyntaxFactory.TokenList(
+                    GetMemberModifiers(symbol)
+                ),
+                SyntaxFactory.Identifier(symbol.ContainingType.Name),
+                SyntaxFactory.ParameterList(
+                    SyntaxFactory.SeparatedList(
+                        from p in symbol.Parameters
+                        select GetParameter(p)
+                    )
+                ),
+                null,
+                null
+            ).NormalizeWhitespace().ToString();
+
+        private string GetFieldSyntax(IFieldSymbol symbol)
+        {
+            if (symbol.ContainingType.TypeKind == TypeKind.Enum)
+            {
+                return SyntaxFactory.EnumMemberDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.Identifier(symbol.Name),
+                    GetDefaultValueClause(symbol)
+                ).NormalizeWhitespace().ToString();
+            }
+            else
+            {
+                return SyntaxFactory.FieldDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(
+                        GetMemberModifiers(symbol)
+                    ),
+                    SyntaxFactory.VariableDeclaration(
+                        GetTypeSyntax(symbol.Type),
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.VariableDeclarator(
+                                SyntaxFactory.Identifier(symbol.Name)
+                            )
+                        )
+                    )
+                ).NormalizeWhitespace().ToString().TrimEnd(';');
+            }
+        }
+
+        private string GetEventSyntax(IEventSymbol symbol)
+        {
+            ExplicitInterfaceSpecifierSyntax eii = null;
+            if (symbol.ExplicitInterfaceImplementations.Length > 0)
+            {
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol)));
+            }
+            return RemoveBraces(
+                SyntaxFactory.EventDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
+                    SyntaxFactory.Token(SyntaxKind.EventKeyword),
+                    GetTypeSyntax(symbol.Type),
+                    eii,
+                    SyntaxFactory.Identifier(GetMemberName(symbol)),
+                    SyntaxFactory.AccessorList()
+                ).NormalizeWhitespace().ToString()
+            );
+        }
+
+        private string GetPropertySyntax(IPropertySymbol symbol)
+        {
+            ExplicitInterfaceSpecifierSyntax eii = null;
+            if (symbol.ExplicitInterfaceImplementations.Length > 0)
+            {
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol)));
+            }
+            if (symbol.IsIndexer)
+            {
+                return SyntaxFactory.IndexerDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
+                    GetTypeSyntax(symbol.Type),
+                    eii,
+                    SyntaxFactory.BracketedParameterList(
+                        SyntaxFactory.SeparatedList(
+                            from p in symbol.Parameters
+                            select GetParameter(p))),
+                    SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol))))
+                    .NormalizeWhitespace()
+                    .ToString();
+            }
+            else
+            {
+                return SyntaxFactory.PropertyDeclaration(
+                    GetAttributes(symbol),
+                    SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
+                    GetTypeSyntax(symbol.Type),
+                    eii,
+                    SyntaxFactory.Identifier(GetMemberName(symbol)),
+                    SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol))))
+                    .NormalizeWhitespace()
+                    .ToString();
+            }
+        }
+
+        #endregion
+
+        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, bool inOneLine = false)
         {
             if (!GenerateAttribute)
             {
@@ -545,7 +575,7 @@ namespace Microsoft.DocAsCode.EntityModel
                                 select GetAttributeSyntax(attr)).ToList();
                 if (attrList.Count > 0)
                 {
-                    if (inOneList)
+                    if (inOneLine)
                     {
                         return SyntaxFactory.SingletonList(
                             SyntaxFactory.AttributeList(
@@ -704,7 +734,7 @@ namespace Microsoft.DocAsCode.EntityModel
         private static ParameterSyntax GetParameter(IParameterSymbol p)
         {
             return SyntaxFactory.Parameter(
-                new SyntaxList<AttributeListSyntax>(),
+                GetAttributes(p, true),
                 SyntaxFactory.TokenList(GetParameterModifiers(p)),
                 GetTypeSyntax(p.Type),
                 SyntaxFactory.Identifier(p.Name),
@@ -1425,7 +1455,7 @@ namespace Microsoft.DocAsCode.EntityModel
                         propertySymbol.DeclaredAccessibility == Accessibility.ProtectedOrInternal)
                     {
                         return SyntaxFactory.AccessorDeclaration(kind,
-                            new SyntaxList<AttributeListSyntax>(),
+                            GetAttributes(methodSymbol),
                             new SyntaxTokenList(),
                             SyntaxFactory.Token(keyword),
                             null,
@@ -1435,7 +1465,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     {
                         return SyntaxFactory.AccessorDeclaration(
                             kind,
-                            new SyntaxList<AttributeListSyntax>(),
+                            GetAttributes(methodSymbol),
                             SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
                             SyntaxFactory.Token(keyword),
                             null,
@@ -1443,7 +1473,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     }
                 case Accessibility.Public:
                     return SyntaxFactory.AccessorDeclaration(kind,
-                        new SyntaxList<AttributeListSyntax>(),
+                        GetAttributes(methodSymbol),
                         new SyntaxTokenList(),
                         SyntaxFactory.Token(keyword),
                         null,
@@ -1452,7 +1482,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     if (methodSymbol.ExplicitInterfaceImplementations.Length > 0)
                     {
                         return SyntaxFactory.AccessorDeclaration(kind,
-                            new SyntaxList<AttributeListSyntax>(),
+                            GetAttributes(methodSymbol),
                             new SyntaxTokenList(),
                             SyntaxFactory.Token(keyword),
                             null,

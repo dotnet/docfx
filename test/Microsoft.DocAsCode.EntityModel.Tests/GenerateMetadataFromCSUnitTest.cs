@@ -2175,14 +2175,18 @@ using System.ComponentModel;
 namespace Test1
 {
     [Serializable]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Parameter, Inherited = true)]
+    [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = true)]
     [TypeConverter(typeof(TestAttribute))]
     [Test(""test"")]
     [Test(new int[]{1,2,3})]
     [Test(new object[]{null, ""abc"", 'd', 1.1f, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7u, 8l, 9ul, new int[]{ 10, 11, 12 })]
     public class TestAttribute : Attribute
     {
-        public TestAttribute(object obj){}
+        [Test(1)]
+        [Test(2)]
+        public TestAttribute([Test(3), Test(4)] object obj){}
+        [Test(5)]
+        public object Property { [Test(6)] get; [Test(7), Test(8)] set; }
     }
 }
 ";
@@ -2194,12 +2198,30 @@ namespace Test1
             Assert.Equal("TestAttribute", @class.DisplayNames[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.TestAttribute", @class.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal(@"[Serializable]
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Parameter, Inherited = true)]
+[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Module | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Interface | AttributeTargets.Parameter | AttributeTargets.Delegate | AttributeTargets.ReturnValue | AttributeTargets.GenericParameter | AttributeTargets.All, Inherited = true, AllowMultiple = true)]
 [TypeConverter(typeof (TestAttribute))]
 [Test(""test"")]
 [Test(new int[]{1, 2, 3})]
 [Test(new object[]{null, ""abc"", 'd', 1.1F, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7U, 8L, 9UL, new int[]{10, 11, 12}})]
 public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var ctor = @class.Items[0];
+            Assert.NotNull(ctor);
+            Assert.Equal(@"[Test(1)]
+[Test(2)]
+public TestAttribute([Test(3), Test(4)] object obj)", ctor.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var property = @class.Items[1];
+            Assert.NotNull(property);
+            Assert.Equal(@"[Test(5)]
+public object Property
+{
+    [Test(6)]
+    get;
+    [Test(7)]
+    [Test(8)]
+    set;
+}", property.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
