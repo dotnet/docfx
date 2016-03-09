@@ -124,6 +124,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 var index = href.IndexOf('#');
                 if (index == -1)
                 {
+                    href = href.TrimEnd('/');
                     if (string.IsNullOrEmpty(Path.GetExtension(href)))
                     {
                         return $"{href}{defaultExtension}";
@@ -139,15 +140,15 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 }
                 else
                 {
-                    var hrefWithoutAnchor = href.Remove(index);
+                    var hrefWithoutAnchor = href.Remove(index).TrimEnd('/');
                     var anchor = href.Substring(index);
-                    if (string.IsNullOrEmpty(Path.GetExtension(href)))
+                    if (string.IsNullOrEmpty(Path.GetExtension(hrefWithoutAnchor)))
                     {
                         return $"{hrefWithoutAnchor}{defaultExtension}{anchor}";
                     }
                     else
                     {
-                        return href;
+                        return $"{hrefWithoutAnchor}{anchor}";
                     }
                 }
             }
