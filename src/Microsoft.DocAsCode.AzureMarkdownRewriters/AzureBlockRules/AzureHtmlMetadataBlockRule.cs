@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text.RegularExpressions;
 
     using HtmlAgilityPack;
@@ -14,6 +15,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     public class AzureHtmlMetadataBlockRule : IMarkdownRule
     {
+        private const string AzureDocumentPrefix = "https://azure.microsoft.com/en-us/documentation/articles";
+
         public virtual string Name => "AZURE.Properties";
 
         private static readonly Regex _azureHtmlMetadataRegex = new Regex(@"^(?: *(\<(properties|tags)\s+[^\>]*\s*\>[^\<]*\<\/\1\>|\<(?:properties|tags)\s+[^>]*\/>)\s*){1,2}(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -29,7 +32,16 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
 
             source = source.Substring(match.Length);
+
+            object currentFilePath;
+            if (!engine.Context.Variables.TryGetValue("path", out currentFilePath))
+            {
+                Logger.LogWarning($"Can't get path for setting azure ms.assetid. Won't set it.");
+                currentFilePath = string.Empty;
+            }
+
             var metadata = GetAttributesFromHtmlContent(match.Value);
+            metadata.Properties["ms.assetid"] = $"{AzureDocumentPrefix}/{Path.GetFileNameWithoutExtension(currentFilePath.ToString())}";
             if (metadata == null)
             {
                 return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
@@ -39,9 +51,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         private class AzureHtmlMetadata
         {
-            public IReadOnlyDictionary<string, string> Properties { get; set; }
+            public Dictionary<string, string> Properties { get; set; }
 
-            public IReadOnlyDictionary<string, string> Tags { get; set; }
+            public Dictionary<string, string> Tags { get; set; }
         }
 
         private AzureHtmlMetadata GetAttributesFromHtmlContent(string htmlContent)
@@ -65,19 +77,26 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             return azureHtmlMetadata;
         }
 
-        private IReadOnlyDictionary<string, string> GetAttributesFromNode(HtmlNode node)
+        private Dictionary<string, string> GetAttributesFromNode(HtmlNode node)
         {
             var attributes = new Dictionary<string, string>();
             foreach(var attribute in node.Attributes)
             {
-                // TODO: Azure has metadata with name "authors" that could be a list of name. Not sure if docfx can handle it.
                 if (string.Equals(attribute.Name, "pageTitle", StringComparison.OrdinalIgnoreCase))
                 {
-                    attributes.Add("title", attribute.Value);
+                    attributes["title"] = attribute.Value;
+                }
+                else if(string.Equals(attribute.Name, "authors", StringComparison.OrdinalIgnoreCase))
+                {
+                    var authors = attribute.Value.Split(';');
+                    if(authors.Length >= 1)
+                    {
+                        attributes["author"] = authors[0].Trim();
+                    }
                 }
                 else
                 {
-                    attributes.Add(attribute.Name, attribute.Value);
+                    attributes[attribute.Name] = attribute.Value;
                 }
             }
             return attributes;
