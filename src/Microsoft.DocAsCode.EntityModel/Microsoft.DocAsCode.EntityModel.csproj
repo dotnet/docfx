@@ -178,6 +178,7 @@
     <Compile Include="TemplateManagers\TemplateProcessor.cs" />
     <Compile Include="TemplateManagers\TemplateManager.cs" />
     <Compile Include="ViewModels\IOverwriteDocumentViewModel.cs" />
+    <Compile Include="Parsers\Section.cs" />
     <Compile Include="ViewModels\RestApi\RestApiItemViewModel.cs" />
     <Compile Include="ViewModels\RestApi\RestApiResponseExampleViewModel.cs" />
     <Compile Include="ViewModels\RestApi\RestApiResponseViewModel.cs" />
@@ -190,7 +191,6 @@
     <Compile Include="ViewModels\TocItemViewModel.cs" />
     <Compile Include="ViewModels\TocViewModel.cs" />
     <Compile Include="ViewModels\ViewModelUtility.cs" />
-    <Compile Include="ViewModels\MapFileItemViewModel.cs" />
     <Compile Include="Models\SyntaxLanguage.cs" />
     <Compile Include="Models\MemberType.cs" />
     <Compile Include="Models\LayoutItem.cs" />

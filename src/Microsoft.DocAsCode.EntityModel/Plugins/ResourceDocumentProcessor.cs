@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         {
                             content[item.Key] = item.Value;
                         }
-                        if (item.Key == "uid")
+                        if (item.Key == Constants.PropertyName.Uid)
                         {
                             uid = item.Value as string;
                         }

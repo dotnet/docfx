@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     [Serializable]
     public class RestApiItemViewModel : IOverwriteDocumentViewModel
     {
-        [YamlMember(Alias = "uid")]
-        [JsonProperty("uid")]
+        [YamlMember(Alias = Constants.PropertyName.Uid)]
+        [JsonProperty(Constants.PropertyName.Uid)]
         [MergeOption(MergeOption.MergeKey)]
         public string Uid { get; set; }
 
@@ -32,8 +32,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [YamlMember(Alias = "path")]
-        [JsonProperty("path")]
+        [YamlMember(Alias = Constants.PropertyName.Path)]
+        [JsonProperty(Constants.PropertyName.Path)]
         public string Path { get; set; }
 
         [YamlMember(Alias = "operation")]
@@ -61,12 +61,12 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [MergeOption(MergeOption.Ignore)]
         public string Raw { get; set; }
 
-        [YamlMember(Alias = "documentation")]
-        [JsonProperty("documentation")]
+        [YamlMember(Alias = Constants.PropertyName.Documentation)]
+        [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
 
-        [YamlMember(Alias = "conceptual")]
-        [JsonProperty("conceptual")]
+        [YamlMember(Alias = Constants.PropertyName.Conceptual)]
+        [JsonProperty(Constants.PropertyName.Conceptual)]
         public string Conceptual { get; set; }
 
         [YamlMember(Alias = "parameters")]
@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
                     };
 
                     // TODO: line number
-                    itemVm.Metadata["source"] = swagger.Metadata["source"];
+                    itemVm.Metadata[Constants.PropertyName.Source] = swagger.Metadata[Constants.PropertyName.Source];
                     vm.Children.Add(itemVm);
                 }
             }

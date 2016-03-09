@@ -27,10 +27,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var repoInfo = GitUtility.GetGitDetail(filePath);
             return new Dictionary<string, object>
             {
-                ["conceptual"] = File.ReadAllText(filePath),
-                ["type"] = "Conceptual",
-                ["source"] = new SourceDetail() { Remote = repoInfo },
-                ["path"] = file,
+                [Constants.PropertyName.Conceptual] = File.ReadAllText(filePath),
+                [Constants.PropertyName.Type] = "Conceptual",
+                [Constants.PropertyName.Source] = new SourceDetail() { Remote = repoInfo },
+                [Constants.PropertyName.Path] = file,
             };
         }
 

@@ -10,5 +10,22 @@ namespace Microsoft.DocAsCode.EntityModel
         public const string MapFileExtension = ".map";
 
         public const int DefaultParallelism = 4;
+
+        /// <summary>
+        /// TODO: add other property name const
+        /// </summary>
+        public static class PropertyName
+        {
+            public const string Uid = "uid";
+            public const string Id = "id";
+            public const string Href = "href";
+            public const string Type = "type";
+            public const string Source = "source";
+            public const string Path = "path";
+            public const string DocumentType = "documentType";
+            public const string Title = "title";
+            public const string Conceptual = "conceptual";
+            public const string Documentation = "documentation";
+        }
     }
 }

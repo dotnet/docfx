@@ -124,8 +124,8 @@ namespace Microsoft.DocAsCode.EntityModel
         /// <summary>
         /// The url path for current source, should be resolved at some late stage
         /// </summary>
-        [YamlMember(Alias = "href")]
-        [JsonProperty("href")]
+        [YamlMember(Alias = Constants.PropertyName.Href)]
+        [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
         public LinkItem Clone()

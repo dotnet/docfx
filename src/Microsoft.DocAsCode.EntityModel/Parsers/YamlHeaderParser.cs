@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.EntityModel
     /// </summary>
     public static class YamlHeaderParser
     {
-        private static readonly List<string> RequiredProperties = new List<string> { "uid" };
+        private static readonly List<string> RequiredProperties = new List<string> { Constants.PropertyName.Uid };
 
         // If is not the end of the file, then \n should be appended to ---
         public static readonly Regex YamlHeaderRegex = new Regex(@"((((?!\n)\s)*\n)|^)((?!\n)\s)*\-\-\-((?!\n)\s)*\n((?!\n)\s)*(?<content>uid:.*?)\s*\-\-\-((?!\n)\s)*\n", RegexOptions.Compiled | RegexOptions.Singleline);
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
             return new MatchDetail
             {
-                           Id = properties["uid"].ToString(),
+                           Id = properties[Constants.PropertyName.Uid].ToString(),
                            MatchedSection =
                                new Section { Key = wholeMatch.Value, Locations = new List<Location> { location } },
                            Properties = overridenProperties,

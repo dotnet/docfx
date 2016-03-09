@@ -17,13 +17,13 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     [Serializable]
     public class ItemViewModel : IOverwriteDocumentViewModel
     {
-        [YamlMember(Alias = "uid")]
-        [JsonProperty("uid")]
+        [YamlMember(Alias = Constants.PropertyName.Uid)]
+        [JsonProperty(Constants.PropertyName.Uid)]
         [MergeOption(MergeOption.MergeKey)]
         public string Uid { get; set; }
 
-        [YamlMember(Alias = "id")]
-        [JsonProperty("id")]
+        [YamlMember(Alias = Constants.PropertyName.Id)]
+        [JsonProperty(Constants.PropertyName.Id)]
         public string Id { get; set; }
 
         [YamlMember(Alias = "parent")]
@@ -35,8 +35,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("children")]
         public List<string> Children { get; set; }
 
-        [YamlMember(Alias = "href")]
-        [JsonProperty("href")]
+        [YamlMember(Alias = Constants.PropertyName.Href)]
+        [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
         [YamlMember(Alias = "langs")]
@@ -151,16 +151,16 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
             }
         }
 
-        [YamlMember(Alias = "type")]
-        [JsonProperty("type")]
+        [YamlMember(Alias = Constants.PropertyName.Type)]
+        [JsonProperty(Constants.PropertyName.Type)]
         public MemberType? Type { get; set; }
 
-        [YamlMember(Alias = "source")]
-        [JsonProperty("source")]
+        [YamlMember(Alias = Constants.PropertyName.Source)]
+        [JsonProperty(Constants.PropertyName.Source)]
         public SourceDetail Source { get; set; }
 
-        [YamlMember(Alias = "documentation")]
-        [JsonProperty("documentation")]
+        [YamlMember(Alias = Constants.PropertyName.Documentation)]
+        [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
 
         [YamlMember(Alias = "assemblies")]
@@ -224,8 +224,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonIgnore]
         public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
 
-        [YamlMember(Alias = "conceptual")]
-        [JsonProperty("conceptual")]
+        [YamlMember(Alias = Constants.PropertyName.Conceptual)]
+        [JsonProperty(Constants.PropertyName.Conceptual)]
         public string Conceptual { get; set; }
 
         [YamlMember(Alias = "platform")]

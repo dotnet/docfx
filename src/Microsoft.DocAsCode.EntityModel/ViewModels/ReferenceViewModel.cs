@@ -16,8 +16,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     [Serializable]
     public class ReferenceViewModel
     {
-        [YamlMember(Alias = "uid")]
-        [JsonProperty("uid")]
+        [YamlMember(Alias = Constants.PropertyName.Uid)]
+        [JsonProperty(Constants.PropertyName.Uid)]
         public string Uid { get; set; }
 
         [YamlMember(Alias = "parent")]
@@ -32,8 +32,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [YamlMember(Alias = "isExternal")]
         public bool? IsExternal { get; set; }
 
-        [YamlMember(Alias = "href")]
-        [JsonProperty("href")]
+        [YamlMember(Alias = Constants.PropertyName.Href)]
+        [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
         [YamlMember(Alias = "name")]

@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 if (model.Type == DocumentType.Article)
                 {
                     var content = (Dictionary<string, object>)model.Content;
-                    content["wordCount"] = WordCounter.CountWord((string)content["conceptual"]);
+                    content["wordCount"] = WordCounter.CountWord((string)content[Constants.PropertyName.Conceptual]);
                 }
             }
         }

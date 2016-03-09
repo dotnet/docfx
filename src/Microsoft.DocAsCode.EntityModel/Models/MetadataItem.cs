@@ -19,8 +19,8 @@ namespace Microsoft.DocAsCode.EntityModel
         [JsonIgnore]
         public string RawComment { get; set; }
 
-        [YamlMember(Alias = "id")]
-        [JsonProperty("id")]
+        [YamlMember(Alias = Constants.PropertyName.Id)]
+        [JsonProperty(Constants.PropertyName.Id)]
         public string Name { get; set; }
 
         [YamlMember(Alias = "language")]
@@ -39,8 +39,8 @@ namespace Microsoft.DocAsCode.EntityModel
         [JsonProperty("parent")]
         public MetadataItem Parent { get; set; }
 
-        [YamlMember(Alias = "type")]
-        [JsonProperty("type")]
+        [YamlMember(Alias = Constants.PropertyName.Type)]
+        [JsonProperty(Constants.PropertyName.Type)]
         public MemberType Type { get; set; }
 
         [YamlMember(Alias = "assemblies")]
@@ -51,12 +51,12 @@ namespace Microsoft.DocAsCode.EntityModel
         [JsonProperty("namespace")]
         public string NamespaceName { get; set; }
 
-        [YamlMember(Alias = "source")]
-        [JsonProperty("source")]
+        [YamlMember(Alias = Constants.PropertyName.Source)]
+        [JsonProperty(Constants.PropertyName.Source)]
         public SourceDetail Source { get; set; }
 
-        [YamlMember(Alias = "documentation")]
-        [JsonProperty("documentation")]
+        [YamlMember(Alias = Constants.PropertyName.Documentation)]
+        [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
 
         public List<LayoutItem> Layout { get; set; }

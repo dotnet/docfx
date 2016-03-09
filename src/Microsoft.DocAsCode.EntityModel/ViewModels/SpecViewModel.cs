@@ -10,8 +10,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
     [Serializable]
     public class SpecViewModel
     {
-        [YamlMember(Alias = "uid")]
-        [JsonProperty("uid")]
+        [YamlMember(Alias = Constants.PropertyName.Uid)]
+        [JsonProperty(Constants.PropertyName.Uid)]
         public string Uid { get; set; }
 
         [YamlMember(Alias = "name")]
@@ -26,8 +26,8 @@ namespace Microsoft.DocAsCode.EntityModel.ViewModels
         [JsonProperty("isExternal")]
         public bool IsExternal { get; set; }
 
-        [YamlMember(Alias = "href")]
-        [JsonProperty("href")]
+        [YamlMember(Alias = Constants.PropertyName.Href)]
+        [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
         public static SpecViewModel FromModel(LinkItem model)

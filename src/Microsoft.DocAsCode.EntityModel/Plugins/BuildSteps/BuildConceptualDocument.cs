@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildConceptualDocument : BaseDocumentBuildStep
     {
-        private const string ConceputalKey = "conceptual";
+        private const string ConceputalKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
         private const int TitleThumbnailMaxLength = 30;
         public override string Name => nameof(BuildConceptualDocument);
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             var result = host.Markup(markdown, model.FileAndType);
 
             var htmlInfo = SeperateHtml(result.Html);
-            content["title"] = htmlInfo.Title;
+            content[Constants.PropertyName.Title] = htmlInfo.Title;
             content["rawTitle"] = htmlInfo.RawTitle;
             content[ConceputalKey] = htmlInfo.Content;
 
@@ -43,13 +43,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 foreach (var item in result.YamlHeader)
                 {
-                    if (item.Key == "uid")
+                    if (item.Key == Constants.PropertyName.Uid)
                     {
                         var uid = item.Value as string;
                         if (!string.IsNullOrWhiteSpace(uid))
                         {
                             model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRepoRoot) }.ToImmutableArray();
-                            content["uid"] = item.Value;
+                            content[Constants.PropertyName.Uid] = item.Value;
                         }
                     }
                     else
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 model.Properties.XrefSpec = new XRefSpec
                 {
                     Uid = model.Uids[0].Name,
-                    Name = TitleThumbnail(content["title"].ToString() ?? model.Uids[0].Name, TitleThumbnailMaxLength),
+                    Name = TitleThumbnail(content[Constants.PropertyName.Title].ToString() ?? model.Uids[0].Name, TitleThumbnailMaxLength),
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }

@@ -189,7 +189,7 @@ tagRules : [
                         "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a></p>\n" +
                         "<p><p>\n" +
                         "test</p>\n",
-                        model["conceptual"]);
+                        model[Constants.PropertyName.Conceptual]);
                     Assert.Equal("Conceptual", model["type"]);
                     Assert.Equal("Hello world!", model["meta"]);
                     Assert.Equal("b", model["a"]);
@@ -211,8 +211,8 @@ tagRules : [
                     Assert.Equal("Hello world!", meta["meta"]);
                     Assert.True(meta.ContainsKey("abc"));
                     Assert.Equal("xyz", meta["abc"]);
-                    Assert.True(meta.ContainsKey("uid"));
-                    Assert.Equal("r1", meta["uid"]);
+                    Assert.True(meta.ContainsKey(Constants.PropertyName.Uid));
+                    Assert.Equal("r1", meta[Constants.PropertyName.Uid]);
                 }
             }
             finally
