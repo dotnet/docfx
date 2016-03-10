@@ -54,9 +54,7 @@ namespace Test1
     }
 }
 ";
-            CSYamlModelGenerator.GenerateAttribute = true;
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            CSYamlModelGenerator.GenerateAttribute = false;
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
             Assert.Equal("Class1", @class.DisplayNames.First().Value);
@@ -2190,9 +2188,7 @@ namespace Test1
     }
 }
 ";
-            CSYamlModelGenerator.GenerateAttribute = true;
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromFile(typeof(System.ComponentModel.TypeConverterAttribute).Assembly.Location)));
-            CSYamlModelGenerator.GenerateAttribute = false;
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
             Assert.Equal("TestAttribute", @class.DisplayNames[SyntaxLanguage.CSharp]);

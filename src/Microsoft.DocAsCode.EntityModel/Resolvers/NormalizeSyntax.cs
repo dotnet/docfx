@@ -3,13 +3,13 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
-    using System;
-
     public class NormalizeSyntax : IResolverPipeline
     {
         public void Run(MetadataModel yaml, ResolverContext context)
         {
-            TreeIterator.Preorder(yaml.TocYamlViewModel, null,
+            TreeIterator.Preorder(
+                yaml.TocYamlViewModel,
+                null,
                 s => s.IsInvalid ? null : s.Items,
                 (member, parent) =>
                 {
@@ -30,8 +30,11 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static string NormalizeLines(string content)
         {
-            if (string.IsNullOrEmpty(content)) return content;
-            return string.Join(" ", content.Split(new[] { ' ', '\r', '\n'  }, StringSplitOptions.RemoveEmptyEntries));
+            if (string.IsNullOrEmpty(content))
+            {
+                return content;
+            }
+            return content.Replace("\r\n", "\n");
         }
     }
 }

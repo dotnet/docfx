@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.EntityModel
     public class CSYamlModelGenerator : SimpleYamlModelGenerator
     {
         #region Fields
-        public static bool GenerateAttribute = false;
         private static readonly Regex BracesRegex = new Regex(@"\s*\{(;|\s)*\}\s*$", RegexOptions.Compiled);
         #endregion
 
@@ -563,10 +562,6 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, bool inOneLine = false)
         {
-            if (!GenerateAttribute)
-            {
-                return new SyntaxList<AttributeListSyntax>();
-            }
             var attrs = symbol.GetAttributes();
             if (attrs.Length > 0)
             {
