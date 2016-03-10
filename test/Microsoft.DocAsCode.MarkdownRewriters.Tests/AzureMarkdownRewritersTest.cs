@@ -580,10 +580,12 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
             File.WriteAllText(Path.Combine(docset2Dir.FullName, docset2MdFileName), docset2Md);
             var docset2Resource = @"<p>docset2 resource</p>";
             var docset2ResourceFileName = "docset2Resource.html";
-            File.WriteAllText(Path.Combine(docset2Dir.FullName, docset2ResourceFileName), docset2Resource);
+            var docset2ResourceFilePath = Path.Combine(docset2Dir.FullName, docset2ResourceFileName);
+            File.WriteAllText(docset2ResourceFilePath, docset2Resource);
             var docset2Image = @"image";
             var docset2ImageFileName = "docset2Image.png";
-            File.WriteAllText(Path.Combine(docset2Dir.FullName, "docset2Image.png"), docset2Image);
+            var docset2ImageFilePath = Path.Combine(docset2Dir.FullName, docset2ImageFileName);
+            File.WriteAllText(docset2ImageFilePath, docset2Image);
 
             // Expected result
             var expected = @"[Ref a md content in another docset](../docset2/docset2Md.md)
@@ -595,7 +597,14 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 
 ";
 
-            var result = AzureMarked.Markup(docset1Md, docset1MdFilePath);
+            Dictionary<string, AzureFileInfo> azureResourceFileInfoMapping = new Dictionary<string, AzureFileInfo>
+            {
+                [docset2ResourceFileName] = new AzureFileInfo { FileName = docset2ResourceFileName, FilePath = docset2ResourceFilePath },
+                [docset2ImageFileName] = new AzureFileInfo { FileName = docset2ImageFileName, FilePath = docset2ImageFilePath }
+            };
+
+
+            var result = AzureMarked.Markup(docset1Md, docset1MdFilePath, null, null, azureResourceFileInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
             var externalResourceFolderName = "ex_resource";
             Assert.True(!File.Exists(Path.Combine(docset1Dir.FullName, externalResourceFolderName, docset2MdFileName)));
@@ -819,7 +828,7 @@ ms.author: rogardle
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInSameDocset()
         {
-            var azureFileInfoMapping =
+            var azureMarkdownFileInfoMapping =
                 new Dictionary<string, AzureFileInfo>{
                     {
                         "unique.md",
@@ -838,7 +847,7 @@ ms.author: rogardle
 
 ";
 
-            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            var result = AzureMarked.Markup(source, sourceFilePath, azureMarkdownFileInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -846,7 +855,7 @@ ms.author: rogardle
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInsideDocsetWithOnlyBookmark()
         {
-            var azureFileInfoMapping =
+            var azureMarkdownFileInfoMapping =
                 new Dictionary<string, AzureFileInfo>{
                     {
                         "unique.md",
@@ -865,7 +874,7 @@ ms.author: rogardle
 
 ";
 
-            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            var result = AzureMarked.Markup(source, sourceFilePath, azureMarkdownFileInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -873,7 +882,7 @@ ms.author: rogardle
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInSameDocsetWithBookmark()
         {
-            var azureFileInfoMapping =
+            var azureMarkdownFileInfoMapping =
                 new Dictionary<string, AzureFileInfo>{
                     {
                         "unique.md",
@@ -892,7 +901,7 @@ ms.author: rogardle
 
 ";
 
-            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            var result = AzureMarked.Markup(source, sourceFilePath, azureMarkdownFileInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -900,7 +909,7 @@ ms.author: rogardle
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInDifferentDocsetWithBookmark()
         {
-            var azureFileInfoMapping =
+            var azureMarkdownFileInfoMapping =
                 new Dictionary<string, AzureFileInfo>{
                     {
                         "unique.md",
@@ -919,7 +928,7 @@ ms.author: rogardle
 
 ";
 
-            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            var result = AzureMarked.Markup(source, sourceFilePath, azureMarkdownFileInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -927,7 +936,7 @@ ms.author: rogardle
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeOutsideDocset()
         {
-            var azureFileInfoMapping =
+            var azureMarkdownFileInfoMapping =
                 new Dictionary<string, AzureFileInfo>{
                     {
                         "unique.md",
@@ -946,7 +955,7 @@ ms.author: rogardle
 
 ";
 
-            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            var result = AzureMarked.Markup(source, sourceFilePath, azureMarkdownFileInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -954,7 +963,7 @@ ms.author: rogardle
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkOutsideDocsetWithBookmark()
         {
-            var azureFileInfoMapping =
+            var azureMarkdownFileInfoMapping =
                 new Dictionary<string, AzureFileInfo>{
                     {
                         "unique.md",
@@ -973,7 +982,7 @@ ms.author: rogardle
 
 ";
 
-            var result = AzureMarked.Markup(source, sourceFilePath, azureFileInfoMapping);
+            var result = AzureMarked.Markup(source, sourceFilePath, azureMarkdownFileInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 

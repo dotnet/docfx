@@ -15,8 +15,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         public static string Markup(
             string src,
             string path = null,
-            IReadOnlyDictionary<string, AzureFileInfo> azureFileInfoMapping = null,
-            IReadOnlyDictionary<string, AzureVideoInfo> azureVideoInfoMapping = null)
+            IReadOnlyDictionary<string, AzureFileInfo> azureMarkdownFileInfoMapping = null,
+            IReadOnlyDictionary<string, AzureVideoInfo> azureVideoInfoMapping = null,
+            IReadOnlyDictionary<string, AzureFileInfo> azureResourceFileInfoMapping = null)
         {
             var engine = (MarkdownEngine)_builder.CreateEngine(_renderer);
             var context = engine.Context;
@@ -25,14 +26,19 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 context = engine.Context.CreateContext(engine.Context.Variables.SetItem("path", path));
             }
 
-            if (azureFileInfoMapping != null)
+            if (azureMarkdownFileInfoMapping != null)
             {
-                context = context.CreateContext(context.Variables.SetItem("azureFileInfoMapping", azureFileInfoMapping));
+                context = context.CreateContext(context.Variables.SetItem("azureMarkdownFileInfoMapping", azureMarkdownFileInfoMapping));
             }
 
             if (azureVideoInfoMapping != null)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureVideoInfoMapping", azureVideoInfoMapping));
+            }
+
+            if (azureResourceFileInfoMapping != null)
+            {
+                context = context.CreateContext(context.Variables.SetItem("azureResourceFileInfoMapping", azureResourceFileInfoMapping));
             }
 
             return engine.Mark(MarkdownEngine.Normalize(src), context);

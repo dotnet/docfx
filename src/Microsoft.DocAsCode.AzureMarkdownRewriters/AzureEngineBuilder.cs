@@ -199,16 +199,31 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
             var currentFilePath = (string)context.Variables["path"];
             var currentFolderPath = Path.GetDirectoryName(currentFilePath);
-            var nonMdHrefPath = PathUtility.GetFullPath(currentFolderPath, nonMdHref);
+
+            // if azure resource file info doesn't exist, log warning and return
+            if (!context.Variables.ContainsKey("azureResourceFileInfoMapping"))
+            {
+                Logger.LogWarning($"Can't find azure resource file info mapping. Couldn't fix href: {nonMdHref} in file {currentFilePath}. raw: {rawMarkdown}");
+                return nonMdHref;
+            }
+
+            var nonMdHrefFileName = Path.GetFileName(nonMdHref);
+            var azureResourceFileInfoMapping = (Dictionary<string, AzureFileInfo>)context.Variables["azureResourceFileInfoMapping"];
+            AzureFileInfo azureResourceFileInfo;
+            if (!azureResourceFileInfoMapping.TryGetValue(nonMdHrefFileName, out azureResourceFileInfo))
+            {
+                Logger.LogWarning($"Can't find info for file name {nonMdHrefFileName} in azure resource file info mapping. Couldn't fix href: {nonMdHref} in file {currentFilePath}. raw: {rawMarkdown}");
+                return nonMdHref;
+            }
 
             // If the nonMdHref is under same docset with current file. No need to fix that.
-            if (PathUtility.IsPathUnderSpecificFolder(nonMdHrefPath, currentFolderPath))
+            if (PathUtility.IsPathUnderSpecificFolder(azureResourceFileInfo.FilePath, currentFolderPath))
             {
                 return nonMdHref;
             }
 
             // If the nonMdHref is under different docset with current file but not exists. Then log warning and won't fix.
-            if (!File.Exists(nonMdHrefPath))
+            if (!File.Exists(azureResourceFileInfo.FilePath))
             {
                 Logger.LogWarning($"{nonMdHref} refer by {currentFilePath} doesn't exists. Won't do link fix. raw: {rawMarkdown}");
                 return nonMdHref;
@@ -217,8 +232,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             // If the nonMdHref is under different docset with current file and also exists, then fix the link.
             // 1. copy the external file to ex_resource folder. 2. Return new href path to the file under external folder
             var exResourceDir = Directory.CreateDirectory(Path.Combine(currentFolderPath, ExternalResourceFolderName));
-            var resDestPath = Path.Combine(exResourceDir.FullName, Path.GetFileName(nonMdHrefPath));
-            File.Copy(nonMdHrefPath, resDestPath, true);
+            var resDestPath = Path.Combine(exResourceDir.FullName, Path.GetFileName(azureResourceFileInfo.FilePath));
+            File.Copy(azureResourceFileInfo.FilePath, resDestPath, true);
             return PathUtility.MakeRelativePath(currentFolderPath, resDestPath);
         }
 
@@ -259,7 +274,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             StringBuffer content = StringBuffer.Empty;
 
             // If the context doesn't have necessary info, return the original href
-            if (!context.Variables.ContainsKey("path") || !context.Variables.ContainsKey("azureFileInfoMapping"))
+            if (!context.Variables.ContainsKey("path") || !context.Variables.ContainsKey("azureMarkdownFileInfoMapping"))
             {
                 return href;
             }
@@ -290,15 +305,15 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
             // deal with different kinds of relative paths
             var currentFilePath = (string)context.Variables["path"];
-            var azureFileInfoMapping = (IReadOnlyDictionary<string, AzureFileInfo>)context.Variables["azureFileInfoMapping"];
-            if (azureFileInfoMapping == null || !azureFileInfoMapping.ContainsKey(hrefFileName))
+            var azureMarkdownFileInfoMapping = (IReadOnlyDictionary<string, AzureFileInfo>)context.Variables["azureMarkdownFileInfoMapping"];
+            if (azureMarkdownFileInfoMapping == null || !azureMarkdownFileInfoMapping.ContainsKey(hrefFileName))
             {
                 Logger.LogWarning($"Can't fild reference file: {href} in azure file system for file {currentFilePath}. Raw: {rawMarkdown}");
                 return href;
             }
 
             string azureHref = null;
-            var hrefFileInfo = azureFileInfoMapping[hrefFileName];
+            var hrefFileInfo = azureMarkdownFileInfoMapping[hrefFileName];
 
             // Not in docsets and transform to azure external link
             if (hrefFileInfo.NeedTransformToAzureExternalLink)
