@@ -557,6 +557,52 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_FixResourceFileNotInCurrentDocset()
+        {
+            // Prepare data
+            // Create a docset1 markdown file. Ref docset2's markdown, image and resource
+            var docset1Md = @"[Ref a md content in another docset](../docset2/docset2Md.md)
+[Ref a non md resource in another docset](../docset2/docset2Resource.html)
+![Ref a image content in another docset](../docset2/docset2Image.png)
+![Ref a image content not in another docset](../docset2/docset2FakeImage.png)
+![Ref a abs path image content in another docset](c:\\docset2\fullNameImage.img)
+![Ref a abs http image content in another docset](https://google/images/fullNameImage.img)";
+            var docset1Dir = Directory.CreateDirectory("docset1");
+            var docset1MdFilePath = Path.Combine(docset1Dir.FullName, "docset1Md.md");
+            File.WriteAllText(docset1MdFilePath, docset1Md);
+
+            // Create docset2's files, one markdown, one resource, one image
+            var docset2Dir = Directory.CreateDirectory("docset2");
+            var docset2Md = @"docset2 content";
+            var docset2MdFileName = "docset2Md.md";
+            File.WriteAllText(Path.Combine(docset2Dir.FullName, docset2MdFileName), docset2Md);
+            var docset2Resource = @"<p>docset2 resource</p>";
+            var docset2ResourceFileName = "docset2Resource.html";
+            File.WriteAllText(Path.Combine(docset2Dir.FullName, docset2ResourceFileName), docset2Resource);
+            var docset2Image = @"image";
+            var docset2ImageFileName = "docset2Image.png";
+            File.WriteAllText(Path.Combine(docset2Dir.FullName, "docset2Image.png"), docset2Image);
+
+            // Expected result
+            var expected = @"[Ref a md content in another docset](../docset2/docset2Md.md)
+[Ref a non md resource in another docset](ex_resource/docset2Resource.html)
+![Ref a image content in another docset](ex_resource/docset2Image.png)
+![Ref a image content not in another docset](../docset2/docset2FakeImage.png)
+![Ref a abs path image content in another docset](c:\\docset2\fullNameImage.img)
+![Ref a abs http image content in another docset](https://google/images/fullNameImage.img)
+
+";
+
+            var result = AzureMarked.Markup(docset1Md, docset1MdFilePath);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            var externalResourceFolderName = "ex_resource";
+            Assert.True(!File.Exists(Path.Combine(docset1Dir.FullName, externalResourceFolderName, docset2MdFileName)));
+            Assert.True(File.Exists(Path.Combine(docset1Dir.FullName, externalResourceFolderName, docset2ResourceFileName)));
+            Assert.True(File.Exists(Path.Combine(docset1Dir.FullName, externalResourceFolderName, docset2ImageFileName)));
+        }
+
         [Fact(Skip = "Disable as Include logic change")]
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_TransformMultiAzureInclude()

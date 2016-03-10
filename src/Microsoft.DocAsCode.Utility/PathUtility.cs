@@ -182,7 +182,7 @@ namespace Microsoft.DocAsCode.Utility
         {
             if (string.IsNullOrEmpty(href)) return null;
             if (string.IsNullOrEmpty(folder)) return href;
-            return Path.Combine(folder, href);
+            return Path.GetFullPath(Path.Combine(folder, href));
         }
 
         public static void CopyFile(string path, string targetPath, bool overwrite = false)

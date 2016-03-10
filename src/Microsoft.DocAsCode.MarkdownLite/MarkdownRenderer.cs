@@ -15,6 +15,23 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         #region Inline Token
 
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownImageInlineToken token, MarkdownInlineContext context)
+        {
+            StringBuffer content = StringBuffer.Empty;
+            content += "![";
+            content += token.Text;
+            content += "](";
+            content += StringHelper.Unescape(token.Href);
+            if (!string.IsNullOrEmpty(token.Title))
+            {
+                content += " \"";
+                content += StringHelper.Unescape(token.Title);
+                content += "\"";
+            }
+            content += ")";
+            return content;
+        }
+
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownLinkInlineToken token, MarkdownInlineContext context)
         {
             StringBuffer content = StringBuffer.Empty;

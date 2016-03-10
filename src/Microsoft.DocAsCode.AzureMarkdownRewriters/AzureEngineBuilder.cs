@@ -21,6 +21,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         private const string MarkdownExtension = ".md";
         private const string HtmlExtension = ".html";
 
+        private const string ExternalResourceFolderName = "ex_resource";
+
         public AzureEngineBuilder(Options options) : base(options)
         {
             BuildRules();
@@ -99,6 +101,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                             (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
+                            (IMarkdownRewriteEngine e, MarkdownImageInlineToken t) => new MarkdownImageInlineToken(t.Rule, t.Context, FixNonMdRelativeFileHref(t.Href, t.Context, t.RawMarkdown), t.Title, t.Text, t.RawMarkdown)
+                        ),
+                        MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.RawMarkdown), t.Title, t.Content, t.RawMarkdown)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
@@ -112,47 +117,109 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         private string NormalizeAzureLink(string href, string defaultExtension, IMarkdownContext context, string rawMarkdown)
         {
-            var link = AppendDefaultExtension(href, defaultExtension);
-            link = GenerateAzureLinkHref(context, link, rawMarkdown);
+            bool isHrefRelativeNonMdFile;
+            var link = AppendDefaultExtension(href, defaultExtension, out isHrefRelativeNonMdFile);
+            if (isHrefRelativeNonMdFile)
+            {
+                link = FixNonMdRelativeFileHref(link, context, rawMarkdown);
+            }
+            else
+            {
+                link = GenerateAzureLinkHref(context, link, rawMarkdown);
+            }
             return link;
         }
 
-        private string AppendDefaultExtension(string href, string defaultExtension)
+        /// <summary>
+        /// Append default extension to href by condition
+        /// </summary>
+        /// <param name="href">original href string</param>
+        /// <param name="defaultExtension">default extension to append</param>
+        /// <param name="isHrefRelativeNonMdFile">true if it is a relative path and not a markdown file. Otherwise false</param>
+        /// <returns>Href with default extension appended</returns>
+        private string AppendDefaultExtension(string href, string defaultExtension, out bool isHrefRelativeNonMdFile)
         {
-            if (PathUtility.IsRelativePath(href))
+            isHrefRelativeNonMdFile = false;
+            if (!PathUtility.IsRelativePath(href))
             {
-                var index = href.IndexOf('#');
-                if (index == -1)
+                return href;
+            }
+
+            var index = href.IndexOf('#');
+            if (index == -1)
+            {
+                href = href.TrimEnd('/');
+                var extension = Path.GetExtension(href);
+
+                // Regard all the relative path with no extension as markdown file that missing .md
+                if (string.IsNullOrEmpty(extension))
                 {
-                    href = href.TrimEnd('/');
-                    if (string.IsNullOrEmpty(Path.GetExtension(href)))
-                    {
-                        return $"{href}{defaultExtension}";
-                    }
-                    else
-                    {
-                        return href;
-                    }
-                }
-                else if (index == 0)
-                {
-                    return href;
+                    return $"{href}{defaultExtension}";
                 }
                 else
                 {
-                    var hrefWithoutAnchor = href.Remove(index).TrimEnd('/');
-                    var anchor = href.Substring(index);
-                    if (string.IsNullOrEmpty(Path.GetExtension(hrefWithoutAnchor)))
+                    if (!extension.Equals(MarkdownExtension, StringComparison.OrdinalIgnoreCase))
                     {
-                        return $"{hrefWithoutAnchor}{defaultExtension}{anchor}";
+                        isHrefRelativeNonMdFile = true;
                     }
-                    else
-                    {
-                        return $"{hrefWithoutAnchor}{anchor}";
-                    }
+                    return href;
                 }
             }
-            return href;
+            else if (index == 0)
+            {
+                return href;
+            }
+            else
+            {
+                var hrefWithoutAnchor = href.Remove(index).TrimEnd('/');
+                var anchor = href.Substring(index);
+                var extension = Path.GetExtension(hrefWithoutAnchor);
+                if (string.IsNullOrEmpty(extension))
+                {
+                    return $"{hrefWithoutAnchor}{defaultExtension}{anchor}";
+                }
+                else
+                {
+                    if (!extension.Equals(MarkdownExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        isHrefRelativeNonMdFile = true;
+                    }
+                    return $"{hrefWithoutAnchor}{anchor}";
+                }
+            }
+        }
+
+        private string FixNonMdRelativeFileHref(string nonMdHref, IMarkdownContext context, string rawMarkdown)
+        {
+            // If the context doesn't have necessary info or nonMdHref is not a relative path, return the original href
+            if (!context.Variables.ContainsKey("path") || !PathUtility.IsRelativePath(nonMdHref))
+            {
+                return nonMdHref;
+            }
+
+            var currentFilePath = (string)context.Variables["path"];
+            var currentFolderPath = Path.GetDirectoryName(currentFilePath);
+            var nonMdHrefPath = PathUtility.GetFullPath(currentFolderPath, nonMdHref);
+
+            // If the nonMdHref is under same docset with current file. No need to fix that.
+            if (PathUtility.IsPathUnderSpecificFolder(nonMdHrefPath, currentFolderPath))
+            {
+                return nonMdHref;
+            }
+
+            // If the nonMdHref is under different docset with current file but not exists. Then log warning and won't fix.
+            if (!File.Exists(nonMdHrefPath))
+            {
+                Logger.LogWarning($"{nonMdHref} refer by {currentFilePath} doesn't exists. Won't do link fix. raw: {rawMarkdown}");
+                return nonMdHref;
+            }
+
+            // If the nonMdHref is under different docset with current file and also exists, then fix the link.
+            // 1. copy the external file to ex_resource folder. 2. Return new href path to the file under external folder
+            var exResourceDir = Directory.CreateDirectory(Path.Combine(currentFolderPath, ExternalResourceFolderName));
+            var resDestPath = Path.Combine(exResourceDir.FullName, Path.GetFileName(nonMdHrefPath));
+            File.Copy(nonMdHrefPath, resDestPath, true);
+            return PathUtility.MakeRelativePath(currentFolderPath, resDestPath);
         }
 
         private string GenerateAzureSelectorAttributes(string selectorType, string selectorConditions)
@@ -191,7 +258,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         {
             StringBuffer content = StringBuffer.Empty;
 
-            // If the context doesn't have necessary, return the original href
+            // If the context doesn't have necessary info, return the original href
             if (!context.Variables.ContainsKey("path") || !context.Variables.ContainsKey("azureFileInfoMapping"))
             {
                 return href;
