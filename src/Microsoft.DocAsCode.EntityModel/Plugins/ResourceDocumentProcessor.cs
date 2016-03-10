@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     }
                 }
             }
-            return ProcessingPriority.NotSupportted;
+            return ProcessingPriority.NotSupported;
         }
 
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)

@@ -24,13 +24,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         {
             if (file.Type != DocumentType.Article)
             {
-                return ProcessingPriority.NotSupportted;
+                return ProcessingPriority.NotSupported;
             }
             if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
             {
                 return ProcessingPriority.Normal;
             }
-            return ProcessingPriority.NotSupportted;
+            return ProcessingPriority.NotSupported;
         }
 
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)

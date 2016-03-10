@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 default:
                     break;
             }
-            return ProcessingPriority.NotSupportted;
+            return ProcessingPriority.NotSupported;
         }
 
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)

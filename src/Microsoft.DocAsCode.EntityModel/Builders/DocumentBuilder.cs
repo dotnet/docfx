@@ -407,7 +407,7 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                 from file in parameters.Files.EnumerateFiles()
                 from p in (from processor in processors
                            let priority = processor.GetProcessingPriority(file)
-                           where priority != ProcessingPriority.NotSupportted
+                           where priority != ProcessingPriority.NotSupported
                            group processor by priority into ps
                            orderby ps.Key descending
                            select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
