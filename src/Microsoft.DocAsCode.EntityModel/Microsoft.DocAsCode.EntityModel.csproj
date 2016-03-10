@@ -118,13 +118,15 @@
     <Compile Include="Incremental\ProjectLevelCache.cs" />
     <Compile Include="Parsers\ITripleSlashCommentParserContext.cs" />
     <Compile Include="Parsers\TripleSlashCommentParserContext.cs" />
+    <Compile Include="Plugins\BuildSteps\ApplyOverwriteDocument.cs" />
     <Compile Include="Plugins\BuildSteps\ApplyOverwriteDocumentForRestApi.cs" />
     <Compile Include="Plugins\BuildSteps\BuildRestApiDocument.cs" />
+    <Compile Include="Plugins\OverwriteDocumentReader.cs" />
     <Compile Include="Plugins\RestApiDocumentProcessor.cs" />
     <Compile Include="Plugins\DisposableDocumentProcessor.cs" />
     <Compile Include="MetadataMergers\MetadataMergeParameters.cs" />
     <Compile Include="MetadataMergers\MetadataMerger.cs" />
-    <Compile Include="Plugins\BuildSteps\ApplyOverwriteDocument.cs" />
+    <Compile Include="Plugins\BuildSteps\ApplyOverwriteDocumentForMref.cs" />
     <Compile Include="Plugins\BuildSteps\ApplyPlatformVersion.cs" />
     <Compile Include="Plugins\BuildSteps\BaseDocumentBuildStep.cs" />
     <Compile Include="Plugins\BuildSteps\BuildConceptualDocument.cs" />
@@ -184,6 +186,7 @@
     <Compile Include="TemplateManagers\TemplateCollection.cs" />
     <Compile Include="TemplateManagers\TemplateProcessor.cs" />
     <Compile Include="TemplateManagers\TemplateManager.cs" />
+    <Compile Include="Plugins\OverwriteDocumentModel.cs" />
     <Compile Include="ViewModels\IOverwriteDocumentViewModel.cs" />
     <Compile Include="Parsers\Section.cs" />
     <Compile Include="ViewModels\RestApi\RestApiItemViewModel.cs" />

@@ -7,16 +7,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.IO;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Utility;
 
     public class MarkdownReader
     {
-        public static List<T> ReadMarkdownAsOverwrite<T>(string baseDir, string file) where T : IOverwriteDocumentViewModel
+        public static List<OverwriteDocumentModel> ReadMarkdownAsOverwrite(string baseDir, string file)
         {
             // Order the list from top to bottom
-            var list = ReadMarkDownCore<T>(Path.Combine(baseDir, file)).ToList();
+            var list = ReadMarkDownCore(Path.Combine(baseDir, file)).ToList();
             list.Reverse();
             return list;
         }
@@ -34,7 +32,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             };
         }
 
-        private static IEnumerable<T> ReadMarkDownCore<T>(string file) where T : IOverwriteDocumentViewModel
+        private static IEnumerable<OverwriteDocumentModel> ReadMarkDownCore(string file)
         {
             var content = File.ReadAllText(file);
             var repoInfo = GitUtility.GetGitDetail(file);
@@ -52,18 +50,19 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 {
                     int start = lineIndex[item.Location.EndLocation.Line] + item.Location.EndLocation.Column + 1;
                     int end = lineIndex[currentEnd.Line] + currentEnd.Column + 1;
-                    using (var sw = new StringWriter())
+                    yield return new OverwriteDocumentModel
                     {
-                        YamlUtility.Serialize(sw, item.Detail.Properties);
-                        using (var sr = new StringReader(sw.ToString()))
+                        Uid = item.Id,
+                        Metadata = item.Detail.Properties,
+                        Conceptual = content.Substring(start, end - start + 1),
+                        Documentation = new SourceDetail
                         {
-                            var vm = YamlUtility.Deserialize<T>(sr);
-                            vm.Conceptual = content.Substring(start, end - start + 1);
-                            vm.Documentation = new SourceDetail { Remote = repoInfo, StartLine = item.Location.EndLocation.Line, EndLine = currentEnd.Line };
-                            vm.Uid = item.Id;
-                            yield return vm;
+                            Remote = repoInfo,
+                            StartLine = item.Location.EndLocation.Line,
+                            EndLine = currentEnd.Line,
+                            Path = Path.GetFullPath(file).ToDisplayPath()
                         }
-                    }
+                    };
                 }
                 currentEnd = item.Location.StartLocation;
             }

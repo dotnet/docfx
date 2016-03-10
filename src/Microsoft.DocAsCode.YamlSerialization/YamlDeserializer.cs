@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
 
         public IList<INodeDeserializer> NodeDeserializers { get; private set; }
         public IList<INodeTypeResolver> TypeResolvers { get; private set; }
-
+        public IValueDeserializer ValueDeserializer => _valueDeserializer;
         private class TypeDescriptorProxy : ITypeInspector
         {
             public ITypeInspector TypeDescriptor;
@@ -128,29 +128,29 @@ namespace Microsoft.DocAsCode.YamlSerialization
             _converters.Add(typeConverter);
         }
 
-        public T Deserialize<T>(TextReader input)
+        public T Deserialize<T>(TextReader input, IValueDeserializer deserializer = null)
         {
-            return (T)Deserialize(input, typeof(T));
+            return (T)Deserialize(input, typeof(T), deserializer);
         }
 
-        public object Deserialize(TextReader input)
+        public object Deserialize(TextReader input, IValueDeserializer deserializer = null)
         {
-            return Deserialize(input, typeof(object));
+            return Deserialize(input, typeof(object), deserializer);
         }
 
-        public object Deserialize(TextReader input, Type type)
+        public object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)
         {
-            return Deserialize(new EventReader(new Parser(input)), type);
+            return Deserialize(new EventReader(new Parser(input)), type, deserializer);
         }
 
-        public T Deserialize<T>(EventReader reader)
+        public T Deserialize<T>(EventReader reader, IValueDeserializer deserializer = null)
         {
-            return (T)Deserialize(reader, typeof(T));
+            return (T)Deserialize(reader, typeof(T), deserializer);
         }
 
-        public object Deserialize(EventReader reader)
+        public object Deserialize(EventReader reader, IValueDeserializer deserializer = null)
         {
-            return Deserialize(reader, typeof(object));
+            return Deserialize(reader, typeof(object), deserializer);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
         /// <param name="reader">The <see cref="EventReader" /> where to deserialize the object.</param>
         /// <param name="type">The static type of the object to deserialize.</param>
         /// <returns>Returns the deserialized object.</returns>
-        public object Deserialize(EventReader reader, Type type)
+        public object Deserialize(EventReader reader, Type type, IValueDeserializer deserializer = null)
         {
             if (reader == null)
             {
@@ -174,13 +174,13 @@ namespace Microsoft.DocAsCode.YamlSerialization
             var hasStreamStart = reader.Allow<StreamStart>() != null;
 
             var hasDocumentStart = reader.Allow<DocumentStart>() != null;
-
+            deserializer = deserializer ?? _valueDeserializer;
             object result = null;
             if (!reader.Accept<DocumentEnd>() && !reader.Accept<StreamEnd>())
             {
                 using (var state = new SerializerState())
                 {
-                    result = _valueDeserializer.DeserializeValue(reader, type, state, _valueDeserializer);
+                    result = deserializer.DeserializeValue(reader, type, state, deserializer);
                     state.OnDeserialization();
                 }
             }

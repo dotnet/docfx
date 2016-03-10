@@ -4,75 +4,31 @@
 namespace Microsoft.DocAsCode.EntityModel.Plugins
 {
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForRestApi : BaseDocumentBuildStep
+    public class ApplyOverwriteDocumentForRestApi : ApplyOverwriteDocument<RestApiItemViewModel>
     {
-        private readonly MergerFacade Merger = new MergerFacade(
-                new DictionaryMerger(
-                    new KeyedListMerger(
-                        new ReflectionEntityMerger())));
-
         public override string Name => nameof(ApplyOverwriteDocumentForRestApi);
 
         public override int BuildOrder => 0x10;
 
-        public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
+        protected override IEnumerable<RestApiItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, IHostService host)
         {
-            if (models.Count > 0)
-            {
-                ApplyOverwrites(models, host);
-            }
+            var item = OverwriteDocumentReader.Transform<RestApiItemViewModel>(
+                fileModel,
+                s => BuildRestApiDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
+            fileModel.Content = item;
+            return item;
         }
 
-        #region Private methods
-
-        /// <summary>
-        /// TODO: extract to base class together with class ApplyOverwriteDocument
-        /// </summary>
-        /// <param name="models"></param>
-        /// <param name="host"></param>
-        private void ApplyOverwrites(ImmutableList<FileModel> models, IHostService host)
+        protected override IEnumerable<RestApiItemViewModel> GetItemsToOverwrite(FileModel model, IHostService host)
         {
-            foreach (var uid in host.GetAllUids())
-            {
-                var ms = host.LookupByUid(uid);
-                var od = ms.Where(m => m.Type == DocumentType.Overwrite).ToList();
-                var articles = ms.Except(od).ToList();
-                if (articles.Count == 0 || od.Count == 0)
-                {
-                    continue;
-                }
-
-                if (od.Count > 1)
-                {
-                    var uidDefinitions = od[0].Uids.Where(u => u.Name == uid);
-                    var errorMessage = string.Join(",", uidDefinitions.Select(s => $"\"{s.File}\" Line {s.Line}"));
-                    throw new DocumentException($"UID \"{uid}\" is defined in multiple places: {errorMessage}. Only one overwrite document is allowed per particular UID.");
-                }
-
-                var ovm = ((List<RestApiItemViewModel>)od[0].Content).Single(vm => vm.Uid == uid);
-                foreach (
-                    var pair in
-                        from model in articles
-                        from item in new RestApiItemViewModel[] { (RestApiItemViewModel)model.Content }.Concat(((RestApiItemViewModel)model.Content).Children)
-                        where item.Uid == uid
-                        select new { model, item })
-                {
-                    var vm = pair.item;
-                    Merger.Merge(ref vm, ovm);
-                    ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od[0].Properties.LinkToUids);
-                    ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od[0].Properties.LinkToFiles);
-                }
-            }
+            return new RestApiItemViewModel[] { (RestApiItemViewModel)model.Content }.Concat(((RestApiItemViewModel)model.Content).Children);
         }
-        #endregion
     }
 }

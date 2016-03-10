@@ -121,6 +121,27 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="tmpl\tmpl1.zip" />
+    <None Include="TestData\overwrite\rest.overwrite.unmergable.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\overwrite\rest.overwrite.multi.uid.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\overwrite\rest.overwrite.not.predefined.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\overwrite\rest.overwrite.simple.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\overwrite\rest.overwrite.default.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\overwrite\rest.overwrite.invalid.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\contacts-operations.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\contacts_swagger2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

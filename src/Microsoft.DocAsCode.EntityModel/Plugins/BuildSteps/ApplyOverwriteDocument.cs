@@ -3,26 +3,21 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Plugins
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Composition;
     using System.Linq;
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
-    [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocument : BaseDocumentBuildStep
+    public abstract class ApplyOverwriteDocument<T> : BaseDocumentBuildStep where T : class, IOverwriteDocumentViewModel
     {
         private readonly MergerFacade Merger = new MergerFacade(
                 new DictionaryMerger(
                     new KeyedListMerger(
                         new ReflectionEntityMerger())));
-
-        public override string Name => nameof(ApplyOverwriteDocument);
-
-        public override int BuildOrder => 0x10;
 
         public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
@@ -31,6 +26,10 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 ApplyOverwrites(models, host);
             }
         }
+
+        protected abstract IEnumerable<T> GetItemsFromOverwriteDocument(FileModel fileModel, IHostService host);
+
+        protected abstract IEnumerable<T> GetItemsToOverwrite(FileModel fileModel, IHostService host);
 
         #region Private methods
 
@@ -46,28 +45,53 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     continue;
                 }
 
-                if (od.Count > 1)
+                // Multiple UID in overwrite documents is allowed now
+                var ovms =
+                    (from fm in od.Distinct()
+                     from content in GetItemsFromOverwriteDocument(fm, host)
+                     where content.Uid == uid
+                     select new
+                     {
+                         model = content,
+                         fileModel = fm
+                     }).ToList();
+
+                if (ovms.Count == 0)
                 {
-                    var uidDefinitions = od[0].Uids.Where(u => u.Name == uid);
-                    var errorMessage = string.Join(",", uidDefinitions.Select(s => $"\"{s.File}\"" + (s.Line.HasValue ? $"Line {s.Line}" : string.Empty)));
-                    throw new DocumentException($"UID \"{uid}\" is defined in multiple places: {errorMessage}. Only one overwrite document is allowed per particular UID.");
+                    continue;
                 }
 
-                var ovm = ((List<ItemViewModel>)od[0].Content).Single(vm => vm.Uid == uid);
+                // 1. merge all the overwrite document into one overwrite view model
+                var ovm = ovms.Skip(1).Aggregate(ovms[0].model, (accum, item) => Merge(accum, item.model, item.fileModel));
+                
+                // 2. apply the view model to articles matching the uid
                 foreach (
                     var pair in
                         from model in articles
-                        from item in ((PageViewModel)model.Content).Items
+                        from item in GetItemsToOverwrite(model, host)
                         where item.Uid == uid
                         select new { model, item })
                 {
                     var vm = pair.item;
-                    // todo : fix file path
-                    Merger.Merge(ref vm, ovm);
+                    Merge(vm, ovm, ovms[0].fileModel);
                     ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od[0].Properties.LinkToUids);
                     ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od[0].Properties.LinkToFiles);
                 }
             }
+        }
+
+        private T Merge(T baseModel, T overrideModel, FileModel model)
+        {
+            try
+            {
+                Merger.Merge(ref baseModel, overrideModel);
+            }
+            catch (Exception e)
+            {
+                throw new DocumentException($"Error merging overwrite document from {model.OriginalFileAndType}: {e.Message}", e);
+            }
+
+            return baseModel;
         }
 
         #endregion

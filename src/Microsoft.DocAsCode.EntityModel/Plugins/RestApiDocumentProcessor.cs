@@ -87,25 +87,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                         },
                     };
                 case DocumentType.Overwrite:
-                    var overwrites = MarkdownReader.ReadMarkdownAsOverwrite<RestApiItemViewModel>(file.BaseDir, file.File);
-                    if (overwrites == null || overwrites.Count == 0) return null;
-
-                    displayLocalPath = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
-                    return new FileModel(file, overwrites, serializer: new BinaryFormatter())
-                    {
-                        Uids = (from item in overwrites
-                                select new UidDefinition(
-                                    item.Uid,
-                                    displayLocalPath,
-                                    item.Documentation.StartLine + 1
-                                    )).ToImmutableArray(),
-                        Properties =
-                        {
-                            LinkToFiles = new HashSet<string>(),
-                            LinkToUids = new HashSet<string>(),
-                        },
-                        LocalPathFromRepoRoot = displayLocalPath,
-                    };
+                    // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors
+                    return OverwriteDocumentReader.Read(file);
                 default:
                     throw new NotSupportedException();
             }

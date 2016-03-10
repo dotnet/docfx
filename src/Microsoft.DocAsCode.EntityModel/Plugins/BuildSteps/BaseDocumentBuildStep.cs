@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Plugins
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
@@ -25,6 +26,32 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public virtual void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
+        }
+
+        /// <summary>
+        /// TODO: merge with the one in BuildManagedReferenceDocument
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="markdown"></param>
+        /// <param name="model"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public static string Markup(IHostService host, string markdown, FileModel model, Func<string, bool> filter = null)
+        {
+            if (string.IsNullOrEmpty(markdown))
+            {
+                return markdown;
+            }
+
+            if (filter != null && filter(markdown))
+            {
+                return markdown;
+            }
+
+            var mr = host.Markup(markdown, model.FileAndType);
+            ((HashSet<string>)model.Properties.LinkToFiles).UnionWith(mr.LinkToFiles);
+            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(mr.LinkToUids);
+            return mr.Html;
         }
     }
 }

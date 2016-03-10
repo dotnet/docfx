@@ -36,33 +36,18 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     }
                     break;
                 case DocumentType.Overwrite:
-                    foreach (var item in (List<RestApiItemViewModel>)model.Content)
-                    {
-                        BuildItem(host, item, model);
-                    }
-                    return;
+                    break;
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        private void BuildItem(IHostService host, RestApiItemViewModel item, FileModel model)
+        public static RestApiItemViewModel BuildItem(IHostService host, RestApiItemViewModel item, FileModel model, Func<string, bool> filter = null)
         {
-            item.Summary = Markup(host, item.Summary, model);
-            item.Description = Markup(host, item.Description, model);
-            item.Conceptual = Markup(host, item.Conceptual, model);
-        }
-
-        private string Markup(IHostService host, string markdown, FileModel model)
-        {
-            if (string.IsNullOrEmpty(markdown))
-            {
-                return markdown;
-            }
-            var mr = host.Markup(markdown, model.FileAndType);
-            ((HashSet<string>)model.Properties.LinkToFiles).UnionWith(mr.LinkToFiles);
-            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(mr.LinkToUids);
-            return mr.Html;
+            item.Summary = Markup(host, item.Summary, model, filter);
+            item.Description = Markup(host, item.Description, model, filter);
+            item.Conceptual = Markup(host, item.Conceptual, model, filter);
+            return item;
         }
     }
 }

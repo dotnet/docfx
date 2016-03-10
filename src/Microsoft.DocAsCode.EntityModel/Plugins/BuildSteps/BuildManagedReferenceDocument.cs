@@ -36,11 +36,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                     model.File = Path.ChangeExtension(model.File, ".json");
                     break;
                 case DocumentType.Overwrite:
-                    foreach (var item in (List<ItemViewModel>)model.Content)
-                    {
-                        BuildItem(host, item, model);
-                    }
-                    return;
+                    break;
                 default:
                     throw new NotSupportedException();
             }
@@ -48,12 +44,12 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         #region Private methods
         private static IEnumerable<string> EmptyEnumerable = Enumerable.Empty<string>();
-        private void BuildItem(IHostService host, ItemViewModel item, FileModel model)
+        public static ItemViewModel BuildItem(IHostService host, ItemViewModel item, FileModel model, Func<string, bool> filter = null)
         {
             var linkToUids = new HashSet<string>();
-            item.Summary = Markup(host, item.Summary, model);
-            item.Remarks = Markup(host, item.Remarks, model);
-            item.Conceptual = Markup(host, item.Conceptual, model);
+            item.Summary = Markup(host, item.Summary, model, filter);
+            item.Remarks = Markup(host, item.Remarks, model, filter);
+            item.Conceptual = Markup(host, item.Conceptual, model, filter);
             linkToUids.UnionWith(item.Inheritance ?? EmptyEnumerable);
             linkToUids.UnionWith(item.InheritedMembers ?? EmptyEnumerable);
             linkToUids.UnionWith(item.Implements ?? EmptyEnumerable);
@@ -69,7 +65,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 if (item.Syntax.Return.Description != null)
                 {
-                    item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, model);
+                    item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, model, filter);
                 }
 
                 linkToUids.Add(item.Syntax.Return.Type);
@@ -80,7 +76,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 foreach (var parameter in parameters)
                 {
-                    parameter.Description = Markup(host, parameter.Description, model);
+                    parameter.Description = Markup(host, parameter.Description, model, filter);
                     linkToUids.Add(parameter.Type);
                 }
             }
@@ -88,24 +84,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             {
                 foreach (var exception in item.Exceptions)
                 {
-                    exception.Description = Markup(host, exception.Description, model);
+                    exception.Description = Markup(host, exception.Description, model, filter);
                     linkToUids.Add(exception.Type);
                 }
             }
 
             ((HashSet<string>)model.Properties.LinkToUids).UnionWith(linkToUids);
-        }
-
-        private string Markup(IHostService host, string markdown, FileModel model)
-        {
-            if (string.IsNullOrEmpty(markdown))
-            {
-                return markdown;
-            }
-            var mr = host.Markup(markdown, model.FileAndType);
-            ((HashSet<string>)model.Properties.LinkToFiles).UnionWith(mr.LinkToFiles);
-            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(mr.LinkToUids);
-            return mr.Html;
+            return item;
         }
 
         #endregion

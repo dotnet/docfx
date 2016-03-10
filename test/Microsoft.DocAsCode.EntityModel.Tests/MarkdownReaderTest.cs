@@ -24,11 +24,11 @@ remarks: Hello
 This is unit test!";
             const string FileName = "ut_ReadMarkdownAsOverwrite.md";
             File.WriteAllText(FileName, Content);
-            var results = MarkdownReader.ReadMarkdownAsOverwrite<ItemViewModel>(Environment.CurrentDirectory, FileName);
+            var results = MarkdownReader.ReadMarkdownAsOverwrite(Environment.CurrentDirectory, FileName);
             Assert.NotNull(results);
             Assert.Equal(1, results.Count);
             Assert.Equal("Test", results[0].Uid);
-            Assert.Equal("Hello", results[0].Remarks);
+            Assert.Equal("Hello", results[0].Metadata["remarks"]);
             Assert.Equal(@"
 This is unit test!", results[0].Conceptual);
             File.Delete(FileName);

@@ -24,41 +24,42 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         private string _outputFolder;
         private string _inputFolder;
         private string _templateFolder;
+        private FileCollection _defaultFiles;
+        private ApplyTemplateSettings _applyTemplateSettings;
+
+        private const string RawModelFileExtension = ".raw.json";
 
         public RestApiDocumentProcessorTest(RestApiDocumentProcessorFixture fixture)
         {
             _outputFolder = Path.GetFullPath(fixture.OutputFolder);
             _inputFolder = Path.GetFullPath(fixture.InputFolder);
             _templateFolder = Path.GetFullPath(fixture.TemplateFolder);
+            _defaultFiles = new FileCollection(Environment.CurrentDirectory);
+            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts_swagger2.json" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
+            _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
+            _applyTemplateSettings.RawModelExportSettings.Export = true;
         }
 
         [Fact]
-        public void TestRestApiDocumentProcessorWithSwaggerJsonFile()
+        public void ProcessSwaggerhouldSucceed()
         {
-            const string RawModelFileExtension = ".raw.json";
-
-            // TODO: Add override markdown file
-            FileCollection files = new FileCollection(Environment.CurrentDirectory);
-            files.Add(DocumentType.Article, new[] { "TestData/contacts_swagger2.json" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
+            FileCollection files = new FileCollection(_defaultFiles);
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = _outputFolder,
+                ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary()
+            };
 
             using (var builder = new DocumentBuilder())
             {
-                var applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
-                applyTemplateSettings.RawModelExportSettings.Export = true;
-                var parameters = new DocumentBuildParameters
-                {
-                    Files = files,
-                    OutputBaseDir = _outputFolder,
-                    ApplyTemplateSettings = applyTemplateSettings,
-                    Metadata = new Dictionary<string, object>
-                    {
-                        ["meta"] = "Hello world!",
-                    }.ToImmutableDictionary()
-                };
                 builder.Build(parameters);
             }
 
-            // Check REST API
             var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
@@ -73,6 +74,177 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             Assert.Equal("1.6", item1.Parameters[0].Metadata["default"]);
             Assert.Equal(1, item1.Responses.Count);
             Assert.Equal("200", item1.Responses[0].HttpStatusCode);
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithDefaultOverwriteShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = _outputFolder,
+                ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary()
+            };
+
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.default.md" });
+            parameters.Files = files;
+            using (var builder = new DocumentBuilder())
+            {
+                builder.Build(parameters);
+            }
+            {
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
+                Assert.Equal("<p>Overwrite summary</p>\n", model.Summary);
+                Assert.Equal("<p>Overwrite content</p>\n", model.Conceptual);
+            }
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithSimpleOverwriteShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = _outputFolder,
+                ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary()
+            };
+
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.simple.md" });
+            parameters.Files = files;
+            using (var builder = new DocumentBuilder())
+            {
+                builder.Build(parameters);
+            }
+            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+            Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
+            Assert.Equal("<p>Overwrite content</p>\n", model.Summary);
+            Assert.Null(model.Conceptual);
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithNotPredefinedOverwriteShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = _outputFolder,
+                ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary()
+            };
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.not.predefined.md" });
+            parameters.Files = files;
+            using (var builder = new DocumentBuilder())
+            {
+                builder.Build(parameters);
+            }
+            {
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
+                Assert.Equal("<p>Overwrite content</p>\n", model.Metadata["not_defined_property"]);
+                Assert.Null(model.Conceptual);
+            }
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithInvalidOverwriteShouldFail()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = _outputFolder,
+                ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary()
+            };
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.invalid.md" });
+            parameters.Files = files;
+            using (var builder = new DocumentBuilder())
+            {
+                Assert.Throws<DocumentException>(() => builder.Build(parameters));
+            }
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithUnmergableOverwriteShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = _outputFolder,
+                ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary()
+            };
+
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergable.md" });
+            parameters.Files = files;
+            using (var builder = new DocumentBuilder())
+            {
+                builder.Build(parameters);
+            }
+            {
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
+                Assert.Equal("graph_windows_net_myorganization_Contacts", model.HtmlId);
+            }
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithMultiUidOverwriteShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            var parameters = new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = _outputFolder,
+                ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary()
+            };
+
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.multi.uid.md" });
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergable.md" });
+            parameters.Files = files;
+            using (var builder = new DocumentBuilder())
+            {
+                builder.Build(parameters);
+            }
+            {
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
+                Assert.Equal("graph_windows_net_myorganization_Contacts", model.HtmlId);
+                Assert.Equal("<p>Overwrite content1</p>\n", model.Conceptual);
+                Assert.Equal("<p>Overwrite &quot;content2&quot;</p>\n", model.Summary);
+                Assert.Equal("<p>Overwrite &#39;content3&#39;</p>\n", model.Metadata["not_defined_property"]);
+            }
         }
     }
 }

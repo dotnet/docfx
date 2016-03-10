@@ -7,11 +7,11 @@ namespace Microsoft.DocAsCode.EntityModel
     {
         public const string YamlExtension = ".yml";
 
-        public const string MapFileExtension = ".map";
-
         public const int DefaultParallelism = 4;
 
         public const string IndexFileName = "index.json";
+
+        public static string ContentPlaceholder = "$content";
 
         /// <summary>
         /// TODO: add other property name const
