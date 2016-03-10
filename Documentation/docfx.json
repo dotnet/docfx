@@ -36,13 +36,15 @@
     ],
     "overwrite": "apispec/*.md",
     "externalReference": [
-      { 
+      {
         "files": "content/*.rpk",
         "cwd": "../src/nuspec/msdn.4.5.2/"
       }
     ],
     "globalMetadata": {
-      "_appTitle": "DocFX website"
+      "_appTitle": "DocFX website",
+      // Disable full-text-search by comment the following line
+      "_enableSearch": "enable full-text-search"
     },
     "fileMetadata": {
       "priority": {

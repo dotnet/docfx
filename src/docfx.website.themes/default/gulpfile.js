@@ -8,7 +8,12 @@ var copy = require('gulp-copy');
 
 var vendor = {
   css: ['bower_components/bootstrap/dist/css/bootstrap.css', 'bower_components/highlightjs/styles/solarized_dark.css'],
-  js: ['bower_components/jquery/dist/jquery.min.js', 'bower_components/bootstrap/dist/js/bootstrap.min.js', 'bower_components/highlightjs/highlight.pack.min.js'],
+  js: ['bower_components/jquery/dist/jquery.min.js',
+       'bower_components/bootstrap/dist/js/bootstrap.min.js',
+       'bower_components/highlightjs/highlight.pack.min.js',
+       'bower_components/lunr.js/lunr.min.js',
+       'bower_components/js-url/url.min.js'
+      ],
   font: {
     src: ['*'],
     cwd: 'bower_components/bootstrap/dist/fonts/'

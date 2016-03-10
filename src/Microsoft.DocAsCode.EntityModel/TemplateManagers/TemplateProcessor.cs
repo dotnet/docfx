@@ -56,12 +56,12 @@ namespace Microsoft.DocAsCode.EntityModel
             return Path.ChangeExtension(path, defaultTemplate.Extension);
         }
 
-        public static void Transform(TemplateProcessor processor, List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings)
+        public static List<TemplateManifestItem> Transform(TemplateProcessor processor, List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings)
         {
             if (settings.Options == ApplyTemplateOptions.ExportRawModel || processor == null)
             {
                 ExportRawModel(manifest, settings);
-                return;
+                return null;
             }
 
             using (new LoggerPhaseScope("Apply Templates"))
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     Logger.LogWarning("No template is found.");
                     ExportRawModel(manifest, settings);
-                    return;
+                    return null;
                 }
 
                 Logger.LogVerbose("Start applying template...");
@@ -94,6 +94,7 @@ namespace Microsoft.DocAsCode.EntityModel
                     JsonUtility.Serialize(manifestPath, templateManifest);
                     Logger.LogInfo($"Manifest file saved to {manifestPath}.");
                 }
+                return templateManifest;
             }
         }
 

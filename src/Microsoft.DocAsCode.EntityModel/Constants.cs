@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public const int DefaultParallelism = 4;
 
+        public const string IndexFileName = "index.json";
+
         /// <summary>
         /// TODO: add other property name const
         /// </summary>

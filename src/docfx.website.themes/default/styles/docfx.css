@@ -318,6 +318,47 @@ article section {
   width: 200px;
   box-shadow: 0 0 10px #111;
 }
+#search {
+  display: none;
+}
+
+/* Search results display*/
+#search-results {
+  max-width: 960px !important;
+  margin-top: 120px;
+  margin-bottom: 115px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.8;
+  display: none;
+}
+
+#search-results>.search-list {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+}
+
+#search-results p {
+  text-align: center;
+}
+
+#search-results .sr-items {
+  font-size: 24px;
+}
+
+.sr-item {
+  margin-bottom: 25px;
+}
+
+.sr-item>.item-href {
+  font-size: 14px;
+  color: #093;
+}
+
+.sr-item>.item-brief {
+  font-size: 13px;
+}
 
 .fixed_header {
   position: fixed;

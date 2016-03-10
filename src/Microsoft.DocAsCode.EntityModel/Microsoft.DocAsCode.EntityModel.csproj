@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\DocumentBuilder.cs" />
+    <Compile Include="ExtractSearchData\ExtractSearchIndexFromHtml.cs" />
+    <Compile Include="ExtractSearchData\SearchIndexItem.cs" />
     <Compile Include="Models\Swagger\Internal\SwaggerObjectConverter.cs" />
     <Compile Include="Models\Swagger\Internal\SwaggerObjectType.cs" />
     <Compile Include="Models\Swagger\Internal\SwaggerObjectBase.cs" />
@@ -143,8 +145,6 @@
     <Compile Include="ExternalReferences\ExternalReferencePackageWriter.cs" />
     <Compile Include="ExternalReferences\ExternalReferenceConverter.cs" />
     <Compile Include="ExtractMetadata\ExtractMetadataWorker.cs" />
-    <Compile Include="ExtractSearchData\ExtractSearchData.cs" />
-    <Compile Include="ExtractSearchData\SearchItem.cs" />
     <Compile Include="Incremental\ApplicationLevelCache.cs" />
     <Compile Include="Incremental\IncrementalCheck.cs" />
     <Compile Include="ExtractMetadata\ExtractMetadataInputModel.cs" />

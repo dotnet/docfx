@@ -14,4 +14,5 @@
   <link rel="stylesheet" href="{{_rel}}styles/main.css">
   <meta property="docfx:navrel" content="{{_navRel}}">
   <meta property="docfx:tocrel" content="{{_tocRel}}">
+  {{#_enableSearch}}<meta property="docfx:indexrel" content="{{_rel}}index.json">{{/_enableSearch}}
 </head>

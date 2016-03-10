@@ -103,8 +103,11 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         UpdateContext(context);
                         UpdateHref(manifest, context);
 
-                        TemplateProcessor.Transform(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
-
+                        var generatedManifest = TemplateProcessor.Transform(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
+                        if (parameters.Metadata.ContainsKey("_enableSearch"))
+                        {
+                            ExtractSearchData.ExtractSearchIndexFromHtml.GenerateFile(generatedManifest, parameters.OutputBaseDir);
+                        }
                         Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
                     }
                 }
