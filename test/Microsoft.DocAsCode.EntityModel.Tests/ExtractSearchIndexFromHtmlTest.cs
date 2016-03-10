@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.EntityModel.Tests
 {
-    using System.Collections.Generic;
-
     using Microsoft.DocAsCode.EntityModel.ExtractSearchData;
 
     using Xunit;

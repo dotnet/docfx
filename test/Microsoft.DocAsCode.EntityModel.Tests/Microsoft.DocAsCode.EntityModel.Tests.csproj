@@ -8,6 +8,10 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Jint, Version=2.5.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Jint.2.5.0\lib\portable-net40+sl50+win+wpa81+wp80\Jint.dll</HintPath>
       <Private>True</Private>
@@ -96,11 +100,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtractSearchIndexFromHtmlTest.cs" />
     <Compile Include="RestApiDocumentProcessorFixture.cs" />
     <Compile Include="SwaggerJsonParserTest.cs" />
     <Compile Include="RestApiDocumentProcessorTest.cs" />
     <Compile Include="YamlSerializationTest.cs" />
-    <Compile Include="ExtractSearchDataTest.cs" />
     <Compile Include="DocfxFlavoredMarkdownTest.cs" />
     <Compile Include="ConvertStrongTypeToJsValueTest.cs" />
     <Compile Include="HtmlMarkdownTokenValidatorProvider.cs" />
