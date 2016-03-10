@@ -110,6 +110,33 @@ $(function () {
       });
     }
 
+    // Highlight the searching keywords
+    (function() {
+      var q = url('?q');
+      if (q !== null) {
+        var keywords = q.split("%20");
+        keywords.forEach(function(keyword) {
+          if (keyword !== "") {
+            highlight($('.data-searchable *'), keyword, "<mark>");
+            highlight($('article *'), keyword, "<mark>");
+          }
+        });
+      }
+    })();
+
+    function highlight(nodes, rgxStr, tag) {
+      var rgx = new RegExp(rgxStr, "gi");
+      nodes.each(function () {
+        $(this).contents().filter(function() {
+            return this.nodeType == 3 && rgx.test(this.nodeValue);
+        }).replaceWith(function() {
+            return (this.nodeValue || "").replace(rgx, function(match) {
+              return $(tag).text(match)[0].outerHTML;
+            });
+        });
+      });
+    }
+
     function addSearchEvent() {
       $('#search-query').keypress(function(e) {
         return e.which !== 13;
@@ -144,12 +171,7 @@ $(function () {
           });
           query.split(/\s+/).forEach(function(word) {
             if (word !== '') {
-              var rgx = new RegExp(word, "gi");
-              $('.item-brief').each(function() {
-                $(this).html($(this).html().replace(rgx, function(match) {
-                  return "<strong>" + match + "</strong>";
-                }));
-              });
+              highlight($('#search-results>.sr-items *'), word, "<strong>");
             }
           });
         }
