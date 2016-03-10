@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
     public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
     {
-        private static ConcurrentDictionary<Type, CachingItem> Cache { get; } =
-            new ConcurrentDictionary<Type, CachingItem>();
+        private static ConcurrentDictionary<Tuple<Type, Type>, CachingItem> Cache { get; } =
+            new ConcurrentDictionary<Tuple<Type, Type>, CachingItem>();
         private readonly ITypeResolver _resolver;
 
         public EmitTypeInspector(ITypeResolver resolver)
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
         public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
-            CachingItem ci = Cache.GetOrAdd(type, t => CachingItem.Create(t, _resolver));
+            CachingItem ci = Cache.GetOrAdd(Tuple.Create(type, _resolver.GetType()), pair => CachingItem.Create(pair.Item1, _resolver));
             if (ci.Error != null)
             {
                 throw ci.Error;
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
         public override IPropertyDescriptor GetProperty(Type type, object container, string name)
         {
-            CachingItem ci = Cache.GetOrAdd(type, t => CachingItem.Create(t, _resolver));
+            CachingItem ci = Cache.GetOrAdd(Tuple.Create(type, _resolver.GetType()), pair => CachingItem.Create(pair.Item1, _resolver));
             if (ci.Error != null)
             {
                 throw ci.Error;

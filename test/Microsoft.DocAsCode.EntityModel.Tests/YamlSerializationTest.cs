@@ -57,7 +57,7 @@ C: Good!
         }
 
         [Fact]
-        public void TestClassWithExtensibleMembers()
+        public void TestClassWithExtensibleMembersBySerializeThenDeserialize()
         {
             var sw = new StringWriter();
             YamlUtility.Serialize(
@@ -106,6 +106,38 @@ bar: bar
             Assert.Equal(2, value.ObjectExtensions.Count);
             Assert.Equal(new[] { "foo1" }, (List<object>)value.ObjectExtensions["foo"]);
             Assert.Equal("bar", (string)value.ObjectExtensions["bar"]);
+        }
+
+        [Fact]
+        public void TestClassWithExtensibleMembersByDeserializeThenSerialize()
+        {
+            var yaml = @"B: 1
+C: Good!
+s.a: aaa
+s.b: bbb
+i.x: 1
+i.y: 2
+foo:
+- foo1
+bar: bar
+".Replace("\r\n", "\n");
+            var value = YamlUtility.Deserialize<ClassWithExtensibleMembers>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(1, value.B);
+            Assert.Equal("Good!", value.C);
+            Assert.Equal(2, value.StringExtensions.Count);
+            Assert.Equal("aaa", value.StringExtensions["a"]);
+            Assert.Equal("bbb", value.StringExtensions["b"]);
+            Assert.Equal(2, value.IntegerExtensions.Count);
+            Assert.Equal(1, value.IntegerExtensions["x"]);
+            Assert.Equal(2, value.IntegerExtensions["y"]);
+            Assert.Equal(2, value.ObjectExtensions.Count);
+            Assert.Equal(new[] { "foo1" }, (List<object>)value.ObjectExtensions["foo"]);
+            Assert.Equal("bar", (string)value.ObjectExtensions["bar"]);
+
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, value);
+            Assert.Equal(yaml, sw.ToString().Replace("\r\n", "\n"));
         }
 
         [Fact]
