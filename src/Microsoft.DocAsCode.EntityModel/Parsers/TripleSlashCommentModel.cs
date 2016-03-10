@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Text;
     using System.Text.RegularExpressions;
     using System.Xml;
     using System.Xml.Linq;
@@ -21,6 +22,8 @@ namespace Microsoft.DocAsCode.EntityModel
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
         private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
         private readonly string[] _lines;
+
+        private readonly ITripleSlashCommentParserContext _context;
 
         public string Summary { get; private set; }
         public string Remarks { get; private set; }
@@ -36,6 +39,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             // Normalize xml line ending before load into xml
             XDocument doc = XDocument.Parse(xml, LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
+            _context = context;
             if (!context.PreserveRawInlineComments)
             {
                 ResolveSeeCref(doc, context.AddReferenceDelegate);
@@ -264,19 +268,19 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
-        private static void ResolveSeeAlsoCref(XNode node, Action<string> addReference)
+        private void ResolveSeeAlsoCref(XNode node, Action<string> addReference)
         {
             // Resolve <see cref> to <xref>
             ResolveCrefLink(node, "//seealso", addReference);
         }
 
-        private static void ResolveSeeCref(XNode node, Action<string> addReference)
+        private void ResolveSeeCref(XNode node, Action<string> addReference)
         {
             // Resolve <see cref> to <xref>
             ResolveCrefLink(node, "//see", addReference);
         }
 
-        private static void ResolveCrefLink(XNode node, string nodeSelector, Action<string> addReference)
+        private void ResolveCrefLink(XNode node, string nodeSelector, Action<string> addReference)
         {
             if (node == null || string.IsNullOrEmpty(nodeSelector)) return;
 
@@ -307,7 +311,24 @@ namespace Microsoft.DocAsCode.EntityModel
                     }
                     else
                     {
-                        Logger.Log(LogLevel.Warning, $"Invalid cref value {value} found in triple-slash-comments, ignored.");
+                        var detailedInfo = new StringBuilder();
+                        if (_context != null && _context.Source != null)
+                        {
+                            if (!string.IsNullOrEmpty(_context.Source.Name))
+                            {
+                                detailedInfo.Append(" for ");
+                                detailedInfo.Append(_context.Source.Name);
+                            }
+                            if (!string.IsNullOrEmpty(_context.Source.Path))
+                            {
+                                detailedInfo.Append(" defined in ");
+                                detailedInfo.Append(_context.Source.Path);
+                                detailedInfo.Append(" Line ");
+                                detailedInfo.Append(_context.Source.StartLine);
+                            }
+                        }
+
+                        Logger.Log(LogLevel.Warning, $"Invalid cref value \"{value}\" found in triple-slash-comments{detailedInfo}, ignored.");
                     }
                 }
             }

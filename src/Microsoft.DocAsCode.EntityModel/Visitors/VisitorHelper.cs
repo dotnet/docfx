@@ -260,6 +260,7 @@ namespace Microsoft.DocAsCode.EntityModel
                 {
                     StartLine = syntaxNode.SyntaxTree.GetLineSpan(syntaxNode.Span).StartLinePosition.Line,
                     Path = syntaxNode.SyntaxTree.FilePath,
+                    Name = symbol.Name
                 };
 
                 source.Remote = GitUtility.GetGitDetail(source.Path);
