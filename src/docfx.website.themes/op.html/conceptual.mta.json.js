@@ -9,11 +9,15 @@ function transform(model, _attrs){
   model.rawTitle = undefined;
 
   // Clean up open publishing internal used properties
+  // TODO: remove key names begin with '_op_'
   model._op_accessToken = undefined;
   model._op_clientId = undefined;
   model._op_clientSecret = undefined;
   model._op_gitContributorInformation = undefined;
   model._op_gitCommitHistory = undefined;
+  model._op_gitCommitsHistoryFilePath = undefined;
+  model._op_gitUserProfileFilePath = undefined;
+  model._op_gitFetchCommitsHistoryFromFile = undefined;
   model.newFileRepository = undefined;
 
   if (!model.toc_asset_id){
