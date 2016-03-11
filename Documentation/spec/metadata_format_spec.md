@@ -175,7 +175,6 @@ In metadata file, all *items* **MUST** be referenced by *UID*.
 > It's **RECOMMENDED** to include all referenced *items* in reference section. This makes the file self contained and easy to render at runtime.
 
 > Many programming languages has the concept of "template instantiation". For example, in C#, you can create a new type `List<int>` from `List<T>` with argument `int`. You can create a reference for "template instances". For example, for a class inherited from `List<int>`:
-
 ```yaml
 items:
 - uid: NumberList
@@ -183,7 +182,7 @@ items:
   - System.Collections.Generic.List<System.Int32>
 references:
 - uid: System.Collections.Generic.List`1<System.Int32>
-  link: @{System.Collections.Generic.List`1}<@{System.Int32}>
+  link: @"System.Collections.Generic.List`1"<@"System.Int32">
 - uid: System.Collections.Generic.List`1
   name: List
   url: system.collections.generic.list`1.yml
@@ -238,7 +237,17 @@ You **SHALL NOT** define new *item* in markdown.
 
 ### 3.2 Reference Items in Markdown
 
-We introduce a new markdown syntax to represent *item* reference:
+To cross reference an *item*, you can use URI with `xref` scheme. You can either use [standard link](https://daringfireball.net/projects/markdown/syntax#link) or [automatic link](https://daringfireball.net/projects/markdown/syntax#autolink) with the above URI.
+For example, to cross reference `System.String`:
+```markdown
+[System.String](xref:System.String)
+
+<xref:System.String>
+```
+
+> Since *item* reference is a URI, special characters (like `#`, `?`) **MUST** be [encoded](https://tools.ietf.org/html/rfc3986#section-2.1).
+
+We also introduce a shorthand markdown syntax to cross reference easily:
 
 If a string starts with `@`, and followed by a string enclosed by quotes `'` or double quotes `"`, it will be treated as an *item* reference. The string inside `""` or `''` is the *UID* of the *item*. Here is one example:
 
@@ -246,16 +255,16 @@ If a string starts with `@`, and followed by a string enclosed by quotes `'` or 
 @"System.String"
 ```
 
-> Markdown processor **MAY** implement some algorithm to allow omit curly braces if *ID* is simple enough. For example, For reference like `@{int}`, we may also want to allow `@int`.
+> Markdown processor **MAY** implement some algorithm to allow omit curly braces if *ID* is simple enough. For example, For reference like `@"int"`, we may also want to allow `@int`.
 
 When rendering reference in markdown, they will be expanded into a link with the *item*'s name as link title. You can also customize the link title using the standard syntax of markdown:
 
 ```markdown
-[Dictionary](@{System.Collections.Generic.Dictionary`2})<[String](@{System.String}), [String](@{System.String})>
+[Dictionary](@"System.Collections.Generic.Dictionary`2")<[String](@"System.String"), [String](@"System.String")>
 ```
 
 Will be rendered to:
-``[Dictionary](@{System.Collections.Generic.Dictionary`2})<[String](@{System.String}), [String](@{System.String})>``
+[Dictionary](@"System.Collections.Generic.Dictionary`2")<[String](@"System.String"), [String](@"System.String")>
 
 Besides *UID*, we also allow reference item using *ID* and *alias*, in markdown processor, the following algorithm **SHOULD** be implemented to resolve references:
 
