@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
                     }
-                    else if (s.StartsWith("\r\n") || s.StartsWith("\n"))
+                    else if (s.Length > 0 && char.IsWhiteSpace(s[0]))
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
                     }

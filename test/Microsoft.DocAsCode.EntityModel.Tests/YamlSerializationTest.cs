@@ -16,6 +16,20 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     [Trait("Owner", "zhyan")]
     public class YamlSerializationTest
     {
+        [Theory]
+        [InlineData(" Add --globalMetadata, --globalMetadataFile and --fileMetadataFile\n")]
+        [InlineData("\r\n Hello\n")]
+        [InlineData("  \r\n Hello\n")]
+        public void TestObjectWithStringProperty(string input)
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new BasicClass { C = input });
+            var yaml = sw.ToString();
+            var value = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(input, value.C);
+        }
+
         [Fact]
         public void TestBasicClass()
         {
