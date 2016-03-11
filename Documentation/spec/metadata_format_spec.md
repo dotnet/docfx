@@ -249,7 +249,7 @@ In markdown, you can either use [standard link](https://daringfireball.net/proje
 <xref:System.String>
 ```
 
-> Since *item* reference is a URL, special characters (like `#`, `?`) should be [encoded](https://tools.ietf.org/html/rfc3986#section-2.1).
+> Since *item* reference is a URL, special characters (like `#`, `?`) **MUST** be [encoded](https://tools.ietf.org/html/rfc3986#section-2.1).
 
 We also introduce a shorthand markdown syntax to cross reference easily:
 
