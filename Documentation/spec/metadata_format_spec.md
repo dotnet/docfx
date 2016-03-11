@@ -237,19 +237,15 @@ You **SHALL NOT** define new *item* in markdown.
 
 ### 3.2 Reference Items in Markdown
 
-To cross reference an *item*, you can use URL with `xref` scheme. For example, to cross reference `System.String`: 
-```markdown
-xref:System.String
-```
-
-In markdown, you can either use [standard link](https://daringfireball.net/projects/markdown/syntax#link) or [automatic link](https://daringfireball.net/projects/markdown/syntax#autolink) with the above URL:
+To cross reference an *item*, you can use URI with `xref` scheme. You can either use [standard link](https://daringfireball.net/projects/markdown/syntax#link) or [automatic link](https://daringfireball.net/projects/markdown/syntax#autolink) with the above URI.
+For example, to cross reference `System.String`:
 ```markdown
 [System.String](xref:System.String)
 
 <xref:System.String>
 ```
 
-> Since *item* reference is a URL, special characters (like `#`, `?`) **MUST** be [encoded](https://tools.ietf.org/html/rfc3986#section-2.1).
+> Since *item* reference is a URI, special characters (like `#`, `?`) **MUST** be [encoded](https://tools.ietf.org/html/rfc3986#section-2.1).
 
 We also introduce a shorthand markdown syntax to cross reference easily:
 
