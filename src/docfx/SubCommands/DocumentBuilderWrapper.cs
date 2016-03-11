@@ -87,7 +87,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     return;
                 }
 
-                builder.Build(parameters);
+                using (new PerformanceScope("building documents", LogLevel.Info))
+                {
+                    builder.Build(parameters);
+                }
             }
         }
 

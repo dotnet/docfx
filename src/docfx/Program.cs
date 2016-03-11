@@ -70,7 +70,11 @@ namespace Microsoft.DocAsCode
             try
             {
                 ThreadPool.SetMinThreads(4, 4);
-                command.Exec(context);
+                using (new PerformanceScope("executing", LogLevel.Info))
+                {
+                    command.Exec(context);
+                }
+
                 return 0;
             }
             catch (DocumentException de)
