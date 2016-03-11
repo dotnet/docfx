@@ -118,6 +118,12 @@ namespace Microsoft.DocAsCode.EntityModel
             }
         }
 
+        public static string GetHtmlId(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            return HtmlEncodeRegex.Replace(id, "_");
+        }
+
         private static HtmlAgilityPack.HtmlNode GetAnchorNode(string href, string title, string value)
         {
             var anchorNode = $"<a class=\"xref\" href=\"{href}\"";
@@ -135,12 +141,6 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             var spanNode = $"<span class=\"xref\">{value}</span>";
             return HtmlAgilityPack.HtmlNode.CreateNode(spanNode);
-        }
-
-        private static string GetHtmlId(string id)
-        {
-            if (string.IsNullOrEmpty(id)) return null;
-            return HtmlEncodeRegex.Replace(id, "_");
         }
 
         private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, string defaultValue, params string[] keyInFallbackOrder)

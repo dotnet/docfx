@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Runtime.Serialization.Formatters.Binary;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.EntityModel.BuildOutputs;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -89,7 +90,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 case DocumentType.Overwrite:
                     var overwrites = MarkdownReader.ReadMarkdownAsOverwrite<ItemViewModel>(file.BaseDir, file.File);
                     if (overwrites == null || overwrites.Count == 0) return null;
-                    
+
                     displayLocalPath = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
                     return new FileModel(file, overwrites, serializer: new BinaryFormatter())
                     {
@@ -118,6 +119,8 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 throw new NotSupportedException();
             }
             var vm = (PageViewModel)model.Content;
+
+            model.Content = ApiBuildOutput.FromModel(vm); // Fill in details
 
             return new SaveResult
             {

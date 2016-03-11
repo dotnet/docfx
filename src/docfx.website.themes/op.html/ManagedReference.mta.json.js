@@ -8,12 +8,41 @@ function transform(model, _attrs){
     model.toc_asset_id = _attrs._tocPath;
   }
 
-  model.content_git_url = getContentGitUrl(model.items[0], model.newFileRepository);
+  model.content_git_url = getContentGitUrl(model, model.newFileRepository);
 
   // Clean up unused predefined properties
-  model.items = undefined;
-  model.references = undefined;
+  model.uid = undefined;
+  model.id = undefined;
+  model.parent = undefined;
+  model.children = undefined;
+  model.href = undefined;
+  model.langs = undefined;
+  model.name = undefined;
+  model.fullName = undefined;
+  model.type = undefined;
+  model.source = undefined;
+  model.documentation = undefined;
+  model.assemblies = undefined;
+  model.namespace = undefined;
+  model.summary = undefined;
+  model.remarks = undefined;
+  model.example = undefined;
+  model.syntax = undefined;
+  model.overridden = undefined;
+  model.exceptions = undefined;
+  model.seealso = undefined;
+  model.see = undefined;
+  model.inheritance = undefined;
+  model.level = undefined;
+  model.implements = undefined;
+  model.inheritedMembers = undefined;
+  model.conceptual = undefined;
+  model.platform = undefined;
   model.newFileRepository = undefined;
+  model.thread_safety = undefined;
+  model.defined_in = undefined;
+  model.supported_platforms = undefined;
+  model.requirements = undefined;
 
   function getContentGitUrl(item, newFileRepository) {
     if (!item) return '';

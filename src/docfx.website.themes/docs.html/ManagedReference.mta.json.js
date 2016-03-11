@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 function transform(model, _attrs){
   model.layout = "Reference";
-  model.title = model.items[0].name + " " + model.items[0].type;
+  model.title = model.name[0].value + " " + model.type;
 
   // If toc is not defined in model, read it from __attrs
   if (_attrs._tocPath && _attrs._tocPath.indexOf("~/") == 0){
@@ -12,19 +12,46 @@ function transform(model, _attrs){
   }
 
   model.toc_rel = _attrs._tocRel;
-  model.platforms = model.items[0].platform;
-  model.langs = model.items[0].langs;
+  model.platforms = model.platform;
   if (!model.breadcrumb_path) {
     model.breadcrumb_path = "/toc.html";
   }
-  model.content_git_url = getContentGitUrl(model.items[0], model.newFileRepository);
-  model.source_url = getViewSourceHref(model.items[0]);
-  model["ms.assetid"] = getMsAssetId(model.items[0]);
+  model.content_git_url = getContentGitUrl(model, model.newFileRepository);
+  model.source_url = getViewSourceHref(model);
+  model["ms.assetid"] = getMsAssetId(model);
 
   // Clean up unused predefined properties
-  model.items = undefined;
-  model.references = undefined;
+  model.uid = undefined;
+  model.id = undefined;
+  model.parent = undefined;
+  model.children = undefined;
+  model.href = undefined;
+  model.name = undefined;
+  model.fullName = undefined;
+  model.type = undefined;
+  model.source = undefined;
+  model.documentation = undefined;
+  model.assemblies = undefined;
+  model.namespace = undefined;
+  model.summary = undefined;
+  model.remarks = undefined;
+  model.example = undefined;
+  model.syntax = undefined;
+  model.overridden = undefined;
+  model.exceptions = undefined;
+  model.seealso = undefined;
+  model.see = undefined;
+  model.inheritance = undefined;
+  model.level = undefined;
+  model.implements = undefined;
+  model.inheritedMembers = undefined;
+  model.conceptual = undefined;
+  model.platform = undefined;
   model.newFileRepository = undefined;
+  model.thread_safety = undefined;
+  model.defined_in = undefined;
+  model.supported_platforms = undefined;
+  model.requirements = undefined;
 
   return {
     content: JSON.stringify(model)
@@ -72,7 +99,7 @@ function transform(model, _attrs){
     if (path.charAt(path.length - 1) == '/') path = path.substring(0, path.length - 1);
     return path;
   }
-  
+
   function getHtmlId(input) {
     return input.replace(/\W/g, '_');
   }
