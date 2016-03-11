@@ -566,6 +566,7 @@ namespace Microsoft.DocAsCode.EntityModel
             if (attrs.Length > 0)
             {
                 var attrList = (from attr in attrs
+                                where attr?.AttributeConstructor != null
                                 where VisitorHelper.CanVisit(attr.AttributeConstructor)
                                 select GetAttributeSyntax(attr)).ToList();
                 if (attrList.Count > 0)

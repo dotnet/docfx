@@ -1338,6 +1338,51 @@ End Namespace
             Assert.Null(returnValue);
         }
 
+        [Trait("Related", "Attribute")]
+        [Fact]
+        public void TestGenereateMetadataWithAttribute()
+        {
+            string code = @"
+Imports System
+Imports System.ComponentModel
+
+Namespace Test1
+    <Serializable>
+    <AttributeUsage(AttributeTargets.All, Inherited := true, AllowMultiple := true)>
+    <TypeConverter(GetType(TestAttribute))>
+    <Test(""test"")>
+    <Test(New Integer(){1,2,3})>
+    <Test(New Object(){Nothing, ""abc"", ""d""c, 1.1f, 1.2, CType(2, SByte), CType(3, Byte), 4s, 5us, 6, 8L, 9UL, New Integer(){ 10, 11, 12 }})>
+    Public Class TestAttribute
+        Inherits Attribute
+
+        <Test(1)>
+        <Test(2)>
+        Public Sub New(o As Object)
+        End Sub
+    End Class
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code, MetadataReference.CreateFromFile(typeof(System.ComponentModel.TypeConverterAttribute).Assembly.Location)));
+            Assert.Equal(1, output.Items.Count);
+            var type = output.Items[0].Items[0];
+            Assert.NotNull(type);
+            Assert.Equal(@"<Serializable>
+<AttributeUsage(AttributeTargets.Assembly Or AttributeTargets.Module Or AttributeTargets.Class Or AttributeTargets.Struct Or AttributeTargets.Enum Or AttributeTargets.Constructor Or AttributeTargets.Method Or AttributeTargets.Property Or AttributeTargets.Field Or AttributeTargets.Event Or AttributeTargets.Interface Or AttributeTargets.Parameter Or AttributeTargets.Delegate Or AttributeTargets.ReturnValue Or AttributeTargets.GenericParameter Or AttributeTargets.All, Inherited:=True, AllowMultiple:=True)>
+<TypeConverter(GetType(TestAttribute))>
+<Test(""test"")>
+<Test(New Integer() {1, 2, 3})>
+<Test(New Object() {Nothing, ""abc"", ""d""c, 1.1F, 1.2, CType(2, SByte), CType(3, Byte), CType(4, Short), CType(5, UShort), 6, 8L, 9UL, New Integer() {10, 11, 12}})>
+Public Class TestAttribute
+    Inherits Attribute
+    Implements _Attribute", type.Syntax.Content[SyntaxLanguage.VB]);
+            var ctor = type.Items[0];
+            Assert.NotNull(type);
+            Assert.Equal(@"<Test(1)>
+<Test(2)>
+Public Sub New(o As Object)", ctor.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
         private static Compilation CreateCompilationFromVBCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromVBCode(code, "test.dll", references);
