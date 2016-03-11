@@ -14,6 +14,10 @@ var vendor = {
        'bower_components/lunr.js/lunr.min.js',
        'bower_components/js-url/url.min.js'
       ],
+  webWorker: {
+    src: ['lunr.min.js'],
+    cwd: 'bower_components/lunr.js/'
+  },
   font: {
     src: ['*'],
     cwd: 'bower_components/bootstrap/dist/fonts/'
@@ -38,6 +42,9 @@ gulp.task('concat', function () {
 gulp.task('copy', function () {
   gulp.src(vendor.font.src, {cwd: vendor.font.cwd})
     .pipe(copy('./fonts/'))
+  ;
+  gulp.src(vendor.webWorker.src, {cwd:vendor.webWorker.cwd})
+    .pipe(copy('./styles/'))
   ;
 });
 
