@@ -39,6 +39,7 @@ $(function () {
       this.field('title', {boost: 10});
       this.field('keywords');
     });
+    lunr.tokenizer.seperator = /[\s\-\.]+/;
     var indexPath = $("meta[property='docfx\\:indexrel']").attr("content");
     if (indexPath) {
       var items = indexPath.split('/');
