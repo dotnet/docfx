@@ -186,29 +186,42 @@ $(function () {
     }
 
     function handleSearchResults(hits) {
-      $('#search-results>.sr-items').empty().append(
-        hits.length?
-        hits.map(function(hit) {
-          var currentUrl = window.location.href;
-          var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
-          var itemHref = relHref + hit.href + "?q=" + query;
-          var itemTitle = hit.title;
-          var itemBrief = extractContentBrief(hit.keywords);
+      var numPerPage = 10;
+      $('#pagination').empty();
+      $('#pagination').removeData("twbs-pagination");
+      if (hits.length === 0) {
+        $('#search-results>.sr-items').html('<p>No results found</p>');
+      } else {
+        $('#pagination').twbsPagination({
+            totalPages: Math.ceil(hits.length/numPerPage),
+            visiblePages: 5,
+            onPageClick: function (event, page) {
+              var start = (page-1) * numPerPage;
+              var curHits = hits.slice(start, start + numPerPage);
+              $('#search-results>.sr-items').empty().append(
+                curHits.map(function(hit) {
+                  var currentUrl = window.location.href;
+                  var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
+                  var itemHref = relHref + hit.href + "?q=" + query;
+                  var itemTitle = hit.title;
+                  var itemBrief = extractContentBrief(hit.keywords);
 
-          var itemNode = $('<div>').attr('class', 'sr-item');
-          var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").text(itemTitle));
-          var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
-          var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
-          itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
-          return itemNode;
-        }): $('<p>No results found</p>')
-      );
-
-      query.split(/\s+/).forEach(function(word) {
-        if (word !== '') {
-          highlight($('#search-results>.sr-items *'), word, "<strong>");
-        }
-      });
+                  var itemNode = $('<div>').attr('class', 'sr-item');
+                  var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").text(itemTitle));
+                  var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
+                  var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
+                  itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
+                  return itemNode;
+                })
+              );
+              query.split(/\s+/).forEach(function(word) {
+                if (word !== '') {
+                  highlight($('#search-results>.sr-items *'), word, "<strong>");
+                }
+              });
+            }
+        });
+      }
     }
   })();
 
