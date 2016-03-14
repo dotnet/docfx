@@ -260,11 +260,11 @@ If a string starts with `@`, and followed by a string enclosed by quotes `'` or 
 When rendering reference in markdown, they will be expanded into a link with the *item*'s name as link title. You can also customize the link title using the standard syntax of markdown:
 
 ```markdown
-[Dictionary](@"System.Collections.Generic.Dictionary`2")<[String](@"System.String"), [String](@"System.String")>
+[Dictionary](xref:System.Collections.Generic.Dictionary`2)<[String](xref:System.String), [String](xref:System.String)>
 ```
 
 Will be rendered to:
-[Dictionary](@"System.Collections.Generic.Dictionary`2")<[String](@"System.String"), [String](@"System.String")>
+[Dictionary](xref:System.Collections.Generic.Dictionary`2)<[String](xref:System.String), [String](xref:System.String)>
 
 Besides *UID*, we also allow reference item using *ID* and *alias*, in markdown processor, the following algorithm **SHOULD** be implemented to resolve references:
 

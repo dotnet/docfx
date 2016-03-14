@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildConceptualDocument : BaseDocumentBuildStep
     {
-        private const string ConceputalKey = Constants.PropertyName.Conceptual;
+        private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
         private const int TitleThumbnailMaxLength = 30;
         public override string Name => nameof(BuildConceptualDocument);
@@ -31,13 +31,13 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 return;
             }
             var content = (Dictionary<string, object>)model.Content;
-            var markdown = (string)content[ConceputalKey];
+            var markdown = (string)content[ConceptualKey];
             var result = host.Markup(markdown, model.FileAndType);
 
             var htmlInfo = SeperateHtml(result.Html);
             content[Constants.PropertyName.Title] = htmlInfo.Title;
             content["rawTitle"] = htmlInfo.RawTitle;
-            content[ConceputalKey] = htmlInfo.Content;
+            content[ConceptualKey] = htmlInfo.Content;
 
             if (result.YamlHeader != null && result.YamlHeader.Count > 0)
             {
