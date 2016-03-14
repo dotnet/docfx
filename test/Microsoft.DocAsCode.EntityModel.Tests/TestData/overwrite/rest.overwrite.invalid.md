@@ -1,6 +1,6 @@
 ---
 uid: graph.windows.net/myorganization/Contacts
-children: $content
+children: *content
 ---
 
 Overwrite content

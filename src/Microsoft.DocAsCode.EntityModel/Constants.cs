@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
         public const string IndexFileName = "index.json";
 
-        public static string ContentPlaceholder = "$content";
+        public static string ContentPlaceholder = "*content";
 
         /// <summary>
         /// TODO: add other property name const

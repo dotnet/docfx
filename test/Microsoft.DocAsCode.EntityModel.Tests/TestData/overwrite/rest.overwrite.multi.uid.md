@@ -7,14 +7,14 @@ Overwrite content1
 
 ---
 uid: graph.windows.net/myorganization/Contacts
-summary: $content
+summary: *content
 ---
 
 Overwrite "content2"
 
 ---
 uid: graph.windows.net/myorganization/Contacts
-not_defined_property: $content
+not_defined_property: *content
 ---
 
 Overwrite 'content3'
