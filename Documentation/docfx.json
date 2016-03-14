@@ -44,7 +44,7 @@
     "globalMetadata": {
       "_appTitle": "DocFX website",
       // Disable full-text-search by comment the following line
-      "_enableSearch": "enable full-text-search"
+      "_enableSearch": true
     },
     "fileMetadata": {
       "priority": {

@@ -3,6 +3,9 @@ Version Notes (Current Version: v1.6)
 v1.6 (Pre-release)
 -----------
 1. Add attribute in c# and vb syntax.
+2. Support full text search, with pure client side implementation:
+    1. The feature is disabled by default. You can enable it by adding `"_enableSearch": true` to the `globalMetadata` property of `docfx.json`.
+    2. The search engine is powered by [lunr.js](http://lunrjs.com/)
 
 
 v1.5
@@ -25,7 +28,7 @@ v1.4.2
 v1.4.1
 -----------
 Remove `newFileRepository` from output metadata
- 
+
 v1.4
 -----------
 1. Cross-reference related:

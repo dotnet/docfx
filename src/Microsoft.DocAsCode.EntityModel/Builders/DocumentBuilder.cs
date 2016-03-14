@@ -104,9 +104,14 @@ namespace Microsoft.DocAsCode.EntityModel.Builders
                         UpdateHref(manifest, context);
 
                         var generatedManifest = TemplateProcessor.Transform(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
-                        if (parameters.Metadata.ContainsKey("_enableSearch"))
+                        object value;
+                        if (parameters.Metadata.TryGetValue("_enableSearch", out value))
                         {
-                            ExtractSearchData.ExtractSearchIndexFromHtml.GenerateFile(generatedManifest, parameters.OutputBaseDir);
+                            var isSearchable = value as bool?;
+                            if (isSearchable.HasValue && isSearchable.Value)
+                            {
+                                ExtractSearchData.ExtractSearchIndexFromHtml.GenerateFile(generatedManifest, parameters.OutputBaseDir);
+                            }
                         }
                         Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
                     }
