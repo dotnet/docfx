@@ -360,6 +360,15 @@ article section {
   font-size: 13px;
 }
 
+.pagination>li>a {
+  color: #47A7A0
+}
+
+.pagination>.active>a {
+  background-color: #47A7A0;
+  border-color: #47A7A0;
+}
+
 .fixed_header {
   position: fixed;
   width: 100%;
