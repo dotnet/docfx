@@ -27,8 +27,9 @@ function transform(model, _attrs) {
             child.docurl = child.docurl || getImproveTheDocHref(child, vm.newFileRepository);
             child.sourceurl = child.sourceurl || getViewSourceHref(child);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
-            if (vm._displayItems && child.uid) {
-                var index = vm._displayItems.indexOf(child.uid);
+            child.footer = child.footer || ''; // set to empty incase mustache looks up
+            if (vm.sections && child.uid) {
+                var index = vm.sections.indexOf(child.uid);
                 if (index > -1) {
                     ordered[index] = child;
                 }

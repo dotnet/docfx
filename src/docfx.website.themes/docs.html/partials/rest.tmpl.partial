@@ -2,7 +2,7 @@
 
 <header class="header" id="overview">
   {{#conceptual}}
-  <div>{{{conceptual}}}</div>
+  <div class="conceptual primary">{{{conceptual}}}</div>
   {{/conceptual}}
   {{^conceptual}}
   <h2 id="{{htmlId}}" data-uid="{{uid}}">{{name}}</h2>
@@ -79,4 +79,10 @@
     data-api-operation-id="{{operationId}}"/>
   </section>
 </div>
+{{#footer}}
+<div class="conceptual primary">{{{footer}}}</div>
+{{/footer}}
 {{/children}}
+{{#footer}}
+<div class="conceptual primary">{{{footer}}}</div>
+{{/footer}}
