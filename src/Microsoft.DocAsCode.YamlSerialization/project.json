@@ -26,7 +26,6 @@
         "System.Runtime": "",
         "System.Runtime.Extensions": "",
         "System.Runtime.Serialization.Primitives": "",
-        "System.Threading": "",
         "System.Text.RegularExpressions": ""
       },
       "dependencies": {
