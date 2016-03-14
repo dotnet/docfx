@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Doc-as-Code: Metadata Format Specification | DocFX website</title>
+    <title>Doc-as-Code: Metadata Format Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Doc-as-Code: Metadata Format Specification | DocFX website">
+    <meta name="title" content="Doc-as-Code: Metadata Format Specification | DocFX website ">
     <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -307,10 +307,10 @@ For example, to cross reference <code>System.String</code>:</p>
 <blockquote><p>Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@&quot;int&quot;</code>, we may also want to allow <code>@int</code>.</p>
 </blockquote>
 <p>When rendering reference in markdown, they will be expanded into a link with the <em>item</em>&#39;s name as link title. You can also customize the link title using the standard syntax of markdown:</p>
-<pre><code class="lang-markdown">[Dictionary](@&quot;System.Collections.Generic.Dictionary`2&quot;)&lt;[String](@&quot;System.String&quot;), [String](@&quot;System.String&quot;)&gt;
+<pre><code class="lang-markdown">[Dictionary](xref:System.Collections.Generic.Dictionary`2)&lt;[String](xref:System.String), [String](xref:System.String)&gt;
 </code></pre>
 <p>Will be rendered to:
-[Dictionary](@&quot;System.Collections.Generic.Dictionary`2&quot;)&lt;[String](@&quot;System.String&quot;), [String](@&quot;System.String&quot;)&gt;</p>
+[Dictionary](xref:System.Collections.Generic.Dictionary`2)&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</p>
 <p>Besides <em>UID</em>, we also allow reference item using <em>ID</em> and <em>alias</em>, in markdown processor, the following algorithm <strong>SHOULD</strong> be implemented to resolve references:</p>
 <ol>
 <li>Check whether the reference matches any <em>identifier</em> of current <em>item</em>&#39;s children.</li>
