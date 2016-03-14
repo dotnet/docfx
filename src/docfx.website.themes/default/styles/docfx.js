@@ -232,7 +232,6 @@ $(function () {
     loadNavbar();
     loadToc();
     function loadNavbar() {
-      console.log("hello")
       var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
@@ -411,15 +410,10 @@ $(function () {
     }
 
     function getAbsolutePath(href) {
-      var abshref;
-      if (isAbsolutePath(href)) {
-        abshref = href;
-      } else {
-        // Use anchor to normalize href
-        abshref = $('<a href="' + href + '"></a>')[0].href;
-      }
-      
-      return $('<a href="' + abshref + '"></a>')[0].pathname; // remove hashtag
+      // Use anchor to normalize href
+      var anchor = $('<a href="' + href + '"></a>')[0];
+      // Ignore protocal, remove search and query
+      return anchor.host + anchor.pathname;
     }
 
     function isRelativePath(href) {
