@@ -8,29 +8,29 @@ $(function () {
   var hide = 'hide';
 
   //Adjust the position of search box in navbar
-  (function() {
+  (function () {
     autoCollapse();
     $(window).on('resize', autoCollapse);
-    $(document).on('click','.navbar-collapse.in',function(e) {
-      if( $(e.target).is('a') ) {
-       $(this).collapse('hide');
+    $(document).on('click', '.navbar-collapse.in', function (e) {
+      if ($(e.target).is('a')) {
+        $(this).collapse('hide');
       }
     });
 
     function autoCollapse() {
       var navbar = $('#autocollapse');
       if (navbar.height() === null) {
-        setTimeout(autoCollapse,300);
+        setTimeout(autoCollapse, 300);
       }
       navbar.removeClass(collapsed);
-      if(navbar.height() > 60) {
-       navbar.addClass(collapsed);
+      if (navbar.height() > 60) {
+        navbar.addClass(collapsed);
       }
     }
   })();
 
   // Support full-text-search
-  (function() {
+  (function () {
     var query;
     var relHref = $("meta[property='docfx\\:rel']").attr("content");
     var search = searchFactory();
@@ -46,10 +46,10 @@ $(function () {
 
       function localSearch() {
         console.log("using local search");
-        var lunrIndex = lunr(function() {
+        var lunrIndex = lunr(function () {
           this.ref('href');
-          this.field('title', {boost: 50});
-          this.field('keywords', {boost: 20});
+          this.field('title', { boost: 50 });
+          this.field('keywords', { boost: 20 });
         });
         lunr.tokenizer.seperator = /[\s\-\.]+/;
         var searchData = {};
@@ -58,7 +58,7 @@ $(function () {
         var indexPath = relHref + "index.json";
         if (indexPath) {
           searchDataRequest.open('GET', indexPath);
-          searchDataRequest.onload = function() {
+          searchDataRequest.onload = function () {
             searchData = JSON.parse(this.responseText);
             for (var prop in searchData) {
               lunrIndex.add(searchData[prop]);
@@ -67,12 +67,12 @@ $(function () {
           searchDataRequest.send();
         }
 
-        $("body").bind("queryReady", function() {
+        $("body").bind("queryReady", function () {
           var hits = lunrIndex.search(query);
           var results = [];
-          hits.forEach(function(hit) {
+          hits.forEach(function (hit) {
             var item = searchData[hit.ref];
-            results.push({'href': item.href, 'title': item.title, 'keywords': item.keywords});
+            results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
           });
           handleSearchResults(results);
         });
@@ -82,21 +82,21 @@ $(function () {
         console.log("using Web Worker");
         var indexReady = $.Deferred();
 
-        worker.onmessage = function(oEvent) {
+        worker.onmessage = function (oEvent) {
           switch (oEvent.data.e) {
-           case 'index-ready':
-             indexReady.resolve();
-             break;
-           case 'query-ready':
-             var hits = oEvent.data.d;
-             handleSearchResults(hits);
-             break;
+            case 'index-ready':
+              indexReady.resolve();
+              break;
+            case 'query-ready':
+              var hits = oEvent.data.d;
+              handleSearchResults(hits);
+              break;
           }
         }
 
-        indexReady.promise().done(function() {
-          $("body").bind("queryReady", function() {
-            worker.postMessage({q: query});
+        indexReady.promise().done(function () {
+          $("body").bind("queryReady", function () {
+            worker.postMessage({ q: query });
           });
         });
       }
@@ -107,7 +107,7 @@ $(function () {
       var q = url('?q');
       if (q !== null) {
         var keywords = q.split("%20");
-        keywords.forEach(function(keyword) {
+        keywords.forEach(function (keyword) {
           if (keyword !== "") {
             highlight($('.data-searchable *'), keyword, "<mark>");
             highlight($('article *'), keyword, "<mark>");
@@ -117,12 +117,12 @@ $(function () {
     }
 
     function addSearchEvent() {
-      $('body').bind("searchEvent", function() {
-        $('#search-query').keypress(function(e) {
+      $('body').bind("searchEvent", function () {
+        $('#search-query').keypress(function (e) {
           return e.which !== 13;
         });
 
-        $('#search-query').keyup(function() {
+        $('#search-query').keyup(function () {
           query = $(this).val();
           if (query.length < 3) {
             flipContents("show");
@@ -148,12 +148,12 @@ $(function () {
     function highlight(nodes, rgxStr, tag) {
       var rgx = new RegExp(rgxStr, "gi");
       nodes.each(function () {
-        $(this).contents().filter(function() {
-            return this.nodeType == 3 && rgx.test(this.nodeValue);
-        }).replaceWith(function() {
-            return (this.nodeValue || "").replace(rgx, function(match) {
-              return $(tag).text(match)[0].outerHTML;
-            });
+        $(this).contents().filter(function () {
+          return this.nodeType == 3 && rgx.test(this.nodeValue);
+        }).replaceWith(function () {
+          return (this.nodeValue || "").replace(rgx, function (match) {
+            return $(tag).text(match)[0].outerHTML;
+          });
         });
       });
     }
@@ -161,14 +161,14 @@ $(function () {
     function relativeUrlToAbsoluteUrl(currentUrl, relativeUrl) {
       var currentItems = currentUrl.split(/\/+/);
       var relativeItems = relativeUrl.split(/\/+/);
-      var depth = currentItems.length-1;
+      var depth = currentItems.length - 1;
       var items = [];
       for (var i = 0; i < relativeItems.length; i++) {
-          if (relativeItems[i] === '..') {
-              depth--;
-          } else if (relativeItems[i] !== '.') {
-              items.push(relativeItems[i]);
-          }
+        if (relativeItems[i] === '..') {
+          depth--;
+        } else if (relativeItems[i] !== '.') {
+          items.push(relativeItems[i]);
+        }
       }
       return currentItems.slice(0, depth).concat(items).join('/');
     }
@@ -179,7 +179,7 @@ $(function () {
       var queryIndex = content.indexOf(words[0]);
       var briefContent;
       if (queryIndex > briefOffset) {
-         return "..." + content.slice(queryIndex - briefOffset, queryIndex + briefOffset) + "...";
+        return "..." + content.slice(queryIndex - briefOffset, queryIndex + briefOffset) + "...";
       } else if (queryIndex <= briefOffset) {
         return content.slice(0, queryIndex + briefOffset) + "...";
       }
@@ -193,33 +193,33 @@ $(function () {
         $('#search-results>.sr-items').html('<p>No results found</p>');
       } else {
         $('#pagination').twbsPagination({
-            totalPages: Math.ceil(hits.length/numPerPage),
-            visiblePages: 5,
-            onPageClick: function (event, page) {
-              var start = (page-1) * numPerPage;
-              var curHits = hits.slice(start, start + numPerPage);
-              $('#search-results>.sr-items').empty().append(
-                curHits.map(function(hit) {
-                  var currentUrl = window.location.href;
-                  var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
-                  var itemHref = relHref + hit.href + "?q=" + query;
-                  var itemTitle = hit.title;
-                  var itemBrief = extractContentBrief(hit.keywords);
+          totalPages: Math.ceil(hits.length / numPerPage),
+          visiblePages: 5,
+          onPageClick: function (event, page) {
+            var start = (page - 1) * numPerPage;
+            var curHits = hits.slice(start, start + numPerPage);
+            $('#search-results>.sr-items').empty().append(
+              curHits.map(function (hit) {
+                var currentUrl = window.location.href;
+                var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
+                var itemHref = relHref + hit.href + "?q=" + query;
+                var itemTitle = hit.title;
+                var itemBrief = extractContentBrief(hit.keywords);
 
-                  var itemNode = $('<div>').attr('class', 'sr-item');
-                  var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").text(itemTitle));
-                  var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
-                  var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
-                  itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
-                  return itemNode;
-                })
+                var itemNode = $('<div>').attr('class', 'sr-item');
+                var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").text(itemTitle));
+                var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
+                var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
+                itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
+                return itemNode;
+              })
               );
-              query.split(/\s+/).forEach(function(word) {
-                if (word !== '') {
-                  highlight($('#search-results>.sr-items *'), word, "<strong>");
-                }
-              });
-            }
+            query.split(/\s+/).forEach(function (word) {
+              if (word !== '') {
+                highlight($('#search-results>.sr-items *'), word, "<strong>");
+              }
+            });
+          }
         });
       }
     }
@@ -236,7 +236,7 @@ $(function () {
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
-      $.get(navbarPath, function(data) {
+      $.get(navbarPath, function (data) {
         $(data).find("#toc>ul").appendTo("#navbar");
         if ($('#search-results').length !== 0) {
           $('#search').show();
@@ -294,15 +294,15 @@ $(function () {
         if (index > -1) {
           tocrel = tocPath.substr(0, index + 1);
         }
-        var currentHref = window.location.href;
-        var hashIndex = currentHref.indexOf('#');
-        if (hashIndex > -1) currentHref = currentHref.substr(0, hashIndex);
+        var currentHref = getAbsolutePath(window.location.pathname);
         $('#sidetoc').find('a[href]').each(function (i, e) {
           var href = $(e).attr("href");
           if (isRelativePath(href)) {
             href = tocrel + href;
             $(e).attr("href", href);
-            if (e.href === currentHref) {
+          }
+
+          if (getAbsolutePath(e.href) === currentHref) {
             $(e).parent().addClass(active);
             var parent = $(e).parent().parents('li').children('a');
             if (parent.length > 0) {
@@ -330,63 +330,62 @@ $(function () {
             $(e).parent().removeClass(active);
             $(e).parents('li').children('a').removeClass(active);
           }
-        }
         });
       });
     }
 
-    function registerTocEvents(){
-        $('.toc .nav > li > .expand-stub').click(function (e) {
-          $(e.target).parent().toggleClass(expanded);
-        });
-        $('#toc_filter_input').on('input', function (e) {
-          var val = this.value;
-          if (val === '') {
-            // Clear 'filtered' class
-            $('#toc li').removeClass(filtered).removeClass(hide);
-            return;
-          }
+    function registerTocEvents() {
+      $('.toc .nav > li > .expand-stub').click(function (e) {
+        $(e.target).parent().toggleClass(expanded);
+      });
+      $('#toc_filter_input').on('input', function (e) {
+        var val = this.value;
+        if (val === '') {
+          // Clear 'filtered' class
+          $('#toc li').removeClass(filtered).removeClass(hide);
+          return;
+        }
 
-          // Get leaf nodes
-          $('#toc li>a').filter(function (i, e) {
-            return $(e).siblings().length === 0
-          }).each(function (i, anchor) {
-            var text = $(anchor).text();
-            var parent = $(anchor).parent();
-            var parentNodes = parent.parents('ul>li');
-            for (var i = 0; i < parentNodes.length; i++) {
-              var parentText = $(parentNodes[i]).children('a').text();
-              if (parentText) text = parentText + '.' + text;
-            };
-            if (filterNavItem(text, val)) {
-              parent.addClass(show);
-              parent.removeClass(hide);
-            } else {
-              parent.addClass(hide);
-              parent.removeClass(show);
-            }
-          });
-          $('#toc li>a').filter(function (i, e) {
-            return $(e).siblings().length > 0
-          }).each(function (i, anchor) {
-            var parent = $(anchor).parent();
-            if (parent.find('li.show').length > 0) {
-              parent.addClass(show);
-              parent.addClass(filtered);
-              parent.removeClass(hide);
-            } else {
-              parent.addClass(hide);
-              parent.removeClass(show);
-              parent.removeClass(filtered);
-            }
-          })
-
-          function filterNavItem(name, text) {
-            if (!text) return true;
-            if (name.toLowerCase().indexOf(text.toLowerCase()) > -1) return true;
-            return false;
+        // Get leaf nodes
+        $('#toc li>a').filter(function (i, e) {
+          return $(e).siblings().length === 0
+        }).each(function (i, anchor) {
+          var text = $(anchor).text();
+          var parent = $(anchor).parent();
+          var parentNodes = parent.parents('ul>li');
+          for (var i = 0; i < parentNodes.length; i++) {
+            var parentText = $(parentNodes[i]).children('a').text();
+            if (parentText) text = parentText + '.' + text;
+          };
+          if (filterNavItem(text, val)) {
+            parent.addClass(show);
+            parent.removeClass(hide);
+          } else {
+            parent.addClass(hide);
+            parent.removeClass(show);
           }
         });
+        $('#toc li>a').filter(function (i, e) {
+          return $(e).siblings().length > 0
+        }).each(function (i, anchor) {
+          var parent = $(anchor).parent();
+          if (parent.find('li.show').length > 0) {
+            parent.addClass(show);
+            parent.addClass(filtered);
+            parent.removeClass(hide);
+          } else {
+            parent.addClass(hide);
+            parent.removeClass(show);
+            parent.removeClass(filtered);
+          }
+        })
+
+        function filterNavItem(name, text) {
+          if (!text) return true;
+          if (name.toLowerCase().indexOf(text.toLowerCase()) > -1) return true;
+          return false;
+        }
+      });
     }
 
     function Breadcrumb() {
@@ -411,10 +410,10 @@ $(function () {
     }
 
     function getAbsolutePath(href) {
-      if (isAbsolutePath(href)) return href;
       // Use anchor to normalize href
-      var abshref = $('<a href="' + href + '"></a>')[0].href;
-      return $('<a href="' + abshref + '"></a>')[0].pathname; // remove hashtag
+      var anchor = $('<a href="' + href + '"></a>')[0];
+      // Ignore protocal, remove search and query
+      return anchor.host + anchor.pathname;
     }
 
     function isRelativePath(href) {
@@ -504,20 +503,20 @@ $(function () {
 
     function htmlEncode(str) {
       return String(str)
-              .replace(/&/g, '&amp;')
-              .replace(/"/g, '&quot;')
-              .replace(/'/g, '&#39;')
-              .replace(/</g, '&lt;')
-              .replace(/>/g, '&gt;');
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
     }
 
-    function htmlDecode(value){
+    function htmlDecode(value) {
       return String(value)
-              .replace(/&quot;/g, '"')
-              .replace(/&#39;/g, "'")
-              .replace(/&lt;/g, '<')
-              .replace(/&gt;/g, '>')
-              .replace(/&amp;/g, '&');
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
     }
   })();
 
