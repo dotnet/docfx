@@ -17,18 +17,17 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override int BuildOrder => 0x10;
 
-        protected override IEnumerable<RestApiItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, IHostService host)
+        protected override IEnumerable<RestApiItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
         {
-            var item = OverwriteDocumentReader.Transform<RestApiItemViewModel>(
+            return OverwriteDocumentReader.Transform<RestApiItemViewModel>(
                 fileModel,
+                uid,
                 s => BuildRestApiDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
-            fileModel.Content = item;
-            return item;
         }
 
-        protected override IEnumerable<RestApiItemViewModel> GetItemsToOverwrite(FileModel model, IHostService host)
+        protected override IEnumerable<RestApiItemViewModel> GetItemsToOverwrite(FileModel model, string uid, IHostService host)
         {
-            return new RestApiItemViewModel[] { (RestApiItemViewModel)model.Content }.Concat(((RestApiItemViewModel)model.Content).Children);
+            return (new RestApiItemViewModel[] { (RestApiItemViewModel)model.Content }.Concat(((RestApiItemViewModel)model.Content).Children)).Where(s => s.Uid == uid);
         }
     }
 }

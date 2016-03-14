@@ -27,9 +27,9 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             }
         }
 
-        protected abstract IEnumerable<T> GetItemsFromOverwriteDocument(FileModel fileModel, IHostService host);
+        protected abstract IEnumerable<T> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host);
 
-        protected abstract IEnumerable<T> GetItemsToOverwrite(FileModel fileModel, IHostService host);
+        protected abstract IEnumerable<T> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host);
 
         #region Private methods
 
@@ -48,8 +48,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 // Multiple UID in overwrite documents is allowed now
                 var ovms =
                     (from fm in od.Distinct()
-                     from content in GetItemsFromOverwriteDocument(fm, host)
-                     where content.Uid == uid
+                     from content in GetItemsFromOverwriteDocument(fm, uid, host)
                      select new
                      {
                          model = content,
@@ -68,8 +67,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
                 foreach (
                     var pair in
                         from model in articles
-                        from item in GetItemsToOverwrite(model, host)
-                        where item.Uid == uid
+                        from item in GetItemsToOverwrite(model, uid, host)
                         select new { model, item })
                 {
                     var vm = pair.item;

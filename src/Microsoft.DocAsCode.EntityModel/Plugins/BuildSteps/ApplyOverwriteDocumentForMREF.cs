@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Plugins;
-
+    using System.Linq;
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
     public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument<ItemViewModel>
     {
@@ -16,18 +16,17 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override int BuildOrder => 0x10;
 
-        protected override IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, IHostService host)
+        protected override IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
         {
-            var item = OverwriteDocumentReader.Transform<ItemViewModel>(
+            return OverwriteDocumentReader.Transform<ItemViewModel>(
                 fileModel,
+                uid,
                 s => BuildManagedReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
-            fileModel.Content = item;
-            return item;
         }
 
-        protected override IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel model, IHostService host)
+        protected override IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel model, string uid, IHostService host)
         {
-            return ((PageViewModel)model.Content).Items;
+            return ((PageViewModel)model.Content).Items.Where(s => s.Uid == uid);
         }
     }
 }

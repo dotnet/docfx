@@ -62,14 +62,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         /// <param name="model"></param>
         /// <param name="itemBuilder"></param>
         /// <returns></returns>
-        public static IEnumerable<T> Transform<T>(FileModel model, Func<T, T> itemBuilder) where T : class, IOverwriteDocumentViewModel
+        public static IEnumerable<T> Transform<T>(FileModel model, string uid, Func<T, T> itemBuilder) where T : class, IOverwriteDocumentViewModel
         {
             if (model == null)
             {
                 throw new ArgumentNullException(nameof(model));
             }
 
-            var overwrites = (List<OverwriteDocumentModel>)model.Content;
+            var overwrites = ((List<OverwriteDocumentModel>)model.Content).Where(s => s.Uid == uid);
             return overwrites.Select(s =>
             {
                 try
