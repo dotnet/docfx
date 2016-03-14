@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -60,7 +73,7 @@
             <article class="content wrap" id="_content">
               
               <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L17" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L18" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator">Class VBYamlModelGenerator
               </h1>
               <div class="markdown level0 summary"></div>
@@ -80,12 +93,9 @@
               </div>
               <h3 id="constructors">Constructors
               </h3>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator__ctor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.%23ctor%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L23">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L24">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator__ctor" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.#ctor">VBYamlModelGenerator()</h4>
               <div class="markdown level1 summary"></div>
@@ -96,12 +106,9 @@
               </div>
               <h3 id="methods">Methods
               </h3>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_DefaultVisit_Microsoft_CodeAnalysis_ISymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol%2CMicrosoft.DocAsCode.EntityModel.MetadataItem%2CMicrosoft.DocAsCode.EntityModel.SymbolVisitorAdapter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L29">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L30">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_DefaultVisit_Microsoft_CodeAnalysis_ISymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.DefaultVisit(Microsoft.CodeAnalysis.ISymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)">DefaultVisit(ISymbol, MetadataItem, SymbolVisitorAdapter)</h4>
               <div class="markdown level1 summary"></div>
@@ -137,12 +144,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateEvent_Microsoft_CodeAnalysis_IEventSymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateEvent(Microsoft.CodeAnalysis.IEventSymbol%2CMicrosoft.DocAsCode.EntityModel.MetadataItem%2CMicrosoft.DocAsCode.EntityModel.SymbolVisitorAdapter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L218">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L234">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateEvent_Microsoft_CodeAnalysis_IEventSymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateEvent(Microsoft.CodeAnalysis.IEventSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)">GenerateEvent(IEventSymbol, MetadataItem, SymbolVisitorAdapter)</h4>
               <div class="markdown level1 summary"></div>
@@ -178,12 +182,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateField_Microsoft_CodeAnalysis_IFieldSymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateField(Microsoft.CodeAnalysis.IFieldSymbol%2CMicrosoft.DocAsCode.EntityModel.MetadataItem%2CMicrosoft.DocAsCode.EntityModel.SymbolVisitorAdapter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L118">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L119">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateField_Microsoft_CodeAnalysis_IFieldSymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateField(Microsoft.CodeAnalysis.IFieldSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)">GenerateField(IFieldSymbol, MetadataItem, SymbolVisitorAdapter)</h4>
               <div class="markdown level1 summary"></div>
@@ -219,12 +220,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateMethod_Microsoft_CodeAnalysis_IMethodSymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateMethod(Microsoft.CodeAnalysis.IMethodSymbol%2CMicrosoft.DocAsCode.EntityModel.MetadataItem%2CMicrosoft.DocAsCode.EntityModel.SymbolVisitorAdapter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L79">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L80">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateMethod_Microsoft_CodeAnalysis_IMethodSymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateMethod(Microsoft.CodeAnalysis.IMethodSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)">GenerateMethod(IMethodSymbol, MetadataItem, SymbolVisitorAdapter)</h4>
               <div class="markdown level1 summary"></div>
@@ -260,12 +258,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateNamedType_Microsoft_CodeAnalysis_INamedTypeSymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol%2CMicrosoft.DocAsCode.EntityModel.MetadataItem%2CMicrosoft.DocAsCode.EntityModel.SymbolVisitorAdapter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L35">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L36">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateNamedType_Microsoft_CodeAnalysis_INamedTypeSymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateNamedType(Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)">GenerateNamedType(INamedTypeSymbol, MetadataItem, SymbolVisitorAdapter)</h4>
               <div class="markdown level1 summary"></div>
@@ -301,12 +296,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateProperty_Microsoft_CodeAnalysis_IPropertySymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateProperty(Microsoft.CodeAnalysis.IPropertySymbol%2CMicrosoft.DocAsCode.EntityModel.MetadataItem%2CMicrosoft.DocAsCode.EntityModel.SymbolVisitorAdapter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L147">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L148">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateProperty_Microsoft_CodeAnalysis_IPropertySymbol_Microsoft_DocAsCode_EntityModel_MetadataItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateProperty(Microsoft.CodeAnalysis.IPropertySymbol,Microsoft.DocAsCode.EntityModel.MetadataItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)">GenerateProperty(IPropertySymbol, MetadataItem, SymbolVisitorAdapter)</h4>
               <div class="markdown level1 summary"></div>
@@ -342,12 +334,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateReference_Microsoft_CodeAnalysis_ISymbol_Microsoft_DocAsCode_EntityModel_ReferenceItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateReference(Microsoft.CodeAnalysis.ISymbol%2CMicrosoft.DocAsCode.EntityModel.ReferenceItem%2CMicrosoft.DocAsCode.EntityModel.SymbolVisitorAdapter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L472">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L304">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GenerateReference_Microsoft_CodeAnalysis_ISymbol_Microsoft_DocAsCode_EntityModel_ReferenceItem_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GenerateReference(Microsoft.CodeAnalysis.ISymbol,Microsoft.DocAsCode.EntityModel.ReferenceItem,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)">GenerateReference(ISymbol, ReferenceItem, SymbolVisitorAdapter)</h4>
               <div class="markdown level1 summary"></div>
@@ -383,12 +372,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GetSyntaxContent_Microsoft_DocAsCode_EntityModel_MemberType_Microsoft_CodeAnalysis_ISymbol_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GetSyntaxContent(Microsoft.DocAsCode.EntityModel.MemberType%2CMicrosoft.CodeAnalysis.ISymbol%2CMicrosoft.DocAsCode.EntityModel.SymbolVisitorAdapter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L257">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/VBYamlModelGenerator.cs/#L273">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_VBYamlModelGenerator_GetSyntaxContent_Microsoft_DocAsCode_EntityModel_MemberType_Microsoft_CodeAnalysis_ISymbol_Microsoft_DocAsCode_EntityModel_SymbolVisitorAdapter_" data-uid="Microsoft.DocAsCode.EntityModel.VBYamlModelGenerator.GetSyntaxContent(Microsoft.DocAsCode.EntityModel.MemberType,Microsoft.CodeAnalysis.ISymbol,Microsoft.DocAsCode.EntityModel.SymbolVisitorAdapter)">GetSyntaxContent(MemberType, ISymbol, SymbolVisitorAdapter)</h4>
               <div class="markdown level1 summary"></div>
@@ -457,7 +443,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

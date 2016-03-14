@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -59,28 +72,25 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content">
               
-              <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs/#L266" class="btn btn-primary pull-right mobile-hide">View Source</a>
-              <h1 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate" data-uid="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate">Struct Coordinate
+              <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_Coordinate.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.Coordinate%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/Section.cs/#L68" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <h1 id="Microsoft_DocAsCode_EntityModel_Coordinate" data-uid="Microsoft.DocAsCode.EntityModel.Coordinate">Struct Coordinate
               </h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
-              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.EntityModel.ViewModels</h6>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.EntityModel</h6>
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.EntityModel.dll</h6>
-              <h5 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_syntax">Syntax</h5>
+              <h5 id="Microsoft_DocAsCode_EntityModel_Coordinate_syntax">Syntax</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public struct Coordinate : IComparable&lt;Coordinate&gt;</code></pre>
               </div>
               <h3 id="fields">Fields
               </h3>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_Default.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.Default%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/Section.cs/#L75">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs/#L273">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_Default" data-uid="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.Default">Default</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Coordinate_Default" data-uid="Microsoft.DocAsCode.EntityModel.Coordinate.Default">Default</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -89,21 +99,22 @@
               </div>
               <h3 id="properties">Properties
               </h3>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_Column.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.Column%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/Section.cs/#L73">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs/#L271">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_Column" data-uid="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.Column">Column</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Coordinate_Column" data-uid="Microsoft.DocAsCode.EntityModel.Coordinate.Column">Column</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public int Column { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public int Column
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -118,21 +129,22 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_Line.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.Line%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/Section.cs/#L72">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs/#L270">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_Line" data-uid="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.Line">Line</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Coordinate_Line" data-uid="Microsoft.DocAsCode.EntityModel.Coordinate.Line">Line</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public int Line { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public int Line
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -149,14 +161,11 @@
               </table>
               <h3 id="methods">Methods
               </h3>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_Add_Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.Add(Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/Section.cs/#L77">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs/#L275">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_Add_Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_" data-uid="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.Add(Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate)">Add(Coordinate)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Coordinate_Add_Microsoft_DocAsCode_EntityModel_Coordinate_" data-uid="Microsoft.DocAsCode.EntityModel.Coordinate.Add(Microsoft.DocAsCode.EntityModel.Coordinate)">Add(Coordinate)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -174,7 +183,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.html#Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate">Coordinate</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.Coordinate.html#Microsoft_DocAsCode_EntityModel_Coordinate">Coordinate</a></td>
                     <td><em>toAdd</em></td>
                     <td></td>
                   </tr>
@@ -190,19 +199,16 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.html#Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate">Coordinate</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.Coordinate.html#Microsoft_DocAsCode_EntityModel_Coordinate">Coordinate</a></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_CompareTo_Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.CompareTo(Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/Section.cs/#L111">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs/#L309">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_CompareTo_Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_" data-uid="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.CompareTo(Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate)">CompareTo(Coordinate)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Coordinate_CompareTo_Microsoft_DocAsCode_EntityModel_Coordinate_" data-uid="Microsoft.DocAsCode.EntityModel.Coordinate.CompareTo(Microsoft.DocAsCode.EntityModel.Coordinate)">CompareTo(Coordinate)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -220,7 +226,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.html#Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate">Coordinate</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.Coordinate.html#Microsoft_DocAsCode_EntityModel_Coordinate">Coordinate</a></td>
                     <td><em>other</em></td>
                     <td></td>
                   </tr>
@@ -241,14 +247,11 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_GetCoordinate_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.GetCoordinate(System.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/Section.cs/#L91">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs/#L289">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_GetCoordinate_System_String_" data-uid="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.GetCoordinate(System.String)">GetCoordinate(String)</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Coordinate_GetCoordinate_System_String_" data-uid="Microsoft.DocAsCode.EntityModel.Coordinate.GetCoordinate(System.String)">GetCoordinate(String)</h4>
               <div class="markdown level1 summary"><p>Lines and Columns start at 0 to leverage default value, NOTE that IDE start at 1, need to +1 at the outermost</p>
 </div>
               <div class="markdown level1 conceptual"></div>
@@ -283,19 +286,16 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.html#Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate">Coordinate</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.Coordinate.html#Microsoft_DocAsCode_EntityModel_Coordinate">Coordinate</a></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_ToString.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.ToString%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/Section.cs/#L121">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/ViewModels/MapFileItemViewModel.cs/#L319">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_ViewModels_Coordinate_ToString" data-uid="Microsoft.DocAsCode.EntityModel.ViewModels.Coordinate.ToString">ToString()</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_Coordinate_ToString" data-uid="Microsoft.DocAsCode.EntityModel.Coordinate.ToString">ToString()</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -335,7 +335,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

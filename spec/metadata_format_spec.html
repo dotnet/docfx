@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Doc-as-Code: Metadata Format Specification | docfx website</title>
+    <title>Doc-as-Code: Metadata Format Specification | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Doc-as-Code: Metadata Format Specification | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content="Doc-as-Code: Metadata Format Specification | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,21 +36,33 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
           </div>
         </div>
       </header>
-      <div role="main" class="container body-content">
+      <div class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -236,14 +249,13 @@ references:
 <p>In metadata file, all <em>items</em> <strong>MUST</strong> be referenced by <em>UID</em>.</p>
 <blockquote><p>It&#39;s <strong>RECOMMENDED</strong> to include all referenced <em>items</em> in reference section. This makes the file self contained and easy to render at runtime.</p>
 <p>Many programming languages has the concept of &quot;template instantiation&quot;. For example, in C#, you can create a new type <code>List&lt;int&gt;</code> from <code>List&lt;T&gt;</code> with argument <code>int</code>. You can create a reference for &quot;template instances&quot;. For example, for a class inherited from <code>List&lt;int&gt;</code>:</p>
-</blockquote>
 <pre><code class="lang-yaml">items:
 - uid: NumberList
   inherits:
   - System.Collections.Generic.List&lt;System.Int32&gt;
 references:
 - uid: System.Collections.Generic.List`1&lt;System.Int32&gt;
-  link: @{System.Collections.Generic.List`1}&lt;@{System.Int32}&gt;
+  link: @&quot;System.Collections.Generic.List`1&quot;&lt;@&quot;System.Int32&quot;&gt;
 - uid: System.Collections.Generic.List`1
   name: List
   url: system.collections.generic.list`1.yml
@@ -251,6 +263,7 @@ references:
   name: int
   url: system.int32.yml
 </code></pre>
+</blockquote>
 <h3 id="2-6-multiple-language-support">2.6 Multiple Language Support</h3>
 <p>There may be a need that an <em>item</em> supports multiple languages. For example, in .NET, a class can be used in C#, VB, managed C++ and F#. Different languages may have differences in <em>properties</em>. For example, a list of string is displayed as <code>List&lt;string&gt;</code> in C#, while <code>List(Of string)</code> in VB.</p>
 <p>To support this scenario, we introduce a concept of language context to allow define different <em>property</em> values in different languages.</p>
@@ -274,21 +287,29 @@ This is a **string** class.
 </code></pre>
 <p>You can multiple YAML sections inside a single markdown file, but in a single YAML section, there <strong>MUST</strong> be only one <em>item</em>.</p>
 <p>The YAML metadata section does not have to contain all <em>properties</em>. The only <em>property</em> that <strong>MUST</strong> appear is &quot;uid&quot;, which is used to match the same <em>item</em> in metadata file.</p>
-<p>The most common scenario for using YAML section is to specify which <em>item</em> the markdown doc belongs to. But you can also override <em>item</em> <em>property</em> by defining one with the same name in YAML section. In the above example, the <em>property</em> &quot;summary&quot; will override the same one in metadata.</p>
+<p>The most common scenario for using YAML section is to specify which <em>item</em> the markdown doc belongs to. But you can also overwrite <em>item</em> <em>property</em> by defining one with the same name in YAML section. In the above example, the <em>property</em> &quot;summary&quot; will overwrite the same one in metadata.</p>
 <p>Same as language context, the following <em>properties</em> <strong>SHALL NOT</strong> be overridden: uid, id, alias, children, parent.</p>
 <p>You <strong>SHALL NOT</strong> define new <em>item</em> in markdown.</p>
 <h3 id="3-2-reference-items-in-markdown">3.2 Reference Items in Markdown</h3>
-<p>We introduce a new markdown syntax to represent <em>item</em> reference:</p>
+<p>To cross reference an <em>item</em>, you can use URI with <code>xref</code> scheme. You can either use <a href="https://daringfireball.net/projects/markdown/syntax#link">standard link</a> or <a href="https://daringfireball.net/projects/markdown/syntax#autolink">automatic link</a> with the above URI.
+For example, to cross reference <code>System.String</code>:</p>
+<pre><code class="lang-markdown">[System.String](xref:System.String)
+
+&lt;xref:System.String&gt;
+</code></pre>
+<blockquote><p>Since <em>item</em> reference is a URI, special characters (like <code>#</code>, <code>?</code>) <strong>MUST</strong> be <a href="https://tools.ietf.org/html/rfc3986#section-2.1">encoded</a>.</p>
+</blockquote>
+<p>We also introduce a shorthand markdown syntax to cross reference easily:</p>
 <p>If a string starts with <code>@</code>, and followed by a string enclosed by quotes <code>&#39;</code> or double quotes <code>&quot;</code>, it will be treated as an <em>item</em> reference. The string inside <code>&quot;&quot;</code> or <code>&#39;&#39;</code> is the <em>UID</em> of the <em>item</em>. Here is one example:</p>
 <pre><code class="lang-markdown">@&quot;System.String&quot;
 </code></pre>
-<blockquote><p>Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@{int}</code>, we may also want to allow <code>@int</code>.</p>
+<blockquote><p>Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@&quot;int&quot;</code>, we may also want to allow <code>@int</code>.</p>
 </blockquote>
 <p>When rendering reference in markdown, they will be expanded into a link with the <em>item</em>&#39;s name as link title. You can also customize the link title using the standard syntax of markdown:</p>
-<pre><code class="lang-markdown">[Dictionary](@{System.Collections.Generic.Dictionary`2})&lt;[String](@{System.String}), [String](@{System.String})&gt;
+<pre><code class="lang-markdown">[Dictionary](@&quot;System.Collections.Generic.Dictionary`2&quot;)&lt;[String](@&quot;System.String&quot;), [String](@&quot;System.String&quot;)&gt;
 </code></pre>
 <p>Will be rendered to:
-<code>[Dictionary](@{System.Collections.Generic.Dictionary`2})&lt;[String](@{System.String}), [String](@{System.String})&gt;</code></p>
+[Dictionary](@&quot;System.Collections.Generic.Dictionary`2&quot;)&lt;[String](@&quot;System.String&quot;), [String](@&quot;System.String&quot;)&gt;</p>
 <p>Besides <em>UID</em>, we also allow reference item using <em>ID</em> and <em>alias</em>, in markdown processor, the following algorithm <strong>SHOULD</strong> be implemented to resolve references:</p>
 <ol>
 <li>Check whether the reference matches any <em>identifier</em> of current <em>item</em>&#39;s children.</li>
@@ -317,7 +338,7 @@ This is a **string** class.
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

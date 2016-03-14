@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -79,10 +92,7 @@
               </div>
               <h3 id="fields">Fields
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_Empty.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.Empty%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L19">View Source</a>
               </span>
@@ -96,10 +106,7 @@
               </div>
               <h3 id="methods">Methods
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_Append_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.Append(System.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L36">View Source</a>
               </span>
@@ -142,10 +149,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_Clone.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.Clone%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L107">View Source</a>
               </span>
@@ -171,10 +175,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_Concat_Microsoft_DocAsCode_MarkdownLite_StringBuffer_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.Concat(Microsoft.DocAsCode.MarkdownLite.StringBuffer)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L47">View Source</a>
               </span>
@@ -217,10 +218,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_GetLength.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.GetLength%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L119">View Source</a>
               </span>
@@ -246,10 +244,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_ToString.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.ToString%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L129">View Source</a>
               </span>
@@ -277,10 +272,7 @@
               </table>
               <h3 id="operators">Operators
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_op_Addition_Microsoft_DocAsCode_MarkdownLite_StringBuffer_Microsoft_DocAsCode_MarkdownLite_StringBuffer_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.op_Addition(Microsoft.DocAsCode.MarkdownLite.StringBuffer%2CMicrosoft.DocAsCode.MarkdownLite.StringBuffer)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L143">View Source</a>
               </span>
@@ -328,10 +320,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_op_Addition_Microsoft_DocAsCode_MarkdownLite_StringBuffer_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.op_Addition(Microsoft.DocAsCode.MarkdownLite.StringBuffer%2CSystem.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L138">View Source</a>
               </span>
@@ -379,10 +368,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_op_Implicit_Microsoft_DocAsCode_MarkdownLite_StringBuffer__System_String.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.op_Implicit(Microsoft.DocAsCode.MarkdownLite.StringBuffer)~System.String%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L157">View Source</a>
               </span>
@@ -425,10 +411,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_StringBuffer_op_Implicit_System_String__Microsoft_DocAsCode_MarkdownLite_StringBuffer.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.StringBuffer.op_Implicit(System.String)~Microsoft.DocAsCode.MarkdownLite.StringBuffer%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/StringBuffer.cs/#L148">View Source</a>
               </span>
@@ -489,7 +472,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

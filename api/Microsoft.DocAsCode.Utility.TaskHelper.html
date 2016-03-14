@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -78,10 +91,7 @@
               </div>
               <h3 id="fields">Fields
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_TaskHelper_Completed.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.TaskHelper.Completed%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/TaskHelper.cs/#L115">View Source</a>
               </span>
@@ -95,10 +105,7 @@
               </div>
               <h3 id="methods">Methods
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_TaskHelper_ForEachInParallelAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.TaskHelper.ForEachInParallelAsync%60%601(System.Collections.Generic.IEnumerable%7B%60%600%7D%2CSystem.Func%7B%60%600%2CSystem.Threading.Tasks.Task%7D)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/TaskHelper.cs/#L57">View Source</a>
               </span>
@@ -153,10 +160,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_TaskHelper_ForEachInParallelAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.TaskHelper.ForEachInParallelAsync%60%601(System.Collections.Generic.IEnumerable%7B%60%600%7D%2CSystem.Func%7B%60%600%2CSystem.Threading.Tasks.Task%7D%2CSystem.Int32)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/TaskHelper.cs/#L22">View Source</a>
               </span>
@@ -214,10 +218,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_TaskHelper_SelectInParallelAsync__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task___1___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.TaskHelper.SelectInParallelAsync%60%602(System.Collections.Generic.IEnumerable%7B%60%600%7D%2CSystem.Func%7B%60%600%2CSystem.Threading.Tasks.Task%7B%60%601%7D%7D)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/TaskHelper.cs/#L107">View Source</a>
               </span>
@@ -272,10 +273,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_TaskHelper_SelectInParallelAsync__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task___1___System_Int32_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.TaskHelper.SelectInParallelAsync%60%602(System.Collections.Generic.IEnumerable%7B%60%600%7D%2CSystem.Func%7B%60%600%2CSystem.Threading.Tasks.Task%7B%60%601%7D%7D%2CSystem.Int32)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/TaskHelper.cs/#L71">View Source</a>
               </span>
@@ -351,7 +349,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

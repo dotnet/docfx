@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -78,10 +91,7 @@
               </div>
               <h3 id="fields">Fields
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_ListFileExtension.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.ListFileExtension%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L43">View Source</a>
               </span>
@@ -94,10 +104,7 @@
               </div>
               <h3 id="methods">Methods
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_CopyFile_System_String_System_String_System_Boolean_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.CopyFile(System.String%2CSystem.String%2CSystem.Boolean)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L188">View Source</a>
               </span>
@@ -135,10 +142,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_CopyFilesToFolder_System_Collections_Generic_IEnumerable_System_String__System_String_System_String_System_Boolean_System_Action_System_String__System_Func_System_String_System_Boolean__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.CopyFilesToFolder(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CSystem.String%2CSystem.String%2CSystem.Boolean%2CSystem.Action%7BSystem.String%7D%2CSystem.Func%7BSystem.String%2CSystem.Boolean%7D)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L123">View Source</a>
               </span>
@@ -206,12 +210,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_FormatPath_System_String_System_UriKind_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.FormatPath(System.String%2CSystem.UriKind%2CSystem.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L215">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L222">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Utility_PathUtility_FormatPath_System_String_System_UriKind_System_String_" data-uid="Microsoft.DocAsCode.Utility.PathUtility.FormatPath(System.String,System.UriKind,System.String)">FormatPath(String, UriKind, String)</h4>
               <div class="markdown level1 summary"><p>Also change backslash to forward slash</p>
@@ -263,10 +264,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_GetFileListFromFile_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.GetFileListFromFile(System.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L45">View Source</a>
               </span>
@@ -309,10 +307,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_GetFullPath_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.GetFullPath(System.String%2CSystem.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L181">View Source</a>
               </span>
@@ -360,12 +355,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_IsPathFromWorkingFolder_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.IsPathFromWorkingFolder(System.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L238">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L245">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Utility_PathUtility_IsPathFromWorkingFolder_System_String_" data-uid="Microsoft.DocAsCode.Utility.PathUtility.IsPathFromWorkingFolder(System.String)">IsPathFromWorkingFolder(String)</h4>
               <div class="markdown level1 summary"></div>
@@ -406,10 +398,55 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_IsRelativePath_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.IsRelativePath(System.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L262">View Source</a>
               </span>
+              <h4 id="Microsoft_DocAsCode_Utility_PathUtility_IsPathUnderSpecificFolder_System_String_System_String_" data-uid="Microsoft.DocAsCode.Utility.PathUtility.IsPathUnderSpecificFolder(System.String,System.String)">IsPathUnderSpecificFolder(String, String)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public static bool IsPathUnderSpecificFolder(string path, string folder)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><em>path</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><em>folder</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L198">View Source</a>
               </span>
@@ -452,10 +489,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_IsVaildFilePath_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.IsVaildFilePath(System.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L73">View Source</a>
               </span>
@@ -499,10 +533,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_MakeRelativePath_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.MakeRelativePath(System.String%2CSystem.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L95">View Source</a>
               </span>
@@ -577,10 +608,50 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_SaveFileListToFile_System_Collections_Generic_List_System_String__System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.SaveFileListToFile(System.Collections.Generic.List%7BSystem.String%7D%2CSystem.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L271">View Source</a>
               </span>
+              <h4 id="Microsoft_DocAsCode_Utility_PathUtility_NormalizePath_System_String_" data-uid="Microsoft.DocAsCode.Utility.PathUtility.NormalizePath(System.String)">NormalizePath(String)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public static string NormalizePath(string path)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><em>path</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L30">View Source</a>
               </span>
@@ -613,10 +684,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_ToValidFilePath_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.ToValidFilePath(System.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L18">View Source</a>
               </span>
@@ -659,12 +727,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Utility_PathUtility_TryGetPathFromWorkingFolder_System_String_System_String__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Utility.PathUtility.TryGetPathFromWorkingFolder(System.String%2CSystem.String%40)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L244">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Utility/PathUtility.cs/#L251">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Utility_PathUtility_TryGetPathFromWorkingFolder_System_String_System_String__" data-uid="Microsoft.DocAsCode.Utility.PathUtility.TryGetPathFromWorkingFolder(System.String,System.String@)">TryGetPathFromWorkingFolder(String, out String)</h4>
               <div class="markdown level1 summary"></div>
@@ -728,7 +793,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -60,7 +73,7 @@
             <article class="content wrap" id="_content">
               
               <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MatchDetail.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MatchDetail%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L69" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L8" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_EntityModel_MatchDetail" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail">Class MatchDetail
               </h1>
               <div class="markdown level0 summary"></div>
@@ -78,21 +91,22 @@
               </div>
               <h3 id="properties">Properties
               </h3>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MatchDetail_EndLine.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MatchDetail.EndLine%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L81">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L20">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_MatchDetail_EndLine" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail.EndLine">EndLine</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public int EndLine { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public int EndLine
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -107,12 +121,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MatchDetail_Id.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MatchDetail.Id%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L76">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L15">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_MatchDetail_Id" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail.Id">Id</h4>
               <div class="markdown level1 summary"><p>The Id from regular expression&#39;s content group, e.g. ABC from @ABC</p>
@@ -120,9 +131,13 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Id { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Id
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -137,21 +152,22 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MatchDetail_MatchedSections.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MatchDetail.MatchedSections%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L10">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L71">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_EntityModel_MatchDetail_MatchedSections" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail.MatchedSections">MatchedSections</h4>
+              <h4 id="Microsoft_DocAsCode_EntityModel_MatchDetail_MatchedSection" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail.MatchedSection">MatchedSection</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public SectionCollection MatchedSections { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public Section MatchedSection
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -161,26 +177,27 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.SectionCollection.html#Microsoft_DocAsCode_EntityModel_SectionCollection">SectionCollection</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.EntityModel.Section.html#Microsoft_DocAsCode_EntityModel_Section">Section</a></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MatchDetail_Path.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MatchDetail.Path%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L77">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L16">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_MatchDetail_Path" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail.Path">Path</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Path { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Path
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -195,22 +212,22 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MatchDetail_Properties.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MatchDetail.Properties%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L86">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L22">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_MatchDetail_Properties" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail.Properties">Properties</h4>
-              <div class="markdown level1 summary"><p>Store all the other customized properties</p>
-</div>
+              <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public Dictionary&lt;string, object&gt; Properties { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public Dictionary&lt;string, object&gt; Properties
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -225,21 +242,22 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MatchDetail_StartLine.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MatchDetail.StartLine%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L79">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L18">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_MatchDetail_StartLine" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail.StartLine">StartLine</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public int StartLine { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public int StartLine
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -256,12 +274,9 @@
               </table>
               <h3 id="methods">Methods
               </h3>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MatchDetail_GetHashCode.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MatchDetail.GetHashCode%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L88">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Parsers/MatchDetail.cs/#L24">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_EntityModel_MatchDetail_GetHashCode" data-uid="Microsoft.DocAsCode.EntityModel.MatchDetail.GetHashCode">GetHashCode()</h4>
               <div class="markdown level1 summary"></div>
@@ -303,7 +318,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

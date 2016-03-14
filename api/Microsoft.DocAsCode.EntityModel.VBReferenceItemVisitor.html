@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -80,10 +93,7 @@
               </div>
               <h3 id="constructors">Constructors
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor__ctor_Microsoft_DocAsCode_EntityModel_ReferenceItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.%23ctor(Microsoft.DocAsCode.EntityModel.ReferenceItem)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L275">View Source</a>
               </span>
@@ -113,10 +123,7 @@
               </table>
               <h3 id="methods">Methods
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_AddBeginGenericParameter.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.AddBeginGenericParameter%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L427">View Source</a>
               </span>
@@ -127,10 +134,7 @@
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">protected override void AddBeginGenericParameter()</code></pre>
               </div>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_AddEndGenericParameter.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.AddEndGenericParameter%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L436">View Source</a>
               </span>
@@ -141,10 +145,7 @@
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">protected override void AddEndGenericParameter()</code></pre>
               </div>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_AddGenericParameterSeparator.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.AddGenericParameterSeparator%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L445">View Source</a>
               </span>
@@ -155,10 +156,7 @@
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">protected override void AddGenericParameterSeparator()</code></pre>
               </div>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_AddLinkItems_Microsoft_CodeAnalysis_INamedTypeSymbol_System_Boolean_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.AddLinkItems(Microsoft.CodeAnalysis.INamedTypeSymbol%2CSystem.Boolean)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L454">View Source</a>
               </span>
@@ -191,10 +189,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_VisitArrayType_Microsoft_CodeAnalysis_IArrayTypeSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.VisitArrayType(Microsoft.CodeAnalysis.IArrayTypeSymbol)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L301">View Source</a>
               </span>
@@ -222,10 +217,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_VisitEvent_Microsoft_CodeAnalysis_IEventSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.VisitEvent(Microsoft.CodeAnalysis.IEventSymbol)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L403">View Source</a>
               </span>
@@ -253,10 +245,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_VisitField_Microsoft_CodeAnalysis_IFieldSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.VisitField(Microsoft.CodeAnalysis.IFieldSymbol)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L415">View Source</a>
               </span>
@@ -284,10 +273,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_VisitMethod_Microsoft_CodeAnalysis_IMethodSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.VisitMethod(Microsoft.CodeAnalysis.IMethodSymbol)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L332">View Source</a>
               </span>
@@ -315,10 +301,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_VisitNamespace_Microsoft_CodeAnalysis_INamespaceSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.VisitNamespace(Microsoft.CodeAnalysis.INamespaceSymbol)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L283">View Source</a>
               </span>
@@ -346,10 +329,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_VisitPointerType_Microsoft_CodeAnalysis_IPointerTypeSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.VisitPointerType(Microsoft.CodeAnalysis.IPointerTypeSymbol)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L322">View Source</a>
               </span>
@@ -377,10 +357,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_VisitProperty_Microsoft_CodeAnalysis_IPropertySymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.VisitProperty(Microsoft.CodeAnalysis.IPropertySymbol)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L366">View Source</a>
               </span>
@@ -408,10 +385,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_VBReferenceItemVisitor_VisitTypeParameter_Microsoft_CodeAnalysis_ITypeParameterSymbol_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.VBReferenceItemVisitor.VisitTypeParameter(Microsoft.CodeAnalysis.ITypeParameterSymbol)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Visitors/ReferenceItemVisitor.cs/#L292">View Source</a>
               </span>
@@ -457,7 +431,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

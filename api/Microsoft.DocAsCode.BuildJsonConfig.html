@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -74,14 +87,12 @@
               <h6><strong>Assembly</strong>:docfx.dll</h6>
               <h5 id="Microsoft_DocAsCode_BuildJsonConfig_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class BuildJsonConfig</code></pre>
+                <pre><code class="lang-csharp hljs">[Serializable]
+public class BuildJsonConfig</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_BaseDirectory.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.BaseDirectory%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L16">View Source</a>
               </span>
@@ -90,9 +101,14 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string BaseDirectory { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonIgnore]
+public string BaseDirectory
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -107,10 +123,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Content.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Content%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L22">View Source</a>
               </span>
@@ -119,9 +132,14 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public FileMapping Content { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;content&quot;)]
+public FileMapping Content
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -136,10 +154,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Destination.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Destination%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L34">View Source</a>
               </span>
@@ -148,9 +163,14 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Destination { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;dest&quot;)]
+public string Destination
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -165,10 +185,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_DryRun.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.DryRun%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L78">View Source</a>
               </span>
@@ -177,9 +194,14 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool ? DryRun { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;dryRun&quot;)]
+public bool ? DryRun
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -194,10 +216,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_ExportRawModel.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.ExportRawModel%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L66">View Source</a>
               </span>
@@ -206,9 +225,14 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool ? ExportRawModel { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exportRawModel&quot;)]
+public bool ? ExportRawModel
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -223,10 +247,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_ExportViewModel.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.ExportViewModel%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L72">View Source</a>
               </span>
@@ -235,9 +256,14 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool ? ExportViewModel { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exportViewModel&quot;)]
+public bool ? ExportViewModel
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -252,10 +278,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_ExternalReference.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.ExternalReference%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L31">View Source</a>
               </span>
@@ -264,9 +287,14 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public FileMapping ExternalReference { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;externalReference&quot;)]
+public FileMapping ExternalReference
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -281,10 +309,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_FileMetadata.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.FileMetadata%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L48">View Source</a>
               </span>
@@ -298,9 +323,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public Dictionary&lt;string, FileMetadataPairs&gt; FileMetadata { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;fileMetadata&quot;)]
+public Dictionary&lt;string, FileMetadataPairs&gt; FileMetadata
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -315,10 +345,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Force.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Force%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L60">View Source</a>
               </span>
@@ -327,9 +354,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool ? Force { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;force&quot;)]
+public bool ? Force
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -344,10 +376,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_GlobalMetadata.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.GlobalMetadata%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L37">View Source</a>
               </span>
@@ -356,9 +385,15 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public Dictionary&lt;string, object&gt; GlobalMetadata { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;globalMetadata&quot;)]
+[JsonConverter(typeof (JObjectDictionaryToObjectDictionaryConverter))]
+public Dictionary&lt;string, object&gt; GlobalMetadata
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -373,10 +408,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_OutputFolder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.OutputFolder%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L19">View Source</a>
               </span>
@@ -385,9 +417,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string OutputFolder { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonIgnore]
+public string OutputFolder
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -402,10 +439,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Overwrite.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Overwrite%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L28">View Source</a>
               </span>
@@ -414,9 +448,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public FileMapping Overwrite { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;overwrite&quot;)]
+public FileMapping Overwrite
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -431,10 +470,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Port.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Port%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L63">View Source</a>
               </span>
@@ -443,9 +479,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Port { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;port&quot;)]
+public string Port
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -460,10 +501,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_RawModelOutputFolder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.RawModelOutputFolder%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L69">View Source</a>
               </span>
@@ -472,9 +510,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string RawModelOutputFolder { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;rawModelOutputFolder&quot;)]
+public string RawModelOutputFolder
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -489,10 +532,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Resource.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Resource%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L25">View Source</a>
               </span>
@@ -501,9 +541,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public FileMapping Resource { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;resource&quot;)]
+public FileMapping Resource
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -518,10 +563,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Serve.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Serve%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L57">View Source</a>
               </span>
@@ -530,9 +572,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool ? Serve { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;serve&quot;)]
+public bool ? Serve
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -547,10 +594,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Templates.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Templates%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L51">View Source</a>
               </span>
@@ -559,9 +603,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public ListWithStringFallback Templates { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;template&quot;)]
+public ListWithStringFallback Templates
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -576,10 +625,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_Themes.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.Themes%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L54">View Source</a>
               </span>
@@ -588,9 +634,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public ListWithStringFallback Themes { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;theme&quot;)]
+public ListWithStringFallback Themes
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -605,10 +656,7 @@ For each item of the value:
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_BuildJsonConfig_ViewModelOutputFolder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.BuildJsonConfig.ViewModelOutputFolder%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/BuildJsonConfig.cs/#L75">View Source</a>
               </span>
@@ -617,9 +665,14 @@ For each item of the value:
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string ViewModelOutputFolder { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[JsonProperty(&quot;viewModelOutputFolder&quot;)]
+public string ViewModelOutputFolder
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -652,7 +705,7 @@ For each item of the value:
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

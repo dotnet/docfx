@@ -51,15 +51,14 @@ svg:hover path {
 }
 
 .counter-key-section{
-  color: #fff;
-  background-color: #6E8B60;
-  background-image: -webkit-gradient(linear,left bottom,right top,color-stop(0%,#6E8B60),color-stop(100%,#385361));
-  background-image: -webkit-linear-gradient(45deg,#6E8B60 0,#385361 100%);
-  background-image: -moz-linear-gradient(45deg,#6E8B60 0,#385361 100%);
-  background-image: -ms-linear-gradient(45deg,#6E8B60 0,#385361 100%);
-  background-image: -o-linear-gradient(45deg,#6E8B60 0,#385361 100%);
-  background-image: linear-gradient(45deg,#6E8B60 0,#385361 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6E8B60', endColorstr='#385361', GradientType=1);
+  border: 2px solid #6E8B60;
+  -webkit-border-image-source: -webkit-gradient(linear, left, right, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(50%, #385361), color-stop(100%, rgba(0, 0, 0, 0)));
+  -webkit-border-image-source: -webkit-linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  -moz-border-image-source: -moz-linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  -ms-border-image-source: -ms-linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  -o-border-image-source: -o-linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  border-image-source: linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  border-image-slice: 1;
 }
 
 /* End Colors */

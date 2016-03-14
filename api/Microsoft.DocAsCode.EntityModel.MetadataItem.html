@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -78,10 +91,7 @@
               </div>
               <h3 id="properties">Properties
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_AssemblyNameList.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.AssemblyNameList%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L46">View Source</a>
               </span>
@@ -90,9 +100,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;string&gt; AssemblyNameList { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;assemblies&quot;)]
+[JsonProperty(&quot;assemblies&quot;)]
+public List&lt;string&gt; AssemblyNameList
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -107,10 +123,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_CommentModel.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.CommentModel%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L120">View Source</a>
               </span>
@@ -119,9 +132,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public TripleSlashCommentModel CommentModel { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlIgnore]
+[JsonIgnore]
+public TripleSlashCommentModel CommentModel
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -136,10 +155,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_DisplayNames.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.DisplayNames%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L30">View Source</a>
               </span>
@@ -148,9 +164,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public SortedList&lt;SyntaxLanguage, string&gt; DisplayNames { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;name&quot;)]
+[JsonProperty(&quot;name&quot;)]
+public SortedList&lt;SyntaxLanguage, string&gt; DisplayNames
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -165,10 +187,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_DisplayQualifiedNames.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.DisplayQualifiedNames%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L34">View Source</a>
               </span>
@@ -177,9 +196,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public SortedList&lt;SyntaxLanguage, string&gt; DisplayQualifiedNames { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;qualifiedName&quot;)]
+[JsonProperty(&quot;qualifiedName&quot;)]
+public SortedList&lt;SyntaxLanguage, string&gt; DisplayQualifiedNames
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -194,10 +219,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Documentation.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Documentation%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L58">View Source</a>
               </span>
@@ -206,9 +228,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public SourceDetail Documentation { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;documentation&quot;)]
+[JsonProperty(&quot;documentation&quot;)]
+public SourceDetail Documentation
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -223,10 +251,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Examples.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Examples%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L72">View Source</a>
               </span>
@@ -235,9 +260,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;string&gt; Examples { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;example&quot;)]
+[JsonProperty(&quot;example&quot;)]
+public List&lt;string&gt; Examples
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -252,10 +283,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Exceptions.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Exceptions%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L84">View Source</a>
               </span>
@@ -264,9 +292,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;CrefInfo&gt; Exceptions { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;exceptions&quot;)]
+[JsonProperty(&quot;exceptions&quot;)]
+public List&lt;CrefInfo&gt; Exceptions
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -281,10 +315,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Implements.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Implements%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L100">View Source</a>
               </span>
@@ -293,9 +324,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;string&gt; Implements { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;implements&quot;)]
+[JsonProperty(&quot;implements&quot;)]
+public List&lt;string&gt; Implements
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -310,10 +347,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Inheritance.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Inheritance%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L96">View Source</a>
               </span>
@@ -322,9 +356,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;string&gt; Inheritance { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritance&quot;)]
+[JsonProperty(&quot;inheritance&quot;)]
+public List&lt;string&gt; Inheritance
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -339,10 +379,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_InheritedMembers.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.InheritedMembers%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L104">View Source</a>
               </span>
@@ -351,9 +388,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;string&gt; InheritedMembers { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritedMembers&quot;)]
+[JsonProperty(&quot;inheritedMembers&quot;)]
+public List&lt;string&gt; InheritedMembers
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -368,10 +411,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_IsInvalid.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.IsInvalid%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L14">View Source</a>
               </span>
@@ -380,9 +420,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool IsInvalid { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlIgnore]
+[JsonIgnore]
+public bool IsInvalid
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -397,10 +443,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Items.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Items%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L112">View Source</a>
               </span>
@@ -409,9 +452,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;MetadataItem&gt; Items { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;items&quot;)]
+[JsonProperty(&quot;items&quot;)]
+public List&lt;MetadataItem&gt; Items
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -426,10 +475,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Language.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Language%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L26">View Source</a>
               </span>
@@ -438,9 +484,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public SyntaxLanguage Language { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;language&quot;)]
+[JsonProperty(&quot;language&quot;)]
+public SyntaxLanguage Language
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -455,10 +507,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Layout.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Layout%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L62">View Source</a>
               </span>
@@ -467,9 +516,13 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;LayoutItem&gt; Layout { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;LayoutItem&gt; Layout
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -484,10 +537,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Modifiers.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Modifiers%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L108">View Source</a>
               </span>
@@ -496,9 +546,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public SortedList&lt;SyntaxLanguage, List&lt;string&gt;&gt; Modifiers { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;modifiers&quot;)]
+[JsonProperty(&quot;modifiers&quot;)]
+public SortedList&lt;SyntaxLanguage, List&lt;string&gt;&gt; Modifiers
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -513,10 +569,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Name%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L22">View Source</a>
               </span>
@@ -525,9 +578,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Name { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;id&quot;)]
+[JsonProperty(&quot;id&quot;)]
+public string Name
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -542,10 +601,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_NamespaceName.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.NamespaceName%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L50">View Source</a>
               </span>
@@ -554,9 +610,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string NamespaceName { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;namespace&quot;)]
+[JsonProperty(&quot;namespace&quot;)]
+public string NamespaceName
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -571,10 +633,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Overridden.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Overridden%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L80">View Source</a>
               </span>
@@ -583,9 +642,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Overridden { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;overridden&quot;)]
+[JsonProperty(&quot;overridden&quot;)]
+public string Overridden
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -600,10 +665,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Parent.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Parent%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L38">View Source</a>
               </span>
@@ -612,9 +674,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public MetadataItem Parent { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;parent&quot;)]
+[JsonProperty(&quot;parent&quot;)]
+public MetadataItem Parent
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -629,10 +697,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_RawComment.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.RawComment%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L18">View Source</a>
               </span>
@@ -641,9 +706,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string RawComment { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlIgnore]
+[JsonIgnore]
+public string RawComment
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -658,10 +729,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_References.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.References%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L116">View Source</a>
               </span>
@@ -670,9 +738,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public Dictionary&lt;string, ReferenceItem&gt; References { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;references&quot;)]
+[JsonProperty(&quot;references&quot;)]
+public Dictionary&lt;string, ReferenceItem&gt; References
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -687,10 +761,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Remarks.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Remarks%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L68">View Source</a>
               </span>
@@ -699,9 +770,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Remarks { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;remarks&quot;)]
+[JsonProperty(&quot;remarks&quot;)]
+public string Remarks
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -716,10 +793,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_SeeAlsos.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.SeeAlsos%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L92">View Source</a>
               </span>
@@ -728,9 +802,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;CrefInfo&gt; SeeAlsos { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;seealso&quot;)]
+[JsonProperty(&quot;seealso&quot;)]
+public List&lt;CrefInfo&gt; SeeAlsos
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -745,10 +825,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Sees.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Sees%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L88">View Source</a>
               </span>
@@ -757,9 +834,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public List&lt;CrefInfo&gt; Sees { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;see&quot;)]
+[JsonProperty(&quot;see&quot;)]
+public List&lt;CrefInfo&gt; Sees
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -774,10 +857,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Source.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Source%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L54">View Source</a>
               </span>
@@ -786,9 +866,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public SourceDetail Source { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;source&quot;)]
+[JsonProperty(&quot;source&quot;)]
+public SourceDetail Source
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -803,10 +889,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Summary.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Summary%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L64">View Source</a>
               </span>
@@ -815,9 +898,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string Summary { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;summary&quot;)]
+[JsonProperty(&quot;summary&quot;)]
+public string Summary
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -832,10 +921,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Syntax.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Syntax%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L76">View Source</a>
               </span>
@@ -844,9 +930,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public SyntaxDetail Syntax { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;syntax&quot;)]
+[JsonProperty(&quot;syntax&quot;)]
+public SyntaxDetail Syntax
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -861,10 +953,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Type.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Type%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L42">View Source</a>
               </span>
@@ -873,9 +962,15 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public MemberType Type { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;type&quot;)]
+[JsonProperty(&quot;type&quot;)]
+public MemberType Type
+{
+    get;
+    set;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -892,10 +987,7 @@
               </table>
               <h3 id="methods">Methods
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_Clone.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.Clone%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L129">View Source</a>
               </span>
@@ -921,10 +1013,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel_MetadataItem_ToString.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel.MetadataItem.ToString%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Models/MetadataItem.cs/#L124">View Source</a>
               </span>
@@ -968,7 +1057,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

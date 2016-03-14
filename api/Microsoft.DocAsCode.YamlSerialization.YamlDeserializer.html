@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title> | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content=" | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -79,19 +92,16 @@
               </div>
               <h3 id="constructors">Constructors
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer__ctor_YamlDotNet_Serialization_IObjectFactory_YamlDotNet_Serialization_INamingConvention_System_Boolean_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.%23ctor(YamlDotNet.Serialization.IObjectFactory%2CYamlDotNet.Serialization.INamingConvention%2CSystem.Boolean)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L67">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer__ctor_YamlDotNet_Serialization_IObjectFactory_YamlDotNet_Serialization_INamingConvention_System_Boolean_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.#ctor(YamlDotNet.Serialization.IObjectFactory,YamlDotNet.Serialization.INamingConvention,System.Boolean)">YamlDeserializer(IObjectFactory, INamingConvention, Boolean)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer__ctor_YamlDotNet_Serialization_IObjectFactory_YamlDotNet_Serialization_INamingConvention_System_Boolean_System_Boolean_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.#ctor(YamlDotNet.Serialization.IObjectFactory,YamlDotNet.Serialization.INamingConvention,System.Boolean,System.Boolean)">YamlDeserializer(IObjectFactory, INamingConvention, Boolean, Boolean)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public YamlDeserializer(IObjectFactory objectFactory = null, INamingConvention namingConvention = null, bool ignoreUnmatched = false)</code></pre>
+                <pre><code class="lang-csharp hljs">public YamlDeserializer(IObjectFactory objectFactory = null, INamingConvention namingConvention = null, bool ignoreUnmatched = false, bool ignoreNotFoundAnchor = true)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -118,14 +128,16 @@
                     <td><em>ignoreUnmatched</em></td>
                     <td></td>
                   </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td><em>ignoreNotFoundAnchor</em></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
               <h3 id="properties">Properties
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_NodeDeserializers.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.NodeDeserializers%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L49">View Source</a>
               </span>
@@ -134,9 +146,12 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public IList&lt;INodeDeserializer&gt; NodeDeserializers { get; }</code></pre>
+                <pre><code class="lang-csharp hljs">public IList&lt;INodeDeserializer&gt; NodeDeserializers
+{
+    get;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -151,10 +166,7 @@
                   </tr>
                 </tbody>
               </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_TypeResolvers.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.TypeResolvers%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
+              
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L50">View Source</a>
               </span>
@@ -163,9 +175,12 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public IList&lt;INodeTypeResolver&gt; TypeResolvers { get; }</code></pre>
+                <pre><code class="lang-csharp hljs">public IList&lt;INodeTypeResolver&gt; TypeResolvers
+{
+    get;
+}</code></pre>
               </div>
-              <h5 class="returns">Returns</h5>
+              <h5 class="propertyValue">Proverty Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -180,67 +195,47 @@
                   </tr>
                 </tbody>
               </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L51">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_ValueDeserializer" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.ValueDeserializer">ValueDeserializer</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IValueDeserializer ValueDeserializer
+{
+    get;
+}</code></pre>
+              </div>
+              <h5 class="propertyValue">Proverty Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IValueDeserializer</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <h3 id="methods">Methods
               </h3>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_System_IO_TextReader_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(System.IO.TextReader)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L155">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L136">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_System_IO_TextReader_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(System.IO.TextReader)">Deserialize(TextReader)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_System_IO_TextReader_System_Type_YamlDotNet_Serialization_IValueDeserializer_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(System.IO.TextReader,System.Type,YamlDotNet.Serialization.IValueDeserializer)">Deserialize(TextReader, Type, IValueDeserializer)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public object Deserialize(TextReader input)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.textreader(v=vs.110).aspx">TextReader</a></td>
-                    <td><em>input</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_System_IO_TextReader_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(System.IO.TextReader%2CSystem.Type)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L141">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_System_IO_TextReader_System_Type_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(System.IO.TextReader,System.Type)">Deserialize(TextReader, Type)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public object Deserialize(TextReader input, Type type)</code></pre>
+                <pre><code class="lang-csharp hljs">public object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -262,6 +257,11 @@
                     <td><em>type</em></td>
                     <td></td>
                   </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IValueDeserializer</span></td>
+                    <td><em>deserializer</em></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
               <h5 class="returns">Returns</h5>
@@ -279,19 +279,16 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_YamlDotNet_Core_EventReader_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(YamlDotNet.Core.EventReader)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L150">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L151">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_YamlDotNet_Core_EventReader_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(YamlDotNet.Core.EventReader)">Deserialize(EventReader)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_System_IO_TextReader_YamlDotNet_Serialization_IValueDeserializer_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(System.IO.TextReader,YamlDotNet.Serialization.IValueDeserializer)">Deserialize(TextReader, IValueDeserializer)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public object Deserialize(EventReader reader)</code></pre>
+                <pre><code class="lang-csharp hljs">public object Deserialize(TextReader input, IValueDeserializer deserializer = null)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -304,8 +301,13 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">YamlDotNet.Core.EventReader</span></td>
-                    <td><em>reader</em></td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.textreader(v=vs.110).aspx">TextReader</a></td>
+                    <td><em>input</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IValueDeserializer</span></td>
+                    <td><em>deserializer</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -325,20 +327,17 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_YamlDotNet_Core_EventReader_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(YamlDotNet.Core.EventReader%2CSystem.Type)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L176">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L162">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_YamlDotNet_Core_EventReader_System_Type_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(YamlDotNet.Core.EventReader,System.Type)">Deserialize(EventReader, Type)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_YamlDotNet_Core_EventReader_System_Type_YamlDotNet_Serialization_IValueDeserializer_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(YamlDotNet.Core.EventReader,System.Type,YamlDotNet.Serialization.IValueDeserializer)">Deserialize(EventReader, Type, IValueDeserializer)</h4>
               <div class="markdown level1 summary"><p>Deserializes an object of the specified type.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public object Deserialize(EventReader reader, Type type)</code></pre>
+                <pre><code class="lang-csharp hljs">public object Deserialize(EventReader reader, Type type, IValueDeserializer deserializer = null)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -362,6 +361,11 @@
                     <td><p>The static type of the object to deserialize.</p>
 </td>
                   </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IValueDeserializer</span></td>
+                    <td><em>deserializer</em></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
               <h5 class="returns">Returns</h5>
@@ -380,65 +384,16 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize__1_System_IO_TextReader_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize%60%601(System.IO.TextReader)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L165">View Source</a>
               </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L131">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize__1_System_IO_TextReader_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize``1(System.IO.TextReader)">Deserialize&lt;T&gt;(TextReader)</h4>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize_YamlDotNet_Core_EventReader_YamlDotNet_Serialization_IValueDeserializer_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(YamlDotNet.Core.EventReader,YamlDotNet.Serialization.IValueDeserializer)">Deserialize(EventReader, IValueDeserializer)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public T Deserialize&lt;T&gt;(TextReader input)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.textreader(v=vs.110).aspx">TextReader</a></td>
-                    <td><em>input</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">T</span></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize__1_YamlDotNet_Core_EventReader_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize%60%601(YamlDotNet.Core.EventReader)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L146">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize__1_YamlDotNet_Core_EventReader_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize``1(YamlDotNet.Core.EventReader)">Deserialize&lt;T&gt;(EventReader)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public T Deserialize&lt;T&gt;(EventReader reader)</code></pre>
+                <pre><code class="lang-csharp hljs">public object Deserialize(EventReader reader, IValueDeserializer deserializer = null)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -455,6 +410,59 @@
                     <td><em>reader</em></td>
                     <td></td>
                   </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IValueDeserializer</span></td>
+                    <td><em>deserializer</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L145">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize__1_System_IO_TextReader_YamlDotNet_Serialization_IValueDeserializer_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize``1(System.IO.TextReader,YamlDotNet.Serialization.IValueDeserializer)">Deserialize&lt;T&gt;(TextReader, IValueDeserializer)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public T Deserialize&lt;T&gt;(TextReader input, IValueDeserializer deserializer = null)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.textreader(v=vs.110).aspx">TextReader</a></td>
+                    <td><em>input</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IValueDeserializer</span></td>
+                    <td><em>deserializer</em></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
               <h5 class="returns">Returns</h5>
@@ -472,12 +480,57 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_RegisterTagMapping_System_String_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.RegisterTagMapping(System.String%2CSystem.Type)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L160">View Source</a>
               </span>
+              <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_Deserialize__1_YamlDotNet_Core_EventReader_YamlDotNet_Serialization_IValueDeserializer_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize``1(YamlDotNet.Core.EventReader,YamlDotNet.Serialization.IValueDeserializer)">Deserialize&lt;T&gt;(EventReader, IValueDeserializer)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public T Deserialize&lt;T&gt;(EventReader reader, IValueDeserializer deserializer = null)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Core.EventReader</span></td>
+                    <td><em>reader</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">YamlDotNet.Serialization.IValueDeserializer</span></td>
+                    <td><em>deserializer</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">T</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L121">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L135">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_RegisterTagMapping_System_String_System_Type_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.RegisterTagMapping(System.String,System.Type)">RegisterTagMapping(String, Type)</h4>
               <div class="markdown level1 summary"></div>
@@ -508,12 +561,9 @@
                   </tr>
                 </tbody>
               </table>
+              
               <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_RegisterTypeConverter_YamlDotNet_Serialization_IYamlTypeConverter_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.RegisterTypeConverter(YamlDotNet.Serialization.IYamlTypeConverter)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L126">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/YamlDeserializer.cs/#L140">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_YamlSerialization_YamlDeserializer_RegisterTypeConverter_YamlDotNet_Serialization_IYamlTypeConverter_" data-uid="Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.RegisterTypeConverter(YamlDotNet.Serialization.IYamlTypeConverter)">RegisterTypeConverter(IYamlTypeConverter)</h4>
               <div class="markdown level1 summary"></div>
@@ -557,7 +607,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>

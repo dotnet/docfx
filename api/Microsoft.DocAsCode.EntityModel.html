@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Microsoft.DocAsCode.EntityModel namespace | docfx website</title>
+    <title> | DocFX website</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Microsoft.DocAsCode.EntityModel namespace | docfx website">
-    <meta name="generator" content="docfx 1.5.2.0">
+    <meta name="title" content=" | DocFX website">
+    <meta name="generator" content="docfx 1.6.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:indexrel" content="../index.json">
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -35,12 +36,17 @@
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
             </div>
           </div>
         </nav>
         
         <div class="subnav navbar navbar-default">
-          <div class="container" id="breadcrumb">
+          <div class="container hide-when-search" id="breadcrumb">
             <ul class="breadcrumb">
               <li></li>
             </ul>
@@ -49,7 +55,14 @@
       </header>
       <div role="main" class="container body-content">
         
-        <div class="sidenav">
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
           <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
           <div class="sidetoggle collapse" id="sidetoggle">
             <div id="sidetoc"></div>
@@ -60,7 +73,6 @@
             <article class="content wrap" id="_content">
               
               <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_EntityModel.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.EntityModel%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.EntityModel/Plugins/MarkdownReader.cs/#L4" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_EntityModel" data-uid="Microsoft.DocAsCode.EntityModel">Namespace Microsoft.DocAsCode.EntityModel
               </h1>
               <div class="markdown level0 summary"></div>
@@ -90,18 +102,15 @@
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.CacheBase.html#Microsoft_DocAsCode_EntityModel_CacheBase">CacheBase</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.CodeSnippetParser.html#Microsoft_DocAsCode_EntityModel_CodeSnippetParser">CodeSnippetParser</a></h4>
-                  <section><p>Match code snippet from markdown files.
-Code snippet syntax: {{&quot;relativePath/sourceFilename&quot;}} or {{&quot;relativePath/sourceFilename&quot;[startline-endline]}}
-where starline and endline should be integers and are both optional,
-the default values for which are 1 and the fileLength.</p>
-</section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.CompositeResourceCollectionWithOverridden.html#Microsoft_DocAsCode_EntityModel_CompositeResourceCollectionWithOverridden">CompositeResourceCollectionWithOverridden</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.CompositeYamlModelGenerator.html#Microsoft_DocAsCode_EntityModel_CompositeYamlModelGenerator">CompositeYamlModelGenerator</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.Constants.html#Microsoft_DocAsCode_EntityModel_Constants">Constants</a></h4>
                   <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.Constants.PropertyName.html#Microsoft_DocAsCode_EntityModel_Constants_PropertyName">Constants.PropertyName</a></h4>
+                  <section><p>TODO: add other property name const</p>
+</section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.CrefInfo.html#Microsoft_DocAsCode_EntityModel_CrefInfo">CrefInfo</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.CSharpNameVisitorCreator.html#Microsoft_DocAsCode_EntityModel_CSharpNameVisitorCreator">CSharpNameVisitorCreator</a></h4>
@@ -138,10 +147,6 @@ the default values for which are 1 and the fileLength.</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.MatchDetail.html#Microsoft_DocAsCode_EntityModel_MatchDetail">MatchDetail</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.MatchDetailCollection.html#Microsoft_DocAsCode_EntityModel_MatchDetailCollection">MatchDetailCollection</a></h4>
-                  <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.MatchSingleDetail.html#Microsoft_DocAsCode_EntityModel_MatchSingleDetail">MatchSingleDetail</a></h4>
-                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.MetadataItem.html#Microsoft_DocAsCode_EntityModel_MetadataItem">MetadataItem</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.MetadataModel.html#Microsoft_DocAsCode_EntityModel_MetadataModel">MetadataModel</a></h4>
@@ -153,6 +158,8 @@ the default values for which are 1 and the fileLength.</p>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.NameVisitorCreator.html#Microsoft_DocAsCode_EntityModel_NameVisitorCreator">NameVisitorCreator</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.NormalizeSyntax.html#Microsoft_DocAsCode_EntityModel_NormalizeSyntax">NormalizeSyntax</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.OverwriteDocumentModel.html#Microsoft_DocAsCode_EntityModel_OverwriteDocumentModel">OverwriteDocumentModel</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ProjectLevelCache.html#Microsoft_DocAsCode_EntityModel_ProjectLevelCache">ProjectLevelCache</a></h4>
                   <section></section>
@@ -168,7 +175,7 @@ the default values for which are 1 and the fileLength.</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ResourceFinder.html#Microsoft_DocAsCode_EntityModel_ResourceFinder">ResourceFinder</a></h4>
                   <section></section>
-                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.SectionCollection.html#Microsoft_DocAsCode_EntityModel_SectionCollection">SectionCollection</a></h4>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.Section.html#Microsoft_DocAsCode_EntityModel_Section">Section</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.SetParent.html#Microsoft_DocAsCode_EntityModel_SetParent">SetParent</a></h4>
                   <section></section>
@@ -223,13 +230,20 @@ YAML HEADER Syntax</p>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.YamlViewModelExtensions.html#Microsoft_DocAsCode_EntityModel_YamlViewModelExtensions">YamlViewModelExtensions</a></h4>
                   <section></section>
+                <h3 id="structs">Structs
+              </h3>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.Coordinate.html#Microsoft_DocAsCode_EntityModel_Coordinate">Coordinate</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.Location.html#Microsoft_DocAsCode_EntityModel_Location">Location</a></h4>
+                  <section></section>
                 <h3 id="interfaces">Interfaces
               </h3>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.IResolverPipeline.html#Microsoft_DocAsCode_EntityModel_IResolverPipeline">IResolverPipeline</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext.html#Microsoft_DocAsCode_EntityModel_ITripleSlashCommentParserContext">ITripleSlashCommentParserContext</a></h4>
                   <section></section>
-                <h3 id="enums"></h3>
+                <h3 id="enums">Enums
+              </h3>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.ApplyTemplateOptions.html#Microsoft_DocAsCode_EntityModel_ApplyTemplateOptions">ApplyTemplateOptions</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.EntityModel.LayoutItem.html#Microsoft_DocAsCode_EntityModel_LayoutItem">LayoutItem</a></h4>
@@ -259,7 +273,7 @@ YAML HEADER Syntax</p>
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>docfx</strong></span>
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>
