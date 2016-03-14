@@ -2,6 +2,8 @@ Version Notes (Current Version: v1.6)
 =======================================
 v1.6 (Pre-release)
 -----------
+1. Add attribute in c# and vb syntax.
+
 
 v1.5
 -----------
