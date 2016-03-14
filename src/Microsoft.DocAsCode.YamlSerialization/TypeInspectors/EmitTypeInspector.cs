@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
     public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
     {
-        private static ConcurrentDictionary<Tuple<Type, Type>, CachingItem> Cache { get; } =
-            new ConcurrentDictionary<Tuple<Type, Type>, CachingItem>();
+        private static readonly ConcurrentDictionary<Type, CachingItem> _cache =
+            new ConcurrentDictionary<Type, CachingItem>();
         private readonly ITypeResolver _resolver;
 
         public EmitTypeInspector(ITypeResolver resolver)
@@ -29,38 +29,36 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
         public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
-            CachingItem ci = Cache.GetOrAdd(Tuple.Create(type, _resolver.GetType()), pair => CachingItem.Create(pair.Item1, _resolver));
-            if (ci.Error != null)
+            var item = _cache.GetOrAdd(type, CachingItem.Create);
+            if (item.Error != null)
             {
-                throw ci.Error;
+                throw item.Error;
             }
-            IEnumerable<IPropertyDescriptor> result = ci.Properies;
-            if (container != null && ci.ExtensibleProperies.Count > 0)
+            var result = from p in item.Properies select (IPropertyDescriptor)new EmitPropertyDescriptor(p, _resolver);
+            if (container == null || item.ExtensibleProperies.Count == 0)
             {
-                foreach (var ep in ci.ExtensibleProperies)
-                {
-                    result = result.Concat(
-                        from key in ep.GetAllKeys(container) ?? Enumerable.Empty<string>()
-                        select ep.SetName(ep.Prefix + key));
-                }
+                return result;
             }
-            return result;
+            return result.Concat(
+                from ep in item.ExtensibleProperies
+                from key in ep.GetAllKeys(container) ?? Enumerable.Empty<string>()
+                select new ExtensiblePropertyDescriptor(ep, ep.Prefix + key, _resolver));
         }
 
         public override IPropertyDescriptor GetProperty(Type type, object container, string name)
         {
-            CachingItem ci = Cache.GetOrAdd(Tuple.Create(type, _resolver.GetType()), pair => CachingItem.Create(pair.Item1, _resolver));
-            if (ci.Error != null)
+            var item = _cache.GetOrAdd(type, CachingItem.Create);
+            if (item.Error != null)
             {
-                throw ci.Error;
+                throw item.Error;
             }
-            if (ci.ExtensibleProperies.Count == 0)
+            if (item.ExtensibleProperies.Count == 0)
             {
                 return null;
             }
-            return (from ep in ci.ExtensibleProperies
+            return (from ep in item.ExtensibleProperies
                     where name.StartsWith(ep.Prefix)
-                    select ep.SetName(name)).FirstOrDefault();
+                    select new ExtensiblePropertyDescriptor(ep, name, _resolver)).FirstOrDefault();
         }
 
         private sealed class CachingItem
@@ -69,11 +67,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
             public Exception Error { get; private set; }
 
-            public List<EmitPropertyDescriptor> Properies { get; } = new List<EmitPropertyDescriptor>();
+            public List<EmitPropertyDescriptorSkeleton> Properies { get; } = new List<EmitPropertyDescriptorSkeleton>();
 
-            public List<ExtensiblePropertyDescriptor> ExtensibleProperies { get; } = new List<ExtensiblePropertyDescriptor>();
+            public List<ExtensiblePropertyDescriptorSkeleton> ExtensibleProperies { get; } = new List<ExtensiblePropertyDescriptorSkeleton>();
 
-            public static CachingItem Create(Type type, ITypeResolver typeResolver)
+            public static CachingItem Create(Type type)
             {
                 var result = new CachingItem();
 
@@ -110,13 +108,12 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 #else
                         var setMethod = prop.GetSetMethod();
 #endif
-                        result.Properies.Add(new EmitPropertyDescriptor
+                        result.Properies.Add(new EmitPropertyDescriptorSkeleton
                         {
                             CanWrite = setMethod != null,
                             Name = prop.Name,
                             Property = prop,
                             Type = propertyType,
-                            TypeResolver = typeResolver,
                             Reader = CreateReader(getMethod),
                             Writer = setMethod == null ? null : CreateWriter(setMethod),
                         });
@@ -132,14 +129,13 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                         }
 
                         result.ExtensibleProperies.Add(
-                            new ExtensiblePropertyDescriptor
+                            new ExtensiblePropertyDescriptorSkeleton
                             {
                                 KeyReader = CreateDictionaryKeyReader(getMethod, valueType),
                                 Prefix = extAttr.Prefix,
                                 Reader = CreateDictionaryReader(getMethod, valueType),
                                 Writer = CreateDictionaryWriter(getMethod, valueType),
                                 Type = valueType,
-                                TypeResolver = typeResolver,
                             });
                     }
                 }
@@ -453,13 +449,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             }
         }
 
-        private sealed class EmitPropertyDescriptor : IPropertyDescriptor
+        private sealed class EmitPropertyDescriptorSkeleton
         {
-            private readonly ConcurrentDictionary<Type, Attribute> _attributeCache = new ConcurrentDictionary<Type, Attribute>();
+            private volatile KeyValuePair<Type, Attribute>[] _attributeCache = null;
 
             internal PropertyInfo Property { get; set; }
-
-            internal ITypeResolver TypeResolver { get; set; }
 
             internal Func<object, object> Reader { get; set; }
 
@@ -469,36 +463,101 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
             public string Name { get; set; }
 
+            public Type Type { get; set; }
+
+            public T GetCustomAttribute<T>() where T : Attribute
+            {
+                var type = typeof(T);
+                var cache = _attributeCache;
+                var attr = FindAttributeInCache(type, cache);
+                if (attr != null)
+                {
+                    return (T)attr;
+                }
+                lock (this)
+                {
+                    var syncCache = _attributeCache;
+                    if (syncCache != cache)
+                    {
+                        attr = FindAttributeInCache(type, syncCache);
+                        if (attr != null)
+                        {
+                            return (T)attr;
+                        }
+                    }
+                    attr = Property.GetCustomAttribute<T>();
+                    if (syncCache == null)
+                    {
+                        _attributeCache = new KeyValuePair<Type, Attribute>[] { new KeyValuePair<Type, Attribute>(type, attr) };
+                    }
+                    else
+                    {
+                        var temp = new KeyValuePair<Type, Attribute>[syncCache.Length + 1];
+                        Array.Copy(syncCache, temp, syncCache.Length);
+                        temp[temp.Length - 1] = new KeyValuePair<Type, Attribute>(type, attr);
+                        _attributeCache = temp;
+                    }
+                    return (T)attr;
+                }
+            }
+
+            private static Attribute FindAttributeInCache(Type type, KeyValuePair<Type, Attribute>[] cache)
+            {
+                if (cache == null)
+                {
+                    return null;
+                }
+                for (int i = 0; i < cache.Length; i++)
+                {
+                    if (cache[i].Key == type)
+                    {
+                        return cache[i].Value;
+                    }
+                }
+                return null;
+            }
+        }
+
+        private sealed class EmitPropertyDescriptor : IPropertyDescriptor
+        {
+            private readonly EmitPropertyDescriptorSkeleton _skeleton;
+            private readonly ITypeResolver _typeResolver;
+
+            public EmitPropertyDescriptor(EmitPropertyDescriptorSkeleton skeleton, ITypeResolver typeResolver)
+            {
+                _skeleton = skeleton;
+                _typeResolver = typeResolver;
+            }
+
+            public bool CanWrite => _skeleton.CanWrite;
+
+            public string Name => _skeleton.Name;
+
             public int Order { get; set; }
 
             public ScalarStyle ScalarStyle { get; set; }
 
-            public Type Type { get; set; }
+            public Type Type => _skeleton.Type;
 
             public Type TypeOverride { get; set; }
 
-            public T GetCustomAttribute<T>() where T : Attribute
-            {
-                return (T)_attributeCache.GetOrAdd(typeof(T), (s) => Property.GetCustomAttribute<T>());
-            }
+            public T GetCustomAttribute<T>() where T : Attribute => _skeleton.GetCustomAttribute<T>();
 
             public IObjectDescriptor Read(object target)
             {
-                var value = Reader(target);
-                return new BetterObjectDescriptor(value, TypeOverride ?? TypeResolver.Resolve(Type, value), Type, ScalarStyle);
+                var value = _skeleton.Reader(target);
+                return new BetterObjectDescriptor(value, TypeOverride ?? _typeResolver.Resolve(Type, value), Type, ScalarStyle);
             }
 
             public void Write(object target, object value)
             {
-                Writer(target, value);
+                _skeleton.Writer(target, value);
             }
         }
 
-        private sealed class ExtensiblePropertyDescriptor : IPropertyDescriptor
+        private sealed class ExtensiblePropertyDescriptorSkeleton
         {
             internal string Prefix { get; set; }
-
-            internal ITypeResolver TypeResolver { get; set; }
 
             internal Func<object, string, object> Reader { get; set; }
 
@@ -506,57 +565,60 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
             internal Func<object, ICollection<string>> KeyReader { get; set; }
 
-            public bool CanWrite => Name != null;
+            public Type Type { get; set; }
 
-            public string Name { get; private set; }
+            public ICollection<string> GetAllKeys(object target) => KeyReader(target);
+        }
+
+        private sealed class ExtensiblePropertyDescriptor : IPropertyDescriptor
+        {
+            private readonly ExtensiblePropertyDescriptorSkeleton _skeleton;
+            private readonly string _name;
+            private readonly ITypeResolver _typeResolver;
+
+            public ExtensiblePropertyDescriptor(
+                ExtensiblePropertyDescriptorSkeleton skeleton,
+                string name,
+                ITypeResolver typeResolver)
+            {
+                _skeleton = skeleton;
+                _name = name;
+                _typeResolver = typeResolver;
+            }
+
+            internal string Prefix => _skeleton.Prefix;
+
+            public bool CanWrite => true;
+
+            public string Name => _name;
 
             public int Order { get; set; }
 
             public ScalarStyle ScalarStyle { get; set; }
 
-            public Type Type { get; set; }
+            public Type Type => _skeleton.Type;
 
             public Type TypeOverride { get; set; }
 
-            public T GetCustomAttribute<T>() where T : Attribute
-            {
-                return null;
-            }
+            public T GetCustomAttribute<T>() where T : Attribute => null;
 
             public IObjectDescriptor Read(object target)
             {
-                if (Name == null || Name.Length <= Prefix.Length)
+                if (Name == null || Name.Length <= _skeleton.Prefix.Length)
                 {
                     throw new YamlException($"Invalid read {Name}!");
                 }
-                var value = Reader(target, Name.Substring(Prefix.Length));
-                return new BetterObjectDescriptor(value, TypeOverride ?? TypeResolver.Resolve(Type, value), Type, ScalarStyle);
+                var value = _skeleton.Reader(target, Name.Substring(_skeleton.Prefix.Length));
+                return new BetterObjectDescriptor(value, TypeOverride ?? _typeResolver.Resolve(Type, value), Type, ScalarStyle);
             }
 
             public void Write(object target, object value)
             {
-                if (Name == null || Name.Length <= Prefix.Length)
+                if (Name == null || Name.Length <= _skeleton.Prefix.Length)
                 {
                     throw new YamlException($"Invalid write {Name}!");
                 }
-                Writer(target, Name.Substring(Prefix.Length), value);
-            }
-
-            public ICollection<string> GetAllKeys(object target)
-            {
-                return KeyReader(target);
-            }
-
-            public ExtensiblePropertyDescriptor Clone()
-            {
-                return (ExtensiblePropertyDescriptor)MemberwiseClone();
-            }
-
-            public ExtensiblePropertyDescriptor SetName(string name)
-            {
-                var result = Clone();
-                result.Name = name;
-                return result;
+                _skeleton.Writer(target, Name.Substring(_skeleton.Prefix.Length), value);
             }
         }
     }
