@@ -29,6 +29,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata.SchemaValidators
                 case "integer":
                 case "float":
                 case "boolean":
+                case "datetime":
                     break;
                 default:
                     return ValidationResult.Fail(ValidationErrorCodes.Schema.UnexpectedType, $"Expected metadata object for property {name}.type.", name + ".type");

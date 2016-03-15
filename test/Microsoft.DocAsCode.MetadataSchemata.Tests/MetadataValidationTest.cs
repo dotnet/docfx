@@ -31,6 +31,16 @@
     ""display_name"": ""Choice test"",
     ""choice_set"": [ ""A"", ""B"" ],
     ""description"": ""Test choice set!""
+  },
+  ""datetime_test"": {
+    ""type"": ""datetime"",
+    ""is_multivalued"": false,
+    ""is_queryable"": false,
+    ""is_required"": false,
+    ""is_visible"": false,
+    ""query_name"": null,
+    ""display_name"": ""DateTime test"",
+    ""description"": ""Test date time!""
   }
 }";
             var ss = MetadataParser.GetMetadataSchema();
@@ -39,6 +49,7 @@
             var vrs = schema.ValidateMetadata(@"{
     api_scan: true,
     choice_test: [ ""A"", ""B"" ],
+    datetime_test: ""2016-3-14 11:33:55"",
     unknown_good1: ""1"",
     unknown_good2: 2
 }");

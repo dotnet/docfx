@@ -223,6 +223,8 @@ namespace Microsoft.DocAsCode.MetadataSchemata
                     return typeof(double);
                 case "boolean":
                     return typeof(bool);
+                case "datetime":
+                    return typeof(DateTime);
                 default:
                     throw new NotSupportedException(string.Format("Type '{0}' is not supported.", definition.Type));
             }
