@@ -18,8 +18,11 @@ function transform(model, _attrs, _global) {
 
   if (!model) return null;
 
-  handleItem(model, model.newFileRepository, model.langs);
-  model.children.forEach(handleItem, model.newFileRepository, model.langs);
+  newFileRepository = model.newFileRepository;
+  langs = model.langs;
+
+  handleItem(model);
+  model.children.forEach(handleItem);
 
   if (model.type) {
     switch (model.type.toLowerCase()) {
@@ -100,9 +103,9 @@ function handleNamespace(model) {
   model.namespace = model.namespaceExpanded.uid;
 }
 
-function handleItem(vm, newFileRepository, langs) {
+function handleItem(vm) {
   // get contribution information
-  vm.docurl = getImproveTheDocHref(vm, newFileRepository);
+  vm.docurl = getImproveTheDocHref(vm);
   vm.sourceurl = getViewSourceHref(vm);
 
   // fill "null" if key not existed
@@ -123,7 +126,7 @@ function handleItem(vm, newFileRepository, langs) {
       }
   }
 
-  if (vm && vm.langs) {
+  if (vm && langs) {
       if (shouldHideTitleType(vm)) {
           vm.hideTitleType = true;
       } else {
@@ -137,10 +140,10 @@ function handleItem(vm, newFileRepository, langs) {
       }
   }
 
-  function getImproveTheDocHref(item, newFileRepository) {
+  function getImproveTheDocHref(item) {
     if (!item) return '';
     if (!item.documentation || !item.documentation.remote) {
-      return getNewFileUrl(item.uid, newFileRepository);
+      return getNewFileUrl(item.uid);
     } else {
       return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1);
     }
@@ -152,7 +155,7 @@ function handleItem(vm, newFileRepository, langs) {
     return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1);
   }
 
-  function getNewFileUrl(uid, newFileRepository) {
+  function getNewFileUrl(uid) {
     // do not support VSO for now
     if (newFileRepository && newFileRepository.repo) {
       var repo = newFileRepository.repo;
@@ -231,14 +234,12 @@ function handleItem(vm, newFileRepository, langs) {
 
   function shouldHideTitleType(vm) {
       var type = vm.type.toLowerCase();
-      var langs = vm.langs;
       return ((type === 'namespace' && langs.length == 1 && (langs[0] === 'objectivec' || langs[0] === 'java' || langs[0] === 'c'))
       || ((type === 'class' || type === 'enum') && langs.length == 1 && langs[0] === 'c'));
   }
 
   function shouldHideSubtitle(vm) {
       var type = vm.type.toLowerCase();
-      var langs = vm.langs;
       return (type === 'class' || type === 'namespace') && langs.length == 1 && langs[0] === 'c';
   }
 
