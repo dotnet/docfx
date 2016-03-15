@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensibleMemberAttribute.cs" />
+    <Compile Include="Helpers\ArrayDictionary.cs" />
     <Compile Include="NodeDeserializers\ExtensibleObjectNodeDeserializer.cs" />
     <Compile Include="ObjectFactories\DefaultEmitObjectFactory.cs" />
     <Compile Include="NodeDeserializers\EmitGenericDictionaryNodeDeserializer.cs" />
