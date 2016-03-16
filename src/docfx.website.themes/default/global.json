@@ -24,7 +24,7 @@
   "name": "Name",
   "description": "Description",
   "returns": "Returns",
-  "propertyValue": "Proverty Value",
+  "propertyValue": "Property Value",
   "exceptions": "Exceptions",
   "condition": "Condition"
 }
