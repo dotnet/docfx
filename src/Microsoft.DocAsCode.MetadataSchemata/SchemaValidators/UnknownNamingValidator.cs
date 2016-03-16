@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.MetadataSchemata.SchemaValidators
     public class UnknownNamingValidator : IUnknownMetadataValidator
     {
         private static readonly Regex Regex =
-            new Regex("^[a-z][a-z0-9_]*$",
+            new Regex("^(?:[a-z](?:[a-z0-9_]*[a-z0-9])?|[A-Z0-9]{2,})$",
 #if NetCore
             RegexOptions.None);
 #else

@@ -21,7 +21,10 @@ namespace Microsoft.DocAsCode.MetadataSchemata.SchemaValidators
                     return ValidationResult.Success;
                 case JTokenType.Object:
                 default:
-                    return ValidationResult.Fail(ValidationErrorCodes.UnknownMetadata.UnexpectedType, $"Invalid type for property {name}.", name);
+                    return ValidationResult.Fail(
+                        ValidationErrorCodes.UnknownMetadata.UnexpectedType,
+                        $"Invalid type for property {name}.",
+                        name);
             }
         }
 
@@ -43,11 +46,17 @@ namespace Microsoft.DocAsCode.MetadataSchemata.SchemaValidators
                         }
                         else if (itemType != item.Type)
                         {
-                            return ValidationResult.Fail(ValidationErrorCodes.UnknownMetadata.UnexpectedType, "Invalid type for property {name}[{index}].", $"{name}[{index}]");
+                            return ValidationResult.Fail(
+                                ValidationErrorCodes.UnknownMetadata.UnexpectedType,
+                                $"Invalid type for property {name}[{index}].",
+                                $"{name}[{index}]");
                         }
                         break;
                     default:
-                        return ValidationResult.Fail(ValidationErrorCodes.UnknownMetadata.UnexpectedType, "Invalid type for property {name}[{index}].", $"{name}[{index}]");
+                        return ValidationResult.Fail(
+                            ValidationErrorCodes.UnknownMetadata.UnexpectedType,
+                            $"Invalid type for property {name}[{index}].",
+                            $"{name}[{index}]");
                 }
                 index++;
             }
