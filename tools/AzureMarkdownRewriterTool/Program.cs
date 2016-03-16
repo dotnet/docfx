@@ -248,7 +248,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
         private void Rewrite()
         {
             var sourceDirInfo = new DirectoryInfo(_srcDirectory);
-            var fileInfos = sourceDirInfo.EnumerateFiles("*.md", SearchOption.AllDirectories);
+            var fileInfos = sourceDirInfo.GetFiles("*.md", SearchOption.AllDirectories);
 
             Console.WriteLine("Start transform dir '{0}' to dest dir '{1}' at {2}", _srcDirectory, _destDirectory, DateTime.UtcNow);
             Parallel.ForEach(
