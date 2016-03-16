@@ -207,7 +207,7 @@ function handleItem(vm) {
         repo = repo.substr(0, repo.length - 4);
       }
       var linenum = startLine ? startLine : 0;
-      if (repo.match(/https:\/\/.*\.visualstudio\.com\/.*/g)) {
+      if (/https:\/\/.*\.visualstudio\.com\/.*/gi.test(repo)) {
         // TODO: line not working for vso
         return repo + '#path=/' + remote.path;
       }
@@ -223,13 +223,11 @@ function handleItem(vm) {
   }
 
   function getGithubUrlPrefix(repo) {
-    if (repo.match(/https:\/\/(|\S+\.)github\.com\/.*/g)) {
-      return repo;
-    }
-    if (repo.match(/git@(|\S+\.)github\.com:.*/g)) {
-      return 'https://' + repo.substr(4).replace(':', '/');
-    }
-    return '';
+    var regex = /^(?:https?:\/\/)?(?:\S+\@)?(?:\S+\.)?(github\.com(?:\/|:).*)/gi;
+    if (!regex.test(repo)) return '';
+    return repo.replace(regex, function(match, p1, offset, string) {
+      return 'https://' + p1.replace(':', '/');
+    })
   }
 
   function shouldHideTitleType(vm) {
