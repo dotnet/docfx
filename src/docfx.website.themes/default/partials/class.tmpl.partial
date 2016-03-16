@@ -22,6 +22,27 @@
 <div class="codewrapper">
   <pre><code class="lang-{{_lang}} hljs">{{syntax.content.0.value}}</code></pre>
 </div>
+{{#syntax.typeParameters.0}}
+<h5 class="typeParameters">{{__global.typeParameters}}</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.name}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+{{/syntax.typeParameters.0}}
+{{#syntax.typeParameters}}
+    <tr>
+      <td><em>{{{id}}}</em></td>
+      <td>{{{description}}}</td>
+    </tr>
+{{/syntax.typeParameters}}
+{{#syntax.typeParameters.0}}
+  </tbody>
+</table>
+{{/syntax.typeParameters.0}}
 {{#remarks}}
 <h5 id="{{id}}_remarks"><strong>{{__global.remarks}}</strong></h5>
 <div class="markdown level0 remarks">{{{remarks}}}</div>
@@ -92,6 +113,27 @@
   </tbody>
 </table>
 {{/return}}
+{{#typeParameters.0}}
+<h5 class="typeParameters">{{__global.typeParameters}}</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.name}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+{{/typeParameters.0}}
+{{#typeParameters}}
+    <tr>
+      <td><em>{{{id}}}</em></td>
+      <td>{{{description}}}</td>
+    </tr>
+{{/typeParameters}}
+{{#typeParameters.0}}
+  </tbody>
+</table>
+{{/typeParameters.0}}
 {{#propertyValue}}
 <h5 class="propertyValue">{{__global.propertyValue}}</h5>
 <table class="table table-bordered table-striped table-condensed">

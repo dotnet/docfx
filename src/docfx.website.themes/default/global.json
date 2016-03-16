@@ -19,6 +19,7 @@
   "remarks": "Remarks",
   "declaration": "Declaration",
   "parameters": "Parameters",
+  "typeParameters": "Type Parameters",
   "type": "Type",
   "name": "Name",
   "description": "Description",

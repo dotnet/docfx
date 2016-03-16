@@ -19,6 +19,7 @@
   "remarks": "备注",
   "declaration": "声明",
   "parameters": "参数",
+  "typeParameters": "类型参数",
   "type": "类型",
   "name": "名称",
   "description": "描述",
