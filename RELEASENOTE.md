@@ -1,5 +1,9 @@
 Version Notes (Current Version: v1.6)
 =======================================
+v1.6.1
+-----------
+1. Fix bug: "Improve this doc" button disppears in method level
+
 v1.6
 -----------
 1. Add attribute in c# and vb syntax.
