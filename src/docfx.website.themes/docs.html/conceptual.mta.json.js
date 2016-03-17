@@ -10,6 +10,16 @@ function transform(model, _attrs){
   model.source = undefined;
   model.newFileRepository = undefined;
 
+  model._docfxVersion = undefined;
+
+  // For metadata consumed by docs themes, rename with prefix "_op_"
+  var metaForThemes = ["wordCount", "rawTitle"];
+  for (var index = 0; index < metaForThemes.length; ++index) {
+    var meta = metaForThemes[index];
+    model["_op_".concat(meta)] = model[meta];
+    model[meta] = undefined;
+  }
+
   if (!model.toc_asset_id){
     model.toc_asset_id = _attrs._tocPath;
   }

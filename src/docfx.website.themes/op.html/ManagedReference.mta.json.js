@@ -44,6 +44,19 @@ function transform(model, _attrs){
   model.supported_platforms = undefined;
   model.requirements = undefined;
 
+  model.wordCount = undefined;
+  model.rawTitle = undefined;
+  model._docfxVersion = undefined;
+
+  // Clean up open publishing internal used properties
+  for (var key in model)
+  {
+    if (key.indexOf("_op_") == 0)
+    {
+      model[key] = undefined;
+    }
+  }
+
   function getContentGitUrl(item, newFileRepository) {
     if (!item) return '';
     if (!item.documentation || !item.documentation.remote) {
