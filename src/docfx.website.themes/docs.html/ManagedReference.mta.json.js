@@ -53,6 +53,16 @@ function transform(model, _attrs){
   model.supported_platforms = undefined;
   model.requirements = undefined;
 
+  model._docfxVersion = undefined;
+
+  // For metadata consumed by docs themes, rename with prefix "_op_"
+  var metaForThemes = ["wordCount", "rawTitle"];
+  for (var index = 0; index < metaForThemes.length; ++index) {
+    var meta = metaForThemes[index];
+    model["_op_".concat(meta)] = model[meta];
+    model[meta] = undefined;
+  }
+
   return {
     content: JSON.stringify(model)
   };
