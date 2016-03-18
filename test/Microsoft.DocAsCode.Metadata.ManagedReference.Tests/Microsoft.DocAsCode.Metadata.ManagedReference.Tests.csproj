@@ -2,20 +2,12 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\Shared\test.base.props" />
   <PropertyGroup>
-    <ProjectGuid>{EFAA7A53-D047-422E-A3FB-ECC834944CE6}</ProjectGuid>
+    <ProjectGuid>{C7019EBE-9423-46FD-BCA2-821255ECB426}</ProjectGuid>
     <OutputType>Library</OutputType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Jint, Version=2.5.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Jint.2.5.0\lib\portable-net40+sl50+win+wpa81+wp80\Jint.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.CodeAnalysis.Common.1.1.0-rc1-20151109-01\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
       <Private>True</Private>
@@ -53,26 +45,6 @@
       <HintPath>..\..\packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Composition.AttributedModel, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.Convention, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.Hosting, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.Runtime, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.TypedParts, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Reflection.Metadata.1.1.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
@@ -100,95 +72,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtractSearchIndexFromHtmlTest.cs" />
-    <Compile Include="RestApiDocumentProcessorFixture.cs" />
-    <Compile Include="SwaggerJsonParserTest.cs" />
-    <Compile Include="RestApiDocumentProcessorTest.cs" />
-    <Compile Include="YamlSerializationTest.cs" />
-    <Compile Include="DocfxFlavoredMarkdownTest.cs" />
-    <Compile Include="ConvertStrongTypeToJsValueTest.cs" />
-    <Compile Include="HtmlMarkdownTokenValidatorProvider.cs" />
-    <Compile Include="MarkdownReaderTest.cs" />
-    <Compile Include="TemplateManagerUnitTest.cs" />
-    <Compile Include="ParsersUnitTest.cs" />
-    <Compile Include="ConvertToViewModelUnitTest.cs" />
-    <Compile Include="DocumentBuilderTest.cs" />
-    <Compile Include="WordCounterUnitTest.cs" />
-    <Compile Include="TestLoggerListener.cs" />
+    <Compile Include="GenerateMetadataFromVBUnitTest.cs" />
+    <Compile Include="GenerateMetadataFromCSUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="tmpl\tmpl1.zip" />
-    <None Include="TestData\overwrite\rest.overwrite.unmergable.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\overwrite\rest.overwrite.multi.uid.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\overwrite\rest.overwrite.not.predefined.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\overwrite\rest.overwrite.simple.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\overwrite\rest.overwrite.default.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\overwrite\rest.overwrite.invalid.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\contacts-operations.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\contacts_swagger2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\swagger\loopref_swagger2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\swagger\ref_swagger2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\swagger\simple_swagger2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="TestData\System.Console.csyml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestData\System.ConsoleColor.csyml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="tmpl\tmpl1\sub\file1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="tmpl\tmpl1\tmpl1.dot.%24">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\docfx\docfx.csproj">
-      <Project>{ab97bedf-d207-42e9-a56f-c9dd395bfcdd}</Project>
-      <Name>docfx</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
       <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
       <Name>Microsoft.DocAsCode.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
-      <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
-      <Name>Microsoft.DocAsCode.Dfm</Name>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
+      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
-      <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
-      <Name>Microsoft.DocAsCode.EntityModel</Name>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj">
+      <Project>{60f21edb-35f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.ManagedReference</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
-      <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
-      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
-      <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
-      <Name>Microsoft.DocAsCode.Plugins</Name>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj">
+      <Project>{60f22edb-35f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.Metadata.ManagedReference</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>

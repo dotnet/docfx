@@ -489,6 +489,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{642412
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.DataContracts.Common", "src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.xproj", "{AAB7BF54-90BE-4EDD-8996-17A16311B6C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Metadata.ManagedReference.Tests", "test\Microsoft.DocAsCode.Metadata.ManagedReference.Tests\Microsoft.DocAsCode.Metadata.ManagedReference.Tests.csproj", "{C7019EBE-9423-46FD-BCA2-821255ECB426}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -961,6 +963,14 @@ Global
 		{AAB7BF54-90BE-4EDD-8996-17A16311B6C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AAB7BF54-90BE-4EDD-8996-17A16311B6C1}.Release|x86.ActiveCfg = Release|Any CPU
 		{AAB7BF54-90BE-4EDD-8996-17A16311B6C1}.Release|x86.Build.0 = Release|Any CPU
+		{C7019EBE-9423-46FD-BCA2-821255ECB426}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7019EBE-9423-46FD-BCA2-821255ECB426}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7019EBE-9423-46FD-BCA2-821255ECB426}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C7019EBE-9423-46FD-BCA2-821255ECB426}.Debug|x86.Build.0 = Debug|Any CPU
+		{C7019EBE-9423-46FD-BCA2-821255ECB426}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7019EBE-9423-46FD-BCA2-821255ECB426}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7019EBE-9423-46FD-BCA2-821255ECB426}.Release|x86.ActiveCfg = Release|Any CPU
+		{C7019EBE-9423-46FD-BCA2-821255ECB426}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1069,5 +1079,6 @@ Global
 		{60F21EDB-37F9-490D-B1B6-2EC482F76B50} = {C4FFDB19-28F2-4499-8FC8-AA49FDF09364}
 		{642412E9-D804-46BC-A7D6-738DE18483D4} = {9C3C5F8F-337F-4B7E-9B04-15888135F93B}
 		{AAB7BF54-90BE-4EDD-8996-17A16311B6C1} = {642412E9-D804-46BC-A7D6-738DE18483D4}
+		{C7019EBE-9423-46FD-BCA2-821255ECB426} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
 	EndGlobalSection
 EndGlobal

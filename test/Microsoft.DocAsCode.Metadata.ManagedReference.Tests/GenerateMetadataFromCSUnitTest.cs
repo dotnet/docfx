@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -14,9 +13,10 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Emit;
     using Microsoft.CodeAnalysis.MSBuild;
-    using Microsoft.DocAsCode.EntityModel;
 
-    using static Microsoft.DocAsCode.EntityModel.ExtractMetadataWorker;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]

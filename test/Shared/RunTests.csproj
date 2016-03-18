@@ -31,6 +31,10 @@
       <Project>{38adeed9-cf82-4dc0-a6cf-a13ac3a5797f}</Project>
       <Name>Microsoft.DocAsCode.AzureMarkdownRewriters.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference.Tests\Microsoft.DocAsCode.Metadata.ManagedReference.Tests.csproj">
+      <Project>{c7019ebe-9423-46fd-bca2-821255ecb426}</Project>
+      <Name>Microsoft.DocAsCode.Metadata.ManagedReference.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.MetadataSchemata.Tests\Microsoft.DocAsCode.MetadataSchemata.Tests.csproj">
       <Project>{294cc6a4-1441-a36d-dd28-5f9d5b6d45a3}</Project>
       <Name>Microsoft.DocAsCode.MetadataSchemata.Tests</Name>
