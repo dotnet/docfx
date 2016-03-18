@@ -14,75 +14,186 @@ namespace Microsoft.DocAsCode.Dfm
 
     internal class DfmCodeExtractor
     {
-        // C# code snippet block: // <[/]snippetname>
-        private static readonly Regex CSharpCodeSnippetExtractorRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        // C# code snippet comment block: // <[/]snippetname>
+        private static readonly Regex CSharpCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex CSharpCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        // VB code snippet block: ' <[/]snippetname>
-        private static readonly Regex VBCodeSnippetExtractorRegex = new Regex(@"^\s*\'\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        // C# code snippet region block: start -> #region snippetname, end -> #endregion
+        private static readonly Regex CSharpCodeSnippetRegionStartLineRegex = new Regex(@"^\s*#\s*region\s+(?<name>.+?)\s*$", RegexOptions.Compiled);
+        private static readonly Regex CSharpCodeSnippetRegionEndLineRegex = new Regex(@"^\s*#\s*endregion\s*$", RegexOptions.Compiled);
+
+        // VB code snippet comment block: ' <[/]snippetname>
+        private static readonly Regex VBCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\'\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex VBCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\'\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        // VB code snippet Region block: start -> # Region "snippetname", end -> # End Region
+        private static readonly Regex VBCodeSnippetRegionRegionStartLineRegex = new Regex(@"^\s*#\s*Region\s*(?<name>.+?)\s*$", RegexOptions.Compiled);
+        private static readonly Regex VBCodeSnippetRegionRegionEndLineRegex = new Regex(@"^\s*#\s*End\s+Region\s*$", RegexOptions.Compiled);
 
         // C++ code snippet block: // <[/]snippetname>
-        private static readonly Regex CPlusPlusCodeSnippetExtractorRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex CPlusPlusCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex CPlusPlusCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // F# code snippet block: // <[/]snippetname>
-        private static readonly Regex FSharpCodeSnippetExtractorRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex FSharpCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex FSharpCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // XML code snippet block: <!-- <[/]snippetname> -->
-        private static readonly Regex XmlCodeSnippetExtractorRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex XmlCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex XmlCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*\/\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // XAML code snippet block: <!-- <[/]snippetname> -->
-        private static readonly Regex XamlCodeSnippetExtractorRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex XamlCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex XamlCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*\/\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // HTML code snippet block: <!-- <[/]snippetname> -->
-        private static readonly Regex HtmlCodeSnippetExtractorRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex HtmlCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex HtmlCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\<\!\-{2}\s*\<\s*\/\s*([\w\.]+)\s*\>\s*\-{2}\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // Sql code snippet block: -- <[/]snippetname>
-        private static readonly Regex SqlCodeSnippetExtractorRegex = new Regex(@"^\s*\-{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex SqlCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\-{2}\s*\<\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex SqlCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\-{2}\s*\<\s*\/\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // Javascript code snippet block: <!-- <[/]snippetname> -->
-        private static readonly Regex JavaScriptSnippetExtractorRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/?\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex JavaScriptSnippetCommentStartLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex JavaScriptSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*([\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly string RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
-
-        private static readonly List<char> AllowedIndentCharacters = new List<char> { ' ', '\t' };
 
         // Language names and aliases fllow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
-        private static readonly IReadOnlyDictionary<string, Regex> CodeLanguageRegexes =
-            new Dictionary<string, Regex>(StringComparer.OrdinalIgnoreCase)
+        private static readonly IReadOnlyDictionary<string, List<ICodeSnippetExtractor>> CodeLanguageExtractors =
+            new Dictionary<string, List<ICodeSnippetExtractor>>(StringComparer.OrdinalIgnoreCase)
+            {
+                [".cs"] = new List<ICodeSnippetExtractor>
                 {
-                    { ".cs", CSharpCodeSnippetExtractorRegex },
-                    { "cs", CSharpCodeSnippetExtractorRegex },
-                    { "csharp", CSharpCodeSnippetExtractorRegex },
-                    { ".vb", VBCodeSnippetExtractorRegex },
-                    { "vb", VBCodeSnippetExtractorRegex },
-                    { "vbnet", VBCodeSnippetExtractorRegex },
-                    { ".cpp", CPlusPlusCodeSnippetExtractorRegex },
-                    { ".h", CPlusPlusCodeSnippetExtractorRegex },
-                    { ".hpp", CPlusPlusCodeSnippetExtractorRegex },
-                    { ".c", CPlusPlusCodeSnippetExtractorRegex },
-                    { ".cc", CPlusPlusCodeSnippetExtractorRegex },
-                    { "cpp", CPlusPlusCodeSnippetExtractorRegex },
-                    { "c++", CPlusPlusCodeSnippetExtractorRegex },
-                    { "fs", FSharpCodeSnippetExtractorRegex },
-                    { "fsharp", FSharpCodeSnippetExtractorRegex },
-                    { ".fs", FSharpCodeSnippetExtractorRegex },
-                    { ".fsi", FSharpCodeSnippetExtractorRegex },
-                    { ".fsx", FSharpCodeSnippetExtractorRegex },
-                    { ".xml", XmlCodeSnippetExtractorRegex },
-                    { ".csdl", XmlCodeSnippetExtractorRegex },
-                    { ".edmx", XmlCodeSnippetExtractorRegex },
-                    { "xml", XmlCodeSnippetExtractorRegex },
-                    { ".html", HtmlCodeSnippetExtractorRegex },
-                    { "html", HtmlCodeSnippetExtractorRegex },
-                    { ".xaml", XamlCodeSnippetExtractorRegex },
-                    { ".sql", SqlCodeSnippetExtractorRegex },
-                    { "sql", SqlCodeSnippetExtractorRegex },
-                    { ".js", JavaScriptSnippetExtractorRegex },
-                    { "js", JavaScriptSnippetExtractorRegex },
-                    { "javascript", JavaScriptSnippetExtractorRegex },
-                };
+                    new FlatNameCodeSnippetExtractor(CSharpCodeSnippetCommentStartLineRegex, CSharpCodeSnippetCommentEndLineRegex),
+                    new RecursiveNameCodeSnippetExtractor(CSharpCodeSnippetRegionStartLineRegex, CSharpCodeSnippetRegionEndLineRegex)
+                },
+                ["cs"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CSharpCodeSnippetCommentStartLineRegex, CSharpCodeSnippetCommentEndLineRegex),
+                    new RecursiveNameCodeSnippetExtractor(CSharpCodeSnippetRegionStartLineRegex, CSharpCodeSnippetRegionEndLineRegex)
+                },
+                ["csharp"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CSharpCodeSnippetCommentStartLineRegex, CSharpCodeSnippetCommentEndLineRegex),
+                    new RecursiveNameCodeSnippetExtractor(CSharpCodeSnippetRegionStartLineRegex, CSharpCodeSnippetRegionEndLineRegex)
+                },
+                [".vb"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(VBCodeSnippetCommentStartLineRegex, VBCodeSnippetCommentEndLineRegex),
+                    new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex)
+                },
+                ["vb"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(VBCodeSnippetCommentStartLineRegex, VBCodeSnippetCommentEndLineRegex),
+                    new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex)
+                },
+                ["vbnet"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(VBCodeSnippetCommentStartLineRegex, VBCodeSnippetCommentEndLineRegex),
+                    new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex)
+                },
+                [".cpp"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CPlusPlusCodeSnippetCommentStartLineRegex, CPlusPlusCodeSnippetCommentEndLineRegex)
+                },
+                [".h"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CPlusPlusCodeSnippetCommentStartLineRegex, CPlusPlusCodeSnippetCommentEndLineRegex)
+                },
+                [".hpp"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CPlusPlusCodeSnippetCommentStartLineRegex, CPlusPlusCodeSnippetCommentEndLineRegex)
+                },
+                [".c"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CPlusPlusCodeSnippetCommentStartLineRegex, CPlusPlusCodeSnippetCommentEndLineRegex)
+                },
+                [".cc"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CPlusPlusCodeSnippetCommentStartLineRegex, CPlusPlusCodeSnippetCommentEndLineRegex)
+                },
+                ["cpp"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CPlusPlusCodeSnippetCommentStartLineRegex, CPlusPlusCodeSnippetCommentEndLineRegex)
+                },
+                ["c++"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(CPlusPlusCodeSnippetCommentStartLineRegex, CPlusPlusCodeSnippetCommentEndLineRegex)
+                },
+                ["fs"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(FSharpCodeSnippetCommentStartLineRegex, FSharpCodeSnippetCommentEndLineRegex)
+                },
+                ["fsharp"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(FSharpCodeSnippetCommentStartLineRegex, FSharpCodeSnippetCommentEndLineRegex)
+                },
+                [".fs"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(FSharpCodeSnippetCommentStartLineRegex, FSharpCodeSnippetCommentEndLineRegex)
+                },
+                [".fsi"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(FSharpCodeSnippetCommentStartLineRegex, FSharpCodeSnippetCommentEndLineRegex)
+                },
+                [".fsx"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(FSharpCodeSnippetCommentStartLineRegex, FSharpCodeSnippetCommentEndLineRegex)
+                },
+                [".xml"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(XmlCodeSnippetCommentStartLineRegex, XmlCodeSnippetCommentEndLineRegex)
+                },
+                [".csdl"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(XmlCodeSnippetCommentStartLineRegex, XmlCodeSnippetCommentEndLineRegex)
+                },
+                [".edmx"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(XmlCodeSnippetCommentStartLineRegex, XmlCodeSnippetCommentEndLineRegex)
+                },
+                ["xml"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(XmlCodeSnippetCommentStartLineRegex, XmlCodeSnippetCommentEndLineRegex)
+                },
+                [".html"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(HtmlCodeSnippetCommentStartLineRegex, HtmlCodeSnippetCommentEndLineRegex)
+                },
+                ["html"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(HtmlCodeSnippetCommentStartLineRegex, HtmlCodeSnippetCommentEndLineRegex)
+                },
+                [".xaml"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(XamlCodeSnippetCommentStartLineRegex, XamlCodeSnippetCommentEndLineRegex)
+                },
+                [".sql"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(SqlCodeSnippetCommentStartLineRegex, SqlCodeSnippetCommentEndLineRegex)
+                },
+                ["sql"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(SqlCodeSnippetCommentStartLineRegex, SqlCodeSnippetCommentEndLineRegex)
+                },
+                [".js"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(JavaScriptSnippetCommentStartLineRegex, JavaScriptSnippetCommentEndLineRegex)
+                },
+                ["js"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(JavaScriptSnippetCommentStartLineRegex, JavaScriptSnippetCommentEndLineRegex)
+                },
+                ["javascript"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(JavaScriptSnippetCommentStartLineRegex, JavaScriptSnippetCommentEndLineRegex)
+                }
+            };
 
         private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>> _dfmTagNameLineRangeCache
             = new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>>(StringComparer.OrdinalIgnoreCase);
@@ -105,15 +216,15 @@ namespace Microsoft.DocAsCode.Dfm
             if (token.PathQueryOption?.TagName != null)
             {
                 var lang = GetCodeLanguageOrExtension(token);
-                Regex regex;
-                if (!CodeLanguageRegexes.TryGetValue(lang, out regex))
+                List<ICodeSnippetExtractor> extractors;
+                if (!CodeLanguageExtractors.TryGetValue(lang, out extractors))
                 {
                     string errorMessage = $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead";
                     Logger.LogError(errorMessage);
                     return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = errorMessage, FencesCodeLines = fencesCode };
                 }
 
-                var resolveResult = ResolveTagNamesFromPath(fencesPath, fencesCode, token.PathQueryOption.TagName, regex);
+                var resolveResult = ResolveTagNamesFromPath(fencesPath, fencesCode, token.PathQueryOption.TagName, extractors);
                 if (!resolveResult.IsSuccessful)
                 {
                     Logger.LogError(resolveResult.ErrorMessage);
@@ -136,7 +247,7 @@ namespace Microsoft.DocAsCode.Dfm
                 int endLine = token.PathQueryOption?.EndLine ?? fencesCode.Length;
                 int indentLength = (from line in fencesCode.Skip(startLine - 1).Take(endLine - startLine + 1)
                                     where !string.IsNullOrEmpty(line) && !string.IsNullOrWhiteSpace(line)
-                                    select (int?)GetIndentLength(line)).Min() ?? 0;
+                                    select (int?)DfmCodeExtractorHelper.GetIndentLength(line)).Min() ?? 0;
                 return GetFencesCodeCore(fencesCode, startLine, endLine, indentLength);
             }
         }
@@ -160,57 +271,19 @@ namespace Microsoft.DocAsCode.Dfm
             };
         }
 
-        private DfmTagNameResolveResult ResolveTagNamesFromPath(string fencesPath, string[] fencesCodeLines, string tagName, Regex regexToExtractCode)
+        private DfmTagNameResolveResult ResolveTagNamesFromPath(string fencesPath, string[] fencesCodeLines, string tagName, List<ICodeSnippetExtractor> codeSnippetExtractors)
         {
             var lazyResolveResults =
                 _dfmTagNameLineRangeCache.GetOrAdd(fencesPath,
                     path => new Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>(
                             () =>
                             {
-                                var linesOfSnippetComment = new Dictionary<int, string>();
-                                for (int i = 0; i < fencesCodeLines.Length; i++)
-                                {
-                                    var match = regexToExtractCode.Match(fencesCodeLines[i]);
-                                    if (match.Success)
-                                    {
-                                        linesOfSnippetComment.Add(i + 1, match.Groups[1].Value);
-                                    }
-                                }
-
-                                var excludedLines = new HashSet<int>(linesOfSnippetComment.Keys);
-
-                                var dictionary = new ConcurrentDictionary<string, DfmTagNameResolveResult>(StringComparer.OrdinalIgnoreCase);
-
-                                foreach (var snippetCommentsInPair in linesOfSnippetComment.GroupBy(kvp => kvp.Value))
-                                {
-                                    DfmTagNameResolveResult tagResolveResult;
-                                    var lineNumbers = snippetCommentsInPair.Select(line => line.Key).OrderBy(line => line).ToList();
-                                    if (lineNumbers.Count == 2)
-                                    {
-                                        tagResolveResult = new DfmTagNameResolveResult
-                                        {
-                                            IsSuccessful = true,
-                                            StartLine = lineNumbers[0] + 1,
-                                            EndLine = lineNumbers[1] - 1,
-                                            ExcludesLines = excludedLines,
-                                            IndentLength = GetIndentLength(fencesCodeLines[lineNumbers[0]])
-                                        };
-                                    }
-                                    else
-                                    {
-                                        tagResolveResult = new DfmTagNameResolveResult
-                                        {
-                                            IsSuccessful = false,
-                                            ErrorMessage = lineNumbers.Count == 1
-                                                ? $"Tag name {snippetCommentsInPair.Key} is not closed"
-                                                : $"Tag name {snippetCommentsInPair.Key} occurs {lineNumbers.Count} times"
-                                        };
-                                    }
-
-                                    dictionary.TryAdd(snippetCommentsInPair.Key, tagResolveResult);
-                                }
-
-                                return dictionary;
+                                // TODO: consider different code snippet representation with same name
+                                return new ConcurrentDictionary<string, DfmTagNameResolveResult>(
+                                    (from codeSnippetExtractor in codeSnippetExtractors
+                                     let result = codeSnippetExtractor.GetAll(fencesCodeLines)
+                                     from codeSnippet in result
+                                     group codeSnippet by codeSnippet.Key).ToDictionary(d => d.Key, d => d.First().Value), StringComparer.OrdinalIgnoreCase);
                             }));
 
             DfmTagNameResolveResult resolveResult;
@@ -249,26 +322,5 @@ namespace Microsoft.DocAsCode.Dfm
         {
             return !string.IsNullOrEmpty(token.Lang) ? token.Lang : Path.GetExtension(token.Path);
         }
-
-        private static int GetIndentLength(string s) => s.TakeWhile(c => AllowedIndentCharacters.Contains(c)).Count();
-
-        #region Private class
-
-        private class DfmTagNameResolveResult
-        {
-            public int StartLine { get; set; }
-
-            public int EndLine { get; set; }
-
-            public int IndentLength { get; set; }
-
-            public HashSet<int> ExcludesLines { get; set; }
-
-            public bool IsSuccessful { get; set; }
-
-            public string ErrorMessage { get; set; }
-        }
-
-        #endregion
     }
 }

@@ -45,7 +45,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeSnippetExtractor\CodeSnippet.cs" />
+    <Compile Include="CodeSnippetExtractor\CodeSnippetRegexExtractor.cs" />
+    <Compile Include="CodeSnippetExtractor\DfmTagNameResolveResult.cs" />
+    <Compile Include="CodeSnippetExtractor\FlatNameCodeSnippetExtractor.cs" />
+    <Compile Include="CodeSnippetExtractor\RecursiveNameCodeSnippetExtractor.cs" />
+    <Compile Include="DfmCodeExtractorHelper.cs" />
     <Compile Include="DfmMarkdownRenderer.cs" />
+    <Compile Include="CodeSnippetExtractor\ICodeSnippetExtractor.cs" />
     <Compile Include="MarkdownValidators\MarkdownSytleConfig.cs" />
     <Compile Include="MarkdownValidators\MarkdownValidationRule.cs" />
     <Compile Include="MarkdownValidators\MarkdownValidatorBuilder.cs" />

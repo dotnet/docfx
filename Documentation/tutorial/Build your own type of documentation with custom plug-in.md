@@ -57,29 +57,29 @@ Create a document processor
 
 2.  Declare we can handle `.rtf` file:
 
-    [!Code-csharp[GetProcessingPriority](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
+    [!Code-csharp[GetProcessingPriority](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=GetProcessingPriority)]
 
     Here we declare this processor can handle any `.rtf` file in article category with normal priority.
     When two or more processors declare for same file, DocFX will give it to the higher priority one.
     *Unexpected*: two or more processor declare for the same file with same priority.
 
 3.  Load our rtf file by read all text:
-    [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
+    [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Load)]
 
     we use `Dictionary<string, object>` as the data model, as similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs) store the content of markdown files.
 
 4.  Implements `Save` method as following:
-    [!Code-csharp[Save](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
+    [!Code-csharp[Save](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Save)]
 
 5.  `BuildSteps` property can give severial build steps for model, we suggest implement as following:
-    [!Code-csharp[BuildSteps](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
+    [!Code-csharp[BuildSteps](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=BuildSteps)]
 
 6.  `Name` property is used to display in log, so give any constant string as you like.  
     e.g.:  
-    [!Code-csharp[Name](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
+    [!Code-csharp[Name](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Name)]
 
 7.  Since we don't support hyperlink, keep `UpdateHref` method empty.
-    [!Code-csharp[UpdateHref](../codesnippet/Rtf/RtfDocumentProcessor.cs)]
+    [!Code-csharp[UpdateHref](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=UpdateHref)]
 
 View final [RtfDocumentProcessor.cs](../codesnippet/Rtf/RtfDocumentProcessor.cs)
 

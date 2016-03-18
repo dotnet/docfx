@@ -585,6 +585,17 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
         }
     }
     // &lt;/snippetprogram&gt;
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion
+    }
+    #endregion
 }
 </code></pre>")]
         [InlineData(@"[!code[Main](Program.cs#L12-L16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">static void Main(string[] args)
@@ -600,6 +611,17 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
         }
     }
     // &lt;/snippetprogram&gt;
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion
+    }
+    #endregion
 }
 </code></pre>")]
         [InlineData(@"[!code-csharp[Main](Program.cs#namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
@@ -628,6 +650,10 @@ using System.IO;
     }
 }
 </code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?name=Foo ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">public static void Foo()
+{
+}
+</code></pre>")]
         [InlineData(@"[!code-csharp[Main](Program.cs?name=namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
 using System.Collections.Generic;
 using System.IO;
@@ -637,6 +663,13 @@ using System.IO;
 // &lt;/namespace&gt;
 
 // &lt;snippetprogram&gt;
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?name=Helper ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">internal static class Helper
+{
+    public static void Foo()
+    {
+    }
+}
 </code></pre>")]
         public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
         {
@@ -659,6 +692,17 @@ using System.IO;
         }
     }
     // </snippetprogram>
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion
+    }
+    #endregion
 }";
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
