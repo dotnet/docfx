@@ -7,6 +7,6 @@
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)'=='' ">$(MSBuildThisFileDirectory)..\..\artifacts\</OutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">$(MSBuildThisFileDirectory)..\..\artifacts\$(Configuration)\$(MSBuildProjectName)</OutputPath>
   </PropertyGroup>
 </Project>
