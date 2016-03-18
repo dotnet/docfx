@@ -124,10 +124,10 @@ Create a document build step
     ```
 
 2.  In `Build` method, convert rtf to html:
-    [!Code-csharp[Build](../codesnippet/Rtf/RtfBuildStep.cs)]
+    [!Code-csharp[Build](../codesnippet/Rtf/RtfBuildStep.cs?name=build)]
 
 3.  Implements other methods:
-    [!Code-csharp[Others](../codesnippet/Rtf/RtfBuildStep.cs)]
+    [!Code-csharp[Others](../codesnippet/Rtf/RtfBuildStep.cs?name=Others)]
 
 View final [RtfBuildStep.cs](../codesnippet/Rtf/RtfBuildStep.cs)
 
