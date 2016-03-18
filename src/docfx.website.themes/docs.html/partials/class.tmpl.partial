@@ -11,7 +11,6 @@
   </h1>
 </header>
 <div class="level">
-  {{#inheritance.0}}
   <section class="primary">
     <div class="alert alert-minimal inheritance">
       <h5><span class="icon icon-inheritance"></span> Inheritance Hierarchy</h5>
@@ -40,15 +39,17 @@
       {{/inheritance.0}}
     </div>
   </section>
-  {{/inheritance.0}}
-  {{#assemblies.0}}
-  <section class="secondary">   
+  <section class="secondary">
     <div class="alert alert-minimal">
       <h5><span class="icon icon-assembly"></span> Assembly</h5>
+      {{#assemblies.0}}
       <p><code>{{assemblies.0}}.dll</code></p>
+      {{/assemblies.0}}
+      {{^assemblies.0}}
+      <p><code>None</code></p>
+      {{/assemblies.0}}
     </div>
   </section>
-  {{/assemblies.0}}
 </div>
 {{#summary}}
 <header class="header" id="summary">
