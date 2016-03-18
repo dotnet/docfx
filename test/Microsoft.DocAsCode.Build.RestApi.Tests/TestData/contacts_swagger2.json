@@ -1,7 +1,8 @@
 ﻿{
     "swagger": "2.0",
     "info": {
-        "title": "Contacts"
+      "title": "Contacts",
+      "version":  "1.0"
     },
     "paths": {
         "/contacts": {

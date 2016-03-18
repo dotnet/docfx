@@ -10,7 +10,9 @@
     href: advanced_support_hyperlink.md
 - name: "HowTo: Create Custom Template"
   href: howto_create_custom_template.md
-- name: Introduction to TOC Files
-  href: intro_toc.md
 - name: "HowTo: Filter Out Unwanted APIs"
   href: howto_filter_out_unwanted_apis.md
+- name: Introduction to TOC Files
+  href: intro_toc.md
+- name: Introduction to REST API
+  href: intro_rest_api_documentation.md

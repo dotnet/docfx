@@ -160,7 +160,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
 
         private static string GetUid(Swagger.SwaggerModel swagger)
         {
-            return GenerateUid(swagger.Host, swagger.BasePath, swagger.Info.Title);
+            return GenerateUid(swagger.Host, swagger.BasePath, swagger.Info.Title, swagger.Info.Version);
         }
 
         private static string GetUidForOperation(string parentUid, Swagger.OperationObject item)

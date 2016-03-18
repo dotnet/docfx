@@ -24,6 +24,13 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
         [JsonProperty("title")]
         public string Title { get; set; }
 
+        /// <summary>
+        /// Required. Provides the version of the application API
+        /// </summary>
+        [YamlMember(Alias = "version")]
+        [JsonProperty("version")]
+        public string Version { get; set; }
+
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> PatternedObjects { get; set; } = new Dictionary<string, object>();

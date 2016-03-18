@@ -6,14 +6,14 @@ ms.ContentId: 477161a7-aebf-4d4b-981d-fcbc148e25c1
 ms.topic: reference (API)
 ms.date: 01/26/2016
 _displayItems:
-  - graph.windows.net/myorganization/Contacts/get contacts
-  - graph.windows.net/myorganization/Contacts/get contact by id
-  - graph.windows.net/myorganization/Contacts/update contact
-  - graph.windows.net/myorganization/Contacts/delete contact
-  - graph.windows.net/myorganization/Contacts/get contact manager link
-  - graph.windows.net/myorganization/Contacts/update contact manager
-  - graph.windows.net/myorganization/Contacts/get contact direct reports links
-  - graph.windows.net/myorganization/Contacts/get contact memberOf links
+  - graph.windows.net/myorganization/Contacts/1.0/get contacts
+  - graph.windows.net/myorganization/Contacts/1.0/get contact by id
+  - graph.windows.net/myorganization/Contacts/1.0/update contact
+  - graph.windows.net/myorganization/Contacts/1.0/delete contact
+  - graph.windows.net/myorganization/Contacts/1.0/get contact manager link
+  - graph.windows.net/myorganization/Contacts/1.0/update contact manager
+  - graph.windows.net/myorganization/Contacts/1.0/get contact direct reports links
+  - graph.windows.net/myorganization/Contacts/1.0/get contact memberOf links
 ---
 
 # Operations on contacts | Graph API reference
@@ -61,7 +61,7 @@ You can perform read operations on contacts by targeting either the contact reso
 ****
 
 ---
-uid: graph.windows.net/myorganization/Contacts/get contacts
+uid: graph.windows.net/myorganization/Contacts/1.0/get contacts
 codeGenerator: true
 ---
 
@@ -83,7 +83,7 @@ On success, returns a collection of [Contact] objects; otherwise, the response b
 ****
 
 ---
-uid: graph.windows.net/myorganization/Contacts/get contact by id
+uid: graph.windows.net/myorganization/Contacts/1.0/get contact by id
 codeGenerator: true
 ---
 
@@ -105,7 +105,7 @@ On success, returns the [Contact] object for the specified contact; otherwise, t
 
 ****
 ---
-uid: graph.windows.net/myorganization/Contacts/update contact
+uid: graph.windows.net/myorganization/Contacts/1.0/update contact
 ---
 
 ### Update a contact <a id="UpdateContact"> </a>
@@ -122,7 +122,7 @@ On success, no response body is returned; otherwise, the response body contains 
 ```
 ****
 ---
-uid: graph.windows.net/myorganization/Contacts/delete contact
+uid: graph.windows.net/myorganization/Contacts/1.0/delete contact
 ---
 ### Delete a contact <a id="DeleteContact"> </a>
 
@@ -144,7 +144,7 @@ On success, no response body is returned; otherwise, the response body contains 
 Relationships between a contact and other objects in the directory such as the contact's manager, direct group memberships, and direct reports are exposed through navigation properties. You can read and, in some cases, modify these relationships by targeting these navigation properties in your requests.
 
 ---
-uid: graph.windows.net/myorganization/Contacts/get contact manager link
+uid: graph.windows.net/myorganization/Contacts/1.0/get contact manager link
 codeGenerator: true
 ---
 
@@ -169,7 +169,7 @@ On success, returns a link to the [User] or [Contact] assigned as the contact's 
 ****
 
 ---
-uid: graph.windows.net/myorganization/Contacts/update contact manager
+uid: graph.windows.net/myorganization/Contacts/1.0/update contact manager
 ---
 ### Assign a contact's manager <a id="AssignContactsManager"> </a>
 
@@ -186,7 +186,7 @@ On success, no response body is returned; otherwise, the response body contains 
 
 ****
 ---
-uid: graph.windows.net/myorganization/Contacts/get contact direct reports links
+uid: graph.windows.net/myorganization/Contacts/1.0/get contact direct reports links
 codeGenerator: true
 ---
 ### Get a contact's direct reports <a id="GetContactsDirectReports"> </a>
@@ -209,7 +209,7 @@ On success, returns a collection of links to the [User]'s and [Contact]'s for wh
 
 ****
 ---
-uid: graph.windows.net/myorganization/Contacts/get contact memberOf links
+uid: graph.windows.net/myorganization/Contacts/1.0/get contact memberOf links
 codeGenerator: true
 ---
 ### Get a contact's group memberships <a id="GetContactsMemberships"> </a>

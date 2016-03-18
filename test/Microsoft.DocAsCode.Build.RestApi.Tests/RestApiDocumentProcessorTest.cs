@@ -47,15 +47,15 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             FileCollection files = new FileCollection(_defaultFiles);
             BuildDocument(files);
 
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
-            Assert.Equal("graph.windows.net/myorganization/Contacts", model.Uid);
-            Assert.Equal("graph_windows_net_myorganization_Contacts", model.HtmlId);
+            Assert.Equal("graph.windows.net/myorganization/Contacts/1.0", model.Uid);
+            Assert.Equal("graph_windows_net_myorganization_Contacts_1_0", model.HtmlId);
             Assert.Equal(9, model.Children.Count);
             Assert.Equal("Hello world!", model.Metadata["meta"]);
             var item1 = model.Children[0];
-            Assert.Equal("graph.windows.net/myorganization/Contacts/get contacts", item1.Uid);
+            Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/get contacts", item1.Uid);
             Assert.Equal("<p>You can get a collection of contacts from your tenant.</p>\n", item1.Summary);
             Assert.Equal(1, item1.Parameters.Count);
             Assert.Equal("1.6", item1.Parameters[0].Metadata["default"]);
@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             BuildDocument(files);
 
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
                 Assert.Equal("<p>Overwrite summary</p>\n", model.Summary);
@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             FileCollection files = new FileCollection(_defaultFiles);
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.simple.md" });
             BuildDocument(files);
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
             Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
             Assert.Equal("<p>Overwrite content</p>\n", model.Summary);
@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.not.predefined.md" });
             BuildDocument(files);
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
                 Assert.Equal("<p>Overwrite content</p>\n", model.Metadata["not_defined_property"]);
@@ -122,10 +122,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergable.md" });
             BuildDocument(files);
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
-                Assert.Equal("graph_windows_net_myorganization_Contacts", model.HtmlId);
+                Assert.Equal("graph_windows_net_myorganization_Contacts_1_0", model.HtmlId);
             }
         }
 
@@ -137,10 +137,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergable.md" });
             BuildDocument(files);
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts_swagger2.json", RawModelFileExtension));
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiItemViewModel>(outputRawModelPath);
-                Assert.Equal("graph_windows_net_myorganization_Contacts", model.HtmlId);
+                Assert.Equal("graph_windows_net_myorganization_Contacts_1_0", model.HtmlId);
                 Assert.Equal("<p>Overwrite content1</p>\n", model.Conceptual);
                 Assert.Equal("<p>Overwrite &quot;content2&quot;</p>\n", model.Summary);
                 Assert.Equal("<p>Overwrite &#39;content3&#39;</p>\n", model.Metadata["not_defined_property"]);
