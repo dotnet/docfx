@@ -441,45 +441,45 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{6DA6BE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConceptualDocuments", "ConceptualDocuments", "{39E87C47-F88C-4A02-B86E-26E6C8A43B8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.Common", "src\Microsoft.DocAsCode.Build\Common\Microsoft.DocAsCode.Build.Common.csproj", "{60F21EDB-35F9-420D-B1B6-3ED482F76B50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.Common", "src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj", "{60F21EDB-35F9-420D-B1B6-3ED482F76B50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.ConceptualDocuments", "src\Microsoft.DocAsCode.Build\ConceptualDocuments\Microsoft.DocAsCode.Build.ConceptualDocuments.csproj", "{60F21EDB-35F9-220D-C1B6-3ED482F76B51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.ConceptualDocuments", "src\Microsoft.DocAsCode.Build.ConceptualDocuments\Microsoft.DocAsCode.Build.ConceptualDocuments.csproj", "{60F21EDB-35F9-220D-C1B6-3ED482F76B51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.Engine", "src\Microsoft.DocAsCode.Build\Engine\Microsoft.DocAsCode.Build.Engine.csproj", "{60F21EDB-35F9-420D-B1B6-3ED482F76B51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.Engine", "src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj", "{60F21EDB-35F9-420D-B1B6-3ED482F76B51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.ManagedReference", "src\Microsoft.DocAsCode.Build\ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj", "{60F21EDB-35F9-420D-B1B6-2EC482F76B50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.ManagedReference", "src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj", "{60F21EDB-35F9-420D-B1B6-2EC482F76B50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.RestApi", "src\Microsoft.DocAsCode.Build\RestApi\Microsoft.DocAsCode.Build.RestApi.csproj", "{60F21EDB-35F9-420D-B1B6-2ED482F76B50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.RestApi", "src\Microsoft.DocAsCode.Build.RestApi\Microsoft.DocAsCode.Build.RestApi.csproj", "{60F21EDB-35F9-420D-B1B6-2ED482F76B50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.TableOfContents", "src\Microsoft.DocAsCode.Build\TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.csproj", "{60F21EDB-35F9-220D-B1B6-3ED482F76B51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.TableOfContents", "src\Microsoft.DocAsCode.Build.TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.csproj", "{60F21EDB-35F9-220D-B1B6-3ED482F76B51}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.Common", "src\Microsoft.DocAsCode.Build\Common\Microsoft.DocAsCode.Build.Common.xproj", "{AAB7BF54-90BE-44DF-8996-12A16312B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.Common", "src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.xproj", "{AAB7BF54-90BE-44DF-8996-12A16312B6C1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ConceptualDocuments", "src\Microsoft.DocAsCode.Build\ConceptualDocuments\Microsoft.DocAsCode.Build.ConceptualDocuments.xproj", "{AAB72F54-90BE-44DF-0996-12A26312B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ConceptualDocuments", "src\Microsoft.DocAsCode.Build.ConceptualDocuments\Microsoft.DocAsCode.Build.ConceptualDocuments.xproj", "{AAB72F54-90BE-44DF-0996-12A26312B6C1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.Engine", "src\Microsoft.DocAsCode.Build\Engine\Microsoft.DocAsCode.Build.Engine.xproj", "{AAB7BF54-90BE-44DF-8996-12A26312B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.Engine", "src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.xproj", "{AAB7BF54-90BE-44DF-8996-12A26312B6C1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference", "src\Microsoft.DocAsCode.Build\ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.xproj", "{AAB7BF54-90BE-44DF-8996-17A16311B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference", "src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.xproj", "{AAB7BF54-90BE-44DF-8996-17A16311B6C1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.RestApi", "src\Microsoft.DocAsCode.Build\RestApi\Microsoft.DocAsCode.Build.RestApi.xproj", "{AAB7BF54-90BE-44DF-8996-17A16312B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.RestApi", "src\Microsoft.DocAsCode.Build.RestApi\Microsoft.DocAsCode.Build.RestApi.xproj", "{AAB7BF54-90BE-44DF-8996-17A16312B6C1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.TableOfContents", "src\Microsoft.DocAsCode.Build\TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.xproj", "{AAB72F54-90BE-44DF-8996-12A26312B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.TableOfContents", "src\Microsoft.DocAsCode.Build.TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.xproj", "{AAB72F54-90BE-44DF-8996-12A26312B6C1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.DataContracts.ManagedReference", "src\Microsoft.DocAsCode.DataContracts\ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.xproj", "{AAB7BF54-90BE-44DD-8996-17A16311B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.DataContracts.ManagedReference", "src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.xproj", "{AAB7BF54-90BE-44DD-8996-17A16311B6C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.DataContracts.ManagedReference", "src\Microsoft.DocAsCode.DataContracts\ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj", "{60F21EDB-35F9-490D-B1B6-2EC482F76B50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.DataContracts.ManagedReference", "src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj", "{60F21EDB-35F9-490D-B1B6-2EC482F76B50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Metadata.ManagedReference", "src\Microsoft.DocAsCode.Metadata\ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj", "{60F22EDB-35F9-490D-B1B6-2EC482F76B50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Metadata.ManagedReference", "src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj", "{60F22EDB-35F9-490D-B1B6-2EC482F76B50}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Metadata.ManagedReference", "src\Microsoft.DocAsCode.Metadata\ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.xproj", "{AAB7BF52-90BE-44DD-8996-17A16311B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Metadata.ManagedReference", "src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.xproj", "{AAB7BF52-90BE-44DD-8996-17A16311B6C1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ResourceFiles", "ResourceFiles", "{478D25BC-C0F1-4416-A95B-0174C2FA4D2A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ResourceFiles", "ResourceFiles", "{2415EA7D-CBF3-43B4-8FC6-DC04A4148290}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ResourceFiles", "src\Microsoft.DocAsCode.Build\ResourceFiles\Microsoft.DocAsCode.Build.ResourceFiles.xproj", "{AAB72F54-90BE-44DF-8996-12A26372B6C1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ResourceFiles", "src\Microsoft.DocAsCode.Build.ResourceFiles\Microsoft.DocAsCode.Build.ResourceFiles.xproj", "{AAB72F54-90BE-44DF-8996-12A26372B6C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.ResourceFiles", "src\Microsoft.DocAsCode.Build\ResourceFiles\Microsoft.DocAsCode.Build.ResourceFiles.csproj", "{60F21EDB-35F9-220D-B1B6-3ED882F76B51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.ResourceFiles", "src\Microsoft.DocAsCode.Build.ResourceFiles\Microsoft.DocAsCode.Build.ResourceFiles.csproj", "{60F21EDB-35F9-220D-B1B6-3ED882F76B51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\Shared\base.props" />
+  <Import Project="..\Shared\base.props" />
   <PropertyGroup>
-    <ProjectGuid>{60F21EDB-35F9-420D-B1B6-3ED482F76B50}</ProjectGuid>
+    <ProjectGuid>{60F21EDB-35F9-490D-B1B6-2EC482F76B50}</ProjectGuid>
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
