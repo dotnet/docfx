@@ -66,6 +66,7 @@
     <Compile Include="TaskHelper.cs" />
     <Compile Include="GitUtility.cs" />
     <Compile Include="ProcessUtility.cs" />
+    <Compile Include="TreeIterator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

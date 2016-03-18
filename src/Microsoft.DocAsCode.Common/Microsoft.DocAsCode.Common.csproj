@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleUtility.cs" />
+    <Compile Include="Exceptions\DocfxException.cs" />
     <Compile Include="JsonUtility.cs" />
     <Compile Include="Loggers\ConsoleLogListener.cs" />
     <Compile Include="Loggers\CrossAppDomainListener.cs" />

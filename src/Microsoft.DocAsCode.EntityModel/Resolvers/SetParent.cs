@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.EntityModel
 {
+    using Microsoft.DocAsCode.Utility;
+
     public class SetParent : IResolverPipeline
     {
         public void Run(MetadataModel yaml, ResolverContext context)

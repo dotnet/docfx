@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Common
     public sealed class PerformanceScope : IDisposable
     {
         private readonly Stopwatch _stopwatch = new Stopwatch();
-        private readonly string _originPhaseName;
         private readonly Action<TimeSpan> _logger;
 
         public PerformanceScope(string content, LogLevel level) : this(s => Logger.Log(level, GetContent(content, s)))

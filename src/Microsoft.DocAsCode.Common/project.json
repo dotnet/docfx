@@ -27,22 +27,6 @@
       "dependencies": {
         "Newtonsoft.Json": "7.0.1"
       }
-    },
-    "netcore45": {
-      "frameworkAssemblies": {
-        "System.Collections": "",
-        "System.Globalization": "",
-        "System.IO": "",
-        "System.Runtime": "",
-        "System.Runtime.Extensions": "",
-        "System.Threading.Tasks": ""
-      },
-      "dependencies": {
-        "Newtonsoft.Json": "6.0.8"
-      },
-      "compilationOptions": {
-        "define": ["NetCore"]
-      }
     }
   }
 }

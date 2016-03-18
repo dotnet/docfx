@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.EntityModel
     using System.Collections.Generic;
     using System.Diagnostics;
 
+    using Microsoft.DocAsCode.Utility;
+
     public class ResolveReference : IResolverPipeline
     {
         public void Run(MetadataModel yaml, ResolverContext context)

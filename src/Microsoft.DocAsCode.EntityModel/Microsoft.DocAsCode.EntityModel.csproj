@@ -104,7 +104,6 @@
     <Compile Include="Builders\DocumentBuildParameters.cs" />
     <Compile Include="Builders\ManifestItem.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Exceptions\DocfxException.cs" />
     <Compile Include="Exceptions\CrossReferenceNotResolvedException.cs" />
     <Compile Include="Exceptions\PluginDirectoryAlreadyExistsException.cs" />
     <Compile Include="Exceptions\PluginException.cs" />
@@ -148,7 +147,6 @@
     <Compile Include="TemplateManagers\Settings\ApplyTemplateSettings.cs" />
     <Compile Include="TemplateManagers\JintProcessorHelper.cs" />
     <Compile Include="TemplateManagers\XrefDetails.cs" />
-    <Compile Include="TreeIterator.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageCollection.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageReader.cs" />
     <Compile Include="ExternalReferences\ExternalReferencePackageWriter.cs" />
