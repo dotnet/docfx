@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Diagnostics;
     using System.Linq;
 
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     public static class YamlViewModelExtensions
@@ -178,24 +179,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var nameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayName);
                 if (result.Name != nameForCSharp)
                 {
-                    result.NameForCSharp = nameForCSharp;
+                    result.NameInDevLangs[Constants.DevLang.CSharp] = nameForCSharp;
                 }
                 var nameForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayName);
                 if (result.Name != nameForVB)
                 {
-                    result.NameForVB = nameForVB;
+                    result.NameInDevLangs[Constants.DevLang.VB] = nameForVB;
                 }
 
                 result.FullName = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayQualifiedNames);
                 var fullnameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayQualifiedNames);
                 if (result.FullName != fullnameForCSharp)
                 {
-                    result.FullNameForCSharp = fullnameForCSharp;
+                    result.FullNameInDevLangs[Constants.DevLang.CSharp] = fullnameForCSharp;
                 }
                 var fullnameForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayQualifiedNames);
                 if (result.FullName != fullnameForVB)
                 {
-                    result.FullNameForVB = fullnameForVB;
+                    result.FullNameInDevLangs[Constants.DevLang.VB] = fullnameForVB;
                 }
 
                 result.SpecForCSharp = GetSpec(model.Value, SyntaxLanguage.CSharp);

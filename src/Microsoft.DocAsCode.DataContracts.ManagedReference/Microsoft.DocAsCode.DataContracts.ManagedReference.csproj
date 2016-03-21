@@ -12,8 +12,6 @@
     <Compile Include="ItemViewModel.cs" />
     <Compile Include="MemberType.cs" />
     <Compile Include="PageViewModel.cs" />
-    <Compile Include="ReferenceViewModel.cs" />
-    <Compile Include="SpecViewModel.cs" />
     <Compile Include="SyntaxDetailViewModel.cs" />
     <Compile Include="SyntaxLanguage.cs" />
     <Compile Include="TocItemViewModel.cs" />

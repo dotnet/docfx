@@ -23,5 +23,11 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Conceptual = "conceptual";
             public const string Documentation = "documentation";
         }
+
+        public static class DevLang
+        {
+            public const string CSharp = "csharp";
+            public const string VB = "vb";
+        }
     }
 }

@@ -1,11 +1,33 @@
-{
+﻿{
   "version": "1.0.0",
   "dependencies": {
+    "Microsoft.DocAsCode.Common": "",
+    "Microsoft.DocAsCode.Dfm": "",
+    "Microsoft.DocAsCode.Glob": "",
+    "Microsoft.DocAsCode.MarkdownLite": "",
+    "Microsoft.DocAsCode.Plugins": "",
+    "Microsoft.DocAsCode.DataContracts.Common": "",
+    "DotLiquid": "1.8.0",
+    "HtmlAgilityPack": "1.4.9",
+    "Jint": "2.5.0",
+    "Microsoft.Composition": "1.0.27",
+    "Newtonsoft.Json": "7.0.1",
+    "Nustache": "1.15.3.5",
+    "System.Collections.Immutable": "1.1.37",
+    "YamlDotNet.Signed": "3.7.0"
   },
   "frameworks": {
     "dnx451": {
+      "frameworkAssemblies": {
+        "System.Runtime": "",
+        "System": "",
+        "System.Reflection": "",
+        "System.Web": ""
+      }
     },
     "net45": {
+      "System": "",
+      "System.Web": ""
     }
   }
 }
