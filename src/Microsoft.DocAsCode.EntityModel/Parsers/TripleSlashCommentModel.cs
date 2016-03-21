@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.EntityModel
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Plugins;
 
     public class TripleSlashCommentModel
     {
@@ -78,6 +79,10 @@ namespace Microsoft.DocAsCode.EntityModel
             catch (XmlException)
             {
                 return null;
+            }
+            catch (Exception e)
+            {
+                throw new DocumentException($"Unable to extract comment from source code {context.Source.Path}: {xml}. {e.Message}", e);
             }
         }
 
@@ -397,6 +402,16 @@ namespace Microsoft.DocAsCode.EntityModel
             // <remarks><para>Value</para></remarks>
             // decode InnerXml as it encodes
             var lineInfo = node as IXmlLineInfo;
+            if (lineInfo == null || lineInfo.LineNumber == 0)
+            {
+                throw new ArgumentException($"Unable to get line info for current node: {node.OuterXml}");
+            }
+
+            if (lineInfo.LineNumber > _lines.Length)
+            {
+                throw new ArgumentOutOfRangeException($"current node's line number {lineInfo.LineNumber} exceeds the maximumn line number {_lines.Length}: {node.OuterXml}");
+            }
+
             var lineNumber = lineInfo.LineNumber - 1;
             var line = _lines[lineNumber];
             int column = GetNonWhitespaceIndex(line);
