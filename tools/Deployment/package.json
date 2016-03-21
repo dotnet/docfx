@@ -1,20 +1,8 @@
 {
-  "name": "docfxCi",
+  "name": "docfx-deployment",
   "version": "1.0.0",
   "description": "CI scripts for docfx",
-  "main": "",
-  "private": true,
-  "dependencies": {
-    "async": "^1.5.0",
-    "commander": "^2.9.0",
-    "fs-extra": "^0.26.2",
-    "jszip": "^2.5.0",
-    "nconf": "^0.8.2"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "deploy.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dotnet/docfx.git"
@@ -23,17 +11,17 @@
     "url": "https://github.com/dotnet/docfx/issues"
   },
   "homepage": "https://github.com/dotnet/docfx",
-  "keywords": [
-    "docfx"
-  ],
-  "author": {
-    "name": "Microsoft Docascode"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "maintainers": [
-    {
-      "name": "docascode",
-      "email": "docascode@microsoft.com"
-    }
-  ],
-  "license": "MIT"
+  "author": "Microsoft",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
+    "fs-extra": "^0.26.7",
+    "jszip": "^2.5.0",
+    "nconf": "^0.8.4",
+    "request": "^2.69.0"
+  }
 }
