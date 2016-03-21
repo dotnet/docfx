@@ -176,7 +176,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private static readonly IEnumerable<IQuestion> _selectorQuestions = new IQuestion[]
         {
             new YesOrNoQuestion(
-                "Does the generation contain source code files?", (s, m, c) =>
+                "Will the website contain API documentation from source code?", (s, m, c) =>
                 {
                     m.Build = new BuildJsonConfig();
                     if (s)
