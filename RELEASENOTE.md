@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.6.1)
+Version Notes (Current Version: v1.6.2)
 =======================================
+v1.6.2
+----------
+1. For issue #221, add detailed error information.
+
 v1.6.1
 -----------
 1. Fix bug: "Improve this doc" button disppears in method level
