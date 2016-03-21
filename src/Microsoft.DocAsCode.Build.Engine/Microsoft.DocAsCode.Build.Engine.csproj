@@ -10,6 +10,8 @@
     <Compile Include="DocumentBuildContext.cs" />
     <Compile Include="DocumentBuilder.cs" />
     <Compile Include="DocumentBuildParameters.cs" />
+    <Compile Include="ExtractSearchData\ExtractSearchIndexFromHtml.cs" />
+    <Compile Include="ExtractSearchData\SearchIndexItem.cs" />
     <Compile Include="FileCollection.cs" />
     <Compile Include="FileMetadata.cs" />
     <Compile Include="FileMetadataItem.cs" />
