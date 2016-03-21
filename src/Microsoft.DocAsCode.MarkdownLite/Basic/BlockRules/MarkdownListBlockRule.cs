@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
-            var match = Regexes.Block.List.Match(source);
+            var match = List.Match(source);
             if (match.Length == 0)
             {
                 return null;
