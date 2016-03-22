@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     public static class Constants
     {
         public const string YamlExtension = ".yml";
+        public const string ContentPlaceholder = "*content";
 
         /// <summary>
         /// TODO: add other property name const
