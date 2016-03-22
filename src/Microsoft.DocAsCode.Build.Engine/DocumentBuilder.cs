@@ -104,17 +104,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                         UpdateHref(manifest, context);
 
                         var generatedManifest = TemplateProcessor.Transform(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
-                        // todo : enable search.
-                        //object value;
-                        //if (parameters.Metadata.TryGetValue("_enableSearch", out value))
-                        //{
-                        //    var isSearchable = value as bool?;
-                        //    if (isSearchable.HasValue && isSearchable.Value)
-                        //    {
-                        //        ExtractSearchData.ExtractSearchIndexFromHtml.GenerateFile(generatedManifest, parameters.OutputBaseDir);
-                        //    }
-                        //}
-                        //Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
+                        // todo : move to plugin.
+                        object value;
+                        if (parameters.Metadata.TryGetValue("_enableSearch", out value))
+                        {
+                            var isSearchable = value as bool?;
+                            if (isSearchable.HasValue && isSearchable.Value)
+                            {
+                                ExtractSearchData.ExtractSearchIndexFromHtml.GenerateFile(generatedManifest, parameters.OutputBaseDir);
+                            }
+                        }
+                        Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
                     }
                 }
                 finally
