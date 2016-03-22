@@ -35,10 +35,6 @@
       <Project>{c7019ebe-9423-46fd-bca2-821255ecb426}</Project>
       <Name>Microsoft.DocAsCode.Metadata.ManagedReference.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.MetadataSchemata.Tests\Microsoft.DocAsCode.MetadataSchemata.Tests.csproj">
-      <Project>{294cc6a4-1441-a36d-dd28-5f9d5b6d45a3}</Project>
-      <Name>Microsoft.DocAsCode.MetadataSchemata.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Utility.Tests\Microsoft.DocAsCode.Utility.Tests.csproj">
       <Project>{f84bb644-a042-4364-ad2d-bf9d5bbd44ac}</Project>
       <Name>Microsoft.DocAsCode.Utility.Tests</Name>
