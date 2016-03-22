@@ -15,6 +15,8 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
+        public const string DefaultValidatorName = "default";
+
         public DfmEngineBuilder(Options options, string baseDir = null) : base(options)
         {
             var inlineRules = InlineRules.ToList();
@@ -93,25 +95,43 @@ namespace Microsoft.DocAsCode.Dfm
         {
             try
             {
-                if (string.IsNullOrEmpty(baseDir))
+                var builder = new MarkdownValidatorBuilder(host);
+                if (!TryLoadValidatorConfig(baseDir, builder))
                 {
-                    return null;
+                    builder.AddValidators(DefaultValidatorName);
                 }
-                var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
-                if (File.Exists(configFile))
-                {
-                    var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
-                    var builder = new MarkdownValidatorBuilder(host);
-                    builder.AddValidators(from r in config.Rules where !r.Disable select r.RuleName);
-                    builder.AddTagValidators(config.TagRules);
-                    return builder.Create();
-                }
+                return builder.Create();
             }
             catch (Exception ex)
             {
                 Logger.LogWarning($"Fail to init markdown style, details:{Environment.NewLine}{ex.ToString()}");
             }
             return null;
+        }
+
+        private static bool TryLoadValidatorConfig(string baseDir, MarkdownValidatorBuilder builder)
+        {
+            if (string.IsNullOrEmpty(baseDir))
+            {
+                return false;
+            }
+            var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
+            if (!File.Exists(configFile))
+            {
+                return false;
+            }
+            var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
+            if (config.Rules != null &&
+                !config.Rules.Any(r => r.RuleName == DefaultValidatorName))
+            {
+                builder.AddValidators(DefaultValidatorName);
+            }
+            builder.AddValidators(
+                from r in config.Rules ?? new MarkdownValidationRule[0]
+                where !r.Disable
+                select r.RuleName);
+            builder.AddTagValidators(config.TagRules ?? new MarkdownTagValidationRule[0]);
+            return true;
         }
 
         public DfmEngine CreateDfmEngine(object renderer)
