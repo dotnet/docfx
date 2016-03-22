@@ -3,8 +3,9 @@
 
 namespace Microsoft.DocAsCode.DataContracts.Common
 {
-    using Newtonsoft.Json;
     using System;
+
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
     [Serializable]

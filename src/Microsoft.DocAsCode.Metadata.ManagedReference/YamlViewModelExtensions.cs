@@ -199,8 +199,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     result.FullNameInDevLangs[Constants.DevLang.VB] = fullnameForVB;
                 }
 
-                result.SpecForCSharp = GetSpec(model.Value, SyntaxLanguage.CSharp);
-                result.SpecForVB = GetSpec(model.Value, SyntaxLanguage.VB);
+                result.Specs[Constants.DevLang.CSharp] = GetSpec(model.Value, SyntaxLanguage.CSharp);
+                result.Specs[Constants.DevLang.VB] = GetSpec(model.Value, SyntaxLanguage.VB);
                 result.IsExternal = GetIsExternal(model.Value);
                 result.Href = GetHref(model.Value);
             }

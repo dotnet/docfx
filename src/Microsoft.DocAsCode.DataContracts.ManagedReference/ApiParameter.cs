@@ -6,21 +6,23 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System;
 
     using Microsoft.DocAsCode.Utility.EntityMergers;
+
     using Newtonsoft.Json;
+    using YamlDotNet.Serialization;
 
     [Serializable]
     public class ApiParameter
     {
-        [YamlDotNet.Serialization.YamlMember(Alias = "id")]
+        [YamlMember(Alias = "id")]
         [JsonProperty("id")]
         [MergeOption(MergeOption.MergeKey)]
         public string Name { get; set; }
 
-        [YamlDotNet.Serialization.YamlMember(Alias = "type")]
+        [YamlMember(Alias = "type")]
         [JsonProperty("type")]
         public string Type { get; set; }
 
-        [YamlDotNet.Serialization.YamlMember(Alias = "description")]
+        [YamlMember(Alias = "description")]
         [JsonProperty("description")]
         public string Description { get; set; }
     }

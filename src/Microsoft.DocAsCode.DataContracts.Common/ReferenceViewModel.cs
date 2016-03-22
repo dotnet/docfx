@@ -6,12 +6,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
@@ -56,32 +54,6 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [ExtensibleMember("spec.")]
         [JsonIgnore]
         public SortedList<string, List<SpecViewModel>> Specs { get; } = new SortedList<string, List<SpecViewModel>>();
-
-        [YamlIgnore]
-        [JsonIgnore]
-        public List<SpecViewModel> SpecForCSharp
-        {
-            get
-            {
-                List<SpecViewModel> result;
-                Specs.TryGetValue("csharp", out result);
-                return result;
-            }
-            set { Specs["csharp"] = value; }
-        }
-
-        [YamlIgnore]
-        [JsonIgnore]
-        public List<SpecViewModel> SpecForVB
-        {
-            get
-            {
-                List<SpecViewModel> result;
-                Specs.TryGetValue("vb", out result);
-                return result;
-            }
-            set { Specs["vb"] = value; }
-        }
 
         [ExtensibleMember]
         [JsonIgnore]
