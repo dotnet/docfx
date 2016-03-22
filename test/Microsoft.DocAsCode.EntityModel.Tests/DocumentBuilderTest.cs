@@ -160,7 +160,7 @@ tagRules : [
                 {
                     // check toc.
                     Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension))));
-                    var model = JsonUtility.Deserialize<TocViewModel>(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension)));
+                    var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
                     Assert.NotNull(model);
                     Assert.Equal("test1", model[0].Name);
                     Assert.Equal("test.json", model[0].Href);
