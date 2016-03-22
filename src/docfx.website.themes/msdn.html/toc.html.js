@@ -1,13 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 function transform(model, _attrs){
-  var level = 1;
-  var length = model.length;
-  for (var i = 0; i<length; i++) {
-    transformItem(model[i], level);
-  };
-
+  transformItem(model, 0);
   return {
-    content: model
+    content: model.items
   }
 
   function transformItem(item, level){
@@ -15,7 +10,7 @@ function transform(model, _attrs){
     if (item.items && item.items.length > 0){
       var length = item.items.length;
       for (var i = 0; i<length; i++) {
-        transformItem(item.items[i], level+1);
+        transformItem(item.items[i], level + 1);
       };
     } else {
       item.items = [];

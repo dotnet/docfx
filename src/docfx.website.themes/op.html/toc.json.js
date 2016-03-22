@@ -1,21 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 function transform(model, _attrs){
-  var transformed = [];
-  var level = 1;
-  var length = model.length;
   var path = _attrs._path;
   var directory = "";
-    var index = path.lastIndexOf('/');
-    if (index > -1){
-      directory = path.substr(0, index + 1); // keep '/'
-    }
+  var index = path.lastIndexOf('/');
+  if (index > -1){
+    directory = path.substr(0, index + 1); // keep '/'
+  }
 
-  for (var i = 0; i<length; i++) {
-    transformed.push(transformItem(model[i], level));
-  };
-
+  transformItem(model, 0);
   return {
-    content: JSON.stringify(transformed)
+    content: JSON.stringify(model.children)
   };
 
   function transformItem(item, level){

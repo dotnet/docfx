@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
-    using System.Web;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
@@ -42,7 +41,7 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             var filePath = Path.Combine(file.BaseDir, file.File);
-            TocViewModel toc = LoadSingleToc(filePath);
+            TocItemViewModel toc = LoadSingleToc(filePath);
 
             var repoDetail = GitUtility.GetGitDetail(filePath);
             var displayLocalPath = repoDetail?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
@@ -66,20 +65,14 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override void UpdateHref(FileModel model, IDocumentBuildContext context)
         {
-            var toc = (TocViewModel)model.Content;
+            var toc = (TocItemViewModel)model.Content;
             var key = model.Key;
 
             // Add current folder to the toc mapping, e.g. `a/` maps to `a/toc`
             var directory = ((RelativePath)key).GetPathFromWorkingFolder().GetDirectoryPath();
             context.RegisterToc(key, directory);
 
-            if (toc.Count > 0)
-            {
-                foreach (var item in toc)
-                {
-                    UpdateTocItemHref(item, model, context);
-                }
-            }
+            UpdateTocItemHref(toc, model, context);
         }
 
         private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
@@ -174,15 +167,23 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
             return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo(((RelativePath)relativeToPath).GetPathFromWorkingFolder());
         }
 
-        private TocViewModel LoadSingleToc(string filePath)
+        private TocItemViewModel LoadSingleToc(string filePath)
         {
             if ("toc.md".Equals(Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
             {
-                return MarkdownTocReader.LoadToc(File.ReadAllText(filePath), filePath);
+                var toc = MarkdownTocReader.LoadToc(File.ReadAllText(filePath), filePath);
+                return new TocItemViewModel
+                {
+                    Items = toc,
+                };
             }
             else if ("toc.yml".Equals(Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
             {
-                return YamlUtility.Deserialize<TocViewModel>(filePath);
+                var toc = YamlUtility.Deserialize<TocViewModel>(filePath);
+                return new TocItemViewModel
+                {
+                    Items = toc
+                };
             }
 
             throw new NotSupportedException($"{filePath} is not a valid TOC file, supported toc files could be \"toc.md\" or \"toc.yml\".");

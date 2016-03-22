@@ -23,23 +23,25 @@ namespace Microsoft.DocAsCode.EntityModel.Plugins
 
         public override void Build(FileModel model, IHostService host)
         {
-            var toc = (TocViewModel)model.Content;
+            var toc = (TocItemViewModel)model.Content;
             Normalize(toc, model, host);
             // todo : metadata.
         }
 
-        private void Normalize(TocViewModel toc, FileModel model, IHostService hostService)
+        private void Normalize(TocItemViewModel item, FileModel model, IHostService hostService)
         {
-            if (toc == null) return;
-            foreach (var item in toc)
+            if (item == null) return;
+            ValidateToc(item, model, hostService);
+            var relativeToFile = (RelativePath)model.File;
+            item.Href = NormalizeHref(item.Href, relativeToFile);
+            item.OriginalHref = NormalizeHref(item.OriginalHref, relativeToFile);
+            item.Homepage = NormalizeHref(item.Homepage, relativeToFile);
+            if (item.Items != null)
             {
-                ValidateToc(item, model, hostService);
-                var relativeToFile = (RelativePath)model.File;
-                item.Href = NormalizeHref(item.Href, relativeToFile);
-                item.OriginalHref = NormalizeHref(item.OriginalHref, relativeToFile);
-                item.Homepage = NormalizeHref(item.Homepage, relativeToFile);
-
-                Normalize(item.Items, model, hostService);
+                foreach(var i in item.Items)
+                {
+                    Normalize(i, model, hostService);
+                }
             }
         }
 
