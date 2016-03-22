@@ -23,7 +23,7 @@
         "src": ".."
       },
       {
-        "files": [ "tutorial/**/*.md", "spec/**/*.md", "index.md", "guideline/**/*.md" ]
+        "files": [ "tutorial/**/*.md", "spec/**/*.md", "*.md", "guideline/**/*.md" ]
       },
       {
         "files": [ "toc.yml" ]
