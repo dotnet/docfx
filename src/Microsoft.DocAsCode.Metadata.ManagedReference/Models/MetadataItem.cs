@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Utility.EntityMergers;
 
     public class MetadataItem : ICloneable
     {
@@ -108,6 +109,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("inheritedMembers")]
         public List<string> InheritedMembers { get; set; }
 
+        [YamlMember(Alias = "attributes")]
+        [JsonProperty("attributes")]
+        [MergeOption(MergeOption.Ignore)]
+        public List<AttributeInfo> Attributes { get; set; }
+
         [YamlMember(Alias = "modifiers")]
         [JsonProperty("modifiers")]
         public SortedList<SyntaxLanguage, List<string>> Modifiers { get; set; } = new SortedList<SyntaxLanguage, List<string>>();
@@ -131,7 +137,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

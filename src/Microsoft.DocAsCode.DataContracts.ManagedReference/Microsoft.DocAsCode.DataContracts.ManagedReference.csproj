@@ -8,9 +8,12 @@
   <ItemGroup>
     <Compile Include="ApiParameter.cs" />
     <Compile Include="ApiReferenceViewModel.cs" />
+    <Compile Include="ArgumentInfo.cs" />
+    <Compile Include="AttributeInfo.cs" />
     <Compile Include="CrefInfo.cs" />
     <Compile Include="ItemViewModel.cs" />
     <Compile Include="MemberType.cs" />
+    <Compile Include="NamedProperty.cs" />
     <Compile Include="PageViewModel.cs" />
     <Compile Include="SyntaxDetailViewModel.cs" />
     <Compile Include="SyntaxLanguage.cs" />

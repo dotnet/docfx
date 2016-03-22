@@ -4,11 +4,12 @@
 namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
     using System;
-
-    using Microsoft.DocAsCode.Utility.EntityMergers;
+    using System.Collections.Generic;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
+
+    using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Serializable]
     public class ApiParameter
@@ -25,5 +26,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
         public string Description { get; set; }
+
+        [YamlMember(Alias = "attributes")]
+        [JsonProperty("attributes")]
+        [MergeOption(MergeOption.Ignore)]
+        public List<AttributeInfo> Attributes { get; set; }
     }
 }
