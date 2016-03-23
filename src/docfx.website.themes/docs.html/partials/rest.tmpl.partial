@@ -10,15 +10,15 @@
 </header>
 {{#children}}
 <header class="header" id="{{operationId}}">
+  <div class="primary">
   {{#conceptual}}
-  <div>{{{conceptual}}}</div>
+  {{{conceptual}}}
   {{/conceptual}}
   {{^conceptual}}
   <h3 id="{{htmlId}}" data-uid="{{uid}}">{{{summary}}}</h3>
-  <div>
-    {{{description}}}
-  </div>
+  {{{description}}}
   {{/conceptual}}
+  </div>
 </header>
 <div class="level">
   <section class="primary">
@@ -72,9 +72,13 @@
   <section class="secondary">
     <div class="api-example"
     {{#tryFeature}}
-    data-api-interactive
+    data-api-interactive="true"
+    {{/tryFeature}}
+    {{^tryFeature}}
+    data-api-interactive="false"
     {{/tryFeature}}
     data-api-example-endpoint="{{_mockServerUrl}}"
+    data-api-example-authorization="{{_mockServerAuthorization}}"
     data-api-swagger-url="{{_jsonPath}}"
     data-api-operation-id="{{operationId}}"/>
   </section>

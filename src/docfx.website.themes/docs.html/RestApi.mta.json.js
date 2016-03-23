@@ -12,6 +12,9 @@ function transform(model, _attrs) {
     if (!model.breadcrumb_path) {
         vm.breadcrumb_path = "/toc.html";
     }
+    else {
+        vm.breadcrumb_path = model.breadcrumb_path;
+    }
 
     vm.content_git_url = getContentGitUrl(model, model.newFileRepository);
 
