@@ -23,10 +23,11 @@
     "Microsoft.Owin.Host.HttpListener": "3.0.1",
     "Microsoft.Owin.Hosting": "3.0.1",
     "Microsoft.Owin.SelfHost": "3.0.1",
-    "Microsoft.Owin.StaticFiles": "3.0.1"
+    "Microsoft.Owin.StaticFiles": "3.0.1",
+    "Microsoft.DotNet.ProjectModel.Workspaces": "1.0.0-dev-001606"
   },
   "frameworks": {
-    "dnx451": {}
+    "dnxcore50": {}
   },
   "commands": {
     "docfx": "docfx"
