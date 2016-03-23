@@ -18,11 +18,11 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         /// <summary>
         /// Indicate the video width
         /// </summary>
-        public int Width { get; set; }
+        public int Width { get; set; } = 640;
 
         /// <summary>
         /// Indicate the video height
         /// </summary>
-        public int Height { get; set; }
+        public int Height { get; set; } = 360;
     }
 }

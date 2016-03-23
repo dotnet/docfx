@@ -34,6 +34,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
+      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
+      <Name>Microsoft.DocAsCode.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
       <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
       <Name>Microsoft.DocAsCode.Dfm</Name>
