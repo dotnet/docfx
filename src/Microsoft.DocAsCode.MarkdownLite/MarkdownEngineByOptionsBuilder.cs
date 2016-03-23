@@ -87,10 +87,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (Options.Gfm)
             {
                 irb.Add(new GfmDelInlineRule());
+                irb.Add(new MarkdownEscapedTextInlineRule());
                 irb.Add(new GfmTextInlineRule());
             }
             else
             {
+                irb.Add(new MarkdownEscapedTextInlineRule());
                 irb.Add(new MarkdownTextInlineRule());
             }
 

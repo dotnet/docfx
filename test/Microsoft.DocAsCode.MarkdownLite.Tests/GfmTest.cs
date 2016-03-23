@@ -355,6 +355,10 @@ break list!
 </code></pre></li>
 </ol>
 ")]
+        [InlineData(
+            @"a\<b <span>c</span>",
+            @"<p>a&lt;b <span>c</span></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
