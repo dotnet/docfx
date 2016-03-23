@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     using HtmlAgilityPack;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 
@@ -35,7 +36,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 if (!Path.IsPathRooted(currentPath))
                 {
-                    return GenerateNodeWithCommentWrapper("ERROR INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw);
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw);
                 }
                 else
                     currentPath = PathUtility.MakeRelativePath(Environment.CurrentDirectory, currentPath);
@@ -54,7 +55,7 @@ namespace Microsoft.DocAsCode.Dfm
 
             if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
             {
-                return GenerateNodeWithCommentWrapper("ERROR INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
+                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
             }
 
             string result = string.Empty;
@@ -83,12 +84,18 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception e)
             {
-                result = GenerateNodeWithCommentWrapper("ERROR INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw);
+                result = GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw);
             }
 
             _cache.Add(currentPath, result);
 
             return result;
+        }
+
+        private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html)
+        {
+            Logger.LogWarning(comment);
+            return GenerateNodeWithCommentWrapper("ERROR " + tag, comment, html);
         }
 
         private static string GenerateNodeWithCommentWrapper(string tag, string comment, string html)

@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 
@@ -25,8 +26,23 @@ namespace Microsoft.DocAsCode.Dfm
             return InternalMarkup(src, ImmutableStack<string>.Empty.Push(path));
         }
 
-        internal string InternalMarkup(string src, ImmutableStack<string> parents) =>
-            InternalMarkup(src, Context.SetFilePathStack(parents));
+        internal string InternalMarkup(string src, ImmutableStack<string> parents)
+        {
+            LoggerFileScope fileScope = null;
+            if (!parents.IsEmpty)
+            {
+                var path = parents.Peek().ToDisplayPath();
+                if (!string.IsNullOrEmpty(path))
+                {
+                    fileScope = new LoggerFileScope(path);
+                }
+            }
+
+            using (fileScope)
+            {
+                return InternalMarkup(src, Context.SetFilePathStack(parents));
+            }
+        }
 
         internal string InternalMarkup(string src, IMarkdownContext context) =>
             Mark(Normalize(src), context).ToString();
