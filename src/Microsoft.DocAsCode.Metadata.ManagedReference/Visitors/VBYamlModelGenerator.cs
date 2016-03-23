@@ -1180,6 +1180,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (constant.Type.TypeKind == TypeKind.Array)
             {
+                if (constant.Values == null)
+                {
+                    return GetLiteralExpression(null, constant.Type);
+                }
                 var items = (from value in constant.Values
                              select GetLiteralExpression(value)).ToList();
                 if (items.TrueForAll(x => x != null))
