@@ -6,6 +6,7 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BaseDocumentBuildStep.cs" />
     <Compile Include="DisposableDocumentProcessor.cs" />
     <Compile Include="MarkdownReader.cs" />
     <Compile Include="MatchDetail.cs" />
