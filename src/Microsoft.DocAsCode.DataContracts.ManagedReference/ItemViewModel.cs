@@ -232,6 +232,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("platform")]
         public List<string> Platform { get; set; }
 
+        [YamlMember(Alias = "attributes")]
+        [JsonProperty("attributes")]
+        [MergeOption(MergeOption.Ignore)]
+        public List<AttributeInfo> Attributes { get; set; }
+
         [ExtensibleMember]
         [JsonIgnore]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();

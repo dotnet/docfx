@@ -231,9 +231,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Exceptions = model.Exceptions,
                 Sees = model.Sees,
                 SeeAlsos = model.SeeAlsos,
+                
                 Inheritance = model.Inheritance,
                 Implements = model.Implements,
                 InheritedMembers = model.InheritedMembers,
+                Attributes = model.Attributes,
             };
 
             result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
