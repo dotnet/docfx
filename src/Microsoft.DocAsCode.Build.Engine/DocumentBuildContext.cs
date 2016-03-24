@@ -18,7 +18,7 @@
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages)
         {
             BuildOutputFolder = buildOutputFolder;
-            AllSourceFiles = allSourceFiles.ToImmutableDictionary(ft => ((RelativePath)ft.File).GetPathFromWorkingFolder(), FilePathComparer.OSPlatformSensitiveStringComparer);
+            AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
         }
 
@@ -140,6 +140,46 @@
             {
                 TocMap[fileKey] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey };
             }
+        }
+
+        private ImmutableDictionary<string, FileAndType> GetAllSourceFiles(IEnumerable<FileAndType> allSourceFiles)
+        {
+            var dict = new Dictionary<string, FileAndType>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            foreach (var item in allSourceFiles)
+            {
+                var path = (string)((RelativePath)item.File).GetPathFromWorkingFolder();
+                FileAndType ft;
+                if (dict.TryGetValue(path, out ft))
+                {
+                    if (FilePathComparer.OSPlatformSensitiveStringComparer.Equals(ft.BaseDir, item.BaseDir) &&
+                        FilePathComparer.OSPlatformSensitiveStringComparer.Equals(ft.File, item.File))
+                    {
+                        if (ft.Type >= item.Type)
+                        {
+                            Logger.LogWarning($"Ignored duplicate file {Path.Combine(item.BaseDir, item.File)}.");
+                            continue;
+                        }
+                        else
+                        {
+                            Logger.LogWarning($"Ignored duplicate file {Path.Combine(ft.BaseDir, ft.File)}.");
+                        }
+                    }
+                    else
+                    {
+                        if (ft.Type >= item.Type)
+                        {
+                            Logger.LogWarning($"Ignored conflict file {Path.Combine(item.BaseDir, item.File)} for {path} by {Path.Combine(ft.BaseDir, ft.File)}.");
+                            continue;
+                        }
+                        else
+                        {
+                            Logger.LogWarning($"Ignored conflict file {Path.Combine(ft.BaseDir, ft.File)} for {path} by {Path.Combine(item.BaseDir, item.File)}.");
+                        }
+                    }
+                }
+                dict[path] = item;
+            }
+            return dict.ToImmutableDictionary();
         }
 
         private static XRefSpec GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)
