@@ -108,10 +108,11 @@ function handleItem(vm) {
   vm.docurl = getImproveTheDocHref(vm);
   vm.sourceurl = getViewSourceHref(vm);
 
-  // fill "null" if key not existed
+  // fill "undefined" if key not existed
   vm.summary = vm.summary;
   vm.remarks = vm.remarks;
   vm.conceptual = vm.conceptual;
+  vm.syntax = vm.syntax;
 
   if (vm.supported_platforms) {
       vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);
