@@ -15,11 +15,12 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Microsoft.DocAsCode.Tests.Common;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "RestApiDocumentProcessor")]
     [Collection("docfx STA")]
-    public class RestApiDocumentProcessorTest : IClassFixture<RestApiDocumentProcessorFixture>
+    public class RestApiDocumentProcessorTest : TestBase
     {
         private string _outputFolder;
         private string _inputFolder;
@@ -29,11 +30,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
         private const string RawModelFileExtension = ".raw.json";
 
-        public RestApiDocumentProcessorTest(RestApiDocumentProcessorFixture fixture)
+        public RestApiDocumentProcessorTest()
         {
-            _outputFolder = Path.GetFullPath(fixture.OutputFolder);
-            _inputFolder = Path.GetFullPath(fixture.InputFolder);
-            _templateFolder = Path.GetFullPath(fixture.TemplateFolder);
+            _outputFolder = GetRandomFolder();
+            _inputFolder = GetRandomFolder();
+            _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Environment.CurrentDirectory);
             _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts_swagger2.json" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);

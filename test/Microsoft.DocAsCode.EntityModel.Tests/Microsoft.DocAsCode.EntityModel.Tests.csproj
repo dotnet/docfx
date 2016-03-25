@@ -100,8 +100,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\TestBase.cs">
+      <Link>TestBase.cs</Link>
+    </Compile>
     <Compile Include="ExtractSearchIndexFromHtmlTest.cs" />
-    <Compile Include="RestApiDocumentProcessorFixture.cs" />
     <Compile Include="SwaggerJsonParserTest.cs" />
     <Compile Include="RestApiDocumentProcessorTest.cs" />
     <Compile Include="YamlSerializationTest.cs" />

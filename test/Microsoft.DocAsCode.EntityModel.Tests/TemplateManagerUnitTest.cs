@@ -12,43 +12,19 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.EntityModel.Builders;
-
-    public class TemplateManagerFixture : IDisposable
-    {
-        public string OutputFolder { get; }
-        public string InputFolder { get; }
-
-        public TemplateManagerFixture()
-        {
-            InputFolder = "TemplateManagerUnitTestInput";
-            OutputFolder = "TemplateManagerUnitTestOutput";
-        }
-
-        public void Dispose()
-        {
-            if (Directory.Exists(InputFolder))
-            {
-                Directory.Delete(InputFolder, true);
-            }
-
-            if (Directory.Exists(OutputFolder))
-            {
-                Directory.Delete(OutputFolder, true);
-            }
-        }
-    }
+    using Microsoft.DocAsCode.Tests.Common;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplateManager")]
-    public class TemplateManagerUnitTest : IClassFixture<TemplateManagerFixture>
+    public class TemplateManagerUnitTest : TestBase
     {
         private readonly string _inputFolder;
         private readonly string _outputFolder;
 
-        public TemplateManagerUnitTest(TemplateManagerFixture fixture)
+        public TemplateManagerUnitTest()
         {
-            _inputFolder = fixture.InputFolder;
-            _outputFolder = fixture.OutputFolder;
+            _inputFolder = GetRandomFolder();
+            _outputFolder = GetRandomFolder();
         }
 
         [Trait("Related", "ResourceFinder")]

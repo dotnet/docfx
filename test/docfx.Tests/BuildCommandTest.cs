@@ -7,21 +7,23 @@ namespace Microsoft.DocAsCode.Tests
     using System.Collections.Generic;
     using System.IO;
 
-    using Microsoft.DocAsCode.SubCommands;
     using Xunit;
 
+    using Microsoft.DocAsCode.SubCommands;
+    using Microsoft.DocAsCode.Tests.Common;
+
     [Collection("docfx STA")]
-    public class BuildCommandTest : IClassFixture<BuildCommandFixture>
+    public class BuildCommandTest : TestBase
     {
         private string _outputFolder;
         private string _inputFolder;
         private string _templateFolder;
 
-        public BuildCommandTest(BuildCommandFixture fixture)
+        public BuildCommandTest()
         {
-            _outputFolder = fixture.OutputFolder;
-            _inputFolder = fixture.InputFolder;
-            _templateFolder = fixture.TemplateFolder;
+            _outputFolder = GetRandomFolder();
+            _inputFolder = GetRandomFolder();
+            _templateFolder = GetRandomFolder();
         }
 
         /// <summary>

@@ -24,6 +24,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\TestBase.cs">
+      <Link>TestBase.cs</Link>
+    </Compile>
     <Compile Include="GlobFileTest.cs" />
     <Compile Include="GlobMatcherTest.cs" />
   </ItemGroup>

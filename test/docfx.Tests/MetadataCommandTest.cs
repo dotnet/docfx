@@ -12,9 +12,10 @@ namespace Microsoft.DocAsCode.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.SubCommands;
+    using Microsoft.DocAsCode.Tests.Common;
 
     [Collection("docfx STA")]
-    public class MetadataCommandTest : IClassFixture<MetadataCommandFixture>
+    public class MetadataCommandTest : TestBase
     {
         /// <summary>
         /// Use MetadataCommand to generate YAML files from a c# project and a VB project separately
@@ -22,10 +23,10 @@ namespace Microsoft.DocAsCode.Tests
         private string _outputFolder;
         private string _projectFolder;
 
-        public MetadataCommandTest(MetadataCommandFixture fixture)
+        public MetadataCommandTest()
         {
-            _outputFolder = fixture.OutputFolder;
-            _projectFolder = fixture.ProjectFolder;
+            _outputFolder = GetRandomFolder();
+            _projectFolder = GetRandomFolder();
         }
 
         [Fact]

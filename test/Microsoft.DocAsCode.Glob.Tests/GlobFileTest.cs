@@ -3,18 +3,21 @@
 
 namespace Microsoft.DocAsCode.Glob.Tests
 {
-    using Glob;
-    using System;
     using System.IO;
     using System.Linq;
+
     using Xunit;
 
-    public class GlobFileTest : IClassFixture<GlobFileFixture>
+    using Microsoft.DocAsCode.Glob;
+    using Microsoft.DocAsCode.Tests.Common;
+
+    public class GlobFileTest : TestBase
     {
         private string _workingDirectory;
-        public GlobFileTest(GlobFileFixture fixture)
+
+        public GlobFileTest()
         {
-            _workingDirectory = fixture.WorkingDirectory;
+            _workingDirectory = GetRandomFolder();
         }
 
         [Fact]
@@ -99,24 +102,6 @@ namespace Microsoft.DocAsCode.Glob.Tests
                     if (dir != string.Empty) Directory.CreateDirectory(dir);
                     File.WriteAllText(item, string.Empty);
                 }
-            }
-        }
-    }
-
-    public class GlobFileFixture : IDisposable
-    {
-        public string WorkingDirectory { get; }
-
-        public GlobFileFixture()
-        {
-            WorkingDirectory = "GlobFileTestWorkingDirectory";
-        }
-
-        public void Dispose()
-        {
-            if (Directory.Exists(WorkingDirectory))
-            {
-                Directory.Delete(WorkingDirectory, true);
             }
         }
     }

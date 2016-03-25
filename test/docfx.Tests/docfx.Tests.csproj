@@ -146,11 +146,12 @@
     <None Include="Assets\test.cs.sample.1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Compile Include="..\Shared\TestBase.cs">
+      <Link>TestBase.cs</Link>
+    </Compile>
     <Compile Include="ArgsParserTest.cs" />
     <Compile Include="BuildCommandTest.cs" />
     <Compile Include="JsonConverterTest.cs" />
-    <Compile Include="BuildCommandFixture.cs" />
-    <Compile Include="MetadataCommandFixture.cs" />
     <Compile Include="MetadataCommandTest.cs" />
   </ItemGroup>
   <ItemGroup>
