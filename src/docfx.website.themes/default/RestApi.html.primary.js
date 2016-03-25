@@ -168,7 +168,7 @@ function transform(model, _attrs) {
                 repo = repo.substr(0, repo.length - 4);
             }
             var linenum = startLine ? startLine : 0;
-            if (/https:\/\/.*\.visualstudio\.com\/.*/gi.test(reop)) {
+            if (/https:\/\/.*\.visualstudio\.com\/.*/gi.test(repo)) {
                 // TODO: line not working for vso
                 return repo + '#path=/' + remote.path;
             }
