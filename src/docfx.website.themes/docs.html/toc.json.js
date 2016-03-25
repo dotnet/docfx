@@ -22,7 +22,6 @@ function transform(model, _attrs){
         item.external_link = item.href;
       }else{
         if (item.href.indexOf('~/') == 0) item.href = item.href.substring(2);
-        item.href = removeExtension(item.href);
         if (item.href.indexOf('/') == 0) {
           item.relative_path_in_depot = item.href;
         } else {
@@ -44,13 +43,5 @@ function transform(model, _attrs){
 
   function isAbsolutePath(path){
     return /^(\w+:)?\/\//g.test(path);
-  }
-
-  function removeExtension(path){
-    var index = path.lastIndexOf('.');
-    if (index > 0){
-      return path.substring(0, index);
-    }
-    return path;
   }
 }
