@@ -2,21 +2,14 @@
 function transform(model, _attrs) {
     var vm = {};
     vm.title = model.name;
-    vm.layout = "Rest";
-    vm.langs = ["http"];
+    vm.layout = model.layout || "Rest";
+    vm.langs = model.langs || ["http"];
 
-    if (!model.toc_asset_id) {
-        vm.toc_asset_id = _attrs._tocPath;
-    }
-    vm.toc_rel = _attrs._tocRel;
-    if (!model.breadcrumb_path) {
-        vm.breadcrumb_path = "/toc.html";
-    }
-    else {
-        vm.breadcrumb_path = model.breadcrumb_path;
-    }
+    vm.toc_asset_id = model.toc_asset_id || attrs._tocPath;
+    vm.toc_rel = model.toc_rel || _attrs._tocRel;
 
-    vm.content_git_url = getContentGitUrl(model, model.newFileRepository);
+    vm.breadcrumb_path = model.breadcrumb_path || "/toc.html";
+    vm.content_git_url = model.content_git_url || getContentGitUrl(model, model.newFileRepository);
 
     return {
         content: JSON.stringify(vm)
@@ -98,11 +91,11 @@ function transform(model, _attrs) {
         }
     }
 
-  function getGithubUrlPrefix(repo) {
-    var regex = /^(?:https?:\/\/)?(?:\S+\@)?(?:\S+\.)?(github\.com(?:\/|:).*)/gi;
-    if (!regex.test(repo)) return '';
-    return repo.replace(regex, function(match, p1, offset, string) {
-      return 'https://' + p1.replace(':', '/');
-    })
-  }
+    function getGithubUrlPrefix(repo) {
+        var regex = /^(?:https?:\/\/)?(?:\S+\@)?(?:\S+\.)?(github\.com(?:\/|:).*)/gi;
+        if (!regex.test(repo)) return '';
+        return repo.replace(regex, function(match, p1, offset, string) {
+            return 'https://' + p1.replace(':', '/');
+        })
+    }
 }

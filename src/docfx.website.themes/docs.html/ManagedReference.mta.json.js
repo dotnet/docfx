@@ -1,24 +1,28 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-function transform(model, _attrs){
-  model.layout = "Reference";
-  model.title = model.name[0].value + " " + model.type;
+function transform(model, _attrs) {
+  model.layout = model.layout || "Reference";
+  if (!model.title) {
+    model.title = model.name[0].value + " " + model.type;
+  }
 
   // If toc is not defined in model, read it from __attrs
-  if (_attrs._tocPath && _attrs._tocPath.indexOf("~/") == 0){
+  if (_attrs._tocPath && _attrs._tocPath.indexOf("~/") == 0) {
     _attrs._tocPath = _attrs._tocPath.substring(2);
   }
-  if (!model.toc_asset_id){
-    model.toc_asset_id = _attrs._tocPath;
-  }
+  model.toc_asset_id = model.toc_asset_id || _attrs._tocPath;
+  model.toc_rel = model.toc_rel || _attrs._tocRel;
 
-  model.toc_rel = _attrs._tocRel;
-  model.platforms = model.platform;
-  if (!model.breadcrumb_path) {
-    model.breadcrumb_path = "/toc.html";
+  model.platforms = model.platforms || model.platform;
+  model.breadcrumb_path = model.breadcrumb_path || "/toc.html";
+  if (!model.content_git_url) {
+    model.content_git_url = getContentGitUrl(model, model.newFileRepository);
   }
-  model.content_git_url = getContentGitUrl(model, model.newFileRepository);
-  model.source_url = getViewSourceHref(model);
-  model["ms.assetid"] = getMsAssetId(model);
+  if (!model.source_url) {
+    model.source_url = getViewSourceHref(model);
+  }
+  if (!model["ms.assetid"]) {
+    model["ms.assetid"] = getMsAssetId(model);
+  }
 
   // Clean up unused predefined properties
   model.uid = undefined;
