@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Utility;
 #if DNX451
-    using Microsoft.DotNet.ProjectModel.Workspaces;
+    using Microsoft.CodeAnalysis.Workspaces.Dnx;
 #endif
 
     public sealed class ExtractMetadataWorker : IDisposable
