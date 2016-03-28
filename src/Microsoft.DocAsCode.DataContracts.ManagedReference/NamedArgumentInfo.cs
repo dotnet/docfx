@@ -6,22 +6,16 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
-    public class NamedProperty
+    public class NamedArgumentInfo
     {
-        [YamlMember(Alias = "id")]
-        [JsonProperty("id")]
+        [YamlMember(Alias = "name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
-        [YamlMember(Alias = "property")]
-        [JsonProperty("property")]
-        public string Property { get; set; }
-        [YamlMember(Alias = "declareType")]
-        [JsonProperty("declareType")]
-        public string DeclareType { get; set; }
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
         public string Type { get; set; }
         [YamlMember(Alias = "value")]
         [JsonProperty("value")]
-        public string Value { get; set; }
+        public object Value { get; set; }
     }
 }

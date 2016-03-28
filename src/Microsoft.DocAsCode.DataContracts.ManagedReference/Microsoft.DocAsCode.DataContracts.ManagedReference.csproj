@@ -13,7 +13,7 @@
     <Compile Include="CrefInfo.cs" />
     <Compile Include="ItemViewModel.cs" />
     <Compile Include="MemberType.cs" />
-    <Compile Include="NamedProperty.cs" />
+    <Compile Include="NamedArgumentInfo.cs" />
     <Compile Include="PageViewModel.cs" />
     <Compile Include="SyntaxDetailViewModel.cs" />
     <Compile Include="SyntaxLanguage.cs" />
