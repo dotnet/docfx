@@ -5,7 +5,7 @@ function transform(model, _attrs) {
     vm.layout = model.layout || "Rest";
     vm.langs = model.langs || ["http"];
 
-    vm.toc_asset_id = model.toc_asset_id || attrs._tocPath;
+    vm.toc_asset_id = model.toc_asset_id || _attrs._tocPath;
     vm.toc_rel = model.toc_rel || _attrs._tocRel;
 
     vm.breadcrumb_path = model.breadcrumb_path || "/toc.html";
