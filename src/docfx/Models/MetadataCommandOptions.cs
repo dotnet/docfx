@@ -33,5 +33,8 @@ namespace Microsoft.DocAsCode
 
         [ValueList(typeof(List<string>))]
         public List<string> Projects { get; set; }
+
+        [Option("filter", HelpText = "Specify the filter config file")]
+        public string FilterConfigFile { get; set; }
     }
 }

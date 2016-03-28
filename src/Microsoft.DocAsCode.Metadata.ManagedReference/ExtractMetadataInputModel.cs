@@ -24,6 +24,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public bool ForceRebuild { get; set; }
 
+        public string FilterConfigFile { get; set; }
+
         public override string ToString()
         {
             using(StringWriter writer = new StringWriter())

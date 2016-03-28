@@ -276,27 +276,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             switch (typeKind)
             {
                 case MemberType.Class:
-                    return GetClassSyntax((INamedTypeSymbol)symbol);
+                    return GetClassSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Enum:
-                    return GetEnumSyntax((INamedTypeSymbol)symbol);
+                    return GetEnumSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Interface:
-                    return GetInterfaceSyntax((INamedTypeSymbol)symbol);
+                    return GetInterfaceSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Struct:
-                    return GetStructSyntax((INamedTypeSymbol)symbol);
+                    return GetStructSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Delegate:
-                    return GetDelegateSyntax((INamedTypeSymbol)symbol);
+                    return GetDelegateSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Method:
-                    return GetMethodSyntax((IMethodSymbol)symbol);
+                    return GetMethodSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Operator:
-                    return GetOperatorSyntax((IMethodSymbol)symbol);
+                    return GetOperatorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Constructor:
-                    return GetConstructorSyntax((IMethodSymbol)symbol);
+                    return GetConstructorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Field:
-                    return GetFieldSyntax((IFieldSymbol)symbol);
+                    return GetFieldSyntax((IFieldSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Event:
-                    return GetEventSyntax((IEventSymbol)symbol);
+                    return GetEventSyntax((IEventSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Property:
-                    return GetPropertySyntax((IPropertySymbol)symbol);
+                    return GetPropertySyntax((IPropertySymbol)symbol, adapter.FilterVisitor);
                 default:
                     return null;
             }
@@ -313,11 +313,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #region Syntax
 
-        private string GetClassSyntax(INamedTypeSymbol symbol)
+        private string GetClassSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor)
         {
             var syntaxStr = SyntaxFactory.ClassBlock(
                 SyntaxFactory.ClassStatement(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetTypeModifiers(symbol)
                     ),
@@ -333,11 +333,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return RemoveEnd(syntaxStr);
         }
 
-        private string GetEnumSyntax(INamedTypeSymbol symbol)
+        private string GetEnumSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor)
         {
             var syntaxStr = SyntaxFactory.EnumBlock(
                 SyntaxFactory.EnumStatement(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetTypeModifiers(symbol)
                     ),
@@ -349,11 +349,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return RemoveEnd(syntaxStr);
         }
 
-        private string GetInterfaceSyntax(INamedTypeSymbol symbol)
+        private string GetInterfaceSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor)
         {
             var syntaxStr = SyntaxFactory.InterfaceBlock(
                 SyntaxFactory.InterfaceStatement(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetTypeModifiers(symbol)
                     ),
@@ -369,11 +369,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return RemoveEnd(syntaxStr);
         }
 
-        private string GetStructSyntax(INamedTypeSymbol symbol)
+        private string GetStructSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor)
         {
             string syntaxStr = SyntaxFactory.StructureBlock(
                 SyntaxFactory.StructureStatement(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetTypeModifiers(symbol)
                     ),
@@ -389,13 +389,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return RemoveEnd(syntaxStr);
         }
 
-        private string GetDelegateSyntax(INamedTypeSymbol symbol)
+        private string GetDelegateSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor)
         {
             string syntaxStr = SyntaxFactory.DelegateStatement(
                 symbol.DelegateInvokeMethod.ReturnsVoid ?
                     SyntaxKind.DelegateSubStatement :
                     SyntaxKind.DelegateFunctionStatement,
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetTypeModifiers(symbol)
                 ),
@@ -410,13 +410,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return RemoveEnd(syntaxStr);
         }
 
-        private string GetMethodSyntax(IMethodSymbol symbol)
+        private string GetMethodSyntax(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             string syntaxStr = SyntaxFactory.MethodStatement(
                 symbol.ReturnsVoid ?
                     SyntaxKind.SubStatement :
                     SyntaxKind.FunctionStatement,
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
@@ -428,12 +428,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 GetParamerterList(symbol),
                 GetReturnAsClause(symbol),
                 null,
-                GetImplementsClause(symbol)
+                GetImplementsClause(symbol, filterVisitor)
             ).NormalizeWhitespace().ToString();
             return RemoveEnd(syntaxStr);
         }
 
-        private string GetOperatorSyntax(IMethodSymbol symbol)
+        private string GetOperatorSyntax(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             var operatorToken = GetOperatorToken(symbol);
             if (operatorToken == null)
@@ -441,7 +441,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return "VB cannot support this operator.";
             }
             return SyntaxFactory.OperatorStatement(
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
@@ -452,10 +452,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ).NormalizeWhitespace().ToString();
         }
 
-        private string GetConstructorSyntax(IMethodSymbol symbol)
+        private string GetConstructorSyntax(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             var syntaxStr = SyntaxFactory.SubNewStatement(
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
@@ -464,13 +464,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return RemoveEnd(syntaxStr);
         }
 
-        private string GetFieldSyntax(IFieldSymbol symbol)
+        private string GetFieldSyntax(IFieldSymbol symbol, IFilterVisitor filterVisitor)
         {
             string syntaxStr;
             if (symbol.ContainingType.TypeKind == TypeKind.Enum)
             {
                 syntaxStr = SyntaxFactory.EnumMemberDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.Identifier(symbol.Name),
                     GetDefaultValue(symbol)
                 ).NormalizeWhitespace().ToString();
@@ -478,7 +478,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             else
             {
                 syntaxStr = SyntaxFactory.FieldDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     SyntaxFactory.SingletonSeparatedList(
                         SyntaxFactory.VariableDeclarator(
@@ -496,10 +496,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return RemoveEnd(syntaxStr);
         }
 
-        private string GetEventSyntax(IEventSymbol symbol)
+        private string GetEventSyntax(IEventSymbol symbol, IFilterVisitor filterVisitor)
         {
             return SyntaxFactory.EventStatement(
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
@@ -508,14 +508,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.SimpleAsClause(
                     GetTypeSyntax(symbol.Type)
                 ),
-                GetImplementsClause(symbol)
+                GetImplementsClause(symbol, filterVisitor)
             ).NormalizeWhitespace().ToString();
         }
 
-        private string GetPropertySyntax(IPropertySymbol symbol)
+        private string GetPropertySyntax(IPropertySymbol symbol, IFilterVisitor filterVisitor)
         {
             return SyntaxFactory.PropertyStatement(
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
@@ -525,20 +525,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     GetTypeSyntax(symbol.Type)
                 ),
                 null,
-                GetImplementsClause(symbol)
+                GetImplementsClause(symbol, filterVisitor)
             ).NormalizeWhitespace().ToString();
         }
 
         #endregion
 
-        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, bool inOneLine = false)
+        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, IFilterVisitor filterVisitor, bool inOneLine = false)
         {
             var attrs = symbol.GetAttributes();
             if (attrs.Length > 0)
             {
                 var attrList = (from attr in attrs
                                 where attr?.AttributeConstructor != null
-                                where VisitorHelper.CanVisit(attr.AttributeConstructor)
+                                where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
                                 select GetAttributeSyntax(attr)).ToList();
                 if (attrList.Count > 0)
                 {
@@ -983,14 +983,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private ImplementsClauseSyntax GetImplementsClause(IMethodSymbol symbol)
+        private ImplementsClauseSyntax GetImplementsClause(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
                 return null;
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
-                        where VisitorHelper.CanVisit(eii)
+                        where filterVisitor.CanVisitApi(eii)
                         select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
             if (list.Count == 0)
             {
@@ -999,14 +999,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return SyntaxFactory.ImplementsClause(SyntaxFactory.SeparatedList(list.ToArray()));
         }
 
-        private ImplementsClauseSyntax GetImplementsClause(IEventSymbol symbol)
+        private ImplementsClauseSyntax GetImplementsClause(IEventSymbol symbol, IFilterVisitor filterVisitor)
         {
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
                 return null;
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
-                        where VisitorHelper.CanVisit(eii)
+                        where filterVisitor.CanVisitApi(eii)
                         select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
             if (list.Count == 0)
             {
@@ -1015,14 +1015,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return SyntaxFactory.ImplementsClause(SyntaxFactory.SeparatedList(list.ToArray()));
         }
 
-        private ImplementsClauseSyntax GetImplementsClause(IPropertySymbol symbol)
+        private ImplementsClauseSyntax GetImplementsClause(IPropertySymbol symbol, IFilterVisitor filterVisitor)
         {
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
                 return null;
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
-                        where VisitorHelper.CanVisit(eii)
+                        where filterVisitor.CanVisitApi(eii)
                         select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
             if (list.Count == 0)
             {

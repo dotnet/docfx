@@ -52,6 +52,8 @@
     <Compile Include="ExtractMetadata\SupportedSourceType.cs" />
     <Compile Include="ExtractMetadata\CompilationUtility.cs" />
     <Compile Include="ExtractMetadata\ProjectDocumentCache.cs" />
+    <Compile Include="Filters\ConfigFilterRuleExcludeItem.cs" />
+    <Compile Include="Filters\ConfigFilterRuleIncludeItem.cs" />
     <Compile Include="Incremental\BuildInfo.cs" />
     <Compile Include="Incremental\CacheBase.cs" />
     <Compile Include="Incremental\ProjectLevelCache.cs" />
@@ -74,7 +76,14 @@
     <Compile Include="Resolvers\ResolverContext.cs" />
     <Compile Include="Resolvers\IResolverPipeline.cs" />
     <Compile Include="Resolvers\BuildToc.cs" />
+    <Compile Include="Visitors\CachedFilterVisitor.cs" />
     <Compile Include="Visitors\CompositeYamlModelGenerator.cs" />
+    <Compile Include="Filters\ConfigFilterRule.cs" />
+    <Compile Include="Filters\ConfigFilterRuleItem.cs" />
+    <Compile Include="Filters\ConfigFilterRuleItemUnion.cs" />
+    <Compile Include="Visitors\DelegatingFilterVisitor.cs" />
+    <Compile Include="Filters\ExtendedSymbolKind.cs" />
+    <Compile Include="Visitors\FilterVisitorExtensions.cs" />
     <Compile Include="Visitors\SpecIdCoreVisitor.cs" />
     <Compile Include="Visitors\SpecIdHelper.cs" />
     <Compile Include="Visitors\ReferenceItemVisitor.cs" />
@@ -86,6 +95,9 @@
     <Compile Include="Visitors\CSYamlModelGenerator.cs" />
     <Compile Include="Visitors\VBYamlModelGenerator.cs" />
     <Compile Include="Visitors\YamlModelGenerator.cs" />
+    <Compile Include="Visitors\IFilterVisitor.cs" />
+    <Compile Include="Visitors\DefaultFilterVisitor.cs" />
+    <Compile Include="Visitors\ConfigFilterVisitor.cs" />
     <Compile Include="Resolvers\YamlMetadataResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="YamlViewModelExtensions.cs" />

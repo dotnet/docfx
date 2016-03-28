@@ -1,0 +1,13 @@
+﻿apiRules:
+- exclude:
+    uidRegex: ^Test1\.Test2$
+    type: Namespace
+- include:
+    uidRegex: ^Test1\.Class3\.Class4$
+    type: Type
+- include:
+    uidRegex: ^Test1\.Class3\.Func2.*$
+    type: Member
+- exclude:
+    uidRegex: ^Test1\.Class3.*$
+    type: Member

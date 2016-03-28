@@ -18,6 +18,9 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("raw")]
         public bool? Raw { get; set; }
+
+        [JsonProperty("filter")]
+        public string FilterConfigFile { get; set; }
     }
 
 }

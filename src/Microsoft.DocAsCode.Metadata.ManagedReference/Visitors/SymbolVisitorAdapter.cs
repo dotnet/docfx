@@ -23,17 +23,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static readonly IReadOnlyList<string> EmptyListOfString = new string[0];
         private readonly YamlModelGenerator _generator;
         private Dictionary<string, ReferenceItem> _references;
-        public bool _preserveRawInlineComments;
+        private bool _preserveRawInlineComments;
 
         #endregion
 
         #region Constructor
 
-        public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, bool preserveRawInlineComments = false)
+        public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, bool preserveRawInlineComments = false, string filterConfigFile = null)
         {
             _generator = generator;
             Language = language;
             _preserveRawInlineComments = preserveRawInlineComments;
+            FilterVisitor = string.IsNullOrEmpty(filterConfigFile) ? new DefaultFilterVisitor() : new DefaultFilterVisitor().WithConfig(filterConfigFile).WithCache();
         }
 
         #endregion
@@ -42,13 +43,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public SyntaxLanguage Language { get; private set; }
 
+        public IFilterVisitor FilterVisitor { get; private set; }
+
         #endregion
 
         #region Overrides
 
         public override MetadataItem DefaultVisit(ISymbol symbol)
         {
-            if (!VisitorHelper.CanVisit(symbol))
+            if (!FilterVisitor.CanVisitApi(symbol))
             {
                 return null;
             }
@@ -127,7 +130,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             item.Items = VisitDescendants(
                 namespaces,
                 ns => ns.GetMembers().OfType<INamespaceSymbol>(),
-                ns => ns.GetMembers().OfType<INamedTypeSymbol>().Any(t => VisitorHelper.CanVisit(t)));
+                ns => ns.GetMembers().OfType<INamedTypeSymbol>().Any(t => FilterVisitor.CanVisitApi(t)));
             item.References = _references;
             return item;
         }
@@ -560,7 +563,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (symbol.AllInterfaces.Length > 0)
                 {
                     item.Implements = (from t in symbol.AllInterfaces
-                                       where VisitorHelper.CanVisit(t)
+                                       where FilterVisitor.CanVisitApi(t)
                                        select AddSpecReference(t, typeParamterNames)).ToList();
                     if (item.Implements.Count == 0)
                     {
@@ -589,7 +592,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             foreach (var m in from m in type.GetMembers()
                               where !(m is INamedTypeSymbol)
-                              where VisitorHelper.CanVisit(m, symbol == type || !symbol.IsSealed || symbol.TypeKind != TypeKind.Struct)
+                              where FilterVisitor.CanVisitApi(m, symbol == type || !symbol.IsSealed || symbol.TypeKind != TypeKind.Struct)
                               where IsInheritable(m)
                               select m)
             {

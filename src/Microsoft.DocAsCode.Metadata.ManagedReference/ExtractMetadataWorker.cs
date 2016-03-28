@@ -41,6 +41,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private readonly ExtractMetadataInputModel _rawInput;
         private readonly bool _rebuild;
         private readonly bool _preserveRawInlineComments;
+        private readonly string _filterConfigFile;
 
         static ExtractMetadataWorker()
         {
@@ -55,6 +56,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _validInput = ValidateInput(input);
             _rebuild = rebuild;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
+            _filterConfigFile = input.FilterConfigFile?.ToNormalizedFullPath();
         }
 
         public async Task ExtractMetadataAsync()
@@ -81,7 +83,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         }
 
         #region Internal For UT
-        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false)
+        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null)
         {
             if (compilation == null)
             {
@@ -92,11 +94,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             SymbolVisitorAdapter visitor;
             if (compilation.Language == "Visual Basic")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, preserveRawInlineComments);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, preserveRawInlineComments, filterConfigFile);
             }
             else if (compilation.Language == "C#")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, preserveRawInlineComments);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, preserveRawInlineComments, filterConfigFile);
             }
             else
             {
@@ -225,6 +227,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Exclude not supported files from inputs
             inputs = solutions.Concat(projects).Concat(sourceFiles);
 
+            // Add filter config file into inputs and cache
+            if (!string.IsNullOrEmpty(_filterConfigFile))
+            {
+                inputs = inputs.Concat(new string[] { _filterConfigFile });
+                documentCache.AddDocument(_filterConfigFile, _filterConfigFile);
+            }
+
             // No matter is incremental or not, we have to load solutions into memory
             await solutions.ForEachInParallelAsync(async path =>
             {
@@ -334,7 +343,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             foreach (var project in projectCache)
             {
-                var projectMetadata = await GetProjectMetadataFromCacheAsync(project.Value, outputFolder, documentCache, forceRebuild, _preserveRawInlineComments);
+                var projectMetadata = await GetProjectMetadataFromCacheAsync(project.Value, outputFolder, documentCache, forceRebuild, _preserveRawInlineComments, _filterConfigFile);
                 if (projectMetadata != null) projectMetadataList.Add(projectMetadata);
             }
 
@@ -345,7 +354,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
                 if (csCompilation != null)
                 {
-                    var csMetadata = await GetFileMetadataFromCacheAsync(csFiles, csCompilation, outputFolder, forceRebuild, _preserveRawInlineComments);
+                    var csMetadata = await GetFileMetadataFromCacheAsync(csFiles, csCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _filterConfigFile);
                     if (csMetadata != null) projectMetadataList.Add(csMetadata);
                 }
             }
@@ -357,7 +366,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
                 if (vbCompilation != null)
                 {
-                    var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild, _preserveRawInlineComments);
+                    var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _filterConfigFile);
                     if (vbMetadata != null) projectMetadataList.Add(vbMetadata);
                 }
             }
@@ -394,33 +403,35 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
         
-        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments)
+        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile)
         {
             var projectFilePath = project.FilePath;
             var k = documentCache.GetDocuments(projectFilePath);
             return GetMetadataFromProjectLevelCacheAsync(
                 project,
-                new[] { projectFilePath },
-                s => Task.FromResult(forceRebuild || s.AreFilesModified(k)),
+                new[] { projectFilePath, filterConfigFile },
+                s => Task.FromResult(forceRebuild || s.AreFilesModified(k.Concat(new string[] { filterConfigFile }))),
                 s => project.GetCompilationAsync(),
                 s =>
                 {
                     return new Dictionary<string, List<string>> { { s.FilePath.ToNormalizedFullPath(), k.ToList() } };
                 },
                 outputFolder,
-                preserveRawInlineComments);
+                preserveRawInlineComments,
+                filterConfigFile);
         }
 
-        private static Task <MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments)
+        private static Task <MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile)
         {
             if (files == null || !files.Any()) return null;
             return GetMetadataFromProjectLevelCacheAsync(
                 files,
-                files, s => Task.FromResult(forceRebuild || s.AreFilesModified(files)),
+                files.Concat(new string[] { filterConfigFile }), s => Task.FromResult(forceRebuild || s.AreFilesModified(files.Concat(new string[] { filterConfigFile }))),
                 s => Task.FromResult(compilation),
                 s => null,
                 outputFolder,
-                preserveRawInlineComments);
+                preserveRawInlineComments,
+                filterConfigFile);
         }
 
         private static async Task<MetadataItem> GetMetadataFromProjectLevelCacheAsync<T>(
@@ -430,7 +441,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Func<T, Task<Compilation>> compilationProvider,
             Func<T, IDictionary<string, List<string>>> containedFilesProvider,
             string outputFolder,
-            bool preserveRawInlineComments)
+            bool preserveRawInlineComments,
+            string filterConfigFile)
         {
             DateTime triggeredTime = DateTime.UtcNow;
             var projectLevelCache = ProjectLevelCache.Get(inputKey);
@@ -460,7 +472,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var compilation = await compilationProvider(input);
 
-            projectMetadata = GenerateYamlMetadata(compilation, preserveRawInlineComments);
+            projectMetadata = GenerateYamlMetadata(compilation, preserveRawInlineComments, filterConfigFile);
             var file = Path.GetRandomFileName();
             var cacheOutputFolder = projectLevelCache.OutputFolder;
             var path = Path.Combine(cacheOutputFolder, file);

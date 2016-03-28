@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
@@ -262,27 +262,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             switch (typeKind)
             {
                 case MemberType.Class:
-                    return GetClassSyntax((INamedTypeSymbol)symbol);
+                    return GetClassSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Enum:
-                    return GetEnumSyntax((INamedTypeSymbol)symbol);
+                    return GetEnumSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Interface:
-                    return GetInterfaceSyntax((INamedTypeSymbol)symbol);
+                    return GetInterfaceSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Struct:
-                    return GetStructSyntax((INamedTypeSymbol)symbol);
+                    return GetStructSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Delegate:
-                    return GetDelegateSyntax((INamedTypeSymbol)symbol);
+                    return GetDelegateSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Method:
-                    return GetMethodSyntax((IMethodSymbol)symbol);
+                    return GetMethodSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Operator:
-                    return GetOperatorSyntax((IMethodSymbol)symbol);
+                    return GetOperatorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Constructor:
-                    return GetConstructorSyntax((IMethodSymbol)symbol);
+                    return GetConstructorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Field:
-                    return GetFieldSyntax((IFieldSymbol)symbol);
+                    return GetFieldSyntax((IFieldSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Event:
-                    return GetEventSyntax((IEventSymbol)symbol);
+                    return GetEventSyntax((IEventSymbol)symbol, adapter.FilterVisitor);
                 case MemberType.Property:
-                    return GetPropertySyntax((IPropertySymbol)symbol);
+                    return GetPropertySyntax((IPropertySymbol)symbol, adapter.FilterVisitor);
                 default:
                     return null;
             }
@@ -299,10 +299,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #region Syntax
 
-        private string GetClassSyntax(INamedTypeSymbol symbol) =>
+        private string GetClassSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor) =>
             RemoveBraces(
                 SyntaxFactory.ClassDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetTypeModifiers(symbol)),
                     SyntaxFactory.Identifier(symbol.Name),
                     GetTypeParameters(symbol),
@@ -312,10 +312,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ).NormalizeWhitespace().ToString()
             );
 
-        private string GetEnumSyntax(INamedTypeSymbol symbol) =>
+        private string GetEnumSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor) =>
             RemoveBraces(
                 SyntaxFactory.EnumDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetTypeModifiers(symbol)),
                     SyntaxFactory.Identifier(symbol.Name),
                     GetEnumBaseTypeList(symbol),
@@ -325,10 +325,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 .ToString()
             );
 
-        private string GetInterfaceSyntax(INamedTypeSymbol symbol) =>
+        private string GetInterfaceSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor) =>
             RemoveBraces(
                 SyntaxFactory.InterfaceDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetTypeModifiers(symbol)
                     ),
@@ -342,10 +342,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ).NormalizeWhitespace().ToString()
             );
 
-        private string GetStructSyntax(INamedTypeSymbol symbol) =>
+        private string GetStructSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor) =>
             RemoveBraces(
                 SyntaxFactory.StructDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetTypeModifiers(symbol)
                     ),
@@ -359,9 +359,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ).NormalizeWhitespace().ToString()
             );
 
-        private string GetDelegateSyntax(INamedTypeSymbol symbol) =>
+        private string GetDelegateSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor) =>
             SyntaxFactory.DelegateDeclaration(
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetTypeModifiers(symbol)
                 ),
@@ -371,7 +371,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.ParameterList(
                     SyntaxFactory.SeparatedList(
                         from p in symbol.DelegateInvokeMethod.Parameters
-                        select GetParameter(p)
+                        select GetParameter(p, filterVisitor)
                     )
                 ),
                 SyntaxFactory.List(
@@ -379,28 +379,28 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 )
             ).NormalizeWhitespace().ToString();
 
-        private string GetMethodSyntax(IMethodSymbol symbol)
+        private string GetMethodSyntax(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             ExplicitInterfaceSpecifierSyntax eii = null;
             if (symbol.ExplicitInterfaceImplementations.Length > 0)
             {
-                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol)));
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol, filterVisitor)));
             }
             return SyntaxFactory.MethodDeclaration(
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
                 GetTypeSyntax(symbol.ReturnType),
                 eii,
                 SyntaxFactory.Identifier(
-                    GetMemberName(symbol)
+                    GetMemberName(symbol, filterVisitor)
                 ),
                 GetTypeParameters(symbol),
                 SyntaxFactory.ParameterList(
                     SyntaxFactory.SeparatedList(
                         from p in symbol.Parameters
-                        select GetParameter(p)
+                        select GetParameter(p, filterVisitor)
                     )
                 ),
                 SyntaxFactory.List(
@@ -411,7 +411,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ).NormalizeWhitespace().ToString();
         }
 
-        private string GetOperatorSyntax(IMethodSymbol symbol)
+        private string GetOperatorSyntax(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             var operatorToken = GetOperatorToken(symbol);
             if (operatorToken == null)
@@ -421,7 +421,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             else if (operatorToken.Value.Kind() == SyntaxKind.ImplicitKeyword || operatorToken.Value.Kind() == SyntaxKind.ExplicitKeyword)
             {
                 return SyntaxFactory.ConversionOperatorDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetMemberModifiers(symbol)
                     ),
@@ -430,7 +430,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SeparatedList(
                             from p in symbol.Parameters
-                            select GetParameter(p)
+                            select GetParameter(p, filterVisitor)
                         )
                     ),
                     null,
@@ -440,7 +440,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             else
             {
                 return SyntaxFactory.OperatorDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetMemberModifiers(symbol)
                     ),
@@ -449,7 +449,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SeparatedList(
                             from p in symbol.Parameters
-                            select GetParameter(p)
+                            select GetParameter(p, filterVisitor)
                         )
                     ),
                     null,
@@ -458,9 +458,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private string GetConstructorSyntax(IMethodSymbol symbol) =>
+        private string GetConstructorSyntax(IMethodSymbol symbol, IFilterVisitor filterVisitor) =>
             SyntaxFactory.ConstructorDeclaration(
-                GetAttributes(symbol),
+                GetAttributes(symbol, filterVisitor),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
@@ -468,19 +468,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.ParameterList(
                     SyntaxFactory.SeparatedList(
                         from p in symbol.Parameters
-                        select GetParameter(p)
+                        select GetParameter(p, filterVisitor)
                     )
                 ),
                 null,
                 null
             ).NormalizeWhitespace().ToString();
 
-        private string GetFieldSyntax(IFieldSymbol symbol)
+        private string GetFieldSyntax(IFieldSymbol symbol, IFilterVisitor filterVisitor)
         {
             if (symbol.ContainingType.TypeKind == TypeKind.Enum)
             {
                 return SyntaxFactory.EnumMemberDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.Identifier(symbol.Name),
                     GetDefaultValueClause(symbol)
                 ).NormalizeWhitespace().ToString();
@@ -488,7 +488,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             else
             {
                 return SyntaxFactory.FieldDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(
                         GetMemberModifiers(symbol)
                     ),
@@ -504,57 +504,57 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private string GetEventSyntax(IEventSymbol symbol)
+        private string GetEventSyntax(IEventSymbol symbol, IFilterVisitor filterVisitor)
         {
             ExplicitInterfaceSpecifierSyntax eii = null;
             if (symbol.ExplicitInterfaceImplementations.Length > 0)
             {
-                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol)));
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol, filterVisitor)));
             }
             return RemoveBraces(
                 SyntaxFactory.EventDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     SyntaxFactory.Token(SyntaxKind.EventKeyword),
                     GetTypeSyntax(symbol.Type),
                     eii,
-                    SyntaxFactory.Identifier(GetMemberName(symbol)),
+                    SyntaxFactory.Identifier(GetMemberName(symbol, filterVisitor)),
                     SyntaxFactory.AccessorList()
                 ).NormalizeWhitespace().ToString()
             );
         }
 
-        private string GetPropertySyntax(IPropertySymbol symbol)
+        private string GetPropertySyntax(IPropertySymbol symbol, IFilterVisitor filterVisitor)
         {
             ExplicitInterfaceSpecifierSyntax eii = null;
             if (symbol.ExplicitInterfaceImplementations.Length > 0)
             {
-                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol)));
+                eii = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(GetEiiContainerTypeName(symbol, filterVisitor)));
             }
             if (symbol.IsIndexer)
             {
                 return SyntaxFactory.IndexerDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     GetTypeSyntax(symbol.Type),
                     eii,
                     SyntaxFactory.BracketedParameterList(
                         SyntaxFactory.SeparatedList(
                             from p in symbol.Parameters
-                            select GetParameter(p))),
-                    SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol))))
+                            select GetParameter(p, filterVisitor))),
+                    SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol, filterVisitor))))
                     .NormalizeWhitespace()
                     .ToString();
             }
             else
             {
                 return SyntaxFactory.PropertyDeclaration(
-                    GetAttributes(symbol),
+                    GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     GetTypeSyntax(symbol.Type),
                     eii,
-                    SyntaxFactory.Identifier(GetMemberName(symbol)),
-                    SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol))))
+                    SyntaxFactory.Identifier(GetMemberName(symbol, filterVisitor)),
+                    SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol, filterVisitor))))
                     .NormalizeWhitespace()
                     .ToString();
             }
@@ -562,14 +562,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #endregion
 
-        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, bool inOneLine = false)
+        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, IFilterVisitor filterVisitor, bool inOneLine = false)
         {
             var attrs = symbol.GetAttributes();
             if (attrs.Length > 0)
             {
                 var attrList = (from attr in attrs
                                 where attr?.AttributeConstructor != null
-                                where VisitorHelper.CanVisit(attr.AttributeConstructor)
+                                where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
                                 select GetAttributeSyntax(attr)).ToList();
                 if (attrList.Count > 0)
                 {
@@ -624,7 +624,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             );
         }
 
-        private static string GetMemberName(IMethodSymbol symbol)
+        private static string GetMemberName(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             string name = symbol.Name;
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
@@ -633,7 +633,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
             {
-                if (VisitorHelper.CanVisit(symbol.ExplicitInterfaceImplementations[i]))
+                if (filterVisitor.CanVisitApi(symbol.ExplicitInterfaceImplementations[i]))
                 {
                     return symbol.ExplicitInterfaceImplementations[i].Name;
                 }
@@ -642,7 +642,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return symbol.Name;
         }
 
-        private static string GetMemberName(IEventSymbol symbol)
+        private static string GetMemberName(IEventSymbol symbol, IFilterVisitor filterVisitor)
         {
             string name = symbol.Name;
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
@@ -651,7 +651,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
             {
-                if (VisitorHelper.CanVisit(symbol.ExplicitInterfaceImplementations[i]))
+                if (filterVisitor.CanVisitApi(symbol.ExplicitInterfaceImplementations[i]))
                 {
                     return symbol.ExplicitInterfaceImplementations[i].Name;
                 }
@@ -660,7 +660,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return symbol.Name;
         }
 
-        private static string GetMemberName(IPropertySymbol symbol)
+        private static string GetMemberName(IPropertySymbol symbol, IFilterVisitor filterVisitor)
         {
             string name = symbol.Name;
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
@@ -669,7 +669,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
             {
-                if (VisitorHelper.CanVisit(symbol.ExplicitInterfaceImplementations[i]))
+                if (filterVisitor.CanVisitApi(symbol.ExplicitInterfaceImplementations[i]))
                 {
                     return symbol.ExplicitInterfaceImplementations[i].Name;
                 }
@@ -678,7 +678,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return symbol.Name;
         }
 
-        private static string GetEiiContainerTypeName(IMethodSymbol symbol)
+        private static string GetEiiContainerTypeName(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
@@ -686,7 +686,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
             {
-                if (VisitorHelper.CanVisit(symbol.ExplicitInterfaceImplementations[i]))
+                if (filterVisitor.CanVisitApi(symbol.ExplicitInterfaceImplementations[i]))
                 {
                     return NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter).GetName(symbol.ExplicitInterfaceImplementations[i].ContainingType);
                 }
@@ -695,7 +695,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static string GetEiiContainerTypeName(IEventSymbol symbol)
+        private static string GetEiiContainerTypeName(IEventSymbol symbol, IFilterVisitor filterVisitor)
         {
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
@@ -703,7 +703,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
             {
-                if (VisitorHelper.CanVisit(symbol.ExplicitInterfaceImplementations[i]))
+                if (filterVisitor.CanVisitApi(symbol.ExplicitInterfaceImplementations[i]))
                 {
                     return NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter).GetName(symbol.ExplicitInterfaceImplementations[i].ContainingType);
                 }
@@ -712,7 +712,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static string GetEiiContainerTypeName(IPropertySymbol symbol)
+        private static string GetEiiContainerTypeName(IPropertySymbol symbol, IFilterVisitor filterVisitor)
         {
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
@@ -720,7 +720,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
             {
-                if (VisitorHelper.CanVisit(symbol.ExplicitInterfaceImplementations[i]))
+                if (filterVisitor.CanVisitApi(symbol.ExplicitInterfaceImplementations[i]))
                 {
                     return NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter).GetName(symbol.ExplicitInterfaceImplementations[i].ContainingType);
                 }
@@ -729,10 +729,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static ParameterSyntax GetParameter(IParameterSymbol p)
+        private static ParameterSyntax GetParameter(IParameterSymbol p, IFilterVisitor filterVisitor)
         {
             return SyntaxFactory.Parameter(
-                GetAttributes(p, true),
+                GetAttributes(p, filterVisitor, true),
                 SyntaxFactory.TokenList(GetParameterModifiers(p)),
                 GetTypeSyntax(p.Type),
                 SyntaxFactory.Identifier(p.Name),
@@ -1427,14 +1427,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static IEnumerable<AccessorDeclarationSyntax> GetPropertyAccessors(IPropertySymbol propertySymbol)
+        private static IEnumerable<AccessorDeclarationSyntax> GetPropertyAccessors(IPropertySymbol propertySymbol, IFilterVisitor filterVisitor)
         {
-            var getAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.GetMethod, SyntaxKind.GetAccessorDeclaration, SyntaxKind.GetKeyword);
+            var getAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.GetMethod, SyntaxKind.GetAccessorDeclaration, SyntaxKind.GetKeyword, filterVisitor);
             if (getAccessor != null)
             {
                 yield return getAccessor;
             }
-            var setAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.SetMethod, SyntaxKind.SetAccessorDeclaration, SyntaxKind.SetKeyword);
+            var setAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.SetMethod, SyntaxKind.SetAccessorDeclaration, SyntaxKind.SetKeyword, filterVisitor);
             if (setAccessor != null)
             {
                 yield return setAccessor;
@@ -1443,7 +1443,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static AccessorDeclarationSyntax GetPropertyAccessorCore(
             IPropertySymbol propertySymbol, IMethodSymbol methodSymbol,
-            SyntaxKind kind, SyntaxKind keyword)
+            SyntaxKind kind, SyntaxKind keyword, IFilterVisitor filterVisitor)
         {
             if (methodSymbol == null)
             {
@@ -1457,7 +1457,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         propertySymbol.DeclaredAccessibility == Accessibility.ProtectedOrInternal)
                     {
                         return SyntaxFactory.AccessorDeclaration(kind,
-                            GetAttributes(methodSymbol),
+                            GetAttributes(methodSymbol, filterVisitor),
                             new SyntaxTokenList(),
                             SyntaxFactory.Token(keyword),
                             null,
@@ -1467,7 +1467,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return SyntaxFactory.AccessorDeclaration(
                             kind,
-                            GetAttributes(methodSymbol),
+                            GetAttributes(methodSymbol, filterVisitor),
                             SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
                             SyntaxFactory.Token(keyword),
                             null,
@@ -1475,7 +1475,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                 case Accessibility.Public:
                     return SyntaxFactory.AccessorDeclaration(kind,
-                        GetAttributes(methodSymbol),
+                        GetAttributes(methodSymbol, filterVisitor),
                         new SyntaxTokenList(),
                         SyntaxFactory.Token(keyword),
                         null,
@@ -1484,7 +1484,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     if (methodSymbol.ExplicitInterfaceImplementations.Length > 0)
                     {
                         return SyntaxFactory.AccessorDeclaration(kind,
-                            GetAttributes(methodSymbol),
+                            GetAttributes(methodSymbol, filterVisitor),
                             new SyntaxTokenList(),
                             SyntaxFactory.Token(keyword),
                             null,

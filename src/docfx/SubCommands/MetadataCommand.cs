@@ -56,6 +56,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     item.Raw |= options.PreserveRawInlineComments;
                     item.Force |= options.ForceRebuild;
+                    item.FilterConfigFile = options.FilterConfigFile ?? item.FilterConfigFile;
                 }
                 return config;
             }
@@ -67,7 +68,8 @@ namespace Microsoft.DocAsCode.SubCommands
                     Force = options.ForceRebuild,
                     Destination = options.OutputFolder,
                     Raw = options.PreserveRawInlineComments,
-                    Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true }
+                    Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true },
+                    FilterConfigFile = options.FilterConfigFile
                 });
                 return config;
             }
@@ -93,6 +95,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 PreserveRawInlineComments = configModel?.Raw ?? false,
                 ForceRebuild = configModel?.Force ?? false,
                 ApiFolderName = string.Empty,
+                FilterConfigFile = configModel?.FilterConfigFile,
             };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(Config.BaseDirectory, projects);
