@@ -78,15 +78,16 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             var templateName = "NoScript";
             string template = @"
 {{#model}}
-{{name}}
+name1={{name1}},
+name2={{name2}};
 {{/model}}
 ";
             var model = new
             {
-                model = new[]
+                model = new object[]
                {
-                   new {name = "test1"},
-                   new {name = "test2"},
+                   new {name1 = "test1"},
+                   new {name2 = "test2"},
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScript.yml");
@@ -96,8 +97,10 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
             Assert.True(File.Exists(outputFile));
             Assert.Equal(@"
-test1
-test2
+name1=test1,
+name2=;
+name1=,
+name2=test2;
 ", File.ReadAllText(outputFile));
         }
 
