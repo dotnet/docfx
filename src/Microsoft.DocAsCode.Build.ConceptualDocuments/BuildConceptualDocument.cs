@@ -37,6 +37,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             var result = host.Markup(markdown, model.FileAndType);
 
             var htmlInfo = SeperateHtml(result.Html);
+            model.Properties.IsUserDefinedTitle = false;
             content[Constants.PropertyName.Title] = htmlInfo.Title;
             content["rawTitle"] = htmlInfo.RawTitle;
             content[ConceptualKey] = htmlInfo.Content;
@@ -60,6 +61,10 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                         if (item.Key == DocumentTypeKey)
                         {
                             model.DocumentType = item.Value as string;
+                        }
+                        if (item.Key == Constants.PropertyName.Title)
+                        {
+                            model.Properties.IsUserDefinedTitle = true;
                         }
                     }
                 }
