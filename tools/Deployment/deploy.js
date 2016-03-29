@@ -417,8 +417,8 @@ switch (branchValue.toLowerCase()) {
       removePromiseFn(config.docfx.releaseFolder),
       execPromiseFn("build.cmd", ["Release", "PROD"], config.docfx.home),
       execPromiseFn(config.msbuild, [config.docfx.e2eproj, "/p:Configuration=Release", "/t:Build"]),
-      uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev),
-      execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder)
+      execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder),
+      uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev)
     ].reduce((p, fn) => p.then(fn), Promise.resolve()).catch(function(err) {
       logger.error(err);
       process.exit(1);
@@ -429,8 +429,8 @@ switch (branchValue.toLowerCase()) {
       removePromiseFn(config.docfx.releaseFolder),
       execPromiseFn("build.cmd", ["Release", "PROD"], config.docfx.home),
       execPromiseFn(config.msbuild, [config.docfx.e2eproj, "/p:Configuration=Release", "/t:Build"]),
-      uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master),
       execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder),
+      uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master),
       // update gh-pages
       git.clone(config.docfx.repoUrl, "gh-pages", "docfxsite"),
       copyPromiseFn(config.docfx.siteFolder, "tmp"),
