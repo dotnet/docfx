@@ -30,6 +30,8 @@
     <Compile Include="ReferenceViewModel.cs" />
     <Compile Include="SourceDetail.cs" />
     <Compile Include="SpecViewModel.cs" />
+    <Compile Include="TocItemViewModel.cs" />
+    <Compile Include="TocViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

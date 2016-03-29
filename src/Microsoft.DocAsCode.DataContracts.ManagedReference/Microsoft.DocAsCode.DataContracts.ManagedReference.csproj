@@ -17,8 +17,6 @@
     <Compile Include="PageViewModel.cs" />
     <Compile Include="SyntaxDetailViewModel.cs" />
     <Compile Include="SyntaxLanguage.cs" />
-    <Compile Include="TocItemViewModel.cs" />
-    <Compile Include="TocViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
