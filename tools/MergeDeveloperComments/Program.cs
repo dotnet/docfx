@@ -428,6 +428,17 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                         }
                     }
                 }
+                if (item.Syntax.TypeParameters != null)
+                {
+                    foreach (var p in item.Syntax.TypeParameters)
+                    {
+                        var description = commentModel.GetTypeParameter(p.Name);
+                        if (!string.IsNullOrEmpty(description))
+                        {
+                            p.Description = description;
+                        }
+                    }
+                }
                 if (item.Syntax.Return != null)
                 {
                     var returns = commentModel.Returns;
