@@ -22,6 +22,46 @@
 <div class="codewrapper">
   <pre><code class="lang-{{_lang}} hljs">{{syntax.content.0.value}}</code></pre>
 </div>
+{{#syntax.parameters.0}}
+<h5 class="parameters">{{__global.parameters}}</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.type}}</th>
+      <th>{{__global.name}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+{{/syntax.parameters.0}}
+{{#syntax.parameters}}
+    <tr>
+      <td>{{{type.specName.0.value}}}</td>
+      <td><em>{{{id}}}</em></td>
+      <td>{{{description}}}</td>
+    </tr>
+{{/syntax.parameters}}
+{{#syntax.parameters.0}}
+  </tbody>
+</table>
+{{/syntax.parameters.0}}
+{{#syntax.return}}
+<h5 class="returns">{{__global.returns}}</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.type}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{{type.specName.0.value}}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+  </tbody>
+</table>
+{{/syntax.return}}
 {{#syntax.typeParameters.0}}
 <h5 class="typeParameters">{{__global.typeParameters}}</h5>
 <table class="table table-bordered table-striped table-condensed">
