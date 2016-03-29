@@ -8,8 +8,8 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.IO;
 
     using Microsoft.DocAsCode;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
