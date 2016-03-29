@@ -104,8 +104,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 public static readonly Regex Escape = new Regex(@"^\\([\\`*{}\[\]()#+\-.!_>~|])", RegexOptionCompiled);
                 public static readonly Regex Url = new Regex(@"^(https?:\/\/[^\s<]+[^<.,:;""')\]\s])", RegexOptionCompiled);
                 public static readonly Regex Del = new Regex(@"^~~(?=\S)([\s\S]*?\S)~~", RegexOptionCompiled);
-                public static readonly Regex StrongEm = new Regex(@"^(\**?)\*{3}(?!\*)(?=\S)(.*?\S)\*(.*?(?<=\S))?\*{2}", RegexOptionCompiled);
-                public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*{2}(?!\*)(?=\S)(.*?\S)?\*{2}", RegexOptionCompiled);
+                public static readonly Regex StrongEm = new Regex(@"^(\**?)\*{3}(?!\*)(?=\S)([\s\S]*?\S)\*([\s\S]*?(?<=\S))?\*{2}", RegexOptionCompiled);
+                public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*{2}(?!\*)(?=\S)([\s\S]*?\S)?\*{2}", RegexOptionCompiled);
                 public static readonly Regex Em = new Regex(@"^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)(?<!\*)\*", RegexOptionCompiled);
                 public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~]|https?:\/\/| {2,}\n|$)", RegexOptionCompiled);
             }

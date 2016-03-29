@@ -395,6 +395,12 @@ break list!
             @"***A*B*C*D**",
             @"<p><strong><em>A</em>B<em>C</em>D</strong></p>
 ")]
+        [InlineData(
+            @"***A*B
+**  C***",
+            @"<p><strong><em>A</em>B
+**  C</strong>*</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
