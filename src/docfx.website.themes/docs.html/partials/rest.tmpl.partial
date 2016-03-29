@@ -39,12 +39,14 @@
             {{/required}}
           </li>
           <li>
-            <!--todo: complex type-->
             <code>{{type}}</code>
           </li>
         </ol>
         <section class="description">
           {{{description}}}
+          {{#schema}}
+            {{>partials/rest.child.param}}
+          {{/schema}}
         </section>
       </li>
       {{/parameters}}

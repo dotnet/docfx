@@ -1,0 +1,34 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+
+{{#properties.0}}
+<p>
+  <a class="child-toggle">view child properties</a>
+</p>
+{{/properties.0}}
+{{#properties}}
+<ul class="member-details">
+  <li>
+    <ol class="meta">
+      <li>
+      <code>{{key}}</code>
+      {{#value.required}}
+        <em>(required)</em>
+      {{/value.required}}
+      </li>
+      <li>
+        {{#value.type}}
+          <code>{{value.type}}</code>
+        {{/value.type}}
+      </li>
+    </ol>
+    <section class="description">
+      {{{value.description}}}
+      {{#value.items}}
+        {{!call this template recursively}}
+        {{>partials/rest.child.param}}
+      {{/value.items}}
+    </section>
+  </li>
+</ul>
+{{/properties}}

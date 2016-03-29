@@ -81,10 +81,9 @@ function transform(model, _attrs) {
             for (var key in obj.properties) {
                 if (obj.properties.hasOwnProperty(key)) {
                     var value = obj.properties[key];
-                    if (!value.description) {
-                        // set description to null incase mustache looks up
-                        value.description = null;
-                    }
+                    // set description to null incase mustache looks up
+                    value.description = value.description || null;
+
                     value = transformPropertiesValue(value);
                     array.push({key:key, value:value});
                 }
@@ -95,7 +94,8 @@ function transform(model, _attrs) {
     }
 
     function transformPropertiesValue(obj) {
-        if (obj.type === "array" && obj.items && obj.items.properties) {
+        if (obj.type === "array" && obj.items) {
+            obj.items.properties = obj.items.properties || null;
             obj.items = transformProperties(obj.items);
         }
         return obj;
