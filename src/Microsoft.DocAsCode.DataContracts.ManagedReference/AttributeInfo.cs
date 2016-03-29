@@ -19,8 +19,8 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [YamlMember(Alias = "arguments")]
         [JsonProperty("arguments")]
         public List<ArgumentInfo> Arguments { get; set; }
-        [YamlMember(Alias = "namedProperties")]
-        [JsonProperty("namedProperties")]
+        [YamlMember(Alias = "namedArguments")]
+        [JsonProperty("namedArguments")]
         public List<NamedArgumentInfo> NamedArguments { get; set; }
     }
 }

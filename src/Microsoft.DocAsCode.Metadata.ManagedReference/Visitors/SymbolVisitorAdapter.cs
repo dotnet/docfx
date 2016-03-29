@@ -650,14 +650,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var result =
                 (from attr in attributes
-                     // todo : if is visible attrs[i].AttributeConstructor
+                 where FilterVisitor.CanVisitAttribute(attr.AttributeConstructor)
                  select new AttributeInfo
                  {
                      Type = AddSpecReference(attr.AttributeClass),
                      Constructor = AddSpecReference(attr.AttributeConstructor),
                      Arguments = GetArguments(attr),
                      NamedArguments = GetNamedArguments(attr)
-                 }).ToList();
+                 } into attr
+                 where attr.Arguments != null
+                 select attr).ToList();
             if (result.Count == 0)
             {
                 return null;
@@ -667,12 +669,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private List<ArgumentInfo> GetArguments(AttributeData attr)
         {
-            var result =
-                (from arg in attr.ConstructorArguments
-                 select GetArgumentInfo(arg)).ToList();
-            if (result.Count == 0)
+            var result = new List<ArgumentInfo>();
+            foreach (var arg in attr.ConstructorArguments)
             {
-                return null;
+                var argInfo = GetArgumentInfo(arg);
+                if (argInfo == null)
+                {
+                    return null;
+                }
+                result.Add(argInfo);
             }
             return result;
         }
@@ -680,17 +685,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private ArgumentInfo GetArgumentInfo(TypedConstant arg)
         {
             var result = new ArgumentInfo();
-            result.Type = AddSpecReference(arg.Type);
             if (arg.Type.TypeKind == TypeKind.Array)
             {
                 // todo : value of array.
-                result.Value = "...";
+                return null;
             }
             else if (arg.Value != null)
             {
                 var type = arg.Value as INamedTypeSymbol;
                 if (type != null)
                 {
+                    if (!FilterVisitor.CanVisitApi(type))
+                    {
+                        return null;
+                    }
                     result.Value = AddSpecReference(type);
                 }
                 else
@@ -698,6 +706,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     result.Value = arg.Value;
                 }
             }
+            result.Type = AddSpecReference(arg.Type);
             return result;
         }
 
@@ -705,7 +714,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var result =
                 (from pair in attr.NamedArguments
-                 select GetNamedArgumentInfo(pair)).ToList();
+                 select GetNamedArgumentInfo(pair) into namedArgument
+                 where namedArgument != null
+                 select namedArgument).ToList();
             if (result.Count == 0)
             {
                 return null;
@@ -720,17 +731,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Name = pair.Key,
             };
             var arg = pair.Value;
-            result.Type = AddSpecReference(arg.Type);
             if (arg.Type.TypeKind == TypeKind.Array)
             {
                 // todo : value of array.
-                result.Value = "...";
+                return null;
             }
             else if (arg.Value != null)
             {
                 var type = arg.Value as INamedTypeSymbol;
                 if (type != null)
                 {
+                    if (!FilterVisitor.CanVisitApi(type))
+                    {
+                        return null;
+                    }
                     result.Value = AddSpecReference(type);
                 }
                 else
@@ -738,6 +752,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     result.Value = arg.Value;
                 }
             }
+            result.Type = AddSpecReference(arg.Type);
             return result;
         }
 
