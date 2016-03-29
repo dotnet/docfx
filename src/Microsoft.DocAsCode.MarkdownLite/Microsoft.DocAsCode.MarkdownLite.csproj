@@ -24,6 +24,9 @@
     <Compile Include="Basic\BlockTokens\MarkdownNonParagraphBlockToken.cs" />
     <Compile Include="Contexts\MarkdownInlineContext.cs" />
     <Compile Include="GfmEngineBuilder.cs" />
+    <Compile Include="Gfm\GfmStrongEmInlineRule.cs" />
+    <Compile Include="Gfm\GfmStrongInlineRule.cs" />
+    <Compile Include="Gfm\GfmEmInlineRule.cs" />
     <Compile Include="Gfm\GfmDelInlineRule.cs" />
     <Compile Include="Gfm\GfmDelInlineToken.cs" />
     <Compile Include="Gfm\GfmEscapeInlineRule.cs" />

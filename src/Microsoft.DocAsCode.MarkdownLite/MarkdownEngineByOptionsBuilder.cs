@@ -80,8 +80,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
             irb.Add(new MarkdownLinkInlineRule());
             irb.Add(new MarkdownRefLinkInlineRule());
             irb.Add(new MarkdownNoLinkInlineRule());
-            irb.Add(new MarkdownStrongInlineRule());
-            irb.Add(new MarkdownEmInlineRule());
+            if (Options.Gfm)
+            {
+                irb.Add(new GfmStrongEmInlineRule());
+                irb.Add(new GfmStrongInlineRule());
+                irb.Add(new GfmEmInlineRule());
+            }
+            else
+            {
+                irb.Add(new MarkdownStrongInlineRule());
+                irb.Add(new MarkdownEmInlineRule());
+            }
             irb.Add(new MarkdownCodeInlineRule());
             irb.Add(new MarkdownBrInlineRule());
             if (Options.Gfm)

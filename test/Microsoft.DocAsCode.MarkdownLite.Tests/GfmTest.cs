@@ -359,6 +359,42 @@ break list!
             @"a\<b <span>c</span>",
             @"<p>a&lt;b <span>c</span></p>
 ")]
+        [InlineData(
+            @"***A***",
+            @"<p><strong><em>A</em></strong></p>
+")]
+        [InlineData(
+            @"***A*B**",
+            @"<p><strong><em>A</em>B</strong></p>
+")]
+        [InlineData(
+            @"***A**B*",
+            @"<p><em>**A</em><em>B</em></p>
+")]
+        [InlineData(
+            @"***A*****B*****C***",
+            @"<p><strong><em>A</em></strong><strong>B</strong><strong><em>C</em></strong></p>
+")]
+        [InlineData(
+            @"****A****",
+            @"<p>*<strong><em>A</em></strong>*</p>
+")]
+        [InlineData(
+            @"***A*B **  C***",
+            @"<p><strong><em>A</em>B **  C</strong>*</p>
+")]
+        [InlineData(
+            @"**A*B***",
+            @"<p><strong>A*B</strong>*</p>
+")]
+        [InlineData(
+            @"*A**B***",
+            @"<p><em>A</em><em>B</em>**</p>
+")]
+        [InlineData(
+            @"***A*B*C*D**",
+            @"<p><strong><em>A</em>B<em>C</em>D</strong></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
