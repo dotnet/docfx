@@ -688,7 +688,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else if (arg.Value != null)
             {
-                result.Value = arg.Value;
+                var type = arg.Value as INamedTypeSymbol;
+                if (type != null)
+                {
+                    result.Value = AddSpecReference(type);
+                }
+                else
+                {
+                    result.Value = arg.Value;
+                }
             }
             return result;
         }
@@ -720,7 +728,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else if (arg.Value != null)
             {
-                result.Value = arg.Value;
+                var type = arg.Value as INamedTypeSymbol;
+                if (type != null)
+                {
+                    result.Value = AddSpecReference(type);
+                }
+                else
+                {
+                    result.Value = arg.Value;
+                }
             }
             return result;
         }
