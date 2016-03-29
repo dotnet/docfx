@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Diagnostics;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -201,6 +202,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             AddReference(symbol);
+
+            item.Attributes = GetAttributeInfo(symbol.GetAttributes());
+
             return item;
         }
 
@@ -248,6 +252,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 result.Overridden = AddSpecReference(symbol.OverriddenMethod, typeGenericParameters, methodGenericParameters);
             }
+
+            result.Attributes = GetAttributeInfo(symbol.GetAttributes());
+
             return result;
         }
 
@@ -271,6 +278,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
             AddSpecReference(symbol.Type, typeGenericParameters);
+
+            result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
             return result;
         }
@@ -301,6 +310,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             AddSpecReference(symbol.Type, typeGenericParameters);
+
+            result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
             return result;
         }
@@ -350,6 +361,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             _generator.GenerateProperty(symbol, result, this);
+
+            result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
             return result;
         }
@@ -594,6 +607,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var id = AddSpecReference(symbol.ReturnType, typeGenericParameters, methodGenericParameters);
                 result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+                result.Syntax.Return.Attributes = GetAttributeInfo(symbol.GetReturnTypeAttributes());
             }
 
             if (symbol.Parameters.Length > 0)
@@ -608,6 +622,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     var id = AddSpecReference(p.Type, typeGenericParameters, methodGenericParameters);
                     var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
                     Debug.Assert(param.Type != null);
+                    param.Attributes = GetAttributeInfo(p.GetAttributes());
                     result.Syntax.Parameters.Add(param);
                 }
             }
@@ -622,6 +637,89 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 PreserveRawInlineComments = preserve,
                 Source = item.Source
             };
+        }
+
+        private List<AttributeInfo> GetAttributeInfo(ImmutableArray<AttributeData> attributes)
+        {
+            if (attributes.Length == 0)
+            {
+                return null;
+            }
+            var result =
+                (from attr in attributes
+                     // todo : if is visible attrs[i].AttributeConstructor
+                 select new AttributeInfo
+                 {
+                     Type = AddSpecReference(attr.AttributeClass),
+                     Constructor = AddSpecReference(attr.AttributeConstructor),
+                     Arguments = GetArguments(attr),
+                     NamedArguments = GetNamedArguments(attr)
+                 }).ToList();
+            if (result.Count == 0)
+            {
+                return null;
+            }
+            return result;
+        }
+
+        private List<ArgumentInfo> GetArguments(AttributeData attr)
+        {
+            var result =
+                (from arg in attr.ConstructorArguments
+                 select GetArgumentInfo(arg)).ToList();
+            if (result.Count == 0)
+            {
+                return null;
+            }
+            return result;
+        }
+
+        private ArgumentInfo GetArgumentInfo(TypedConstant arg)
+        {
+            var result = new ArgumentInfo();
+            result.Type = AddSpecReference(arg.Type);
+            if (arg.Type.TypeKind == TypeKind.Array)
+            {
+                // todo : value of array.
+                result.Value = "...";
+            }
+            else if (arg.Value != null)
+            {
+                result.Value = arg.Value;
+            }
+            return result;
+        }
+
+        private List<NamedArgumentInfo> GetNamedArguments(AttributeData attr)
+        {
+            var result =
+                (from pair in attr.NamedArguments
+                 select GetNamedArgumentInfo(pair)).ToList();
+            if (result.Count == 0)
+            {
+                return null;
+            }
+            return result;
+        }
+
+        private NamedArgumentInfo GetNamedArgumentInfo(KeyValuePair<string, TypedConstant> pair)
+        {
+            var result = new NamedArgumentInfo
+            {
+                Name = pair.Key,
+            };
+            var arg = pair.Value;
+            result.Type = AddSpecReference(arg.Type);
+            if (arg.Type.TypeKind == TypeKind.Array)
+            {
+                // todo : value of array.
+                result.Value = "...";
+            }
+            else if (arg.Value != null)
+            {
+                result.Value = arg.Value;
+            }
+            return result;
         }
 
         private Action<string> GetAddReferenceDelegate(MetadataItem item)
