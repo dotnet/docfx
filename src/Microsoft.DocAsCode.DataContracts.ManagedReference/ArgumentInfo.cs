@@ -8,14 +8,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
     public class ArgumentInfo
     {
-        [YamlMember(Alias = "declareType")]
-        [JsonProperty("declareType")]
-        public string DeclareType { get; set; }
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
         public string Type { get; set; }
         [YamlMember(Alias = "value")]
         [JsonProperty("value")]
-        public string Value { get; set; }
+        public object Value { get; set; }
     }
 }
