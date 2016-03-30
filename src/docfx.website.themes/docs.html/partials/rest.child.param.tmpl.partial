@@ -6,8 +6,8 @@
   <a class="child-toggle">view child properties</a>
 </p>
 {{/properties.0}}
-{{#properties}}
 <ul class="member-details">
+  {{#properties}}
   <li>
     <ol class="meta">
       <li>
@@ -16,11 +16,11 @@
         <em>(required)</em>
       {{/value.required}}
       </li>
+      {{#value.type}}
       <li>
-        {{#value.type}}
-          <code>{{value.type}}</code>
-        {{/value.type}}
+        <code>{{value.type}}</code>
       </li>
+      {{/value.type}}
     </ol>
     <section class="description">
       {{{value.description}}}
@@ -30,5 +30,5 @@
       {{/value.items}}
     </section>
   </li>
+  {{/properties}}
 </ul>
-{{/properties}}
