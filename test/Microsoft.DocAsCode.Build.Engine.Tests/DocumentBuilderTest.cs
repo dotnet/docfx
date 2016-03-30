@@ -7,9 +7,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Reflection;
 
     using Xunit;
 
+    using Microsoft.DocAsCode.Build.ConceptualDocuments;
+    using Microsoft.DocAsCode.Build.ManagedReference;
+    using Microsoft.DocAsCode.Build.ResourceFiles;
+    using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
@@ -126,7 +131,7 @@ tagRules : [
             try
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
-                using (var builder = new DocumentBuilder())
+                using (var builder = new DocumentBuilder(LoadAssemblies()))
                 {
                     var applyTemplateSettings = new ApplyTemplateSettings(documentsBaseDir, outputBaseDir);
                     applyTemplateSettings.RawModelExportSettings.Export = true;
@@ -219,6 +224,14 @@ tagRules : [
                 Directory.Delete(outputBaseDir, true);
                 File.Delete(resourceMetaFile);
             }
+        }
+
+        private IEnumerable<Assembly> LoadAssemblies()
+        {
+            yield return typeof(ConceptualDocumentProcessor).Assembly;
+            yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
+            yield return typeof(ResourceDocumentProcessor).Assembly;
+            yield return typeof(TocDocumentProcessor).Assembly;
         }
     }
 }

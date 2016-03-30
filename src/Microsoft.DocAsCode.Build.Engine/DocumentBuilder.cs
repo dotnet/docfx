@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (parameters.MaxParallelism <= 0)
             {
-                throw new ArgumentException("MaxParallelism cannot less than or equal 0.", nameof(parameters) + "." + nameof(parameters.MaxParallelism));
+                parameters.MaxParallelism = Environment.ProcessorCount;
             }
             if (parameters.Metadata == null)
             {

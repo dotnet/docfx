@@ -196,7 +196,7 @@ namespace Test1
                 Assert.Equal("Test1.Class1<T>.Event1", event1.DisplayQualifiedNames.First().Value);
                 Assert.Equal("Test1.Class1`1.Event1", event1.Name);
                 Assert.Null(event1.Syntax.Parameters);
-                Assert.Null(event1.Syntax.Return);
+                Assert.Equal("EventHandler", event1.Syntax.Return.Type);
                 Assert.Equal("public event EventHandler Event1", event1.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public" }, event1.Modifiers[SyntaxLanguage.CSharp]);
             }
@@ -311,7 +311,7 @@ namespace Test1
                 Assert.Equal("Test1.IFoo.FooBar", @event.Name);
                 Assert.Equal("event EventHandler FooBar", @event.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Null(@event.Syntax.Parameters);
-                Assert.Null(@event.Syntax.Return);
+                Assert.Equal("EventHandler", @event.Syntax.Return.Type);
                 Assert.Equal(new string[0], @event.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
