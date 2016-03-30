@@ -4,7 +4,7 @@
 
 |            | Windows  |
 | ---------- | --------- | ------
-| **master** | [![masterstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCi_MasterBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCi_MasterBranch)
+| **master** | [![masterstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCiWithScripts_DocfxCiForMasterBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForMasterBranch)
 | **dev**    | [![devstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCiWithScripts_DocfxCiForDevBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForDevBranch)
 
 ## What is it?
