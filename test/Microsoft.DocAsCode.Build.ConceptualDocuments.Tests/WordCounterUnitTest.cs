@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Build.ConceptualDocuments.Tests
 {
-    using Microsoft.DocAsCode.EntityModel.Plugins;
-
     using Xunit;
 
     [Trait("Owner", "yih")]

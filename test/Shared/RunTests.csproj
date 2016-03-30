@@ -15,6 +15,30 @@
       <Project>{f84bb644-a042-4364-ad2d-bf9d5bbd44bc}</Project>
       <Name>docfx.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common.Tests\Microsoft.DocAsCode.Build.Common.Tests.csproj">
+      <Project>{6aa8604a-258b-4992-97c2-3f8d4ac5f191}</Project>
+      <Name>Microsoft.DocAsCode.Build.Common.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.ConceptualDocuments.Tests\Microsoft.DocAsCode.Build.ConceptualDocuments.Tests.csproj">
+      <Project>{cee4a009-b332-49a7-8a4f-7585e5ebad00}</Project>
+      <Name>Microsoft.DocAsCode.Build.ConceptualDocuments.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.Engine.Tests\Microsoft.DocAsCode.Build.Engine.Tests.csproj">
+      <Project>{da4aa0ba-02d1-4894-93a5-93d962135acb}</Project>
+      <Name>Microsoft.DocAsCode.Build.Engine.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.RestApi.Tests\Microsoft.DocAsCode.Build.RestApi.Tests.csproj">
+      <Project>{fe8b442e-0896-4414-aa8c-266cada198df}</Project>
+      <Name>Microsoft.DocAsCode.Build.RestApi.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.TableOfContents.Tests\Microsoft.DocAsCode.Build.TableOfContents.Tests.csproj">
+      <Project>{1febd1f7-5107-4f26-9e76-597ac9593db7}</Project>
+      <Name>Microsoft.DocAsCode.Build.TableOfContents.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Common.Tests\Microsoft.DocAsCode.Common.Tests.csproj">
+      <Project>{efab7a53-d047-422e-a3fb-ecc834944ce6}</Project>
+      <Name>Microsoft.DocAsCode.Common.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.EntityModel.Tests\Microsoft.DocAsCode.EntityModel.Tests.csproj">
       <Project>{efaa7a53-d047-422e-a3fb-ecc834944ce6}</Project>
       <Name>Microsoft.DocAsCode.EntityModel.Tests</Name>

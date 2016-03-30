@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Build.RestApi.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -10,11 +10,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
 
     using Xunit;
 
+    using Microsoft.DocAsCode.Build.Engine;
+    using Microsoft.DocAsCode.Build.RestApi.ViewModels;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
     using Microsoft.DocAsCode.Tests.Common;
 
     [Trait("Owner", "lianwei")]

@@ -1,5 +1,5 @@
 ﻿
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
     using System.Collections.Generic;
     using System.IO;

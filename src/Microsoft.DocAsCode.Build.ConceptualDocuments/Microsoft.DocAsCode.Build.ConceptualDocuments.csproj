@@ -31,6 +31,7 @@
     <Compile Include="BuildConceptualDocument.cs" />
     <Compile Include="ConceptualDocumentProcessor.cs" />
     <Compile Include="CountWord.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

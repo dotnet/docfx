@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
     using System.Collections.Generic;
     using System.Linq;
-    using EntityModel;
+
     using Xunit;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "Parser")]
-    public class ParsersUnitTest
+    public class TripleSlashParserUnitTest
     {
         [Trait("Related", "TripleSlashComments")]
         [Fact]
@@ -128,39 +128,6 @@ This is another example
             Assert.Equal(1, seeAlsos.Count);
             Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].Type);
             Assert.Null(seeAlsos[0].Description);
-        }
-
-        [Trait("Related", "YamlHeader")]
-        [Fact]
-        public void TestYamlHeaderParser()
-        {
-            // spaces are allowed
-            string input = @"
-                            ---      
-                             uid: abc
-                            ---
-                            ";
-            var yamlHeaders = YamlHeaderParser.Select(input);
-            Assert.Equal(1, yamlHeaders.Count);
-            Assert.Equal("abc", yamlHeaders[0].Id);
-
-            // --- Should also work
-            input = @"---      
-                             uid: abc
-                            ---
-                            ";
-            yamlHeaders = YamlHeaderParser.Select(input);
-            Assert.Equal(1, yamlHeaders.Count);
-            Assert.Equal("abc", yamlHeaders[0].Id);
-
-            // --- should be start with uid
-            input = @"
-                            ---      
-                             id: abc
-                            ---
-                            ";
-            yamlHeaders = YamlHeaderParser.Select(input);
-            Assert.Equal(0, yamlHeaders.Count);
         }
     }
 }

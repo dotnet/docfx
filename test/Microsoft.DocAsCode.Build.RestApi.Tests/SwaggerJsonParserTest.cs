@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Build.RestApi.Tests
 {
     using System.IO;
 
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    using Microsoft.DocAsCode.EntityModel.Swagger;
+    using Microsoft.DocAsCode.Build.RestApi.Swagger;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "SwaggerJsonParser")]
