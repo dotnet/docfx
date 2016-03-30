@@ -33,12 +33,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public TemplateCollection(ResourceCollection provider) : base(ReadTemplate(provider), StringComparer.OrdinalIgnoreCase)
+        public TemplateCollection(ResourceCollection provider, int maxParallelism) : base(ReadTemplate(provider, maxParallelism), StringComparer.OrdinalIgnoreCase)
         {
             base.TryGetValue("default", out _defaultTemplate);
         }
 
-        private static Dictionary<string, List<Template>> ReadTemplate(ResourceCollection resource)
+        private static Dictionary<string, List<Template>> ReadTemplate(ResourceCollection resource, int maxParallelism)
         {
             // type <=> list of template with different extension
             var dict = new Dictionary<string, List<Template>>(StringComparer.OrdinalIgnoreCase);
@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Logger.Log(LogLevel.Warning, $"Multiple template scripts for type '{group.Key}'(case insensitive) are found, the one from '{currentScripts[0].Key}' is taken.");
                     }
 
-                    var template = new Template(currentTemplate.Value, currentTemplate.Key, currentScript.Value, resource);
+                    var template = new Template(currentTemplate.Value, currentTemplate.Key, currentScript.Value, resource, maxParallelism);
                     List<Template> templateList;
                     if (dict.TryGetValue(template.Type, out templateList))
                     {

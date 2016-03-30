@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public bool IsPrimary { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
 
-        public Template(string template, string templateName, string script, ResourceCollection resourceCollection)
+        public Template(string template, string templateName, string script, ResourceCollection resourceCollection, int maxParallelism)
         {
             if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
             if (string.IsNullOrEmpty(template)) throw new ArgumentNullException(nameof(template));
@@ -42,12 +42,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (script != null)
             {
                 ScriptName = templateName + ".js";
-                _enginePool = ResourcePool.Create(() => CreateEngine(script), 4); // todo : set parallelism.
+                _enginePool = ResourcePool.Create(() => CreateEngine(script), maxParallelism);
             }
 
             if (resourceCollection != null)
             {
-                _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, templateName, template), 4); // todo : set parallelism.
+                _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, templateName, template), maxParallelism);
             }
 
             Resources = ExtractDependentResources();

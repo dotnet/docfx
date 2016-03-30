@@ -73,6 +73,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentException("Source files cannot be null.", nameof(parameters) + "." + nameof(parameters.Files));
             }
+            if (parameters.MaxParallelism <= 0)
+            {
+                throw new ArgumentException("MaxParallelism cannot less than or equal 0.", nameof(parameters) + "." + nameof(parameters.MaxParallelism));
+            }
             if (parameters.Metadata == null)
             {
                 parameters.Metadata = ImmutableDictionary<string, object>.Empty;
@@ -80,17 +84,18 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             using (new LoggerPhaseScope(PhaseName))
             {
+                Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism.ToString()}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 var context = new DocumentBuildContext(
                     Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
                     parameters.Files.EnumerateFiles(),
-                    parameters.ExternalReferencePackages
-                    );
+                    parameters.ExternalReferencePackages,
+                    parameters.MaxParallelism);
                 Logger.LogVerbose("Start building document...");
-                IEnumerable<InnerBuildContext> innerContexts = Enumerable.Empty<InnerBuildContext>();
+                var innerContexts = Enumerable.Empty<InnerBuildContext>();
                 try
                 {
-                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor())
+                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism))
                     {
                         innerContexts = GetInnerContexts(parameters, Processors, processor).ToList();
                         var manifest = new List<ManifestItemWithContext>();
@@ -154,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Logger.LogVerbose($"Plug-in {processor.Name}: Preprocessing...");
             Prebuild(processor, hostService);
             Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
-            BuildArticle(processor, hostService);
+            BuildArticle(processor, hostService, context.MaxParallelism);
             Logger.LogVerbose($"Plug-in {processor.Name}: Postprocessing...");
             Postbuild(processor, hostService);
             Logger.LogVerbose($"Plug-in {processor.Name}: Generating manifest...");
@@ -235,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 });
         }
 
-        private void BuildArticle(IDocumentProcessor processor, HostService hostService)
+        private void BuildArticle(IDocumentProcessor processor, HostService hostService, int maxParallelism)
         {
             hostService.Models.RunAll(
                 m =>
@@ -252,8 +257,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             });
                     }
                 },
-                // todo : set parallelism
-                4);
+                maxParallelism);
         }
 
         private void Postbuild(IDocumentProcessor processor, HostService hostService)
@@ -438,7 +442,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning(sb.ToString());
             }
 
-            return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(4) // todo : set parallelism
+            return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                    select new InnerBuildContext(
                        new HostService(
                            parameters.Files.DefaultBaseDir,

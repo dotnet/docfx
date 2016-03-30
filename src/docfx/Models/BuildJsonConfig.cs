@@ -77,5 +77,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("dryRun")]
         public bool? DryRun { get; set; }
+
+        [JsonProperty("maxParallelism")]
+        public int? MaxParallelism { get; set; }
     }
 }

@@ -179,6 +179,14 @@ namespace Microsoft.DocAsCode.SubCommands
 
             parameters.ApplyTemplateSettings = applyTemplateSettings;
             parameters.TemplateManager = templateManager;
+            if (config.MaxParallelism == null || config.MaxParallelism.Value <= 0)
+            {
+                parameters.MaxParallelism = Environment.ProcessorCount;
+            }
+            else
+            {
+                parameters.MaxParallelism = config.MaxParallelism.Value;
+            }
             return parameters;
         }
 

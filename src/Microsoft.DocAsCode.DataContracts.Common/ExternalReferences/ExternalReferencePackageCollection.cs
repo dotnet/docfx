@@ -11,13 +11,13 @@
     {
         private readonly LruList<ReferenceViewModelCacheItem> _cache = LruList<ReferenceViewModelCacheItem>.Create(0x100);
 
-        public ExternalReferencePackageCollection(IEnumerable<string> packageFiles)
+        public ExternalReferencePackageCollection(IEnumerable<string> packageFiles, int maxParallelism)
         {
             if (packageFiles == null)
             {
                 throw new ArgumentNullException(nameof(packageFiles));
             }
-            Readers = (from file in packageFiles.AsParallel()
+            Readers = (from file in packageFiles.AsParallel().WithDegreeOfParallelism(maxParallelism)
                        let reader = ExternalReferencePackageReader.CreateNoThrow(file)
                        where reader != null
                        select reader).ToImmutableList();

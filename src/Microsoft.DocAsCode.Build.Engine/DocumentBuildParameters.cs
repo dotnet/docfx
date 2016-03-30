@@ -15,5 +15,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public FileMetadata FileMetadata { get; set; }
         public TemplateManager TemplateManager { get; set; }
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
+        public int MaxParallelism { get; set; }
     }
 }

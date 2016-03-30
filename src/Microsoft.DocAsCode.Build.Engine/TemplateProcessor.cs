@@ -35,11 +35,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         /// <param name="templateName"></param>
         /// <param name="resourceProvider"></param>
-        public TemplateProcessor(ResourceCollection resourceProvider)
+        public TemplateProcessor(ResourceCollection resourceProvider, int maxParallelism)
         {
             _resourceProvider = resourceProvider;
             _global = LoadGlobalJson(resourceProvider);
-            Templates = new TemplateCollection(resourceProvider);
+            Templates = new TemplateCollection(resourceProvider, maxParallelism);
         }
 
         public string UpdateFileExtension(string path, string documentType)
@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         manifest.Add(manifestItem);
                     }
                 },
-                4); // todo : set parallelism.
+                context.MaxParallelism); // todo : set parallelism.
 
             return manifest.ToList();
         }

@@ -77,5 +77,8 @@ namespace Microsoft.DocAsCode
 
         [Option("dryRun", HelpText = "If set to true, template will not be actually applied to the documents. This option is always used with --exportRawModel or --exportViewModel is set so that only raw model files or view model files are generated.")]
         public bool DryRun { get; set; }
+
+        [Option("maxParallelism", HelpText = "Set the max parallelism, 0 is auto.")]
+        public int? MaxParallelism { get; set; }
     }
 }

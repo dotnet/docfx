@@ -13,13 +13,14 @@
 
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
-        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty) { }
+        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, 1) { }
 
-        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages)
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, int maxParallelism)
         {
             BuildOutputFolder = buildOutputFolder;
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
+            MaxParallelism = maxParallelism;
         }
 
         public string BuildOutputFolder { get; }
@@ -27,6 +28,8 @@
         public ImmutableArray<string> ExternalReferencePackages { get; }
 
         public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
+
+        public int MaxParallelism { get; }
 
         public Dictionary<string, string> FileMap { get; private set; } = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
@@ -52,7 +55,7 @@
 
             if (ExternalReferencePackages.Length > 0)
             {
-                using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages))
+                using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages, MaxParallelism))
                 {
                     foreach (var uid in xref)
                     {

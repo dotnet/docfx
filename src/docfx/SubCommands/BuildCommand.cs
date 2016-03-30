@@ -138,14 +138,30 @@ namespace Microsoft.DocAsCode.SubCommands
                 config.ExternalReference.Add(new FileMappingItem() { Files = new FileItems(options.ExternalReference), SourceFolder = optionsBaseDirectory });
             }
 
-            if (options.Serve) config.Serve = options.Serve;
-            if (options.Port.HasValue) config.Port = options.Port.Value.ToString();
+            if (options.Serve)
+            {
+                config.Serve = options.Serve;
+            }
+            if (options.Port.HasValue)
+            {
+                config.Port = options.Port.Value.ToString();
+            }
             config.Force |= options.ForceRebuild;
             config.ExportRawModel |= options.ExportRawModel;
             config.ExportViewModel |= options.ExportViewModel;
-            if (!string.IsNullOrEmpty(options.RawModelOutputFolder)) config.RawModelOutputFolder = Path.GetFullPath(options.RawModelOutputFolder);
-            if (!string.IsNullOrEmpty(options.ViewModelOutputFolder)) config.ViewModelOutputFolder = Path.GetFullPath(options.ViewModelOutputFolder);
+            if (!string.IsNullOrEmpty(options.RawModelOutputFolder))
+            {
+                config.RawModelOutputFolder = Path.GetFullPath(options.RawModelOutputFolder);
+            }
+            if (!string.IsNullOrEmpty(options.ViewModelOutputFolder))
+            {
+                config.ViewModelOutputFolder = Path.GetFullPath(options.ViewModelOutputFolder);
+            }
             config.DryRun |= options.DryRun;
+            if (options.MaxParallelism != null)
+            {
+                config.MaxParallelism = options.MaxParallelism;
+            }
 
             config.FileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
             config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
