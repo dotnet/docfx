@@ -280,7 +280,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _generator.GenerateField(symbol, result, this);
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
-            AddSpecReference(symbol.Type, typeGenericParameters);
+
+            var id = AddSpecReference(symbol.Type, typeGenericParameters);
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+            Debug.Assert(result.Syntax.Return.Type != null);
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
@@ -312,7 +315,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.Overridden = AddSpecReference(symbol.OverriddenEvent, typeGenericParameters);
             }
 
-            AddSpecReference(symbol.Type, typeGenericParameters);
+            var id = AddSpecReference(symbol.Type, typeGenericParameters);
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+            Debug.Assert(result.Syntax.Return.Type != null);
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 

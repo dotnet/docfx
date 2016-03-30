@@ -75,9 +75,19 @@ function groupChildren(model, typeChildrenItems) {
     if (!grouped.hasOwnProperty(type)) {
       grouped[type] = [];
     }
+    // special handle for field
+    if (type === "field" && c.syntax) {
+      c.syntax.fieldValue = c.syntax.return;
+      c.syntax.return = undefined;
+    }
     // special handle for property
     if (type === "property" && c.syntax) {
       c.syntax.propertyValue = c.syntax.return;
+      c.syntax.return = undefined;
+    }
+    // special handle for event
+    if (type === "event" && c.syntax) {
+      c.syntax.eventType = c.syntax.return;
       c.syntax.return = undefined;
     }
     grouped[type].push(c);

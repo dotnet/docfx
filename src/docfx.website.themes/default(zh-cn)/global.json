@@ -24,7 +24,9 @@
   "name": "名称",
   "description": "描述",
   "returns": "返回",
+  "fieldValue": "字段值",
   "propertyValue": "属性值",
+  "eventType": "事件类型",
   "exceptions": "异常",
   "condition": "条件"
 }

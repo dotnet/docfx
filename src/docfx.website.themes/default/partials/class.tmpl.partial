@@ -131,8 +131,8 @@
       <td><em>{{{id}}}</em></td>
       <td>{{{description}}}</td>
     </tr>
-  {{/parameters}}
-  {{#parameters.0}}
+{{/parameters}}
+{{#parameters.0}}
   </tbody>
 </table>
 {{/parameters.0}}
@@ -174,6 +174,23 @@
   </tbody>
 </table>
 {{/typeParameters.0}}
+{{#fieldValue}}
+<h5 class="fieldValue">{{__global.fieldValue}}</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.type}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{{type.specName.0.value}}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+  </tbody>
+</table>
+{{/fieldValue}}
 {{#propertyValue}}
 <h5 class="propertyValue">{{__global.propertyValue}}</h5>
 <table class="table table-bordered table-striped table-condensed">
@@ -191,6 +208,23 @@
   </tbody>
 </table>
 {{/propertyValue}}
+{{#eventType}}
+<h5 class="eventType">{{__global.eventType}}</h5>
+<table class="table table-bordered table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.type}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{{type.specName.0.value}}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+  </tbody>
+</table>
+{{/eventType}}
 {{/syntax}}
 {{#exceptions.0}}
 <h5 class="exceptions">{{__global.exceptions}}</h5>

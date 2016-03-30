@@ -24,7 +24,9 @@
   "name": "Name",
   "description": "Description",
   "returns": "Returns",
+  "fieldValue": "Field Value",
   "propertyValue": "Property Value",
+  "eventType": "Event Type",
   "exceptions": "Exceptions",
   "condition": "Condition"
 }
