@@ -114,9 +114,45 @@
       <Project>{ab97bedf-d207-42e9-a56f-c9dd395bfcdd}</Project>
       <Name>docfx</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj">
+      <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.Build.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.ConceptualDocuments\Microsoft.DocAsCode.Build.ConceptualDocuments.csproj">
+      <Project>{60f21edb-35f9-220d-c1b6-3ed482f76b51}</Project>
+      <Name>Microsoft.DocAsCode.Build.ConceptualDocuments</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj">
+      <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b51}</Project>
+      <Name>Microsoft.DocAsCode.Build.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj">
+      <Project>{60f21edb-35f9-420d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.Build.ManagedReference</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.ResourceFiles\Microsoft.DocAsCode.Build.ResourceFiles.csproj">
+      <Project>{60f21edb-35f9-220d-b1b6-3ed882f76b51}</Project>
+      <Name>Microsoft.DocAsCode.Build.ResourceFiles</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.RestApi\Microsoft.DocAsCode.Build.RestApi.csproj">
+      <Project>{60f21edb-35f9-420d-b1b6-2ed482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.Build.RestApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.csproj">
+      <Project>{60f21edb-35f9-220d-b1b6-3ed482f76b51}</Project>
+      <Name>Microsoft.DocAsCode.Build.TableOfContents</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
       <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
       <Name>Microsoft.DocAsCode.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
+      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj">
+      <Project>{60f21edb-35f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.ManagedReference</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
       <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
@@ -130,6 +166,14 @@
       <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
       <Name>Microsoft.DocAsCode.Glob</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
+      <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
+      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj">
+      <Project>{60f22edb-35f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.Metadata.ManagedReference</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
       <Project>{42F7A3B4-464B-403C-8352-5FBF40C696FF}</Project>
       <Name>Microsoft.DocAsCode.Plugins</Name>
@@ -137,6 +181,10 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
       <Project>{619EC13D-8939-4F23-B7DC-7A98964BB9A4}</Project>
       <Name>Microsoft.DocAsCode.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj">
+      <Project>{87efc656-3081-442e-902b-822714514768}</Project>
+      <Name>Microsoft.DocAsCode.YamlSerialization</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

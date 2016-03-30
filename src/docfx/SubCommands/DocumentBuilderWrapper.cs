@@ -9,12 +9,15 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.IO;
     using System.Reflection;
     using System.Runtime.Remoting.Lifetime;
-    using System.Runtime.Serialization.Formatters.Binary;
 
     using Microsoft.DocAsCode;
+    using Microsoft.DocAsCode.Build.ConceptualDocuments;
+    using Microsoft.DocAsCode.Build.Engine;
+    using Microsoft.DocAsCode.Build.ManagedReference;
+    using Microsoft.DocAsCode.Build.ResourceFiles;
+    using Microsoft.DocAsCode.Build.RestApi;
+    using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.EntityModel.Builders;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -96,6 +99,12 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
         {
+            yield return typeof(ConceptualDocumentProcessor).Assembly;
+            yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
+            yield return typeof(ResourceDocumentProcessor).Assembly;
+            yield return typeof(RestApiDocumentProcessor).Assembly;
+            yield return typeof(TocDocumentProcessor).Assembly;
+
             if (pluginDirectory == null || !Directory.Exists(pluginDirectory))
             {
                 yield break;

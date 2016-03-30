@@ -160,7 +160,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
             // TODO: may lead to potential problems with have vm.Additional["syntax"] as SyntaxDetailViewModel
             // It is now working as syntax is set only in FillReferenceInformation and not from YAML deserialization
-            return new ApiReferenceBuildOutput
+            var result = new ApiReferenceBuildOutput
             {
                 Uid = vm.Uid,
                 Id = Utility.GetHtmlId(vm.Uid),
@@ -172,8 +172,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNameInDevLangs, supportedLanguages),
                 Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.FullName, vm.Name), supportedLanguages, vm.Specs),
                 Metadata = vm.Additional,
-                Syntax = ApiSyntaxBuildOutput.FromModel(vm.Additional["syntax"] as SyntaxDetailViewModel, supportedLanguages),
             };
+            object syntax;
+            if (vm.Additional.TryGetValue("syntax", out syntax))
+            {
+                result.Syntax = ApiSyntaxBuildOutput.FromModel(syntax as SyntaxDetailViewModel, supportedLanguages);
+            }
+            return result;
         }
 
         public static ApiReferenceBuildOutput FromModel(ItemViewModel vm)
