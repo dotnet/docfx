@@ -255,6 +255,26 @@ This is azure include block.
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
+        [Trait("Bug 551844", "Rewriter issue")]
+        public void TestAzureMarkdownRewriters_ListRewriterBug()
+        {
+            var source = @"5. Open a command prompt with administrative permissions, and run the following command:
+
+            gpupdate /force
+6. Restart the computer.
+";
+            var expected = @"1. Open a command prompt with administrative permissions, and run the following command:
+
+            gpupdate /force
+2. Restart the computer.
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_ListWithInlineToken()
         {
             var source = @"Hello world

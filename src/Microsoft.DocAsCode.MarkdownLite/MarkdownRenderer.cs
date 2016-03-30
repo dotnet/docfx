@@ -279,9 +279,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     content += indent;
                     content += render.Render(t);
+
                 }
             }
-            if (!token.Loose)
+            if (!content.ToString().EndsWith("\n"))
             {
                 content += "\n";
             }
