@@ -222,7 +222,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private static void MergeNewFileRepositoryToConfig(BuildJsonConfig config)
         {
             GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
-            if (repoInfoFromBaseDirectory != null)
+            if (repoInfoFromBaseDirectory != null && repoInfoFromBaseDirectory.RelativePath != null)
             {
                 repoInfoFromBaseDirectory.RelativePath = Path.Combine(repoInfoFromBaseDirectory.RelativePath, DocAsCode.Constants.DefaultOverwriteFolderName);
             }

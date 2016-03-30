@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode.Utility
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Utility.Git;
+
     [Serializable]
     public class GitDetail
     {
@@ -25,6 +27,10 @@ namespace Microsoft.DocAsCode.Utility
         [YamlMember(Alias = "repo")]
         [JsonProperty("repo")]
         public string RemoteRepositoryUrl { get; set; }
+
+        [YamlMember(Alias = "commit")]
+        [JsonProperty("commit")]
+        public CommitDetail CommitDetail { get; set; }
 
         [YamlIgnore]
         [JsonIgnore]

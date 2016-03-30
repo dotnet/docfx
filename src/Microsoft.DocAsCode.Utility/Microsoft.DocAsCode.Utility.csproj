@@ -11,6 +11,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\GitSharp.0.3\lib\GitSharp.dll</HintPath>
     </Reference>
+    <Reference Include="GitSharp.Core, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\GitSharp.0.3\lib\GitSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -37,6 +41,8 @@
   <ItemGroup>
     <Compile Include="AsyncConcurrentCache.cs" />
     <Compile Include="CollectionExtensions.cs" />
+    <Compile Include="Git\RepositoryWalker.cs" />
+    <Compile Include="Git\UserInfo.cs" />
     <Compile Include="ConvertToObjectHelper.cs" />
     <Compile Include="EntityMergers\DictionaryMerger.cs" />
     <Compile Include="EntityMergers\KeyedListMerger.cs" />
@@ -49,6 +55,7 @@
     <Compile Include="EntityMergers\MergeOptionAttribute.cs" />
     <Compile Include="EntityMergers\MergerFacade.cs" />
     <Compile Include="FilePathComparer.cs" />
+    <Compile Include="Git\CommitDetail.cs" />
     <Compile Include="GitDetail.cs" />
     <Compile Include="EntityMergers\ReflectionEntityMerger.cs" />
     <Compile Include="JObjectDictionaryToObjectDictionaryConverter.cs" />
