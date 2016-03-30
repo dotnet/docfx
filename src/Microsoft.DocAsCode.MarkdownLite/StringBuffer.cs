@@ -126,6 +126,100 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return result;
         }
 
+        public bool StartsWith(char character)
+        {
+            if (_index == 0)
+            {
+                return false;
+            }
+            var lastStr = _buffer[0];
+            return lastStr[0] == character;
+        }
+
+        public bool StartsWith(string text)
+        {
+            if (text == null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+            if (text.Length == 0)
+            {
+                return true;
+            }
+            if (_index == 0)
+            {
+                return false;
+            }
+            var index = 0;
+            var current = _buffer[index];
+            int j = 0;
+            for (int i = 0; i < text.Length; i++, j++)
+            {
+                if (j >= current.Length)
+                {
+                    index++;
+                    if (index >= _index)
+                    {
+                        return false;
+                    }
+                    current = _buffer[index];
+                    j = 0;
+                }
+                if (text[i] != current[j])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool EndsWith(char character)
+        {
+            if (_index == 0)
+            {
+                return false;
+            }
+            var lastStr = _buffer[_index - 1];
+            return lastStr[lastStr.Length - 1] == character;
+        }
+
+        public bool EndsWith(string text)
+        {
+            if (text == null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+            if (text.Length == 0)
+            {
+                return true;
+            }
+            if (_index == 0)
+            {
+                return false;
+            }
+            var index = _index - 1;
+            string current = _buffer[index];
+            int j = current.Length - 1;
+            for (int i = text.Length - 1; i >= 0; i--, j--)
+            {
+                if (j < 0)
+                {
+                    index--;
+                    if (index < 0)
+                    {
+                        return false;
+                    }
+                    current = _buffer[index];
+                    j = current.Length - 1;
+                }
+                if (text[i] != current[j])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public override string ToString()
         {
             if (this == Empty)
