@@ -483,7 +483,7 @@ test2
             WriteTemplate(templateFolder, templateFiles);
             using (var resource = new ResourceFinder(null, null).Find(templateFolder))
             {
-                var processor = new TemplateProcessor(resource);
+                var processor = new TemplateProcessor(resource, 4);
                 var context = new DocumentBuildContext(inputFolder);
                 foreach (var item in items)
                 {
