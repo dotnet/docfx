@@ -29,27 +29,30 @@
     {{#parameters.0}}
     <h4>Properties</h4>
     <ul class="member-details">
-      {{#parameters}}
-      <li>
-        <ol class="meta">
-          <li>
-            <code>{{name}}</code>
-            {{#required}}
-            <em>(required)</em>
-            {{/required}}
-          </li>
-          <li>
-            <code>{{type}}</code>
-          </li>
-        </ol>
-        <section class="description">
-          {{{description}}}
-          {{#schema}}
-            {{>partials/rest.child.param}}
-          {{/schema}}
-        </section>
-      </li>
-      {{/parameters}}
+    {{!end to prevent mustache looking up from first parameter}}
+    {{/parameters.0}}
+    {{#parameters}}
+    <li>
+      <ol class="meta">
+        <li>
+          <code>{{name}}</code>
+          {{#required}}
+          <em>(required)</em>
+          {{/required}}
+        </li>
+        <li>
+          <code>{{type}}</code>
+        </li>
+      </ol>
+      <section class="description">
+        {{{description}}}
+        {{#schema}}
+          {{>partials/rest.child.param}}
+        {{/schema}}
+      </section>
+    </li>
+    {{/parameters}}
+    {{#parameters.0}}
     </ul>
     {{/parameters.0}}
     {{#responses.0}}
