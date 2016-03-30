@@ -5,8 +5,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
-    using System.Text.RegularExpressions;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
@@ -54,21 +54,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("specName")]
         public List<ApiLanguageValuePair> Spec { get; set; }
 
-        [YamlMember(Alias = "type")]
-        [JsonProperty("type")]
-        public MemberType? Type { get; set; }
-
-        [YamlMember(Alias = "summary")]
-        [JsonProperty("summary")]
-        public string Summary { get; set; } = null;
-
         [YamlMember(Alias = "syntax")]
         [JsonProperty("syntax")]
         public ApiSyntaxBuildOutput Syntax { get; set; }
-
-        [YamlMember(Alias = "platform")]
-        [JsonProperty("platform")]
-        public List<string> Platform { get; set; }
 
         [YamlMember(Alias = "source")]
         [JsonProperty("source")]
@@ -142,6 +130,27 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonIgnore]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [YamlIgnore]
+        [JsonExtensionData(ReadData = false, WriteData = true)]
+        public Dictionary<string, object> MetadataJson
+        {
+            get
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (var item in Modifiers)
+                {
+                    dict["modifiers." + item.Key] = item.Value;
+                }
+                foreach (var item in Metadata)
+                {
+                    dict[item.Key] = item.Value;
+                }
+                return dict;
+            }
+            set { }
+        }
+
         private bool _isExpanded = false;
 
         public static ApiReferenceBuildOutput FromUid(string uid)
@@ -174,9 +183,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Metadata = vm.Additional,
             };
             object syntax;
-            if (vm.Additional.TryGetValue("syntax", out syntax))
+            if (result.Metadata.TryGetValue("syntax", out syntax))
             {
                 result.Syntax = ApiSyntaxBuildOutput.FromModel(syntax as SyntaxDetailViewModel, supportedLanguages);
+                result.Metadata.Remove("syntax");
             }
             return result;
         }
@@ -185,7 +195,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         {
             if (vm == null) return null;
 
-            return new ApiReferenceBuildOutput
+            var output = new ApiReferenceBuildOutput
             {
                 Uid = vm.Uid,
                 Id = Utility.GetHtmlId(vm.Uid),
@@ -195,9 +205,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.Names, vm.SupportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNames, vm.SupportedLanguages),
                 Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.FullName, vm.Name), vm.SupportedLanguages),
-                Type = vm.Type,
-                Summary = vm.Summary,
-                Platform = vm.Platform,
                 Source = vm.Source,
                 Documentation = vm.Documentation,
                 AssemblyNameList = vm.AssemblyNameList,
@@ -216,6 +223,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Syntax = ApiSyntaxBuildOutput.FromModel(vm.Syntax, vm.SupportedLanguages),
                 Exceptions = vm.Exceptions?.Select(s => ApiCrefInfoBuildOutput.FromModel(s)).ToList(),
             };
+            output.Metadata["type"] = vm.Type;
+            output.Metadata["summary"] = vm.Summary;
+            output.Metadata["platform"] = vm.Platform;
+            return output;
         }
 
         public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)

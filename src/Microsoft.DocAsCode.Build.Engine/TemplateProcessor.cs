@@ -192,7 +192,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             // save raw model for further investigation:
                             var exportSettings = ApplyTemplateSettings.RawModelExportSettingsForDebug;
-                            var rawModelPath = ExportModel(item.Model, item.ModelFile, exportSettings);
+                            var rawModelPath = ExportModel(model, item.ModelFile, exportSettings);
                             throw new DocumentException($"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRepoRoot}\" using \"{template.ScriptName}\": {e.Message}");
                         }
 
