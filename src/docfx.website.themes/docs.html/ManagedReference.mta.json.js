@@ -20,8 +20,8 @@ function transform(model, _attrs) {
   if (!model.source_url) {
     model.source_url = getViewSourceHref(model);
   }
-  if (!model["ms.assetid"]) {
-    model["ms.assetid"] = getMsAssetId(model);
+  if (!model.asset_id) {
+    model.asset_id = getAssetId(model);
   }
 
   // Clean up unused predefined properties
@@ -161,7 +161,7 @@ function transform(model, _attrs) {
     })
   }
 
-  function getMsAssetId(item) {
+  function getAssetId(item) {
     if (!item || !item.uid) return '';
     return item.uid;
   }
