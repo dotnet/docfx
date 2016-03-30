@@ -7,14 +7,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.DocAsCode.DataContracts.Common;
     using YamlDotNet.Serialization;
 
     public abstract class ConfigFilterRuleItem
     {
         private Regex _uidRegex;
 
-        [YamlMember(Alias = Constants.PropertyName.UidRegex)]
+        [YamlMember(Alias = "uidRegex")]
         public string UidRegex
         {
             get
@@ -27,8 +26,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        [YamlMember(Alias = Constants.PropertyName.Type)]
+        [YamlMember(Alias = "type")]
         public ExtendedSymbolKind? Kind { get; set; }
+
+        [YamlMember(Alias = "hasAttribute")]
+        public AttributeFilterInfo Attribute { get; set; }
 
         [YamlIgnore]
         public abstract bool CanVisit { get; }
@@ -39,7 +41,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 throw new ArgumentNullException("symbol");
             }
-            return (_uidRegex == null || _uidRegex.IsMatch(VisitorHelper.GetId(symbol))) && (Kind == null || Kind.Value.Contains(symbol));
+            return (_uidRegex == null || _uidRegex.IsMatch(VisitorHelper.GetId(symbol))) &&
+                (Kind == null || Kind.Value.Contains(symbol)) &&
+                (Attribute == null || Attribute.ContainedIn(symbol));
         }
     }
 }

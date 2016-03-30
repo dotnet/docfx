@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -2226,6 +2227,7 @@ public object Property
         {
             string code = @"
 using System;
+using System.ComponentModel;
 
 namespace Test1
 {
@@ -2281,6 +2283,15 @@ namespace Test1
         {
         }
     }
+
+    public class Class6
+    {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public int C { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        public int D { get; set; }
+    }
 }
 
 ";
@@ -2290,7 +2301,7 @@ namespace Test1
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
             Assert.Equal("Test1", @namespace.Name);
-            Assert.Equal(3, @namespace.Items.Count);
+            Assert.Equal(4, @namespace.Items.Count);
             {
                 var class1 = @namespace.Items[0];
                 Assert.Equal("Test1.Class1", class1.Name);
@@ -2309,6 +2320,12 @@ namespace Test1
                 var class4 = @namespace.Items[2];
                 Assert.Equal("Test1.Class3.Class4", class4.Name);
                 Assert.Equal(0, class4.Items.Count);
+            }
+            {
+                var class6 = @namespace.Items[3];
+                Assert.Equal("Test1.Class6", class6.Name);
+                Assert.Equal(1, class6.Items.Count);
+                Assert.Equal("Test1.Class6.D", class6.Items[0].Name);
             }
 
             var nestedNamespace = output.Items[1];
@@ -2329,7 +2346,7 @@ namespace Test1
         private static Compilation CreateCompilationFromCSharpCode(string code, string assemblyName, params MetadataReference[] references)
         {
             var tree = SyntaxFactory.ParseSyntaxTree(code);
-            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) };
+            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location), MetadataReference.CreateFromFile(typeof(EditorBrowsableAttribute).Assembly.Location) };
             if (references != null)
             {
                 defaultReferences.AddRange(references);

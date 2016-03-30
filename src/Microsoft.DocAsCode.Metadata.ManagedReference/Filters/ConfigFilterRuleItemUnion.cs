@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private ConfigFilterRuleIncludeItem _include;
         private ConfigFilterRuleExcludeItem _exclude;
 
-        [YamlMember(Alias = Constants.PropertyName.Include)]
+        [YamlMember(Alias = "include")]
         public ConfigFilterRuleIncludeItem Include
         {
             get
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        [YamlMember(Alias = Constants.PropertyName.Exclude)]
+        [YamlMember(Alias = "exclude")]
         public ConfigFilterRuleExcludeItem Exclude
         {
             get

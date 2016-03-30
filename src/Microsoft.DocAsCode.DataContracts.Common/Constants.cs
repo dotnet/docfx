@@ -23,10 +23,6 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Title = "title";
             public const string Conceptual = "conceptual";
             public const string Documentation = "documentation";
-            public const string ApiFilterRule = "apiRules";
-            public const string Include = "include";
-            public const string Exclude = "exclude";
-            public const string UidRegex = "uidRegex";
         }
 
         public static class DevLang

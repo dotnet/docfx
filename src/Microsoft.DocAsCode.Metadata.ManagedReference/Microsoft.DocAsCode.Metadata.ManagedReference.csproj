@@ -52,6 +52,7 @@
     <Compile Include="ExtractMetadata\SupportedSourceType.cs" />
     <Compile Include="ExtractMetadata\CompilationUtility.cs" />
     <Compile Include="ExtractMetadata\ProjectDocumentCache.cs" />
+    <Compile Include="Filters\AttributeFilterInfo.cs" />
     <Compile Include="Filters\ConfigFilterRuleExcludeItem.cs" />
     <Compile Include="Filters\ConfigFilterRuleIncludeItem.cs" />
     <Compile Include="Incremental\BuildInfo.cs" />

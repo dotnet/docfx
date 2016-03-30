@@ -11,3 +11,8 @@
 - exclude:
     uidRegex: ^Test1\.Class3.*$
     type: Member
+- exclude:
+    hasAttribute:
+      uid: System.ComponentModel.EditorBrowsableAttribute
+      ctorArguments:
+      - System.ComponentModel.EditorBrowsableState.Never

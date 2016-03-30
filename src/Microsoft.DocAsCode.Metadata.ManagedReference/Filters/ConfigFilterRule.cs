@@ -6,13 +6,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System;
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.DataContracts.Common;
     using YamlDotNet.Serialization;
 
     [Serializable]
     public class ConfigFilterRule
     {
-        [YamlMember(Alias = Constants.PropertyName.ApiFilterRule)]
+        [YamlMember(Alias = "apiRules")]
         public List<ConfigFilterRuleItemUnion> ApiRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
     }
 }
