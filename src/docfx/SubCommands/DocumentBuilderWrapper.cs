@@ -120,6 +120,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 string assemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
                 if (!string.IsNullOrEmpty(assemblyName))
                 {
+                    if (assemblyName == "Microsoft.DocAsCode.EntityModel")
+                    {
+                        // work around, don't load assembly Microsoft.DocAsCode.EntityModel.
+                        Logger.LogWarning("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
+                        continue;
+                    }
                     try
                     {
                         assembly = Assembly.Load(assemblyName);

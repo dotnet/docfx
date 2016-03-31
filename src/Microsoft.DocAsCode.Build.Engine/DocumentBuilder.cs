@@ -21,8 +21,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         public const string PhaseName = "Build Document";
 
-        private static readonly Assembly[] DefaultAssemblies = { typeof(DocumentBuilder).Assembly };
-
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
         {
             var configuration = new ContainerConfiguration();
@@ -47,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerPhaseScope(PhaseName))
             {
                 Logger.LogVerbose("Loading plug-in...");
-                GetContainer(DefaultAssemblies.Union(assemblies ?? new Assembly[0])).SatisfyImports(this);
+                GetContainer(assemblies ?? new Assembly[0]).SatisfyImports(this);
                 Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
                 foreach (var processor in Processors)
                 {
