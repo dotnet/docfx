@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.Metadata.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;

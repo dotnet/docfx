@@ -40,56 +40,6 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             return new ExternalReferencePackageWriter(packageFile, baseUri, true);
         }
 
-        //public void AddProjects(IReadOnlyList<string> projectPaths)
-        //{
-        //    if (projectPaths == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(projectPaths));
-        //    }
-        //    if (projectPaths.Count == 0)
-        //    {
-        //        throw new ArgumentException("Empty collection is not allowed.", nameof(projectPaths));
-        //    }
-        //    for (int i = 0; i < projectPaths.Count; i++)
-        //    {
-        //        var name = Path.GetFileName(projectPaths[i]);
-        //        AddFiles(
-        //            "#" + name + "!api",    // Hard code for angular url for now
-        //            Directory.GetFiles(Path.Combine(projectPaths[i], "api"), "*.yml", SearchOption.TopDirectoryOnly));
-        //    }
-        //}
-
-        //public void AddFiles(string relativePath, IReadOnlyList<string> docPaths)
-        //{
-        //    if (docPaths == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(docPaths));
-        //    }
-        //    if (docPaths.Count == 0)
-        //    {
-        //        throw new ArgumentException("Empty collection is not allowed.", nameof(docPaths));
-        //    }
-        //    var uri = string.IsNullOrEmpty(relativePath) ? _baseUri : new Uri(_baseUri, relativePath);
-        //    foreach (var item in from doc in docPaths
-        //                         let vm = LoadViewModelNoThrow(doc)
-        //                         where vm != null
-        //                         let extRef = ExternalReferenceConverter.ToExternalReferenceViewModel(vm.Item2, uri).ToList()
-        //                         select new { EntryName = vm.Item1, Refs = extRef })
-        //    {
-        //        ZipArchiveEntry entry = null;
-        //        if (_zip.Mode == ZipArchiveMode.Update)
-        //        {
-        //            entry = _zip.GetEntry(item.EntryName);
-        //        }
-        //        entry = entry ?? _zip.CreateEntry(item.EntryName);
-        //        using (var stream = entry.Open())
-        //        using (var sw = new StreamWriter(stream))
-        //        {
-        //            YamlUtility.Serialize(sw, item.Refs);
-        //        }
-        //    }
-        //}
-
         public void AddOrUpdateEntry(string entryName, List<ReferenceViewModel> vm)
         {
             if (entryName == null)
@@ -116,18 +66,6 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                 YamlUtility.Serialize(sw, vm);
             }
         }
-
-        //private static Tuple<string, PageViewModel> LoadViewModelNoThrow(string filePath)
-        //{
-        //    try
-        //    {
-        //        return Tuple.Create(Path.GetFileName(filePath), YamlUtility.Deserialize<PageViewModel>(filePath));
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-        //}
 
         public void Dispose()
         {

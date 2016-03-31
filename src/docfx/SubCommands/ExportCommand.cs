@@ -4,10 +4,11 @@
 namespace Microsoft.DocAsCode.SubCommands
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
@@ -45,7 +46,29 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             using (var package = _options.AppendMode ? ExternalReferencePackageWriter.Append(outputFile, baseUri) : ExternalReferencePackageWriter.Create(outputFile, baseUri))
             {
-                package.AddProjects(inputModels.SelectMany(s => s.Items).Select(s => s.Key).ToList());
+                AddProjects(package, inputModels.SelectMany(s => s.Items).Select(s => s.Key).ToList());
+            }
+        }
+
+        public void AddProjects(ExternalReferencePackageWriter writer, IReadOnlyList<string> projectPaths)
+        {
+            if (projectPaths == null)
+            {
+                throw new ArgumentNullException(nameof(projectPaths));
+            }
+            if (projectPaths.Count == 0)
+            {
+                throw new ArgumentException("Empty collection is not allowed.", nameof(projectPaths));
+            }
+            for (int i = 0; i < projectPaths.Count; i++)
+            {
+                var name = Path.GetFileName(projectPaths[i]);
+                ExternalReferencePackageHelper.AddFiles(
+                    writer,
+                    new Uri(_options.BaseUrl),
+                    _options.UrlPattern,
+                    string.Empty,
+                    Directory.GetFiles(Path.Combine(projectPaths[i], "api"), "*.yml", SearchOption.TopDirectoryOnly));
             }
         }
     }

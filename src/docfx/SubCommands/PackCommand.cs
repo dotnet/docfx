@@ -7,8 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.IO;
     using System.Linq;
 
-    using Microsoft.DocAsCode;
-    using Microsoft.DocAsCode.EntityModel;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Glob;
     using Microsoft.DocAsCode.Plugins;
@@ -19,6 +18,7 @@ namespace Microsoft.DocAsCode.SubCommands
     internal class PackCommand : ISubCommand
     {
         private readonly PackCommandOptions _options;
+
         public bool AllowReplay => true;
 
         public PackCommand(PackCommandOptions options)
@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 var files = FileGlob.GetFiles(source, new string[] { _options.Glob }, null).ToList();
                 if (_options.FlatMode)
                 {
-                    package.AddFiles(string.Empty, files);
+                    ExternalReferencePackageHelper.AddFiles(package, baseUri, _options.UrlPattern, string.Empty, files);
                 }
                 else
                 {
@@ -55,11 +55,11 @@ namespace Microsoft.DocAsCode.SubCommands
                     {
                         if (g.Folder.Length == 0)
                         {
-                            package.AddFiles(string.Empty, g.Files);
+                            ExternalReferencePackageHelper.AddFiles(package, baseUri, _options.UrlPattern, string.Empty, g.Files);
                         }
                         else
                         {
-                            package.AddFiles(g.Folder + "/", g.Files);
+                            ExternalReferencePackageHelper.AddFiles(package, baseUri, _options.UrlPattern, g.Folder + "/", g.Files);
                         }
                     }
                 }

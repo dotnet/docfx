@@ -118,6 +118,7 @@
     <Compile Include="Models\OptionUsageAttribute.cs" />
     <Compile Include="Models\TemplateCommandOptions.cs" />
     <Compile Include="SubCommands\DocumentBuilderWrapper.cs" />
+    <Compile Include="SubCommands\ExternalReferencePackageHelper.cs" />
     <Compile Include="SubCommands\MergeCommandCreator.cs" />
     <Compile Include="SubCommands\MergeCommand.cs" />
     <Compile Include="SubCommands\PackCommandCreator.cs" />

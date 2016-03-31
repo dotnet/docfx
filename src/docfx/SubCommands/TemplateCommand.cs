@@ -9,8 +9,8 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Linq;
 
     using Microsoft.DocAsCode;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Exceptions;
 

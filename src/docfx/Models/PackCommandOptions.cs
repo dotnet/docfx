@@ -13,6 +13,9 @@ namespace Microsoft.DocAsCode
         [Option('u', "url", HelpText = "The base url of yaml file.", Required = true)]
         public string BaseUrl { get; set; }
 
+        [Option('p', "pattern", HelpText = "The pattern of url, default is '{baseUrl}/{fileName}.html'", Required = true)]
+        public string UrlPattern { get; set; } = "{baseUrl}/{fileName}.html";
+
         [Option('s', "source", HelpText = "The base folder for yaml files.", Required = true)]
         public string Source { get; set; }
 

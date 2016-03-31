@@ -3,10 +3,7 @@
 
 namespace Microsoft.DocAsCode
 {
-    using CommandLine;
-    using Microsoft.DocAsCode.EntityModel;
     using System;
-    using System.Diagnostics;
     using System.IO;
 
     internal static class Constants
