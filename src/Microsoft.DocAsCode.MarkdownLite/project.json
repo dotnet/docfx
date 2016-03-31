@@ -10,7 +10,10 @@
         "System.Core": "",
         "System": "",
         "System.Net": "",
-        "System.Runtime": ""
+        "System.Runtime": {
+          "type": "build",
+          "version": ""
+        }
       }
     },
     "dnx451": {

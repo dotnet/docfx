@@ -19,10 +19,22 @@
     },
     "net45": {
       "frameworkAssemblies": {
-        "System.Collections": "",
-        "System.Globalization": "",
-        "System.Runtime": "",
-        "System.Threading.Tasks": ""
+        "System.Runtime": {
+          "type": "build",
+          "version": ""
+        },
+        "System.Collections": {
+          "type": "build",
+          "version": ""
+        },
+        "System.Globalization": {
+          "type": "build",
+          "version": ""
+        },
+        "System.Threading.Tasks": {
+          "type": "build",
+          "version": ""
+        }
       },
       "dependencies": {
         "Newtonsoft.Json": "7.0.1"

@@ -17,7 +17,6 @@
     },
     "net45": {
       "frameworkAssemblies": {
-        "System.IO": "",
         "System.IO.Compression": "",
         "System.IO.Compression.FileSystem": ""
       }

@@ -8,7 +8,10 @@
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
-        "System.Runtime": ""
+        "System.Runtime": {
+          "type": "build",
+          "version": ""
+        }
       }
     },
     "dnx451": {
