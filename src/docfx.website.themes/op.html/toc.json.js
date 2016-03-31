@@ -21,9 +21,9 @@ function transform(model, _attrs){
         item.external_link = item.href;
       }else{
         if (item.href.indexOf('/') == 0) {
-          item.relative_path_in_depot = item.href;
+          item.relative_path_in_depot = decodeURIComponent(item.href);
         } else {
-          item.relative_path_in_depot = directory + item.href;
+          item.relative_path_in_depot = directory + decodeURIComponent(item.href);
         }
       }
       item.href = undefined;
