@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             StringBuffer content = StringBuffer.Empty;
             content += "[";
-            foreach(var t in token.Content)
+            foreach (var t in token.Content)
             {
                 content += render.Render(t);
             }
@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             StringBuffer content = StringBuffer.Empty;
             content += "~~";
-            foreach(var t in token.Content)
+            foreach (var t in token.Content)
             {
                 content += render.Render(t);
             }
@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             StringBuffer content = StringBuffer.Empty;
             content += "*";
-            foreach(var t in token.Content)
+            foreach (var t in token.Content)
             {
                 content += render.Render(t);
             }
@@ -95,7 +95,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = StringBuffer.Empty;
-            foreach(var t in token.Content.Tokens)
+            foreach (var t in token.Content.Tokens)
             {
                 content += render.Render(t);
             }
@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             content += " ";
 
-            foreach(var t in token.Content.Tokens)
+            foreach (var t in token.Content.Tokens)
             {
                 content += render.Render(t);
             }
@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownNonParagraphBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = StringBuffer.Empty;
-            foreach(var t in token.Content.Tokens)
+            foreach (var t in token.Content.Tokens)
             {
                 content += render.Render(t);
             }
@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             // Generate header line
             content += "|";
-            foreach(var header in token.Header)
+            foreach (var header in token.Header)
             {
                 content += " ";
                 foreach (var t in header.Tokens)
@@ -163,9 +163,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             // Generate align line
             content += "|";
-            foreach(var align in token.Align)
+            foreach (var align in token.Align)
             {
-                switch(align)
+                switch (align)
                 {
                     case Align.NotSpec:
                         content += " --- ";
@@ -187,7 +187,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             content += "\n";
 
             // Generate content lines
-            foreach(var row in token.Cells)
+            foreach (var row in token.Cells)
             {
                 content += "| ";
                 foreach (var column in row)
@@ -279,10 +279,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     content += indent;
                     content += render.Render(t);
-
                 }
             }
-            if (!content.ToString().EndsWith("\n"))
+            if (!content.EndsWith('\n'))
             {
                 content += "\n";
             }
