@@ -89,9 +89,9 @@
   </section>
 </div>
 {{#footer}}
-<div class="conceptual primary">{{{footer}}}</div>
+  {{>partials/rest.footer}}
 {{/footer}}
 {{/children}}
 {{#footer}}
-<div class="conceptual primary">{{{footer}}}</div>
+  {{>partials/rest.footer}}
 {{/footer}}
