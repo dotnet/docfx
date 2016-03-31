@@ -36,7 +36,7 @@ function transform(model, _attrs) {
             }
             vm.children[i] = transformReference(vm.children[i]);
         };
-        if (vm._displayItems) {
+        if (vm.sections) {
             vm.children = ordered;
         }
     }
