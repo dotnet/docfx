@@ -34,7 +34,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         BuildItem(host, item, model);
                     }
 
-                    model.File = Path.ChangeExtension(model.File, ".json");
                     break;
                 case DocumentType.Overwrite:
                     break;

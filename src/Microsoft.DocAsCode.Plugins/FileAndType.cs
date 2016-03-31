@@ -32,15 +32,21 @@ namespace Microsoft.DocAsCode.Plugins
                 throw new ArgumentException("File cannot be rooted.", nameof(file));
             }
 
-            BaseDir = baseDir;
+            BaseDir = baseDir.Replace('\\', '/');
             File = file.Replace('\\', '/');
             Type = type;
+            FullPath = Path.Combine(BaseDir, File).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             PathRewriter = pathRewriter;
+            StringComparer = GetStringComparer();
         }
+
+        public StringComparer StringComparer { get; }
 
         public string BaseDir { get; }
 
         public string File { get; }
+
+        public string FullPath { get; }
 
         public DocumentType Type { get; }
 
@@ -57,7 +63,7 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 return false;
             }
-            return File == other.File && Type == other.Type && BaseDir == other.BaseDir;
+            return StringComparer.Equals(File, other.File) && Type == other.Type && StringComparer.Equals(BaseDir, other.BaseDir);
         }
 
         public override bool Equals(object obj)
@@ -67,7 +73,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         public override int GetHashCode()
         {
-            return File.GetHashCode() + (int)Type ^ BaseDir.GetHashCode();
+            return StringComparer.GetHashCode(File) + (int)Type ^ StringComparer.GetHashCode(BaseDir);
         }
 
         public static bool operator ==(FileAndType left, FileAndType right)
@@ -86,6 +92,18 @@ namespace Microsoft.DocAsCode.Plugins
         public static bool operator !=(FileAndType left, FileAndType right)
         {
             return !(left == right);
+        }
+
+        private static StringComparer GetStringComparer()
+        {
+            if (Environment.OSVersion.Platform < PlatformID.Unix)
+            {
+                return StringComparer.OrdinalIgnoreCase;
+            }
+            else
+            {
+                return StringComparer.Ordinal;
+            }
         }
     }
 }

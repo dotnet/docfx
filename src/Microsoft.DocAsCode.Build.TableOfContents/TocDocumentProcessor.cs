@@ -25,33 +25,36 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public override ProcessingPriority GetProcessingPriority(FileAndType file)
         {
-            if (file.Type == DocumentType.Article)
+            if (file.Type == DocumentType.Article && Utility.IsSupportedFile(file.File))
             {
-                if ("toc.md".Equals(Path.GetFileName(file.File), StringComparison.OrdinalIgnoreCase))
-                {
-                    return ProcessingPriority.High;
-                }
-                if ("toc.yml".Equals(Path.GetFileName(file.File), StringComparison.OrdinalIgnoreCase))
-                {
-                    return ProcessingPriority.High;
-                }
+                return ProcessingPriority.High;
             }
+
             return ProcessingPriority.NotSupported;
         }
 
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
-            var filePath = Path.Combine(file.BaseDir, file.File);
-            TocItemViewModel toc = LoadSingleToc(filePath);
+            var filePath = file.FullPath;
+            var tocViewModel = Utility.LoadSingleToc(filePath);
+            var toc = new TocItemViewModel
+            {
+                Items = tocViewModel
+            };
 
             var repoDetail = GitUtility.GetGitDetail(filePath);
-            var displayLocalPath = repoDetail?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
-            
+            var displayLocalPath = repoDetail?.RelativePath ?? filePath;
+
             // todo : metadata.
             return new FileModel(file, toc)
             {
                 Uids = new[] { new UidDefinition(file.File, displayLocalPath) }.ToImmutableArray(),
-                LocalPathFromRepoRoot = displayLocalPath
+                LocalPathFromRepoRoot = displayLocalPath,
+                Properties =
+                        {
+                            LinkToFiles = new HashSet<string>(),
+                            LinkToUids = new HashSet<string>(),
+                        },
             };
         }
 
@@ -81,13 +84,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             ResolveUid(toc, model, context);
             RegisterTocMap(toc, model.Key, context);
 
-            if (!string.IsNullOrEmpty(toc.Homepage) && PathUtility.IsRelativePath(toc.Href))
-            {
-                toc.Href = toc.Homepage;
-            }
-
+            toc.Homepage = GetUpdatedHref(toc.Homepage, model, context);
             toc.Href = GetUpdatedHref(toc.Href, model, context);
-            toc.OriginalHref = GetUpdatedHref(toc.OriginalHref, model, context);
+            toc.TocHref = GetUpdatedHref(toc.TocHref, model, context);
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
@@ -166,28 +165,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         private string GetRelativePath(string pathFromWorkingFolder, string relativeToPath)
         {
             return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo(((RelativePath)relativeToPath).GetPathFromWorkingFolder());
-        }
-
-        private TocItemViewModel LoadSingleToc(string filePath)
-        {
-            if ("toc.md".Equals(Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
-            {
-                var toc = MarkdownTocReader.LoadToc(File.ReadAllText(filePath), filePath);
-                return new TocItemViewModel
-                {
-                    Items = toc,
-                };
-            }
-            else if ("toc.yml".Equals(Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
-            {
-                var toc = YamlUtility.Deserialize<TocViewModel>(filePath);
-                return new TocItemViewModel
-                {
-                    Items = toc
-                };
-            }
-
-            throw new NotSupportedException($"{filePath} is not a valid TOC file, supported toc files could be \"toc.md\" or \"toc.yml\".");
         }
     }
 }

@@ -57,9 +57,9 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
-        [YamlMember(Alias = "originalHref")]
-        [JsonProperty("originalHref")]
-        public string OriginalHref { get; set; }
+        [YamlMember(Alias = "tocHref")]
+        [JsonProperty("tocHref")]
+        public string TocHref { get; set; }
 
         [YamlMember(Alias = "homepage")]
         [JsonProperty("homepage")]

@@ -75,6 +75,7 @@
       <Link>TestBase.cs</Link>
     </Compile>
     <Compile Include="MarkdownTocReaderTest.cs" />
+    <Compile Include="TocDocumentProcessorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -83,6 +84,10 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj">
       <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b50}</Project>
       <Name>Microsoft.DocAsCode.Build.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.ConceptualDocuments\Microsoft.DocAsCode.Build.ConceptualDocuments.csproj">
+      <Project>{60f21edb-35f9-220d-c1b6-3ed482f76b51}</Project>
+      <Name>Microsoft.DocAsCode.Build.ConceptualDocuments</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj">
       <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b51}</Project>

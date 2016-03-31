@@ -165,17 +165,17 @@ tagRules : [
                     var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
                     Assert.NotNull(model);
                     Assert.Equal("test1", model[0].Name);
-                    Assert.Equal("test.json", model[0].Href);
+                    Assert.Equal("test.md", model[0].Href);
                     Assert.NotNull(model[0].Items);
                     Assert.Equal("test2", model[0].Items[0].Name);
-                    Assert.Equal("test/test.json", model[0].Items[0].Href);
+                    Assert.Equal("test/test.md", model[0].Items[0].Href);
                     Assert.Equal("Api", model[1].Name);
                     Assert.Null(model[1].Href);
                     Assert.NotNull(model[1].Items);
                     Assert.Equal("Console", model[1].Items[0].Name);
-                    Assert.Equal("../System.Console.json", model[1].Items[0].Href);
+                    Assert.Equal("../System.Console.csyml", model[1].Items[0].Href);
                     Assert.Equal("ConsoleColor", model[1].Items[1].Name);
-                    Assert.Equal("../System.ConsoleColor.json", model[1].Items[1].Href);
+                    Assert.Equal("../System.ConsoleColor.csyml", model[1].Items[1].Href);
                 }
 
                 {

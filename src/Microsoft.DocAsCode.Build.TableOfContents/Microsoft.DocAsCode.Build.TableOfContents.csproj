@@ -68,6 +68,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TocFileType.cs" />
+    <Compile Include="HrefType.cs" />
+    <Compile Include="Utility.cs" />
+    <Compile Include="TocItemInfo.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="TocResolver.cs" />
     <Compile Include="BuildTocDocument.cs" />
     <Compile Include="MarkdownTocReader.cs" />
     <Compile Include="TocDocumentProcessor.cs" />

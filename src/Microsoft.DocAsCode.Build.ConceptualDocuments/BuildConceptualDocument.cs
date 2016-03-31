@@ -81,7 +81,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
-            model.File = Path.ChangeExtension(model.File, ".json");
         }
 
         private static string TitleThumbnail(string title, int maxLength)
