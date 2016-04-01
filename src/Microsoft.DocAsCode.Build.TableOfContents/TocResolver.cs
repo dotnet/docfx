@@ -204,8 +204,18 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// <returns></returns>
         private bool IsValidHomepageLink(TocItemViewModel tocItem)
         {
-            return !string.IsNullOrEmpty(tocItem.Uid) ||
-             (PathUtility.IsRelativePath(tocItem.Href) && !string.IsNullOrEmpty(Path.GetFileName(tocItem.Href)));
+            if (!string.IsNullOrEmpty(tocItem.Uid))
+            {
+                return true;
+            }
+
+            var hrefType = Utility.GetHrefType(tocItem.Href);
+            if (hrefType == HrefType.RelativeFile)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
