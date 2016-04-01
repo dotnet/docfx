@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Utility
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
+
     using Microsoft.DocAsCode.Utility.Git;
 
     [Serializable]

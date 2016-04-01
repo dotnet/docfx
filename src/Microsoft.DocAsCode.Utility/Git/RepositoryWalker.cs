@@ -14,7 +14,9 @@ namespace Microsoft.DocAsCode.Utility.Git
     internal sealed class RepositoryWalker : IDisposable
     {
         private static readonly ConcurrentDictionary<ObjectId, CommitWrapper> Map = new ConcurrentDictionary<ObjectId, CommitWrapper>();
+        private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private readonly RevWalk _walker;
+        private readonly RevWalk _assistantWalker;
         private readonly RevCommit _initCommit;
         private readonly object _locker = new object();
 
@@ -26,6 +28,7 @@ namespace Microsoft.DocAsCode.Utility.Git
             }
 
             _walker = new RevWalk(repo);
+            _assistantWalker = new RevWalk(repo);
             _initCommit = new RevCommit(repo.Head.ObjectId);
 
         }
@@ -38,30 +41,15 @@ namespace Microsoft.DocAsCode.Utility.Git
             }
         }
 
-        private CommitWrapper GetCommit(RevCommit currentRev)
-        {
-            return Map.GetOrAdd(currentRev, (s) =>
-            {
-                var commit = currentRev.AsCommit(_walker);
-                return new CommitWrapper
-                {
-                    Detail = CommitDetail.FromCommit(commit),
-                    TreeEntry = commit.TreeEntry,
-                    ParentCount = commit.ParentIds.Length
-                };
-            });
-        }
-
         private CommitDetail GetCommitDetailNoLock(string path)
         {
             // REset must be called according to https://github.com/henon/GitSharp/blob/master/GitSharp.Core/RevWalk/RevWalk.cs#L55
             _walker.reset();
             _walker.markStart(_initCommit);
-            var currentRev = _walker.next(); // Use next to fetch the actual RevCommit
-            var currentCommit = GetCommit(currentRev);
-            var currentEntry = currentCommit.TreeEntry.FindBlobMember(path);
-            while (currentRev != null)
+            for (var currentRev = _walker.next(); currentRev != null; currentRev = _walker.next())
             {
+                var currentCommit = GetCommit(currentRev);
+                var currentEntry = currentCommit.TreeEntry.FindBlobMember(path);
                 if (currentEntry == null)
                 {
                     return null;
@@ -74,47 +62,14 @@ namespace Microsoft.DocAsCode.Utility.Git
 
                 if (currentCommit.ParentCount > 1)
                 {
-                    // For commit that contains multiple parents, e.g. when merge takes place, find the previous commit with only one parent that contains the same file
-                    var parentRev = _walker.next();
-                    TreeEntry parentEntry = null;
-                    CommitWrapper parentCommit = null;
-                    while (parentRev != null)
-                    {
-                        parentCommit = GetCommit(parentRev);
-                        parentEntry = parentCommit.TreeEntry.FindBlobMember(path);
-                        if (parentEntry == null || parentEntry.Id != currentEntry.Id)
-                        {
-                            parentRev = _walker.next();
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    if (parentRev == null)
-                    {
-                        return currentCommit.Detail;
-                    }
-
-                    currentCommit = parentCommit;
-                    currentRev = parentRev;
-                    currentEntry = parentEntry;
+                    continue;
                 }
-                else
+
+                var parentCommit = GetCommitFromObjectId(currentCommit.Commit.ParentIds[0]);
+                var parentEntry = parentCommit.TreeEntry.FindBlobMember(path);
+                if (parentEntry == null || currentEntry.Id != parentEntry.Id)
                 {
-                    var parentRev = _walker.next();
-
-                    var parentCommit = GetCommit(parentRev);
-                    var parentEntry = parentCommit.TreeEntry.FindBlobMember(path);
-                    if (parentEntry == null || currentEntry.Id != parentEntry.Id)
-                    {
-                        return currentCommit.Detail;
-                    }
-
-                    currentCommit = parentCommit;
-                    currentRev = parentRev;
-                    currentEntry = parentEntry;
+                    return currentCommit.Detail;
                 }
             }
 
@@ -126,8 +81,71 @@ namespace Microsoft.DocAsCode.Utility.Git
             _walker.Dispose();
         }
 
+        private CommitWrapper GetCommit(RevCommit currentRev)
+        {
+            return Map.GetOrAdd(currentRev, (s) =>
+            {
+                var commit = currentRev.AsCommit(_walker);
+                return new CommitWrapper
+                {
+                    Commit = commit,
+                    Detail = ConvertToCommitDetail(commit),
+                    TreeEntry = commit.TreeEntry,
+                    ParentCount = commit.ParentIds.Length
+                };
+            });
+        }
+
+        private CommitWrapper GetCommitFromObjectId(ObjectId commitId)
+        {
+            return Map.GetOrAdd(commitId, (s) =>
+            {
+                var commit = GetRevCommit(commitId);
+                return new CommitWrapper
+                {
+                    Commit = commit,
+                    Detail = ConvertToCommitDetail(commit),
+                    TreeEntry = commit.TreeEntry,
+                    ParentCount = commit.ParentIds.Length
+                };
+            });
+        }
+
+        private Commit GetRevCommit(ObjectId commitId)
+        {
+            _assistantWalker.reset();
+            _assistantWalker.markStart(new RevCommit(commitId));
+            return _assistantWalker.next().AsCommit(_assistantWalker);
+        }
+
+        private static CommitDetail ConvertToCommitDetail(Commit commit)
+        {
+            var commitId = commit.CommitId;
+
+            var author = commit.Author;
+            var committer = commit.Committer;
+            return new CommitDetail
+            {
+                CommitId = commitId.Name,
+                Author = new UserInfo
+                {
+                    Name = author.Name,
+                    Email = author.EmailAddress,
+                    Date = Epoch.AddMilliseconds(author.When)
+                },
+                Committer = new UserInfo
+                {
+                    Name = committer.Name,
+                    Email = committer.EmailAddress,
+                    Date = Epoch.AddMilliseconds(committer.When)
+                },
+                ShortMessage = commit.Message,
+            };
+        }
+
         private sealed class CommitWrapper
         {
+            public Commit Commit { get; set; }
             public CommitDetail Detail { get; set; }
             public Tree TreeEntry { get; set; }
             public int ParentCount { get; set; }
