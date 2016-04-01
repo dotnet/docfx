@@ -158,5 +158,15 @@
                 }
             }
         }
+
+        public void RegisterTocInfo(TocInfo toc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IImmutableList<TocInfo> GetTocInfo()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

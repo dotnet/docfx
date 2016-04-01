@@ -15,10 +15,13 @@ namespace Microsoft.DocAsCode.Utility
     {
 
         #region Consts/Fields
-        private const string ParentDirectory = "../";
+        public const char WorkingFolderChar = '~';
+        public static readonly string NormalizedWorkingFolder = "~/";
+        public static readonly string AltWorkingFolder = "~\\";
         public static readonly RelativePath Empty = new RelativePath(false, 0, new string[] { string.Empty });
         public static readonly RelativePath WorkingFolder = new RelativePath(true, 0, new string[] { string.Empty });
 
+        private const string ParentDirectory = "../";
         private readonly bool _isFromWorkingFolder;
         private readonly int _parentDirectoryCount;
         private readonly string[] _parts;
@@ -90,6 +93,35 @@ namespace Microsoft.DocAsCode.Utility
                 stack.Push(string.Empty);
             }
             return Create(isFromWorkingFolder, parentCount, stack.Reverse());
+        }
+
+        public static bool IsPathFromWorkingFolder(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return false;
+            }
+
+            return path.StartsWith(NormalizedWorkingFolder)
+                || path.StartsWith(AltWorkingFolder);
+        }
+
+        public static string GetPathWithoutWorkingFolderChar(string path)
+        {
+            string pathWithoutWorkingDirectory;
+            TryGetPathWithoutWorkingFolderChar(path, out pathWithoutWorkingDirectory);
+            return pathWithoutWorkingDirectory;
+        }
+
+        public static bool TryGetPathWithoutWorkingFolderChar(string path, out string pathFromWorkingFolder)
+        {
+            if (IsPathFromWorkingFolder(path))
+            {
+                pathFromWorkingFolder = path.Substring(2);
+                return true;
+            }
+            pathFromWorkingFolder = path;
+            return false;
         }
 
         public int ParentDirectoryCount => _parentDirectoryCount;
@@ -293,7 +325,7 @@ namespace Microsoft.DocAsCode.Utility
         }
 
         public override string ToString() =>
-            (_isFromWorkingFolder ? "~/" : "") +
+            (_isFromWorkingFolder ? NormalizedWorkingFolder : "") +
             string.Concat(Enumerable.Repeat(ParentDirectory, _parentDirectoryCount)) +
             string.Join("/", _parts);
 

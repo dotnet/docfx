@@ -75,8 +75,18 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             // Add current folder to the toc mapping, e.g. `a/` maps to `a/toc`
             var directory = ((RelativePath)key).GetPathFromWorkingFolder().GetDirectoryPath();
             context.RegisterToc(key, directory);
-
             UpdateTocItemHref(toc, model, context);
+            var tocInfo = new TocInfo(key);
+            if (toc.Homepage != null)
+            {
+                if (PathUtility.IsRelativePath(toc.Homepage))
+                {
+                    var pathToRoot = ((RelativePath)model.File + (RelativePath)toc.Homepage).GetPathFromWorkingFolder();
+                    tocInfo.Homepage = pathToRoot;
+                }
+            }
+
+            context.RegisterTocInfo(tocInfo);
         }
 
         private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
@@ -142,10 +152,24 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void RegisterTocMap(TocItemViewModel item, string key, IDocumentBuildContext context)
         {
-            var href = item.Href; // Should be original href from working folder starting with ~
-            if (!PathUtility.IsRelativePath(href)) return;
-
-            context.RegisterToc(key, href);
+            // If tocHref is set, href is originally RelativeFolder type, and href is set to the homepage of TocHref,
+            // So in this case, TocHref should be used to in TocMap
+            // TODO: what if user wants to set TocHref?
+            var tocHref = item.TocHref;
+            var tocHrefType = Utility.GetHrefType(tocHref);
+            if (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile)
+            {
+                context.RegisterToc(key, tocHref);
+            }
+            else
+            {
+                var href = item.Href; // Should be original href from working folder starting with ~
+                var hrefType = Utility.GetHrefType(href);
+                if (hrefType == HrefType.RelativeFile)
+                {
+                    context.RegisterToc(key, href);
+                }
+            }
         }
 
         private string GetUpdatedHref(string originalPathToFile, FileModel model, IDocumentBuildContext context)
