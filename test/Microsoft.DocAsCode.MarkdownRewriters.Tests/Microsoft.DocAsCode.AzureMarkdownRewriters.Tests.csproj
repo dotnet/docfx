@@ -33,10 +33,6 @@
       <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
       <Name>Microsoft.DocAsCode.Dfm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
-      <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
-      <Name>Microsoft.DocAsCode.EntityModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
       <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
       <Name>Microsoft.DocAsCode.MarkdownLite</Name>
