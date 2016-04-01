@@ -111,6 +111,8 @@
   <ItemGroup>
     <Compile Include="CommandModels\OptionParserException.cs" />
     <Compile Include="CommandModels\CompositeOptions.cs" />
+    <Compile Include="Exceptions\PluginDirectoryAlreadyExistsException.cs" />
+    <Compile Include="Exceptions\PluginException.cs" />
     <Compile Include="Models\MergeCommandOptions.cs" />
     <Compile Include="Models\MergeJsonConfig.cs" />
     <Compile Include="Models\ICanPrintHelpMessage.cs" />
@@ -121,6 +123,8 @@
     <Compile Include="SubCommands\ExternalReferencePackageHelper.cs" />
     <Compile Include="SubCommands\MergeCommandCreator.cs" />
     <Compile Include="SubCommands\MergeCommand.cs" />
+    <Compile Include="SubCommands\MetadataMergeParameters.cs" />
+    <Compile Include="SubCommands\MetadataMerger.cs" />
     <Compile Include="SubCommands\PackCommandCreator.cs" />
     <Compile Include="SubCommands\ExportCommandCreator.cs" />
     <Compile Include="SubCommands\ExportCommand.cs" />
@@ -250,10 +254,6 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
       <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
       <Name>Microsoft.DocAsCode.Dfm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
-      <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
-      <Name>Microsoft.DocAsCode.EntityModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj">
       <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>

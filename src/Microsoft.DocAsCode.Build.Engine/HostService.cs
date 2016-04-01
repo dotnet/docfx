@@ -151,22 +151,22 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void LogVerbose(string message, string file, string line)
         {
-            Logger.LogVerbose(message, "Build Document - Plugin", file, line);
+            Logger.LogVerbose(message, file: file, line: line);
         }
 
         public void LogInfo(string message, string file, string line)
         {
-            Logger.LogInfo(message, "Build Document - Plugin", file, line);
+            Logger.LogInfo(message, file: file, line: line);
         }
 
         public void LogWarning(string message, string file, string line)
         {
-            Logger.LogWarning(message, "Build Document - Plugin", file, line);
+            Logger.LogWarning(message, file: file, line: line);
         }
 
         public void LogError(string message, string file, string line)
         {
-            Logger.LogError(message, "Build Document - Plugin", file, line);
+            Logger.LogError(message, file: file, line: line);
         }
 
         #endregion
@@ -240,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             lock (_syncRoot)
             {
-                var common = e.Original.Select(s=>s.Name).Intersect(e.Current.Select(s => s.Name)).ToList();
+                var common = e.Original.Select(s => s.Name).Intersect(e.Current.Select(s => s.Name)).ToList();
                 foreach (var added in e.Current.Select(s => s.Name).Except(common))
                 {
                     List<FileModel> list;

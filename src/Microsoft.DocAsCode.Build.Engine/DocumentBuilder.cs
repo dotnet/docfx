@@ -134,6 +134,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters)
+        {
+            var hostService = new HostService(
+                 parameters.Files.DefaultBaseDir,
+                 from file in parameters.Files.EnumerateFiles()
+                 select Load(processor, parameters.Metadata, parameters.FileMetadata, file)
+                 into model
+                 where model != null
+                 select model);
+            BuildCore(processor, hostService, parameters.MaxParallelism);
+            return hostService.Models;
+        }
+
         private void Cleanup(HostService hostService)
         {
             hostService.Models.RunAll(m => m.Dispose());
@@ -142,26 +155,33 @@ namespace Microsoft.DocAsCode.Build.Engine
         private IEnumerable<ManifestItemWithContext> BuildCore(InnerBuildContext buildContext, DocumentBuildContext context)
         {
             var processor = buildContext.Processor;
-            var hostService = buildContext.HostService;
-            Logger.LogVerbose($"Plug-in {processor.Name}: Loading document...");
-            hostService.SourceFiles = context.AllSourceFiles;
-            foreach (var m in hostService.Models)
-            {
-                if (m.LocalPathFromRepoRoot == null)
-                {
-                    m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
-                }
-            }
-            var steps = string.Join("=>", processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
-            Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {processor.Name}({steps})...");
-            Logger.LogVerbose($"Plug-in {processor.Name}: Preprocessing...");
-            Prebuild(processor, hostService);
-            Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
-            BuildArticle(processor, hostService, context.MaxParallelism);
-            Logger.LogVerbose($"Plug-in {processor.Name}: Postprocessing...");
-            Postbuild(processor, hostService);
-            Logger.LogVerbose($"Plug-in {processor.Name}: Generating manifest...");
+            buildContext.HostService.SourceFiles = context.AllSourceFiles;
+            BuildCore(processor, buildContext.HostService, context.MaxParallelism);
             return ExportManifest(buildContext, context);
+        }
+
+        private static void BuildCore(IDocumentProcessor processor, HostService hostService, int maxParallelism)
+        {
+            Logger.LogVerbose($"Processor {processor.Name}: Loading document...");
+            using (new LoggerPhaseScope(processor.Name))
+            {
+                foreach (var m in hostService.Models)
+                {
+                    if (m.LocalPathFromRepoRoot == null)
+                    {
+                        m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
+                    }
+                }
+                var steps = string.Join("=>", processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
+                Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {processor.Name}({steps})...");
+                Logger.LogVerbose($"Processor {processor.Name}: Preprocessing...");
+                Prebuild(processor, hostService);
+                Logger.LogVerbose($"Processor {processor.Name}: Building...");
+                BuildArticle(processor, hostService, maxParallelism);
+                Logger.LogVerbose($"Processor {processor.Name}: Postprocessing...");
+                Postbuild(processor, hostService);
+                Logger.LogVerbose($"Processor {processor.Name}: Generating manifest...");
+            }
         }
 
         private void UpdateHref(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
@@ -188,7 +208,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new LoggerFileScope(file.File))
             {
-                Logger.LogVerbose($"Plug-in {processor.Name}: Loading...");
+                Logger.LogVerbose($"Processor {processor.Name}: Loading...");
 
                 var path = Path.Combine(file.BaseDir, file.File);
                 metadata = ApplyFileMetadata(path, metadata, fileMetadata);
@@ -222,50 +242,59 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result.ToImmutableDictionary();
         }
 
-        private void Prebuild(IDocumentProcessor processor, HostService hostService)
+        private static void Prebuild(IDocumentProcessor processor, HostService hostService)
         {
             RunBuildSteps(
                 processor.BuildSteps,
                 buildStep =>
                 {
-                    Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Preprocessing...");
-                    var models = buildStep.Prebuild(hostService.Models, hostService);
-                    if (!object.ReferenceEquals(models, hostService.Models))
+                    Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Preprocessing...");
+                    using (new LoggerPhaseScope(buildStep.Name))
                     {
-                        Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Reloading models...");
-                        hostService.Reload(models);
+                        var models = buildStep.Prebuild(hostService.Models, hostService);
+                        if (!object.ReferenceEquals(models, hostService.Models))
+                        {
+                            Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Reloading models...");
+                            hostService.Reload(models);
+                        }
                     }
                 });
         }
 
-        private void BuildArticle(IDocumentProcessor processor, HostService hostService, int maxParallelism)
+        private static void BuildArticle(IDocumentProcessor processor, HostService hostService, int maxParallelism)
         {
             hostService.Models.RunAll(
                 m =>
                 {
                     using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                     {
-                        Logger.LogVerbose($"Plug-in {processor.Name}: Building...");
+                        Logger.LogVerbose($"Processor {processor.Name}: Building...");
                         RunBuildSteps(
                             processor.BuildSteps,
                             buildStep =>
                             {
-                                Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Building...");
-                                buildStep.Build(m, hostService);
+                                Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Building...");
+                                using (new LoggerPhaseScope(buildStep.Name))
+                                {
+                                    buildStep.Build(m, hostService);
+                                }
                             });
                     }
                 },
                 maxParallelism);
         }
 
-        private void Postbuild(IDocumentProcessor processor, HostService hostService)
+        private static void Postbuild(IDocumentProcessor processor, HostService hostService)
         {
             RunBuildSteps(
                 processor.BuildSteps,
                 buildStep =>
                 {
-                    Logger.LogVerbose($"Plug-in {processor.Name}, build step {buildStep.Name}: Postprocessing...");
-                    buildStep.Postbuild(hostService.Models, hostService);
+                    Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Postprocessing...");
+                    using (new LoggerPhaseScope(buildStep.Name))
+                    {
+                        buildStep.Postbuild(hostService.Models, hostService);
+                    }
                 });
         }
 
@@ -425,7 +454,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                            select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
                 select new { file, p })
                     group fileItem by fileItem.p;
-                    
+
             var toHandleItems = k.Where(s => s.Key != null);
             var notToHandleItems = k.Where(s => s.Key == null);
             foreach (var item in notToHandleItems)

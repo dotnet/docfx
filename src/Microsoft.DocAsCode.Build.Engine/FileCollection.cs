@@ -49,6 +49,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                             select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type, pathRewriter));
         }
 
+        public void RemoveAll(Predicate<FileAndType> match)
+        {
+            _files.RemoveAll(match);
+        }
+
         private string ToRelative(string file, string rootedBaseDir)
         {
             if (!Path.IsPathRooted(file))

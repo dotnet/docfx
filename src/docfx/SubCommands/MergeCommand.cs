@@ -10,14 +10,13 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Linq;
 
     using Microsoft.DocAsCode;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.EntityModel.Builders;
-    using Microsoft.DocAsCode.EntityModel.MetadataMergers;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
     using Newtonsoft.Json;
+
     internal sealed class MergeCommand : ISubCommand
     {
         private static JsonSerializer GetSerializer() =>

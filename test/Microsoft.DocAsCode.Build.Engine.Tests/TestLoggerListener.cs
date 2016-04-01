@@ -34,6 +34,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 Items.Add(item);
             }
+            else if (item.Phase != null && item.Phase.EndsWith(Phase))
+            {
+                Items.Add(item);
+            }
         }
     }
 }

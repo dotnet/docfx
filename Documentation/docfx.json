@@ -4,13 +4,36 @@
       "src": [
         {
           "files": [ "**/*.csproj" ],
+          "exclude": [ "**/bin/**", "**/obj/**", "**/Microsoft.DocAsCode.EntityModel.csproj" ],
+          "cwd": "../src"
+        }
+      ],
+      "dest": "obj/temp/docfxapi1"
+    },
+    {
+      "src": [
+        {
+          "files": [ "**/Microsoft.DocAsCode.EntityModel.csproj" ],
           "exclude": [ "**/bin/**", "**/obj/**" ],
           "cwd": "../src"
         }
       ],
-      "dest": "obj/temp/docfxapi"
+      "dest": "obj/temp/docfxapi2"
     }
   ],
+  "merge": {
+    "content": [
+      {
+        "files": [ "*.yml" ],
+        "src": "obj/temp/docfxapi1/",
+      },
+      {
+        "files": [ "*.yml" ],
+        "src": "obj/temp/docfxapi2/",
+      }
+    ],
+    "dest": "obj/temp/docfxapi"
+  },
   "build": {
     "content": [
       {

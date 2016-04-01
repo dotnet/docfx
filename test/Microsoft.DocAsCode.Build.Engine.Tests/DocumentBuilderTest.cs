@@ -127,7 +127,7 @@ tagRules : [
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
-            Init(string.Join(".", nameof(DocumentBuilderTest), DocumentBuilder.PhaseName, MarkdownValidatorBuilder.MarkdownValidatePhaseName));
+            Init(MarkdownValidatorBuilder.MarkdownValidatePhaseName);
             try
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
