@@ -242,23 +242,6 @@ namespace Microsoft.DocAsCode.Utility
             return null;
         }
 
-        public static bool IsPathFromWorkingFolder(string path)
-        {
-            if (!PathUtility.IsRelativePath(path)) return false;
-            return ((RelativePath)path).IsFromWorkingFolder();
-        }
-
-        public static bool TryGetPathFromWorkingFolder(string path, out string pathFromWorkingFolder)
-        {
-            if (!string.IsNullOrEmpty(path) && IsPathFromWorkingFolder(path))
-            {
-                pathFromWorkingFolder = path.Substring(2);
-                return true;
-            }
-            pathFromWorkingFolder = path;
-            return false;
-        }
-
         public static bool IsPathUnderSpecificFolder(string path, string folder)
         {
             if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(folder))

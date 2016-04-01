@@ -18,9 +18,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public class TemplateProcessor : IDisposable
     {
-        private const string ManifestFileName = ".manifest";
-        private const string Language = "csharp"; // TODO: how to handle multi-language
-
         private ResourceCollection _resourceProvider = null;
         private object _global = null;
 
@@ -88,9 +85,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (templateManifest.Count > 0)
                 {
                     // Save manifest from template
-                    var manifestPath = Path.Combine(outputDirectory ?? string.Empty, ManifestFileName);
+                    // TODO: Keep .manifest for backward-compatability, will remove next sprint
+                    var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
                     JsonUtility.Serialize(manifestPath, templateManifest);
-                    Logger.LogInfo($"Manifest file saved to {manifestPath}.");
+                    Logger.LogInfo($"Manifest file saved to {manifestPath}. NOTE: This file is out-of-date and will be removed next sprint @4/18/2016, if you rely on this file, please change to use {Constants.ManifestFileName} instead.");
+
+                    var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
+
+                    var toc = context.GetTocInfo();
+                    var manifestObject = GenerateManifest(context, templateManifest);
+                    JsonUtility.Serialize(manifestJsonPath, manifestObject);
+                    Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
                 }
                 return templateManifest;
             }
@@ -104,10 +109,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning($"There is no template processing document type(s): {documentTypes.ToDelimitedString()}");
             }
             var manifest = new ConcurrentBag<TemplateManifestItem>();
+            var systemAttributeGenerator = new SystemMetadataGenerator(context);
             items.RunAll(
                 item =>
                 {
-                    var manifestItem = TransformItem(item, context, settings);
+                    var manifestItem = TransformItem(item, context, settings, systemAttributeGenerator);
                     if (manifestItem != null)
                     {
                         manifest.Add(manifestItem);
@@ -126,6 +132,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return JsonUtility.FromJsonString<object>(globalJson);
             }
             return null;
+        }
+
+        private static Manifest GenerateManifest(IDocumentBuildContext context, List<TemplateManifestItem> items)
+        {
+            var toc = context.GetTocInfo();
+            var homepages = toc
+                .Where(s => !string.IsNullOrEmpty(s.Homepage))
+                .Select(s => new HomepageInfo
+                {
+                    Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
+                    TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
+                }).ToList();
+            return new Manifest
+            {
+                Homepages = homepages,
+                Files = items,
+            };
         }
 
         private static void ExportRawModel(List<ManifestItem> manifest, ApplyTemplateSettings settings)
@@ -149,7 +172,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return modelPath.ToDisplayPath();
         }
 
-        private TemplateManifestItem TransformItem(ManifestItem item, IDocumentBuildContext context, ApplyTemplateSettings settings)
+        private TemplateManifestItem TransformItem(ManifestItem item, IDocumentBuildContext context, ApplyTemplateSettings settings, SystemMetadataGenerator systemAttributeGenerator)
         {
             if (settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
             {
@@ -175,7 +198,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 // 1. process model
                 if (templates != null)
                 {
-                    var systemAttrs = new SystemAttributes(context, item, TemplateProcessor.Language);
+                    var systemAttrs = systemAttributeGenerator.Generate(item);
                     foreach (var template in templates)
                     {
                         var extension = template.Extension;
@@ -304,7 +327,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     try
                     {
-                        UpdateXref(xref, context, Language);
+                        UpdateXref(xref, context, Constants.DefaultLanguage);
                     }
                     catch (CrossReferenceNotResolvedException e)
                     {
@@ -434,7 +457,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var key = link.GetAttributeValue(attribute, null);
             string path;
-            if (PathUtility.TryGetPathFromWorkingFolder(key, out path))
+            if (RelativePath.TryGetPathWithoutWorkingFolderChar(key, out path))
             {
                 string href;
 
@@ -463,11 +486,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string UpdateFilePath(string path, string modelFilePathToRoot)
         {
-            string pathToRoot;
-            if (PathUtility.TryGetPathFromWorkingFolder(path, out pathToRoot))
+            if (RelativePath.IsPathFromWorkingFolder(path))
             {
-                return ((RelativePath)pathToRoot).MakeRelativeTo((RelativePath)modelFilePathToRoot);
+                return ((RelativePath)path).RemoveWorkingFolder().MakeRelativeTo((RelativePath)modelFilePathToRoot);
             }
+
             return path;
         }
 

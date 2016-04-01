@@ -46,10 +46,22 @@ namespace Microsoft.DocAsCode.Plugins
         IImmutableList<string> GetTocFileKeySet(string key);
 
         /// <summary>
-        /// Register the toc to the file
+        /// Register the relationship between current toc file and the article
         /// </summary>
         /// <param name="tocFileKey">The key of the toc file that the file belongs to</param>
         /// <param name="fileKey">The key of the file that belongs to the toc</param>
         void RegisterToc(string tocFileKey, string fileKey);
+
+        /// <summary>
+        /// Register the toc file to context with its information provided
+        /// </summary>
+        /// <param name="toc">The information for the toc, containing the homepage of the toc</param>
+        void RegisterTocInfo(TocInfo toc);
+
+        /// <summary>
+        /// Get all the registered toc information
+        /// </summary>
+        /// <returns>All the registered toc information</returns>
+        IImmutableList<TocInfo> GetTocInfo();
     }
 }

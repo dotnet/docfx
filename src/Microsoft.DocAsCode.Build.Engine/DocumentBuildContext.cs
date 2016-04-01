@@ -13,6 +13,8 @@
 
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
+        private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
+
         public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, 1) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, int maxParallelism)
@@ -143,6 +145,16 @@
             {
                 TocMap[fileKey] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey };
             }
+        }
+
+        public void RegisterTocInfo(TocInfo toc)
+        {
+            _tableOfContents[toc.TocFileKey] = toc;
+        }
+
+        public IImmutableList<TocInfo> GetTocInfo()
+        {
+            return _tableOfContents.Values.ToImmutableList();
         }
 
         private ImmutableDictionary<string, FileAndType> GetAllSourceFiles(IEnumerable<FileAndType> allSourceFiles)

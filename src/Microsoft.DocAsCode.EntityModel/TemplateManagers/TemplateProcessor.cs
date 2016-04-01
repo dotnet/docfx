@@ -417,7 +417,7 @@ namespace Microsoft.DocAsCode.EntityModel
         {
             var key = link.GetAttributeValue(attribute, null);
             string path;
-            if (PathUtility.TryGetPathFromWorkingFolder(key, out path))
+            if (RelativePath.TryGetPathWithoutWorkingFolderChar(key, out path))
             {
                 string href;
                 // For href, # may be appended, remove # before search file from map
@@ -449,10 +449,9 @@ namespace Microsoft.DocAsCode.EntityModel
 
         private static string UpdateFilePath(string path, string modelFilePathToRoot)
         {
-            string pathToRoot;
-            if (PathUtility.TryGetPathFromWorkingFolder(path, out pathToRoot))
+            if (RelativePath.IsPathFromWorkingFolder(path))
             {
-                return ((RelativePath)pathToRoot).MakeRelativeTo((RelativePath)modelFilePathToRoot);
+                return ((RelativePath)path).MakeRelativeTo((RelativePath)modelFilePathToRoot);
             }
             return path;
         }
