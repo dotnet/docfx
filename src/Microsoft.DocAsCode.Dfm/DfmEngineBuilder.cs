@@ -38,7 +38,6 @@ namespace Microsoft.DocAsCode.Dfm
             inlineRules.Insert(index + 1, new DfmEmailInlineRule());
 
             // xref link inline rule must be before MarkdownLinkInlineRule
-            inlineRules.Insert(index, new DfmXrefLinkInlineRule());
             inlineRules.Insert(index, new DfmIncludeInlineRule());
 
             index = inlineRules.FindIndex(s => s is MarkdownTextInlineRule);

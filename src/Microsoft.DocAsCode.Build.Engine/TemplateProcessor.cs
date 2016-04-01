@@ -287,6 +287,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             HtmlAgilityPack.HtmlDocument html = new HtmlAgilityPack.HtmlDocument();
             html.LoadHtml(transformed);
 
+            var xrefLinkNodes = html.DocumentNode.SelectNodes("//a[starts-with(@href, 'xref:')]");
+            if (xrefLinkNodes != null)
+            {
+                foreach (var xref in xrefLinkNodes)
+                {
+                    TransformXrefLink(xref, context);
+                }
+            }
+
             var xrefExceptions = new List<CrossReferenceNotResolvedException>();
             var xrefNodes = html.DocumentNode.SelectNodes("//xref/@href");
             if (xrefNodes != null)
@@ -395,6 +404,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        private static void TransformXrefLink(HtmlAgilityPack.HtmlNode node, IDocumentBuildContext context)
+        {
+            var convertedNode = XrefDetails.ConvertXrefLinkNodeToXrefNode(node);
+            node.ParentNode.ReplaceChild(convertedNode, node);
+        }
+
         private static void UpdateXref(HtmlAgilityPack.HtmlNode node, IDocumentBuildContext context, string language)
         {
             var xref = XrefDetails.From(node);
@@ -403,11 +418,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             // Internal one overrides external one
             var xrefSpec = context.GetXrefSpec(xref.Uid);
             xref.ApplyXrefSpec(xrefSpec);
-            bool resolved = xrefSpec != null;
 
             var convertedNode = xref.ConvertToHtmlNode(language);
             node.ParentNode.ReplaceChild(convertedNode, node);
-            if (!resolved)
+            if (xrefSpec == null)
             {
                 if (xref.ThrowIfNotResolved)
                 {
@@ -423,21 +437,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (PathUtility.TryGetPathFromWorkingFolder(key, out path))
             {
                 string href;
-                // For href, # may be appended, remove # before search file from map
-                var anchorIndex = key.IndexOf("#");
-                var anchor = string.Empty;
-                if (anchorIndex == 0) return;
-                if (anchorIndex > 0)
-                {
-                    anchor = key.Substring(anchorIndex);
-                    key = key.Remove(anchorIndex);
-                }
 
-                href = context.GetFilePath(HttpUtility.UrlDecode(key));
+                href = context.GetFilePath(key);
                 if (href != null)
                 {
                     href = ((RelativePath)UpdateFilePath(href, relativePath)).UrlEncode();
-                    href += anchor;
+
+                    var anchor = link.GetAttributeValue("anchor", null);
+                    if (!string.IsNullOrEmpty(anchor))
+                    {
+                        href += anchor;
+                        link.Attributes.Remove(link.Attributes["anchor"]);
+                    }
                     link.SetAttributeValue(attribute, href);
                 }
                 else

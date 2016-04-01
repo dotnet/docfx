@@ -102,16 +102,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                 node.Remove();
             }
             var linkToFiles = new HashSet<string>();
-            foreach (var link in from n in doc.DocumentNode.Descendants()
-                                 where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                 from attr in n.Attributes
-                                 where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
-                                       string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
-                                 where !string.IsNullOrWhiteSpace(attr.Value)
-                                 select attr)
+            foreach (var pair in (from n in doc.DocumentNode.Descendants()
+                                  where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                                  from attr in n.Attributes
+                                  where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
+                                        string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
+                                  where !string.IsNullOrWhiteSpace(attr.Value)
+                                  select new { Node = n, Attr = attr }).ToList())
             {
                 string linkFile;
                 string anchor = null;
+                var link = pair.Attr;
                 if (PathUtility.IsRelativePath(link.Value))
                 {
                     var index = link.Value.IndexOf('#');
@@ -130,7 +131,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     var path = (RelativePath)ft.File + (RelativePath)linkFile;
                     var file = path.GetPathFromWorkingFolder();
-                    link.Value = file + anchor;
+                    link.Value = file;
+                    if (!string.IsNullOrEmpty(anchor) &&
+                        string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
+                    {
+                        pair.Node.SetAttributeValue("anchor", anchor);
+                    }
                     linkToFiles.Add(HttpUtility.UrlDecode(file));
                 }
             }

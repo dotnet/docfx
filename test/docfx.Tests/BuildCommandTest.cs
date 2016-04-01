@@ -74,7 +74,6 @@ namespace Microsoft.DocAsCode.Tests
                     "  c: e",
                     "---",
                     "# Hello World",
-                    "Test XRef Shortcut: [Xref](@xref1 \"shortcut\")",
                     "Test XRef: [](xref:xref1)",
                     "Test XRef auto link: <xref:xref1>",
                     "Test link: [link text](test1.md)",
@@ -111,8 +110,7 @@ namespace Microsoft.DocAsCode.Tests
                 {
                     "",
                     "<h1 id=\"hello-world\">Hello World</h1>",
-                    "<p>Test XRef Shortcut: <a class=\"xref\" href=\"test1.html#xref1\" title=\"shortcut\">Xref</a>",
-                    "Test XRef: <a class=\"xref\" href=\"test1.html#xref1\">Hello Test1</a>",
+                    "<p>Test XRef: <a class=\"xref\" href=\"test1.html#xref1\">Hello Test1</a>",
                     "Test XRef auto link: <a class=\"xref\" href=\"test1.html#xref1\">Hello Test1</a>",
                     "Test link: <a href=\"test1.html\">link text</a></p>",
                     "<p><p>",

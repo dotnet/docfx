@@ -68,7 +68,6 @@
     <Compile Include="Rules\DfmSectionBlockRule.cs" />
     <Compile Include="Rules\DfmTextInlineRule.cs" />
     <Compile Include="Rules\DfmXrefAutoLinkInlineRule.cs" />
-    <Compile Include="Rules\DfmXrefLinkInlineRule.cs" />
     <Compile Include="Rules\DfmXrefShortcutInlineRule.cs" />
     <Compile Include="Rules\DfmYamlHeaderBlockRule.cs" />
     <Compile Include="Tokens\DfmFencesBlockToken.cs" />

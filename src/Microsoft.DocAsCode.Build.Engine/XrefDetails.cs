@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
+    using System.Web;
 
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
@@ -22,6 +23,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static Regex HtmlEncodeRegex = new Regex(@"\W", RegexOptions.Compiled);
 
         public string Uid { get; private set; }
+        public string Anchor { get; private set; }
         public string PlainTextDisplayName { get; private set; }
         public string AnchorDisplayName { get; private set; }
         public string Title { get; private set; }
@@ -36,7 +38,23 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (node.Name != "xref") throw new NotSupportedException("Only xref node is supported!");
             var xref = new XrefDetails();
-            xref.Uid = node.GetAttributeValue("href", null);
+
+            var rawUid = node.GetAttributeValue("href", null);
+            if (!string.IsNullOrEmpty(rawUid))
+            {
+                var anchorIndex = rawUid.IndexOf("#");
+                if (anchorIndex == -1)
+                {
+                    xref.Anchor = string.Empty;
+                    xref.Uid = HttpUtility.UrlDecode(rawUid);
+                }
+                else
+                {
+                    xref.Anchor = rawUid.Substring(anchorIndex);
+                    xref.Uid = HttpUtility.UrlDecode(rawUid.Remove(anchorIndex));
+                }
+            }
+
             var overrideName = node.InnerText;
             if (!string.IsNullOrEmpty(overrideName))
             {
@@ -52,7 +70,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             xref.Title = node.GetAttributeValue("title", null);
-            xref.Raw = node.GetAttributeValue("data-raw", null);
+
+            // Both `data-raw-html` and `data-raw` are html encoded. Use `data-raw-html` with higher priority.
+            // `data-raw-html` will be decoded then displayed, while `data-raw` will be displayed directly.
+            var raw = node.GetAttributeValue("data-raw-html", null);
+            if (!string.IsNullOrEmpty(raw))
+            {
+                xref.Raw = StringHelper.HtmlDecode(raw);
+            }
+            else
+            {
+                xref.Raw = node.GetAttributeValue("data-raw", null);
+            }
+
             xref.ThrowIfNotResolved = node.GetAttributeValue("data-throw-if-not-resolved", false);
 
             return xref;
@@ -64,16 +94,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             var href = spec.Href;
             if (PathUtility.IsRelativePath(href))
             {
-                var hashtagIndex = href.IndexOf('#');
-                if (hashtagIndex == -1)
+                if (string.IsNullOrEmpty(Anchor))
                 {
                     // TODO: hashtag from tempalte
-                    var htmlId = GetHtmlId(Uid);
                     // TODO: What if href is not html?
-                    href = href + "#" + htmlId;
+                    Anchor = "#" + GetHtmlId(Uid);
                 }
             }
-            Href = href;
+            Href = HttpUtility.UrlDecode(href);
             Spec = spec;
         }
 
@@ -95,7 +123,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, value, "name"));
                     }
                 }
-                return GetAnchorNode(Href, Title, value);
+                return GetAnchorNode(Href, Anchor, Title, value);
             }
             else
             {
@@ -124,9 +152,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             return HtmlEncodeRegex.Replace(id, "_");
         }
 
-        private static HtmlAgilityPack.HtmlNode GetAnchorNode(string href, string title, string value)
+        private static HtmlAgilityPack.HtmlNode GetAnchorNode(string href, string anchor, string title, string value)
         {
             var anchorNode = $"<a class=\"xref\" href=\"{href}\"";
+            if (!string.IsNullOrEmpty(anchor))
+            {
+                anchorNode += $" anchor=\"{anchor}\"";
+            }
             if (!string.IsNullOrEmpty(title))
             {
                 anchorNode += $" title=\"{title}\"";
@@ -163,6 +195,27 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return defaultValue;
+        }
+
+        public static HtmlAgilityPack.HtmlNode ConvertXrefLinkNodeToXrefNode(HtmlAgilityPack.HtmlNode node)
+        {
+            var href = node.GetAttributeValue("href", null);
+            if (node.Name != "a" || string.IsNullOrEmpty(href) || !href.StartsWith("xref:"))
+            {
+                throw new NotSupportedException("Only anchor node with href started with \"xref:\" is supported!");
+            }
+            href = href.Substring("xref:".Length);
+            var raw = StringHelper.HtmlEncode(node.OuterHtml);
+            var title = node.GetAttributeValue("title", null);
+
+            var xrefNode = $"<xref href=\"{href}\" data-throw-if-not-resolved=\"True\" data-raw-html=\"{raw}\"";
+            if (!string.IsNullOrEmpty(title))
+            {
+                xrefNode += $" title=\"{title}\"";
+            }
+            xrefNode += $">{node.InnerText}</xref>";
+
+            return HtmlAgilityPack.HtmlNode.CreateNode(xrefNode);
         }
     }
 }

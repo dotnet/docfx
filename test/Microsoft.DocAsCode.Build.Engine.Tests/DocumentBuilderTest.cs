@@ -45,6 +45,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             const string documentsBaseDir = "db.documents";
             const string outputBaseDir = "db.output";
+            const string templateBaseDir = "db.template";
             const string RawModelFileExtension = ".raw.json";
             #region Prepare test data
             if (Directory.Exists(documentsBaseDir))
@@ -55,14 +56,23 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 Directory.Delete(outputBaseDir, true);
             }
+            if (Directory.Exists(templateBaseDir))
+            {
+                Directory.Delete(templateBaseDir, true);
+            }
             Directory.CreateDirectory(documentsBaseDir);
             Directory.CreateDirectory(documentsBaseDir + "/test");
             Directory.CreateDirectory(outputBaseDir);
+            var templateName = "tmpl";
+            var templateFolder = Path.Combine(templateBaseDir, templateName);
+            Directory.CreateDirectory(templateFolder);
             var tocFile = Path.Combine(documentsBaseDir, "toc.md");
             var conceptualFile = Path.Combine(documentsBaseDir, "test.md");
             var conceptualFile2 = Path.Combine(documentsBaseDir, "test/test.md");
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
             var resourceMetaFile = resourceFile + ".meta";
+            var templateFile = Path.Combine(templateFolder ?? string.Empty, "conceptual.html.primary.tmpl");
+
             File.WriteAllLines(
                 tocFile,
                 new[]
@@ -87,6 +97,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "Test XRef: @XRef1",
                     "Test link: [link text](test/test.md)",
                     "Test link: [link text 2](../" + resourceFile + ")",
+                    "Test link style xref: [link text 3](xref:XRef2 \"title\")",
+                    "Test link style xref with anchor: [link text 4](xref:XRef2#anchor \"title\")",
+                    "Test encoded link style xref with anchor: [link text 5](xref:%58%52%65%66%32#anchor \"title\")",
+                    "Test invalid link style xref with anchor: [link text 6](xref:invalid#anchor \"title\")",
+                    "Test autolink style xref: <xref:XRef2>",
+                    "Test autolink style xref with anchor: <xref:XRef2#anchor>",
+                    "Test encoded autolink style xref with anchor: <xref:%58%52%65%66%32#anchor>",
+                    "Test invalid autolink style xref with anchor: <xref:invalid#anchor>",
+                    "Test short xref: @XRef2",
                     "<p>",
                     "test",
                 });
@@ -121,6 +140,8 @@ tagRules : [
     }
 ]
 }");
+            File.WriteAllText(templateFile, "{{{conceptual}}}");
+
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
             files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
@@ -143,7 +164,8 @@ tagRules : [
                         Metadata = new Dictionary<string, object>
                         {
                             ["meta"] = "Hello world!",
-                        }.ToImmutableDictionary()
+                        }.ToImmutableDictionary(),
+                        TemplateManager = new TemplateManager(null, null, new List<string> { templateName }, null, templateBaseDir)
                     };
                     builder.Build(parameters);
                 }
@@ -165,10 +187,10 @@ tagRules : [
                     var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
                     Assert.NotNull(model);
                     Assert.Equal("test1", model[0].Name);
-                    Assert.Equal("test.md", model[0].Href);
+                    Assert.Equal("test.html", model[0].Href);
                     Assert.NotNull(model[0].Items);
                     Assert.Equal("test2", model[0].Items[0].Name);
-                    Assert.Equal("test/test.md", model[0].Items[0].Href);
+                    Assert.Equal("test/test.html", model[0].Items[0].Href);
                     Assert.Equal("Api", model[1].Name);
                     Assert.Null(model[1].Href);
                     Assert.NotNull(model[1].Items);
@@ -180,6 +202,8 @@ tagRules : [
 
                 {
                     // check conceptual.
+                    var conceptualOutputPath = Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".html"));
+                    Assert.True(File.Exists(conceptualOutputPath));
                     Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
                     var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
                     Assert.Equal(
@@ -188,10 +212,35 @@ tagRules : [
                     Assert.Equal(
                         "\n<p>Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\"></xref>\n" +
                         "Test link: <a href=\"~/db.documents/test/test.md\">link text</a>\n" +
-                        "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a></p>\n" +
+                        "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a>\n" +
+                        "Test link style xref: <a href=\"xref:XRef2\" title=\"title\">link text 3</a>\n" +
+                        "Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" title=\"title\">link text 4</a>\n" +
+                        "Test encoded link style xref with anchor: <a href=\"xref:%58%52%65%66%32#anchor\" title=\"title\">link text 5</a>\n" +
+                        "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>\n" +
+                        "Test autolink style xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2&gt;\"></xref>\n" +
+                        "Test autolink style xref with anchor: <xref href=\"XRef2#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2#anchor&gt;\"></xref>\n" +
+                        "Test encoded autolink style xref with anchor: <xref href=\"%58%52%65%66%32#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:%58%52%65%66%32#anchor&gt;\"></xref>\n" +
+                        "Test invalid autolink style xref with anchor: <xref href=\"invalid#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:invalid#anchor&gt;\"></xref>\n" +
+                        "Test short xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef2\"></xref></p>\n" +
                         "<p><p>\n" +
                         "test</p>\n",
                         model[Constants.PropertyName.Conceptual]);
+                    Assert.Equal(
+                        "\n<p>Test XRef: <a class=\"xref\" href=\"test.html#XRef1\">Hello World</a>\n" +
+                        "Test link: <a href=\"test/test.html\">link text</a>\n" +
+                        "Test link: <a href=\"../Microsoft.DocAsCode.Build.Engine.Tests.dll\">link text 2</a>\n" +
+                        "Test link style xref: <a class=\"xref\" href=\"test/test.html#XRef2\" title=\"title\">link text 3</a>\n" +
+                        "Test link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 4</a>\n" +
+                        "Test encoded link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 5</a>\n" +
+                        "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>\n" +
+                        "Test autolink style xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a>\n" +
+                        "Test autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>\n" +
+                        "Test encoded autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>\n" +
+                        "Test invalid autolink style xref with anchor: &lt;xref:invalid#anchor&gt;\n" +
+                        "Test short xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a></p>\n" +
+                        "<p><p>\n" +
+                        "test</p>\n",
+                        File.ReadAllText(conceptualOutputPath));
                     Assert.Equal("Conceptual", model["type"]);
                     Assert.Equal("Hello world!", model["meta"]);
                     Assert.Equal("b", model["a"]);
@@ -222,6 +271,7 @@ tagRules : [
                 CleanUp();
                 Directory.Delete(documentsBaseDir, true);
                 Directory.Delete(outputBaseDir, true);
+                Directory.Delete(templateBaseDir, true);
                 File.Delete(resourceMetaFile);
             }
         }
