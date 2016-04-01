@@ -22,6 +22,14 @@
       <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
       <Name>Microsoft.DocAsCode.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
+      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj">
+      <Project>{60f21edb-35f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.ManagedReference</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
