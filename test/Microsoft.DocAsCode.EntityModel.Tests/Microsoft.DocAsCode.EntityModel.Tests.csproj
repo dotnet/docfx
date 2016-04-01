@@ -105,7 +105,6 @@
     </Compile>
     <Compile Include="DocfxFlavoredMarkdownTest.cs" />
     <Compile Include="HtmlMarkdownTokenValidatorProvider.cs" />
-    <Compile Include="ConvertToViewModelUnitTest.cs" />
     <Compile Include="TestLoggerListener.cs" />
   </ItemGroup>
   <ItemGroup>

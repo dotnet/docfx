@@ -1,13 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.EntityModel.Tests
+namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
-    using EntityModel;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using Xunit;
+
+    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Metadata.ManagedReference;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("EntityType", "ViewModel")]
@@ -362,7 +365,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         [Fact]
         public void TestConvertNamespace()
         {
-            var vm = EntityModel.ViewModels.PageViewModel.FromModel(model.Items[0]);
+            var vm = model.Items[0].ToPageViewModel();
             Assert.NotNull(vm);
             Assert.NotNull(vm.Items);
             Assert.Equal(1, vm.Items.Count);
@@ -376,11 +379,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             var reference = vm.References.Find(x => x.Uid == "N1.C1");
             Assert.NotNull(reference);
             Assert.Equal("C1", reference.Name);
-            Assert.Null(reference.NameForCSharp);
-            Assert.Null(reference.NameForVB);
+            Assert.False(reference.NameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
+            Assert.False(reference.NameInDevLangs.ContainsKey(Constants.DevLang.VB));
             Assert.Equal("N1.C1", reference.FullName);
-            Assert.Null(reference.FullNameForCSharp);
-            Assert.Null(reference.FullNameForVB);
+            Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
+            Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.VB));
             Assert.False(reference.IsExternal);
             Assert.Equal("href!", reference.Href);
         }
@@ -390,7 +393,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
         [Fact]
         public void TestConvertType()
         {
-            var vm = EntityModel.ViewModels.PageViewModel.FromModel(model.Items[0].Items[0]);
+            var vm = model.Items[0].Items[0].ToPageViewModel();
             Assert.NotNull(vm);
             Assert.Null(vm.Items[0].Children);
             var inheritance = vm.Items[0].Inheritance;
@@ -431,11 +434,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             var reference = vm.References.Find(x => x.Uid == "System.Object");
             Assert.NotNull(reference);
             Assert.Equal("Object", reference.Name);
-            Assert.Null(reference.NameForCSharp);
-            Assert.Null(reference.NameForVB);
+            Assert.False(reference.NameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
+            Assert.False(reference.NameInDevLangs.ContainsKey(Constants.DevLang.VB));
             Assert.Equal("System.Object", reference.FullName);
-            Assert.Null(reference.FullNameForCSharp);
-            Assert.Null(reference.FullNameForVB);
+            Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
+            Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.VB));
             Assert.True(reference.IsExternal);
             Assert.Equal("System", reference.Parent);
             Assert.Null(reference.Href);
@@ -443,11 +446,11 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             reference = vm.References.Find(x => x.Uid == "System.Object.GetHashCode");
             Assert.NotNull(reference);
             Assert.Equal("GetHashCode()", reference.Name);
-            Assert.Null(reference.NameForCSharp);
-            Assert.Null(reference.NameForVB);
+            Assert.False(reference.NameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
+            Assert.False(reference.NameInDevLangs.ContainsKey(Constants.DevLang.VB));
             Assert.Equal("System.Object.GetHashCode()", reference.FullName);
-            Assert.Null(reference.FullNameForCSharp);
-            Assert.Null(reference.FullNameForVB);
+            Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
+            Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.VB));
             Assert.True(reference.IsExternal);
             Assert.Equal("System.Object", reference.Parent);
             Assert.Null(reference.Href);
@@ -455,13 +458,13 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
             reference = vm.References.Find(x => x.Uid == "System.Collections.Generic.List{System.Object}");
             Assert.NotNull(reference);
             Assert.Equal("List<Object>", reference.Name);
-            Assert.Null(reference.NameForCSharp);
-            Assert.Equal("List(Of Object)", reference.NameForVB);
+            Assert.False(reference.NameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
+            Assert.Equal("List(Of Object)", reference.NameInDevLangs[Constants.DevLang.VB]);
             Assert.Equal("System.Collections.Generic.List<System.Object>", reference.FullName);
-            Assert.Null(reference.FullNameForCSharp);
-            Assert.Equal("System.Collections.Generic.List(Of System.Object)", reference.FullNameForVB);
+            Assert.False(reference.FullNameInDevLangs.ContainsKey(Constants.DevLang.CSharp));
+            Assert.Equal("System.Collections.Generic.List(Of System.Object)", reference.FullNameInDevLangs[Constants.DevLang.VB]);
             {
-                var list = reference.SpecForCSharp;
+                var list = reference.Specs[Constants.DevLang.CSharp];
                 Assert.NotNull(list);
                 Assert.Equal(new[] { "List", "<", "Object", ">" }, (from x in list select x.Name).ToList());
                 Assert.Equal(new[] { "System.Collections.Generic.List", "<", "System.Object", ">" }, (from x in list select x.FullName).ToList());
@@ -479,7 +482,7 @@ namespace Microsoft.DocAsCode.EntityModel.Tests
                 Assert.Null(list[3].Href);
             }
             {
-                var list = reference.SpecForVB;
+                var list = reference.Specs[Constants.DevLang.VB];
                 Assert.NotNull(list);
                 Assert.Equal(new[] { "List", "(Of ", "Object", ")" }, (from x in list select x.Name).ToList());
                 Assert.Equal(new[] { "System.Collections.Generic.List", "(Of ", "System.Object", ")" }, (from x in list select x.FullName).ToList());

@@ -91,6 +91,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConvertToViewModelUnitTest.cs" />
     <Compile Include="GenerateMetadataFromVBUnitTest.cs" />
     <Compile Include="GenerateMetadataFromCSUnitTest.cs" />
     <Compile Include="TripleSlashParserUnitTest.cs" />
