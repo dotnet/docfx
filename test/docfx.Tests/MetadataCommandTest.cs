@@ -10,7 +10,8 @@ namespace Microsoft.DocAsCode.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.SubCommands;
     using Microsoft.DocAsCode.Tests.Common;
 
@@ -91,7 +92,6 @@ namespace Microsoft.DocAsCode.Tests
                 s => s.Uid.Equals("System.Collections.Generic.List{{TArg}[]}")
                 ));
         }
-
 
         [Fact]
         [Trait("Related", "docfx")]
