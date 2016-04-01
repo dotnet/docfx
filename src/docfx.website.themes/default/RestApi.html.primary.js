@@ -38,7 +38,7 @@ function transform(model, _attrs) {
         };
         if (vm.sections) {
             // Remove empty values from ordered, in case item in sections is not in swagger json 
-            vm.children = ordered.filter(function(o){ return o });
+            vm.children = ordered.filter(function(o){ return o; });
         }
     }
 
