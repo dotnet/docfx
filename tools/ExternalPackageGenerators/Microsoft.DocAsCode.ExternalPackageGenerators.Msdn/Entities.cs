@@ -3,8 +3,9 @@
 
 namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 {
-    using EntityModel.ViewModels;
     using System.Collections.Generic;
+
+    using Microsoft.DocAsCode.DataContracts.Common;
 
     internal sealed class ClassEntry
     {

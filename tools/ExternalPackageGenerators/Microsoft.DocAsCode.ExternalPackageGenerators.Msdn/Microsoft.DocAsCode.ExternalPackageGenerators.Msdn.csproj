@@ -43,9 +43,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
-      <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
-      <Name>Microsoft.DocAsCode.EntityModel</Name>
+    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
+      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj">
       <Project>{629ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>

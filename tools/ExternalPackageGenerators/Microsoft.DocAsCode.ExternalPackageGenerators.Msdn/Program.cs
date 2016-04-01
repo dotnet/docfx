@@ -19,9 +19,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
     using System.Threading.Tasks;
     using System.Xml;
 
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Glob;
 
     internal sealed class Program
