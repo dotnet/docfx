@@ -82,6 +82,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
         {
             ResolveUid(toc, model, context);
+
+            // Have to register TocMap after uid is resolved
             RegisterTocMap(toc, model.Key, context);
 
             toc.Homepage = GetUpdatedHref(toc.Homepage, model, context);

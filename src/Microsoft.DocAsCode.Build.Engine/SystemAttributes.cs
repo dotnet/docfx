@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System.Collections.Generic;
     using System.Linq;
 
     using Newtonsoft.Json;
@@ -82,12 +83,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             RelativePath rootTocPath = null;
             RelativePath parentTocPath = null;
             var rootToc = context.GetTocFileKeySet(RelativePath.WorkingFolder)?.FirstOrDefault();
-            var parentToc = context.GetTocFileKeySet(key)?.FirstOrDefault();
+            var parentToc = GetNearestToc(context.GetTocFileKeySet(key));
             if (parentToc == null)
             {
                 // fall back to get the toc file from the same directory
                 var directory = ((RelativePath)key).GetDirectoryPath();
-                parentToc = context.GetTocFileKeySet(directory)?.FirstOrDefault();
+
+                parentToc = GetNearestToc(context.GetTocFileKeySet(directory));
             }
 
             if (rootToc != null)
@@ -101,6 +103,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return new TocInfo(rootTocPath, parentTocPath);
+        }
+
+        private static string GetNearestToc(IEnumerable<string> tocFiles)
+        {
+            // Get the deepest toc as parent toc
+            return tocFiles?.OrderByDescending(s => ((RelativePath)s).SubdirectoryCount).FirstOrDefault();
         }
 
         private static RelativePath GetFinalFilePath(string key, IDocumentBuildContext context)
