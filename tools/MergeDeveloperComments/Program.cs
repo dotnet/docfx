@@ -11,8 +11,9 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
     using System.Xml;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel;
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Metadata.ManagedReference;
 
     internal sealed class Program : IDisposable
     {
