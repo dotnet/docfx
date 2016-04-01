@@ -22,10 +22,6 @@
       <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
       <Name>Microsoft.DocAsCode.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj">
-      <Project>{a4be543d-2cf1-40ab-9889-e9e48cbf7dfe}</Project>
-      <Name>Microsoft.DocAsCode.EntityModel</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />

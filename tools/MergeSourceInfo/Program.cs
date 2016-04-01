@@ -4,7 +4,7 @@
 namespace Microsoft.DocAsCode.Tools
 {
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.EntityModel.ViewModels;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using System;
     using System.Collections.Generic;
     using System.IO;
