@@ -44,14 +44,22 @@ Now you can view the generated website on http://localhost:8080.
 
 As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use *DocFX* in IDE.
 
-*Step1.* Open Visual Studio and create a C# project as your documentation project. You can use the *ASP.NET Web Application* since it has a built-in *preview* feature that can be used to preview the generated website easily.
+*Step1.* Open Visual Studio and create a C# project as your documentation project. You can create an empty *ASP.NET Web Application* since it has a built-in *preview* feature that can be used to preview the generated website easily.
 
-*Step2.* Install NuGet Package `docfx.msbuild` within *Package Manager Console*:
-```
-Install-Package docfx.msbuild
+*Step2.* Right click on the website project, and choose *Manage NuGet Packages...* to open the NuGet Package Manager. Search and install *docfx.msbuild* package.
+
+*Step3.* Create a `.cs` class in the website project, make sure the class is `public`, for example:
+
+```csharp
+namespace WebApplication1
+{
+    public class Class1
+    {
+    }
+}
 ```
 
-*Step3.* Right click on the website project, and click *View* -> *View in Browser*, navigate to `/_site` sub URL to view your website!
+*Step4.* Right click on the website project, and click *View* -> *View in Browser*, navigate to `/_site` sub URL to view your website!
 
 4. Use *DocFX* under DNX
 ----------------
