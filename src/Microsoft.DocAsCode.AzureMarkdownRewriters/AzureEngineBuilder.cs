@@ -19,7 +19,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     public class AzureEngineBuilder : GfmEngineBuilder
     {
         private const string MarkdownExtension = ".md";
-        private const string HtmlExtension = ".html";
 
         private const string ExternalResourceFolderName = "ex_resource";
 
@@ -334,7 +333,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 }
                 else
                 {
-                    azureHref = $"{hrefFileInfo.UriPrefix}/{Path.GetFileNameWithoutExtension(hrefFileName)}{HtmlExtension}{anchor}";
+                    // If the file is in different docset, then append the absolute path prefix. .html should be remove as docs also don't need it now.
+                    azureHref = $"{hrefFileInfo.UriPrefix}/{Path.GetFileNameWithoutExtension(hrefFileName)}{anchor}";
                 }
             }
 

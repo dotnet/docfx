@@ -944,7 +944,7 @@ ms.author: rogardle
                 };
             var sourceFilePath = @"c:\root\parent\folder2\subfolder1\source.md";
             var source = @"[azure file link](unique.md#bookmark_test)";
-            var expected = @"[azure file link](https://docsmsftstage.azurewebsites.net/parent/unique.html#bookmark_test)
+            var expected = @"[azure file link](https://docsmsftstage.azurewebsites.net/parent/unique#bookmark_test)
 
 ";
 
