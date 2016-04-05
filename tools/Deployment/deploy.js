@@ -20,6 +20,12 @@ config.myget = nconf.get('myget');
 config.msbuild = nconf.get('msbuild');
 config.git = nconf.get('git');
 
+if (config.myget) {
+  config.myget.apiKey = process.env.MGAPIKEY;
+} else {
+  throw new Error("Cannot find myget.org apikey");
+}
+
 let globalOptions = {
   query_url: config.docfx.releaseUrl + '/latest'
 };
@@ -397,6 +403,49 @@ function updateReleasePromiseFn() {
   }
 }
 
+let serialPromiseFlow = function(promiseArray) {
+  return promiseArray.reduce((p, fn) => p.then(fn), Promise.resolve());
+}
+
+let runSteps = function(promiseArray) {
+  serialPromiseFlow(promiseArray).catch(function(err) {
+    logger.error(err);
+    process.exit(1);
+  });
+}
+
+let clearReleaseStep = removePromiseFn(config.docfx.releaseFolder);
+let docfxBuildStep = execPromiseFn("build.cmd", ["Release", "PROD"], config.docfx.home);
+let e2eTestStep = execPromiseFn(config.msbuild, [config.docfx.e2eproj, "/p:Configuration=Release", "/t:Build"]);
+let genereateDocsStep = execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder);
+let uploadDevMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev);
+let uploadMasterMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master);
+
+let updateGhPageStep = function() {
+  let stepsOrder= [
+    git.clone(config.docfx.repoUrl, "gh-pages", "docfxsite"),
+    copyPromiseFn(config.docfx.siteFolder, "tmp"),
+    copyPromiseFn("docfxsite/.git", "tmp/.git"),
+    git.configName(config.git.name, "tmp"),
+    git.configEmail(config.git.email, "tmp"),
+    git.add(".", "tmp"),
+    git.commit(config.git.message, "tmp"),
+    git.push("gh-pages", "tmp")
+  ];
+  return serialPromiseFlow(stepsOrder);
+}
+
+let updateGithubReleaseStep = function() {
+  let stepsOrder = [
+    zipAssetsPromiseFn(config.docfx.zipSrcFolder, config.docfx.zipDestFolder),
+    parseReleaseNotePromiseFn(),
+    loadZipPromiseFn(),
+    updateReleasePromiseFn(),
+    uploadAssetsPromiseFn()
+  ];
+  return serialPromiseFlow(stepsOrder);
+}
+
 let branchValue;
 program
   .arguments('<branch>')
@@ -413,43 +462,48 @@ if (!branchValue) {
 
 switch (branchValue.toLowerCase()) {
   case "dev":
-    [
-      removePromiseFn(config.docfx.releaseFolder),
-      execPromiseFn("build.cmd", ["Release", "PROD"], config.docfx.home),
-      execPromiseFn(config.msbuild, [config.docfx.e2eproj, "/p:Configuration=Release", "/t:Build"]),
-      execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder),
-      uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev)
-    ].reduce((p, fn) => p.then(fn), Promise.resolve()).catch(function(err) {
-      logger.error(err);
-      process.exit(1);
-    });
+    runSteps([
+      // step 1: clear the possible release exists
+      clearReleaseStep,
+      // step2: run build.cmd
+      docfxBuildStep,
+      // step3: run e2e test
+      e2eTestStep,
+      // step4: run docfx.exe to generate documentation
+      genereateDocsStep
+    ]);
+    break;
+  case "nightly-build":
+    runSteps([
+      // step 1: clear the possible release exists
+      clearReleaseStep,
+      // step2: run build.cmd
+      docfxBuildStep,
+      // step3: run e2e test
+      e2eTestStep,
+      // step4: run docfx.exe to generate documentation
+      genereateDocsStep,
+      // step5: upload release to myget.org
+      uploadDevMygetStep
+    ]);
     break;
   case "master":
-    [
-      removePromiseFn(config.docfx.releaseFolder),
-      execPromiseFn("build.cmd", ["Release", "PROD"], config.docfx.home),
-      execPromiseFn(config.msbuild, [config.docfx.e2eproj, "/p:Configuration=Release", "/t:Build"]),
-      execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder),
-      uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master),
-      // update gh-pages
-      git.clone(config.docfx.repoUrl, "gh-pages", "docfxsite"),
-      copyPromiseFn(config.docfx.siteFolder, "tmp"),
-      copyPromiseFn("docfxsite/.git", "tmp/.git"),
-      git.configName(config.git.name, "tmp"),
-      git.configEmail(config.git.email, "tmp"),
-      git.add(".", "tmp"),
-      git.commit(config.git.message, "tmp"),
-      git.push("gh-pages", "tmp"),
-      // zip and upload release
-      zipAssetsPromiseFn(config.docfx.zipSrcFolder, config.docfx.zipDestFolder),
-      parseReleaseNotePromiseFn(),
-      loadZipPromiseFn(),
-      updateReleasePromiseFn(),
-      uploadAssetsPromiseFn()
-    ].reduce((p, fn) => p.then(fn), Promise.resolve()).catch(function(err) {
-      logger.error(err);
-      process.exit(1);
-    });
+    runSteps([
+      // step 1: clear the possible release exists
+      clearReleaseStep,
+      // step2: run build.cmd
+      docfxBuildStep,
+      // step3: run e2e test
+      e2eTestStep,
+      // step4: run docfx.exe to generate documentation
+      genereateDocsStep,
+      // step5: upload release to myget.org
+      uploadMasterMygetStep,
+      // step6: update gh-pages
+      updateGhPageStep,
+      // step7: zip and upload release
+      updateGithubReleaseStep
+    ]);
     break;
   default:
     logger.error("Please specify the *right* repo branch name to run this script");

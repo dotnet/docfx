@@ -14,7 +14,6 @@
   },
   "myget": {
     "exe": "C:/nuget.exe",
-    "apiKey": "248ef281-79ba-4db1-b15a-f7b735935861",
     "url": {
       "dev":"https://www.myget.org/F/docfx-dev/api/v2/package",
       "master": "https://www.myget.org/F/docfx/api/v2/package"
