@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 else
                 {
-                    Logger.LogWarning($"Unable to find root TOC file from output folder, the toppest TOC file is {rootTocPath}");
+                    Logger.LogVerbose($"Root TOC file from output folder is not found, the toppest TOC file is {rootTocPath}");
                 }
             }
 
@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             else
             {
-                Logger.LogWarning($"Unable to find TOC file for {item.LocalPathFromRepoRoot}.");
+                Logger.LogVerbose($"TOC file for {item.LocalPathFromRepoRoot} is not found.");
             }
 
             return attrs;

@@ -96,9 +96,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             // Have to register TocMap after uid is resolved
             RegisterTocMap(toc, model.Key, context);
 
-            toc.Homepage = GetUpdatedHref(toc.Homepage, model, context);
-            toc.Href = GetUpdatedHref(toc.Href, model, context);
-            toc.TocHref = GetUpdatedHref(toc.TocHref, model, context);
+            toc.Homepage = ResolveHref(toc.Homepage, model, context);
+            toc.Href = ResolveHref(toc.Href, model, context);
+            toc.TocHref = ResolveHref(toc.TocHref, model, context);
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
@@ -164,17 +164,16 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             else
             {
                 var href = item.Href; // Should be original href from working folder starting with ~
-                var hrefType = Utility.GetHrefType(href);
-                if (hrefType == HrefType.RelativeFile)
+                if (Utility.IsSupportedRelativeHref(href))
                 {
                     context.RegisterToc(key, href);
                 }
             }
         }
 
-        private string GetUpdatedHref(string originalPathToFile, FileModel model, IDocumentBuildContext context)
+        private string ResolveHref(string originalPathToFile, FileModel model, IDocumentBuildContext context)
         {
-            if (!PathUtility.IsRelativePath(originalPathToFile)) return originalPathToFile;
+            if (!Utility.IsSupportedRelativeHref(originalPathToFile)) return originalPathToFile;
 
             string href = context.GetFilePath(originalPathToFile);
 

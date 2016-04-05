@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack)
         {
-            using (new LoggerFileScope(wrapper.File.FullPath))
+            using (new LoggerFileScope(wrapper.File.File))
             {
                 return ResolveItemCore(wrapper, stack);
             }
@@ -169,10 +169,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return wrapper;
         }
 
-        private string NormalizeHref(string file, RelativePath relativeToFile)
+        private string NormalizeHref(string href, RelativePath relativeToFile)
         {
-            if (!PathUtility.IsRelativePath(file)) return file;
-            return (relativeToFile + (RelativePath)file).GetPathFromWorkingFolder();
+            if (!Utility.IsSupportedRelativeHref(href))
+            {
+                return href;
+            }
+
+            return (relativeToFile + (RelativePath)href).GetPathFromWorkingFolder();
         }
 
         private TocItemViewModel GetDefaultHomepageItem(TocItemViewModel toc)

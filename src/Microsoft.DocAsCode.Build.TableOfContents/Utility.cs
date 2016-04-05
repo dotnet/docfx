@@ -23,7 +23,21 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             return false;
         }
-        
+
+        public static bool IsSupportedRelativeHref(string href)
+        {
+            var hrefType = Utility.GetHrefType(href);
+            return IsSupportedRelativeHref(hrefType);
+        }
+
+        public static bool IsSupportedRelativeHref(HrefType hrefType)
+        {
+            // TocFile href type can happen when homepage is set to toc.yml explicitly
+            return hrefType == HrefType.RelativeFile
+                || hrefType == HrefType.YamlTocFile
+                || hrefType == HrefType.MarkdownTocFile;
+        }
+
         public static TocViewModel LoadSingleToc(string file)
         {
             var fileType = GetTocFileType(file);

@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Plugins
         private FileStream _tempFile;
         private readonly WeakReference<object> _weakRef = new WeakReference<object>(null);
         private readonly IFormatter _serializer;
+        private readonly object _locker = new object();
         public event EventHandler ContentAccessed;
         public string File { get; set; }
         public object Content
@@ -28,8 +29,9 @@ namespace Microsoft.DocAsCode.Plugins
                 {
                     Deserialize();
                 }
+                var content = _content;
                 OnContentAccessed();
-                return _content;
+                return content;
             }
             set
             {
@@ -55,35 +57,41 @@ namespace Microsoft.DocAsCode.Plugins
 
         public bool Serialize()
         {
-            if (_content == null || _serializer == null)
+            lock (_locker)
             {
-                return false;
+                if (_content == null || _serializer == null)
+                {
+                    return false;
+                }
+                if (_tempFile == null)
+                {
+                    _tempFile = CreateTempFile();
+                }
+                else
+                {
+                    _tempFile.Seek(0, SeekOrigin.Begin);
+                    _tempFile.SetLength(0);
+                }
+                _serializer.Serialize(_tempFile, _content);
+                _weakRef.SetTarget(_content);
+                _content = null;
+                return true;
             }
-            if (_tempFile == null)
-            {
-                _tempFile = CreateTempFile();
-            }
-            else
-            {
-                _tempFile.Seek(0, SeekOrigin.Begin);
-                _tempFile.SetLength(0);
-            }
-            _serializer.Serialize(_tempFile, _content);
-            _weakRef.SetTarget(_content);
-            _content = null;
-            return true;
         }
 
         public bool Deserialize()
         {
-            if (_tempFile == null || _serializer == null)
+            lock (_locker)
             {
-                return false;
+                if (_tempFile == null || _serializer == null)
+                {
+                    return false;
+                }
+                _tempFile.Seek(0, SeekOrigin.Begin);
+                _content = _serializer.Deserialize(_tempFile);
+                _weakRef.SetTarget(null);
+                return true;
             }
-            _tempFile.Seek(0, SeekOrigin.Begin);
-            _content = _serializer.Deserialize(_tempFile);
-            _weakRef.SetTarget(null);
-            return true;
         }
 
         public void Dispose()
