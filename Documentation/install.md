@@ -20,7 +20,7 @@ footer{
     A documentation generation tool for API reference and markdown files!
     </div>
     <div class="buttons-unit">
-      <a href="tutorial/walkthrough_create_a_docfx_project.md" class="button">View Walkthrough Sessions</a>
+      <a href="tutorial/walkthrough/walkthrough_create_a_docfx_project.md" class="button">View Walkthrough Sessions</a>
     </div>
   </div>
 </div>

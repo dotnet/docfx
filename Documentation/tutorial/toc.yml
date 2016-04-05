@@ -1,0 +1,11 @@
+﻿- name: Walkthrough Topics
+  href: walkthrough/toc.md
+  homepage: walkthrough/walkthrough_overview.md
+- name: User Manual
+  href: docfx.exe_user_manual.md
+- name: Build your own type of documentation with custom plug-in
+  href: "Build your own type of documentation with custom plug-in.md"
+- name: "🔧 Advanced: Support Hyperlink"
+  href: advanced_support_hyperlink.md
+- name: "HowTo: Create Custom Template"
+  href: howto_create_custom_template.md

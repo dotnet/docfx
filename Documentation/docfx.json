@@ -23,20 +23,18 @@
         "src": ".."
       },
       {
-        "files": [ "tutorial/**/*.md", "spec/**/*.md", "*.md", "guideline/**/*.md" ]
-      },
-      {
-        "files": [ "toc.yml" ]
+        "files": [ "tutorial/**/*.{md,yml}", "spec/**/*.{md,yml}", "*.{md,yml}", "guideline/**/*.{md,yml}" ]
       }
     ],
     "resource": [
       {
-        "files": [ "spec/images/**", "tutorial/artifacts/**", "tutorial/images/**", "codesnippet/**" ]
+        "files": [ "**/images/**", "**/artifacts/**", "codesnippet/**" ],
+        "exclude": [ "_site/**", "**/obj/**" ],
       }
     ],
     "overwrite": "apispec/*.md",
     "externalReference": [
-      { 
+      {
         "files": "content/*.rpk",
         "cwd": "../src/nuspec/msdn.4.5.2/"
       }
