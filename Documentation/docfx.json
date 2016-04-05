@@ -8,33 +8,9 @@
           "cwd": "../src"
         }
       ],
-      "dest": "obj/temp/docfxapi1"
-    },
-    {
-      "src": [
-        {
-          "files": [ "**/Microsoft.DocAsCode.EntityModel.csproj" ],
-          "exclude": [ "**/bin/**", "**/obj/**" ],
-          "cwd": "../src"
-        }
-      ],
-      "dest": "obj/temp/docfxapi2"
+      "dest": "obj/temp/docfxapi"
     }
   ],
-  "merge": {
-    "content": [
-      {
-        "files": [ "*.yml" ],
-        "src": "obj/temp/docfxapi1/",
-        "dest": "obj/temp/docfxapi"
-      },
-      {
-        "files": [ "*.yml" ],
-        "src": "obj/temp/docfxapi2/",
-        "dest": "obj/temp/docfxapi"
-      }
-    ]
-  },
   "build": {
     "content": [
       {
