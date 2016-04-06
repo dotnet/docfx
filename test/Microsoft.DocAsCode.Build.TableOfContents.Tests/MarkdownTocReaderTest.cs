@@ -5,6 +5,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
 {
     using Xunit;
 
+    using Microsoft.DocAsCode.Plugins;
+
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "MarkdownTocReader")]
     public class MarkdownTocReaderTest
@@ -83,6 +85,23 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                 Assert.Equal("Article8", toc1[2].Name);
                 Assert.Equal("article8", toc1[2].Uid);
             }
+        }
+
+        [Fact]
+        public void TestBadMdToc()
+        {
+            var ex = Assert.Throws<DocumentException>(() =>
+                MarkdownTocReader.LoadToc(@"
+#[good](test.md)
+[bad]()
+>_<
+>_<
+>_<
+", "test.md"));
+            Assert.Equal(@"Invalid toc file: test.md, Details: Unknown syntax at line 3:
+[bad]()
+>_<
+>_<", ex.Message);
         }
     }
 }

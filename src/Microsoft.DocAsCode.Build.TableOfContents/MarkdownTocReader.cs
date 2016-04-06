@@ -1,11 +1,13 @@
 ﻿namespace Microsoft.DocAsCode.Build.TableOfContents
 {
+    using System;
     using System.Collections.Generic;
-    using System.IO;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Dfm;
+    using Microsoft.DocAsCode.Plugins;
 
     public static class MarkdownTocReader
     {
@@ -23,9 +25,10 @@
                 new WhitespaceParseRule(),
             };
             var content = tocContent;
+            int lineNumber = 1;
             while (content.Length > 0)
             {
-                state = state.ApplyRules(rules, ref content);
+                state = state.ApplyRules(rules, ref content, ref lineNumber);
             }
             return state.Root;
         }
@@ -36,7 +39,8 @@
             public abstract Stack<TocItemViewModel> Parents { get; }
             public abstract TocViewModel Root { get; }
             public abstract string FilePath { get; }
-            public virtual ParseState ApplyRules(ParseRule[] rules, ref string input)
+
+            public virtual ParseState ApplyRules(ParseRule[] rules, ref string input, ref int lineNumber)
             {
                 foreach (var rule in rules)
                 {
@@ -44,11 +48,12 @@
                     if (m.Success)
                     {
                         input = input.Substring(m.Length);
+                        lineNumber += m.Value.Count(ch => ch == '\n');
                         return rule.Apply(this, m);
                     }
                 }
-                var message = input.Length <= 20 ? input : input.Remove(20) + "...";
-                return new ErrorState(this, Level, $"Unknown syntax: {message}");
+                var message = string.Join("\n", input.Split('\n').Take(3)).TrimEnd('\r','\n');
+                return new ErrorState(this, Level, $"Unknown syntax at line {lineNumber}:{Environment.NewLine}{message}");
             }
         }
 
@@ -96,9 +101,9 @@
             public override Stack<TocItemViewModel> Parents { get; }
             public override TocViewModel Root { get; }
             public override string FilePath { get; }
-            public override ParseState ApplyRules(ParseRule[] rules, ref string input)
+            public override ParseState ApplyRules(ParseRule[] rules, ref string input, ref int lineNumber)
             {
-                throw new InvalidDataException($"Invalid toc file: {FilePath}, Details: {Message}");
+                throw new DocumentException($"Invalid toc file: {FilePath}, Details: {Message}");
             }
         }
 
