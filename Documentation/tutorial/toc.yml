@@ -12,3 +12,5 @@
   href: howto_create_custom_template.md
 - name: Introduction to TOC Files
   href: intro_toc.md
+- name: "HowTo: Filter Out Unwanted APIs"
+  href: howto_filter_out_unwanted_apis.md
