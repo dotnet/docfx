@@ -11,10 +11,11 @@ In version 1.9, manifest file in Array model will be **removed**.
 
 Below table shows the difference between manifest file in Array model and manifest file in Object model.
 
-| | File Name | Data Model
-|-|-|-|
-|Old Array Model | `.manifest` | [Array model](#the-obsoleted-array-model)
-|New Object Model | `.manifest.json` | [Object model](#the-new-object-model)
+---- | File Name | Data Model
+-----|-----------|--------------
+Old Array Model | `.manifest` | [Array model](#the-obsoleted-array-model)
+New Object Model | `.manifest.json` | [Object model](#the-new-object-model)
+
 
 The obsoleted Array model
 -------------------------
