@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.7)
+Version Notes (Current Version: v1.8)
 =======================================
+v1.8 (Pre-Release)
+-----------
+
+
 v1.7
 -----------
 1. Behavior change
