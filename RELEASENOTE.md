@@ -2,6 +2,18 @@ Version Notes (Current Version: v1.7)
 =======================================
 v1.7 (Pre-release)
 -----------
+1. Behavior change
+    1. For articles not in TOC, it's TOC file is the nearest *TOC File* in its output folder. Previously we only search the *TOC File* under the same input folder of the Not-In-Toc article.
+2. Provide more information for API reference documentation
+    1. Type of events (#217)
+    2. Parameters/returns for delegates (#218)
+    3. Type parameter description (#204)
+3. Cross-reference is now supporting anchor`#` (#190)
+4. C# Code snippet now supports referencing source code using a region `#engion` (#160)
+5. Support [TOC reference](xref:intro_toc#link_to_another__toc_file_). With this syntax, we can combine multiple TOC files into a single TOC. (#161)
+6. Improve user experience when using `docfx.msbuild` in VS IDE 
+7. Code refactor:
+   1. We improved DocFX project structure in this release. `Microsoft.DocAsCode.EntityModel` namespace is no longer in use. Assemblies are separated into `Microsoft.DocAsCode.Build`,  `Microsoft.DocAsCode.DataContracts`, and  `Microsoft.DocAsCode.Metadata` namespace. All assemblies can be separately referenced through NuGet. In this way, it is much convenient for plugin writers to reference existing data models and utilities.  
 
 v1.6
 -----------
