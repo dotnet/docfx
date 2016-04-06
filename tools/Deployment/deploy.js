@@ -159,8 +159,9 @@ function uploadMygetPromiseFn(nugetExe, releaseFolder, apiKey, sourceUrl) {
 
       fs.readdirSync(folder).forEach(function(file, index) {
         let subPath = path.join(folder, file);
-        if (fs.lstatSync(subPath).isFile() && file.split('.').pop() === 'nupkg') {
-          promises.push(execPromiseFn(nugetExe, ['push', subPath, apiKey, '-Source', sourceUrl])());
+        let segment = file.split('.');
+        if (fs.lstatSync(subPath).isFile() && segment.pop() === 'nupkg' && segment.pop() !== 'symbols') {
+          promises.push(execPromiseFn(nugetExe, ['push', subPath, config.myget.apiKey, '-Source', sourceUrl])());
         } else {
           upload(subPath);
         }
