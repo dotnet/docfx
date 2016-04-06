@@ -256,6 +256,7 @@ function createReleasePromiseFn() {
         },
         body: {
           "tag_name": globalOptions.version,
+          "target_commitish": "master",
           "name": "Version " + globalOptions.version.slice(1),
           "body": globalOptions.content || ""
         }
