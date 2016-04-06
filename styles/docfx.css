@@ -42,6 +42,15 @@ h1, h2, h3, h4, h5, h6, span.xref {
     word-break: break-all;
 }
 
+h1 mark,
+h2 mark,
+h3 mark,
+h4 mark,
+h5 mark,
+h6 mark {
+  padding: 0;
+}
+
 .inheritance .level0:before,
 .inheritance .level1:before,
 .inheritance .level2:before,

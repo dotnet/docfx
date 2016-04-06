@@ -8,7 +8,7 @@
     <title>Doc-as-Code: Metadata Format for .NET Languages | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Doc-as-Code: Metadata Format for .NET Languages | DocFX website ">
-    <meta name="generator" content="docfx 1.6.3.0">
+    <meta name="generator" content="docfx 1.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -85,16 +85,16 @@
 <li>Types, including class, struct, interface, enum, delegate</li>
 <li>Type members, including field, property, method, event</li>
 </ol>
-<p>Other elements like parameters, generic parameters are not standalone <em>items</em>, they&#39;re part of other <em>items</em>.</p>
+<p>Other elements such as parameters and generic parameters are not standalone <em>items</em>, they&#39;re part of other <em>items</em>.</p>
 <h2 id="2-identifiers">2. Identifiers</h2>
 <h3 id="2-1-unique-identifiers">2.1 Unique Identifiers</h3>
-<p>For any <em>item</em> in .NET languages, its <em>UID</em> is defined by concatenating its parent&#39;s <em>UID</em> and its own <em>ID</em> by dot.
-The <em>ID</em> for each kind of item is defined in following sections. The basic prinicple here is to make <em>ID</em> format close to source code and easy for human reading.</p>
-<p><em>UID</em> is similar with document comment id, document comment id is started with type prefix, e.g. <code>T:</code>, or <code>M:</code>, but <em>UID</em> do not.</p>
+<p>For any <em>item</em> in .NET languages, its <em>UID</em> is defined by concatenating its <em>parent</em>&#39;s <em>UID</em> and its own <em>ID</em> with a dot.
+The <em>ID</em> for each kind of item is defined in following sections. The basic principle here is to make <em>ID</em> format close to source code and easy for human reading.</p>
+<p><em>UID</em> is similar to the document comment id, which is started with type prefix, for example, <code>T:</code>, or <code>M:</code>, but <em>UID</em> do not.</p>
 <p>There <strong>MUST NOT</strong> be any whitespace between method name, parentheses, parameters, and commas.</p>
 <h3 id="2-2-spec-identifiers">2.2 Spec Identifiers</h3>
 <p>Spec identifier is another form of <em>UID</em>.
-It can spec a generic type with type arguments, e.g. for parameters, return types or inheritances, and these <em>UID</em>s are unique in one yaml file. </p>
+It can spec a generic type with type arguments (for example, for parameters, return types or inheritances) and these <em>UID</em>s are unique in one yaml file. </p>
 <p>It is a simple modified Unique Identifiers, when it contains generic type arguments, it will use <code>{Name}</code> instead <code>`N</code>.
 For type parameter, it will be <code>{Name}</code>.
 And it also supports array and pointer.</p>
@@ -140,8 +140,8 @@ fullName: System.IO
 <h2 id="4-types">4. Types</h2>
 <p>Types include classes, structs, interfaces, enums, and delegates.
 They have following properties: summary, remarks, syntax, namespace, assemblies, inheritance.
-The parent of types are namespaces.
-The children of types are members.</p>
+The <em>parents</em> of types are namespaces.
+The <em>children</em> of types are members.</p>
 <h4 id="id">ID</h4>
 <p><em>ID</em> for a type is also its <em>name</em>.</p>
 <blockquote><p>Example 4 Type</p>
@@ -179,7 +179,7 @@ The children of types are members.</p>
 </code></pre>
 </blockquote>
 <h4 id="4-1-id-for-nested-types">4.1 ID for Nested Types</h4>
-<p>For nested types, <em>ID</em> is defined by concatenating the <em>ID</em> of all its containing types and the <em>ID</em> of itself, separated by dot.</p>
+<p>For nested types, <em>ID</em> is defined by concatenating the <em>ID</em> of all its containing types and the <em>ID</em> of itself, separated by a dot.</p>
 <p>The parent type of a nested type is its containing namespace, rather than its containing type.</p>
 <blockquote><p>Example 4.1 Nested type</p>
 <p>C#:</p>
@@ -199,7 +199,7 @@ fullName.csharp: System.Environment.SpecialFolder
 </code></pre>
 </blockquote>
 <h4 id="4-2-inheritance">4.2 Inheritance</h4>
-<p>Only class contains inheritance, the inheritance is a list of spec id.</p>
+<p>Only class contains inheritance, and the inheritance is a list of spec id.</p>
 <blockquote><p>Example 4.2 Inheritance</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System.Collections.Generic
@@ -218,18 +218,18 @@ inheritance:
 </code></pre>
 </blockquote>
 <h4 id="4-3-syntax">4.3 Syntax</h4>
-<p>The syntax part for type contains special languages declaration, and descriptions of type parameters .
-For delegate, it also contains descriptions of paramters and return type.</p>
+<p>The syntax part for type contains declaration, and descriptions of type parameters for different languages.
+For delegates, it also contains descriptions of parameters and a return type.</p>
 <h2 id="5-members">5. Members</h2>
-<p>Members include fields, properties, methods, events.
-They have following properties: summary, remarks, exceptions, syntax.
-The parent of memebers are types.
-All members do not have any children.
-All parameter types or return types are spec id.</p>
+<p>Members include fields, properties, methods, and events.
+They have the following properties: summary, remarks, exceptions, and syntax.
+The parents of members are types.
+Members never have children, and
+all parameter types or return types are spec id.</p>
 <h4 id="5-1-constructors">5.1 Constructors</h4>
 <p>The <em>ID</em> of a constructor is defined by <code>#ctor</code>, followed by the list of the <em>UIDs</em> of its parameter types:
 When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</strong> end with parentheses.</p>
-<p>The syntax part for constructors contains special languages declaration, and descriptions of paramters.</p>
+<p>The syntax part for constructors contains a special language declaration, and descriptions of parameters.</p>
 <blockquote><p>Example 5.1 Constructor</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
@@ -253,11 +253,11 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
 </code></pre>
 </blockquote>
 <h4 id="5-2-methods">5.2 Methods</h4>
-<p>The <em>ID</em> of a method are defined by its name, followed by the list of the <em>UIDs</em> of its parameter types:</p>
+<p>The <em>ID</em> of a method is defined by its name, followed by the list of the <em>UIDs</em> of its parameter types:</p>
 <pre><code class="lang-yaml">method_name(param1,param2,...)
 </code></pre>
 <p>When a method does not have parameter, its <em>ID</em> <strong>MUST</strong> end with parentheses.</p>
-<p>The syntax part for method contains special languages declaration, and descriptions of type parameters for generic method, descriptions of paramters and return type.</p>
+<p>The syntax part for method contains a special language declaration, and descriptions of type parameters for generic method, descriptions of parameters and return type.</p>
 <blockquote><p>Example 5.2 Method</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
@@ -302,11 +302,11 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
 </code></pre>
 </blockquote>
 <h4 id="5-4-operator-overloads">5.4 Operator Overloads</h4>
-<p>The ids of operator overloads are same with the metadata name, e.g. <code>op_Equality</code>.
-The names of operator overloads are similar to msdn, just remove <code>op_</code> from the metadata name of the method.
+<p>The <em>IDs</em> of operator overloads are same with the metadata name (for example, <code>op_Equality</code>).
+The names of operator overloads are similar to MSDN, just remove <code>op_</code> from the metadata name of the method.
 For instance, the name of the equals (<code>==</code>) operator is <code>Equality</code>.</p>
-<p>Type conversion operator can be considered as a special operator whose name is the UID of the target type, with one parameter of the source type. For example, an operator that converts from string to int should be <code>Explicit(System.String to System.Int32)</code>.</p>
-<p>The syntax part for methods contains special languages declaration, descriptions of paramters and return type.</p>
+<p>Type conversion operator can be considered a special operator whose name is the UID of the target type, with one parameter of the source type. For example, an operator that converts from string to int should be <code>Explicit(System.String to System.Int32)</code>.</p>
+<p>The syntax part for methods contains a special language declaration, descriptions of parameters and return type.</p>
 <blockquote><p>Example 5.4 Operator overload</p>
 <pre><code class="lang-csharp">namespace System
 {
@@ -335,9 +335,9 @@ For instance, the name of the equals (<code>==</code>) operator is <code>Equalit
 <p>Please check <a href="https://msdn.microsoft.com/en-us/library/8edha89s.aspx">overloadable operators</a> for all overloadable operators.</p>
 <h4 id="5-5-field-property-or-event">5.5 Field, Property or Event</h4>
 <p>The <em>ID</em> of field, property or event is its name.
-The syntax part for field contains special languages declaration, descriptions of field type.
-For property, it contains special languages declaration, descriptions of paramters and return type.
-For event, it contains special languages declaration, descriptions of event handler type.</p>
+The syntax part for field contains a special language declaration and descriptions of field type.
+For property, it contains a special language declaration, descriptions of parameters, and return type.
+For event, it contains a special language declaration and descriptions of event handler type.</p>
 <blockquote><p>Example 5.5 Field, Property and Event</p>
 <p>C#:</p>
 <pre><code class="lang-csharp">namespace System
@@ -388,7 +388,7 @@ For event, it contains special languages declaration, descriptions of event hand
 </code></pre>
 </blockquote>
 <h2 id="6-generics">6. Generics</h2>
-<p>The <em>ID</em> of a generic type is its name with followed by <code>`n</code>, <code>n</code> the count of generic type count, same as the rule for document comment id.
+<p>The <em>ID</em> of a generic type is its name with followed by <code>`n</code>, <code>n</code> and the count of generic type count, which is the same as the rule for document comment ID.
 For example, <code>Dictionary`2</code>.</p>
 <p>The <em>ID</em> of a generic method uses postfix <code>``n</code>, <code>n</code> is the count of in method parameters, for example, <code>System.Tuple.Create``1(``0)</code>.</p>
 <blockquote><p>Example 2.7 Generic</p>
@@ -413,10 +413,10 @@ For example, <code>Dictionary`2</code>.</p>
 </code></pre>
 </blockquote>
 <h2 id="7-reference">7. Reference</h2>
-<p>The reference contains following member:
+<p>The reference contains the following members:
   name, fullName, summary, isExternal, href, and more.</p>
 <p>The <em>UID</em> in reference can be a <em>Spec Id</em>, then it contains one more member: spec.
-The <em>spec</em> in reference is very like a list of lightweight references, it describes how to compose the gerenic type in some special language.</p>
+The <em>spec</em> in reference is very like a list of lightweight references, it describes how to compose the generic type in some special language.</p>
 <blockquote><p>Example 7 <em>spec</em> for references</p>
 <p>YAML:</p>
 <pre><code class="lang-yaml">references:

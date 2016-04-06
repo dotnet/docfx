@@ -8,7 +8,7 @@
     <title>How-to: Build your own type of documentation with custom plug-in | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Build your own type of documentation with custom plug-in | DocFX website ">
-    <meta name="generator" content="docfx 1.6.3.0">
+    <meta name="generator" content="docfx 1.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -133,439 +133,53 @@ public class RtfDocumentProcessor : IDocumentProcessor
 </code></pre>
 </li>
 <li><p>Declare we can handle <code>.rtf</code> file:</p>
-<pre><code class="lang-csharp" name="GetProcessingPriority">// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-namespace RtfDocumentProcessors
+<pre><code class="lang-csharp" name="GetProcessingPriority">public ProcessingPriority GetProcessingPriority(FileAndType file)
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.IO;
-
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
-
-    [Export(typeof(IDocumentProcessor))]
-    public class RtfDocumentProcessor : IDocumentProcessor
+    if (file.Type == DocumentType.Article &amp;&amp;
+        &quot;.rtf&quot;.Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
     {
-        #region BuildSteps
-        [ImportMany(nameof(RtfDocumentProcessor))]
-        public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
-        #endregion
-
-        #region Name
-        public string Name =&gt; nameof(RtfDocumentProcessor);
-        #endregion
-
-        #region GetProcessingPriority
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
-        {
-            if (file.Type == DocumentType.Article &amp;&amp;
-                &quot;.rtf&quot;.Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-            {
-                return ProcessingPriority.Normal;
-            }
-            return ProcessingPriority.NotSupported;
-        }
-        #endregion
-
-        #region Load
-        public FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)
-        {
-            var content = new Dictionary&lt;string, object&gt;
-            {
-                [&quot;conceptual&quot;] = File.ReadAllText(Path.Combine(file.BaseDir, file.File)),
-                [&quot;type&quot;] = &quot;Conceptual&quot;,
-                [&quot;path&quot;] = file.File,
-            };
-            return new FileModel(file, content);
-        }
-        #endregion
-
-        #region Save
-        public SaveResult Save(FileModel model)
-        {
-            return new SaveResult
-            {
-                DocumentType = &quot;Conceptual&quot;,
-                ModelFile = model.File,
-                LinkToFiles = linkToFiles.ToImmutableArray(),
-            };
-        }
-        #endregion
-
-        #region UpdateHref
-        public void UpdateHref(FileModel model, IDocumentBuildContext context)
-        {
-        }
-        #endregion
+        return ProcessingPriority.Normal;
     }
+    return ProcessingPriority.NotSupported;
 }
 </code></pre><p>Here we declare this processor can handle any <code>.rtf</code> file in article category with normal priority.
 When two or more processors declare for same file, DocFX will give it to the higher priority one.
 <em>Unexpected</em>: two or more processor declare for the same file with same priority.</p>
 </li>
 <li><p>Load our rtf file by read all text:</p>
-<pre><code class="lang-csharp" name="Load">// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-namespace RtfDocumentProcessors
+<pre><code class="lang-csharp" name="Load">public FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.IO;
-
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
-
-    [Export(typeof(IDocumentProcessor))]
-    public class RtfDocumentProcessor : IDocumentProcessor
+    var content = new Dictionary&lt;string, object&gt;
     {
-        #region BuildSteps
-        [ImportMany(nameof(RtfDocumentProcessor))]
-        public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
-        #endregion
-
-        #region Name
-        public string Name =&gt; nameof(RtfDocumentProcessor);
-        #endregion
-
-        #region GetProcessingPriority
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
-        {
-            if (file.Type == DocumentType.Article &amp;&amp;
-                &quot;.rtf&quot;.Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-            {
-                return ProcessingPriority.Normal;
-            }
-            return ProcessingPriority.NotSupported;
-        }
-        #endregion
-
-        #region Load
-        public FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)
-        {
-            var content = new Dictionary&lt;string, object&gt;
-            {
-                [&quot;conceptual&quot;] = File.ReadAllText(Path.Combine(file.BaseDir, file.File)),
-                [&quot;type&quot;] = &quot;Conceptual&quot;,
-                [&quot;path&quot;] = file.File,
-            };
-            return new FileModel(file, content);
-        }
-        #endregion
-
-        #region Save
-        public SaveResult Save(FileModel model)
-        {
-            return new SaveResult
-            {
-                DocumentType = &quot;Conceptual&quot;,
-                ModelFile = model.File,
-                LinkToFiles = linkToFiles.ToImmutableArray(),
-            };
-        }
-        #endregion
-
-        #region UpdateHref
-        public void UpdateHref(FileModel model, IDocumentBuildContext context)
-        {
-        }
-        #endregion
-    }
+        [&quot;conceptual&quot;] = File.ReadAllText(Path.Combine(file.BaseDir, file.File)),
+        [&quot;type&quot;] = &quot;Conceptual&quot;,
+        [&quot;path&quot;] = file.File,
+    };
+    return new FileModel(file, content);
 }
 </code></pre><p>we use <code>Dictionary&lt;string, object&gt;</code> as the data model, as similar to how <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs">ConceptualDocumentProcessor</a> store the content of markdown files.</p>
 </li>
 <li><p>Implements <code>Save</code> method as following:</p>
-<pre><code class="lang-csharp" name="Save">// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-namespace RtfDocumentProcessors
+<pre><code class="lang-csharp" name="Save">public SaveResult Save(FileModel model)
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.IO;
-
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
-
-    [Export(typeof(IDocumentProcessor))]
-    public class RtfDocumentProcessor : IDocumentProcessor
+    return new SaveResult
     {
-        #region BuildSteps
-        [ImportMany(nameof(RtfDocumentProcessor))]
-        public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
-        #endregion
-
-        #region Name
-        public string Name =&gt; nameof(RtfDocumentProcessor);
-        #endregion
-
-        #region GetProcessingPriority
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
-        {
-            if (file.Type == DocumentType.Article &amp;&amp;
-                &quot;.rtf&quot;.Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-            {
-                return ProcessingPriority.Normal;
-            }
-            return ProcessingPriority.NotSupported;
-        }
-        #endregion
-
-        #region Load
-        public FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)
-        {
-            var content = new Dictionary&lt;string, object&gt;
-            {
-                [&quot;conceptual&quot;] = File.ReadAllText(Path.Combine(file.BaseDir, file.File)),
-                [&quot;type&quot;] = &quot;Conceptual&quot;,
-                [&quot;path&quot;] = file.File,
-            };
-            return new FileModel(file, content);
-        }
-        #endregion
-
-        #region Save
-        public SaveResult Save(FileModel model)
-        {
-            return new SaveResult
-            {
-                DocumentType = &quot;Conceptual&quot;,
-                ModelFile = model.File,
-                LinkToFiles = linkToFiles.ToImmutableArray(),
-            };
-        }
-        #endregion
-
-        #region UpdateHref
-        public void UpdateHref(FileModel model, IDocumentBuildContext context)
-        {
-        }
-        #endregion
-    }
+        DocumentType = &quot;Conceptual&quot;,
+        ModelFile = model.File,
+        LinkToFiles = linkToFiles.ToImmutableArray(),
+    };
 }
 </code></pre></li>
 <li><p><code>BuildSteps</code> property can give severial build steps for model, we suggest implement as following:</p>
-<pre><code class="lang-csharp" name="BuildSteps">// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-namespace RtfDocumentProcessors
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.IO;
-
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
-
-    [Export(typeof(IDocumentProcessor))]
-    public class RtfDocumentProcessor : IDocumentProcessor
-    {
-        #region BuildSteps
-        [ImportMany(nameof(RtfDocumentProcessor))]
-        public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
-        #endregion
-
-        #region Name
-        public string Name =&gt; nameof(RtfDocumentProcessor);
-        #endregion
-
-        #region GetProcessingPriority
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
-        {
-            if (file.Type == DocumentType.Article &amp;&amp;
-                &quot;.rtf&quot;.Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-            {
-                return ProcessingPriority.Normal;
-            }
-            return ProcessingPriority.NotSupported;
-        }
-        #endregion
-
-        #region Load
-        public FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)
-        {
-            var content = new Dictionary&lt;string, object&gt;
-            {
-                [&quot;conceptual&quot;] = File.ReadAllText(Path.Combine(file.BaseDir, file.File)),
-                [&quot;type&quot;] = &quot;Conceptual&quot;,
-                [&quot;path&quot;] = file.File,
-            };
-            return new FileModel(file, content);
-        }
-        #endregion
-
-        #region Save
-        public SaveResult Save(FileModel model)
-        {
-            return new SaveResult
-            {
-                DocumentType = &quot;Conceptual&quot;,
-                ModelFile = model.File,
-                LinkToFiles = linkToFiles.ToImmutableArray(),
-            };
-        }
-        #endregion
-
-        #region UpdateHref
-        public void UpdateHref(FileModel model, IDocumentBuildContext context)
-        {
-        }
-        #endregion
-    }
-}
+<pre><code class="lang-csharp" name="BuildSteps">[ImportMany(nameof(RtfDocumentProcessor))]
+public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
 </code></pre></li>
 <li><p><code>Name</code> property is used to display in log, so give any constant string as you like.<br>e.g.:  </p>
-<pre><code class="lang-csharp" name="Name">// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-namespace RtfDocumentProcessors
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.IO;
-
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
-
-    [Export(typeof(IDocumentProcessor))]
-    public class RtfDocumentProcessor : IDocumentProcessor
-    {
-        #region BuildSteps
-        [ImportMany(nameof(RtfDocumentProcessor))]
-        public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
-        #endregion
-
-        #region Name
-        public string Name =&gt; nameof(RtfDocumentProcessor);
-        #endregion
-
-        #region GetProcessingPriority
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
-        {
-            if (file.Type == DocumentType.Article &amp;&amp;
-                &quot;.rtf&quot;.Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-            {
-                return ProcessingPriority.Normal;
-            }
-            return ProcessingPriority.NotSupported;
-        }
-        #endregion
-
-        #region Load
-        public FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)
-        {
-            var content = new Dictionary&lt;string, object&gt;
-            {
-                [&quot;conceptual&quot;] = File.ReadAllText(Path.Combine(file.BaseDir, file.File)),
-                [&quot;type&quot;] = &quot;Conceptual&quot;,
-                [&quot;path&quot;] = file.File,
-            };
-            return new FileModel(file, content);
-        }
-        #endregion
-
-        #region Save
-        public SaveResult Save(FileModel model)
-        {
-            return new SaveResult
-            {
-                DocumentType = &quot;Conceptual&quot;,
-                ModelFile = model.File,
-                LinkToFiles = linkToFiles.ToImmutableArray(),
-            };
-        }
-        #endregion
-
-        #region UpdateHref
-        public void UpdateHref(FileModel model, IDocumentBuildContext context)
-        {
-        }
-        #endregion
-    }
-}
+<pre><code class="lang-csharp" name="Name">public string Name =&gt; nameof(RtfDocumentProcessor);
 </code></pre></li>
 <li><p>Since we don&#39;t support hyperlink, keep <code>UpdateHref</code> method empty.</p>
-<pre><code class="lang-csharp" name="UpdateHref">// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-namespace RtfDocumentProcessors
+<pre><code class="lang-csharp" name="UpdateHref">public void UpdateHref(FileModel model, IDocumentBuildContext context)
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.IO;
-
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
-
-    [Export(typeof(IDocumentProcessor))]
-    public class RtfDocumentProcessor : IDocumentProcessor
-    {
-        #region BuildSteps
-        [ImportMany(nameof(RtfDocumentProcessor))]
-        public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
-        #endregion
-
-        #region Name
-        public string Name =&gt; nameof(RtfDocumentProcessor);
-        #endregion
-
-        #region GetProcessingPriority
-        public ProcessingPriority GetProcessingPriority(FileAndType file)
-        {
-            if (file.Type == DocumentType.Article &amp;&amp;
-                &quot;.rtf&quot;.Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-            {
-                return ProcessingPriority.Normal;
-            }
-            return ProcessingPriority.NotSupported;
-        }
-        #endregion
-
-        #region Load
-        public FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)
-        {
-            var content = new Dictionary&lt;string, object&gt;
-            {
-                [&quot;conceptual&quot;] = File.ReadAllText(Path.Combine(file.BaseDir, file.File)),
-                [&quot;type&quot;] = &quot;Conceptual&quot;,
-                [&quot;path&quot;] = file.File,
-            };
-            return new FileModel(file, content);
-        }
-        #endregion
-
-        #region Save
-        public SaveResult Save(FileModel model)
-        {
-            return new SaveResult
-            {
-                DocumentType = &quot;Conceptual&quot;,
-                ModelFile = model.File,
-                LinkToFiles = linkToFiles.ToImmutableArray(),
-            };
-        }
-        #endregion
-
-        #region UpdateHref
-        public void UpdateHref(FileModel model, IDocumentBuildContext context)
-        {
-        }
-        #endregion
-    }
 }
 </code></pre></li>
 </ol>
@@ -607,97 +221,27 @@ public class RtfBuildStep : IDocumentBuildStep
 </code></pre>
 </li>
 <li><p>In <code>Build</code> method, convert rtf to html:</p>
-<pre><code class="lang-csharp" name="Build">// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+<pre><code class="lang-csharp" name="Build">private readonly TaskFactory _taskFactory = new TaskFactory(new StaTaskScheduler(1));
 
-namespace RtfDocumentProcessors
+public void Build(FileModel model, IHostService host)
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.Threading.Tasks;
-    using System.Threading.Tasks.Schedulers;
-
-    using MarkupConverter;
-    using Microsoft.DocAsCode.Plugins;
-
-    [Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class RtfBuildStep : IDocumentBuildStep
-    {
-        #region Build
-        private readonly TaskFactory _taskFactory = new TaskFactory(new StaTaskScheduler(1));
-
-        public void Build(FileModel model, IHostService host)
-        {
-            string content = (string)((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;];
-            content = _taskFactory.StartNew(() =&gt; RtfToHtmlConverter.ConvertRtfToHtml(content)).Result;
-            ((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;] = content;
-        }
-        #endregion
-
-        #region Others
-        public int BuildOrder =&gt; 0;
-
-        public string Name =&gt; nameof(RtfBuildStep);
-
-        public void Postbuild(ImmutableList&lt;FileModel&gt; models, IHostService host)
-        {
-        }
-
-        public IEnumerable&lt;FileModel&gt; Prebuild(ImmutableList&lt;FileModel&gt; models, IHostService host)
-        {
-            return models;
-        }
-        #endregion
-    }
+    string content = (string)((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;];
+    content = _taskFactory.StartNew(() =&gt; RtfToHtmlConverter.ConvertRtfToHtml(content)).Result;
+    ((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;] = content;
 }
 </code></pre></li>
 <li><p>Implements other methods:</p>
-<pre><code class="lang-csharp" name="Others">// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+<pre><code class="lang-csharp" name="Others">public int BuildOrder =&gt; 0;
 
-namespace RtfDocumentProcessors
+public string Name =&gt; nameof(RtfBuildStep);
+
+public void Postbuild(ImmutableList&lt;FileModel&gt; models, IHostService host)
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.Threading.Tasks;
-    using System.Threading.Tasks.Schedulers;
+}
 
-    using MarkupConverter;
-    using Microsoft.DocAsCode.Plugins;
-
-    [Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class RtfBuildStep : IDocumentBuildStep
-    {
-        #region Build
-        private readonly TaskFactory _taskFactory = new TaskFactory(new StaTaskScheduler(1));
-
-        public void Build(FileModel model, IHostService host)
-        {
-            string content = (string)((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;];
-            content = _taskFactory.StartNew(() =&gt; RtfToHtmlConverter.ConvertRtfToHtml(content)).Result;
-            ((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;] = content;
-        }
-        #endregion
-
-        #region Others
-        public int BuildOrder =&gt; 0;
-
-        public string Name =&gt; nameof(RtfBuildStep);
-
-        public void Postbuild(ImmutableList&lt;FileModel&gt; models, IHostService host)
-        {
-        }
-
-        public IEnumerable&lt;FileModel&gt; Prebuild(ImmutableList&lt;FileModel&gt; models, IHostService host)
-        {
-            return models;
-        }
-        #endregion
-    }
+public IEnumerable&lt;FileModel&gt; Prebuild(ImmutableList&lt;FileModel&gt; models, IHostService host)
+{
+    return models;
 }
 </code></pre></li>
 </ol>

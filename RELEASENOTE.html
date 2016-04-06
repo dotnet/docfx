@@ -5,17 +5,17 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v1.6.3) | DocFX website </title>
+    <title>Version Notes (Current Version: v1.7) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v1.6.3) | DocFX website ">
-    <meta name="generator" content="docfx 1.6.3.0">
+    <meta name="title" content="Version Notes (Current Version: v1.7) | DocFX website ">
+    <meta name="generator" content="docfx 1.7.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
     <link rel="stylesheet" href="styles/docfx.css">
     <link rel="stylesheet" href="styles/main.css">
     <meta property="docfx:navrel" content="toc.html">
-    <meta property="docfx:tocrel" content="">
+    <meta property="docfx:tocrel" content="toc.html">
     <meta property="docfx:rel" content="">
   </head>
   <body data-spy="scroll" data-target="#affix">
@@ -66,15 +66,28 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
               <a href="https://github.com/dotnet/docfx/blob/master/RELEASENOTE.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <h1 id="version-notes-current-version-v1-6-3-">Version Notes (Current Version: v1.6.3)</h1>
+              <h1 id="version-notes-current-version-v1-7-">Version Notes (Current Version: v1.7)</h1>
               
-<h2 id="v1-6-2">v1.6.2</h2>
+<h2 id="v1-7">v1.7</h2>
 <ol>
-<li>For issue #221, add detailed error information.</li>
+<li>Behavior change<ol>
+<li>For articles not in TOC, it&#39;s TOC file is the nearest <em>TOC File</em> in its output folder. Previously we only search the <em>TOC File</em> under the same input folder of the Not-In-Toc article.</li>
 </ol>
-<h2 id="v1-6-1">v1.6.1</h2>
-<ol>
-<li>Fix bug: &quot;Improve this doc&quot; button disppears in method level</li>
+</li>
+<li>Provide more information for API reference documentation<ol>
+<li>Type of events (<a href="https://github.com/dotnet/docfx/issues/217">https://github.com/dotnet/docfx/issues/217</a>)</li>
+<li>Parameters/returns for delegates (<a href="https://github.com/dotnet/docfx/issues/218">https://github.com/dotnet/docfx/issues/218</a>)</li>
+<li>Type parameter description (<a href="https://github.com/dotnet/docfx/issues/204">https://github.com/dotnet/docfx/issues/204</a>)</li>
+</ol>
+</li>
+<li>Cross-reference is now supporting anchor<code>#</code> (<a href="https://github.com/dotnet/docfx/issues/190">https://github.com/dotnet/docfx/issues/190</a>)</li>
+<li>C# Code snippet now supports referencing source code using a region <code>#engion</code> (<a href="https://github.com/dotnet/docfx/issues/160">https://github.com/dotnet/docfx/issues/160</a>)</li>
+<li>Support <a class="xref" href="tutorial/intro_toc.html#link-to-another-toc-file-">TOC reference</a>. With this syntax, we can combine multiple TOC files into a single TOC. (<a href="https://github.com/dotnet/docfx/issues/161">https://github.com/dotnet/docfx/issues/161</a>)</li>
+<li>Improve user experience when using <code>docfx.msbuild</code> in VS IDE </li>
+<li>Code refactor:<ol>
+<li>We improved DocFX project structure in this release. <code>Microsoft.DocAsCode.EntityModel</code> namespace is no longer in use. Assemblies are separated into <code>Microsoft.DocAsCode.Build</code>,  <code>Microsoft.DocAsCode.DataContracts</code>, and  <code>Microsoft.DocAsCode.Metadata</code> namespace. All assemblies can be separately referenced through NuGet. In this way, it is much convenient for plugin writers to reference existing data models and utilities.  </li>
+</ol>
+</li>
 </ol>
 <h2 id="v1-6">v1.6</h2>
 <ol>
@@ -167,7 +180,7 @@ Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.ExtensibleMe
 <li>Add two options to <code>build</code> subcommand, <code>--exportRawModel</code> and <code>--exportViewModel</code>. <code>--exportRawModel</code> exports the data model to apply templates, <code>--exportViewModel</code> exports the view model after running template&#39;s pre-process scripts.</li>
 <li>Add <code>--globalMetadata</code>, and <code>--globalMetadataFile</code> options to <code>build</code> subcommand. These options allow <code>globalMetadata</code> to be loaded from command line in json format or from a JSON file.</li>
 <li>Add <code>--fileMetadataFile</code> option to <code>build</code> subcommand. This option allows <code>fileMeatdata</code> to be read from an external JSON file.</li>
-<li>Support plugins. You can create your own template with a <code>plugins</code> folder, inside which, you create your own build steps. Refer to <a class="xref" href="api/Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep.html#Microsoft_DocAsCode_EntityModel_Plugins_BaseDocumentBuildStep">BaseDocumentBuildStep</a> for a sample plugin implementation.</li>
+<li>Support plugins. You can create your own template with a <code>plugins</code> folder, inside which, you create your own build steps. Refer to @Microsoft.DocAsCode.EntityModel.Plugins.BaseDocumentBuildStep for a sample plugin implementation.</li>
 </ol>
 </li>
 <li><em>DFM</em> syntax improvements<ol>

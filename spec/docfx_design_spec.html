@@ -8,7 +8,7 @@
     <title>docfx Design Spec | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx Design Spec | DocFX website ">
-    <meta name="generator" content="docfx 1.6.3.0">
+    <meta name="generator" content="docfx 1.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -86,15 +86,15 @@
 <tbody>
 <tr>
 <td>DFM</td>
-<td><a href="docfx_flavored_markdown.html">Docfx Flavored Markdown</a></td>
+<td><a href="docfx_flavored_markdown.html">DocFX Flavored Markdown</a></td>
 </tr>
 <tr>
 <td>API</td>
-<td>The api generated from source code</td>
+<td>The API generated from source code</td>
 </tr>
 <tr>
 <td>Overwrite Files</td>
-<td>The files with YAML header used to override YAML files when <code>uid</code> matches</td>
+<td>The files with YAML header used to override YAML files when <code>uid</code> matches.</td>
 </tr>
 </tbody>
 </table>
@@ -102,22 +102,22 @@
 <p><code>docfx</code> should support the following scenarios:</p>
 <ol>
 <li>Source Code =&gt; Website</li>
-<li>Conceputal =&gt; Website</li>
+<li>Conceptual =&gt; Website</li>
 <li>YAML files =&gt; Website</li>
 </ol>
 <h2 id="2-architecture">2. Architecture</h2>
 <p><img src="images/docfx_workflow.png" alt="Workflow"></p>
 <h2 id="3-feature-list">3. Feature List</h2>
 <ol>
-<li>Support <a href="docfx_flavored_markdown.html">Docfx Flavored Markdown</a></li>
-<li>able to parse TOC.json/TOC.yml/TOC.md</li>
+<li>Support for <a href="docfx_flavored_markdown.html">DocFX Flavored Markdown</a></li>
+<li>Ability to parse TOC.json/TOC.yml/TOC.md</li>
 <li>Custom template naming: {type}.{extension}.tmpl under folder {templateName} </li>
 </ol>
 <h2 id="4-open-issues">4. Open Issues</h2>
 <ol>
-<li>should we support other conceptual file format, e.g. RST?
+<li>Should we support other conceptual file format, for example, RST?
 ==&gt; How to parse?</li>
-<li>How to you know what link to replace to html, what not?
+<li>How do you know which link to replace to html, and which not?
 ==&gt; </li>
 </ol>
 

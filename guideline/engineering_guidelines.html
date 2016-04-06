@@ -8,7 +8,7 @@
     <title>Engineering Guidelines | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Engineering Guidelines | DocFX website ">
-    <meta name="generator" content="docfx 1.6.3.0">
+    <meta name="generator" content="docfx 1.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -93,7 +93,7 @@
 </code></pre>
 </blockquote>
 <h3 id="external-dependencies">External dependencies</h3>
-<p>This refers to dependencies on projects (i.e. NuGet packages) outside of the <code>docfx</code> repo, and especially outside of Microsoft. Adding new dependencies require additional approval.</p>
+<p>This refers to dependencies on projects (that is, NuGet packages) outside of the <code>docfx</code> repo, and especially outside of Microsoft. Adding new dependencies requires additional approval.</p>
 <p>Current approved dependencies are:</p>
 <ul>
 <li>Newtonsoft.Json</li>
@@ -103,21 +103,21 @@
 <li>YamlDotNet</li>
 </ul>
 <h3 id="code-reviews-and-checkins">Code reviews and checkins</h3>
-<p>To help ensure that only the highest quality code makes its way into the project, please submit all your code changes to GitHub as PRs. This includes runtime code changes, unit test updates, and deployment scripts. For example, sending a PR for just an update to a unit test might seem like a waste of time but the unit tests are just as important as the product code and as such, reviewing changes to them is also just as important.</p>
-<p>The advantages are numerous: improving code quality, more visibility on changes and their potential impact, avoiding duplication of effort, and creating general awareness of progress being made in various areas.</p>
-<p>In general a PR should be signed off(using the :+1: emoticon) by the Owner of that code.</p>
-<p>To commit the PR to the repo <strong>do not use the Big Green Button</strong>. Instead, do a typical push that you would use with Git (e.g. local pull, rebase, merge, push).</p>
+<p>To help ensure that only the highest quality code makes its way into the project, please submit all your code changes to GitHub as PRs. This includes runtime code changes, unit test updates, and deployment scripts. For example, sending a PR for just an update to a unit test might seem like a waste of time but the unit tests are just as important as the product code. As such, reviewing changes to unit tests is just as important.</p>
+<p>The advantages are numerous: Improving code quality; increasing visibility on changes and their potential impact; avoiding duplication of effort; and creating general awareness of progress being made in various areas.</p>
+<p>In general a PR should be signed off(using the :+1: emoticon) by the owner of that code.</p>
+<p>To commit the PR to the repo, <strong>do not use the Big Green Button</strong>. Instead, do a typical push that you would use with Git (for example, local pull, rebase, merge or push).</p>
 <h2 id="source-code-management">Source Code Management</h2>
 <h3 id="branch-strategy">Branch strategy</h3>
 <p>In general:</p>
 <ul>
 <li><code>master</code> has the code for the latest release on NuGet.org. (e.g. <code>1.0.0</code>, <code>1.1.0</code>)</li>
-<li><code>dev</code> has the code that is being worked on but not yet released. This is the branch into which devs normally submit pull requests and merge changes into. We run daily CI towards <code>dev</code> branch and generate pre-release nuget package, e.g. <code>1.0.1-alpha-9-abcdefsd</code>.</li>
+<li><code>dev</code> has the code that is being worked on but that we have not yet released. This is the branch into which developers normally submit pull requests and merge changes into. We run daily CI towards <code>dev</code> branch and generate pre-release nuget package, e.g. <code>1.0.1-alpha-9-abcdefsd</code>.</li>
 </ul>
 <h3 id="solution-and-project-folder-structure-and-naming">Solution and project folder structure and naming</h3>
 <p>Solution files go in the repo root. The default entry point is <code>All.sln</code>.</p>
 <p>Every project also needs a <code>project.json</code> and a matching <code>.xproj</code> file. This <code>project.json</code> is the source of truth for a project&#39;s dependencies and configuration options.</p>
-<p>Solution need to contain solution folders that match the physical folder (<code>src</code>, <code>test</code>, <code>tools</code>, etc.).</p>
+<p>The solution needs to contain solution folders that match the physical folder (<code>src</code>, <code>test</code>, <code>tools</code>, etc.).</p>
 <h3 id="assembly-naming-pattern">Assembly naming pattern</h3>
 <p>The general naming pattern is <code>Microsoft.DocAsCode.&lt;area&gt;.&lt;subarea&gt;</code>.</p>
 <h3 id="unit-tests">Unit tests</h3>
