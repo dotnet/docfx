@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // TODO: Keep .manifest for backward-compatability, will remove next sprint
                     var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
                     JsonUtility.Serialize(manifestPath, templateManifest);
-                    Logger.LogInfo($"Manifest file saved to {manifestPath}. NOTE: This file is out-of-date and will be removed in version 1.8, if you rely on this file, please change to use {Constants.ManifestFileName} instead.");
+                    // Logger.LogInfo($"Manifest file saved to {manifestPath}. NOTE: This file is out-of-date and will be removed in version 1.8, if you rely on this file, please change to use {Constants.ManifestFileName} instead.");
 
                     var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
 

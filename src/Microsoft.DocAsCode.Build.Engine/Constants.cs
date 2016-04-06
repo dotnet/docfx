@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         public const string ObsoleteManifestFileName = ".manifest";
 
-        public const string ManifestFileName = ".manifest.json";
+        public const string ManifestFileName = "manifest.json";
 
     }
 }
