@@ -10,3 +10,5 @@
     href: advanced_support_hyperlink.md
 - name: "HowTo: Create Custom Template"
   href: howto_create_custom_template.md
+- name: Introduction to TOC Files
+  href: intro_toc.md
