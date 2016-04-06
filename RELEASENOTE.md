@@ -1,6 +1,6 @@
 Version Notes (Current Version: v1.7)
 =======================================
-v1.7 (Pre-release)
+v1.7
 -----------
 1. Behavior change
     1. For articles not in TOC, it's TOC file is the nearest *TOC File* in its output folder. Previously we only search the *TOC File* under the same input folder of the Not-In-Toc article.
