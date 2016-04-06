@@ -107,6 +107,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                         UpdateHref(manifest, context);
 
                         var generatedManifest = TemplateProcessor.Transform(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
+
+                        // export sitemap
+                        YamlUtility.Serialize(
+                            Path.Combine(parameters.OutputBaseDir, "site.xref"),
+                            from xref in context.XRefSpecMap.Values
+                            select new XRefSpec(xref)
+                            {
+                                Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XrefDetails.GetHtmlId(xref.Uid),
+                            });
+
                         // todo : move to plugin.
                         object value;
                         if (parameters.Metadata.TryGetValue("_enableSearch", out value))
