@@ -25,6 +25,9 @@ function transform(model, _attrs) {
         for (var i = 0; i < vm.children.length; i++) {
             var child = vm.children[i];
             child.docurl = child.docurl || getImproveTheDocHref(child, vm.newFileRepository);
+            if (child.operation) {
+                child.operation = child.operation.toUpperCase();
+            }
             child.sourceurl = child.sourceurl || getViewSourceHref(child);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
