@@ -1,5 +1,12 @@
-Version Notes (Current Version: v1.7)
+Version Notes (Current Version: v1.7.1)
 =======================================
+
+v1.7.1
+------
+1. Fix markdown bug:
+   * Do NOT apply inline rule for html code.
+   * Update em rule for gfm.
+
 v1.7
 -----------
 1. Behavior change
