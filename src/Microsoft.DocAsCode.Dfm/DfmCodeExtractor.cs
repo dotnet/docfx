@@ -272,7 +272,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 int startLine = region.StartLine ?? 1;
                 int endLine = region.EndLine ?? codeLines.Length;
-                AddFencesCodeRegion(includedLines, codeLines, startLine, endLine, indentLength);
+                AddFencesCodeRegion(includedLines, codeLines, startLine, endLine);
             }
 
             return new DfmExtractCodeResult
@@ -285,7 +285,7 @@ namespace Microsoft.DocAsCode.Dfm
         private DfmExtractCodeResult GetFencesCodeCore(string[] codeLines, int startLine, int endLine, int indentLength, HashSet<int> excludedLines = null)
         {
             var includedLines = new List<string>();
-            AddFencesCodeRegion(includedLines, codeLines, startLine, endLine, indentLength, excludedLines);
+            AddFencesCodeRegion(includedLines, codeLines, startLine, endLine, excludedLines);
 
             return new DfmExtractCodeResult
             {
@@ -294,7 +294,7 @@ namespace Microsoft.DocAsCode.Dfm
             };
         }
 
-        private void AddFencesCodeRegion(List<string> includedLines, string[] codeLines, int startLine, int endLine, int indentLength, HashSet<int> excludedLines = null)
+        private void AddFencesCodeRegion(List<string> includedLines, string[] codeLines, int startLine, int endLine, HashSet<int> excludedLines = null)
         {
             for (int i = startLine; i <= Math.Min(endLine, codeLines.Length); i++)
             {
