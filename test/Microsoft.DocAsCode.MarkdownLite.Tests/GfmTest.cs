@@ -401,6 +401,14 @@ break list!
             @"<p><strong><em>A</em>B
 **  C</strong>*</p>
 ")]
+        [InlineData(
+            @"a**************",
+            @"<p>a**************</p>
+")]
+        [InlineData(
+            @"a* A*",
+            @"<p>a* A*</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
@@ -473,6 +481,18 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
             var expected = @"<!--
 https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 -->";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmBuilder_CodeTag()
+        {
+            var source = @"<pre><code>//*************************************************
+        // Test!
+        //*************************************************</code></pre>
+";
+            var expected = source;
             TestGfmInGeneral(source, expected);
         }
 
