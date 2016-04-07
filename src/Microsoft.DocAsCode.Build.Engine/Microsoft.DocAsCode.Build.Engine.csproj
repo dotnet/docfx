@@ -38,6 +38,7 @@
     <Compile Include="TemplateManager.cs" />
     <Compile Include="Manifest.cs" />
     <Compile Include="TemplateManifestItem.cs" />
+    <Compile Include="TemplateModelTransformer.cs" />
     <Compile Include="TemplateProcessor.cs" />
     <Compile Include="TemplateResourceInfo.cs" />
     <Compile Include="XrefDetails.cs" />
