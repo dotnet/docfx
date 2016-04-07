@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html)
         {
-            Logger.LogWarning(comment);
+            Logger.LogError(comment);
             return GenerateNodeWithCommentWrapper("ERROR " + tag, comment, html);
         }
 
