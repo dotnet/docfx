@@ -285,7 +285,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             try
             {
-
                 var nodes = node.XPathSelectElements(nodeSelector + "[@cref]").ToList();
                 foreach (var item in nodes)
                 {
@@ -395,6 +394,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // e.g.
             // <remarks><para>Value</para></remarks>
             // decode InnerXml as it encodes
+            // IXmlLineInfo.LinePosition starts from 1 and it would ignore '<'
+            // e.g.
+            // <summary/> the LinePosition is the column number of 's', so it should be minus 2
             var lineInfo = node as IXmlLineInfo;
             int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
 
