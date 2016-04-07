@@ -10,8 +10,18 @@
         public const string NameKey = "name";
         public const string HrefKey = "href";
 
-        private Dictionary<string, string> _dict = new Dictionary<string, string>();
+        private Dictionary<string, string> _dict;
         private bool _isReadOnly;
+
+        public XRefSpec()
+        {
+            _dict = new Dictionary<string, string>();
+        }
+
+        public XRefSpec(XRefSpec spec)
+        {
+            _dict = new Dictionary<string, string>(spec._dict);
+        }
 
         public string Uid
         {
