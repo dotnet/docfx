@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
 
         private readonly ITripleSlashCommentParserContext _context;
+        private readonly TripleSlashCommentTransformer _transformer;
 
         public string Summary { get; private set; }
         public string Remarks { get; private set; }
@@ -39,6 +40,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             // Normalize xml line ending before load into xml
             XDocument doc = XDocument.Parse(xml, LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
+            // Transform triple slash comment
+            _transformer = new TripleSlashCommentTransformer(this.GetType().Assembly, "Transform", "TripleSlashCommentTransform.xsl");
+            doc = _transformer.Transform(doc);
+
             _context = context;
             if (!context.PreserveRawInlineComments)
             {
