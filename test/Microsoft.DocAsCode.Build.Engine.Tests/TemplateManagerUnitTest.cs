@@ -497,7 +497,7 @@ test2
                     item.Model = new DocAsCode.Plugins.ModelWithCache(model);
                 }
                 var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
-                TemplateProcessor.Transform(processor, items.ToList(), context, settings);
+                TemplateProcessor.Process(processor, items.ToList(), context, settings);
             }
         }
 

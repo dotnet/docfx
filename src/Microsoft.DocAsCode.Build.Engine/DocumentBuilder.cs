@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         UpdateContext(context);
                         UpdateHref(manifest, context);
 
-                        var generatedManifest = TemplateProcessor.Transform(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
+                        var generatedManifest = TemplateProcessor.Process(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
                         // todo : move to plugin.
                         object value;
                         if (parameters.Metadata.TryGetValue("_enableSearch", out value))

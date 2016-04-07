@@ -32,35 +32,37 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
             }
             var indexData = new Dictionary<string, SearchIndexItem>();
             var indexDataFilePath = Path.Combine(baseDir, IndexFileName);
-            Logger.LogInfo($"Extracting index data from {manifest.Count} files");
-            foreach (var item in manifest ?? Enumerable.Empty<TemplateManifestItem>())
+            var htmlFiles = (from item in manifest ?? Enumerable.Empty<TemplateManifestItem>()
+                             from output in item.OutputFiles
+                             where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                             select output.Value).ToList();
+            if (htmlFiles.Count == 0)
             {
-                foreach(var outputFile in item.OutputFiles)
-                {
-                    if (outputFile.Key.Equals(".html", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var href = outputFile.Value;
-                        var filePath = Path.Combine(baseDir, href);
-                        var html = new HtmlDocument();
-                        Logger.LogVerbose($"Extracting index data from {filePath}");
+                return;
+            }
 
-                        if (File.Exists(filePath))
-                        {
-                            try
-                            {
-                                html.Load(filePath);
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.LogWarning($"Warning: Can't load content from {filePath}: {ex.Message}");
-                                continue;
-                            }
-                            var indexItem = ExtractItem(html, href);
-                            if (indexItem != null)
-                            {
-                                indexData[href] = indexItem;
-                            }
-                        }
+            Logger.LogInfo($"Extracting index data from {htmlFiles.Count} html files");
+            foreach (var relativePath in htmlFiles)
+            {
+                var filePath = Path.Combine(baseDir, relativePath);
+                var html = new HtmlDocument();
+                Logger.LogVerbose($"Extracting index data from {filePath}");
+
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        html.Load(filePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogWarning($"Warning: Can't load content from {filePath}: {ex.Message}");
+                        continue;
+                    }
+                    var indexItem = ExtractItem(html, relativePath);
+                    if (indexItem != null)
+                    {
+                        indexData[relativePath] = indexItem;
                     }
                 }
             }

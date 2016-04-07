@@ -176,6 +176,20 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
     }
 
+    public sealed class EmptyResourceCollection : ResourceCollection
+    {
+        private static readonly IEnumerable<string> Empty = new string[0];
+        public override bool IsEmpty => true;
+        public override string Name => "Empty";
+
+        public override IEnumerable<string> Names => Empty;
+
+        public override Stream GetResourceStream(string name)
+        {
+            return Stream.Null;
+        }
+    }
+
     public abstract class ResourceCollection : IDisposable
     {
         public abstract string Name { get; }
