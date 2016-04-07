@@ -22,7 +22,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
         private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
-        private readonly string[] _lines;
 
         private readonly ITripleSlashCommentParserContext _context;
 
@@ -48,7 +47,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ResolveParameterRef(doc);
             }
             var nav = doc.CreateNavigator();
-            _lines = doc.ToString().Split('\n');
             Summary = GetSummary(nav, context);
             Remarks = GetRemarks(nav, context);
             Returns = GetReturns(nav, context);
@@ -287,9 +285,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             try
             {
-                
+
                 var nodes = node.XPathSelectElements(nodeSelector + "[@cref]").ToList();
-                foreach(var item in nodes)
+                foreach (var item in nodes)
                 {
                     var value = item.Attribute("cref").Value;
                     // Strict check is needed as value could be an invalid href, 
@@ -385,7 +383,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return output;
             }
         }
-        
+
         /// <summary>
         /// For multiple line comments, comment start position always aligns with its node tag's start position
         /// </summary>
@@ -398,9 +396,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // <remarks><para>Value</para></remarks>
             // decode InnerXml as it encodes
             var lineInfo = node as IXmlLineInfo;
-            var lineNumber = lineInfo.LineNumber - 1;
-            var line = _lines[lineNumber];
-            int column = GetNonWhitespaceIndex(line);
+            int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
 
             var content = WebUtility.HtmlDecode(node.InnerXml);
             var lines = GetLines(content, column);
@@ -422,19 +418,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             int trimIndex = Math.Min(column, GetNonWhitespaceIndex(line));
 
-            // special handle for \r
-            if (trimIndex > 0 && line[trimIndex - 1] == '\r')
-            {
-                trimIndex--;
-            }
-
             return line.Substring(trimIndex);
         }
 
         private static int GetNonWhitespaceIndex(string line)
         {
             int index = 0;
-            while (index < line.Length && char.IsWhiteSpace(line[index]))
+            while (index < line.Length && char.IsWhiteSpace(line[index]) && line[index] != '\r')
             {
                 index++;
             }
