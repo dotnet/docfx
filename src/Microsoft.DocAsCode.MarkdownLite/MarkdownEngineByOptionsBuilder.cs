@@ -76,6 +76,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 irb.Add(new GfmUrlInlineRule());
             }
+            irb.Add(new MarkdownCodeElementInlineRule());
             irb.Add(new MarkdownTagInlineRule());
             irb.Add(new MarkdownLinkInlineRule());
             irb.Add(new MarkdownRefLinkInlineRule());
