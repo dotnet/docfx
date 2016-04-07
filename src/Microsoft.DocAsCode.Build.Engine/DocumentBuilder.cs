@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class DocumentBuilder : IDisposable
     {
         public const string PhaseName = "Build Document";
+        public const string SiteMapFileName = "sitemap.yml";
 
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
         {
@@ -108,14 +109,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         var generatedManifest = TemplateProcessor.Transform(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
 
-                        // export sitemap
-                        YamlUtility.Serialize(
-                            Path.Combine(parameters.OutputBaseDir, "site.xref"),
-                            from xref in context.XRefSpecMap.Values
-                            select new XRefSpec(xref)
-                            {
-                                Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XrefDetails.GetHtmlId(xref.Uid),
-                            });
+                        ExportSiteMap(parameters, context);
 
                         // todo : move to plugin.
                         object value;
@@ -490,6 +484,25 @@ namespace Microsoft.DocAsCode.Build.Engine
                            select model),
                        item.Key,
                        templateProcessor);
+        }
+
+        /// <summary>
+        /// Export site map file.
+        /// </summary>
+        private static void ExportSiteMap(DocumentBuildParameters parameters, DocumentBuildContext context)
+        {
+            Logger.LogInfo("Exporting sitemap...");
+            YamlUtility.Serialize(
+                Path.Combine(parameters.OutputBaseDir, SiteMapFileName),
+                from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+                select new XRefSpec(xref)
+                {
+                    Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XrefDetails.GetHtmlId(xref.Uid),
+                }
+                into xref
+                orderby xref.Uid
+                select xref);
+            Logger.LogInfo("Sitemap exported.");
         }
 
         private sealed class InnerBuildContext
