@@ -51,6 +51,7 @@
     <Compile Include="CodeSnippetExtractor\FlatNameCodeSnippetExtractor.cs" />
     <Compile Include="CodeSnippetExtractor\RecursiveNameCodeSnippetExtractor.cs" />
     <Compile Include="DfmCodeExtractorHelper.cs" />
+    <Compile Include="DfmFencesBlockPathQueryRegion.cs" />
     <Compile Include="DfmMarkdownRenderer.cs" />
     <Compile Include="CodeSnippetExtractor\ICodeSnippetExtractor.cs" />
     <Compile Include="MarkdownValidators\MarkdownSytleConfig.cs" />

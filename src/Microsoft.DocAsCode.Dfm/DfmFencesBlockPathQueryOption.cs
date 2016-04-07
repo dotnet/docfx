@@ -3,11 +3,11 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System.Collections.Generic;
+
     public class DfmFencesBlockPathQueryOption
     {
-        public int? StartLine { get; set; }
-
-        public int? EndLine { get; set; }
+        public List<DfmFencesBlockPathQueryRegion> Regions { get; set; }
 
         public string TagName { get; set; }
     }

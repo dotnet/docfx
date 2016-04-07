@@ -111,7 +111,7 @@ Allows you to insert code with code language specified. The content of specified
 * __`<codepath>`__ is the relative path in file system which indicates the code snippet file that you want to expand.
 * __`<queryoption>`__ and __`<queryoptionvalue>`__ are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:
     * __`#`__: _`#L{startlinenumber}-L{endlinenumber}`_ (line range) or _`#L{tagname}`_ (tag name)
-    * __`?`__: _`?start={startlinenumber}&end={endlinenumber}`_ (line range) or _`?{name}={tagname}`_ (tag name)
+    * __`?`__: _`?start={startlinenumber}&end={endlinenumber}`_ (line range) or _`?{name}={tagname}`_ (tag name) or _`?range={rangequerystring}`_ (multiple region range)
 * __`<title>`__ can be omitted.
 
 #### Code Snippet Sample
@@ -122,6 +122,7 @@ Allows you to insert code with code language specified. The content of specified
 [!code-vb[Main](../Application/Program.vb#testsnippet "This is source file")]
 
 [!code[Main](index.xml?start=5&end=9)]
+[!code[Main](index.xml?range=2,5-7,9-) "This includes the lines 2, 5, 6, 7 and lines 9 to the last line"]
 [!code-javascript[Main](../jquery.js?name=testsnippet)]
 ```
 
