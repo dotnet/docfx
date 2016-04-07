@@ -154,6 +154,23 @@
             </li>
           </ul>
         {{/return}}
+        {{#propertyValue}}
+          <h6>Property Value</h6>
+          <ul class="member-details">
+            <li>
+              <ol class="meta">
+                <li>
+                {{#type.specName}}
+                  <code lang="lang-{{lang}}">{{{value}}}</code>
+                {{/type.specName}}
+                </li>
+              </ol>
+              <section class="description">
+                {{{description}}}
+              </section>
+            </li>
+          </ul>
+        {{/propertyValue}}
         {{#exceptions.0}}
           <h6>Exceptions</h6>
           <ul class="member-details">
