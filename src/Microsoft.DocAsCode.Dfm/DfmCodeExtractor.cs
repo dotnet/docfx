@@ -212,9 +212,12 @@ namespace Microsoft.DocAsCode.Dfm
 
             var fencesCode = File.ReadAllLines(fencesPath);
 
-            // NOTE: Parsing language and removing comment lines only do for tag name representation
+            // 1. extract included and excluded regions
+            List<DfmFencesBlockPathQueryRegion> includedRegions;
+            HashSet<int> excludedLines = null;
             if (token.PathQueryOption?.TagName != null)
             {
+                // NOTE: Parsing language and removing comment lines only do for tag name representation
                 var lang = GetCodeLanguageOrExtension(token);
                 List<ICodeSnippetExtractor> extractors;
                 if (!CodeLanguageExtractors.TryGetValue(lang, out extractors))
@@ -231,13 +234,20 @@ namespace Microsoft.DocAsCode.Dfm
                     return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = resolveResult.ErrorMessage, FencesCodeLines = fencesCode };
                 }
 
-                return GetFencesCodeCore(fencesCode, resolveResult.StartLine, resolveResult.EndLine, resolveResult.IndentLength, resolveResult.ExcludesLines);
+                includedRegions = new List<DfmFencesBlockPathQueryRegion>
+                {
+                    new DfmFencesBlockPathQueryRegion
+                    {
+                        StartLine = resolveResult.StartLine,
+                        EndLine = resolveResult.EndLine,
+                    }
+                };
+                excludedLines = resolveResult.ExcludesLines;
             }
             else if (token.PathQueryOption?.Regions != null)
             {
                 // line range check only need to be done for line number representation
                 string errorMessage;
-                int maxCommonIndent = int.MaxValue;
                 foreach (var region in token.PathQueryOption.Regions)
                 {
                     if (!CheckLineRange(fencesCode.Length, region.StartLine, region.EndLine, out errorMessage))
@@ -245,69 +255,51 @@ namespace Microsoft.DocAsCode.Dfm
                         Logger.LogError(errorMessage);
                         return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = errorMessage, FencesCodeLines = fencesCode };
                     }
-
-                    int startLine = region.StartLine ?? 1;
-                    int endLine = region.EndLine ?? fencesCode.Length;
-                    int indentLength = (from line in fencesCode.Skip(startLine - 1).Take(endLine - startLine + 1)
-                                        where !string.IsNullOrEmpty(line) && !string.IsNullOrWhiteSpace(line)
-                                        select (int?)DfmCodeExtractorHelper.GetIndentLength(line)).Min() ?? 0;
-                    maxCommonIndent = indentLength < maxCommonIndent ? indentLength : maxCommonIndent;
                 }
-                return GetFencesCodeCore(fencesCode, token.PathQueryOption.Regions, maxCommonIndent);
+                includedRegions = token.PathQueryOption.Regions;
             }
             else
             {
                 // Add the full file when no query option is given
-                int indentLength = (from line in fencesCode
-                                    where !string.IsNullOrEmpty(line) && !string.IsNullOrWhiteSpace(line)
-                                    select (int?)DfmCodeExtractorHelper.GetIndentLength(line)).Min() ?? 0;
-                return GetFencesCodeCore(fencesCode, 1, fencesCode.Length, indentLength);
+                includedRegions = new List<DfmFencesBlockPathQueryRegion>
+                {
+                    new DfmFencesBlockPathQueryRegion { StartLine = 1, EndLine = fencesCode.Length }
+                };
             }
+
+            // 2. compose code snippet
+            var includedLines = new List<string>();
+            foreach (var line in GetCodeLines(fencesCode, includedRegions, excludedLines))
+            {
+                includedLines.Add(line);
+            }
+
+            // 3. trim indent
+            int indentLength = (from line in includedLines
+                                where !string.IsNullOrEmpty(line) && !string.IsNullOrWhiteSpace(line)
+                                select (int?)DfmCodeExtractorHelper.GetIndentLength(line)).Min() ?? 0;
+            return new DfmExtractCodeResult
+            {
+                IsSuccessful = true,
+                FencesCodeLines = (indentLength == 0 ? includedLines : includedLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, indentLength), string.Empty))).ToArray()
+            };
         }
 
-        private DfmExtractCodeResult GetFencesCodeCore(string[] codeLines, List<DfmFencesBlockPathQueryRegion> regions, int indentLength)
+        private IEnumerable<string> GetCodeLines(string[] codeLines, List<DfmFencesBlockPathQueryRegion> includedRegions, HashSet<int> excludedLines = null)
         {
-            var includedLines = new List<string>();
-            foreach (var region in regions)
+            if (includedRegions == null) yield break;
+            foreach (var region in includedRegions)
             {
                 int startLine = region.StartLine ?? 1;
                 int endLine = region.EndLine ?? codeLines.Length;
-                AddFencesCodeRegion(includedLines, codeLines, startLine, endLine);
-            }
-
-            return new DfmExtractCodeResult
-            {
-                IsSuccessful = true,
-                FencesCodeLines = TrimIndent(includedLines, indentLength)
-            };
-        }
-
-        private DfmExtractCodeResult GetFencesCodeCore(string[] codeLines, int startLine, int endLine, int indentLength, HashSet<int> excludedLines = null)
-        {
-            var includedLines = new List<string>();
-            AddFencesCodeRegion(includedLines, codeLines, startLine, endLine, excludedLines);
-
-            return new DfmExtractCodeResult
-            {
-                IsSuccessful = true,
-                FencesCodeLines = TrimIndent(includedLines, indentLength),
-            };
-        }
-
-        private void AddFencesCodeRegion(List<string> includedLines, string[] codeLines, int startLine, int endLine, HashSet<int> excludedLines = null)
-        {
-            for (int i = startLine; i <= Math.Min(endLine, codeLines.Length); i++)
-            {
-                if (excludedLines == null || !excludedLines.Contains(i))
+                for (int i = startLine; i <= Math.Min(endLine, codeLines.Length); i++)
                 {
-                    includedLines.Add(codeLines[i - 1]);
+                    if (excludedLines == null || !excludedLines.Contains(i))
+                    {
+                        yield return codeLines[i - 1];
+                    }
                 }
             }
-        }
-
-        private string[] TrimIndent(List<string> codeLines, int indentLength)
-        {
-            return (indentLength == 0 ? codeLines : codeLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, indentLength), string.Empty))).ToArray();
         }
 
         private DfmTagNameResolveResult ResolveTagNamesFromPath(string fencesPath, string[] fencesCodeLines, string tagName, List<ICodeSnippetExtractor> codeSnippetExtractors)
