@@ -27,5 +27,6 @@
         "System.Globalization": ""
       }
     }
-  }
+  },
+  "resource": "Transform/**"
 }

@@ -67,6 +67,7 @@
     <Compile Include="ExtractMetadataInputModel.cs" />
     <Compile Include="Models\ReferenceItem.cs" />
     <Compile Include="Parsers\TripleSlashCommentModel.cs" />
+    <Compile Include="Parsers\TripleSlashCommentTransformer.cs" />
     <Compile Include="Resolvers\ResolveReference.cs" />
     <Compile Include="Resolvers\SetParent.cs" />
     <Compile Include="Models\LayoutItem.cs" />
@@ -128,6 +129,12 @@
       <Project>{87efc656-3081-442e-902b-822714514768}</Project>
       <Name>Microsoft.DocAsCode.YamlSerialization</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Transform\TripleSlashCommentTransform.xsl">
+      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
+      <LogicalName>$(AssemblyName).Transform.TripleSlashCommentTransform.xsl</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

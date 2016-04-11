@@ -28,6 +28,29 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     </summary>
     <remarks>
     <para>This is <paramref name='ref'/> <paramref />a sample of exception node</para>
+    <list type='bullet'>
+        <item>
+            <description>
+                <code language = 'c#'>
+                public class XmlElement
+                    : XmlLinkedNode
+                </code>
+                <list type='number'>
+                    <item>
+                        <description>
+                            word inside list->listItem->list->listItem->para.
+                        </description>
+                    </item>
+                    <item>
+                        <description>item2 in numbered list</description>
+                    </item>
+                </list>
+            </description>
+        </item>
+        <item>
+            <description>item2 in bullet list</description>
+        </item>
+    </list>
     </remarks>
     <returns>Task<see cref='T:System.AccessViolationException'/> returns</returns>
 
@@ -89,7 +112,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
             var remarks = commentModel.Remarks;
             Assert.Equal(@"
-<para>This is *ref* a sample of exception node</para>
+<p>This is *ref* a sample of exception node</p>
+<ul><li>
+            <pre><code class=""c#"">
+            public class XmlElement
+                : XmlLinkedNode
+            </code></pre>
+            <ol><li>
+                        word inside list->listItem->list->listItem->para.
+                    </li><li>item2 in numbered list</li></ol>
+        </li><li>item2 in bullet list</li></ul>
 ", remarks);
 
             var exceptions = commentModel.Exceptions;
@@ -101,7 +133,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             var expected = new List<string> {
 @"
 This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)"" /> method.
-<code>
+<pre><code>
 class TestClass
 {
     static int Main()
@@ -109,7 +141,7 @@ class TestClass
         return GetExceptions(null, null).Count();
     }
 } 
-</code> 
+</code></pre> 
 ",
 @"
 This is another example
