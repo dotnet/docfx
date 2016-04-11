@@ -5,10 +5,12 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System.Collections.Generic;
 
-    public class DfmFencesBlockPathQueryOption
+    public interface IDfmFencesBlockPathQueryOption
     {
-        public List<DfmFencesBlockPathQueryRegion> Regions { get; set; }
+        string ErrorMessage { get; }
 
-        public string TagName { get; set; }
+        bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token);
+
+        IEnumerable<string> GetQueryLines(string[] lines);
     }
 }

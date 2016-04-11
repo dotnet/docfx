@@ -3,16 +3,6 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    using System;
-    using System.Collections.Generic;
-
-    public class CodeSnippet
-    {
-        public string Name { get; set; }
-
-        public List<Tuple<int, int>> LinePair { get; set; } 
-    }
-
     public class CodeSnippetTag
     {
         public CodeSnippetTag(string name, int line, CodeSnippetTagType type)

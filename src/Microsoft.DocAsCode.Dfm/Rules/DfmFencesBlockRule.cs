@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Text.RegularExpressions;
     using System.Collections.Generic;
     using System.Web;
@@ -42,7 +43,7 @@ namespace Microsoft.DocAsCode.Dfm
             return new DfmFencesBlockToken(this, engine.Context, name, path, match.Value, lang, title, pathQueryOption);
         }
 
-        private static DfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
+        private static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
         {
             if (string.IsNullOrEmpty(queryOption) || string.IsNullOrEmpty(queryString))
             {
@@ -56,17 +57,11 @@ namespace Microsoft.DocAsCode.Dfm
                 var match = _dfmFencesSharpQueryStringRegex.Match(queryString);
                 if (match.Success && int.TryParse(match.Groups["start"].Value, out startLine) && int.TryParse(match.Groups["end"].Value, out endLine))
                 {
-                    return new DfmFencesBlockPathQueryOption
-                    {
-                        Regions = new List<DfmFencesBlockPathQueryRegion>
-                        {
-                            new DfmFencesBlockPathQueryRegion { StartLine = startLine, EndLine = endLine }
-                        }
-                    };
+                    return new LineRangeBlockPathQueryOption { StartLine = startLine, EndLine = endLine };
                 }
                 else
                 {
-                    return new DfmFencesBlockPathQueryOption { TagName = queryString };
+                    return new TagNameBlockPathQueryOption { TagName = queryString };
                 }
             }
             else if (queryOption == "?")
@@ -78,31 +73,30 @@ namespace Microsoft.DocAsCode.Dfm
                 var range = collection[RangeQueryStringKey];
                 if (tagName != null)
                 {
-                    return new DfmFencesBlockPathQueryOption { TagName = tagName };
+                    return new TagNameBlockPathQueryOption { TagName = tagName };
                 }
                 else if (range != null)
                 {
                     var regions = range.Split(RegionSeparatorInRangeQueryString);
                     if (regions != null)
                     {
-                        var option = new DfmFencesBlockPathQueryOption { Regions = new List<DfmFencesBlockPathQueryRegion>() };
+                        var option = new MultipleLineRangeBlockPathQueryOption();
                         foreach (var region in regions)
                         {
                             var match = _dfmFencesRangeQueryStringRegex.Match(region);
                             if (match.Success)
                             {
                                 // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
-                                option.Regions.Add(new DfmFencesBlockPathQueryRegion
-                                {
-                                    StartLine = int.TryParse(match.Groups["start"].Value, out startLine) ? startLine : (int?)null,
-                                    EndLine = int.TryParse(match.Groups["end"].Value, out endLine) ? endLine : (int?)null,
-                                });
+                                option.LinePairs.Add(new Tuple<int?, int?>(
+                                    int.TryParse(match.Groups["start"].Value, out startLine) ? startLine : (int?)null,
+                                    int.TryParse(match.Groups["end"].Value, out endLine) ? endLine : (int?)null
+                                ));
                             }
                             else
                             {
                                 // consider region as a sigine line number
                                 var tempLine = int.TryParse(region, out line) ? line : (int?)null;
-                                option.Regions.Add(new DfmFencesBlockPathQueryRegion { StartLine = tempLine, EndLine = tempLine, });
+                                option.LinePairs.Add(new Tuple<int?, int?>(tempLine, tempLine));
                             }
                         }
                         return option;
@@ -110,21 +104,15 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 else if (start != null || end != null)
                 {
-                    return new DfmFencesBlockPathQueryOption
+                    return new LineRangeBlockPathQueryOption
                     {
-                        Regions = new List<DfmFencesBlockPathQueryRegion>
-                        {
-                            new DfmFencesBlockPathQueryRegion
-                            {
-                                StartLine = int.TryParse(start, out startLine) ? startLine : (int?)null,
-                                EndLine = int.TryParse(end, out endLine) ? endLine : (int?)null
-                            }
-                        }
+                        StartLine = int.TryParse(start, out startLine) ? startLine : (int?)null,
+                        EndLine = int.TryParse(end, out endLine) ? endLine : (int?)null
                     };
                 }
+                return null;
             }
-
-            return new DfmFencesBlockPathQueryOption();
+            return null;
         }
     }
 }
