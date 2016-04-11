@@ -1279,7 +1279,7 @@ namespace Test1
     {
         public volatile int X;
         protected static readonly Foo<T> Y = null;
-        protected internal const string Z = "";
+        protected internal const string Z = """";
     }
     public enum Bar
     {
@@ -1317,7 +1317,7 @@ namespace Test1
                 Assert.Equal("Z", field.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Z", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Z", field.Name);
-                Assert.Equal("protected const string Z", field.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("protected const string Z = \"\"", field.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "protected", "const" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
