@@ -4,8 +4,6 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
-    using System.Collections.Immutable;
-    using System.Dynamic;
     using System.IO;
     using System.Runtime.Serialization;
 
@@ -105,11 +103,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         private void OnContentAccessed()
         {
-            var handler = ContentAccessed;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            ContentAccessed?.Invoke(this, EventArgs.Empty);
         }
 
         private FileStream CreateTempFile()

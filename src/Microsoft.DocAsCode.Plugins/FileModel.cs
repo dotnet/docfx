@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Plugins
     public sealed class FileModel : IDisposable
     {
         private ImmutableArray<UidDefinition> _uids = ImmutableArray<UidDefinition>.Empty;
-        
+
         public FileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)
         {
             OriginalFileAndType = original ?? ft;
@@ -33,17 +33,13 @@ namespace Microsoft.DocAsCode.Plugins
         public FileAndType FileAndType { get; private set; }
 
         public FileAndType OriginalFileAndType { get; private set; }
+
         public ModelWithCache ModelWithCache { get; }
+
         public object Content
         {
-            get
-            {
-                return ModelWithCache.Content;
-            }
-            set
-            {
-                ModelWithCache.Content = value;
-            }
+            get { return ModelWithCache.Content; }
+            set { ModelWithCache.Content = value; }
         }
 
         public string BaseDir
@@ -110,21 +106,15 @@ namespace Microsoft.DocAsCode.Plugins
                 OnUidsChanged(nameof(Uids), original, value);
             }
         }
-        
+
         public event EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> UidsChanged;
 
         public event EventHandler FileOrBaseDirChanged;
 
         public event EventHandler ContentAccessed
         {
-            add
-            {
-                ModelWithCache.ContentAccessed += value;
-            }
-            remove
-            {
-                ModelWithCache.ContentAccessed -= value;
-            }
+            add { ModelWithCache.ContentAccessed += value; }
+            remove { ModelWithCache.ContentAccessed -= value; }
         }
 
         public void Dispose()
@@ -134,20 +124,12 @@ namespace Microsoft.DocAsCode.Plugins
 
         private void OnUidsChanged(string propertyName, ImmutableArray<UidDefinition> original, ImmutableArray<UidDefinition> current)
         {
-            var handler = UidsChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs<ImmutableArray<UidDefinition>>(propertyName, original, current));
-            }
+            UidsChanged?.Invoke(this, new PropertyChangedEventArgs<ImmutableArray<UidDefinition>>(propertyName, original, current));
         }
 
         private void OnFileOrBaseDirChanged()
         {
-            var handler = FileOrBaseDirChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            FileOrBaseDirChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

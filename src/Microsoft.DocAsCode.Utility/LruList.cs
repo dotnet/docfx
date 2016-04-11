@@ -56,10 +56,7 @@
                     // remove LRU
                     try
                     {
-                        if (_onRemoving != null)
-                        {
-                            _onRemoving(_cache.First.Value);
-                        }
+                        _onRemoving?.Invoke(_cache.First.Value);
                     }
                     finally
                     {
