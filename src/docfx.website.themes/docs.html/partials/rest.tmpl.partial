@@ -24,7 +24,7 @@
   <section class="primary">
     <h4>Request</h4>
     <div>
-      <pre><code class="lang-http"><span class="method-http-verb">{{operation}}</<span> {{path}}</code></pre>
+      <pre><code class="lang-http"><span class="method-http-verb">{{operation}}</span> {{path}}</code></pre>
     </div>
     {{#parameters.0}}
     <h4>Properties</h4>
