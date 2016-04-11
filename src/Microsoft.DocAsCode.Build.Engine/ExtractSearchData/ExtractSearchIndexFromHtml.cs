@@ -91,7 +91,8 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
         private static string ExtractTitleFromHtml(HtmlDocument html)
         {
             var titleNode = html.DocumentNode.SelectSingleNode("//head/title");
-            return titleNode?.InnerText ?? string.Empty;
+            var originalTitle = titleNode?.InnerText;
+            return NormalizeContent(originalTitle);
         }
 
         private static string NormalizeContent(string str)
