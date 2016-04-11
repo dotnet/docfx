@@ -14,7 +14,7 @@ function transform(model, _attrs) {
         }
     }
     var _fileNameWithoutExt = getFileNameWithoutExtension(_attrs._path);
-    vm._jsonPath = _fileNameWithoutExt + ".json";
+    vm._jsonPath = _fileNameWithoutExt + ".swagger.json";
     vm._disableToc = vm._disableToc || !vm._tocPath || (vm._navPath === vm._tocPath);
     vm.title = vm.title || vm.name;
 
