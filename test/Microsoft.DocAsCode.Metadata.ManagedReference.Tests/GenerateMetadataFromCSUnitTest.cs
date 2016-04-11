@@ -2338,6 +2338,27 @@ namespace Test1
             }
         }
 
+        [Fact]
+        public void TestGenereateMetadataWithFieldHasDefaultValue()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public const ushort Test = 123;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            {
+                var field = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(field);
+                Assert.Equal(@"public const ushort Test = 123", field.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
+        }
+
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromCSharpCode(code, "test.dll", references);
