@@ -14,13 +14,14 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Text;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
     public class DocumentBuilder : IDisposable
     {
         public const string PhaseName = "Build Document";
-        public const string SiteMapFileName = "sitemap.yml";
+        public const string XRefMapFileName = "xrefmap.yml";
 
         private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
         {
@@ -91,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.ExternalReferencePackages,
                     parameters.MaxParallelism);
                 Logger.LogVerbose("Start building document...");
-                var innerContexts = Enumerable.Empty<InnerBuildContext>();
+                List<InnerBuildContext> innerContexts = null;
                 try
                 {
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism))
@@ -109,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         var generatedManifest = TemplateProcessor.Process(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
 
-                        ExportSiteMap(parameters, context);
+                        ExportXRefMap(parameters, context);
 
                         // todo : move to plugin.
                         object value;
@@ -126,12 +127,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 finally
                 {
-                    foreach (var item in innerContexts)
+                    if (innerContexts != null)
                     {
-                        if (item.HostService != null)
+                        foreach (var item in innerContexts)
                         {
-                            Cleanup(item.HostService);
-                            item.HostService.Dispose();
+                            if (item.HostService != null)
+                            {
+                                Cleanup(item.HostService);
+                                item.HostService.Dispose();
+                            }
                         }
                     }
                 }
@@ -487,22 +491,24 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         /// <summary>
-        /// Export site map file.
+        /// Export xref map file.
         /// </summary>
-        private static void ExportSiteMap(DocumentBuildParameters parameters, DocumentBuildContext context)
+        private static void ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
         {
-            Logger.LogInfo("Exporting sitemap...");
+            Logger.LogVerbose("Exporting xref map...");
+            var xrefMap = new XRefMap();
+            xrefMap.References =
+                (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+                 select new XRefSpec(xref)
+                 {
+                     Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XrefDetails.GetHtmlId(xref.Uid),
+                 } into xref
+                 orderby xref.Uid
+                 select YamlUtility.ConvertTo<ReferenceViewModel>(xref)).ToList();
             YamlUtility.Serialize(
-                Path.Combine(parameters.OutputBaseDir, SiteMapFileName),
-                from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
-                select new XRefSpec(xref)
-                {
-                    Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XrefDetails.GetHtmlId(xref.Uid),
-                }
-                into xref
-                orderby xref.Uid
-                select xref);
-            Logger.LogInfo("Sitemap exported.");
+                Path.Combine(parameters.OutputBaseDir, XRefMapFileName),
+                xrefMap);
+            Logger.LogInfo("XRef map exported.");
         }
 
         private sealed class InnerBuildContext

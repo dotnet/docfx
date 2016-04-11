@@ -28,6 +28,7 @@
     <Compile Include="ExternalReferences\ExternalReferencePackageWriter.cs" />
     <Compile Include="IOverwriteDocumentViewModel.cs" />
     <Compile Include="ReferenceViewModel.cs" />
+    <Compile Include="XRefMap.cs" />
     <Compile Include="SourceDetail.cs" />
     <Compile Include="SpecViewModel.cs" />
     <Compile Include="TocItemViewModel.cs" />

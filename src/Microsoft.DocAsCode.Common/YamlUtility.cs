@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System.IO;
+    using System.Text;
     using System.Threading;
 
     using YamlDotNet.Serialization;
@@ -48,5 +49,15 @@ namespace Microsoft.DocAsCode.Common
                 return Deserialize<T>(reader);
         }
 #endif
+
+        public static T ConvertTo<T>(object obj)
+        {
+            var sb = new StringBuilder();
+            using (var writer = new StringWriter(sb))
+            {
+                serializer.Value.Serialize(writer, obj);
+            }
+            return deserializer.Value.Deserialize<T>(new StringReader(sb.ToString()));
+        }
     }
 }
