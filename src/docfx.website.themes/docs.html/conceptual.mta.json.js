@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 function transform(model, _attrs) {
   model.layout = model.layout || "Conceptual";
+  model.pagetype = "Conceptual";
 
   // Clean up unused predefined properties
   model.conceptual = undefined;

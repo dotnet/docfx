@@ -3,6 +3,7 @@ function transform(model, _attrs) {
     var vm = {};
     vm.title = model.name;
     vm.layout = model.layout || "Rest";
+    vm.pagetype = "REST";
     vm.langs = model.langs || ["http"];
 
     vm.toc_asset_id = model.toc_asset_id || _attrs._tocPath;
