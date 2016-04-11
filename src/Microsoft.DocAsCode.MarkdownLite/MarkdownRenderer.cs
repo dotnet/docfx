@@ -274,16 +274,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var content = StringBuffer.Empty;
             if (token.Tokens.Length > 0)
             {
-                content = render.Render(token.Tokens[0]);
-                foreach (var t in token.Tokens.Skip(1))
+                var tokenRenderContent = StringBuffer.Empty;
+                foreach (var t in token.Tokens)
+                {
+                    tokenRenderContent += render.Render(t);
+                }
+
+                var lines = tokenRenderContent.ToString().Split('\n');
+                content += lines[0];
+                content += "\n";
+                foreach (var line in lines.Skip(1))
                 {
                     content += indent;
-                    content += render.Render(t);
+                    content += line;
+                    content += "\n";
                 }
-            }
-            if (!content.EndsWith('\n'))
-            {
-                content += "\n";
             }
             return content;
         }
