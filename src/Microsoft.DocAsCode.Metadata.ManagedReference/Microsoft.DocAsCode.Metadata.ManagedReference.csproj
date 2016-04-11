@@ -131,7 +131,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Transform\TripleSlashCommentTransform.xsl" />
+    <EmbeddedResource Include="Transform\TripleSlashCommentTransform.xsl">
+      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
+      <LogicalName>$(AssemblyName).Transform.TripleSlashCommentTransform.xsl</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
