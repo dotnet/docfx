@@ -496,7 +496,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         GetTypeSyntax(symbol.Type),
                         SyntaxFactory.SingletonSeparatedList(
                             SyntaxFactory.VariableDeclarator(
-                                SyntaxFactory.Identifier(symbol.Name)
+                                SyntaxFactory.Identifier(symbol.Name),
+                                null,
+                                GetDefaultValueClause(symbol)
                             )
                         )
                     )

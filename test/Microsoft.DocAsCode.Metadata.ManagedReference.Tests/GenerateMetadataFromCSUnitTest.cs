@@ -1279,7 +1279,7 @@ namespace Test1
     {
         public volatile int X;
         protected static readonly Foo<T> Y = null;
-        protected internal const string Z = "";
+        protected internal const string Z = """";
     }
     public enum Bar
     {
@@ -1317,7 +1317,7 @@ namespace Test1
                 Assert.Equal("Z", field.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Z", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Z", field.Name);
-                Assert.Equal("protected const string Z", field.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("protected const string Z = \"\"", field.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "protected", "const" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
@@ -2335,6 +2335,27 @@ namespace Test1
             {
                 var class5 = nestedNamespace.Items[0];
                 Assert.Equal("Test1.Test2.Test3.Class5", class5.Name);
+            }
+        }
+
+        [Fact]
+        public void TestGenereateMetadataWithFieldHasDefaultValue()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public const ushort Test = 123;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            {
+                var field = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(field);
+                Assert.Equal(@"public const ushort Test = 123", field.Syntax.Content[SyntaxLanguage.CSharp]);
             }
         }
 
