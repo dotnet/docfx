@@ -206,6 +206,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Homepages = homepages,
                 Files = items,
+                XRefMap = DocumentBuilder.XRefMapFileName,
             };
         }
 

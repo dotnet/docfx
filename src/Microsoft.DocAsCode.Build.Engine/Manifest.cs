@@ -18,6 +18,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         [JsonProperty("homepages")]
         public List<HomepageInfo> Homepages { get; set; }
 
+        [YamlMember(Alias = "xrefmap")]
+        [JsonProperty("xrefmap")]
+        public string XRefMap { get; set; }
+
         [YamlMember(Alias = "files")]
         [JsonProperty("files")]
         public List<TemplateManifestItem> Files { get; set; }
