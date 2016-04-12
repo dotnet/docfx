@@ -7,10 +7,20 @@
     "GitSharp": "0.3.0",
     "Newtonsoft.Json": "7.0.1"
   },
-  "frameworks": {
-    "dnx451": {
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": ["DEBUG", "TRACE"]
+      }
     },
-    "net45": {
+    "Release": {
+      "buildOptions": {
+        "define": ["RELEASE", "TRACE"],
+        "optimize": true
+      }
     }
+  },
+  "frameworks": {
+    "net451": {}
   }
 }

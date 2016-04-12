@@ -1,5 +1,8 @@
 ﻿{
   "version": "1.0.0",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
   "dependencies": {
     "Microsoft.DocAsCode.Common": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
@@ -7,15 +10,8 @@
     "Microsoft.DocAsCode.Utility": "1.0.0"
     },
   "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System.Xml": "",
-        "System.Xml.Linq": ""
-      }
-    }
-    },
+    "net451": {}
+  },
   "commands": {
     "mergeSourceInfo": "mergeSourceInfo"
   }

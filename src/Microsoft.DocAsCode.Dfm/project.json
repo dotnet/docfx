@@ -10,25 +10,30 @@
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
     "Newtonsoft.Json": "7.0.1",
     "YamlDotNet.Signed": "3.7.0",
-    "System.Collections.Immutable": "1.1.37"
+    "System.Collections.Immutable": "1.2.0-*"
   },
-  "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {
-        "System.Collections": "",
-        "System.Reflection": "",
-        "System.Threading.Tasks": "",
-        "System.Globalization": "",
-        "System.Runtime": "",
-        "System.Xml": ""
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [
+          "DEBUG",
+          "TRACE"
+        ]
       }
     },
-    "net45": {
+    "Release": {
+      "buildOptions": {
+        "define": [
+          "RELEASE",
+          "TRACE"
+        ],
+        "optimize": true
+      }
+    }
+  },
+  "frameworks": {
+    "net451": {
       "frameworkAssemblies": {
-        "System.Reflection": {
-          "type": "build",
-          "version": ""
-        },
         "System.Xml": ""
       }
     }

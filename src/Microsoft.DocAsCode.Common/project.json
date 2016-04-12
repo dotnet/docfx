@@ -3,22 +3,30 @@
   "dependencies": {
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
     "YamlDotNet.Signed": "3.7.0",
-    "System.Collections.Immutable": "1.1.37"
+    "Newtonsoft.Json": "7.0.1",
+    "System.Collections.Immutable": "1.2.0-*"
   },
-  "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {
-        "System.Collections": "",
-        "System.Threading.Tasks": "",
-        "System.Globalization": "",
-        "System.Runtime": "",
-        "System.Xml": ""
-      },
-      "dependencies": {
-        "Newtonsoft.Json": "7.0.1"
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [
+          "DEBUG",
+          "TRACE"
+        ]
       }
     },
-    "net45": {
+    "Release": {
+      "buildOptions": {
+        "define": [
+          "RELEASE",
+          "TRACE"
+        ],
+        "optimize": true
+      }
+    }
+  },
+  "frameworks": {
+    "net451": {
       "frameworkAssemblies": {
         "System.Runtime": {
           "type": "build",
@@ -37,9 +45,6 @@
           "version": ""
         },
         "System.Xml": ""
-      },
-      "dependencies": {
-        "Newtonsoft.Json": "7.0.1"
       }
     }
   }
