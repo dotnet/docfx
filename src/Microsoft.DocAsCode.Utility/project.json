@@ -6,19 +6,24 @@
     "YamlDotNet.Signed": "3.7.0",
     "Microsoft.DocAsCode.Common": "1.0.0"
   },
-  "frameworks": {
-    "net45": {
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System.Web": ""
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": ["DEBUG", "TRACE"]
       }
     },
-    "dnx451": {
+    "Release": {
+      "buildOptions": {
+        "define": ["RELEASE", "TRACE"],
+        "optimize": true
+      }
+    }
+  },
+  "frameworks": {
+    "net451": {
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
-        "System.Runtime": "",
         "System.Web": ""
       }
     }

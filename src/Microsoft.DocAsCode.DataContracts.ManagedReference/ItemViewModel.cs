@@ -180,6 +180,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("assemblies")]
         public List<string> AssemblyNameList { get; set; }
 
+        [YamlMember(Alias = "packages")]
+        [MergeOption(MergeOption.Ignore)]
+        [JsonProperty("packages")]
+        public List<string> PackageNameList { get; set; }
+
         [YamlMember(Alias = "namespace")]
         [JsonProperty("namespace")]
         public string NamespaceName { get; set; }

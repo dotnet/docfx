@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+  "dependencies": {
+    "Microsoft.DocAsCode.Common": "1.0.0",
+    "Microsoft.DocAsCode.Utility": "1.0.0",
+    "Microsoft.DocAsCode.AzureMarkdownRewriters": "1.0.0",
+    "Newtonsoft.Json": "7.0.1",
+    "System.Collections.Immutable": "1.2.0-*"
+  },
+  "frameworks": {
+    "net451": {}
+  },
+  "commands": {
+    "azureMarkdownRewriterTool": "azureMarkdownRewriterTool"
+  }
+}

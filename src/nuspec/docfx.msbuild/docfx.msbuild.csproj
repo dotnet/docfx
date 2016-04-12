@@ -7,7 +7,7 @@
     <RootNamespace>docfx.msbuild</RootNamespace>
     <AssemblyName>docfx.msbuild</AssemblyName>
     <PackageOutputPath Condition=" '$(PackageOutputPath)'=='' ">$(MSBuildThisFileDirectory)..\..\..\artifacts\$(Configuration)\</PackageOutputPath>
-    <NugetPath Condition=" '$(NugetPath)'=='' ">$(LocalAppData)\NuGet\NuGet.exe</NugetPath>
+    <NugetPath Condition=" '$(NugetPath)'=='' ">$(LocalAppData)\NuGet\v2.8.6\NuGet.exe</NugetPath>
     <DocfxOutputPath>$(MSBuildThisFileDirectory)..\..\..\target\$(Configuration)\docfx\</DocfxOutputPath>
     <OutputPath>bin\$(Configuration)</OutputPath>
     <NuspecPath>$(MSBuildProjectName).nuspec</NuspecPath>

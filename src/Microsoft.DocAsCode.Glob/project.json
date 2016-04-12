@@ -1,17 +1,19 @@
 {
   "version": "1.0.0",
-  "dependencies": {
-  },
-  "frameworks": {
-    "net45": {
-      "frameworkAssemblies": {
-        "System": ""
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": ["DEBUG", "TRACE"]
       }
     },
-    "dnx451": {
-      "frameworkAssemblies": {
-        "System": ""
+    "Release": {
+      "buildOptions": {
+        "define": ["RELEASE", "TRACE"],
+        "optimize": true
       }
     }
+  },
+  "frameworks": {
+    "net451": {}
   }
 }

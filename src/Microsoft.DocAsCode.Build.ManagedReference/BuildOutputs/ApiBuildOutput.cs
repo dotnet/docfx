@@ -74,6 +74,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("assemblies")]
         public List<string> AssemblyNameList { get; set; }
 
+        [YamlMember(Alias = "packages")]
+        [JsonProperty("packages")]
+        public List<string> PackageNameList { get; set; }
+
         [YamlMember(Alias = "namespace")]
         [JsonProperty("namespace")]
         public ApiReferenceBuildOutput NamespaceName { get; set; }
@@ -189,6 +193,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Source = model.Source,
                 Documentation = model.Documentation,
                 AssemblyNameList = model.AssemblyNameList,
+                PackageNameList = model.PackageNameList,
                 NamespaceName = ApiBuildOutputUtility.GetReferenceViewModel(model.NamespaceName, references, model.SupportedLanguages),
                 Summary = model.Summary,
                 Remarks = model.Remarks,

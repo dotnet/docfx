@@ -42,7 +42,7 @@ Now you can view the generated website on http://localhost:8080.
 3. Use *DocFX* in Visual Studio
 ---------------
 
-As a prerequisite, you need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use *DocFX* in IDE.
+As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use *DocFX* in IDE.
 
 *Step1.* Open Visual Studio and create a C# project as your documentation project. You can create an empty *ASP.NET Web Application* since it has a built-in *preview* feature that can be used to preview the generated website easily.
 
@@ -61,45 +61,10 @@ namespace WebApplication1
 
 *Step4.* Right click on the website project, and click *View* -> *View in Browser*, navigate to `/_site` sub URL to view your website!
 
-4. Use *DocFX* under DNX
+4. Build from source code
 ----------------
-As a prerequisite, you need to install [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm) and [DNX](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx).
 
-*Step1.* `SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/` as we depend upon the release version of ASP.NET 1.0.0-rc1.
-
-*Step2.* `dnvm upgrade` to get the latest dnvm.
-
-*Step3.* Add feed https://www.myget.org/F/aspnetrelease/api/v2/ to NuGet.config.
-> For Windows, the NuGet config file is *%AppData%\NuGet\NuGet.config*.
-
-> For Linux/OSX, the NuGet config file is *~/.config/NuGet/NuGet.config*.
-
-Sample NuGet.config
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <add key="myget.release" value="https://www.myget.org/F/aspnetrelease/api/v2/" />
-    <add key="nuget.org" value="https://www.nuget.org/api/v2/" />
-  </packageSources>
-  <disabledPackageSources />
-  <activePackageSource>
-    <add key="nuget.org" value="https://www.nuget.org/api/v2/" />
-  </activePackageSource>
-</configuration>
-```
-
-*Step4.* `dnu commands install docfx` to install *DocFX* as a command.
-
-*Step5.* `docfx init -q` to generate a sample project.
-
-*Step6.* `docfx docfx_project\docfx.json --serve` to build your project and preview your site at http://localhost:8080.
-
-Please refer to [*DocFX* User Manual](docfx.exe_user_manual.md) for detailed description of `docfx.json`.
-
-5. Build from source code
-----------------
-As a prerequisite, you need to install [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159).
+As a prerequisite, you will need [Latest .NET Command Line Interface](https://github.com/dotnet/cli) to run `build.cmd`
 
 *Step1.* `git clone https://github.com/dotnet/docfx.git` to get the latest code.
 
@@ -110,7 +75,7 @@ As a prerequisite, you need to install [Microsoft Build Tools 2015](https://www.
 
 *Step4.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or DNX.
 
-6. A seed project to play with *DocFX*
+5. A seed project to play with *DocFX*
 -------------------------
 Here is a seed project https://github.com/docascode/docfx-seed. It contains
 
@@ -123,7 +88,7 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 > Tip:
   It is a good practice to seperate files with different type into different folders.
 
-7. Q&A
+6. Q&A
 -------------------------
 1. Q: How do I quickly reference APIs from other APIs or conceptual files?
    A: Use `@uid` syntax.

@@ -19,16 +19,13 @@ We currently support C# and VB projects.
 ## How to build?
 ### Prerequisites
 1. [VS 2015 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx) or above
-2. [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)
+2. [Latest .NET Command Line Interface](https://github.com/dotnet/cli)
 
 ### Steps
-1. `dnvm install 1.0.0-rc1-final`
-2. Run `build.cmd` under *DocFX* code repo
+1. Run `build.cmd` under *DocFX* code repo
 
 > Possible build issues
-  1. *DNX.PackageManager not found*
-   Install http://www.microsoft.com/en-us/download/details.aspx?id=49442. Note that there are 2 msi to be installed.
-  2. *Test failure with message `\r\n` not equal to `\n` for Windows*
+  1. *Test failure with message `\r\n` not equal to `\n` for Windows*
   Set `git config --global core.autocrlf true`
 
 ## How do I play with *DocFX*?
