@@ -84,13 +84,13 @@ Block file inclusion must be in a single line and with no prefix characters befo
 User may need to define section. Mostly used for code table.
 Give an example below.
 
-    > [!div class="tabbedCodeSnippets" data-resources="OutlookServices.Calendar"]
-    > ```cs
-    > <cs code text>
-    > ```
-    > ```javascript
-    > <js code text>
-    > ```
+    [!div class="tabbedCodeSnippets" data-resources="OutlookServices.Calendar"]
+    ```cs
+    <cs code text>
+    ```
+    ```javascript
+    <js code text>
+    ```
 
 The above blockquote Markdown text will transform to section html as in the following:
 ```
