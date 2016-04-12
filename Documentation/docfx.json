@@ -29,7 +29,7 @@
     "resource": [
       {
         "files": [ "**/images/**", "**/artifacts/**", "codesnippet/**" ],
-        "exclude": [ "_site/**", "**/obj/**" ],
+        "exclude": [ "_site/**", "**/obj/**", "**.meta" ]
       }
     ],
     "overwrite": "apispec/*.md",
