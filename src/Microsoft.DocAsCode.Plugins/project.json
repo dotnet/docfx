@@ -1,25 +1,37 @@
 {
   "version": "1.0.0",
-  "dependencies": {
-    "System.Collections.Immutable": "1.1.37"
+  "configurations": {
+    "Debug": {
+      "compilationOptions": {
+        "define": [
+          "DEBUG",
+          "TRACE"
+        ]
+      }
+    },
+    "Release": {
+      "compilationOptions": {
+        "define": [
+          "RELEASE",
+          "TRACE"
+        ],
+        "optimize": true
+      }
+    }
   },
   "frameworks": {
     "net45": {
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System.Runtime": {
-          "type": "build",
-          "version": ""
-        }
+      "dependencies": {
+        "System.Collections.Immutable": "1.1.37"
       }
     },
-    "dnx451": {
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System.Runtime": ""
+    "net462": {
+      "dependencies": {
+        "System.Collections.Immutable": "1.2.0-rc2-24008"
       }
     }
+  },
+  "runtimes": {
+    "win7-x64": {}
   }
 }

@@ -1,5 +1,8 @@
 {
   "version": "1.0.0",
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
   "dependencies": {
     "Microsoft.DocAsCode.Common": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
@@ -8,14 +11,11 @@
     "Microsoft.DocAsCode.Utility": "1.0.0"
     },
   "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System.Xml": "",
-        "System.Xml.Linq": ""
-      }
-    }
+    "net45": {},
+    "net462": {}
+  },
+  "runtimes": {
+    "win7-x64": {}
   },
   "commands": {
     "mergeDeveloperComments": "mergeDeveloperComments"

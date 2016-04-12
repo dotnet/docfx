@@ -4,19 +4,26 @@ PUSHD %~dp0
 SETLOCAL
 SETLOCAL ENABLEDELAYEDEXPANSION
 
-IF NOT DEFINED VisualStudioVersion (
-    IF DEFINED VS140COMNTOOLS (
-        CALL "%VS140COMNTOOLS%\VsDevCmd.bat"
-        GOTO :EnvSet
-    )
+REM IF NOT DEFINED VisualStudioVersion (
+REM     IF DEFINED VS140COMNTOOLS (
+REM         CALL "%VS140COMNTOOLS%\VsDevCmd.bat"
+REM         GOTO :EnvSet
+REM     )
 
-    ECHO Error: build.cmd requires Visual Studio 2015.
-    SET ERRORLEVEL=1
+REM     ECHO Error: build.cmd requires Visual Studio 2015.
+REM     SET ERRORLEVEL=1
+REM     GOTO :Exit
+REM )
+
+WHERE dotnet >NUL
+IF NOT '%ERRORLEVEL%'=='0' (
+    ECHO ERROR: .Net Command Line Interface is not successfully configured.
+    ECHO ERROR: Please follow https://github.com/dotnet/cli to install .Net Command Line Interface.
     GOTO :Exit
 )
 
 :EnvSet
-SET BuildProj=%~dp0All.sln
+REM SET BuildProj=%~dp0All.sln
 SET Configuration=%1
 IF '%Configuration%'=='' (
     SET Configuration=Release
@@ -34,13 +41,13 @@ IF '%Environment%'=='PROD' (
 
 :: Check if DNU exists globally
 :: DNU is OPTIONAL
-WHERE dnu >NUL
-IF NOT '%ERRORLEVEL%'=='0' (
-    ECHO ERROR: DNU is not successfully configured.
-    ECHO ERROR: Please follow http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm to install dnvm.
-    ECHO ERROR: If dnvm is installed, use `dnvm list` to show available dnx runtime, and use `dnvm use` to select the default dnx runtime
-    GOTO :Exit
-)
+REM WHERE dnu >NUL
+REM IF NOT '%ERRORLEVEL%'=='0' (
+REM     ECHO ERROR: DNU is not successfully configured.
+REM     ECHO ERROR: Please follow http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm to install dnvm.
+REM     ECHO ERROR: If dnvm is installed, use `dnvm list` to show available dnx runtime, and use `dnvm use` to select the default dnx runtime
+REM     GOTO :Exit
+REM )
 
 :: Restore packages for .csproj projects
 
@@ -67,14 +74,14 @@ POPD
 :AfterBuild
 
 :: Pull the build summary from the log file
-ECHO.
-ECHO === BUILD RESULT ===
-findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%" & cd >nul
+REM ECHO.
+REM ECHO === BUILD RESULT ===
+REM findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%BuildLog%" & cd >nul
 
 :: Pull xunit test result from the log file
-ECHO.
-ECHO === TEST EXECUTION SUMMARY ===
-findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%" & cd >nul
+REM ECHO.
+REM ECHO === TEST EXECUTION SUMMARY ===
+REM findstr /ir /c:"Total:.*Failed.*Skipped.*Time.*" "%BuildLog%" & cd >nul
 
 ECHO Exit Code: %BuildErrorLevel%
 SET ERRORLEVEL=%BuildErrorLevel%
@@ -82,39 +89,50 @@ SET ERRORLEVEL=%BuildErrorLevel%
 GOTO :Exit
 
 :Build
-%BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=d;LogFile="%BuildLog%"; %BuildPostfix%
+REM %BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=d;LogFile="%BuildLog%"; %BuildPostfix%
+FOR /D %%x IN ("src/*","tools/*") DO (
+    PUSHD %%x
+    CMD /C dotnet build -c Release
+    POPD
+)
+
 SET BuildErrorLevel=%ERRORLEVEL%
 EXIT /B %ERRORLEVEL%
 
 :RestorePackage
-
-:RestoreDnuPackage
-FOR /D %%x IN ("src","test","tools") DO (
+FOR /D %%x IN ("src/*","tools/*") DO (
     PUSHD %%x
-    CMD /C dnu restore --parallel
+    CMD /C dotnet restore
     POPD
 )
 
-:RestoreNormalPackage
-:: Currently version 3.3 is not compatible with our build, force to use v2.8.6
-SET CachedNuget=%LocalAppData%\NuGet\v2.8.6\NuGet.exe
-IF EXIST "%CachedNuget%" GOTO :Restore
-ECHO Downloading NuGet.exe v2.8.6...
-IF NOT EXIST "%LocalAppData%\NuGet\v2.8.6" MD "%LocalAppData%\NuGet\v2.8.6"
-powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; [Net.WebRequest]::DefaultWebProxy.Credentials = [Net.CredentialCache]::DefaultCredentials; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/v2.8.6/nuget.exe' -OutFile '%CachedNuget%'"
+REM :RestoreDnuPackage
+REM FOR /D %%x IN ("src","test","tools") DO (
+REM     PUSHD %%x
+REM     CMD /C dnu restore --parallel
+REM     POPD
+REM )
 
-IF NOT '%ErrorLevel%'=='0' (
-    ECHO ERROR: Failed downloading NuGet.exe
-    GOTO :Exit
-)
+REM :RestoreNormalPackage
+REM :: Currently version 3.3 is not compatible with our build, force to use v2.8.6
+REM SET CachedNuget=%LocalAppData%\NuGet\v2.8.6\NuGet.exe
+REM IF EXIST "%CachedNuget%" GOTO :Restore
+REM ECHO Downloading NuGet.exe v2.8.6...
+REM IF NOT EXIST "%LocalAppData%\NuGet\v2.8.6" MD "%LocalAppData%\NuGet\v2.8.6"
+REM powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; [Net.WebRequest]::DefaultWebProxy.Credentials = [Net.CredentialCache]::DefaultCredentials; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/v2.8.6/nuget.exe' -OutFile '%CachedNuget%'"
 
-:Restore
-%CachedNuget% restore "%BuildProj%"
+REM IF NOT '%ErrorLevel%'=='0' (
+REM     ECHO ERROR: Failed downloading NuGet.exe
+REM     GOTO :Exit
+REM )
 
-IF NOT '%ErrorLevel%'=='0' (
-    ECHO ERROR: Error when restoring packages for %BuildProj%
-    GOTO :Exit
-)
+REM :Restore
+REM %CachedNuget% restore "%BuildProj%"
+
+REM IF NOT '%ErrorLevel%'=='0' (
+REM     ECHO ERROR: Error when restoring packages for %BuildProj%
+REM     GOTO :Exit
+REM )
 
 :Exit
 POPD
