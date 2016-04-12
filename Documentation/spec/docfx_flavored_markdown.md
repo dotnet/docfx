@@ -110,8 +110,12 @@ Allows you to insert code with code language specified. The content of specified
 * __`<language>`__ can be made up of any number of character and '-'. However, the recommended value should follow [Highlight.js language names and aliases](http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases).
 * __`<codepath>`__ is the relative path in file system which indicates the code snippet file that you want to expand.
 * __`<queryoption>`__ and __`<queryoptionvalue>`__ are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:
-    * __`#`__: _`#L{startlinenumber}-L{endlinenumber}`_ (line range) or _`#L{tagname}`_ (tag name)
-    * __`?`__: _`?start={startlinenumber}&end={endlinenumber}`_ (line range) or _`?{name}={tagname}`_ (tag name)
+
+|                          | query string using `#`                 | query string using `?`
+|--------------------------|----------------------------------------|-------------
+| 1. line range            | `#L{startlinenumber}-L{endlinenumber}` | `?start={startlinenumber}&end={endlinenumber}`
+| 2. tagname               | `#{tagname}`                           | `?name={tagname}`
+| 3. multiple region range | _Unsupported_                          | `?range={rangequerystring}`
 * __`<title>`__ can be omitted.
 
 #### Code Snippet Sample
@@ -123,6 +127,7 @@ Allows you to insert code with code language specified. The content of specified
 
 [!code[Main](index.xml?start=5&end=9)]
 [!code-javascript[Main](../jquery.js?name=testsnippet)]
+[!code[Main](index.xml?range=2,5-7,9-) "This includes the lines 2, 5, 6, 7 and lines 9 to the last line"]
 ```
 
 #### Tag Name Representation in Code Snippet Source File

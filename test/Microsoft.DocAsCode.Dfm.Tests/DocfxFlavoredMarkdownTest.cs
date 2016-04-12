@@ -669,6 +669,27 @@ using System.IO;
     }
 }
 </code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?range=1-2,10,20-21,29- ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">namespace ConsoleApplication1
+{
+    class Program
+    #region Helper
+    internal static class Helper
+    #endregion
+}
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?range=1,21,24-26,1,10,12-16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">namespace ConsoleApplication1
+    internal static class Helper
+        public static void Foo()
+        {
+        }
+namespace ConsoleApplication1
+    class Program
+        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+</code></pre>")]
         public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
         {
             // arrange

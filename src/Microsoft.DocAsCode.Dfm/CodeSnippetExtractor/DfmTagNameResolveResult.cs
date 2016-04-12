@@ -11,8 +11,6 @@ namespace Microsoft.DocAsCode.Dfm
 
         public int EndLine { get; set; }
 
-        public int IndentLength { get; set; }
-
         public HashSet<int> ExcludesLines { get; set; }
 
         public bool IsSuccessful { get; set; }

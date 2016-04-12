@@ -48,7 +48,6 @@ namespace Microsoft.DocAsCode.Dfm
                         tagResolveResult.StartLine = startLine + 1;
                         tagResolveResult.EndLine = endLine - 1;
                         tagResolveResult.ExcludesLines = excludedLines;
-                        tagResolveResult.IndentLength = DfmCodeExtractorHelper.GetIndentLength(lines[startLine - 1]);
                     }
                     else
                     {
