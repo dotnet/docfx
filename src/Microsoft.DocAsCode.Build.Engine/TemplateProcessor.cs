@@ -51,17 +51,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             _templateCollection = new TemplateCollection(resourceProvider, maxParallelism);
         }
 
-        public string GetFileExtension(string documentType)
+        public bool TryGetFileExtension(string documentType, out string fileExtension)
         {
             if (string.IsNullOrEmpty(documentType)) throw new ArgumentNullException(nameof(documentType));
-
-            if (_templateCollection.Count == 0) return string.Empty;
+            fileExtension = string.Empty;
+            if (_templateCollection.Count == 0) return false;
             var templateBundle = _templateCollection[documentType];
 
             // Get default template extension
-            if (templateBundle == null) return string.Empty;
+            if (templateBundle == null) return false;
 
-            return templateBundle.Extension;
+            fileExtension = templateBundle.Extension;
+            return true;
         }
 
         public List<TemplateManifestItem> Process(List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings)

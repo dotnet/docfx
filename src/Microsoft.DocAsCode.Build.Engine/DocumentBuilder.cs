@@ -330,14 +330,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                             string extension = string.Empty;
                             if (templateProcessor != null)
                             {
-                                extension = templateProcessor.GetFileExtension(result.DocumentType);
-                                // For backward-compatibility, will remove ModelFile in v1.9
-                                if (string.IsNullOrEmpty(result.FileWithoutExtension))
+                                if (templateProcessor.TryGetFileExtension(result.DocumentType, out extension))
                                 {
-                                    result.FileWithoutExtension = Path.ChangeExtension(result.ModelFile, null);
-                                }
+                                    // For backward-compatibility, will remove ModelFile in v1.9
+                                    if (string.IsNullOrEmpty(result.FileWithoutExtension))
+                                    {
+                                        result.FileWithoutExtension = Path.ChangeExtension(result.ModelFile, null);
+                                    }
 
-                                m.File = result.FileWithoutExtension + extension;
+                                    m.File = result.FileWithoutExtension + extension;
+                                }
                             }
 
                             var item = HandleSaveResult(context, hostService, m, result);
