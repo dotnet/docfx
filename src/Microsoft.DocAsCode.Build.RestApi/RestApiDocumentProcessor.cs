@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
                     swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
                     var vm = RestApiItemViewModel.FromSwaggerModel(swagger);
-                    var displayLocalPath = repoInfo?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+                    var displayLocalPath = repoInfo?.RelativePath ?? filePath.ToDisplayPath();
                     return new FileModel(file, vm, serializer: new BinaryFormatter())
                     {
                         Uids = new UidDefinition[] { new UidDefinition(vm.Uid, displayLocalPath) }.Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),

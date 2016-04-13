@@ -75,9 +75,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                             }
                         }
                     }
-
+                    var filePath = Path.Combine(file.BaseDir, file.File);
+                    var repoInfo = GitUtility.GetGitDetail(filePath);
                     // Item's source is the path for the original code, should not be used here
-                    var displayLocalPath = Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+                    var displayLocalPath = repoInfo?.RelativePath ?? filePath.ToDisplayPath();
                     return new FileModel(file, page, serializer: new BinaryFormatter())
                     {
                         Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
