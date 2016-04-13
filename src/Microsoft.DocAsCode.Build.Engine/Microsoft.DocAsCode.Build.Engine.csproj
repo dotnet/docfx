@@ -33,6 +33,8 @@
     <Compile Include="Settings\ExportSettings.cs" />
     <Compile Include="SystemMetadata.cs" />
     <Compile Include="SystemMetadataGenerator.cs" />
+    <Compile Include="TemplateType.cs" />
+    <Compile Include="TemplateBundle.cs" />
     <Compile Include="Template.cs" />
     <Compile Include="TemplateCollection.cs" />
     <Compile Include="TemplateManager.cs" />

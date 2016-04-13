@@ -327,13 +327,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                         var result = processor.Save(m);
                         if (result != null)
                         {
+                            string extension = string.Empty;
                             if (templateProcessor != null)
                             {
-                                m.File = templateProcessor.UpdateFileExtension(m.File, result.DocumentType);
-                                result.ModelFile = templateProcessor.UpdateFileExtension(result.ModelFile, result.DocumentType);
+                                extension = templateProcessor.GetFileExtension(result.DocumentType);
+                                // For backward-compatibility, will remove ModelFile in v1.9
+                                if (string.IsNullOrEmpty(result.FileWithoutExtension))
+                                {
+                                    result.FileWithoutExtension = Path.ChangeExtension(result.ModelFile, null);
+                                }
+
+                                m.File = result.FileWithoutExtension + extension;
                             }
 
                             var item = HandleSaveResult(context, hostService, m, result);
+                            item.Extension = extension;
+
                             manifestItems.Add(new ManifestItemWithContext(item, m, processor));
                         }
                     }
@@ -429,7 +438,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return new ManifestItem
             {
                 DocumentType = result.DocumentType,
-                ModelFile = result.ModelFile,
+                FileWithoutExtension = result.FileWithoutExtension,
                 ResourceFile = result.ResourceFile,
                 Key = model.Key,
                 // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor

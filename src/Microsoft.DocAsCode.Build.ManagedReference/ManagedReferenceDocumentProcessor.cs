@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new SaveResult
             {
                 DocumentType = "ManagedReference",
-                ModelFile = model.File,
+                FileWithoutExtension = Path.ChangeExtension(model.File, null),
                 LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
                 LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableHashSet(),
                 XRefSpecs = (from item in vm.Items

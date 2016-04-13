@@ -99,11 +99,13 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
                 DocumentType = "Resource",
                 ResourceFile = model.File,
             };
+
             if (model.Content != null)
             {
-                var modelFile = model.File.TrimEnd('.') + ".json";
-                result.ModelFile = modelFile;
+                // For resources, e.g. image.png, file extension is kept
+                result.FileWithoutExtension = model.File;
             }
+
             return result;
         }
     }

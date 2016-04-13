@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
             {
-                ExportModel(item.Model.Content, item.ModelFile, _settings.RawModelExportSettings);
+                ExportModel(item.Model.Content, item.FileWithoutExtension, _settings.RawModelExportSettings);
             }
 
             if (item.Model == null || item.Model.Content == null) throw new ArgumentNullException("Content for item.Model should not be null!");
@@ -64,8 +64,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             // 2. process model
-            var templates = _templateCollection[item.DocumentType];
-            if (templates == null || templates.Count == 0)
+            var templateBundle = _templateCollection[item.DocumentType];
+            if (templateBundle == null)
             {
                 return manifestItem;
             }
@@ -75,10 +75,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             // Must convert to JObject first as we leverage JsonProperty as the property name for the model
             var model = ConvertToObjectHelper.ConvertStrongTypeToJObject(item.Model.Content);
             var systemAttrs = _systemMetadataGenerator.Generate(item);
-            foreach (var template in templates)
+            foreach (var template in templateBundle.Templates)
             {
                 var extension = template.Extension;
-                string outputFile = Path.ChangeExtension(item.ModelFile, extension);
+                string outputFile = item.FileWithoutExtension + extension;
                 string outputPath = Path.Combine(outputDirectory, outputFile);
                 var dir = Path.GetDirectoryName(outputPath);
                 if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     // save raw model for further investigation:
                     var exportSettings = ApplyTemplateSettings.RawModelExportSettingsForDebug;
-                    var rawModelPath = ExportModel(model, item.ModelFile, exportSettings);
+                    var rawModelPath = ExportModel(model, item.FileWithoutExtension, exportSettings);
                     var message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRepoRoot}\" using \"{template.ScriptName}\": {e.Message}";
                     Logger.LogError(message);
                     throw new DocumentException(message, e);
@@ -122,12 +122,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (string.IsNullOrWhiteSpace(result))
                     {
                         // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
-                        Logger.LogWarning($"Model \"{item.ModelFile}\" is transformed to empty string with template \"{template.Name}\"");
+                        var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
+                        var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
+                        Logger.LogWarning($"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"");
                         File.WriteAllText(outputPath, string.Empty);
                     }
                     else
                     {
-                        TransformDocument(result, extension, _context, outputPath, item.ModelFile, missingUids);
+                        TransformDocument(result, extension, _context, outputPath, outputFile, missingUids);
                         Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.LocalPathFromRepoRoot}\" to \"{outputPath}\".");
                     }
 

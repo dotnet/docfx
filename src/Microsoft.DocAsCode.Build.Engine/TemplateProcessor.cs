@@ -51,16 +51,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             _templateCollection = new TemplateCollection(resourceProvider, maxParallelism);
         }
 
-        public string UpdateFileExtension(string path, string documentType)
+        public string GetFileExtension(string documentType)
         {
-            if (_templateCollection.Count == 0) return path;
-            var templates = _templateCollection[documentType];
+            if (string.IsNullOrEmpty(documentType)) throw new ArgumentNullException(nameof(documentType));
+
+            if (_templateCollection.Count == 0) return string.Empty;
+            var templateBundle = _templateCollection[documentType];
 
             // Get default template extension
-            if (templates == null || templates.Count == 0) return path;
+            if (templateBundle == null) return string.Empty;
 
-            var defaultTemplate = templates.FirstOrDefault(s => s.IsPrimary) ?? templates[0];
-            return Path.ChangeExtension(path, defaultTemplate.Extension);
+            return templateBundle.Extension;
         }
 
         public List<TemplateManifestItem> Process(List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings)
@@ -77,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
                 {
-                    var templatesInUse = documentTypes.Select(s => _templateCollection[s]).Where(s => s != null).SelectMany(s => s).ToList();
+                    var templatesInUse = documentTypes.Select(s => _templateCollection[s]).Where(s => s != null).ToList();
                     ProcessDependencies(settings.OutputFolder, templatesInUse);
                 }
                 else
@@ -93,9 +94,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ProcessDependencies(string outputDirectory, IEnumerable<Template> templates)
+        private void ProcessDependencies(string outputDirectory, IEnumerable<TemplateBundle> templateBundles)
         {
-            foreach (var resourceInfo in templates.SelectMany(s => s.Resources).Distinct())
+            foreach (var resourceInfo in templateBundles.SelectMany(s => s.Resources).Distinct())
             {
                 try
                 {

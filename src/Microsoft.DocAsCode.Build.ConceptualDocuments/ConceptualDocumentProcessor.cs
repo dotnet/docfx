@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             var result = new SaveResult
             {
                 DocumentType = model.DocumentType ?? "Conceptual",
-                ModelFile = model.File,
+                FileWithoutExtension = Path.ChangeExtension(model.File, null),
                 LinkToFiles = model.Properties.LinkToFiles,
                 LinkToUids = model.Properties.LinkToUids,
             };

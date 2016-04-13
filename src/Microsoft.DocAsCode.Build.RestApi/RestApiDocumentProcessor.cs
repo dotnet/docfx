@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             return new SaveResult
             {
                 DocumentType = documentType ?? RestApiDocumentType,
-                ModelFile = model.File,
+                FileWithoutExtension = Path.ChangeExtension(model.File, null),
                 LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
                 LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableHashSet(),
             };

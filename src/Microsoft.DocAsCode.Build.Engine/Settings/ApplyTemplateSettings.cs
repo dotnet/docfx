@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string ViewModelExtension = ".view.json";
         private const string RawModelOutputFolderForDebug = "obj/rawmodel";
         private const string ViewModelOutputFolderForDebug = "obj/viewmodel";
-        public static readonly ExportSettings DefaultRawModelExportSettings = new ExportSettings { Extension = RawModelExtension, PathRewriter = s => Path.ChangeExtension(s, RawModelExtension) };
+        public static readonly ExportSettings DefaultRawModelExportSettings = new ExportSettings { Extension = RawModelExtension, PathRewriter = s => s + RawModelExtension };
         public static readonly ExportSettings DefaultViewModelExportSettings = new ExportSettings { Extension = ViewModelExtension, PathRewriter = s => s + ViewModelExtension };
         public static readonly ExportSettings RawModelExportSettingsForDebug = new ExportSettings(DefaultRawModelExportSettings) { Export = true, OutputFolder = RawModelOutputFolderForDebug };
         public static readonly ExportSettings ViewModelExportSettingsForDebug = new ExportSettings(DefaultViewModelExportSettings) { Export = true, OutputFolder = ViewModelOutputFolderForDebug };

@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             };
 
             string key = GetFileKey(item.Key);
-            var file = (RelativePath)item.ModelFile;
+            var file = (RelativePath)(item.FileWithoutExtension + item.Extension);
 
             attrs.RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo(file);
             attrs.PathFromRoot = file.RemoveWorkingFolder();

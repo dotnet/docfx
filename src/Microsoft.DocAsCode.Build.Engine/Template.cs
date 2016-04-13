@@ -15,6 +15,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public class Template
     {
+        private const string Primary = ".primary";
+        private const string Auxiliary = ".aux";
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
         private readonly object _locker = new object();
         private readonly ResourcePoolManager<ITemplateRenderer> _rendererPool = null;
@@ -26,18 +28,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string ScriptName { get; }
         public string Extension { get; }
         public string Type { get; }
-        public bool IsPrimary { get; }
+        public TemplateType TemplateType { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
 
         public Template(string template, string templateName, string script, ResourceCollection resourceCollection, int maxParallelism)
         {
             if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
-            if (string.IsNullOrEmpty(template)) throw new ArgumentNullException(nameof(template));
             Name = templateName;
-            var typeAndExtension = GetTemplateTypeAndExtension(templateName);
-            Extension = typeAndExtension.Item2;
-            Type = typeAndExtension.Item1;
-            IsPrimary = typeAndExtension.Item3;
+            var templateInfo = GetTemplateInfo(templateName);
+            Extension = templateInfo.Extension;
+            Type = templateInfo.DocumentType;
+            TemplateType = templateInfo.TemplateType;
             _script = script;
             if (script != null)
             {
@@ -45,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _enginePool = ResourcePool.Create(() => CreateEngine(script), maxParallelism);
             }
 
-            if (resourceCollection != null)
+            if (!string.IsNullOrEmpty(template) && resourceCollection != null)
             {
                 _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, templateName, template), maxParallelism);
             }
@@ -98,23 +99,32 @@ namespace Microsoft.DocAsCode.Build.Engine
             return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
         }
 
-        private static Tuple<string, string, bool> GetTemplateTypeAndExtension(string templateName)
+        private static TemplateInfo GetTemplateInfo(string templateName)
         {
             // Remove folder and .tmpl
             templateName = Path.GetFileNameWithoutExtension(templateName);
             var splitterIndex = templateName.IndexOf('.');
-            if (splitterIndex < 0) return Tuple.Create(templateName, string.Empty, false);
+            if (splitterIndex < 0)
+            {
+                return new TemplateInfo(templateName, string.Empty, TemplateType.Default);
+            }
+
             var type = templateName.Substring(0, splitterIndex);
             var extension = templateName.Substring(splitterIndex);
-            var isPrimary = false;
-            if (extension.EndsWith(".primary"))
+            TemplateType templateType = TemplateType.Default;
+            if (extension.EndsWith(Primary))
             {
-                isPrimary = true;
-                extension = extension.Substring(0, extension.Length - 8);
+                templateType = TemplateType.Primary;
+                extension = extension.Substring(0, extension.Length - Primary.Length);
             }
-            return Tuple.Create(type, extension, isPrimary);
-        }
+            else if (extension.EndsWith(Auxiliary))
+            {
+                templateType = TemplateType.Auxiliary;
+                extension = extension.Substring(0, extension.Length - Auxiliary.Length);
+            }
 
+            return new TemplateInfo(type, extension, templateType);
+        }
 
         /// <summary>
         /// Dependent files are defined in following syntax in Mustache template leveraging Mustache Comments
@@ -173,6 +183,20 @@ namespace Microsoft.DocAsCode.Build.Engine
             else
             {
                 return new MustacheTemplateRenderer(resourceCollection, template);
+            }
+        }
+
+        private sealed class TemplateInfo
+        {
+            public string DocumentType { get; }
+            public string Extension { get; }
+            public TemplateType TemplateType { get; }
+
+            public TemplateInfo(string documentType, string extension, TemplateType type)
+            {
+                DocumentType = documentType;
+                Extension = extension;
+                TemplateType = type;
             }
         }
     }

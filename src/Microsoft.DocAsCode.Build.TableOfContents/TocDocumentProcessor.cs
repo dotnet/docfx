@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return new SaveResult
             {
                 DocumentType = "Toc",
-                ModelFile = model.File,
+                FileWithoutExtension = Path.ChangeExtension(model.File, null),
             };
         }
 

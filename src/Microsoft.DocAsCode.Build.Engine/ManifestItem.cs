@@ -10,7 +10,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string DocumentType { get; set; }
         public string LocalPathFromRepoRoot { get; set; }
         public string Key { get; set; }
-        public string ModelFile { get; set; }
+        public string FileWithoutExtension { get; set; }
+        public string Extension { get; set; }
         public string ResourceFile { get; set; }
         public string InputFolder { get; set; }
         public ModelWithCache Model { get; set; }
