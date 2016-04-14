@@ -229,21 +229,27 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
 
-            xref = (from map in XRefMaps select map.Find(uid)).FirstOrDefault();
-            if (xref != null)
+            if (XRefMaps != null && XRefMaps.Count > 0)
             {
-                ExternalXRefSpec.TryAdd(uid, xref);
-                return xref;
+                xref = (from map in XRefMaps select map.Find(uid)).FirstOrDefault();
+                if (xref != null)
+                {
+                    ExternalXRefSpec.TryAdd(uid, xref);
+                    return xref;
+                }
             }
 
-            using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages, MaxParallelism))
+            if (ExternalReferencePackages.Length > 0)
             {
-                xref = GetExternalReference(externalReferences, uid);
-            }
-            if (xref != null)
-            {
-                ExternalXRefSpec.TryAdd(uid, xref);
-                return xref;
+                using (var externalReferences = new ExternalReferencePackageCollection(ExternalReferencePackages, MaxParallelism))
+                {
+                    xref = GetExternalReference(externalReferences, uid);
+                }
+                if (xref != null)
+                {
+                    ExternalXRefSpec.TryAdd(uid, xref);
+                    return xref;
+                }
             }
 
             UnknownUids.TryAdd(uid, null);
