@@ -76,6 +76,7 @@ var pack = {
             "files": [
                 "ManagedReference.mta.json.tmpl",
                 "conceptual.mta.json.tmpl",
+                "Resource.mta.json.aux.tmpl",
             ],
             "cwd": "docs.html",
         },
