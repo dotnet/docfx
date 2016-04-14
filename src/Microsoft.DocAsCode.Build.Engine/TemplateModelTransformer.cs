@@ -248,13 +248,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void TransformXrefLink(HtmlAgilityPack.HtmlNode node, IDocumentBuildContext context)
         {
-            var convertedNode = XrefDetails.ConvertXrefLinkNodeToXrefNode(node);
+            var convertedNode = XRefDetails.ConvertXrefLinkNodeToXrefNode(node);
             node.ParentNode.ReplaceChild(convertedNode, node);
         }
 
         private static void UpdateXref(HtmlAgilityPack.HtmlNode node, IDocumentBuildContext context, string language)
         {
-            var xref = XrefDetails.From(node);
+            var xref = XRefDetails.From(node);
 
             // Resolve external xref map first, and then internal xref map.
             // Internal one overrides external one

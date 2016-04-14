@@ -90,6 +90,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
                     parameters.Files.EnumerateFiles(),
                     parameters.ExternalReferencePackages,
+                    parameters.XRefMaps,
                     parameters.MaxParallelism);
                 Logger.LogVerbose("Start building document...");
                 List<InnerBuildContext> innerContexts = null;
@@ -355,7 +356,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void UpdateContext(DocumentBuildContext context)
         {
-            context.SetExternalXRefSpec();
+            context.ResolveExternalXRefSpec();
         }
 
         private ManifestItem HandleSaveResult(
@@ -512,10 +513,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                  select new XRefSpec(xref)
                  {
-                     Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XrefDetails.GetHtmlId(xref.Uid),
-                 } into xref
-                 orderby xref.Uid
-                 select YamlUtility.ConvertTo<ReferenceViewModel>(xref)).ToList();
+                     Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XRefDetails.GetHtmlId(xref.Uid),
+                 }).ToList();
+            xrefMap.Sort();
             YamlUtility.Serialize(
                 Path.Combine(parameters.OutputBaseDir, XRefMapFileName),
                 xrefMap);

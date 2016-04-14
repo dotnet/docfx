@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
-    using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using System.Web;
 
@@ -12,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
-    internal sealed class XrefDetails
+    internal sealed class XRefDetails
     {
         /// <summary>
         /// TODO: completely move into template
@@ -32,12 +31,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         public XRefSpec Spec { get; private set; }
         public bool ThrowIfNotResolved { get; private set; }
 
-        private XrefDetails() { }
+        private XRefDetails() { }
 
-        public static XrefDetails From(HtmlAgilityPack.HtmlNode node)
+        public static XRefDetails From(HtmlAgilityPack.HtmlNode node)
         {
             if (node.Name != "xref") throw new NotSupportedException("Only xref node is supported!");
-            var xref = new XrefDetails();
+            var xref = new XRefDetails();
 
             var rawUid = node.GetAttributeValue("href", null);
             if (!string.IsNullOrEmpty(rawUid))

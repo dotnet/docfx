@@ -160,6 +160,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 GetFilesFromFileMapping(
                     GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference))
                 .ToImmutableArray();
+
+            if (config.XRefMaps != null)
+            {
+                parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
+            }
+
             parameters.Files = GetFileCollectionFromFileMapping(
                 baseDirectory,
                 GlobUtility.ExpandFileMapping(baseDirectory, config.Content),

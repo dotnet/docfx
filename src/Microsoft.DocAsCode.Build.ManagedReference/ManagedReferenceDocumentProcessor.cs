@@ -61,6 +61,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 case DocumentType.Article:
                     var page = YamlUtility.Deserialize<PageViewModel>(Path.Combine(file.BaseDir, file.File));
+                    if (page.Items == null || page.Items.Count == 0)
+                    {
+                        return null;
+                    }
                     if (page.Metadata == null)
                     {
                         page.Metadata = metadata.ToDictionary(p => p.Key, p => p.Value);

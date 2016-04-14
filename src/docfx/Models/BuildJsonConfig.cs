@@ -31,6 +31,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("externalReference")]
         public FileMapping ExternalReference { get; set; }
 
+        [JsonProperty("xrefMaps")]
+        public ListWithStringFallback XRefMaps { get; set; }
+
         [JsonProperty("dest")]
         public string Destination { get; set; }
 

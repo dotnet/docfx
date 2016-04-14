@@ -39,6 +39,9 @@ namespace Microsoft.DocAsCode
         [OptionList("externalReference", Separator = ',', HelpText = "Specifies external reference files used by content files.")]
         public List<string> ExternalReference { get; set; }
 
+        [OptionList('x', "xref", Separator = ',', HelpText = "Specifies the urls of xrefmap used by content files.")]
+        public List<string> XRefMaps { get; set; }
+
         [OptionList('t', "template", Separator = ',', HelpText = "Specifies the template name to apply to. If not specified, output YAML file will not be transformed.")]
         public List<string> Templates { get; set; }
 
