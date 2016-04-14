@@ -8,8 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Text.RegularExpressions;
 
-    using Jint;
-
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
@@ -21,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly object _locker = new object();
         private readonly ResourcePoolManager<ITemplateRenderer> _rendererPool = null;
 
-        private readonly ResourcePoolManager<Engine> _enginePool = null;
+        private readonly ResourcePoolManager<ITemplatePreprocessor> _preprocessorPool = null;
         private readonly string _script;
 
         public string Name { get; }
@@ -40,10 +38,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             Type = templateInfo.DocumentType;
             TemplateType = templateInfo.TemplateType;
             _script = script;
-            if (script != null)
+            if (!string.IsNullOrWhiteSpace(script))
             {
                 ScriptName = templateName + ".js";
-                _enginePool = ResourcePool.Create(() => CreateEngine(script), maxParallelism);
+                _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(script), maxParallelism);
             }
 
             if (!string.IsNullOrEmpty(template) && resourceCollection != null)
@@ -63,8 +61,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns>The view model</returns>
         public object TransformModel(object model, object attrs, object global)
         {
-            if (_enginePool == null) return model;
-            return ProcessWithJint(model, attrs, global);
+            if (_preprocessorPool == null) return model;
+            using (var lease = _preprocessorPool.Rent())
+            {
+                return lease.Resource.Process(model, attrs, global);
+            }
         }
 
         /// <summary>
@@ -79,17 +80,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (var lease = _rendererPool.Rent())
             {
                 return lease.Resource.Render(model);
-            }
-        }
-
-        private object ProcessWithJint(object model, object attrs, object global)
-        {
-            var argument1 = JintProcessorHelper.ConvertStrongTypeToJsValue(model);
-            var argument2 = JintProcessorHelper.ConvertStrongTypeToJsValue(attrs);
-            var argument3 = JintProcessorHelper.ConvertStrongTypeToJsValue(global);
-            using (var lease = _enginePool.Rent())
-            {
-                return lease.Resource.Invoke("transform", argument1, argument2, argument3).ToObject();
             }
         }
 
@@ -158,19 +148,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static Engine CreateEngine(string script)
+        private static ITemplatePreprocessor CreatePreprocessor(string script)
         {
-            if (string.IsNullOrEmpty(script)) throw new ArgumentNullException(nameof(script));
-            var engine = new Engine();
-
-            engine.SetValue("console", new
-            {
-                log = new Action<object>(Logger.Log)
-            });
-
-            // throw exception when execution fails
-            engine.Execute(script);
-            return engine;
+            return new TemplateJintPreprocessor(script);
         }
 
         private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, string templateName, string template)
