@@ -655,6 +655,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var result =
                 (from attr in attributes
+                 where !(attr.AttributeClass is IErrorTypeSymbol)
                  where FilterVisitor.CanVisitAttribute(attr.AttributeConstructor)
                  select new AttributeInfo
                  {
