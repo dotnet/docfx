@@ -270,6 +270,28 @@ End Namespace
             }
         }
 
+        [Fact]
+        public void TestGenereateMetadataWithModule()
+        {
+            string code = @"
+Namespace Test1
+    Public Module M1
+    End Module
+End Namespace
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Equal(1, output.Items.Count);
+            {
+                var type = output.Items[0].Items[0];
+                Assert.NotNull(type);
+                Assert.Equal("M1", type.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.M1", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.M1", type.Name);
+                Assert.Equal(@"Public Module M1", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "Public", "Module" }, type.Modifiers[SyntaxLanguage.VB]);
+            }
+        }
+
         [Trait("Related", "Generic")]
         [Trait("Related", "Inheritance")]
         [Fact]
