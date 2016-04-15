@@ -570,6 +570,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (attrs.Length > 0)
             {
                 var attrList = (from attr in attrs
+                                where !(attr.AttributeClass is IErrorTypeSymbol)
                                 where attr?.AttributeConstructor != null
                                 where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
                                 select GetAttributeSyntax(attr)).ToList();
