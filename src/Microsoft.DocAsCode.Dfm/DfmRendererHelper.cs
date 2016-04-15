@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Dfm
             string renderedCodeLines = string.Empty;
             if (!string.IsNullOrEmpty(errorMessage))
             {
-                renderedErrorMessage = $@"<!-- {StringHelper.HtmlEncode(errorMessage)} -->\n";
+                renderedErrorMessage = $"<!-- {StringHelper.HtmlEncode(errorMessage)} -->\n";
             }
 
             if (codeLines != null)

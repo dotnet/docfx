@@ -201,7 +201,7 @@ this is also warning</p>
         public void TestCode_ParentFolderNotExist()
         {
             var source = @"[!code-cs[not exist](not_exist_folder/file.cs)]";
-            var expected = @"<!-- Can not find reference not_exist_folder/file.cs -->\n";
+            var expected = "<!-- Can not find reference not_exist_folder/file.cs -->\n";
             var marked = DocfxFlavoredMarked.Markup(source, "parent");
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
