@@ -696,7 +696,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 // todo : value of array.
                 return null;
             }
-            else if (arg.Value != null)
+            if (arg.Value != null)
             {
                 var type = arg.Value as INamedTypeSymbol;
                 if (type != null)
@@ -705,15 +705,31 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return null;
                     }
-                    result.Value = AddSpecReference(type);
                 }
-                else
-                {
-                    result.Value = arg.Value;
-                }
+                result.Value = GetConstantValueForArgumentInfo(arg);
             }
             result.Type = AddSpecReference(arg.Type);
             return result;
+        }
+
+        private object GetConstantValueForArgumentInfo(TypedConstant arg)
+        {
+            var type = arg.Value as INamedTypeSymbol;
+            if (type != null)
+            {
+                return AddSpecReference(type);
+            }
+
+            switch (Convert.GetTypeCode(arg.Value))
+            {
+                case TypeCode.UInt32:
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
+                    // work around: yaml cannot deserialize them.
+                    return arg.Value.ToString();
+                default:
+                    return arg.Value;
+            }
         }
 
         private List<NamedArgumentInfo> GetNamedArguments(AttributeData attr)
@@ -751,12 +767,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return null;
                     }
-                    result.Value = AddSpecReference(type);
                 }
-                else
-                {
-                    result.Value = arg.Value;
-                }
+                result.Value = GetConstantValueForArgumentInfo(arg);
             }
             result.Type = AddSpecReference(arg.Type);
             return result;
