@@ -123,6 +123,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             switch (typeKind)
             {
+                case TypeKind.Module:
                 case TypeKind.Class:
                     return MemberType.Class;
                 case TypeKind.Enum:

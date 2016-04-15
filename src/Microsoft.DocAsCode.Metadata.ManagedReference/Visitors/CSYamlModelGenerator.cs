@@ -60,6 +60,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             switch (symbol.TypeKind)
             {
+                case TypeKind.Module:
                 case TypeKind.Class:
                     modifiers.Add("class");
                     break;

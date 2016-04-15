@@ -57,6 +57,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             switch (symbol.TypeKind)
             {
+                case TypeKind.Module:
+                    modifiers.Add("Module");
+                    break;
                 case TypeKind.Class:
                     modifiers.Add("Class");
                     break;
@@ -315,21 +318,41 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private string GetClassSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor)
         {
-            var syntaxStr = SyntaxFactory.ClassBlock(
-                SyntaxFactory.ClassStatement(
-                    GetAttributes(symbol, filterVisitor),
-                    SyntaxFactory.TokenList(
-                        GetTypeModifiers(symbol)
+            string syntaxStr;
+            if (symbol.TypeKind == TypeKind.Module)
+            {
+                syntaxStr = SyntaxFactory.ModuleBlock(
+                    SyntaxFactory.ModuleStatement(
+                        GetAttributes(symbol, filterVisitor),
+                        SyntaxFactory.TokenList(
+                            GetTypeModifiers(symbol)
+                        ),
+                        SyntaxFactory.Identifier(symbol.Name),
+                        GetTypeParameters(symbol)
                     ),
-                    SyntaxFactory.Token(SyntaxKind.ClassKeyword),
-                    SyntaxFactory.Identifier(symbol.Name),
-                    GetTypeParameters(symbol)
-                ),
-                GetInheritsList(symbol),
-                GetImplementsList(symbol),
-                new SyntaxList<StatementSyntax>(),
-                SyntaxFactory.EndClassStatement()
-            ).NormalizeWhitespace().ToString();
+                    GetInheritsList(symbol),
+                    GetImplementsList(symbol),
+                    new SyntaxList<StatementSyntax>()
+                ).NormalizeWhitespace().ToString();
+            }
+            else
+            {
+                syntaxStr = SyntaxFactory.ClassBlock(
+                    SyntaxFactory.ClassStatement(
+                        GetAttributes(symbol, filterVisitor),
+                        SyntaxFactory.TokenList(
+                            GetTypeModifiers(symbol)
+                        ),
+                        SyntaxFactory.Token(SyntaxKind.ClassKeyword),
+                        SyntaxFactory.Identifier(symbol.Name),
+                        GetTypeParameters(symbol)
+                    ),
+                    GetInheritsList(symbol),
+                    GetImplementsList(symbol),
+                    new SyntaxList<StatementSyntax>(),
+                    SyntaxFactory.EndClassStatement()
+                ).NormalizeWhitespace().ToString();
+            }
             return RemoveEnd(syntaxStr);
         }
 
