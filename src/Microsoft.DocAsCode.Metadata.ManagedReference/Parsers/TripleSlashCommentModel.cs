@@ -46,7 +46,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 ResolveSeeCref(doc, context.AddReferenceDelegate);
                 ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
-                ResolveParameterRef(doc);
             }
             var nav = doc.CreateNavigator();
             Summary = GetSummary(nav, context);
@@ -249,24 +248,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, ITripleSlashCommentParserContext context)
         {
             return GetListContent(navigator, "/member/typeparam", "type parameter", context);
-        }
-
-        private static void ResolveParameterRef(XDocument node)
-        {
-            var paramRefs = node.Descendants("paramref").ToList();
-            foreach (var paramRef in paramRefs)
-            {
-                var name = paramRef.Attribute("name");
-                if (name != null)
-                {
-                    // Convert paramref to italic
-                    paramRef.ReplaceWith("*" + name.Value + "*");
-                }
-                else
-                {
-                    paramRef.Remove();
-                }
-            }
         }
 
         private void ResolveSeeAlsoCref(XNode node, Action<string> addReference)

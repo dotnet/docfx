@@ -61,6 +61,18 @@
     </returns>
   </xsl:template>
 
+  <xsl:template match="paramref">
+    <em>
+      <xsl:value-of select="@name" />
+    </em>
+  </xsl:template>
+
+  <xsl:template match="typeparamref">
+    <em>
+      <xsl:value-of select="@name" />
+    </em>
+  </xsl:template>
+
   <xsl:template match="list">
     <xsl:variable name="listtype">
       <xsl:value-of select="normalize-space(@type)"/>
