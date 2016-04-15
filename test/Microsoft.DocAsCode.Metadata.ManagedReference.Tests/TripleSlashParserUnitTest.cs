@@ -112,7 +112,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
             var remarks = commentModel.Remarks;
             Assert.Equal(@"
-<p>This is *ref* a sample of exception node</p>
+<p>This is <em>ref</em> a sample of exception node</p>
 <ul><li>
             <pre><code class=""c#"">
             public class XmlElement

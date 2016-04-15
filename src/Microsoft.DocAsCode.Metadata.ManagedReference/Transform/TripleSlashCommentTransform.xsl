@@ -62,15 +62,19 @@
   </xsl:template>
 
   <xsl:template match="paramref">
-    <em>
-      <xsl:value-of select="@name" />
-    </em>
+    <xsl:if test="normalize-space(@name)">
+      <em>
+        <xsl:value-of select="@name" />
+      </em>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="typeparamref">
-    <em>
-      <xsl:value-of select="@name" />
-    </em>
+    <xsl:if test="normalize-space(@name)">
+      <em>
+        <xsl:value-of select="@name" />
+      </em>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="list">
