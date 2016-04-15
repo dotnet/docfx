@@ -38,6 +38,7 @@
     <Compile Include="Loggers\PerformanceScope.cs" />
     <Compile Include="Loggers\ReplayLogListener.cs" />
     <Compile Include="Loggers\ReportLogListener.cs" />
+    <Compile Include="XHtmlWriter.cs" />
     <Compile Include="YamlUtility.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -132,7 +132,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             var example = commentModel.Examples;
             var expected = new List<string> {
 @"
-This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)"" /> method.
+This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)""></see> method.
 <pre><code>
 class TestClass
 {

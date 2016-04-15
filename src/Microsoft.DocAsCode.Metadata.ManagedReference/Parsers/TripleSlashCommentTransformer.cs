@@ -3,13 +3,13 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using System;
     using System.IO;
-    using System.Reflection;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.XPath;
     using System.Xml.Xsl;
+
+    using Microsoft.DocAsCode.Common;
 
     public class TripleSlashCommentTransformer
     {
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public XDocument Transform(string xml)
         {
             using (var ms = new MemoryStream())
-            using (var writer = XmlWriter.Create(ms))
+            using (var writer = new XHtmlWriter(new StreamWriter(ms)))
             {
                 XDocument doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
                 _transform.Transform(doc.CreateNavigator(), writer);
