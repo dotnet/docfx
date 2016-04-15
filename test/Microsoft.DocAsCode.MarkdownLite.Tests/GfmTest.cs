@@ -409,6 +409,23 @@ break list!
             @"a* A*",
             @"<p>a* A*</p>
 ")]
+        [InlineData(
+            @"* A
+* B
+
+
+1. C
+2. D
+",
+            @"<ul>
+<li>A</li>
+<li>B</li>
+</ul>
+<ol>
+<li>C</li>
+<li>D</li>
+</ol>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {

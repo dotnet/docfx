@@ -12,7 +12,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         public string Name => "List";
 
-        public virtual Regex List => Regexes.Block.List;
+        public virtual Regex OrderList => Regexes.Block.OrderList;
+
+        public virtual Regex UnorderList => Regexes.Block.UnorderList;
 
         public virtual Regex Item => Regexes.Block.Item;
 
@@ -20,10 +22,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
-            var match = List.Match(source);
+            var match = OrderList.Match(source);
             if (match.Length == 0)
             {
-                return null;
+                match = UnorderList.Match(source);
+                if (match.Length == 0)
+                {
+                    return null;
+                }
             }
             source = source.Substring(match.Length);
 
