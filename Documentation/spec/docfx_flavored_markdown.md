@@ -1,6 +1,6 @@
 DocFX Flavored Markdown
 ==========================================
-DocFX supports "DocFX Flavored Markdown," or DFM. It is 100% compatible with [GitHub Flavored Markdown](https://help.github.com/articles/github-flavored-markdown/), and adds some additional functionality, including cross reference and file inclusion.
+DocFX supports "DocFX Flavored Markdown," or DFM. It is 100% compatible with [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), and adds some additional functionality, including cross reference and file inclusion.
 ### Yaml Header
 Yaml header in DFM is considered as the metadata for the Markdown file. It will transform to `yamlheader` tag when processed.
 Yaml header MUST be the first thing in the file and MUST take the form of valid YAML set between triple-dashed lines. Here is a basic example:

@@ -15,7 +15,7 @@ Here are questions you can answer before you file a bug to make sure you're not 
 1. Did you include the snippet of broken code in the issue?
 2. What are the *EXACT* steps to reproduce this problem?
 
-GitHub supports [markdown](http://github.github.com/github-flavored-markdown/), so when filing bugs make sure you check the formatting before clicking submit.
+GitHub supports [markdown](https://guides.github.com/features/mastering-markdown/), so when filing bugs make sure you check the formatting before clicking submit.
 
 
 ## Contributing code and content
