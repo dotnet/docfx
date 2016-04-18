@@ -24,8 +24,11 @@ namespace Microsoft.DocAsCode.Dfm
                 var lang = string.IsNullOrEmpty(token.Lang) ? null : $" class=\"{options.LangPrefix}{token.Lang}\"";
                 var name = string.IsNullOrEmpty(token.Name) ? null : $" name=\"{StringHelper.HtmlEncode(token.Name)}\"";
                 var title = string.IsNullOrEmpty(token.Title) ? null : $" title=\"{StringHelper.HtmlEncode(token.Title)}\"";
+                var highlight = string.IsNullOrEmpty(token.PathQueryOption?.HighlightLines)
+                                ? null
+                                : $" highlight-lines=\"{StringHelper.HtmlEncode(token.PathQueryOption.HighlightLines)}\"";
 
-                renderedCodeLines = $"<pre><code{lang}{name}{title}>{StringHelper.HtmlEncode(string.Join("\n", codeLines))}\n</code></pre>";
+                renderedCodeLines = $"<pre><code{lang}{name}{title}{highlight}>{StringHelper.HtmlEncode(string.Join("\n", codeLines))}\n</code></pre>";
             }
 
             return $"{renderedErrorMessage}{renderedCodeLines}";

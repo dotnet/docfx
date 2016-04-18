@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System;
     using System.Text.RegularExpressions;
-    using System.Collections.Generic;
     using System.Web;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -16,6 +15,7 @@ namespace Microsoft.DocAsCode.Dfm
         private const string EndLineQueryStringKey = "end";
         private const string TagNameQueryStringKey = "name";
         private const string RangeQueryStringKey = "range";
+        private const string HighlightLinesQueryStringKey = "highlight";
         private const char RegionSeparatorInRangeQueryString = ',';
 
         public string Name => "RestApiFences";
@@ -71,16 +71,17 @@ namespace Microsoft.DocAsCode.Dfm
                 var start = collection[StartLineQueryStringKey];
                 var end = collection[EndLineQueryStringKey];
                 var range = collection[RangeQueryStringKey];
+                var highlight = collection[HighlightLinesQueryStringKey];
                 if (tagName != null)
                 {
-                    return new TagNameBlockPathQueryOption { TagName = tagName };
+                    return new TagNameBlockPathQueryOption { TagName = tagName , HighlightLines = highlight};
                 }
                 else if (range != null)
                 {
                     var regions = range.Split(RegionSeparatorInRangeQueryString);
                     if (regions != null)
                     {
-                        var option = new MultipleLineRangeBlockPathQueryOption();
+                        var option = new MultipleLineRangeBlockPathQueryOption { HighlightLines = highlight };
                         foreach (var region in regions)
                         {
                             var match = _dfmFencesRangeQueryStringRegex.Match(region);
@@ -107,12 +108,13 @@ namespace Microsoft.DocAsCode.Dfm
                     return new LineRangeBlockPathQueryOption
                     {
                         StartLine = int.TryParse(start, out startLine) ? startLine : (int?)null,
-                        EndLine = int.TryParse(end, out endLine) ? endLine : (int?)null
+                        EndLine = int.TryParse(end, out endLine) ? endLine : (int?)null,
+                        HighlightLines = highlight
                     };
                 }
-                return null;
+                return new FullFileBlockPathQueryOption { HighlightLines = highlight };
             }
-            return null;
+            return new FullFileBlockPathQueryOption();
         }
     }
 }

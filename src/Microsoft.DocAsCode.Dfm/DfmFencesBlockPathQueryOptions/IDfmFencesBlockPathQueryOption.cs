@@ -7,9 +7,13 @@ namespace Microsoft.DocAsCode.Dfm
 
     public interface IDfmFencesBlockPathQueryOption
     {
+        string HighlightLines { get; set; }
+
         string ErrorMessage { get; }
 
         bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token);
+
+        bool ValidateHighlightLines(int totalLines);
 
         IEnumerable<string> GetQueryLines(string[] lines);
     }

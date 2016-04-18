@@ -52,6 +52,7 @@
     <Compile Include="CodeSnippetExtractor\RecursiveNameCodeSnippetExtractor.cs" />
     <Compile Include="DfmCodeExtractorHelper.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\DfmFencesBlockPathQueryOption.cs" />
+    <Compile Include="DfmFencesBlockPathQueryOptions\FullFileBlockPathQueryOption.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\MultipleLineRangeBlockPathQueryOption.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\TagNameBlockPathQueryOption.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\LineRangeBlockPathQueryOption.cs" />

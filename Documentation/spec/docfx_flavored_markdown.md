@@ -112,10 +112,12 @@ Allows you to insert code with code language specified. The content of specified
 * __`<queryoption>`__ and __`<queryoptionvalue>`__ are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:
 
 |                          | query string using `#`                 | query string using `?`
-|--------------------------|----------------------------------------|-------------
+|--------------------------|----------------------------------------|-----------------------------------------------
 | 1. line range            | `#L{startlinenumber}-L{endlinenumber}` | `?start={startlinenumber}&end={endlinenumber}`
 | 2. tagname               | `#{tagname}`                           | `?name={tagname}`
 | 3. multiple region range | _Unsupported_                          | `?range={rangequerystring}`
+| 4. highlight lines       | _Unsupported_                          | `?highlight={rangequerystring}`
+* In `?` query string, the whole file will be included if none of the first three option is specified.
 * __`<title>`__ can be omitted.
 
 #### Code Snippet Sample
@@ -128,6 +130,7 @@ Allows you to insert code with code language specified. The content of specified
 [!code[Main](index.xml?start=5&end=9)]
 [!code-javascript[Main](../jquery.js?name=testsnippet)]
 [!code[Main](index.xml?range=2,5-7,9-) "This includes the lines 2, 5, 6, 7 and lines 9 to the last line"]
+[!code[Main](index.xml?highlight=2,5-7,9-) "This includes the whole file with lines 2,5-7,9- highlighted"]
 ```
 
 #### Tag Name Representation in Code Snippet Source File

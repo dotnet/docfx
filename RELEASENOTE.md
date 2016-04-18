@@ -2,7 +2,7 @@ Version Notes (Current Version: v1.8)
 =======================================
 v1.8 (Pre-Release)
 -----------
-
+1. Support multiple region selection and highlight code lines in [Code Snippet](http://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#code-snippet) (https://github.com/dotnet/docfx/issues/189)
 
 v1.7
 -----------

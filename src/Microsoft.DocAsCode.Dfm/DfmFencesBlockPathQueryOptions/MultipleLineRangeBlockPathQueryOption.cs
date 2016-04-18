@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Collections.Generic;
 
-    class MultipleLineRangeBlockPathQueryOption : DfmFencesBlockPathQueryOption
+    public class MultipleLineRangeBlockPathQueryOption : DfmFencesBlockPathQueryOption
     {
         public List<Tuple<int?, int?>> LinePairs { get; set; } = new List<Tuple<int?, int?>>();
 

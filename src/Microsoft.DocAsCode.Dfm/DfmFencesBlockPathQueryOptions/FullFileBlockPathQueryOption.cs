@@ -3,28 +3,20 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    using System;
     using System.Collections.Generic;
 
-    public class LineRangeBlockPathQueryOption : DfmFencesBlockPathQueryOption
+    public class FullFileBlockPathQueryOption : DfmFencesBlockPathQueryOption
     {
-        public int? StartLine { get; set; }
-
-        public int? EndLine { get; set; }
-
         public override bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token)
         {
-            return CheckLineRange(lines.Length, StartLine, EndLine);
+            return true;
         }
 
         public override IEnumerable<string> GetQueryLines(string[] lines)
         {
-            int startLine = StartLine ?? 1;
-            int endLine = EndLine ?? lines.Length;
-
-            for (int i = startLine; i <= Math.Min(endLine, lines.Length); i++)
+            foreach (var line in lines)
             {
-                yield return lines[i - 1];
+                yield return line;
             }
         }
     }

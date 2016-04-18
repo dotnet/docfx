@@ -690,6 +690,71 @@ namespace ConsoleApplication1
             int i = 100;
         }
 </code></pre>")]
+        [InlineData(@"[!code-csharp[Main](Program.cs?highlight=1)]", @"<pre><code class=""lang-csharp"" name=""Main"" highlight-lines=""1"">namespace ConsoleApplication1
+{
+    // &lt;namespace&gt;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // &lt;/namespace&gt;
+
+    // &lt;snippetprogram&gt;
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+    }
+    // &lt;/snippetprogram&gt;
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion
+    }
+    #endregion
+}
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?start=5&end=9&highlight=1 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1"">using System.Collections.Generic;
+using System.IO;
+// &lt;/namespace&gt;
+
+// &lt;snippetprogram&gt;
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?name=Helper&highlight=1 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1"">internal static class Helper
+{
+    public static void Foo()
+    {
+    }
+}
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?range=1-2,10,20-21,29-&highlight=1-2,7- ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1-2,7-"">namespace ConsoleApplication1
+{
+    class Program
+    #region Helper
+    internal static class Helper
+    #endregion
+}
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?range=1,21,24-26,1,10,12-16&highlight=8-12 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""8-12"">namespace ConsoleApplication1
+    internal static class Helper
+        public static void Foo()
+        {
+        }
+namespace ConsoleApplication1
+    class Program
+        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+</code></pre>")]
         public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
         {
             // arrange
