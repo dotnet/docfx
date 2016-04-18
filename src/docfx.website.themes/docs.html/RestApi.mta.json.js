@@ -12,6 +12,10 @@ function transform(model, _attrs) {
     vm.breadcrumb_path = model.breadcrumb_path || "/toc.html";
     vm.content_git_url = model.content_git_url || getContentGitUrl(model, model.newFileRepository);
 
+    if (model._op_canonicalUrlPrefix && _attrs._path) {
+        vm._op_canonicalUrl = getCanonicalUrl(model._op_canonicalUrlPrefix, _attrs._path);
+    }
+
     return {
         content: JSON.stringify(vm)
     };
@@ -98,5 +102,22 @@ function transform(model, _attrs) {
         return repo.replace(regex, function(match, p1, offset, string) {
             return 'https://' + p1.replace(':', '/');
         })
+    }
+
+    function getCanonicalUrl(canonicalUrlPrefix, path) {
+        if (!canonicalUrlPrefix || !path) return '';
+        if (canonicalUrlPrefix[canonicalUrlPrefix.length - 1] == '/')
+        {
+            canonicalUrlPrefix = canonicalUrlPrefix.slice(0, -1);
+        }
+        return canonicalUrlPrefix + "/" + removeExtension(path);
+    }
+
+    function removeExtension(path){
+        var index = path.lastIndexOf('.');
+        if (index > 0){
+            return path.substring(0, index);
+        }
+        return path;
     }
 }

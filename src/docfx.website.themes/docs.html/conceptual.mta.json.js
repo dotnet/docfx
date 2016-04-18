@@ -3,6 +3,10 @@ function transform(model, _attrs) {
   model.layout = model.layout || "Conceptual";
   model.pagetype = "Conceptual";
 
+  if (model._op_canonicalUrlPrefix && _attrs._path) {
+    model._op_canonicalUrl = getCanonicalUrl(model._op_canonicalUrlPrefix, _attrs._path);
+  }
+
   // Clean up unused predefined properties
   model.conceptual = undefined;
   model.remote = undefined;
@@ -28,4 +32,21 @@ function transform(model, _attrs) {
   return {
     content: JSON.stringify(model)
   };
+
+  function getCanonicalUrl(canonicalUrlPrefix, path) {
+    if (!canonicalUrlPrefix || !path) return '';
+    if (canonicalUrlPrefix[canonicalUrlPrefix.length - 1] == '/')
+    {
+        canonicalUrlPrefix = canonicalUrlPrefix.slice(0, -1);
+    }
+    return canonicalUrlPrefix + "/" + removeExtension(path);
+  }
+
+  function removeExtension(path){
+    var index = path.lastIndexOf('.');
+    if (index > 0){
+      return path.substring(0, index);
+    }
+    return path;
+  }
 }
