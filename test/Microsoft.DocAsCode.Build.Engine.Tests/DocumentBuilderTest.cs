@@ -19,62 +19,44 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Tests.Common;
     using Microsoft.DocAsCode.Utility;
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
     [Collection("docfx STA")]
-    public class DocumentBuilderTest
+    public class DocumentBuilderTest : TestBase
     {
+        private const string RawModelFileExtension = ".raw.json";
+
+        private readonly string _inputFolder;
+        private readonly string _outputFolder;
+        private readonly string _templateFolder;
         private TestLoggerListener Listener { get; set; }
 
-        private void Init(string phaseName)
+        public DocumentBuilderTest()
         {
-            Listener = new TestLoggerListener(phaseName);
-            Logger.RegisterListener(Listener);
-        }
-
-        private void CleanUp()
-        {
-            Logger.UnregisterListener(Listener);
-            Listener = null;
+            _inputFolder = GetRandomFolder();
+            _outputFolder = GetRandomFolder();
+            _templateFolder = GetRandomFolder();
         }
 
         [Fact]
         public void TestBuild()
         {
-            const string documentsBaseDir = "db.documents";
-            const string outputBaseDir = "db.output";
-            const string templateBaseDir = "db.template";
-            const string RawModelFileExtension = ".raw.json";
             #region Prepare test data
-            if (Directory.Exists(documentsBaseDir))
-            {
-                Directory.Delete(documentsBaseDir, true);
-            }
-            if (Directory.Exists(outputBaseDir))
-            {
-                Directory.Delete(outputBaseDir, true);
-            }
-            if (Directory.Exists(templateBaseDir))
-            {
-                Directory.Delete(templateBaseDir, true);
-            }
-            Directory.CreateDirectory(documentsBaseDir);
-            Directory.CreateDirectory(documentsBaseDir + "/test");
-            Directory.CreateDirectory(outputBaseDir);
-            var templateName = "tmpl";
-            var templateFolder = Path.Combine(templateBaseDir, templateName);
-            Directory.CreateDirectory(templateFolder);
-            var tocFile = Path.Combine(documentsBaseDir, "toc.md");
-            var conceptualFile = Path.Combine(documentsBaseDir, "test.md");
-            var conceptualFile2 = Path.Combine(documentsBaseDir, "test/test.md");
+            var documentsBaseDir = _inputFolder;
+            var outputBaseDir = _outputFolder;
+            var templateBaseDir = _templateFolder;
+
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
             var resourceMetaFile = resourceFile + ".meta";
-            var templateFile = Path.Combine(templateFolder ?? string.Empty, "conceptual.html.primary.tmpl");
 
-            File.WriteAllLines(
-                tocFile,
+            var templateName = "tmpl";
+            var templateFolder = CreateDirectory(templateName, templateBaseDir);
+            CreateFile("tmpl/conceptual.html.primary.tmpl", "{{{conceptual}}}", templateBaseDir);
+
+            var tocFile = CreateFile("toc.md",
                 new[]
                 {
                     "# [test1](test.md)",
@@ -82,9 +64,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "# Api",
                     "## [Console](@System.Console)",
                     "## [ConsoleColor](xref:System.ConsoleColor)",
-                });
-            File.WriteAllLines(
-                conceptualFile,
+                },
+                documentsBaseDir);
+            var conceptualFile = CreateFile("test.md",
                 new[]
                 {
                     "---",
@@ -108,9 +90,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "Test short xref: @XRef2",
                     "<p>",
                     "test",
-                });
-            File.WriteAllLines(
-                conceptualFile2,
+                },
+                documentsBaseDir);
+            var conceptualFile2 = CreateFile("test/test.md",
                 new[]
                 {
                     "---",
@@ -124,7 +106,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "Test link: [link text](../test.md)",
                     "<p>",
                     "test",
-                });
+                },
+                documentsBaseDir);
+
             File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
             File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
 rules : [
@@ -140,7 +124,6 @@ tagRules : [
     }
 ]
 }");
-            File.WriteAllText(templateFile, "{{{conceptual}}}");
 
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
             files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
@@ -211,7 +194,7 @@ tagRules : [
                         model["rawTitle"]);
                     Assert.Equal(
                         "\n<p>Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\"></xref>\n" +
-                        "Test link: <a href=\"~/db.documents/test/test.md\">link text</a>\n" +
+                        $"Test link: <a href=\"~/{documentsBaseDir}/test/test.md\">link text</a>\n" +
                         "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a>\n" +
                         "Test link style xref: <a href=\"xref:XRef2\" title=\"title\">link text 3</a>\n" +
                         "Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" title=\"title\">link text 4</a>\n" +
@@ -269,9 +252,6 @@ tagRules : [
             finally
             {
                 CleanUp();
-                Directory.Delete(documentsBaseDir, true);
-                Directory.Delete(outputBaseDir, true);
-                Directory.Delete(templateBaseDir, true);
                 File.Delete(resourceMetaFile);
             }
         }
@@ -282,6 +262,44 @@ tagRules : [
             yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
+        }
+
+        private void Init(string phaseName)
+        {
+            Listener = new TestLoggerListener(phaseName);
+            Logger.RegisterListener(Listener);
+        }
+
+        private void CleanUp()
+        {
+            Logger.UnregisterListener(Listener);
+            Listener = null;
+        }
+
+        private string CreateFile(string fileName, string[] lines, string baseFolder)
+        {
+            var dir = Path.GetDirectoryName(fileName);
+            dir = CreateDirectory(dir, baseFolder);
+            var file = Path.Combine(baseFolder, fileName);
+            File.WriteAllLines(file, lines);
+            return file;
+        }
+
+        private string CreateFile(string fileName, string content, string baseFolder)
+        {
+            var dir = Path.GetDirectoryName(fileName);
+            dir = CreateDirectory(dir, baseFolder);
+            var file = Path.Combine(baseFolder, fileName);
+            File.WriteAllText(file, content);
+            return file;
+        }
+
+        private string CreateDirectory(string dir, string baseFolder)
+        {
+            if (string.IsNullOrEmpty(dir)) return string.Empty;
+            var subDirectory = Path.Combine(baseFolder, dir);
+            Directory.CreateDirectory(subDirectory);
+            return subDirectory;
         }
     }
 }
