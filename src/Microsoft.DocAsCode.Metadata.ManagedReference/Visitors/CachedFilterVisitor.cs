@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _attributeCache = new Dictionary<CachedKey, bool>();
         }
 
-        public override bool CanVisitApi(ISymbol symbol, bool wantProtectedMember = true)
+        protected override bool CanVisitApiCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
             bool result;
             var key = new CachedKey(symbol, wantProtectedMember);
@@ -26,11 +26,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return result;
             }
-            result = _cache[key] = Inner.CanVisitApi(symbol, wantProtectedMember);
+            result = _cache[key] = Inner.CanVisitApi(symbol, wantProtectedMember, outer);
             return result;
         }
 
-        public override bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember = true)
+        protected override bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
             bool result;
             var key = new CachedKey(symbol, wantProtectedMember);
@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return result;
             }
-            result = _attributeCache[key] = Inner.CanVisitAttribute(symbol, wantProtectedMember);
+            result = _attributeCache[key] = Inner.CanVisitAttribute(symbol, wantProtectedMember, outer);
             return result;
         }
 
@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             public CachedKey(ISymbol symbol, bool wantProtectedMember)
             {
                 Symbol = symbol;
-                WantProtectedMember = wantProtectedMember; 
+                WantProtectedMember = wantProtectedMember;
             }
 
             public bool Equals(CachedKey other)
@@ -71,12 +71,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             public override bool Equals(object obj)
             {
-                return this.Equals(obj as CachedKey);
+                return Equals(obj as CachedKey);
             }
 
             public override int GetHashCode()
             {
-                return new { Symbol, WantProtectedMember }.GetHashCode();
+                return Symbol.GetHashCode() + (WantProtectedMember ? 0 : 12234345);
             }
         }
     }

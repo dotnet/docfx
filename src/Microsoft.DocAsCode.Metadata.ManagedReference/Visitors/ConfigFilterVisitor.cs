@@ -22,28 +22,28 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _configRule = LoadRules(configFile);
         }
 
-        public override bool CanVisitApi(ISymbol symbol, bool wantProtectedMember = true)
+        protected override bool CanVisitApiCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
             if (symbol == null)
             {
                 throw new ArgumentNullException("symbol");
             }
 
-            if (!Inner.CanVisitApi(symbol, wantProtectedMember))
+            if (!Inner.CanVisitApi(symbol, wantProtectedMember,outer))
             {
                 return false;
             }
 
-            return CanVisitCore(_configRule.ApiRules, CanVisitApi, symbol, wantProtectedMember);
+            return CanVisitCore(_configRule.ApiRules, symbol, wantProtectedMember, outer);
         }
 
-        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, Func<ISymbol, bool, bool> visitFunc, ISymbol symbol, bool wantProtectedMember = true)
+        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
             var current = symbol;
             var parent = symbol.ContainingSymbol;
             while (!(current is INamespaceSymbol) && parent != null)
             {
-                if (!visitFunc(parent, wantProtectedMember))
+                if (!outer.CanVisitApi(parent, wantProtectedMember, outer))
                 {
                     return false;
                 }

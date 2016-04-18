@@ -7,8 +7,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public interface IFilterVisitor
     {
-        bool CanVisitApi(ISymbol symbol, bool wantProtectedMember = true);
+        bool CanVisitApi(ISymbol symbol, bool wantProtectedMember = true, IFilterVisitor outer = null);
 
-        bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember = true);
+        bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember = true, IFilterVisitor outer = null);
     }
 }

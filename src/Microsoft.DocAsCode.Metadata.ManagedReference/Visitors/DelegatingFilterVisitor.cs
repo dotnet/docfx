@@ -14,14 +14,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Inner = inner;
         }
 
-        public virtual bool CanVisitApi(ISymbol symbol, bool wantProtectedMember = true)
+        public bool CanVisitApi(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
-            return Inner.CanVisitApi(symbol, wantProtectedMember);
+            return CanVisitApiCore(symbol, wantProtectedMember, outer ?? this);
         }
 
-        public virtual bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember = true)
+        public bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
-            return Inner.CanVisitAttribute(symbol, wantProtectedMember);
+            return CanVisitAttributeCore(symbol, wantProtectedMember, outer ?? this);
+        }
+
+        protected virtual bool CanVisitApiCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        {
+            return Inner.CanVisitApi(symbol, wantProtectedMember, outer);
+        }
+
+        protected virtual bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        {
+            return Inner.CanVisitAttribute(symbol, wantProtectedMember, outer);
         }
     }
 }
