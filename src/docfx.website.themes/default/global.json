@@ -17,6 +17,7 @@
   "assembly": "Assembly",
   "syntax": "Syntax",
   "remarks": "Remarks",
+  "examples": "Examples",
   "declaration": "Declaration",
   "parameters": "Parameters",
   "typeParameters": "Type Parameters",
