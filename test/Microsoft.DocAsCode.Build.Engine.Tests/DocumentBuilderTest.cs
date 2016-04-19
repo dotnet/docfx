@@ -45,16 +45,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         public void TestBuild()
         {
             #region Prepare test data
-            var documentsBaseDir = _inputFolder;
-            var outputBaseDir = _outputFolder;
-            var templateBaseDir = _templateFolder;
-
             var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
             var resourceMetaFile = resourceFile + ".meta";
 
-            var templateName = "tmpl";
-            var templateFolder = CreateDirectory(templateName, templateBaseDir);
-            CreateFile("tmpl/conceptual.html.primary.tmpl", "{{{conceptual}}}", templateBaseDir);
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
 
             var tocFile = CreateFile("toc.md",
                 new[]
@@ -65,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "## [Console](@System.Console)",
                     "## [ConsoleColor](xref:System.ConsoleColor)",
                 },
-                documentsBaseDir);
+                _inputFolder);
             var conceptualFile = CreateFile("test.md",
                 new[]
                 {
@@ -91,7 +85,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "<p>",
                     "test",
                 },
-                documentsBaseDir);
+                _inputFolder);
             var conceptualFile2 = CreateFile("test/test.md",
                 new[]
                 {
@@ -107,7 +101,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "<p>",
                     "test",
                 },
-                documentsBaseDir);
+                _inputFolder);
 
             File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
             File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
@@ -135,22 +129,11 @@ tagRules : [
             try
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
-                using (var builder = new DocumentBuilder(LoadAssemblies()))
                 {
-                    var applyTemplateSettings = new ApplyTemplateSettings(documentsBaseDir, outputBaseDir);
-                    applyTemplateSettings.RawModelExportSettings.Export = true;
-                    var parameters = new DocumentBuildParameters
+                    BuildDocument(files, new Dictionary<string, object>
                     {
-                        Files = files,
-                        OutputBaseDir = Path.Combine(Environment.CurrentDirectory, outputBaseDir),
-                        ApplyTemplateSettings = applyTemplateSettings,
-                        Metadata = new Dictionary<string, object>
-                        {
-                            ["meta"] = "Hello world!",
-                        }.ToImmutableDictionary(),
-                        TemplateManager = new TemplateManager(null, null, new List<string> { templateName }, null, templateBaseDir)
-                    };
-                    builder.Build(parameters);
+                        ["meta"] = "Hello world!",
+                    });
                 }
 
                 {
@@ -166,8 +149,8 @@ tagRules : [
 
                 {
                     // check toc.
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension))));
-                    var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(outputBaseDir, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
                     Assert.NotNull(model);
                     Assert.Equal("test1", model[0].Name);
                     Assert.Equal("test.html", model[0].Href);
@@ -185,16 +168,16 @@ tagRules : [
 
                 {
                     // check conceptual.
-                    var conceptualOutputPath = Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, ".html"));
+                    var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
                     Assert.True(File.Exists(conceptualOutputPath));
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
-                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
                     Assert.Equal(
                         "<h1 id=\"hello-world\">Hello World</h1>",
                         model["rawTitle"]);
                     Assert.Equal(
                         "\n<p>Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\"></xref>\n" +
-                        $"Test link: <a href=\"~/{documentsBaseDir}/test/test.md\">link text</a>\n" +
+                        $"Test link: <a href=\"~/{_inputFolder}/test/test.md\">link text</a>\n" +
                         "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a>\n" +
                         "Test link style xref: <a href=\"xref:XRef2\" title=\"title\">link text 3</a>\n" +
                         "Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" title=\"title\">link text 4</a>\n" +
@@ -231,15 +214,15 @@ tagRules : [
 
                 {
                     // check mref.
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.Console.csyml", RawModelFileExtension))));
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, Path.ChangeExtension("System.ConsoleColor.csyml", RawModelFileExtension))));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.Console.csyml", RawModelFileExtension))));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.ConsoleColor.csyml", RawModelFileExtension))));
                 }
 
                 {
                     // check resource.
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile)));
-                    Assert.True(File.Exists(Path.Combine(outputBaseDir, resourceFile + RawModelFileExtension)));
-                    var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(outputBaseDir, resourceFile + RawModelFileExtension));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
+                    var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
                     Assert.Equal(3, meta.Count);
                     Assert.True(meta.ContainsKey("meta"));
                     Assert.Equal("Hello world!", meta["meta"]);
@@ -253,6 +236,27 @@ tagRules : [
             {
                 CleanUp();
                 File.Delete(resourceMetaFile);
+            }
+        }
+
+        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null)
+        {
+            using (var builder = new DocumentBuilder(LoadAssemblies()))
+            {
+                if (applyTemplateSettings == null)
+                {
+                    applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
+                    applyTemplateSettings.RawModelExportSettings.Export = true;
+                }
+                var parameters = new DocumentBuildParameters
+                {
+                    Files = files,
+                    OutputBaseDir = Path.Combine(Environment.CurrentDirectory, _outputFolder),
+                    ApplyTemplateSettings = applyTemplateSettings,
+                    Metadata = metadata?.ToImmutableDictionary(),
+                    TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null)
+                };
+                builder.Build(parameters);
             }
         }
 

@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 model.Properties.XrefSpec = new XRefSpec
                 {
                     Uid = model.Uids[0].Name,
-                    Name = TitleThumbnail(content[Constants.PropertyName.Title].ToString() ?? model.Uids[0].Name, TitleThumbnailMaxLength),
+                    Name = TitleThumbnail(content[Constants.PropertyName.Title] as string?? model.Uids[0].Name, TitleThumbnailMaxLength),
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
