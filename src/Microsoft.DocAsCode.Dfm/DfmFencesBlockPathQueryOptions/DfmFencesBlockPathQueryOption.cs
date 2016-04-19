@@ -9,48 +9,65 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public string HighlightLines { get; set; }
 
+        public int? DedentLength { get; set; }
+
         public string ErrorMessage { get; protected set; }
 
         public abstract bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token);
 
         public abstract IEnumerable<string> GetQueryLines(string[] lines);
 
-        public bool ValidateHighlightLines(int totalLines)
+        public bool ValidateHighlightLinesAndDedentLength(int totalLines)
         {
-            if (string.IsNullOrEmpty(HighlightLines)) return true;
-            var ranges = HighlightLines.Split(',');
-            int? startLine, endLine;
-            int tempStartLine, tempEndLine;
-            foreach (var range in ranges)
+            var warningMessages = new List<string>();
+            bool result = true;
+
+            if (!string.IsNullOrEmpty(HighlightLines))
             {
-                var match = DfmFencesBlockRule._dfmFencesRangeQueryStringRegex.Match(range);
-                if (match.Success)
+                var ranges = HighlightLines.Split(',');
+                int? startLine, endLine;
+                int tempStartLine, tempEndLine;
+                foreach (var range in ranges)
                 {
-                    // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
-                    startLine = int.TryParse(match.Groups["start"].Value, out tempStartLine) ? tempStartLine : (int?)null;
-                    endLine = int.TryParse(match.Groups["start"].Value, out tempEndLine) ? tempEndLine : (int?)null;
-                }
-                else
-                {
-                    // consider region as a sigine line number
-                    if (int.TryParse(range, out tempStartLine))
+                    var match = DfmFencesBlockRule._dfmFencesRangeQueryStringRegex.Match(range);
+                    if (match.Success)
                     {
-                        startLine = tempStartLine;
-                        endLine = startLine;
+                        // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
+                        startLine = int.TryParse(match.Groups["start"].Value, out tempStartLine) ? tempStartLine : (int?)null;
+                        endLine = int.TryParse(match.Groups["start"].Value, out tempEndLine) ? tempEndLine : (int?)null;
                     }
                     else
                     {
-                        ErrorMessage = $"Illegal range {range} in query parameter `highlight`";
-                        return false;
+                        // consider region as a sigine line number
+                        if (int.TryParse(range, out tempStartLine))
+                        {
+                            startLine = tempStartLine;
+                            endLine = startLine;
+                        }
+                        else
+                        {
+                            warningMessages.Add($"Illegal range `{range}` in query parameter `highlight`.");
+                            result = false;
+                            continue;
+                        }
+                    }
+                    if (!CheckLineRange(totalLines, startLine, endLine))
+                    {
+                        warningMessages.Add(ErrorMessage + " in query parameter `highlight`.");
+                        result = false;
                     }
                 }
-                if (!CheckLineRange(totalLines, startLine, endLine))
-                {
-                    ErrorMessage = ErrorMessage + " in query parameter `highlight`";
-                    return false;
-                }
             }
-            return true;
+
+            if (DedentLength != null && DedentLength < 0)
+            {
+                warningMessages.Add($"Dedent length {DedentLength} should be positive. Auto-dedent will be applied.");
+                DedentLength = null;
+                result =  false;
+            }
+
+            ErrorMessage = string.Join(" ", warningMessages);
+            return result;
         }
 
         protected bool CheckLineRange(int totalLines, int? startLine, int? endLine)

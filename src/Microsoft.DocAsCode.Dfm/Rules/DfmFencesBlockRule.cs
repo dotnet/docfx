@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Web;
 
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Common;
 
     public class DfmFencesBlockRule : IMarkdownRule
     {
@@ -16,6 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
         private const string TagNameQueryStringKey = "name";
         private const string RangeQueryStringKey = "range";
         private const string HighlightLinesQueryStringKey = "highlight";
+        private const string DedentQueryStringKey = "dedent";
         private const char RegionSeparatorInRangeQueryString = ',';
 
         public string Name => "RestApiFences";
@@ -72,16 +74,29 @@ namespace Microsoft.DocAsCode.Dfm
                 var end = collection[EndLineQueryStringKey];
                 var range = collection[RangeQueryStringKey];
                 var highlight = collection[HighlightLinesQueryStringKey];
+                int? dedent = null;
+                if (collection[DedentQueryStringKey] != null)
+                {
+                    int dedentTemp;
+                    if (int.TryParse(collection[DedentQueryStringKey], out dedentTemp))
+                    {
+                        dedent = dedentTemp;
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"Illegal dedent `{collection[DedentQueryStringKey]}` in query parameter `dedent`. Auto-dedent will be applied.");
+                    }
+                }
                 if (tagName != null)
                 {
-                    return new TagNameBlockPathQueryOption { TagName = tagName , HighlightLines = highlight};
+                    return new TagNameBlockPathQueryOption { TagName = tagName , HighlightLines = highlight, DedentLength = dedent};
                 }
                 else if (range != null)
                 {
                     var regions = range.Split(RegionSeparatorInRangeQueryString);
                     if (regions != null)
                     {
-                        var option = new MultipleLineRangeBlockPathQueryOption { HighlightLines = highlight };
+                        var option = new MultipleLineRangeBlockPathQueryOption { HighlightLines = highlight, DedentLength = dedent};
                         foreach (var region in regions)
                         {
                             var match = _dfmFencesRangeQueryStringRegex.Match(region);
@@ -109,10 +124,11 @@ namespace Microsoft.DocAsCode.Dfm
                     {
                         StartLine = int.TryParse(start, out startLine) ? startLine : (int?)null,
                         EndLine = int.TryParse(end, out endLine) ? endLine : (int?)null,
-                        HighlightLines = highlight
+                        HighlightLines = highlight,
+                        DedentLength = dedent,
                     };
                 }
-                return new FullFileBlockPathQueryOption { HighlightLines = highlight };
+                return new FullFileBlockPathQueryOption { HighlightLines = highlight, DedentLength = dedent };
             }
             return new FullFileBlockPathQueryOption();
         }

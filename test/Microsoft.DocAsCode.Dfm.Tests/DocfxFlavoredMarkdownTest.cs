@@ -755,6 +755,59 @@ namespace ConsoleApplication1
             int i = 100;
         }
 </code></pre>")]
+        [InlineData(@"[!code-csharp[Main](Program.cs?dedent=0)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
+{
+    // &lt;namespace&gt;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // &lt;/namespace&gt;
+
+    // &lt;snippetprogram&gt;
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = &quot;test&quot;;
+            int i = 100;
+        }
+    }
+    // &lt;/snippetprogram&gt;
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion
+    }
+    #endregion
+}
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?start=5&end=9&dedent=0 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">    using System.Collections.Generic;
+    using System.IO;
+    // &lt;/namespace&gt;
+
+    // &lt;snippetprogram&gt;
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?name=Helper&dedent=8 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">internal static class Helper
+{
+public static void Foo()
+{
+}
+}
+</code></pre>")]
+        [InlineData(@"[!code[Main](Program.cs?range=1-2,10,20-21,29-&dedent=-4 ""Auto dedent if dedent < 0"")]", @"<!-- Dedent length -4 should be positive. Auto-dedent will be applied. -->
+<pre><code name=""Main"" title=""Auto dedent if dedent &lt; 0"">namespace ConsoleApplication1
+{
+    class Program
+    #region Helper
+    internal static class Helper
+    #endregion
+}
+</code></pre>")]
         public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
         {
             // arrange

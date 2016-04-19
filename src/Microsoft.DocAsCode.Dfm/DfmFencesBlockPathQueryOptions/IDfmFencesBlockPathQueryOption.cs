@@ -9,11 +9,13 @@ namespace Microsoft.DocAsCode.Dfm
     {
         string HighlightLines { get; set; }
 
+        int? DedentLength { get; set; }
+
         string ErrorMessage { get; }
 
         bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token);
 
-        bool ValidateHighlightLines(int totalLines);
+        bool ValidateHighlightLinesAndDedentLength(int totalLines);
 
         IEnumerable<string> GetQueryLines(string[] lines);
     }

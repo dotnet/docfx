@@ -46,19 +46,21 @@ namespace Microsoft.DocAsCode.Dfm
                 includedLines.Add(line);
             }
 
-            if (!token.PathQueryOption.ValidateHighlightLines(includedLines.Count))
+            if (!token.PathQueryOption.ValidateHighlightLinesAndDedentLength(includedLines.Count))
             {
                 Logger.LogWarning(token.PathQueryOption.ErrorMessage);
             }
 
-            int indentLength = (from line in includedLines
+            var dedentLength = token.PathQueryOption.DedentLength ??
+                               (from line in includedLines
                                 where !string.IsNullOrEmpty(line) && !string.IsNullOrWhiteSpace(line)
                                 select (int?)DfmCodeExtractorHelper.GetIndentLength(line)).Min() ?? 0;
+
             return new DfmExtractCodeResult
             {
                 IsSuccessful = true,
                 ErrorMessage = token.PathQueryOption.ErrorMessage,
-                FencesCodeLines = (indentLength == 0 ? includedLines : includedLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, indentLength), string.Empty))).ToArray()
+                FencesCodeLines = (dedentLength == 0 ? includedLines : includedLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, dedentLength), string.Empty))).ToArray()
             };
         }
     }

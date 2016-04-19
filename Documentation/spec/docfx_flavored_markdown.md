@@ -71,7 +71,7 @@ There are two types of file inclusion: Inline and block, as similar to inline co
 
 #### Inline
 Inline file inclusion is in the following syntax, in which `<title>` stands for the title of the included file, and `<filepath>` stands for the file path of the included file. The file path can be either absolute or relative.`<filepath>` can be wrapped by `'` or `"`. *NOTE* that for inline file inclusion, the file included will be considered as containing only inline tags, for example, `###header` inside the file will not transfer since `<h3>` is a block tag, while `[a](b)` will transform to `<a href='b'>a</a>` since `<a>` is an inline tag.
-```
+```md
 ...Other inline contents... [!include[<title>](<filepath>)]
 ```
 #### Block
@@ -93,7 +93,7 @@ Give an example below.
     > ```
 
 The above blockquote Markdown text will transform to section html as in the following:
-```
+```html
 <div class="tabbedCodeSnippets" data-resources="OutlookServices.Calendar">
   <pre><code>cs code text</code></pre>
   <pre><code>js code text</code></pre>
@@ -117,7 +117,9 @@ Allows you to insert code with code language specified. The content of specified
 | 2. tagname               | `#{tagname}`                           | `?name={tagname}`
 | 3. multiple region range | _Unsupported_                          | `?range={rangequerystring}`
 | 4. highlight lines       | _Unsupported_                          | `?highlight={rangequerystring}`
+| 5. dedent                | _Unsupported_                          | `?dedent={dedentlength}`
 * In `?` query string, the whole file will be included if none of the first three option is specified.
+* If `dedent` isn't specified, the maximum common indent will be trimmed automatically.
 * __`<title>`__ can be omitted.
 
 #### Code Snippet Sample
