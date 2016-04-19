@@ -87,6 +87,12 @@
 <h5 id="{{id}}_remarks"><strong>{{__global.remarks}}</strong></h5>
 <div class="markdown level0 remarks">{{{remarks}}}</div>
 {{/remarks}}
+{{#example.0}}
+<h5 id="{{id}}_examples"><strong>{{__global.examples}}</strong></h5>
+{{#example}}
+{{{.}}}
+{{/example}}
+{{/example.0}}
 {{#children}}
 <h3 id="{{id}}">{{>partials/classSubtitle}}</h3>
 {{#children}}

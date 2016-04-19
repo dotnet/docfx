@@ -17,6 +17,7 @@
   "assembly": "程序集",
   "syntax": "语法",
   "remarks": "备注",
+  "examples": "示例",
   "declaration": "声明",
   "parameters": "参数",
   "typeParameters": "类型参数",
