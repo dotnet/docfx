@@ -15,7 +15,8 @@ namespace Microsoft.DocAsCode.Utility.Tests
     public class ConvertToObjectHelperTest
     {
         [Theory]
-        [InlineData(1, typeof(long))]
+        [InlineData(1, typeof(int))]
+        [InlineData(1L, typeof(long))]
         [InlineData(1.0, typeof(double))]
         [InlineData("string", typeof(string))]
         [InlineData('c', typeof(string))]

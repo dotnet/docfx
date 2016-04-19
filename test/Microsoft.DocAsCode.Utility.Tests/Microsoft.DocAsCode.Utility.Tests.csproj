@@ -35,7 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ReflectionEntityMergerTest.cs" />
-    <Compile Include="ConvertToObjectHelper.cs" />
+    <Compile Include="ConvertToObjectHelperTest.cs" />
     <Compile Include="RelativePathTest.cs" />
   </ItemGroup>
   <ItemGroup>
