@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Common
 
     public static class JsonUtility
     {
-        private static readonly ThreadLocal<JsonSerializer> _serializer = new ThreadLocal<JsonSerializer>(
+        public static readonly ThreadLocal<JsonSerializer> DefaultSerializer = new ThreadLocal<JsonSerializer>(
             () =>
                 {
                     var jsonSerializer = new JsonSerializer();
@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Serialize(TextWriter writer, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
-            var localSerializer = serializer ?? _serializer.Value;
+            var localSerializer = serializer ?? DefaultSerializer.Value;
             localSerializer.Formatting = formatting;
             localSerializer.Serialize(writer, graph);
         }
@@ -66,7 +66,7 @@ namespace Microsoft.DocAsCode.Common
         {
             using (JsonReader json = new JsonTextReader(reader))
             {
-                return (serializer ?? _serializer.Value).Deserialize<T>(json);
+                return (serializer ?? DefaultSerializer.Value).Deserialize<T>(json);
             }
         }
 
