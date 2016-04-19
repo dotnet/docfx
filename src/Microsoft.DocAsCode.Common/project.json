@@ -36,10 +36,7 @@
           "type": "build",
           "version": ""
         },
-        "System.Xml": {
-          "type": "build",
-          "version": ""
-        }
+        "System.Xml": ""
       },
       "dependencies": {
         "Newtonsoft.Json": "7.0.1"
