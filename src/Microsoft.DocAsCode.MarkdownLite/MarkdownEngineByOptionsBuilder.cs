@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private void BuildBlockRulesByOptions()
         {
-            var builder = ImmutableList<IMarkdownRule>.Empty.ToBuilder();
+            var builder = ImmutableList.CreateBuilder<IMarkdownRule>();
             builder.Add(new MarkdownNewLineBlockRule());
             builder.Add(new MarkdownCodeBlockRule());
             if (Options.Gfm)
@@ -42,6 +42,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new MarkdownHrBlockRule());
             builder.Add(new MarkdownBlockquoteBlockRule());
             builder.Add(new MarkdownListBlockRule());
+            if (Options.Gfm)
+            {
+                builder.Add(new GfmHtmlCommentBlockRule());
+            }
             builder.Add(new MarkdownHtmlBlockRule());
             builder.Add(new MarkdownDefBlockRule());
             if (Options.Tables)
@@ -62,51 +66,51 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private void BuildInlineRulesByOptions()
         {
-            var irb = ImmutableList<IMarkdownRule>.Empty.ToBuilder();
+            var builder = ImmutableList.CreateBuilder<IMarkdownRule>();
             if (Options.Gfm)
             {
-                irb.Add(new GfmEscapeInlineRule());
+                builder.Add(new GfmEscapeInlineRule());
             }
             else
             {
-                irb.Add(new MarkdownEscapeInlineRule());
+                builder.Add(new MarkdownEscapeInlineRule());
             }
-            irb.Add(new MarkdownAutoLinkInlineRule());
+            builder.Add(new MarkdownAutoLinkInlineRule());
             if (Options.Gfm)
             {
-                irb.Add(new GfmUrlInlineRule());
+                builder.Add(new GfmUrlInlineRule());
             }
-            irb.Add(new MarkdownCodeElementInlineRule());
-            irb.Add(new MarkdownTagInlineRule());
-            irb.Add(new MarkdownLinkInlineRule());
-            irb.Add(new MarkdownRefLinkInlineRule());
-            irb.Add(new MarkdownNoLinkInlineRule());
+            builder.Add(new MarkdownCodeElementInlineRule());
+            builder.Add(new MarkdownTagInlineRule());
+            builder.Add(new MarkdownLinkInlineRule());
+            builder.Add(new MarkdownRefLinkInlineRule());
+            builder.Add(new MarkdownNoLinkInlineRule());
             if (Options.Gfm)
             {
-                irb.Add(new GfmStrongEmInlineRule());
-                irb.Add(new GfmStrongInlineRule());
-                irb.Add(new GfmEmInlineRule());
+                builder.Add(new GfmStrongEmInlineRule());
+                builder.Add(new GfmStrongInlineRule());
+                builder.Add(new GfmEmInlineRule());
             }
             else
             {
-                irb.Add(new MarkdownStrongInlineRule());
-                irb.Add(new MarkdownEmInlineRule());
+                builder.Add(new MarkdownStrongInlineRule());
+                builder.Add(new MarkdownEmInlineRule());
             }
-            irb.Add(new MarkdownCodeInlineRule());
-            irb.Add(new MarkdownBrInlineRule());
+            builder.Add(new MarkdownCodeInlineRule());
+            builder.Add(new MarkdownBrInlineRule());
             if (Options.Gfm)
             {
-                irb.Add(new GfmDelInlineRule());
-                irb.Add(new MarkdownEscapedTextInlineRule());
-                irb.Add(new GfmTextInlineRule());
+                builder.Add(new GfmDelInlineRule());
+                builder.Add(new MarkdownEscapedTextInlineRule());
+                builder.Add(new GfmTextInlineRule());
             }
             else
             {
-                irb.Add(new MarkdownEscapedTextInlineRule());
-                irb.Add(new MarkdownTextInlineRule());
+                builder.Add(new MarkdownEscapedTextInlineRule());
+                builder.Add(new MarkdownTextInlineRule());
             }
 
-            InlineRules = irb.ToImmutable();
+            InlineRules = builder.ToImmutable();
         }
     }
 }

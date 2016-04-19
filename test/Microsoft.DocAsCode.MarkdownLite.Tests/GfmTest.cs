@@ -426,6 +426,12 @@ break list!
 <li>D</li>
 </ol>
 ")]
+        [InlineData(
+            @"<!--aaa-->
+aaa",
+            @"<!--aaa-->
+<p>aaa</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {

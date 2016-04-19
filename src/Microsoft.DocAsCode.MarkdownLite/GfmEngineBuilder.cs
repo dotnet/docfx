@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected virtual void BuildBlockRules()
         {
-            var builder = ImmutableList<IMarkdownRule>.Empty.ToBuilder();
+            var builder = ImmutableList.CreateBuilder<IMarkdownRule>();
             builder.Add(new MarkdownNewLineBlockRule());
             builder.Add(new MarkdownCodeBlockRule());
             builder.Add(new GfmFencesBlockRule());
@@ -31,6 +31,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new MarkdownHrBlockRule());
             builder.Add(new MarkdownBlockquoteBlockRule());
             builder.Add(new MarkdownListBlockRule());
+            builder.Add(new GfmHtmlCommentBlockRule());
             builder.Add(new MarkdownHtmlBlockRule());
             builder.Add(new MarkdownDefBlockRule());
             builder.Add(new MarkdownTableBlockRule());
@@ -41,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected virtual void BuildInlineRules()
         {
-            var builder = ImmutableList<IMarkdownRule>.Empty.ToBuilder();
+            var builder = ImmutableList.CreateBuilder<IMarkdownRule>();
             builder.Add(new GfmEscapeInlineRule());
             builder.Add(new MarkdownCommentInlineRule());
             builder.Add(new MarkdownAutoLinkInlineRule());
