@@ -148,10 +148,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                                  where !string.IsNullOrWhiteSpace(attr.Value)
                                  select attr.Value).ToImmutableHashSet();
             using (var sw = new StringWriter())
-            using (var xw = new XHtmlWriter(sw))
             {
-                doc.Save(xw);
-                result.Html = xw.ToString();
+                doc.Save(sw);
+                result.Html = sw.ToString();
             }
             return result;
         }
