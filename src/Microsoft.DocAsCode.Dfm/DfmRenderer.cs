@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.Dfm
             return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, DfmNoteBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmNoteBlockToken token, MarkdownBlockContext context)
         {
             return token.Content;
         }

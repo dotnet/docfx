@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Del => Regexes.Inline.Gfm.Del;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Del.Match(source);
             if (match.Length == 0)
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            return new GfmDelInlineToken(this, engine.Context, engine.Tokenize(match.Groups[1].Value), match.Value);
+            return new GfmDelInlineToken(this, parser.Context, parser.Tokenize(match.Groups[1].Value), match.Value);
         }
     }
 }

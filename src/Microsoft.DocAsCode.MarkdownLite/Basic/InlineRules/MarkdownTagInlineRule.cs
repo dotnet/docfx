@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Tag => Regexes.Inline.Tag;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Tag.Match(source);
             if (match.Length == 0)
@@ -20,17 +20,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            var context = engine.Context;
+            var context = parser.Context;
             var inLink = (bool)context.Variables[MarkdownInlineContext.IsInLink];
             if (!inLink && Regexes.Lexers.StartHtmlLink.IsMatch(match.Value))
             {
-                engine.SwitchContext(MarkdownInlineContext.IsInLink, true);
+                parser.SwitchContext(MarkdownInlineContext.IsInLink, true);
             }
             else if (inLink && Regexes.Lexers.EndHtmlLink.IsMatch(match.Value))
             {
-                engine.SwitchContext(MarkdownInlineContext.IsInLink, false);
+                parser.SwitchContext(MarkdownInlineContext.IsInLink, false);
             }
-            return new MarkdownTagInlineToken(this, engine.Context, match.Value);
+            return new MarkdownTagInlineToken(this, parser.Context, match.Value);
         }
     }
 }

@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Def => Regexes.Block.Def;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
-            if (!(bool)engine.Context.Variables[MarkdownBlockContext.IsTop])
+            if (!(bool)parser.Context.Variables[MarkdownBlockContext.IsTop])
             {
                 return null;
             }
@@ -23,12 +23,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            engine.Links[match.Groups[1].Value.ToLower()] = new LinkObj
+            parser.Links[match.Groups[1].Value.ToLower()] = new LinkObj
             {
                 Href = match.Groups[2].Value,
                 Title = match.Groups[3].Value
             };
-            return new MarkdownIgnoreToken(this, engine.Context, match.Value);
+            return new MarkdownIgnoreToken(this, parser.Context, match.Value);
         }
     }
 }

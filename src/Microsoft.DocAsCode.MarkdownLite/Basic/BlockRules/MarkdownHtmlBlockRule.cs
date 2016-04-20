@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Html => Regexes.Block.Html;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Html.Match(source);
             if (match.Length == 0)
@@ -21,20 +21,20 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            bool isPre = engine.Options.Sanitizer == null &&
+            bool isPre = parser.Options.Sanitizer == null &&
                 (match.Groups[1].Value == "pre" || match.Groups[1].Value == "script" || match.Groups[1].Value == "style");
-            if (engine.Options.Sanitize)
+            if (parser.Options.Sanitize)
             {
-                return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+                return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
                     new MarkdownParagraphBlockToken(t.Rule, t.Context, p.TokenizeInline(match.Value), t.RawMarkdown));
             }
             else
             {
-                return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+                return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
                     new MarkdownHtmlBlockToken(
                         t.Rule,
                         t.Context,
-                        isPre ? new InlineContent(new IMarkdownToken[] { new MarkdownRawToken(this, engine.Context, t.RawMarkdown) }.ToImmutableArray()) : p.TokenizeInline(t.RawMarkdown),
+                        isPre ? new InlineContent(new IMarkdownToken[] { new MarkdownRawToken(this, parser.Context, t.RawMarkdown) }.ToImmutableArray()) : p.TokenizeInline(t.RawMarkdown),
                         t.RawMarkdown));
             }
         }

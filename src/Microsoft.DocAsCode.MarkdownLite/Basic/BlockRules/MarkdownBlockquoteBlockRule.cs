@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex LeadingBlockquote => Regexes.Lexers.LeadingBlockquote;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Blockquote.Match(source);
             if (match.Length == 0)
@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+            return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
             {
                 var capStr = LeadingBlockquote.Replace(t.RawMarkdown, string.Empty);
                 var blockTokens = p.Tokenize(capStr);

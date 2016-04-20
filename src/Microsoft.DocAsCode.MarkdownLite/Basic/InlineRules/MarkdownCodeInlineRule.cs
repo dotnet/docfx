@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Code => Regexes.Inline.Code;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Code.Match(source);
             if (match.Length == 0)
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
 
-            return new MarkdownCodeInlineToken(this, engine.Context, match.Groups[2].Value, match.Value);
+            return new MarkdownCodeInlineToken(this, parser.Context, match.Groups[2].Value, match.Value);
         }
     }
 }
