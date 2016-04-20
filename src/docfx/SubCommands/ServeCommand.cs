@@ -33,6 +33,10 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             if (string.IsNullOrEmpty(folder)) folder = Environment.CurrentDirectory;
             folder = Path.GetFullPath(folder);
+            if (!Directory.Exists(folder))
+            {
+                throw new ArgumentException("Site folder does not exist. You may need to build it first. Example: \"docfx docfx_project/docfx.json\"", nameof(folder));
+            }
             port = string.IsNullOrWhiteSpace(port) ? "8080" : port;
             var url = $"http://localhost:{port}";
             var fileServerOptions = new FileServerOptions
