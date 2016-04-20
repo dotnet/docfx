@@ -22,15 +22,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly TemplateCollection _templateCollection;
 
-        public static List<TemplateManifestItem> Process(TemplateProcessor processor, List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings)
-        {
-            if (processor == null)
-            {
-                processor = new TemplateProcessor(new EmptyResourceCollection(), 1);
-            }
-
-            return processor.Process(manifest, context, settings);
-        }
+        public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceCollection(), 1);
 
         /// <summary>
         /// TemplateName can be either file or folder
@@ -49,6 +41,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             _resourceProvider = resourceProvider;
             _global = LoadGlobalJson(resourceProvider);
             _templateCollection = new TemplateCollection(resourceProvider, maxParallelism);
+        }
+
+        public TemplateBundle GetTemplateBundle(string documentType)
+        {
+            if (string.IsNullOrEmpty(documentType)) throw new ArgumentNullException(nameof(documentType));
+            return _templateCollection[documentType];
         }
 
         public bool TryGetFileExtension(string documentType, out string fileExtension)
