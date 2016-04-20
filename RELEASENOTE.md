@@ -1,5 +1,11 @@
-Version Notes (Current Version: v1.7.1)
+Version Notes (Current Version: v1.7.2)
 =======================================
+
+v1.7.2
+------
+1. Fix markdown bug:
+   * Ordered list continue with unordered list.
+   * Support gfm comments.
 
 v1.7.1
 ------
