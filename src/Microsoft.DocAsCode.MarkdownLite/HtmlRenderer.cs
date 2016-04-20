@@ -14,19 +14,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         #region Block
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownNewLineBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNewLineBlockToken token, MarkdownBlockContext context)
         {
             // do nothing.
             return StringBuffer.Empty;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownCodeBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeBlockToken token, MarkdownBlockContext context)
         {
             bool escaped = false;
             string code = token.Code;
-            if (engine.Options.Highlight != null)
+            if (renderer.Options.Highlight != null)
             {
-                var highlightCode = engine.Options.Highlight(code, token.Lang);
+                var highlightCode = renderer.Options.Highlight(code, token.Lang);
                 if (highlightCode != null && highlightCode != code)
                 {
                     escaped = true;
@@ -40,25 +40,25 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
 
             return "<pre><code class=\""
-                + engine.Options.LangPrefix
+                + renderer.Options.LangPrefix
                 + StringHelper.Escape(token.Lang, true)
                 + "\">"
                 + (escaped ? code : StringHelper.Escape(code, true))
                 + "\n</code></pre>\n";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownHeadingBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHeadingBlockToken token, MarkdownBlockContext context)
         {
             string level = token.Depth.ToString();
             var result = (StringBuffer)"<h"
                 + level
                 + " id=\""
-                + engine.Options.HeaderPrefix
+                + renderer.Options.HeaderPrefix
                 + token.Id
                 + "\">";
             foreach (var item in token.Content.Tokens)
             {
-                result += engine.Render(item);
+                result += renderer.Render(item);
             }
             result += "</h";
             result += level;
@@ -66,9 +66,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownHrBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHrBlockToken token, MarkdownBlockContext context)
         {
-            return engine.Options.XHtml ? "<hr/>\n" : "<hr>\n";
+            return renderer.Options.XHtml ? "<hr/>\n" : "<hr>\n";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return content + "</blockquote>\n";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownListBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListBlockToken token, MarkdownBlockContext context)
         {
             var type = token.Ordered ? "ol" : "ul";
             StringBuffer content = "<";
@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             content += ">\n";
             foreach (var t in token.Tokens)
             {
-                content += Render(engine, (MarkdownListItemBlockToken)t);
+                content += Render(renderer, (MarkdownListItemBlockToken)t);
             }
             return content + "</" + type + ">\n";
         }
@@ -104,28 +104,28 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return content + "</li>\n";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
         {
             var result = StringBuffer.Empty;
             foreach (var item in token.Content.Tokens)
             {
-                result += engine.Render(item);
+                result += renderer.Render(item);
             }
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer result = "<p>";
             foreach (var item in token.InlineTokens.Tokens)
             {
-                result += engine.Render(item);
+                result += renderer.Render(item);
             }
             result += "</p>\n";
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownTextToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownBlockContext context)
         {
             StringBuffer result = "<p>";
             result += token.Content;
@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownTableBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTableBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer result = "<table>\n<thead>\n";
             // header
@@ -153,7 +153,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
                 foreach (var item in token.Header[i].Tokens)
                 {
-                    result += engine.Render(item);
+                    result += renderer.Render(item);
                 }
                 result += "</th>\n";
             }
@@ -179,7 +179,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     }
                     foreach (var item in row[j].Tokens)
                     {
-                        result += engine.Render(item);
+                        result += renderer.Render(item);
                     }
                     result += "</td>\n";
                 }
@@ -202,14 +202,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         #region Inline
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownEscapeInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEscapeInlineToken token, MarkdownInlineContext context)
         {
             return token.Content;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownLinkInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownLinkInlineToken token, MarkdownInlineContext context)
         {
-            if (engine.Options.Sanitize)
+            if (renderer.Options.Sanitize)
             {
                 string prot = null;
 
@@ -237,14 +237,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             foreach (var item in token.Content)
             {
-                result += engine.Render(item);
+                result += renderer.Render(item);
             }
 
             result += "</a>";
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownImageInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownImageInlineToken token, MarkdownInlineContext context)
         {
             var result = (StringBuffer)"<img src=\"" + token.Href + "\" alt=\"" + token.Text + "\"";
             if (!string.IsNullOrEmpty(token.Title))
@@ -252,67 +252,67 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 result = result + " title=\"" + token.Title + "\"";
             }
 
-            result += engine.Options.XHtml ? "/>" : ">";
+            result += renderer.Options.XHtml ? "/>" : ">";
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownStrongInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownStrongInlineToken token, MarkdownInlineContext context)
         {
             var result = (StringBuffer)"<strong>";
             foreach (var item in token.Content)
             {
-                result += engine.Render(item);
+                result += renderer.Render(item);
             }
             result += "</strong>";
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownEmInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEmInlineToken token, MarkdownInlineContext context)
         {
             var result = (StringBuffer)"<em>";
             foreach (var item in token.Content)
             {
-                result += engine.Render(item);
+                result += renderer.Render(item);
             }
             result += "</em>";
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownCodeInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeInlineToken token, MarkdownInlineContext context)
         {
             return (StringBuffer)"<code>" + StringHelper.Escape(token.Content, true) + "</code>";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, GfmDelInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, GfmDelInlineToken token, MarkdownInlineContext context)
         {
             var result = (StringBuffer)"<del>";
             foreach (var item in token.Content)
             {
-                result += engine.Render(item);
+                result += renderer.Render(item);
             }
             result += "</del>";
             return result;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownTagInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTagInlineToken token, MarkdownInlineContext context)
         {
-            if (engine.Options.Sanitize)
+            if (renderer.Options.Sanitize)
             {
-                if (engine.Options.Sanitizer != null)
+                if (renderer.Options.Sanitizer != null)
                 {
-                    return engine.Options.Sanitizer(token.RawMarkdown);
+                    return renderer.Options.Sanitizer(token.RawMarkdown);
                 }
                 return StringHelper.Escape(token.RawMarkdown);
             }
             return token.RawMarkdown;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownBrInlineToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBrInlineToken token, MarkdownInlineContext context)
         {
-            return engine.Options.XHtml ? "<br/>" : "<br>";
+            return renderer.Options.XHtml ? "<br/>" : "<br>";
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownTextToken token, MarkdownInlineContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownInlineContext context)
         {
             return token.Content;
         }
@@ -321,12 +321,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         #region Misc
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownIgnoreToken token, IMarkdownContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownIgnoreToken token, IMarkdownContext context)
         {
             return StringBuffer.Empty;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownRawToken token, IMarkdownContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownRawToken token, IMarkdownContext context)
         {
             return token.RawMarkdown;
         }
