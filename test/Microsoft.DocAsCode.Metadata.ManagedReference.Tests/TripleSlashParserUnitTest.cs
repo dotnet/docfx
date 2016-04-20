@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Xunit;
 
     [Trait("Owner", "lianwei")]
@@ -19,7 +20,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             string input = @"
 <member name='T:TestClass1.Partial1'>
     <summary>
-        Parital classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies,
+        Parital classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies, Test <see langword='null'/>
     
 
         ```
@@ -92,11 +93,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             };
 
 
-            var commentModel = TripleSlashCommentModel.CreateModel(input, context);
+            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
 
             var summary = commentModel.Summary;
             Assert.Equal(@"
-    Parital classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies,
+    Parital classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies, Test <xref uid=""langword_csharp_null"" name=""null"" href=""""></xref>
 
 
     ```
@@ -149,7 +150,7 @@ This is another example
             Assert.Equal(expected, example);
 
             context.PreserveRawInlineComments = true;
-            commentModel = TripleSlashCommentModel.CreateModel(input, context);
+            commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
 
             var sees = commentModel.Sees;
             Assert.Equal(2, sees.Count);

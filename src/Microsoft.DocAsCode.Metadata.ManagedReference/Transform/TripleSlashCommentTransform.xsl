@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 <xsl:stylesheet
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  exclude-result-prefixes="xsl"
+  xmlns:input="urn:input-variables"
+  exclude-result-prefixes="xsl input"
   version="1.1">
 
   <xsl:output method="xml" indent="yes" encoding="UTF-8" />
+
+  <xsl:param name="input:language"/>
 
   <xsl:template match="para">
     <p>
@@ -59,6 +62,19 @@
     <returns>
       <xsl:apply-templates />
     </returns>
+  </xsl:template>
+
+  <xsl:template match="see[@langword]">
+    <xref>
+      <xsl:attribute name="uid">
+        <xsl:value-of select="concat('langword_', $input:language, '_', @langword)"/>
+      </xsl:attribute>
+      <xsl:attribute name="name">
+        <xsl:value-of select="@langword"/>
+      </xsl:attribute>
+      <xsl:attribute name="href">
+      </xsl:attribute>
+    </xref>
   </xsl:template>
 
   <xsl:template match="paramref">

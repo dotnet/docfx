@@ -36,10 +36,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public Dictionary<string, string> Parameters { get; private set; }
         public Dictionary<string, string> TypeParameters { get; private set; }
 
-        private TripleSlashCommentModel(string xml, ITripleSlashCommentParserContext context)
+        private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
         { 
             // Transform triple slash comment
-            XDocument doc = _transformer.Transform(xml);
+            XDocument doc = _transformer.Transform(xml, language);
 
             _context = context;
             if (!context.PreserveRawInlineComments)
@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             TypeParameters = GetTypeParameters(nav, context);
         }
 
-        public static TripleSlashCommentModel CreateModel(string xml, ITripleSlashCommentParserContext context)
+        public static TripleSlashCommentModel CreateModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (string.IsNullOrEmpty(xml)) return null;
@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             try
             {
-                var model = new TripleSlashCommentModel(xml, context);
+                var model = new TripleSlashCommentModel(xml, language, context);
                 return model;
             }
             catch (XmlException)

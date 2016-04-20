@@ -385,7 +385,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
 
         private void PatchViewModel(ItemViewModel item, string comment)
         {
-            var commentModel = TripleSlashCommentModel.CreateModel(comment, TripleSlashCommentParserContext.Instance);
+            var commentModel = TripleSlashCommentModel.CreateModel(comment, SyntaxLanguage.CSharp, TripleSlashCommentParserContext.Instance);
             var summary = commentModel.Summary;
             if (!string.IsNullOrEmpty(summary))
             {

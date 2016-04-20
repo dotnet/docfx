@@ -28,7 +28,7 @@
     ],
     "resource": [
       {
-        "files": [ "**/images/**", "**/artifacts/**", "codesnippet/**" ],
+        "files": [ "**/images/**", "**/artifacts/**", "codesnippet/**", "langwordmapping/**" ],
         "exclude": [ "_site/**", "**/obj/**", "**.meta" ]
       }
     ],
