@@ -11,11 +11,12 @@
     "Microsoft.DocAsCode.Dfm": "1.0.0",
     "Microsoft.DocAsCode.Plugins": "1.0.0",
     "Microsoft.DocAsCode.Utility": "1.0.0",
-    "Microsoft.DocAsCode.YamlSerialization": "1.0.0"
+    "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
+    "System.Collections.Immutable": "1.2.0-*"
   },
   "configurations": {
     "Debug": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": [
           "DEBUG",
           "TRACE"
@@ -23,7 +24,7 @@
       }
     },
     "Release": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": [
           "RELEASE",
           "TRACE"
@@ -33,18 +34,6 @@
     }
   },
   "frameworks": {
-    "net45": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.1.37"
-      }
-    },
-    "net462": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.2.0-rc2-24008"
-      }
-    }
-  },
-  "runtimes": {
-    "win7-x64": {}
+    "net451": {}
   }
 }

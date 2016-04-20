@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true
   },
   "dependencies": {
@@ -18,7 +18,7 @@
     "Microsoft.DocAsCode.Plugins": "1.0.0",
     "Microsoft.DocAsCode.Utility": "1.0.0",
     "Microsoft.DocAsCode.Glob": "1.0.0",
-    "Microsoft.DocAsCode.Metadata.ManagedReference": "1.0.0",    
+    "Microsoft.DocAsCode.Metadata.ManagedReference": "1.0.0",
     "Owin": "1.0.0",
     "Microsoft.Owin": "3.0.1",
     "Microsoft.Owin.FileSystems": "3.0.1",
@@ -29,29 +29,23 @@
   },
   "configurations": {
     "Debug": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["DEBUG", "TRACE"]
       }
     },
     "Release": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["RELEASE", "TRACE"],
         "optimize": true
       }
     }
   },
   "frameworks": {
-    "net45": {},
-    "net462": {
-      "compilationOptions": {
-        "define": [
-          "NET462"
-        ]
+    "net451": {
+      "buildOptions": {
+        "define": ["NET451"]
       }
     }
-  },
-  "runtimes": {
-    "win7-x64": {}
   },
   "commands": {
     "docfx": "docfx"

@@ -9,11 +9,12 @@
     "Microsoft.DocAsCode.Utility": "1.0.0",
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
     "Newtonsoft.Json": "7.0.1",
-    "YamlDotNet.Signed": "3.7.0"
+    "YamlDotNet.Signed": "3.7.0",
+    "System.Collections.Immutable": "1.2.0-*"
   },
   "configurations": {
     "Debug": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": [
           "DEBUG",
           "TRACE"
@@ -21,7 +22,7 @@
       }
     },
     "Release": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": [
           "RELEASE",
           "TRACE"
@@ -31,27 +32,10 @@
     }
   },
   "frameworks": {
-    "net45": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.1.37"
-      },
+    "net451": {
       "frameworkAssemblies": {
         "System.Xml": ""
-      }
-    },
-    "net462": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.2.0-rc2-24008"
-      },
-      "frameworkAssemblies": {
-        "System.Xml": ""
-      },
-      "dependencies": {
-        "Microsoft.NETCore.Platforms": "1.0.1-*"
       }
     }
-  },
-  "runtimes": {
-    "win7-x64": {}
   }
 }

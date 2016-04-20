@@ -1,13 +1,15 @@
 ﻿{
   "version": "1.0.0",
   "dependencies": {
+    "Microsoft.DocAsCode.Common": "1.0.0",
     "GitSharp": "0.3.0",
     "Microsoft.DocAsCode.Utility": "1.0.0",
-    "Newtonsoft.Json": "7.0.1"
+    "Newtonsoft.Json": "7.0.1",
+    "System.Collections.Immutable": "1.2.0-*"
   },
   "configurations": {
     "Debug": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": [
           "DEBUG",
           "TRACE"
@@ -15,7 +17,7 @@
       }
     },
     "Release": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": [
           "RELEASE",
           "TRACE"
@@ -25,26 +27,11 @@
     }
   },
   "frameworks": {
-    "net45": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.1.37"
-      },
-      "frameworkAssemblies": {
-        "System.IO.Compression": "",
-        "System.IO.Compression.FileSystem": ""
-      }
-    },
-    "net462": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.2.0-rc2-24008"
-      },
+    "net451": {
       "frameworkAssemblies": {
         "System.IO.Compression": "",
         "System.IO.Compression.FileSystem": ""
       }
     }
-  },
-  "runtimes": {
-    "win7-x64": {}
   }
 }

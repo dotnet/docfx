@@ -2,22 +2,18 @@
   "version": "1.0.0",
   "configurations": {
     "Debug": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["DEBUG", "TRACE"]
       }
     },
     "Release": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["RELEASE", "TRACE"],
         "optimize": true
       }
     }
   },
   "frameworks": {
-    "net45": {},
-    "net462": {}
-  },
-  "runtimes": {
-    "win7-x64": {}
+    "net451": {}
   }
 }

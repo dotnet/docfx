@@ -14,42 +14,28 @@
     "Microsoft.Composition": "1.0.27",
     "Newtonsoft.Json": "7.0.1",
     "Nustache": "1.15.3.5",
-    "YamlDotNet.Signed": "3.7.0"
+    "YamlDotNet.Signed": "3.7.0",
+    "System.Collections.Immutable": "1.2.0-*"
   },
   "configurations": {
     "Debug": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["DEBUG", "TRACE"]
       }
     },
     "Release": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["RELEASE", "TRACE"],
         "optimize": true
       }
     }
   },
   "frameworks": {
-    "net45": {
+    "net451": {
       "frameworkAssemblies": {
         "System.Net.Http": "",
         "System.Web": ""
-      },
-      "dependencies": {
-        "System.Collections.Immutable": "1.1.37"        
-      }
-    },
-    "net462": {
-      "frameworkAssemblies": {
-        "System.Net.Http": "",
-        "System.Web": ""
-      },
-      "dependencies": {
-        "System.Collections.Immutable": "1.2.0-rc2-24008"
       }
     }
-  },
-  "runtimes": {
-    "win7-x64": {}
   }
 }

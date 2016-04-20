@@ -8,54 +8,37 @@
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
     "Newtonsoft.Json": "7.0.1",
     "YamlDotNet.Signed": "3.7.0",
-    "Microsoft.Composition": "1.0.27"
+    "Microsoft.Composition": "1.0.27",
+    "System.Collections.Immutable": "1.2.0-*",
+    "Microsoft.CodeAnalysis.Common": "2.0.0-beta1",
+    "Microsoft.CodeAnalysis.VisualBasic": "2.0.0-beta1",
+    "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "2.0.0-beta1",
+    "Microsoft.CodeAnalysis.CSharp": "2.0.0-beta1",
+    "Microsoft.CodeAnalysis.CSharp.Workspaces": "2.0.0-beta1",
+    "Microsoft.CodeAnalysis.Workspaces.Common": "2.0.0-beta1",
+    "Microsoft.DotNet.ProjectModel.Workspaces": "1.0.0-*"
   },
   "configurations": {
     "Debug": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["DEBUG", "TRACE"]
       }
     },
     "Release": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["RELEASE", "TRACE"],
         "optimize": true
       }
     }
   },
   "frameworks": {
-    "net45": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.1.37",        
-        "Microsoft.CodeAnalysis.Common": "1.1.1",
-        "Microsoft.CodeAnalysis.VisualBasic": "1.1.1",
-        "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.1.1",
-        "Microsoft.CodeAnalysis.CSharp": "1.1.1",
-        "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.1.1",
-        "Microsoft.CodeAnalysis.Workspaces.Common": "1.1.1"  
-      },
+    "net451": {
       "frameworkAssemblies": {
         "System.Threading.Tasks": "",
         "System.Xml": "",
         "System.Xml.Linq": ""
       }
-    },
-    "net462": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.2.0-rc2-24008",
-        "Microsoft.CodeAnalysis.Common": "2.0.0-beta1",
-        "Microsoft.CodeAnalysis.VisualBasic": "2.0.0-beta1",
-        "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "2.0.0-beta1",
-        "Microsoft.CodeAnalysis.CSharp": "2.0.0-beta1",
-        "Microsoft.CodeAnalysis.CSharp.Workspaces": "2.0.0-beta1",
-        "Microsoft.CodeAnalysis.Workspaces.Common": "2.0.0-beta1",
-        "Microsoft.DotNet.ProjectModel.Workspaces": "1.0.0-beta-*",
-        "Microsoft.NETCore.Platforms": "1.0.1-*"
-      }
     }
-  },
-  "runtimes": {
-    "win7-x64": {}
   },
   "resource": "Transform/**"
 }

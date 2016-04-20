@@ -8,34 +8,24 @@
   },
   "configurations": {
     "Debug": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["DEBUG", "TRACE"]
       }
     },
     "Release": {
-      "compilationOptions": {
+      "buildOptions": {
         "define": ["RELEASE", "TRACE"],
         "optimize": true
       }
     }
   },
   "frameworks": {
-    "net45": {
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System.Web": ""
-      }
-    },
-    "net462": {
+    "net451": {
       "frameworkAssemblies": {
         "Microsoft.CSharp": "",
         "System.Core": "",
         "System.Web": ""
       }
     }
-  },
-  "runtimes": {
-    "win7-x64": {}
   }
 }

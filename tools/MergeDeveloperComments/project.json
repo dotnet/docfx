@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true
   },
   "dependencies": {
@@ -11,11 +11,7 @@
     "Microsoft.DocAsCode.Utility": "1.0.0"
     },
   "frameworks": {
-    "net45": {},
-    "net462": {}
-  },
-  "runtimes": {
-    "win7-x64": {}
+    "net451": {}
   },
   "commands": {
     "mergeDeveloperComments": "mergeDeveloperComments"

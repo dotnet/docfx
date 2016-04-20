@@ -2,7 +2,7 @@
 <Project ToolsVersion="__ToolsVersion__" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\Shared\xproj.base.props" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>AAB7BF54-90BE-4EDD-8996-17A16311B6C1</ProjectGuid>
+    <ProjectGuid>AAB72F54-90BE-44DF-8996-12A26372B6C1</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>

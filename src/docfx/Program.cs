@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.SubCommands;
-    using System.Diagnostics;
+
     internal class Program
     {
         static int Main(string[] args)

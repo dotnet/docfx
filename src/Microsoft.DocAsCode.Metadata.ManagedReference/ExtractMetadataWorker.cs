@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Utility;
-#if NET462
+#if NET451
     using Microsoft.DotNet.ProjectModel.Workspaces;
 #endif
 
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
         private static string[] SupportedSolutionExtensions = { ".sln" };
-        #if NET462
+        #if NET451
         private static string[] SupportedProjectName = { "project.json" };
         #else
         private static string[] SupportedProjectName = { };
@@ -373,7 +373,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var allMemebers = MergeYamlProjectMetadata(projectMetadataList);
             var allReferences = MergeYamlProjectReferences(projectMetadataList);
-            
+
             if (allMemebers == null || allMemebers.Count == 0)
             {
                 var value = projectMetadataList.Select(s => s.Name).ToDelimitedString();
@@ -402,7 +402,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Logger.Log(LogLevel.Info, $"'{inputs.ToDelimitedString()}' keep up-to-date since '{buildInfo.TriggeredUtcTime.ToString()}', cached result from '{buildInfo.OutputFolder}' is used.");
             relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
-        
+
         private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile)
         {
             var projectFilePath = project.FilePath;
@@ -504,7 +504,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var outputFiles = new List<string>();
             var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, apiFolder, preserveRawInlineComments, externalReferencePackages);
-            
+
             // 1. generate toc.yml
             outputFiles.Add(tocFileName);
             model.TocYamlViewModel.Type = MemberType.Toc;
@@ -715,7 +715,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             try
             {
                 string name = Path.GetFileName(path);
-                #if NET462
+                #if NET451
                 if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase))
                 {
                     var workspace = new ProjectJsonWorkspace(path);
