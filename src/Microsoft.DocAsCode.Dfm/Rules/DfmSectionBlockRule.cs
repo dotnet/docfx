@@ -19,9 +19,9 @@ namespace Microsoft.DocAsCode.Dfm
 
         private const string SectionReplacementHtmlTag = "div";
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
-            if (!engine.Context.Variables.ContainsKey(MarkdownBlockContext.IsBlockQuote) || !(bool)engine.Context.Variables[MarkdownBlockContext.IsBlockQuote])
+            if (!parser.Context.Variables.ContainsKey(MarkdownBlockContext.IsBlockQuote) || !(bool)parser.Context.Variables[MarkdownBlockContext.IsBlockQuote])
             {
                 return null;
             }
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Dfm
             source = source.Substring(match.Length);
 
             var attributes = ExtractAttibutes(match.Groups["attributes"].Value);
-            return new DfmSectionBlockToken(this, engine.Context, attributes, match.Groups["rawmarkdown"].Value);
+            return new DfmSectionBlockToken(this, parser.Context, attributes, match.Groups["rawmarkdown"].Value);
         }
 
         private string ExtractAttibutes(string attributeText)

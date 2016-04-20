@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex _inlineIncludeRegex = new Regex(DocfxFlavoredIncHelper.InlineIncRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public virtual Regex Include => _inlineIncludeRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Include.Match(source);
             if (match.Length == 0)
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups[4].Value;
 
             // 3. Apply inline rules to the included content
-            return new DfmIncludeInlineToken(this, engine.Context, path, value, title, match.Groups[0].Value, match.Value);
+            return new DfmIncludeInlineToken(this, parser.Context, path, value, title, match.Groups[0].Value, match.Value);
         }
     }
 }

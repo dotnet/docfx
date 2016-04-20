@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string Name => "XrefShortcut";
 
-        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = XrefShortcutRegexWithQuote.Match(source);
             if (match.Length == 0)
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Dfm
             // @String=>cap[2]=String, @'string'=>cap[2]=string
             // For cross-reference, add ~/ prefix
             var content = match.Groups[2].Value;
-            return new DfmXrefInlineToken(this, engine.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, false, match.Value);
+            return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, false, match.Value);
         }
     }
 }
