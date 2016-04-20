@@ -78,6 +78,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                         continue;
                     }
 
+                    // If template file does not exists, while a js script ends with .tmpl.js exists
+                    // we consider .tmpl.js file as a standalone preprocess file
+                    if (currentTemplates.Length == 0 && !group.Key.EndsWith(".tmpl", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
                     var currentTemplate = currentTemplates.FirstOrDefault();
                     var currentScript = currentScripts.FirstOrDefault();
                     if (currentTemplates.Length > 1)
@@ -89,6 +96,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         Logger.Log(LogLevel.Warning, $"Multiple template scripts for type '{group.Key}'(case insensitive) are found, the one from '{currentScript.item + currentScript.extension}' is taken.");
                     }
+
+                    var name = group.Key;
 
                     var template = new Template(group.Key, currentTemplate?.extension, currentTemplate?.item, currentScript?.item, resource, maxParallelism);
                     List<Template> templateList;

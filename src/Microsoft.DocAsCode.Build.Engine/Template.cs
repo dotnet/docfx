@@ -46,6 +46,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 ScriptName = Name + ".js";
                 _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(script), maxParallelism);
+                try
+                {
+                    using (_preprocessorPool.Rent())
+                    {
+                    }
+                }
+                catch (Exception e)
+                {
+                    _preprocessorPool = null;
+                    Logger.LogWarning($"{ScriptName} is not a valid template preprocessor, ignored: {e.Message}");
+                }
             }
 
             if (!string.IsNullOrEmpty(template) && resourceCollection != null)
