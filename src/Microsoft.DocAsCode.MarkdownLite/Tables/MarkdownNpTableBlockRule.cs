@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex NpTable => Regexes.Block.Tables.NpTable;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = NpTable.Match(source);
             if (match.Length == 0)
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 cells[i] = cells[i][0].SplitRegex(Regexes.Lexers.TableSplitter);
             }
-            return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+            return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
                     new MarkdownTableBlockToken(
                         t.Rule,
                         t.Context,
