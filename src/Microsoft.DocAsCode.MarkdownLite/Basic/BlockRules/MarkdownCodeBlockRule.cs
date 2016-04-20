@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Code => Regexes.Block.Code;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Regexes.Block.Code.Match(source);
             if (match.Length == 0)
@@ -20,13 +20,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             source = source.Substring(match.Length);
             var capStr = Regexes.Lexers.LeadingWhiteSpaces.Replace(match.Value, string.Empty);
-            if (engine.Options.Pedantic)
+            if (parser.Options.Pedantic)
             {
-                return new MarkdownCodeBlockToken(this, engine.Context, capStr, match.Value);
+                return new MarkdownCodeBlockToken(this, parser.Context, capStr, match.Value);
             }
             else
             {
-                return new MarkdownCodeBlockToken(this, engine.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), match.Value);
+                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), match.Value);
             }
         }
     }

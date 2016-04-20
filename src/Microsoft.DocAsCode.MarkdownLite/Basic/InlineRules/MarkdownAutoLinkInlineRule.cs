@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex AutoLink => Regexes.Inline.AutoLink;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = AutoLink.Match(source);
             if (match.Length == 0)
@@ -28,9 +28,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (match.Groups[2].Value == "@")
             {
                 text = match.Groups[1].Value[6] == ':'
-                  ? Mangle(engine.Options.Mangle, match.Groups[1].Value.Substring(7))
-                  : Mangle(engine.Options.Mangle, match.Groups[1].Value);
-                href = Mangle(engine.Options.Mangle, "mailto:") + text;
+                  ? Mangle(parser.Options.Mangle, match.Groups[1].Value.Substring(7))
+                  : Mangle(parser.Options.Mangle, match.Groups[1].Value);
+                href = Mangle(parser.Options.Mangle, "mailto:") + text;
             }
             else
             {
@@ -40,11 +40,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             return new MarkdownLinkInlineToken(
                 this, 
-                engine.Context, 
+                parser.Context, 
                 href, 
                 null, 
                 ImmutableArray<IMarkdownToken>.Empty.Add(
-                    new MarkdownRawToken(this, engine.Context, text)),
+                    new MarkdownRawToken(this, parser.Context, text)),
                 match.Value);
         }
 

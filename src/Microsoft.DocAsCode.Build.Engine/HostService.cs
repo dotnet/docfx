@@ -144,7 +144,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             result.LinkToUids = (from n in doc.DocumentNode.Descendants()
                                  where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
                                  from attr in n.Attributes
-                                 where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
+                                 where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
                                  where !string.IsNullOrWhiteSpace(attr.Value)
                                  select attr.Value).ToImmutableHashSet();
             using (var sw = new StringWriter())

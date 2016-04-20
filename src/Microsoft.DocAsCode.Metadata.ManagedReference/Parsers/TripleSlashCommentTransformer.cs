@@ -4,12 +4,14 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.IO;
+    using System.Net;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.XPath;
     using System.Xml.Xsl;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     public class TripleSlashCommentTransformer
     {
@@ -28,13 +30,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        public XDocument Transform(string xml)
+        public XDocument Transform(string xml, SyntaxLanguage language)
         {
             using (var ms = new MemoryStream())
             using (var writer = new XHtmlWriter(new StreamWriter(ms)))
             {
                 XDocument doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
-                _transform.Transform(doc.CreateNavigator(), writer);
+                var args = new XsltArgumentList();
+                args.AddParam("language", "urn:input-variables", WebUtility.HtmlEncode(language.ToString().ToLower()));
+                _transform.Transform(doc.CreateNavigator(), args, writer);
                 ms.Seek(0, SeekOrigin.Begin);
                 return XDocument.Load(ms, LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo);
             }

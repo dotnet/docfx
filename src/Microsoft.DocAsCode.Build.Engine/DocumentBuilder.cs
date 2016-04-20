@@ -96,7 +96,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 List<InnerBuildContext> innerContexts = null;
                 try
                 {
-                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism))
+                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
                         innerContexts = GetInnerContexts(parameters, Processors, processor).ToList();
                         var manifest = new List<ManifestItemWithContext>();
@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         UpdateContext(context);
                         UpdateHref(manifest, context);
 
-                        var generatedManifest = TemplateProcessor.Process(processor, manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
+                        var generatedManifest = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings);
 
                         ExportXRefMap(parameters, context);
 
@@ -346,7 +346,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             var item = HandleSaveResult(context, hostService, m, result);
                             item.Extension = extension;
 
-                            manifestItems.Add(new ManifestItemWithContext(item, m, processor));
+                            manifestItems.Add(new ManifestItemWithContext(item, m, processor, templateProcessor?.GetTemplateBundle(result.DocumentType)));
                         }
                     }
                 }
@@ -550,11 +550,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             public ManifestItem Item { get; }
             public FileModel FileModel { get; }
             public IDocumentProcessor Processor { get; }
-            public ManifestItemWithContext(ManifestItem item, FileModel model, IDocumentProcessor processor)
+            public TemplateBundle TemplateBundle { get; }
+            public ManifestItemWithContext(ManifestItem item, FileModel model, IDocumentProcessor processor, TemplateBundle bundle)
             {
                 Item = item;
                 FileModel = model;
                 Processor = processor;
+                TemplateBundle = bundle;
             }
         }
     }

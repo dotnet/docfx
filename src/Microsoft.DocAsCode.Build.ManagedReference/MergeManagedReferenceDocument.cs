@@ -99,6 +99,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new MergeItem
             {
                 MajorItem = majorItem,
+                AssemblyNameList = new SortedSet<string>(majorItem.AssemblyNameList ?? Enumerable.Empty<string>()),
                 Children = new SortedSet<string>(majorItem.Children ?? Enumerable.Empty<string>()),
                 Platform = new SortedSet<string>(majorItem.Platform ?? Enumerable.Empty<string>()),
                 MinorItems = page?.Items.Where(x => x.Uid != majorItem.Uid).ToDictionary(item => item.Uid, item => CreateMergeItemCore(item, null)),
@@ -109,6 +110,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private void MergeCore(MergeItem item, MergeItem otherItem)
         {
+            item.AssemblyNameList.UnionWith(otherItem.AssemblyNameList);
             item.Children.UnionWith(otherItem.Children);
             item.Platform.UnionWith(otherItem.Platform);
             MergeMinorItems(item, otherItem);
@@ -191,6 +193,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private void ConvertToVMCore(PageViewModel vm, MergeItem mergeItem)
         {
+            if (mergeItem.AssemblyNameList.Count > 0)
+            {
+                mergeItem.MajorItem.AssemblyNameList = mergeItem.AssemblyNameList.ToList();
+            }
             if (mergeItem.Children.Count > 0)
             {
                 mergeItem.MajorItem.Children = mergeItem.Children.ToList();
@@ -212,6 +218,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         private sealed class MergeItem
         {
             public ItemViewModel MajorItem { get; set; }
+            public SortedSet<string> AssemblyNameList { get; set; }
             public SortedSet<string> Children { get; set; }
             public SortedSet<string> Platform { get; set; }
             public Dictionary<string, MergeItem> MinorItems { get; set; }

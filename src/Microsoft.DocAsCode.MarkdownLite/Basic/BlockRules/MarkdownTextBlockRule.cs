@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Text => Regexes.Block.Text;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
-            if ((bool)engine.Context.Variables[MarkdownBlockContext.IsTop])
+            if ((bool)parser.Context.Variables[MarkdownBlockContext.IsTop])
             {
                 return null;
             }
@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownTextToken(this, engine.Context, match.Value, match.Value);
+            return new MarkdownTextToken(this, parser.Context, match.Value, match.Value);
         }
     }
 }

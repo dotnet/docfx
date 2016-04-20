@@ -16,7 +16,8 @@ namespace Microsoft.DocAsCode.Dfm
         public static readonly Regex _yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline);
         public string Name => "YamlHeader";
         public virtual Regex YamlHeader => _yamlHeaderRegex;
-        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+
+        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = YamlHeader.Match(source);
             if (match.Length == 0)
@@ -45,7 +46,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
 
             source = source.Substring(match.Length);
-            return new DfmYamlHeaderBlockToken(this, engine.Context, value, match.Value);
+            return new DfmYamlHeaderBlockToken(this, parser.Context, value, match.Value);
         }
     }
 }

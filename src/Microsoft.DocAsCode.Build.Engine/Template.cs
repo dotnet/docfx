@@ -29,27 +29,42 @@ namespace Microsoft.DocAsCode.Build.Engine
         public TemplateType TemplateType { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
 
-        public Template(string template, string templateName, string script, ResourceCollection resourceCollection, int maxParallelism)
+        public Template(string name, string rendererType, string template, string script, ResourceCollection resourceCollection, int maxParallelism)
         {
-            if (string.IsNullOrEmpty(templateName)) throw new ArgumentNullException(nameof(templateName));
-            Name = templateName;
-            var templateInfo = GetTemplateInfo(templateName);
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            Name = name;
+            var templateInfo = GetTemplateInfo(Name);
             Extension = templateInfo.Extension;
             Type = templateInfo.DocumentType;
             TemplateType = templateInfo.TemplateType;
             _script = script;
             if (!string.IsNullOrWhiteSpace(script))
             {
-                ScriptName = templateName + ".js";
+                ScriptName = Name + ".js";
                 _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(script), maxParallelism);
+                try
+                {
+                    using (_preprocessorPool.Rent())
+                    {
+                    }
+                }
+                catch (Exception e)
+                {
+                    _preprocessorPool = null;
+                    Logger.LogWarning($"{ScriptName} is not a valid template preprocessor, ignored: {e.Message}");
+                }
             }
 
             if (!string.IsNullOrEmpty(template) && resourceCollection != null)
             {
-                _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, templateName, template), maxParallelism);
+                _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, rendererType, template), maxParallelism);
             }
 
-            Resources = ExtractDependentResources();
+            Resources = ExtractDependentResources(Name);
         }
 
         /// <summary>
@@ -83,16 +98,20 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private string GetRelativeResourceKey(string relativePath)
+        private string GetRelativeResourceKey(string templateName, string relativePath)
         {
+            if (string.IsNullOrEmpty(templateName))
+            {
+                return relativePath;
+            }
             // Make sure resource keys are combined using '/'
-            return Path.GetDirectoryName(this.Name).ToNormalizedPath().ForwardSlashCombine(relativePath);
+            return Path.GetDirectoryName(templateName).ToNormalizedPath().ForwardSlashCombine(relativePath);
         }
 
         private static TemplateInfo GetTemplateInfo(string templateName)
         {
             // Remove folder and .tmpl
-            templateName = Path.GetFileNameWithoutExtension(templateName);
+            templateName = Path.GetFileName(templateName);
             var splitterIndex = templateName.IndexOf('.');
             if (splitterIndex < 0)
             {
@@ -122,7 +141,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
         /// <param name="template"></param>
-        private IEnumerable<TemplateResourceInfo> ExtractDependentResources()
+        private IEnumerable<TemplateResourceInfo> ExtractDependentResources(string templateName)
         {
             if (_rendererPool == null) yield break;
             using (var lease = _rendererPool.Rent())
@@ -138,11 +157,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (regexPatternMatch.Groups.Count > 1)
                     {
                         filePath = regexPatternMatch.Groups[1].Value;
-                        yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, true);
+                        yield return new TemplateResourceInfo(GetRelativeResourceKey(templateName, filePath), filePath, true);
                     }
                     else
                     {
-                        yield return new TemplateResourceInfo(GetRelativeResourceKey(filePath), filePath, false);
+                        yield return new TemplateResourceInfo(GetRelativeResourceKey(templateName, filePath), filePath, false);
                     }
                 }
             }
@@ -153,10 +172,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             return new TemplateJintPreprocessor(script);
         }
 
-        private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, string templateName, string template)
+        private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, string type, string template)
         {
             if (resourceCollection == null) throw new ArgumentNullException(nameof(resourceCollection));
-            if (Path.GetExtension(templateName).Equals(".liquid", StringComparison.OrdinalIgnoreCase))
+            if (type.Equals(".liquid", StringComparison.OrdinalIgnoreCase))
             {
                 return LiquidTemplateRenderer.Create(resourceCollection, template);
             }

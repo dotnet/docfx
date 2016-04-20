@@ -162,7 +162,7 @@ test2
             var templateName = "InvalidTemplate.html";
             string inputFolder = null;
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_InvalidTemplate.yml");
-            var item = new ManifestItem { FileWithoutExtension = Path.ChangeExtension(modelFileName, null), DocumentType = string.Empty };
+            var item = new ManifestItem { FileWithoutExtension = Path.ChangeExtension(modelFileName, null), DocumentType = string.Empty, Key = modelFileName };
             ProcessTemplate(templateName, inputFolder, new[] { item }, new object(), _outputFolder,
                 Tuple.Create("default.invalidtmpl", string.Empty),
                 Tuple.Create("default.js", string.Empty),
@@ -497,7 +497,7 @@ test2
                     item.Model = new DocAsCode.Plugins.ModelWithCache(model);
                 }
                 var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
-                TemplateProcessor.Process(processor, items.ToList(), context, settings);
+                processor.Process(items.ToList(), context, settings);
             }
         }
 

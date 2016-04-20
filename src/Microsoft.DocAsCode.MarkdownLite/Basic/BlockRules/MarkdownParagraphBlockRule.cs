@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Paragraph => Regexes.Block.Paragraph;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
-            if (!(bool)engine.Context.Variables[MarkdownBlockContext.IsTop])
+            if (!(bool)parser.Context.Variables[MarkdownBlockContext.IsTop])
             {
                 return null;
             }
@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var content = match.Groups[1].Value[match.Groups[1].Value.Length - 1] == '\n'
                 ? match.Groups[1].Value.Substring(0, match.Groups[1].Value.Length - 1)
                 : match.Groups[1].Value;
-            return new TwoPhaseBlockToken(this, engine.Context, match.Value, (p, t) =>
+            return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
                 new MarkdownParagraphBlockToken(t.Rule, t.Context, p.TokenizeInline(content), t.RawMarkdown));
         }
     }

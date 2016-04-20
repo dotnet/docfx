@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string Name => "XrefAutoLink";
 
-        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = XrefAutoLinkRegexWithQuote.Match(source);
             if (match.Length == 0)
@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Dfm
             source = source.Substring(match.Length);
 
             var content = match.Groups[2].Value;
-            return new DfmXrefInlineToken(this, engine.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, true, match.Value);
+            return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, true, match.Value);
         }
     }
 }

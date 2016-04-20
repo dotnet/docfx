@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual string Name => "INCLUDE";
         public virtual Regex Include => _incRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Include.Match(source);
             if (match.Length == 0)
@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Dfm
             var value = match.Groups[1].Value;
             var title = match.Groups[4].Value;
 
-            return new DfmIncludeBlockToken(this, engine.Context, path, value, title, match.Groups[0].Value, match.Value);
+            return new DfmIncludeBlockToken(this, parser.Context, path, value, title, match.Groups[0].Value, match.Value);
         }
     }
 }

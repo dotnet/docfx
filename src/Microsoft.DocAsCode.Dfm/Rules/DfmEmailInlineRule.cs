@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Dfm
         
         public virtual Regex Xref => _emailRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = Xref.Match(source);
             if (match.Length == 0)
@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Dfm
                 return null;
             }
             source = source.Substring(match.Length);
-            return new MarkdownTextToken(this, engine.Context, match.Groups[0].Value, match.Value);
+            return new MarkdownTextToken(this, parser.Context, match.Groups[0].Value, match.Value);
         }
     }
 }

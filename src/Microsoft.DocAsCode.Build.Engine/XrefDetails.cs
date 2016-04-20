@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (node.Name != "xref") throw new NotSupportedException("Only xref node is supported!");
             var xref = new XRefDetails();
 
-            var rawUid = node.GetAttributeValue("href", null);
+            var rawUid = GetRawUid(node);
             if (!string.IsNullOrEmpty(rawUid))
             {
                 var anchorIndex = rawUid.IndexOf("#");
@@ -194,6 +194,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return defaultValue;
+        }
+
+        private static string GetRawUid(HtmlAgilityPack.HtmlNode node)
+        {
+            string href = node.GetAttributeValue("href", null);
+            if (!string.IsNullOrEmpty(href))
+            {
+                return href;
+            }
+            return node.GetAttributeValue("uid", null);
         }
 
         public static HtmlAgilityPack.HtmlNode ConvertXrefLinkNodeToXrefNode(HtmlAgilityPack.HtmlNode node)

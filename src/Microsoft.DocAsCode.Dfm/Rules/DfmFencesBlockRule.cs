@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm
         public static readonly Regex _dfmFencesSharpQueryStringRegex = new Regex(@"^L(?<start>\d+)\-L(?<end>\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public static readonly Regex _dfmFencesRangeQueryStringRegex = new Regex(@"^(?<start>\d+)\-(?<end>\d+)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
             var match = _dfmFencesRegex.Match(source);
             if (match.Length == 0)
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesBlockToken(this, engine.Context, name, path, match.Value, lang, title, pathQueryOption);
+            return new DfmFencesBlockToken(this, parser.Context, name, path, match.Value, lang, title, pathQueryOption);
         }
 
         private static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
