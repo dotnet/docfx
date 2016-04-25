@@ -28,6 +28,7 @@ function transform(model, _attrs) {
             if (child.operation) {
                 child.operation = child.operation.toUpperCase();
             }
+            child.path = appendQueryParamsToPath(child.path, child.parameters);
             child.sourceurl = child.sourceurl || getViewSourceHref(child);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
@@ -199,5 +200,34 @@ function transform(model, _attrs) {
         if (!path || path[path.length - 1] === '/' || path[path.length - 1] === '\\') return '';
         var fileName = path.split('\\').pop().split('/').pop();
         return fileName.slice(0, fileName.lastIndexOf('.'));
+    }
+
+    function appendQueryParamsToPath(path, parameters) {
+        if (!path || !parameters) return path;
+
+        var requiredQueryParams = parameters.filter(function(p) { return p.in === 'query' && p.required; });
+        if (requiredQueryParams.length > 0) {
+            path = formatParams(path, requiredQueryParams, true);
+        }
+
+        var optionalQueryParams = parameters.filter(function(p) { return p.in === 'query' && !p.required; });
+        if (optionalQueryParams.length > 0) {
+            path += "[";
+            path = formatParams(path, optionalQueryParams, requiredQueryParams.length == 0);
+            path += "]";
+        }
+        return path;
+    }
+
+    function formatParams(path, parameters, isFirst) {
+        for (var i = 0; i < parameters.length; i++) {
+            if (i == 0 && isFirst) {
+                path += "?";
+            } else {
+                path += "&";
+            }
+            path += parameters[i].name;
+        }
+        return path;
     }
 }
