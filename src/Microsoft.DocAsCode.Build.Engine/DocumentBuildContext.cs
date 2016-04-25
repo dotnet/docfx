@@ -330,7 +330,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 dict[path] = item;
             }
-            return dict.ToImmutableDictionary();
+            return dict.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer);
         }
 
         private static XRefSpec GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)
