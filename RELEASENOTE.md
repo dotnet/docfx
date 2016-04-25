@@ -1,8 +1,13 @@
 Version Notes (Current Version: v1.8)
 =======================================
-v1.8 (Pre-Release)
+v1.8
 -----------
-1. Support multiple regions selection, code lines highlight and dedent length setting in [Code Snippet](http://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#code-snippet) (https://github.com/dotnet/docfx/issues/189)
+1. Support multiple regions selection, code lines highlight and dedent length setting in [Code Snippet](http://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#code-snippet). (https://github.com/dotnet/docfx/issues/189)
+2. Support more tags in triple-slash-comments, e.g. `lang`, `list`, `code`, `paramref` and `typeparamref`.
+3. Add Example section to default template.
+4. Bug fixes:
+    1. Fix bug when parsing triple-slash-comments. (https://github.com/dotnet/docfx/issues/221)
+    2. Fix syntax generation for VB module. (https://github.com/dotnet/docfx/issues/260)
 
 v1.7
 -----------
@@ -15,9 +20,9 @@ v1.7
 3. Cross-reference is now supporting anchor`#` (https://github.com/dotnet/docfx/issues/190)
 4. C# Code snippet now supports referencing source code using a region `#engion` (https://github.com/dotnet/docfx/issues/160)
 5. Support [TOC reference](xref:intro_toc#link-to-another-toc-file-). With this syntax, we can combine multiple TOC files into a single TOC. (https://github.com/dotnet/docfx/issues/161)
-6. Improve user experience when using `docfx.msbuild` in VS IDE 
+6. Improve user experience when using `docfx.msbuild` in VS IDE
 7. Code refactor:
-   1. We improved DocFX project structure in this release. `Microsoft.DocAsCode.EntityModel` namespace is no longer in use. Assemblies are separated into `Microsoft.DocAsCode.Build`,  `Microsoft.DocAsCode.DataContracts`, and  `Microsoft.DocAsCode.Metadata` namespace. All assemblies can be separately referenced through NuGet. In this way, it is much convenient for plugin writers to reference existing data models and utilities.  
+   1. We improved DocFX project structure in this release. `Microsoft.DocAsCode.EntityModel` namespace is no longer in use. Assemblies are separated into `Microsoft.DocAsCode.Build`,  `Microsoft.DocAsCode.DataContracts`, and  `Microsoft.DocAsCode.Metadata` namespace. All assemblies can be separately referenced through NuGet. In this way, it is much convenient for plugin writers to reference existing data models and utilities.
 
 v1.6
 -----------
