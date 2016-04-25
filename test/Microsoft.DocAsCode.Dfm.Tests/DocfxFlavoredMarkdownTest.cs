@@ -167,7 +167,7 @@ Not yaml syntax
 ---
 hello world";
             var expected = @"<h1 id=""title"">Title</h1>
-<hr>
+<hr/>
 <h2 id=""not-yaml-syntax"">Not yaml syntax</h2>
 <p>hello world</p>
 ";
@@ -246,9 +246,9 @@ world</p>
 ### /Unconfigure
 
 ---";
-            var expected = @"<hr>
+            var expected = @"<hr/>
 <h3 id=""-unconfigure"">/Unconfigure</h3>
-<hr>
+<hr/>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
@@ -263,12 +263,12 @@ world</p>
 - Brian Woodward
 
 ---";
-            var expected = @"<hr>
+            var expected = @"<hr/>
 <ul>
 <li>Jon Schlinkert</li>
 <li>Brian Woodward</li>
 </ul>
-<hr>
+<hr/>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
@@ -287,8 +287,8 @@ This is also note with br
 Skip the note
 ", @"<p>the following is note type</p>
 <div class=""NOTE""><h5>NOTE</h5><p>note text 1-1
-note text 1-2<br>note text 2-1
-This is also note<br>This is also note with br</p>
+note text 1-2<br/>note text 2-1
+This is also note<br/>This is also note with br</p>
 </div>
 <p>Skip the note</p>
 ")]
@@ -300,7 +300,7 @@ This is also note<br>This is also note with br</p>
 ", @"<p>the following is not note type</p>
 <blockquote><p>no-note text 1-1</p>
 </blockquote>
-<div class=""NOTE""><h5>NOTE</h5><p>no-note text 1-2<br>no-note text 2-1</p>
+<div class=""NOTE""><h5>NOTE</h5><p>no-note text 1-2<br/>no-note text 2-1</p>
 </div>
 ")]
         [InlineData(@"the following is not note type
@@ -312,7 +312,7 @@ This is also note<br>This is also note with br</p>
 ", @"<p>the following is not note type</p>
 <blockquote><p>no-note text 1-1</p>
 </blockquote>
-<div class=""NOTE""><h5>NOTE</h5><p>no-note text 2-1<br>no-note text 2-2</p>
+<div class=""NOTE""><h5>NOTE</h5><p>no-note text 2-1<br/>no-note text 2-2</p>
 </div>
 ")]
         [InlineData(@"the following is code
