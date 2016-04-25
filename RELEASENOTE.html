@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v1.7.2) | DocFX website </title>
+    <title>Version Notes (Current Version: v1.8) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v1.7.2) | DocFX website ">
-    <meta name="generator" content="docfx 1.7.2.0">
+    <meta name="title" content="Version Notes (Current Version: v1.8) | DocFX website ">
+    <meta name="generator" content="docfx 1.8.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -66,22 +66,17 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
               <a href="https://github.com/dotnet/docfx/blob/master/RELEASENOTE.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <h1 id="version-notes-current-version-v1-7-2-">Version Notes (Current Version: v1.7.2)</h1>
+              <h1 id="version-notes-current-version-v1-8-">Version Notes (Current Version: v1.8)</h1>
               
-<h2 id="v1-7-2">v1.7.2</h2>
+<h2 id="v1-8">v1.8</h2>
 <ol>
-<li>Fix markdown bug:<ul>
-<li>Ordered list continue with unordered list.</li>
-<li>Support gfm comments.</li>
-</ul>
-</li>
+<li>Support multiple regions selection, code lines highlight and dedent length setting in <a href="http://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#code-snippet">Code Snippet</a>. (<a href="https://github.com/dotnet/docfx/issues/189">https://github.com/dotnet/docfx/issues/189</a>)</li>
+<li>Support more tags in triple-slash-comments, e.g. <code>lang</code>, <code>list</code>, <code>code</code>, <code>paramref</code> and <code>typeparamref</code>.</li>
+<li>Add Example section to default template.</li>
+<li>Bug fixes:<ol>
+<li>Fix bug when parsing triple-slash-comments. (<a href="https://github.com/dotnet/docfx/issues/221">https://github.com/dotnet/docfx/issues/221</a>)</li>
+<li>Fix syntax generation for VB module. (<a href="https://github.com/dotnet/docfx/issues/260">https://github.com/dotnet/docfx/issues/260</a>)</li>
 </ol>
-<h2 id="v1-7-1">v1.7.1</h2>
-<ol>
-<li>Fix markdown bug:<ul>
-<li>Do NOT apply inline rule for html code.</li>
-<li>Update em rule for gfm.</li>
-</ul>
 </li>
 </ol>
 <h2 id="v1-7">v1.7</h2>
@@ -99,9 +94,9 @@
 <li>Cross-reference is now supporting anchor<code>#</code> (<a href="https://github.com/dotnet/docfx/issues/190">https://github.com/dotnet/docfx/issues/190</a>)</li>
 <li>C# Code snippet now supports referencing source code using a region <code>#engion</code> (<a href="https://github.com/dotnet/docfx/issues/160">https://github.com/dotnet/docfx/issues/160</a>)</li>
 <li>Support <a class="xref" href="tutorial/intro_toc.html#link-to-another-toc-file-">TOC reference</a>. With this syntax, we can combine multiple TOC files into a single TOC. (<a href="https://github.com/dotnet/docfx/issues/161">https://github.com/dotnet/docfx/issues/161</a>)</li>
-<li>Improve user experience when using <code>docfx.msbuild</code> in VS IDE </li>
+<li>Improve user experience when using <code>docfx.msbuild</code> in VS IDE</li>
 <li>Code refactor:<ol>
-<li>We improved DocFX project structure in this release. <code>Microsoft.DocAsCode.EntityModel</code> namespace is no longer in use. Assemblies are separated into <code>Microsoft.DocAsCode.Build</code>,  <code>Microsoft.DocAsCode.DataContracts</code>, and  <code>Microsoft.DocAsCode.Metadata</code> namespace. All assemblies can be separately referenced through NuGet. In this way, it is much convenient for plugin writers to reference existing data models and utilities.  </li>
+<li>We improved DocFX project structure in this release. <code>Microsoft.DocAsCode.EntityModel</code> namespace is no longer in use. Assemblies are separated into <code>Microsoft.DocAsCode.Build</code>,  <code>Microsoft.DocAsCode.DataContracts</code>, and  <code>Microsoft.DocAsCode.Metadata</code> namespace. All assemblies can be separately referenced through NuGet. In this way, it is much convenient for plugin writers to reference existing data models and utilities.</li>
 </ol>
 </li>
 </ol>

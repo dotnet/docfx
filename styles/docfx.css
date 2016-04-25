@@ -571,7 +571,7 @@ body .toc{
 .affix {
   font-size: 12px;
   max-height: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
   top: 100px;
   bottom: 10px;
 }
@@ -584,7 +584,10 @@ body .toc{
 }
 .affix > ul.level1 {
   overflow-x: hidden;
+  overflow-y: -20px;
   padding-bottom: 10px;
+  height: calc(100% - 100px);
+  margin-right: -20px;
 }
 .affix ul > li > a:before {
   color: #cccccc;
@@ -775,4 +778,9 @@ footer {
   .toc .level2 > li:after {
     display: none;
   }
+}
+
+/* For code snippet line highlight */
+pre > code .line-highlight {
+  background-color: #ffffcc;
 }

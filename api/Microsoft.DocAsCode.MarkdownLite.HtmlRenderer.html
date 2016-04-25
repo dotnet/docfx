@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class HtmlRenderer
    | DocFX website ">
-    <meta name="generator" content="docfx 1.7.2.0">
+    <meta name="generator" content="docfx 1.8.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -107,7 +107,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, GfmDelInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, GfmDelInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -121,7 +121,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -219,7 +219,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownBrInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBrInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -233,7 +233,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -275,7 +275,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownCodeBlockToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeBlockToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -289,7 +289,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -331,7 +331,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownCodeInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -345,7 +345,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -387,7 +387,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownEmInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEmInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -401,7 +401,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -443,7 +443,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownEscapeInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEscapeInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -457,7 +457,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -499,7 +499,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownHeadingBlockToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHeadingBlockToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -513,7 +513,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -555,7 +555,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownHrBlockToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHrBlockToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -569,7 +569,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -611,7 +611,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownHtmlBlockToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHtmlBlockToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -625,7 +625,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -667,7 +667,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownIgnoreToken token, IMarkdownContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownIgnoreToken token, IMarkdownContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -681,7 +681,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -723,7 +723,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownImageInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownImageInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -737,7 +737,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -779,7 +779,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownLinkInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownLinkInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -793,7 +793,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -835,7 +835,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownListBlockToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListBlockToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -849,7 +849,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -942,7 +942,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownNewLineBlockToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNewLineBlockToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -956,7 +956,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -1054,7 +1054,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownParagraphBlockToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownParagraphBlockToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1068,7 +1068,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -1110,7 +1110,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownRawToken token, IMarkdownContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownRawToken token, IMarkdownContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1124,7 +1124,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -1166,7 +1166,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownStrongInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownStrongInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1180,7 +1180,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -1222,7 +1222,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownTableBlockToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTableBlockToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1236,7 +1236,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -1278,7 +1278,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownTagInlineToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTagInlineToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1292,7 +1292,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -1334,7 +1334,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownTextToken token, MarkdownBlockContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownBlockContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1348,7 +1348,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -1390,7 +1390,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer engine, MarkdownTextToken token, MarkdownInlineContext context)</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownInlineContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1404,7 +1404,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a></td>
-                    <td><em>engine</em></td>
+                    <td><em>renderer</em></td>
                     <td></td>
                   </tr>
                   <tr>

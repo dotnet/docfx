@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class InfoObject
    | DocFX website ">
-    <meta name="generator" content="docfx 1.7.2.0">
+    <meta name="generator" content="docfx 1.8.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -101,7 +101,7 @@ public class InfoObject</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_RestApi_Swagger_InfoObject_PatternedObjects.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.Swagger.InfoObject.PatternedObjects%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/InfoObject.cs/#L27">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/InfoObject.cs/#L34">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_InfoObject_PatternedObjects" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.InfoObject.PatternedObjects">PatternedObjects</h4>
               <div class="markdown level1 summary"></div>
@@ -147,6 +147,42 @@ public Dictionary&lt;string, object&gt; PatternedObjects
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;title&quot;)]
 [JsonProperty(&quot;title&quot;)]
 public string Title
+{
+    get;
+    set;
+}</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_RestApi_Swagger_InfoObject_Version.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.RestApi.Swagger.InfoObject.Version%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/InfoObject.cs/#L30">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_InfoObject_Version" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.InfoObject.Version">Version</h4>
+              <div class="markdown level1 summary"><p>Required. Provides the version of the application API</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;version&quot;)]
+[JsonProperty(&quot;version&quot;)]
+public string Version
 {
     get;
     set;
