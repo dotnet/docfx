@@ -1,5 +1,8 @@
-Version Notes (Current Version: v1.8)
+Version Notes (Current Version: v1.9)
 =======================================
+v1.9 (Pre-Release)
+-----------
+
 v1.8
 -----------
 1. Support multiple regions selection, code lines highlight and dedent length setting in [Code Snippet](http://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#code-snippet). (https://github.com/dotnet/docfx/issues/189)
