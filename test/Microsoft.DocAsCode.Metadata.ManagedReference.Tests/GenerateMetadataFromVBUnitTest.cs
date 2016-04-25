@@ -1377,6 +1377,7 @@ Namespace Test1
     <Test(""test"")>
     <Test(New Integer(){1,2,3})>
     <Test(New Object(){Nothing, ""abc"", ""d""c, 1.1f, 1.2, CType(2, SByte), CType(3, Byte), 4s, 5us, 6, 8L, 9UL, New Integer(){ 10, 11, 12 }})>
+    <Test(New Type(){GetType(Func(Of )), GetType(Func(Of ,)), GetType(Func(Of String, String))})>
     Public Class TestAttribute
         Inherits Attribute
 
@@ -1397,6 +1398,7 @@ End Namespace
 <Test(""test"")>
 <Test(New Integer() {1, 2, 3})>
 <Test(New Object() {Nothing, ""abc"", ""d""c, 1.1F, 1.2, CType(2, SByte), CType(3, Byte), CType(4, Short), CType(5, UShort), 6, 8L, 9UL, New Integer() {10, 11, 12}})>
+<Test(New Type() {GetType(Func(Of )), GetType(Func(Of , )), GetType(Func(Of String, String))})>
 Public Class TestAttribute
     Inherits Attribute
     Implements _Attribute", type.Syntax.Content[SyntaxLanguage.VB]);
