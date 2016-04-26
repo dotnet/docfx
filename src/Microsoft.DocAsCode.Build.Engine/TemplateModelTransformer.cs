@@ -278,18 +278,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             string path;
             if (RelativePath.TryGetPathWithoutWorkingFolderChar(key, out path))
             {
-                string href;
+                var href = context.GetFilePath(key);
+                var anchor = link.GetAttributeValue("anchor", null);
 
-                href = context.GetFilePath(key);
                 if (href != null)
                 {
                     href = ((RelativePath)UpdateFilePath(href, relativePath)).UrlEncode();
 
-                    var anchor = link.GetAttributeValue("anchor", null);
                     if (!string.IsNullOrEmpty(anchor))
                     {
                         href += anchor;
-                        link.Attributes.Remove(link.Attributes["anchor"]);
+                        link.Attributes.Remove("anchor");
                     }
                     link.SetAttributeValue(attribute, href);
                 }
@@ -298,6 +297,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Logger.LogWarning($"File {path} is not found in {relativePath}.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
+                    if (!string.IsNullOrEmpty(anchor))
+                    {
+                        path += anchor;
+                        link.Attributes.Remove("anchor");
+                    }
                     link.SetAttributeValue(attribute, path);
                 }
             }
