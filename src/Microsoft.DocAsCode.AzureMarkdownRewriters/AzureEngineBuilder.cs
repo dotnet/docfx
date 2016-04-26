@@ -199,6 +199,17 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             var currentFilePath = (string)context.Variables["path"];
             var currentFolderPath = Path.GetDirectoryName(currentFilePath);
 
+            // if the relative path (not from azure resource file info mapping) is under docset. Just return it.
+            var nonMdHrefFullPath = Path.GetFullPath(Path.Combine(currentFolderPath, nonMdHref));
+            if (PathUtility.IsPathUnderSpecificFolder(nonMdHrefFullPath, currentFolderPath))
+            {
+                return nonMdHref;
+            }
+            else
+            {
+                Logger.LogVerbose($"Relative path:{nonMdHref} is not under {currentFolderPath} of file {currentFilePath}. Use ex_resource to replace the link.");
+            }
+
             // if azure resource file info doesn't exist, log warning and return
             if (!context.Variables.ContainsKey("azureResourceFileInfoMapping"))
             {
