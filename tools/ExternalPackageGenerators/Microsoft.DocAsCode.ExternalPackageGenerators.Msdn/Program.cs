@@ -415,7 +415,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private string GetAlias(string commentId)
         {
-            if (!commentId.StartsWith("T:"))
+            if (!commentId.StartsWith("T:") && !commentId.StartsWith("N:"))
             {
                 return null;
             }
