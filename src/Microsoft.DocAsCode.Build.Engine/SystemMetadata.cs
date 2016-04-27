@@ -53,5 +53,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         [JsonProperty("_tocRel")]
         public string RelativePathToToc { get; set; }
+
+        /// <summary>
+        /// The file key for Root TOC file, starting with `~`
+        /// </summary>
+        [JsonProperty("_navKey")]
+        public string RootTocKey { get; set; }
+
+        /// <summary>
+        /// The file key for current file's TOC file, starting with `~`
+        /// </summary>
+        [JsonProperty("_tocKey")]
+        public string TocKey { get; set; }
     }
 }

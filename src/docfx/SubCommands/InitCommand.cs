@@ -166,7 +166,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 Descriptions = new string[]
                 {
                     "You can define multiple templates in order, latter one will override former one if name collides",
-                    "Predefined templates in docfx are now: default",
+                    "Predefined templates in docfx are now: default, statictoc",
                     Hints.Enter,
                 }
             }

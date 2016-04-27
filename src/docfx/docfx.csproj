@@ -189,6 +189,10 @@
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
       <LogicalName>$(AssemblyName).Template.default(zh-cn).zip</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Template\statictoc.zip">
+      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
+      <LogicalName>$(AssemblyName).Template.statictoc.zip</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Template\iframe.html.zip">
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
       <LogicalName>$(AssemblyName).Template.iframe.html.zip</LogicalName>
