@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 exports.path = {};
 exports.path.getFileNameWithoutExtension = getFileNameWithoutExtension;
+exports.path.getDirectoryName = getDirectoryName;
 
 exports.getHtmlId = getHtmlId;
 
@@ -9,6 +10,17 @@ exports.getImproveTheDocHref = getImproveTheDocHref;
 
 exports.isAbsolutePath = function (path) {
   return /^(\w+:)?\/\//g.test(path);
+}
+
+exports.isRelativePath = function(path) {
+  if (!path) return false;
+  return !exports.isAbsolutePath(path);
+}
+
+function getDirectoryName(path) {
+  if (!path) return '';
+  var index = path.lastIndexOf('/');
+  return path.slice(0, index + 1);
 }
 
 function getFileNameWithoutExtension(path) {

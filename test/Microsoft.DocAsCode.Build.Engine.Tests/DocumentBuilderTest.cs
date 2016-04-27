@@ -305,6 +305,7 @@ exports.getOptions = function (){
                     ["_rel"] = "../",
                     ["_path"] = $"{_inputFolder}/toc",
                     ["_tocRel"] = "toc",
+                    ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                     ["homepage"] = "test.html",
                     ["items"] = new object[]
                     {
@@ -324,6 +325,7 @@ exports.getOptions = function (){
                                 ["_rel"] = "../",
                                 ["_path"] = $"{_inputFolder}/toc",
                                 ["_tocRel"] = "toc",
+                                ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                                 ["homepage"] = "test.html",
                                 ["items"] = new object[]
                                 {
@@ -340,6 +342,7 @@ exports.getOptions = function (){
                                 ["_rel"] = "../../",
                                 ["_path"] = $"{_inputFolder}/test/toc",
                                 ["_tocRel"] = "toc",
+                                ["_tocKey"] = $"~/{_inputFolder}/test/toc.md",
                                 ["homepage"] = "test.html",
                                 ["items"] = new object[]
                                 {
@@ -368,6 +371,7 @@ exports.getOptions = function (){
                     ["_rel"] = "../",
                     ["_path"] = $"{_inputFolder}/test.html",
                     ["_tocRel"] = "toc",
+                    ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                     ["conceptual"] = $"\n<p>Test link: <a href=\"~/{_inputFolder}/test/test.md\">link text</a>\ntest</p>\n",
                     ["type"] = "Conceptual",
                     ["source"] = model["source"], // reuse model's source, not testing this
@@ -388,6 +392,7 @@ exports.getOptions = function (){
                                 ["_rel"] = "../",
                                 ["_path"] = $"{_inputFolder}/toc",
                                 ["_tocRel"] = "toc",
+                                ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                                 ["homepage"] = "test.html",
                                 ["items"] = new object[]
                                 {
@@ -404,6 +409,7 @@ exports.getOptions = function (){
                                 ["_rel"] = "../../",
                                 ["_path"] = $"{_inputFolder}/test/toc",
                                 ["_tocRel"] = "toc",
+                                ["_tocKey"] = $"~/{_inputFolder}/test/toc.md",
                                 ["homepage"] = "test.html",
                                 ["items"] = new object[]
                                 {

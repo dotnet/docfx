@@ -42,10 +42,30 @@ var pack = {
             "files": files, // Overrides the former one if file name is the same
         }
     ],
+    "statictoc": [
+        {
+            "files": [
+                "fonts/*",
+                "partials/*",
+                "styles/*",
+                "*.js",
+                "*.tmpl",
+                "favicon.ico",
+                "logo.svg",
+                "global.json",
+                "!toc.html.*",
+                ],
+            "cwd": "default",
+        },
+        {
+            "files": files, // Overrides the former one if file name is the same
+        }
+    ],
     "msdn.html": [
         {
             "files": [
                 "common.js",
+                "ManagedReference.common.js",
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
@@ -69,6 +89,7 @@ var pack = {
         {
             "files": [
                 "common.js",
+                "ManagedReference.common.js",
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
@@ -91,6 +112,7 @@ var pack = {
         {
             "files": [
                 "common.js",
+                "ManagedReference.common.js",
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
@@ -118,6 +140,8 @@ var pack = {
          {
             "files": [
                 "common.js",
+                "ManagedReference.common.js",
+                "RestApi.common.js",
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
