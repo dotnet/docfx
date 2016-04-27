@@ -159,7 +159,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 item =>
                 {
                     var manifestItem = transformer.Transform(item);
-                    manifest.Add(manifestItem);
+                    if (manifestItem.OutputFiles?.Count > 0)
+                    {
+                        manifest.Add(manifestItem);
+                    }
                 },
                 context.MaxParallelism);
 
