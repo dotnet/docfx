@@ -58,6 +58,7 @@ h6 mark {
 .inheritance .level4:before,
 .inheritance .level5:before {
     content: '↳';
+    margin-right: 5px;
 }
 
 .inheritance .level0 {
@@ -556,9 +557,6 @@ body .toc{
 
 .article.grid-right {
   margin-left: 280px;
-}
-.inheritance span {
-  margin-left: 5px;
 }
 
 .inheritance hr {
