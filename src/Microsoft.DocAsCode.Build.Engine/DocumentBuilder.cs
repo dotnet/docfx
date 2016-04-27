@@ -434,6 +434,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
+            foreach (var spec in result.ExternalXRefSpecs)
+            {
+                if (!string.IsNullOrWhiteSpace(spec?.Uid))
+                {
+                    context.ReportExternalXRefSpec(spec);
+                }
+            }
         }
 
         private static ManifestItem GetManifestItem(DocumentBuildContext context, FileModel model, SaveResult result)
