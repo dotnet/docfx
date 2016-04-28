@@ -207,7 +207,9 @@
         <section class="secondary">
         {{#example.0}}
           <h6>Example</h6>
-          {{{example}}}
+          {{#example}}
+          {{{.}}}
+          {{/example}}
         {{/example.0}}
         </section>
       </div>
