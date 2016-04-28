@@ -45,6 +45,7 @@ var pack = {
     "msdn.html": [
         {
             "files": [
+                "common.js",
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
@@ -66,6 +67,7 @@ var pack = {
     "op.html": [
         {
             "files": [
+                "common.js",
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
@@ -87,6 +89,7 @@ var pack = {
     "vs.html": [
         {
             "files": [
+                "common.js",
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
@@ -112,6 +115,7 @@ var pack = {
     "docs.html": [
          {
             "files": [
+                "common.js",
                 "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",

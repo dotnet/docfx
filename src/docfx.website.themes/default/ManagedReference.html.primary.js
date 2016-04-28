@@ -1,4 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
+var common = require('./common.js');
+
 function transform(model, _attrs, _global) {
   var namespaceItems = {
     "class":        { inClass: true,        typePropertyName: "inClass",        id: "classes" },
@@ -18,11 +20,9 @@ function transform(model, _attrs, _global) {
 
   if (!model) return null;
 
-  newFileRepository = model.newFileRepository;
   langs = model.langs;
-
-  handleItem(model);
-  model.children.forEach(handleItem);
+  handleItem(model, model.newFileRepository);
+  model.children.forEach(function(item) { handleItem(item, model.newFileRepository);});
 
   if (model.type) {
     switch (model.type.toLowerCase()) {
@@ -113,10 +113,10 @@ function handleNamespace(model) {
   model.namespace = model.namespaceExpanded.uid;
 }
 
-function handleItem(vm) {
+function handleItem(vm, newFileRepository) {
   // get contribution information
-  vm.docurl = getImproveTheDocHref(vm);
-  vm.sourceurl = getViewSourceHref(vm);
+  vm.docurl = common.getImproveTheDocHref(vm, newFileRepository);
+  vm.sourceurl = common.getViewSourceHref(vm);
 
   // fill "undefined" if key not existed
   vm.summary = vm.summary;
@@ -149,96 +149,6 @@ function handleItem(vm) {
       } else {
           vm.hideSubtitle = false;
       }
-  }
-
-  function getImproveTheDocHref(item) {
-    if (!item) return '';
-    if (!item.documentation || !item.documentation.remote) {
-      return getNewFileUrl(item.uid);
-    } else {
-      return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1);
-    }
-  }
-
-  function getViewSourceHref(item) {
-    /* jshint validthis: true */
-    if (!item || !item.source || !item.source.remote) return '';
-    return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1);
-  }
-
-  function getNewFileUrl(uid) {
-    // do not support VSO for now
-    if (newFileRepository && newFileRepository.repo) {
-      var repo = newFileRepository.repo;
-      if (repo.substr(-4) === '.git') {
-        repo = repo.substr(0, repo.length - 4);
-      }
-      var path = getGithubUrlPrefix(repo);
-      if (path != '') {
-        path += '/new';
-        path += '/' + newFileRepository.branch;
-        path += '/' + getOverrideFolder(newFileRepository.path);
-        path += '/new?filename=' + getHtmlId(uid) + '.md';
-        path += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
-      }
-      return path;
-    } else {
-      return '';
-    }
-  }
-
-  function getOverrideFolder(path) {
-    if (!path) return "";
-    path = path.replace('\\', '/');
-    if (path.charAt(path.length - 1) == '/') path = path.substring(0, path.length - 1);
-    return path;
-  }
-
-  function getHtmlId(input) {
-    return input.replace(/\W/g, '_');
-  }
-
-  function getOverrideTemplate(uid) {
-    if (!uid) return "";
-    var content = "";
-    content += "---\n";
-    content += "uid: " + uid + "\n";
-    content += "remarks: '*THIS* is remarks overriden in *MARKDOWN* file'\n";
-    content += "---\n";
-    content += "\n";
-    content += "*Please type below more information about this API:*\n";
-    content += "\n";
-    return content;
-  }
-
-  function getRemoteUrl(remote, startLine) {
-    if (remote && remote.repo) {
-      var repo = remote.repo;
-      if (repo.substr(-4) === '.git') {
-        repo = repo.substr(0, repo.length - 4);
-      }
-      var linenum = startLine ? startLine : 0;
-      if (/https:\/\/.*\.visualstudio\.com\/.*/gi.test(repo)) {
-        // TODO: line not working for vso
-        return repo + '#path=/' + remote.path;
-      }
-      var path = getGithubUrlPrefix(repo);
-      if (path != '') {
-        path += '/blob' + '/' + remote.branch + '/' + remote.path;
-        if (linenum > 0) path += '/#L' + linenum;
-      }
-      return path;
-    } else {
-      return '';
-    }
-  }
-
-  function getGithubUrlPrefix(repo) {
-    var regex = /^(?:https?:\/\/)?(?:\S+\@)?(?:\S+\.)?(github\.com(?:\/|:).*)/gi;
-    if (!regex.test(repo)) return '';
-    return repo.replace(regex, function(match, p1, offset, string) {
-      return 'https://' + p1.replace(':', '/');
-    })
   }
 
   function shouldHideTitleType(vm) {

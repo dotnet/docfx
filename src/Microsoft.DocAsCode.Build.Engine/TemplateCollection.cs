@@ -59,7 +59,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                          select new
                          {
                              item = i.Value,
-                             extension = Path.GetExtension(i.Key)
+                             extension = Path.GetExtension(i.Key),
+                             name = i.Key,
                          } into item
                          where IsSupportedTemplateFile(item.extension)
                          select item).ToArray();
@@ -68,7 +69,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                           select new
                           {
                               item = i.Value,
-                              extension = Path.GetExtension(i.Key)
+                              extension = Path.GetExtension(i.Key),
+                              name = i.Key,
                           } into item
                           where IsSupportedScriptFile(item.extension)
                           select item).ToArray();
@@ -98,8 +100,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     var name = group.Key;
-
-                    var template = new Template(group.Key, currentTemplate?.extension, currentTemplate?.item, currentScript?.item, resource, maxParallelism);
+                    TemplateRendererResource templateResource =
+                        currentTemplate == null ?
+                        null :
+                        new TemplateRendererResource(currentTemplate.name, currentTemplate.item);
+                    TemplatePreprocessorResource templatePrepocessorResource =
+                        currentScript == null ?
+                        null :
+                        new TemplatePreprocessorResource(currentScript.name, currentScript.item);
+                    var template = new Template(group.Key, templateResource, templatePrepocessorResource, resource, maxParallelism);
                     List<Template> templateList;
                     if (dict.TryGetValue(template.Type, out templateList))
                     {
@@ -117,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static bool IsSupportedTemplateFile(string extension)
         {
-            return extension.Equals(".tmpl", StringComparison.OrdinalIgnoreCase) || extension.Equals(".liquid", StringComparison.OrdinalIgnoreCase);
+            return TemplateRendererResource.TemplateRenderTypeMapping.ContainsKey(extension);
         }
 
         private static bool IsSupportedScriptFile(string extension)

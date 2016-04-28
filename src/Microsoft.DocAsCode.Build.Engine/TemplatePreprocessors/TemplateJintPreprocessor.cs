@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Jint;
@@ -14,7 +15,42 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class TemplateJintPreprocessor : ITemplatePreprocessor
     {
         private const string TransformFuncVariableName = "transform";
+
+        /// <summary>
+        /// Support
+        ///     console.log
+        ///     console.info
+        ///     console.warn
+        ///     console.err
+        ///     console.error
+        /// in preprocessor script
+        /// </summary>
         private const string ConsoleVariableName = "console";
+
+        /// <summary>
+        /// Support require functionality as similar to NodeJS and RequireJS:
+        /// use `exports` to export the properties for one module
+        /// use `require` to use the exported module
+        /// 
+        /// Sample:
+        ///
+        /// 1. A common script file common.js:
+        /// ```
+        /// exports.util = function(){};
+        /// ```
+        /// 2. The main script file main.js:
+        /// ```js
+        /// var common = require('./common.js');
+        /// common.util();
+        /// ```
+        /// Comparing to NodeJS, only relative path starting with `./` is supported.
+        /// The circular reference handler is similar to NodeJS: **unfinished copy**.
+        /// https://nodejs.org/api/modules.html#modules_cycles
+        /// </summary>
+        private const string RequireFuncVariableName = "require";
+        private const string RequireRelativePathPrefix = "./";
+
+        private const string ExportsVariableName = "exports";
 
         private static readonly object ConsoleObject = new
         {
@@ -27,16 +63,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly Engine _engine;
 
-        public TemplateJintPreprocessor(string script)
+        public TemplateJintPreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)
         {
-            if (!string.IsNullOrWhiteSpace(script))
+            if (!string.IsNullOrWhiteSpace(scriptResource.Content))
             {
-                var engine = new Engine();
-
-                engine.SetValue(ConsoleVariableName, ConsoleObject);
-
-                engine.Execute(script);
-                _engine = engine;
+                
+                _engine = SetupEngine(resourceCollection, scriptResource);
             }
             else
             {
@@ -53,6 +85,68 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var model = args.Select(s => (object)JintProcessorHelper.ConvertStrongTypeToJsValue(s)).ToArray();
             return _engine.Invoke(TransformFuncVariableName, model).ToObject();
+        }
+
+        private Engine SetupEngine(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)
+        {
+            var rootPath = (RelativePath)scriptResource.ResourceName;
+            var engineCache = new Dictionary<string, Engine>();
+
+            var engine = CreateDefaultEngine();
+
+            var requireAction = new Func<string, object>(
+                s =>
+                {
+                    if (!s.StartsWith(RequireRelativePathPrefix))
+                    {
+                        throw new ArgumentException($"Only relative path starting with `{RequireRelativePathPrefix}` is supported in require");
+                    }
+                    var relativePath = (RelativePath)s.Substring(RequireRelativePathPrefix.Length);
+                    s = relativePath.BasedOn(rootPath);
+
+                    var script = resourceCollection?.GetResource(s);
+                    if (string.IsNullOrWhiteSpace(script))
+                    {
+                        return null;
+                    }
+
+                    Engine cachedEngine;
+                    if (!engineCache.TryGetValue(s, out cachedEngine))
+                    {
+                        cachedEngine = CreateEngine(engine, RequireFuncVariableName);
+                        engineCache[s] = cachedEngine;
+                        cachedEngine.Execute(script);
+                    }
+
+                    return cachedEngine.GetValue(ExportsVariableName);
+                });
+
+            engine.SetValue(RequireFuncVariableName, requireAction);
+            engineCache[rootPath] = engine;
+            engine.Execute(scriptResource.Content);
+            return engine;
+        }
+
+        private static Engine CreateEngine(Engine engine, params string[] sharedVariables)
+        {
+            var newEngine = CreateDefaultEngine();
+            if (sharedVariables != null)
+            {
+                foreach(var sharedVariable in sharedVariables)
+                {
+                    newEngine.SetValue(sharedVariable, engine.GetValue(sharedVariable));
+                }
+            }
+
+            return newEngine;
+        }
+
+        private static Engine CreateDefaultEngine()
+        {
+            var engine = new Engine();
+            engine.SetValue(ExportsVariableName, engine.Object.Construct(Jint.Runtime.Arguments.Empty));
+            engine.SetValue(ConsoleVariableName, ConsoleObject);
+            return engine;
         }
     }
 }

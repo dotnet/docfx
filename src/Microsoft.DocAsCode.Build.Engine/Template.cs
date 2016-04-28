@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public TemplateType TemplateType { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
 
-        public Template(string name, string rendererType, string template, string script, ResourceCollection resourceCollection, int maxParallelism)
+        public Template(string name, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, ResourceCollection resourceCollection, int maxParallelism)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -41,11 +41,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             Extension = templateInfo.Extension;
             Type = templateInfo.DocumentType;
             TemplateType = templateInfo.TemplateType;
-            _script = script;
-            if (!string.IsNullOrWhiteSpace(script))
+            _script = scriptResource?.Content;
+            if (!string.IsNullOrWhiteSpace(_script))
             {
                 ScriptName = Name + ".js";
-                _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(script), maxParallelism);
+                _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(resourceCollection, scriptResource), maxParallelism);
                 try
                 {
                     using (_preprocessorPool.Rent())
@@ -59,9 +59,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            if (!string.IsNullOrEmpty(template) && resourceCollection != null)
+            if (!string.IsNullOrEmpty(templateResource?.Content) && resourceCollection != null)
             {
-                _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, rendererType, template), maxParallelism);
+                _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, templateResource), maxParallelism);
             }
 
             Resources = ExtractDependentResources(Name);
@@ -167,21 +167,20 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static ITemplatePreprocessor CreatePreprocessor(string script)
+        private static ITemplatePreprocessor CreatePreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)
         {
-            return new TemplateJintPreprocessor(script);
+            return new TemplateJintPreprocessor(resourceCollection, scriptResource);
         }
 
-        private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, string type, string template)
+        private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, TemplateRendererResource templateResource)
         {
-            if (resourceCollection == null) throw new ArgumentNullException(nameof(resourceCollection));
-            if (type.Equals(".liquid", StringComparison.OrdinalIgnoreCase))
+            if (templateResource.Type == TemplateRendererType.Liquid)
             {
-                return LiquidTemplateRenderer.Create(resourceCollection, template);
+                return LiquidTemplateRenderer.Create(resourceCollection, templateResource.Content);
             }
             else
             {
-                return new MustacheTemplateRenderer(resourceCollection, template);
+                return new MustacheTemplateRenderer(resourceCollection, templateResource.Content);
             }
         }
 
