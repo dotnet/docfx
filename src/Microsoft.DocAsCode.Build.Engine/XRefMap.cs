@@ -17,6 +17,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [YamlMember(Alias = "sorted")]
         public bool Sorted { get; set; }
 
+        [YamlMember(Alias = "baseUrl")]
+        public string BaseUrl { get; set; }
+
         [YamlMember(Alias = "references")]
         public List<XRefSpec> References { get; set; }
 
