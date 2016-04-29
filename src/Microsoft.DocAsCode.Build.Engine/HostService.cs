@@ -22,10 +22,13 @@ namespace Microsoft.DocAsCode.Build.Engine
     [Export(typeof(IHostService))]
     internal sealed class HostService : IHostService, IDisposable
     {
+        #region Fields
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
         private readonly LruList<ModelWithCache> _lru = LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
-        private DfmEngineBuilder _engine;
+        #endregion
+
+        #region Properties
 
         public ImmutableList<FileModel> Models { get; private set; }
 
@@ -33,11 +36,18 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();
 
+        public IMarkdownService MarkdownService { get; set; }
+
+        #endregion
+
+        #region Constructors
+
         public HostService(string baseDir, IEnumerable<FileModel> models)
         {
-            _engine = DocfxFlavoredMarked.CreateBuilder(baseDir);
             LoadCore(models);
         }
+
+        #endregion
 
         #region IHostService Members
 
@@ -85,9 +95,93 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        public void LogVerbose(string message, string file, string line)
+        {
+            Logger.LogVerbose(message, file: file, line: line);
+        }
+
+        public void LogInfo(string message, string file, string line)
+        {
+            Logger.LogInfo(message, file: file, line: line);
+        }
+
+        public void LogWarning(string message, string file, string line)
+        {
+            Logger.LogWarning(message, file: file, line: line);
+        }
+
+        public void LogError(string message, string file, string line)
+        {
+            Logger.LogError(message, file: file, line: line);
+        }
+
+        #endregion
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            foreach (var m in Models)
+            {
+                m.FileOrBaseDirChanged -= HandleFileOrBaseDirChanged;
+                m.UidsChanged -= HandleUidsChanged;
+            }
+        }
+
+        #endregion
+
+        public void Reload(IEnumerable<FileModel> models)
+        {
+            lock (_syncRoot)
+            {
+                LoadCore(models);
+            }
+        }
+
+        #region Private Methods
+
+        private void LoadCore(IEnumerable<FileModel> models)
+        {
+            EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
+            EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
+            EventHandler contentAccessedHandler = ContentAccessedHandler;
+            if (Models != null)
+            {
+                foreach (var m in Models)
+                {
+                    m.FileOrBaseDirChanged -= fileOrBaseDirChangedHandler;
+                    m.UidsChanged -= uidsChangedHandler;
+                    m.ContentAccessed -= contentAccessedHandler;
+                }
+            }
+            Models = models.ToImmutableList();
+            _uidIndex.Clear();
+            FileMap.Clear();
+            foreach (var m in Models)
+            {
+                m.FileOrBaseDirChanged += fileOrBaseDirChangedHandler;
+                m.UidsChanged += uidsChangedHandler;
+                m.ContentAccessed += contentAccessedHandler;
+                foreach (var uid in m.Uids)
+                {
+                    List<FileModel> list;
+                    if (!_uidIndex.TryGetValue(uid.Name, out list))
+                    {
+                        list = new List<FileModel>();
+                        _uidIndex.Add(uid.Name, list);
+                    }
+                    list.Add(m);
+                }
+                if (m.Type != DocumentType.Overwrite)
+                {
+                    FileMap[m.FileAndType] = m.FileAndType;
+                }
+            }
+        }
+
         private MarkupResult MarkupCore(string markdown, FileAndType ft)
         {
-            var html = _engine.CreateDfmEngine(DocfxFlavoredMarked.Renderer).Markup(markdown, Path.Combine(ft.BaseDir, ft.File));
+            var html = MarkdownService.Markup(markdown, Path.Combine(ft.BaseDir, ft.File));
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             var result = new MarkupResult();
@@ -155,88 +249,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
-        public void LogVerbose(string message, string file, string line)
-        {
-            Logger.LogVerbose(message, file: file, line: line);
-        }
-
-        public void LogInfo(string message, string file, string line)
-        {
-            Logger.LogInfo(message, file: file, line: line);
-        }
-
-        public void LogWarning(string message, string file, string line)
-        {
-            Logger.LogWarning(message, file: file, line: line);
-        }
-
-        public void LogError(string message, string file, string line)
-        {
-            Logger.LogError(message, file: file, line: line);
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            foreach (var m in Models)
-            {
-                m.FileOrBaseDirChanged -= HandleFileOrBaseDirChanged;
-                m.UidsChanged -= HandleUidsChanged;
-            }
-        }
-
-        #endregion
-
-        public void Reload(IEnumerable<FileModel> models)
-        {
-            lock (_syncRoot)
-            {
-                LoadCore(models);
-            }
-        }
-
-        private void LoadCore(IEnumerable<FileModel> models)
-        {
-            EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
-            EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
-            EventHandler contentAccessedHandler = ContentAccessedHandler;
-            if (Models != null)
-            {
-                foreach (var m in Models)
-                {
-                    m.FileOrBaseDirChanged -= fileOrBaseDirChangedHandler;
-                    m.UidsChanged -= uidsChangedHandler;
-                    m.ContentAccessed -= contentAccessedHandler;
-                }
-            }
-            Models = models.ToImmutableList();
-            _uidIndex.Clear();
-            FileMap.Clear();
-            foreach (var m in Models)
-            {
-                m.FileOrBaseDirChanged += fileOrBaseDirChangedHandler;
-                m.UidsChanged += uidsChangedHandler;
-                m.ContentAccessed += contentAccessedHandler;
-                foreach (var uid in m.Uids)
-                {
-                    List<FileModel> list;
-                    if (!_uidIndex.TryGetValue(uid.Name, out list))
-                    {
-                        list = new List<FileModel>();
-                        _uidIndex.Add(uid.Name, list);
-                    }
-                    list.Add(m);
-                }
-                if (m.Type != DocumentType.Overwrite)
-                {
-                    FileMap[m.FileAndType] = m.FileAndType;
-                }
-            }
-        }
-
         private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<UidDefinition>> e)
         {
             var m = sender as FileModel;
@@ -301,5 +313,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.File);
             }
         }
+
+        #endregion
     }
 }

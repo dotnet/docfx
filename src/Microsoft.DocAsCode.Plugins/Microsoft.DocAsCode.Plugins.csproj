@@ -19,6 +19,9 @@
     <Compile Include="DocumentExceptionExtensions.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FileAndType.cs" />
+    <Compile Include="IMarkdownServiceProvider.cs" />
+    <Compile Include="IMarkdownService.cs" />
+    <Compile Include="MarkdownServiceParameters.cs" />
     <Compile Include="TocInfo.cs" />
     <Compile Include="UidDefinition.cs" />
     <Compile Include="ModelWithCache.cs" />

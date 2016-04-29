@@ -17,6 +17,7 @@
     <Compile Include="FileMetadata.cs" />
     <Compile Include="FileMetadataItem.cs" />
     <Compile Include="HostService.cs" />
+    <Compile Include="MarkdownProviders\DfmServiceProvider.cs" />
     <Compile Include="TemplatePreprocessors\JintProcessorHelper.cs" />
     <Compile Include="HomepageInfo.cs" />
     <Compile Include="ManifestItem.cs" />

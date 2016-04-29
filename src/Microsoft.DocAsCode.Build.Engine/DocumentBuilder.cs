@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Text;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
@@ -23,13 +23,25 @@ namespace Microsoft.DocAsCode.Build.Engine
         public const string PhaseName = "Build Document";
         public const string XRefMapFileName = "xrefmap.yml";
 
-        private CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
+        private readonly CompositionHost _container;
+
+        private static CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
         {
             var configuration = new ContainerConfiguration();
-            foreach (var assembly in assemblies)
+
+            configuration.WithAssembly(typeof(DocumentBuilder).Assembly);
+
+            if (assemblies!= null)
             {
-                configuration.WithAssembly(assembly);
+                foreach (var assembly in assemblies)
+                {
+                    if (assembly != null)
+                    {
+                        configuration.WithAssembly(assembly);
+                    }
+                }
             }
+
             try
             {
                 return configuration.CreateContainer();
@@ -47,7 +59,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerPhaseScope(PhaseName))
             {
                 Logger.LogVerbose("Loading plug-in...");
-                GetContainer(assemblies ?? new Assembly[0]).SatisfyImports(this);
+                _container = GetContainer(assemblies);
+                _container.SatisfyImports(this);
                 Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
                 foreach (var processor in Processors)
                 {
@@ -85,6 +98,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerPhaseScope(PhaseName))
             {
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism.ToString()}.");
+                var markdownService = CreateMarkdownService(parameters);
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 var context = new DocumentBuildContext(
                     Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
@@ -98,7 +112,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
-                        innerContexts = GetInnerContexts(parameters, Processors, processor).ToList();
+                        innerContexts = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
                         var manifest = new List<ManifestItemWithContext>();
                         foreach (var item in innerContexts)
                         {
@@ -143,7 +157,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters)
+        public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
         {
             var hostService = new HostService(
                  parameters.Files.DefaultBaseDir,
@@ -152,6 +166,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                  into model
                  where model != null
                  select model);
+            hostService.MarkdownService = markdownService;
             BuildCore(processor, hostService, parameters.MaxParallelism);
             return hostService.Models;
         }
@@ -462,7 +477,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static IEnumerable<InnerBuildContext> GetInnerContexts(DocumentBuildParameters parameters, IEnumerable<IDocumentProcessor> processors, TemplateProcessor templateProcessor)
+        private static IEnumerable<InnerBuildContext> GetInnerContexts(
+            DocumentBuildParameters parameters,
+            IEnumerable<IDocumentProcessor> processors,
+            TemplateProcessor templateProcessor,
+            IMarkdownService markdownService)
         {
             var k = from fileItem in (
                 from file in parameters.Files.EnumerateFiles()
@@ -497,7 +516,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                            select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file.file)
                            into model
                            where model != null
-                           select model),
+                           select model)
+                       {
+                           MarkdownService = markdownService,
+                       },
                        item.Key,
                        templateProcessor);
         }
@@ -520,6 +542,25 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Path.Combine(parameters.OutputBaseDir, XRefMapFileName),
                 xrefMap);
             Logger.LogInfo("XRef map exported.");
+        }
+
+        private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters)
+        {
+            var provider = (IMarkdownServiceProvider)_container.GetExport(
+                typeof(IMarkdownServiceProvider),
+                parameters.MarkdownEngineName);
+            if (provider == null)
+            {
+                Logger.LogError($"Unable to find markdown engine: {parameters.MarkdownEngineName}");
+                throw new DocfxException($"Unable to find markdown engine: {parameters.MarkdownEngineName}");
+            }
+            Logger.LogInfo($"Markdown engine is {parameters.MarkdownEngineName}");
+            return provider.CreateMarkdownService(
+                new MarkdownServiceParameters
+                {
+                    BasePath = parameters.Files.DefaultBaseDir,
+                    Extensions = parameters.MarkdownEngineParameters,
+                });
         }
 
         private sealed class InnerBuildContext
