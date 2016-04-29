@@ -665,6 +665,9 @@ body .toc{
 .codewrapper:hover .tryspan {
   display: block;
 }
+.sample-response .response-content{
+  max-height: 200px;
+}
 footer {
   position: absolute;
   left: 0;

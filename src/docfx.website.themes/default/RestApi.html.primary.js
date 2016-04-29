@@ -38,15 +38,38 @@ function transform(model, _attrs) {
                     ordered[index] = child;
                 }
             }
+
+            formatExample(child.responses);
             vm.children[i] = transformReference(vm.children[i]);
         };
         if (vm.sections) {
-            // Remove empty values from ordered, in case item in sections is not in swagger json 
-            vm.children = ordered.filter(function(o){ return o; });
+            // Remove empty values from ordered, in case item in sections is not in swagger json
+            vm.children = ordered.filter(function(o) { return o; });
         }
     }
 
     return vm;
+
+    function formatExample(responses) {
+        if (!responses) return;
+        for (var i = responses.length - 1; i >= 0; i--) {
+            var examples = responses[i].examples;
+            if (!examples) continue;
+            for (var j = examples.length - 1; j >= 0; j--) {
+                var content = examples[j].content;
+                if (!content) continue;
+                var mimeType = examples[j].mimeType;
+                if (mimeType === 'application/json') {
+                    try {
+                        var json = JSON.parse(content)
+                        responses[i].examples[j].content = JSON.stringify(json, null, '  ');
+                    } catch (e) {
+                        console.warn("example is not a valid JSON object.");
+                    }
+                }
+            }
+        }
+    }
 
     function transformReference(obj) {
         if (Array.isArray(obj)) {
@@ -90,7 +113,7 @@ function transform(model, _attrs) {
                     value.description = value.description || null;
 
                     value = transformPropertiesValue(value);
-                    array.push({key:key, value:value});
+                    array.push({ key: key, value: value });
                 }
             }
             obj.properties = array;
