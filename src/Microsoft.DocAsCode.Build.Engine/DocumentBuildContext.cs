@@ -158,7 +158,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (var client = new HttpClient())
             {
-                Logger.LogInfo($"Donwloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, XRefMapUrls)}");
+                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, XRefMapUrls)}");
                 var mapTasks = (from url in XRefMapUrls
                                 select LoadXRefMap(url, client)).ToArray();
                 Task.WaitAll(mapTasks);
@@ -191,7 +191,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Unable to load xref map from {url}, detail:{Environment.NewLine}{ex.ToString()}");
+                Logger.LogWarning($"Unable to download xref map from {url}, detail:{Environment.NewLine}{ex.ToString()}");
                 return null;
             }
         }
