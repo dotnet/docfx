@@ -17,5 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public TemplateManager TemplateManager { get; set; }
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
         public int MaxParallelism { get; set; }
+        public string MarkdownEngineName { get; set; } = "dfm";
+        public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
     }
 }

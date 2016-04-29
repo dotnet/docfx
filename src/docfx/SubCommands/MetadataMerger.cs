@@ -68,7 +68,12 @@ namespace Microsoft.DocAsCode.SubCommands
                     MaxParallelism = 1,
                     Metadata = parameters.Metadata,
                     OutputBaseDir = parameters.OutputBaseDir,
-                });
+                },
+                new DfmServiceProvider().CreateMarkdownService(
+                    new MarkdownServiceParameters
+                    {
+                        BasePath = fc.DefaultBaseDir,
+                    }));
             foreach (var m in models)
             {
                 m.File = m.PathRewriter(m.File);
