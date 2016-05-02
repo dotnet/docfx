@@ -18,8 +18,21 @@
             _dict = new Dictionary<string, string>();
         }
 
+        public XRefSpec(IDictionary<string, string> dictionary)
+        {
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+            _dict = new Dictionary<string, string>(dictionary);
+        }
+
         public XRefSpec(XRefSpec spec)
         {
+            if (spec == null)
+            {
+                throw new ArgumentNullException(nameof(spec));
+            }
             _dict = new Dictionary<string, string>(spec._dict);
         }
 
@@ -79,6 +92,29 @@
                 };
             }
         }
+
+        /// <summary>
+        /// Merge two xref spec (right overwrite left).
+        /// </summary>
+        public static XRefSpec Merge(XRefSpec left, XRefSpec right)
+        {
+            if (left == null)
+            {
+                return right;
+            }
+            if (right == null)
+            {
+                return left;
+            }
+            var result = new XRefSpec(left);
+            foreach (var pair in right._dict)
+            {
+                result._dict[pair.Key] = pair.Value;
+            }
+            return result;
+        }
+
+        public static XRefSpec operator +(XRefSpec left, XRefSpec right) => Merge(left, right);
 
         #region IDictionary<string, string> Members
 

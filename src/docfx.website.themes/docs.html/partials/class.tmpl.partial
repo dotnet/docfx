@@ -59,6 +59,8 @@
   <section class="primary">
     {{{summary}}}
   </section>
+  <section class="secondary">
+  </section>
 </div>
 {{/summary}}
 {{#conceptual}}
@@ -95,12 +97,12 @@
     </a></h4>
     <section class="content">
       <div class="level">
-        {{#summary}}
         <section class="primary">
+        {{#summary}}
           <h6>Summary</h6>
           {{{summary}}}
-        </section>
         {{/summary}}
+        </section>
         {{#syntax}}
         <section class="secondary">
           <h6>Declaration</h6>
@@ -112,11 +114,11 @@
       </div>
       {{#syntax}}
       <div class="level">
-        {{#parameters.0}}
         <section class="primary">
+          {{#parameters.0}}
           <h6>Parameters</h6>
           <ul class="member-details">
-        {{/parameters.0}}
+          {{/parameters.0}}
           {{#parameters}}
             <li>
               <ol class="meta">
@@ -132,10 +134,10 @@
               </section>
             </li>
           {{/parameters}}
-        {{#parameters.0}}
+          {{#parameters.0}}
           </ul>
+          {{/parameters.0}}
         </section>
-        {{/parameters.0}}
         <section class="secondary">
         {{#return}}
           <h6>Returns</h6>
@@ -196,18 +198,20 @@
       </div>
       {{/syntax}}
       <div class="level">
-        {{#remarks}}
         <section class="primary">
+        {{#remarks}}
           <h6>Remarks</h6>
           {{{remarks}}}
-        </section>
         {{/remarks}}
-        {{#example.0}}
-        <section class="secondary">
-          <h6>Example</h6>
-          {{{example}}}
         </section>
+        <section class="secondary">
+        {{#example.0}}
+          <h6>Example</h6>
+          {{#example}}
+          {{{.}}}
+          {{/example}}
         {{/example.0}}
+        </section>
       </div>
       {{#requirements_method.0}}
       <header class="header" id="requirements_method">
@@ -224,6 +228,8 @@
                   <td>{{{value}}}</td>
                   </tr>
               </tbody>
+      </section>
+      <section class="secondary">
       </section>
       </div>
       {{/requirements_method}}
@@ -299,6 +305,8 @@
      {{#type.specName}}
         {{{value}}}
      {{/type.specName}}
+  </section>
+  <section class="secondary">
   </section>
 </div>
 {{/seealso}}

@@ -70,10 +70,12 @@ $(function () {
   (function () {
     var query;
     var relHref = $("meta[property='docfx\\:rel']").attr("content");
-    var search = searchFactory();
-    search();
-    highlightKeywords();
-    addSearchEvent();
+    if (relHref) {
+      var search = searchFactory();
+      search();
+      highlightKeywords();
+      addSearchEvent();
+    }
 
     // Search factory
     function searchFactory() {
@@ -478,6 +480,20 @@ $(function () {
       var html = '<h5 class="title">In This Article</h5>'
       html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix").append(html);
+      $('#affix').on('activate.bs.scrollspy', function (e) {
+        if (e.target) {
+            if ($(e.target).find('li.active').length > 0)
+            {
+              return;
+            }
+            var top = $(e.target).position().top;
+            $(e.target).parents('li').each(function (i, e) {
+              top += $(e).position().top;
+            });
+            var container = $('#affix > ul');
+            container.scrollTop(container.scrollTop() + top - 100);
+        }
+      })
     }
 
     function getHierarchy() {

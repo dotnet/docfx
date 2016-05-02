@@ -47,43 +47,57 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public int MaxParallelism { get; }
 
-        public Dictionary<string, string> FileMap { get; private set; } = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
+        public Dictionary<string, string> FileMap { get; } = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-        public Dictionary<string, XRefSpec> XRefSpecMap { get; private set; } = new Dictionary<string, XRefSpec>();
+        public Dictionary<string, XRefSpec> XRefSpecMap { get; } = new Dictionary<string, XRefSpec>();
 
-        public Dictionary<string, HashSet<string>> TocMap { get; private set; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
+        public Dictionary<string, HashSet<string>> TocMap { get; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public HashSet<string> XRef { get; } = new HashSet<string>();
 
-        private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; set; }
+        private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
         private List<XRefMap> XRefMaps { get; set; }
 
-        private ConcurrentDictionary<string, object> UnknownUids { get; set; }
+        private ConcurrentDictionary<string, object> UnknownUids { get; } = new ConcurrentDictionary<string, object>();
+
+        public void ReportExternalXRefSpec(XRefSpec spec)
+        {
+            ExternalXRefSpec.AddOrUpdate(
+                spec.Uid,
+                spec,
+                (uid, old) => old + spec);
+        }
 
         public void ResolveExternalXRefSpec()
         {
-            var externalXRefSpec = new Dictionary<string, XRefSpec>();
-
             // remove internal xref.
-            var uidList = XRef.Where(s => !XRefSpecMap.ContainsKey(s)).ToList();
+            var uidList =
+                (from uid in XRef
+                 where !XRefSpecMap.ContainsKey(uid)
+                 select uid)
+                .Concat(
+                 from spec in ExternalXRefSpec.Values
+                 where spec.Href == null
+                 select spec.Uid)
+                .ToList();
 
             if (uidList.Count > 0)
             {
-                uidList = ResolveByXRefMaps(uidList, externalXRefSpec);
+                uidList = ResolveByXRefMaps(uidList, ExternalXRefSpec);
             }
             if (uidList.Count > 0)
             {
-                uidList = ResolveByExternalReferencePackages(uidList, externalXRefSpec);
+                uidList = ResolveByExternalReferencePackages(uidList, ExternalXRefSpec);
             }
 
-            ExternalXRefSpec = new ConcurrentDictionary<string, XRefSpec>(externalXRefSpec);
-            UnknownUids = new ConcurrentDictionary<string, object>(
-                from uid in uidList
-                select new KeyValuePair<string, object>(uid, null));
+            foreach (var uid in uidList)
+            {
+                UnknownUids.TryAdd(uid, null);
+            }
         }
 
-        private List<string> ResolveByExternalReferencePackages(List<string> uidList, Dictionary<string, XRefSpec> externalXRefSpec)
+        private List<string> ResolveByExternalReferencePackages(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
             if (ExternalReferencePackages.Length == 0)
             {
@@ -99,7 +113,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var spec = GetExternalReference(externalReferences, uid);
                     if (spec != null)
                     {
-                        externalXRefSpec[uid] = spec;
+                        externalXRefSpec.AddOrUpdate(uid, spec, (_, old) => old + spec);
                     }
                     else
                     {
@@ -112,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return list;
         }
 
-        private List<string> ResolveByXRefMaps(List<string> uidList, Dictionary<string, XRefSpec> externalXRefSpec)
+        private List<string> ResolveByXRefMaps(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
             if (XRefMapUrls.Length == 0)
             {
@@ -128,7 +142,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var spec = (from map in XRefMaps select map.Find(uid)).FirstOrDefault();
                 if (spec != null)
                 {
-                    externalXRefSpec[uid] = spec;
+                    externalXRefSpec.AddOrUpdate(uid, spec, (_, old) => old + spec);
                 }
                 else
                 {
@@ -144,7 +158,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (var client = new HttpClient())
             {
-                Logger.LogInfo($"Donwloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, XRefMapUrls)}");
+                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, XRefMapUrls)}");
                 var mapTasks = (from url in XRefMapUrls
                                 select LoadXRefMap(url, client)).ToArray();
                 Task.WaitAll(mapTasks);
@@ -177,7 +191,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Unable to load xref map from {url}, detail:{Environment.NewLine}{ex.ToString()}");
+                Logger.LogWarning($"Unable to download xref map from {url}, detail:{Environment.NewLine}{ex.ToString()}");
                 return null;
             }
         }
@@ -211,7 +225,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public XRefSpec GetXrefSpec(string uid)
         {
-            if (string.IsNullOrEmpty(uid)) throw new ArgumentNullException(nameof(uid));
+            if (string.IsNullOrEmpty(uid))
+            {
+                throw new ArgumentNullException(nameof(uid));
+            }
 
             XRefSpec xref;
             if (XRefSpecMap.TryGetValue(uid, out xref))
@@ -234,8 +251,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 xref = (from map in XRefMaps select map.Find(uid)).FirstOrDefault();
                 if (xref != null)
                 {
-                    ExternalXRefSpec.TryAdd(uid, xref);
-                    return xref;
+                    return ExternalXRefSpec.AddOrUpdate(uid, xref, (_, old) => old + xref);
                 }
             }
 
@@ -247,8 +263,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 if (xref != null)
                 {
-                    ExternalXRefSpec.TryAdd(uid, xref);
-                    return xref;
+                    return ExternalXRefSpec.AddOrUpdate(uid, xref, (_, old) => old + xref);
                 }
             }
 
@@ -330,7 +345,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 dict[path] = item;
             }
-            return dict.ToImmutableDictionary();
+            return dict.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer);
         }
 
         private static XRefSpec GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)

@@ -133,7 +133,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 if (symbol.TypeArguments != null && symbol.TypeArguments.Length > 0)
                 {
-                    WriteGeneric(symbol.TypeArguments);
+                    if (symbol.IsUnboundGenericType)
+                    {
+                        WriteGeneric(symbol.TypeArguments.Length);
+                    }
+                    else
+                    {
+                        WriteGeneric(symbol.TypeArguments);
+                    }
                 }
                 else
                 {
@@ -447,6 +454,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
+        private void WriteGeneric(int typeParameterCount)
+        {
+            Append("<");
+            for (int i = 1; i < typeParameterCount; i++)
+            {
+                Append(",");
+            }
+            Append(">");
+        }
+
         private void WriteGeneric(IReadOnlyList<ITypeSymbol> types)
         {
             Append("<");
@@ -512,7 +529,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 if (symbol.TypeArguments != null && symbol.TypeArguments.Length > 0)
                 {
-                    WriteGeneric(symbol.TypeArguments);
+                    if (symbol.IsUnboundGenericType)
+                    {
+                        WriteGeneric(symbol.TypeArguments.Length);
+                    }
+                    else
+                    {
+                        WriteGeneric(symbol.TypeArguments);
+                    }
                 }
                 else
                 {
@@ -769,6 +793,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     return false;
             }
+        }
+
+        private void WriteGeneric(int typeParameterCount)
+        {
+            Append("(Of ");
+            for (int i = 1; i < typeParameterCount; i++)
+            {
+                Append(",");
+            }
+            Append(")");
         }
 
         private void WriteGeneric(IReadOnlyList<ITypeSymbol> types)

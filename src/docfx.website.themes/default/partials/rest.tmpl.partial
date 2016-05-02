@@ -64,16 +64,18 @@
 {{#responses.0}}
 {{/responses.0}}
 {{#responses}}
-<h5 class="response">Sample response</h5>
-<div class="status-code">
-  <i>Status code: </i><span class="status">{{statusCode}}</span>
+<div class="sample-response">
+  <h5 class="response">Sample response</h5>
+  <div class="status-code">
+    <i>Status code: </i><span class="status">{{statusCode}}</span>
+  </div>
+  <div class="markdown level2 description">{{{description}}}</div>
+  {{#examples}}
+  <div class="mime-type">
+    <i>Mime type: </i><span class="mime">{{mimeType}}</span>
+  </div>
+  <pre class="response-content"><code class="lang-js json hljs">{{content}}</code></pre>
+  {{/examples}}
 </div>
-<div class="markdown level2 description">{{{description}}}</div>
-{{#examples}}
-<div class="mime-type">
-  <i>Mime type: </i><span class="mime">{{mimeType}}</span>
-</div>
-<pre class="response-json"><code class="lang-js json hljs">{{content}}</code></pre>
-{{/examples}}
 {{/responses}}
 {{/children}}

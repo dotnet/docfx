@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Dfm
         public static DfmEngineBuilder CreateBuilder(string baseDir)
         {
             // TODO: currently disable mangle as a quick workaround for OP Build Service compatibility
-            return new DfmEngineBuilder(new Options() { Mangle = false }, baseDir);
+            return new DfmEngineBuilder(new Options() { Mangle = false, XHtml = true }, baseDir);
         }
 
         public static string Markup(string src, string path = null)

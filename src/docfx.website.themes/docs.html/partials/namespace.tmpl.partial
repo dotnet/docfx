@@ -18,6 +18,8 @@
   <section class="primary">
   {{{summary}}}
   </section>
+  <section class="secondary">
+  </section>
 </div>
 {{/summary}}
 {{#conceptual}}
@@ -35,6 +37,8 @@
 <div class="level">
   <section class="primary">
   {{{remarks}}}
+  </section>
+  <section class="secondary">
   </section>
 </div>
 {{/remarks}}
@@ -63,7 +67,7 @@
         <figure>
           <pre>{{#content}}<code class="{{lang}}" lang="lang-{{lang}}">{{value}}</code>{{/content}}</pre>
         </figure>
-      {{/syntax}}
+        {{/syntax}}
       </section>
     </div>
   </li>

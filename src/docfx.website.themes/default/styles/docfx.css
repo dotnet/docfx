@@ -58,6 +58,7 @@ h6 mark {
 .inheritance .level4:before,
 .inheritance .level5:before {
     content: '↳';
+    margin-right: 5px;
 }
 
 .inheritance .level0 {
@@ -557,9 +558,6 @@ body .toc{
 .article.grid-right {
   margin-left: 280px;
 }
-.inheritance span {
-  margin-left: 5px;
-}
 
 .inheritance hr {
   margin-top: 5px;
@@ -571,7 +569,7 @@ body .toc{
 .affix {
   font-size: 12px;
   max-height: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
   top: 100px;
   bottom: 10px;
 }
@@ -584,7 +582,10 @@ body .toc{
 }
 .affix > ul.level1 {
   overflow-x: hidden;
+  overflow-y: -20px;
   padding-bottom: 10px;
+  height: calc(100% - 100px);
+  margin-right: -20px;
 }
 .affix ul > li > a:before {
   color: #cccccc;
@@ -663,6 +664,9 @@ body .toc{
 }
 .codewrapper:hover .tryspan {
   display: block;
+}
+.sample-response .response-content{
+  max-height: 200px;
 }
 footer {
   position: absolute;

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
@@ -13,7 +14,7 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Model file should not be in-use, will remove in v1.9
         /// </summary>
-        [System.Obsolete]
+        [Obsolete]
         public string ModelFile { get; set; }
         public string FileWithoutExtension { get; set; }
         public string ResourceFile { get; set; }
@@ -21,5 +22,6 @@ namespace Microsoft.DocAsCode.Plugins
         public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableDictionary<string, HashSet<string>> TocMap { get; set; } = ImmutableDictionary<string, HashSet<string>>.Empty;
         public ImmutableArray<XRefSpec> XRefSpecs { get; set; } = ImmutableArray<XRefSpec>.Empty;
+        public ImmutableArray<XRefSpec> ExternalXRefSpecs { get; set; } = ImmutableArray<XRefSpec>.Empty;
     }
 }

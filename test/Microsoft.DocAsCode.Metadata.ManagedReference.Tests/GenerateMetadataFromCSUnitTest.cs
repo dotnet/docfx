@@ -2179,6 +2179,7 @@ namespace Test1
     [Test(""test"")]
     [Test(new int[]{1,2,3})]
     [Test(new object[]{null, ""abc"", 'd', 1.1f, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7u, 8l, 9ul, new int[]{ 10, 11, 12 }})]
+    [Test(new Type[]{ typeof(Func<>), typeof(Func<,>), typeof(Func<string, string>) })]
     public class TestAttribute : Attribute
     {
         [Test(1)]
@@ -2200,6 +2201,7 @@ namespace Test1
 [Test(""test"")]
 [Test(new int[]{1, 2, 3})]
 [Test(new object[]{null, ""abc"", 'd', 1.1F, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7U, 8L, 9UL, new int[]{10, 11, 12}})]
+[Test(new Type[]{typeof (Func<>), typeof (Func<, >), typeof (Func<string, string>)})]
 public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[SyntaxLanguage.CSharp]);
 
             var ctor = @class.Items[0];

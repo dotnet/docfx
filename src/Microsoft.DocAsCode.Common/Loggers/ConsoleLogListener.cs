@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Common
                 {
                     lineInfo = $"#L{line}";
                 }
-                formatter += $"(file:///{file.Replace('\\', '/')}{lineInfo})";
+                formatter += $"({file.Replace('\\', '/')}{lineInfo})";
             }
 
             formatter += message;

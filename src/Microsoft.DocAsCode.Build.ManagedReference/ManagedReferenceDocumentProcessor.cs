@@ -120,50 +120,34 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableHashSet(),
                 XRefSpecs = (from item in vm.Items
                              select GetXRefInfo(item, model.Key)).ToImmutableArray(),
+                ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
             };
         }
 
-        private IEnumerable<string> GetViewModelXRef(PageViewModel vm)
+        private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
         {
+            if (vm.References == null)
+            {
+                yield break;
+            }
             foreach (var reference in vm.References)
             {
-                if (reference.Uid.StartsWith("{") && reference.Uid.EndsWith("}"))
+                if (reference?.IsExternal == true)
                 {
-                    // ignore generic type parameter.
-                    continue;
-                }
-
-                List<SpecViewModel> result;
-
-                // for spec type, only return the real type:
-                // e.g.:
-                //  - List<string>  -->  List`1, string
-                //  - object[]      -->  object
-                if (reference.Specs.TryGetValue("csharp", out result))
-                {
-                    foreach (var specItem in result)
+                    var dict = YamlUtility.ConvertTo<Dictionary<string, object>>(reference);
+                    if (dict != null)
                     {
-                        if (specItem.Uid != null)
+                        var spec = new XRefSpec();
+                        foreach (var pair in dict)
                         {
-                            yield return specItem.Uid;
+                            var s = pair.Value as string;
+                            if (s != null)
+                            {
+                                spec[pair.Key] = s;
+                            }
                         }
+                        yield return spec;
                     }
-                }
-
-                if (reference.Specs.TryGetValue("vb", out result))
-                {
-                    foreach (var specItem in result)
-                    {
-                        if (specItem.Uid != null)
-                        {
-                            yield return specItem.Uid;
-                        }
-                    }
-                }
-
-                if (result == null)
-                {
-                    yield return reference.Uid;
                 }
             }
         }
