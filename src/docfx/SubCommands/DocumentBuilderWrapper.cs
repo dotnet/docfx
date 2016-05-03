@@ -199,6 +199,14 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.MaxParallelism = config.MaxParallelism.Value;
             }
+            if (config.MarkdownEngineName != null)
+            {
+                parameters.MarkdownEngineName = config.MarkdownEngineName;
+            }
+            if (config.MarkdownEngineProperties != null)
+            {
+                parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
+            }
             return parameters;
         }
 

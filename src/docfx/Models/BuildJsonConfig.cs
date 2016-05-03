@@ -83,5 +83,12 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("maxParallelism")]
         public int? MaxParallelism { get; set; }
+
+        [JsonProperty("markdownEngineName")]
+        public string MarkdownEngineName { get; set; }
+
+        [JsonProperty("markdownEngineProperties")]
+        [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
+        public Dictionary<string, object> MarkdownEngineProperties { get; set; }
     }
 }
