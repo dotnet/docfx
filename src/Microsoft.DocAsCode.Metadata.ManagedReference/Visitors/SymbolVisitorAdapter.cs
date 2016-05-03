@@ -698,7 +698,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (arg.Value != null)
             {
-                var type = arg.Value as INamedTypeSymbol;
+                var type = arg.Value as ITypeSymbol;
                 if (type != null)
                 {
                     if (!FilterVisitor.CanVisitApi(type))
@@ -714,7 +714,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private object GetConstantValueForArgumentInfo(TypedConstant arg)
         {
-            var type = arg.Value as INamedTypeSymbol;
+            var type = arg.Value as ITypeSymbol;
             if (type != null)
             {
                 return AddSpecReference(type);
@@ -760,7 +760,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else if (arg.Value != null)
             {
-                var type = arg.Value as INamedTypeSymbol;
+                var type = arg.Value as ITypeSymbol;
                 if (type != null)
                 {
                     if (!FilterVisitor.CanVisitApi(type))
