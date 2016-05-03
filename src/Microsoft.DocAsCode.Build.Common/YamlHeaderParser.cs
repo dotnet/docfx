@@ -19,14 +19,14 @@ namespace Microsoft.DocAsCode.Build.Common
     /// 2. Followed by three dashes `---` as a line, spaces are allowed before 
     /// 3. Followed by and must followed by `uid: `
     /// 4. Followed by other properties in YAML format
-    /// 5. Ended with three dashes `---` as a line, spaces are allowed before 
+    /// 5. Ended with three dashes `---` and environment newline as a line, spaces are allowed before 
     /// </summary>
     public static class YamlHeaderParser
     {
         private static readonly List<string> RequiredProperties = new List<string> { Constants.PropertyName.Uid };
 
         // If is not the end of the file, then \n should be appended to ---
-        public static readonly Regex YamlHeaderRegex = new Regex(@"((((?!\n)\s)*\n)|^)((?!\n)\s)*\-\-\-((?!\n)\s)*\n((?!\n)\s)*(?<content>uid:.*?)\s*\-\-\-((?!\n)\s)*\n", RegexOptions.Compiled | RegexOptions.Singleline);
+        public static readonly Regex YamlHeaderRegex = new Regex(@"((((?!\n)\s)*\n)|^)((?!\n)\s)*(?<wholeMatch>\-\-\-((?!\n)\s)*\n((?!\n)\s)*(?<content>uid:.*?)\s*\-\-\-)((?!\n)\s)*\n", RegexOptions.Compiled | RegexOptions.Singleline);
 
         public static IList<MatchDetail> Select(string input)
         {
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
         private static MatchDetail SelectSingle(Match match, string input)
         {
-            var wholeMatch = match.Groups[0];
+            var wholeMatch = match.Groups["wholeMatch"];
 
             string content = match.Groups["content"].Value;
             Dictionary<string, object> properties;
@@ -50,9 +50,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
             var overridenProperties = RemoveRequiredProperties(properties, RequiredProperties);
 
-            // Get one character larger then the actual match
-            var location = Location.GetLocation(input, wholeMatch.Index - 1, wholeMatch.Length + 2);
-
+            var location = Location.GetLocation(input, wholeMatch.Index, wholeMatch.Length);
             return new MatchDetail
             {
                            Id = properties[Constants.PropertyName.Uid].ToString(),

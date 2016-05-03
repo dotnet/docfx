@@ -40,6 +40,20 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
                             ";
             yamlHeaders = YamlHeaderParser.Select(input);
             Assert.Equal(0, yamlHeaders.Count);
+
+            // Multi-YamlHeader Test
+            input = @"---
+uid: abc
+---
+conceptual
+---
+uid: efg
+---
+";
+            yamlHeaders = YamlHeaderParser.Select(input);
+            Assert.Equal(2, yamlHeaders.Count);
+            Assert.Equal("abc", yamlHeaders[0].Id);
+            Assert.Equal("efg", yamlHeaders[1].Id);
         }
     }
 }
