@@ -63,10 +63,30 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return CanVisitCore(fieldSymbol, wantProtectedMember, outer);
             }
 
-            var typeSymbol = symbol as INamedTypeSymbol;
-            if (typeSymbol != null)
+            var namedTypeSymbol = symbol as INamedTypeSymbol;
+            if (namedTypeSymbol != null)
             {
-                return CanVisitCore(typeSymbol, wantProtectedMember, outer);
+                return CanVisitCore(namedTypeSymbol, wantProtectedMember, outer);
+            }
+
+            var ts = symbol as ITypeSymbol;
+            if (ts != null)
+            {
+                switch (ts.TypeKind)
+                {
+                    case TypeKind.Dynamic:
+                    case TypeKind.TypeParameter:
+                        return true;
+                    case TypeKind.Unknown:
+                    case TypeKind.Error:
+                        return false;
+                    case TypeKind.Array:
+                        return outer.CanVisitApi(((IArrayTypeSymbol)ts).ElementType, wantProtectedMember, outer);
+                    case TypeKind.Pointer:
+                        return outer.CanVisitApi(((IPointerTypeSymbol)ts).PointedAtType, wantProtectedMember, outer);
+                    default:
+                        break;
+                }
             }
 
             if (symbol.DeclaredAccessibility != Accessibility.Public)

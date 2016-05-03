@@ -2176,6 +2176,7 @@ namespace Test1
     [Serializable]
     [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = true)]
     [TypeConverter(typeof(TestAttribute))]
+    [TypeConverter(typeof(TestAttribute[]))]
     [Test(""test"")]
     [Test(new int[]{1,2,3})]
     [Test(new object[]{null, ""abc"", 'd', 1.1f, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7u, 8l, 9ul, new int[]{ 10, 11, 12 }})]
@@ -2198,11 +2199,60 @@ namespace Test1
             Assert.Equal(@"[Serializable]
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Module | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Interface | AttributeTargets.Parameter | AttributeTargets.Delegate | AttributeTargets.ReturnValue | AttributeTargets.GenericParameter | AttributeTargets.All, Inherited = true, AllowMultiple = true)]
 [TypeConverter(typeof (TestAttribute))]
+[TypeConverter(typeof (TestAttribute[]))]
 [Test(""test"")]
 [Test(new int[]{1, 2, 3})]
 [Test(new object[]{null, ""abc"", 'd', 1.1F, 1.2, (sbyte)2, (byte)3, (short)4, (ushort)5, 6, 7U, 8L, 9UL, new int[]{10, 11, 12}})]
 [Test(new Type[]{typeof (Func<>), typeof (Func<, >), typeof (Func<string, string>)})]
 public class TestAttribute : Attribute, _Attribute", @class.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            Assert.NotNull(@class.Attributes);
+            Assert.Equal(5, @class.Attributes.Count);
+
+            Assert.Equal("System.SerializableAttribute", @class.Attributes[0].Type);
+            Assert.Equal("System.SerializableAttribute.#ctor", @class.Attributes[0].Constructor);
+            Assert.NotNull(@class.Attributes[0].Arguments);
+            Assert.Equal(0, @class.Attributes[0].Arguments.Count);
+            Assert.Null(@class.Attributes[0].NamedArguments);
+
+            Assert.Equal("System.AttributeUsageAttribute", @class.Attributes[1].Type);
+            Assert.Equal("System.AttributeUsageAttribute.#ctor(System.AttributeTargets)", @class.Attributes[1].Constructor);
+            Assert.NotNull(@class.Attributes[1].Arguments);
+            Assert.Equal(1, @class.Attributes[1].Arguments.Count);
+            Assert.Equal("System.AttributeTargets", @class.Attributes[1].Arguments[0].Type);
+            Assert.Equal(32767, @class.Attributes[1].Arguments[0].Value);
+            Assert.NotNull(@class.Attributes[1].NamedArguments);
+            Assert.Equal(2, @class.Attributes[1].NamedArguments.Count);
+            Assert.Equal("Inherited", @class.Attributes[1].NamedArguments[0].Name);
+            Assert.Equal("System.Boolean", @class.Attributes[1].NamedArguments[0].Type);
+            Assert.Equal(true, @class.Attributes[1].NamedArguments[0].Value);
+            Assert.Equal("AllowMultiple", @class.Attributes[1].NamedArguments[1].Name);
+            Assert.Equal("System.Boolean", @class.Attributes[1].NamedArguments[1].Type);
+            Assert.Equal(true, @class.Attributes[1].NamedArguments[1].Value);
+
+            Assert.Equal("System.ComponentModel.TypeConverterAttribute", @class.Attributes[2].Type);
+            Assert.Equal("System.ComponentModel.TypeConverterAttribute.#ctor(System.Type)", @class.Attributes[2].Constructor);
+            Assert.NotNull(@class.Attributes[2].Arguments);
+            Assert.Equal(1, @class.Attributes[2].Arguments.Count);
+            Assert.Equal("System.Type", @class.Attributes[2].Arguments[0].Type);
+            Assert.Equal("Test1.TestAttribute", @class.Attributes[2].Arguments[0].Value);
+            Assert.Null(@class.Attributes[2].NamedArguments);
+
+            Assert.Equal("System.ComponentModel.TypeConverterAttribute", @class.Attributes[3].Type);
+            Assert.Equal("System.ComponentModel.TypeConverterAttribute.#ctor(System.Type)", @class.Attributes[3].Constructor);
+            Assert.NotNull(@class.Attributes[3].Arguments);
+            Assert.Equal(1, @class.Attributes[3].Arguments.Count);
+            Assert.Equal("System.Type", @class.Attributes[3].Arguments[0].Type);
+            Assert.Equal("Test1.TestAttribute[]", @class.Attributes[3].Arguments[0].Value);
+            Assert.Null(@class.Attributes[3].NamedArguments);
+
+            Assert.Equal("Test1.TestAttribute", @class.Attributes[4].Type);
+            Assert.Equal("Test1.TestAttribute.#ctor(System.Object)", @class.Attributes[4].Constructor);
+            Assert.NotNull(@class.Attributes[4].Arguments);
+            Assert.Equal(1, @class.Attributes[4].Arguments.Count);
+            Assert.Equal("System.String", @class.Attributes[4].Arguments[0].Type);
+            Assert.Equal("test", @class.Attributes[4].Arguments[0].Value);
+            Assert.Null(@class.Attributes[4].NamedArguments);
 
             var ctor = @class.Items[0];
             Assert.NotNull(ctor);
