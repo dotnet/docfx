@@ -34,9 +34,15 @@ namespace Microsoft.DocAsCode.Glob
 
         private static IEnumerable<string> GetFilesFromSubfolder(string baseDirectory, string cwd, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
         {
+            var relativePath = GetRelativeFilePath(cwd, baseDirectory);
+            foreach (var exclude in excludeGlobs)
+            {
+                if (exclude.Match(relativePath)) yield break;
+            }
+
             foreach (var file in Directory.GetFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                var relativePath = GetRelativeFilePath(cwd, file);
+                relativePath = GetRelativeFilePath(cwd, file);
                 if (IsFileMatch(relativePath, globs, excludeGlobs))
                 {
                     yield return file;
@@ -45,7 +51,7 @@ namespace Microsoft.DocAsCode.Glob
 
             foreach (var dir in Directory.GetDirectories(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                var relativePath = GetRelativeDirectoryPath(cwd, dir);
+                relativePath = GetRelativeDirectoryPath(cwd, dir);
 
                 // For folder, exclude glob matches folder means nothing, e.g. **/a matches b/a folder, however, **/a does not match b/a/c file
                 foreach (var glob in globs)
