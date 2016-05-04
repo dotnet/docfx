@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx.E2E.Tests", "test\docfx.e2e.Tests\docfx.E2E.Tests.csproj", "{8323B9B5-333D-4C10-B8E3-66CA9AF89793}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.EntityModel", "src\Microsoft.DocAsCode.EntityModel\Microsoft.DocAsCode.EntityModel.csproj", "{A4BE543D-2CF1-40AB-9889-E9E48CBF7DFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Glob", "src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj", "{629EC13D-8939-4F23-B7DC-7A98964BB9A4}"
 EndProject
@@ -39,10 +37,6 @@ Global
 		{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4BE543D-2CF1-40AB-9889-E9E48CBF7DFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4BE543D-2CF1-40AB-9889-E9E48CBF7DFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4BE543D-2CF1-40AB-9889-E9E48CBF7DFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4BE543D-2CF1-40AB-9889-E9E48CBF7DFE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{629EC13D-8939-4F23-B7DC-7A98964BB9A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{629EC13D-8939-4F23-B7DC-7A98964BB9A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{629EC13D-8939-4F23-B7DC-7A98964BB9A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -73,7 +67,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD} = {14EC08D5-5753-4120-9480-121BBB109FBE}
-		{A4BE543D-2CF1-40AB-9889-E9E48CBF7DFE} = {14EC08D5-5753-4120-9480-121BBB109FBE}
 		{629EC13D-8939-4F23-B7DC-7A98964BB9A4} = {14EC08D5-5753-4120-9480-121BBB109FBE}
 		{42F7A3B4-464B-403C-8352-5FBF40C696FF} = {14EC08D5-5753-4120-9480-121BBB109FBE}
 		{619EC13D-8939-4F23-B7DC-7A98964BB9A4} = {14EC08D5-5753-4120-9480-121BBB109FBE}

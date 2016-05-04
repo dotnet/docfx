@@ -23,22 +23,12 @@ namespace Microsoft.DocAsCode.E2E.Tests
         [Trait("Related", "E2Etest")]
         public void TestConceptualPage()
         {
-            this._driver.Navigate().GoToUrl(_urlHomepage);
+            _driver.Navigate().GoToUrl(_urlHomepage);
 
-            // check logo
-            IWebElement element = _driver.FindElement(By.Id("logo"));
-            Assert.Equal("svg", element.TagName);
-
-            // check navbar
-            Assert.NotEmpty(_driver.FindElements(By.XPath("//div[@id='navbar']/ul/li/a")));
-
-            // check article
-            Assert.NotEmpty(_driver.FindElements(By.XPath("//article[@id='_content']")));
+            TestPageCommon();
 
             // check "Improve this Doc" button
-            _driver.FindElement(By.LinkText("Improve this Doc")).Click();
-            Assert.Contains("GitHub", _driver.Title);
-            _driver.Navigate().Back();
+            FindAndTestLinkTitle(_driver, "Improve this Doc", "GitHub");
 
             // check heading 2 and sidebar
             IList<IWebElement> resultsHeading = _driver.FindElements(By.TagName("h2"));
@@ -100,16 +90,11 @@ namespace Microsoft.DocAsCode.E2E.Tests
             _driver.Navigate().GoToUrl(_urlHomepage);
 
             // go to reference
-            _driver.FindElement(By.LinkText("API Documentation")).Click(); // TODO: check each namepace page
-            _driver.FindElements(By.XPath("//h4/a"))[0].Click(); // TODO: check each object page in current namespace
+            _driver.FindElement(By.LinkText("API Documentation")).Click();
+            _driver.FindElements(By.XPath("//h4/a"))[0].Click();
             System.Threading.Thread.Sleep(1000);
 
-            // check logo
-            IWebElement element = _driver.FindElement(By.Id("logo"));
-            Assert.Equal("svg", element.TagName);
-
-            // check navbar
-            Assert.NotEmpty(_driver.FindElements(By.XPath("//div[@id='navbar']/ul/li/a")));
+            TestPageCommon();
 
             // check heading 1
             IList<IWebElement> results = _driver.FindElements(By.TagName("h1"));
@@ -120,27 +105,27 @@ namespace Microsoft.DocAsCode.E2E.Tests
             results = _driver.FindElements(By.XPath("//div[@id='breadcrumb']/ul/li/a"));
             Assert.Contains(results[results.Count - 1].Text, title);
 
-            // check article
-            Assert.NotEmpty(_driver.FindElements(By.XPath("//article[@id='_content']")));
 
             // check overwrite
-            element = _driver.FindElement(By.ClassName("conceptual"));
-            Assert.Contains("This is a class talking about CAT.", element.Text);
-            _driver.FindElement(By.LinkText("CAT")).Click();
-            Assert.Contains("Wikipedia", _driver.Title);
-            _driver.Navigate().Back();
-            element = _driver.FindElement(By.TagName("blockquote"));
+            var conceptual = _driver.FindElement(By.ClassName("conceptual"));
+            Assert.Contains("This is a class talking about CAT.", conceptual.Text);
+            var element = conceptual.FindElement(By.TagName("blockquote"));
             Assert.Equal("NOTE This is a CAT class", element.Text);
+            FindAndTestLinkTitle(conceptual, "CAT", "Wikipedia");
+            conceptual = _driver.FindElement(By.ClassName("conceptual"));
+            FindAndTestLinkTitle(conceptual, "IAnimal", "IAnimal");
 
-            // check "View Source" button
-            _driver.FindElement(By.LinkText("View Source")).Click();
-            Assert.Contains("GitHub", _driver.Title);
-            _driver.Navigate().Back();
+            // check "View Source" buttons
+            results = _driver.FindElements(By.LinkText("View Source"));
+            Assert.True(results.Count >= 2);
+            TestLinkTitle(results[0], "GitHub", "Class1.cs");
+            TestLinkTitle(_driver.FindElements(By.LinkText("View Source"))[1], "GitHub", "Class1.cs");
 
-            // check "Improve This Doc" button
-            _driver.FindElement(By.LinkText("Improve this Doc")).Click();
-            Assert.Contains("GitHub", _driver.Title);
-            _driver.Navigate().Back();
+            // check "Improve This Doc" buttons
+            results = _driver.FindElements(By.LinkText("Improve this Doc"));
+            Assert.True(results.Count >= 2);
+            TestLinkTitle(results[0], "GitHub");
+            TestLinkTitle(_driver.FindElements(By.LinkText("Improve this Doc"))[1], "GitHub");
 
             // check heading 3 and sidebar
             IList<IWebElement> resultsHeading = _driver.FindElements(By.TagName("h3"));
@@ -201,6 +186,37 @@ namespace Microsoft.DocAsCode.E2E.Tests
                 Assert.NotEmpty(results);
                 Assert.Contains(titleBase, results[0].Text);
             }
+        }
+
+        private void TestPageCommon()
+        {
+            // check logo
+            IWebElement element = _driver.FindElement(By.Id("logo"));
+            Assert.Equal("svg", element.TagName);
+
+            // check title
+            Assert.Contains(_driver.FindElement(By.TagName("h1")).Text, _driver.Title);
+
+            // check navbar
+            Assert.NotEmpty(_driver.FindElements(By.XPath("//div[@id='navbar']/ul/li/a")));
+
+            // check article
+            Assert.NotEmpty(_driver.FindElements(By.XPath("//article[@id='_content']")));
+        }
+
+        private void FindAndTestLinkTitle(ISearchContext context, string linkText, params string[] titlePart)
+        {
+            TestLinkTitle(context.FindElement(By.LinkText(linkText)), titlePart);
+        }
+
+        private void TestLinkTitle(IWebElement element, params string[] titlePart)
+        {
+            element.Click();
+            foreach (var part in titlePart)
+            {
+                Assert.Contains(part, _driver.Title);
+            }
+            _driver.Navigate().Back();
         }
     }
 }
