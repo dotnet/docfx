@@ -128,8 +128,10 @@ namespace Microsoft.DocAsCode.Dfm
         private static void UpdateSingleHref(HtmlNode node, string attributeName, string filePath)
         {
             var href = node.GetAttributeValue(attributeName, string.Empty);
-            if (PathUtility.IsRelativePath(href))
+            if (PathUtility.IsRelativePath(href) && !href.StartsWith("#"))
+            {
                 node.SetAttributeValue(attributeName, RebaseHref(href, filePath, string.Empty));
+            }
         }
 
         private static string RebaseHref(string refPath, string source, string target)
