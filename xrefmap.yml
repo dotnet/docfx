@@ -937,6 +937,14 @@ references:
   name: UidRawText
   href: api/Microsoft.DocAsCode.Build.Engine.CrossReferenceNotResolvedException.html#Microsoft_DocAsCode_Build_Engine_CrossReferenceNotResolvedException_UidRawText
   fullName: Microsoft.DocAsCode.Build.Engine.CrossReferenceNotResolvedException.UidRawText
+- uid: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider
+  name: DfmServiceProvider
+  href: api/Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.html#Microsoft_DocAsCode_Build_Engine_DfmServiceProvider
+  fullName: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider
+- uid: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+  name: CreateMarkdownService(MarkdownServiceParameters)
+  href: api/Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.html#Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_
+  fullName: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildContext
   name: DocumentBuildContext
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildContext
@@ -1037,10 +1045,10 @@ references:
   name: Build(DocumentBuildParameters)
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
-- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor,Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
-  name: Build(IDocumentProcessor, DocumentBuildParameters)
-  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_Microsoft_DocAsCode_Plugins_IDocumentProcessor_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_
-  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor, Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor,Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters,Microsoft.DocAsCode.Plugins.IMarkdownService)
+  name: Build(IDocumentProcessor, DocumentBuildParameters, IMarkdownService)
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_Microsoft_DocAsCode_Plugins_IDocumentProcessor_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_Microsoft_DocAsCode_Plugins_IMarkdownService_
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor, Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters, Microsoft.DocAsCode.Plugins.IMarkdownService)
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Dispose
   name: Dispose()
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Dispose
@@ -1073,6 +1081,14 @@ references:
   name: Files
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_Files
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.Files
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.MarkdownEngineName
+  name: MarkdownEngineName
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_MarkdownEngineName
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.MarkdownEngineName
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.MarkdownEngineParameters
+  name: MarkdownEngineParameters
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_MarkdownEngineParameters
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.MarkdownEngineParameters
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.MaxParallelism
   name: MaxParallelism
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_MaxParallelism
@@ -9574,6 +9590,22 @@ references:
   name: SourceFiles
   href: api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_SourceFiles
   fullName: Microsoft.DocAsCode.Plugins.IHostService.SourceFiles
+- uid: Microsoft.DocAsCode.Plugins.IMarkdownService
+  name: IMarkdownService
+  href: api/Microsoft.DocAsCode.Plugins.IMarkdownService.html#Microsoft_DocAsCode_Plugins_IMarkdownService
+  fullName: Microsoft.DocAsCode.Plugins.IMarkdownService
+- uid: Microsoft.DocAsCode.Plugins.IMarkdownService.Markup(System.String,System.String)
+  name: Markup(String, String)
+  href: api/Microsoft.DocAsCode.Plugins.IMarkdownService.html#Microsoft_DocAsCode_Plugins_IMarkdownService_Markup_System_String_System_String_
+  fullName: Microsoft.DocAsCode.Plugins.IMarkdownService.Markup(System.String, System.String)
+- uid: Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider
+  name: IMarkdownServiceProvider
+  href: api/Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider.html#Microsoft_DocAsCode_Plugins_IMarkdownServiceProvider
+  fullName: Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider
+- uid: Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+  name: CreateMarkdownService(MarkdownServiceParameters)
+  href: api/Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider.html#Microsoft_DocAsCode_Plugins_IMarkdownServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_
+  fullName: Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
 - uid: Microsoft.DocAsCode.Plugins.ISubCommand
   name: ISubCommand
   href: api/Microsoft.DocAsCode.Plugins.ISubCommand.html#Microsoft_DocAsCode_Plugins_ISubCommand
@@ -9614,6 +9646,18 @@ references:
   name: GetHelpText()
   href: api/Microsoft.DocAsCode.Plugins.ISubCommandCreator.html#Microsoft_DocAsCode_Plugins_ISubCommandCreator_GetHelpText
   fullName: Microsoft.DocAsCode.Plugins.ISubCommandCreator.GetHelpText()
+- uid: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters
+  name: MarkdownServiceParameters
+  href: api/Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.html#Microsoft_DocAsCode_Plugins_MarkdownServiceParameters
+  fullName: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters
+- uid: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.BasePath
+  name: BasePath
+  href: api/Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.html#Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_BasePath
+  fullName: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.BasePath
+- uid: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.Extensions
+  name: Extensions
+  href: api/Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.html#Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_Extensions
+  fullName: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.Extensions
 - uid: Microsoft.DocAsCode.Plugins.MarkupResult
   name: MarkupResult
   href: api/Microsoft.DocAsCode.Plugins.MarkupResult.html#Microsoft_DocAsCode_Plugins_MarkupResult
