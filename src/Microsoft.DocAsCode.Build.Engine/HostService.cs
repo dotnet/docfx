@@ -225,11 +225,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     var path = (RelativePath)ft.File + (RelativePath)linkFile;
                     var file = path.GetPathFromWorkingFolder();
-                    link.Value = file;
-                    if (!string.IsNullOrEmpty(anchor) &&
-                        string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
+                    if (SourceFiles.ContainsKey(file))
                     {
-                        pair.Node.SetAttributeValue("anchor", anchor);
+                        link.Value = file;
+                        if (!string.IsNullOrEmpty(anchor) &&
+                            string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
+                        {
+                            pair.Node.SetAttributeValue("anchor", anchor);
+                        }
                     }
                     linkToFiles.Add(HttpUtility.UrlDecode(file));
                 }
