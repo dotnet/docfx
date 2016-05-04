@@ -294,7 +294,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 else
                 {
-                    // Logger.LogWarning($"File {path} is not found in {relativePath}.");
+                    Logger.LogWarning($"File {path} is not found in {relativePath}.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
                     if (!string.IsNullOrEmpty(anchor))
