@@ -92,7 +92,7 @@
   <li class="expand-container{{#platform}} platform-{{.}}{{/platform}}" id="{{id}}">
     <h4><a href class="expander">
     {{#name}}
-      <code lang="lang-{{lang}}">{{value}}</code>
+      <code class="lang-{{lang}}">{{value}}</code>
     {{/name}}
     </a></h4>
     <section class="content">
@@ -107,7 +107,7 @@
         <section class="secondary">
           <h6>Declaration</h6>
           <figure>
-            <pre>{{#content}}<code class="{{lang}}" lang="lang-{{lang}}">{{value}}</code>{{/content}}</pre>
+            <pre>{{#content}}<code class="{{lang}} lang-{{lang}}">{{value}}</code>{{/content}}</pre>
           </figure>
         </section>
         {{/syntax}}
@@ -125,7 +125,7 @@
                 <li><code>{{{id}}}</code></li>
                 <li>
                   {{#type.specName}}
-                    <code lang="lang-{{lang}}">{{{value}}}</code>
+                    <code class="lang-{{lang}}">{{{value}}}</code>
                   {{/type.specName}}
                 </li>
               </ol>
@@ -146,7 +146,7 @@
               <ol class="meta">
                 <li>
                 {{#type.specName}}
-                  <code lang="lang-{{lang}}">{{{value}}}</code>
+                  <code class="lang-{{lang}}">{{{value}}}</code>
                 {{/type.specName}}
                 </li>
               </ol>
@@ -163,7 +163,7 @@
               <ol class="meta">
                 <li>
                 {{#type.specName}}
-                  <code lang="lang-{{lang}}">{{{value}}}</code>
+                  <code class="lang-{{lang}}">{{{value}}}</code>
                 {{/type.specName}}
                 </li>
               </ol>
@@ -182,7 +182,7 @@
               <ol class="meta">
                 <li>
                 {{#type.specName}}
-                  <code lang="lang-{{lang}}">{{{value}}}</code>
+                  <code class="lang-{{lang}}">{{{value}}}</code>
                 {{/type.specName}}
                 </li>
               </ol>
