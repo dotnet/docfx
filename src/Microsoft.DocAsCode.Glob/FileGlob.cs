@@ -34,15 +34,9 @@ namespace Microsoft.DocAsCode.Glob
 
         private static IEnumerable<string> GetFilesFromSubfolder(string baseDirectory, string cwd, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
         {
-            var relativePath = GetRelativeFilePath(cwd, baseDirectory);
-            foreach (var exclude in excludeGlobs)
-            {
-                if (exclude.Match(relativePath)) yield break;
-            }
-
             foreach (var file in Directory.GetFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                relativePath = GetRelativeFilePath(cwd, file);
+                var relativePath = GetRelativeFilePath(cwd, file);
                 if (IsFileMatch(relativePath, globs, excludeGlobs))
                 {
                     yield return file;
@@ -51,19 +45,12 @@ namespace Microsoft.DocAsCode.Glob
 
             foreach (var dir in Directory.GetDirectories(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
-                relativePath = GetRelativeDirectoryPath(cwd, dir);
-
-                // For folder, exclude glob matches folder means nothing, e.g. **/a matches b/a folder, however, **/a does not match b/a/c file
-                foreach (var glob in globs)
+                var relativePath = GetRelativeDirectoryPath(cwd, dir);
+                if (IsDirectoryMatch(relativePath, globs, excludeGlobs))
                 {
-                    if (glob.Match(relativePath, true))
+                    foreach (var file in GetFilesFromSubfolder(dir, cwd, globs, excludeGlobs))
                     {
-                        foreach(var file in GetFilesFromSubfolder(dir, cwd, globs, excludeGlobs))
-                        {
-                            yield return file;
-                        }
-
-                        break;
+                        yield return file;
                     }
                 }
             }
@@ -91,13 +78,23 @@ namespace Microsoft.DocAsCode.Glob
 
         private static bool IsFileMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
         {
+            return IsMatch(path, globs, excludeGlobs, false);
+        }
+
+        private static bool IsDirectoryMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
+        {
+            return IsMatch(path, globs, excludeGlobs, true);
+        }
+
+        private static bool IsMatch(string path, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs, bool partial)
+        {
             foreach (var exclude in excludeGlobs)
             {
                 if (exclude.Match(path, false)) return false;
             }
             foreach (var glob in globs)
             {
-                if (glob.Match(path, false)) return true;
+                if (glob.Match(path, partial)) return true;
             }
             return false;
         }
