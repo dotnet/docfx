@@ -65,7 +65,7 @@
       <section class="secondary">
         {{#syntax}}
         <figure>
-          <pre>{{#content}}<code class="{{lang}}" lang="lang-{{lang}}">{{value}}</code>{{/content}}</pre>
+          <pre>{{#content}}<code class="{{lang}} lang-{{lang}}">{{value}}</code>{{/content}}</pre>
         </figure>
         {{/syntax}}
       </section>
