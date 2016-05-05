@@ -51,7 +51,6 @@ uid: Test2
             File.Delete(FileName);
 
             // Test different line ending
-            // Test conceptual content between two yamlheader
             content = "---\nuid: Test\nremarks: Hello\n---\nThis is unit test!";
             File.WriteAllText(FileName, content);
             results = MarkdownReader.ReadMarkdownAsOverwrite(Environment.CurrentDirectory, FileName);

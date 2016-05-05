@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Common
     public struct Coordinate : IComparable<Coordinate>
     {
         private const char NewLineCharacter = '\n';
+
         public int Line { get; set; }
         public int Column { get; set; }
 
