@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -32,64 +33,51 @@ namespace Microsoft.DocAsCode.Dfm
 
         private string LoadCore(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
         {
-            if (!PathUtility.IsRelativePath(currentPath))
+            try
             {
-                if (!Path.IsPathRooted(currentPath))
+                if (!PathUtility.IsRelativePath(currentPath))
                 {
                     return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw);
                 }
-                else
-                    currentPath = PathUtility.MakeRelativePath(Environment.CurrentDirectory, currentPath);
-            }
-            var parents = context.GetFilePathStack();
-            var originalPath = currentPath;
-            string parent = string.Empty;
-            if (parents == null) parents = ImmutableStack<string>.Empty;
 
-            // Update currentPath to be referencing to sourcePath
-            else if (!parents.IsEmpty)
-            {
-                parent = parents.Peek();
-                currentPath = ((RelativePath)currentPath).BasedOn((RelativePath)parent);
-            }
+                var parents = context.GetFilePathStack();
+                var originalPath = currentPath;
+                string parent = string.Empty;
+                if (parents == null) parents = ImmutableStack<string>.Empty;
 
-            if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
-            {
-                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
-            }
+                // Update currentPath to be referencing to sourcePath
+                else if (!parents.IsEmpty)
+                {
+                    parent = parents.Peek();
+                    currentPath = ((RelativePath)currentPath).BasedOn((RelativePath)parent);
+                }
 
-            string result = string.Empty;
+                if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
+                {
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
+                }
 
-            // Add current file path to chain when entering recursion
-            parents = parents.Push(currentPath);
-            try
-            {
+                // Add current file path to chain when entering recursion
+                parents = parents.Push(currentPath);
+                string result;
                 if (!_cache.TryGet(currentPath, out result))
                 {
                     var src = File.ReadAllText(currentPath);
 
                     src = resolver(src, context.SetFilePathStack(parents));
 
-                    HtmlDocument htmlDoc = new HtmlDocument();
-                    htmlDoc.LoadHtml(src);
-                    var node = htmlDoc.DocumentNode;
-
-                    // If current content is not the root one, update href to root
-                    if (parents.Count() > 1)
-                        UpdateHref(node, originalPath);
-
-                    result = node.WriteTo();
+                    result = UpdateToHrefFromWorkingFolder(src, currentPath);
                     result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
+
+                    _cache.Add(currentPath, result);
                 }
+
+                return result;
             }
             catch (Exception e)
             {
-                result = GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw);
+                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw);
             }
-
-            _cache.Add(currentPath, result);
-
-            return result;
         }
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html)
@@ -104,44 +92,52 @@ namespace Microsoft.DocAsCode.Dfm
             return $"<!-- BEGIN {escapedTag}: {StringHelper.Escape(comment)} -->{html}<!--END {escapedTag} -->";
         }
 
-        private static void UpdateHref(HtmlNode node, string filePath)
+        private static string UpdateToHrefFromWorkingFolder(string html, string filePath)
         {
-            var selector = node.SelectNodes("//img");
-            if (selector != null)
-            {
-                foreach (var element in selector)
-                {
-                    UpdateSingleHref(element, "src", filePath);
-                }
-            }
+            return UpdateHtml(html, node => UpdateToHrefFromWorkingFolder(node, filePath));
+        }
 
-            selector = node.SelectNodes("//a|//link|//script");
-            if (selector != null)
+        private static void UpdateToHrefFromWorkingFolder(HtmlNode html, string filePath)
+        {
+            foreach (var pair in GetHrefNodes(html))
             {
-                foreach (var element in selector)
+                var link = pair.Attr;
+                if (PathUtility.IsRelativePath(link.Value) && !RelativePath.IsPathFromWorkingFolder(link.Value) && !link.Value.StartsWith("#"))
                 {
-                    UpdateSingleHref(element, "href", filePath);
+                    link.Value = ((RelativePath)filePath + (RelativePath)link.Value).GetPathFromWorkingFolder();
                 }
             }
         }
 
-        private static void UpdateSingleHref(HtmlNode node, string attributeName, string filePath)
+        private static List<NodeInfo> GetHrefNodes(HtmlNode html)
         {
-            var href = node.GetAttributeValue(attributeName, string.Empty);
-            if (PathUtility.IsRelativePath(href) && !href.StartsWith("#"))
-            {
-                node.SetAttributeValue(attributeName, RebaseHref(href, filePath, string.Empty));
-            }
+            return (from n in html.Descendants()
+                    where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                    from attr in n.Attributes
+                    where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
+                          string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
+                    where !string.IsNullOrWhiteSpace(attr.Value)
+                    select new NodeInfo(n, attr)).ToList();
         }
 
-        private static string RebaseHref(string refPath, string source, string target)
+        private static string UpdateHtml(string html, Action<HtmlNode> updater)
         {
-            var originalPath = (RelativePath)refPath;
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            var node = doc.DocumentNode;
+            updater(node);
+            return node.WriteTo();
+        }
 
-            var from = (RelativePath)source;
-            var to = (RelativePath)target;
-            var rebasedPath = originalPath.Rebase(from, to);
-            return rebasedPath;
+        private sealed class NodeInfo
+        {
+            public HtmlNode Node { get; }
+            public HtmlAttribute Attr { get; }
+            public NodeInfo(HtmlNode node, HtmlAttribute attr)
+            {
+                Node = node;
+                Attr = attr;
+            }
         }
 
         public void Dispose()
