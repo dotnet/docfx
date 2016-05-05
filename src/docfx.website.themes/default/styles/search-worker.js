@@ -12,7 +12,7 @@
   var stopWords = [];
   var stopWordsRequest = new XMLHttpRequest();
 
-  stopWordsRequest.open('GET', '../stopwords.json');
+  stopWordsRequest.open('GET', '../search-stopwords.json');
   stopWordsRequest.onload = function() {
     stopWords = JSON.parse(this.responseText);
     var docfxStopWordFilter = lunr.generateStopWordFilter(stopWords);
