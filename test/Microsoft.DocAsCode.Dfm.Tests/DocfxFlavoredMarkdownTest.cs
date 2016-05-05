@@ -108,6 +108,68 @@ Paragraph1
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestBlockLevelInclusionWithSameFile()
+        {
+            // -r
+            //  |- r.md
+            //  |- a
+            //  |  |- a.md
+            //  |- b
+            //  |  |- token.md
+            //  |- c
+            //     |- d
+            //        |- d.md
+            //  |- img
+            //  |  |- img.jpg
+            var r = @"
+[!include[](a/a.md)]
+[!include[](c/d/d.md)]
+";
+            var a = @"
+[!include[](../b/token.md)]";
+            var token = @"
+![](../img/img.jpg)
+[](#anchor)
+[a](../a/a.md)
+[](invalid.md)
+[d](../c/d/d.md#anchor)
+";
+            var d = @"
+[!include[](../../b/token.md)]";
+            WriteToFile("r/r.md", r);
+            WriteToFile("r/a/a.md", a);
+            WriteToFile("r/b/token.md", token);
+            WriteToFile("r/c/d/d.md", d);
+            var marked = DocfxFlavoredMarked.Markup(a, Path.GetFullPath("r/a/a.md"));
+            Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""../img/img.jpg"" alt="""">
+<a href=""#anchor""></a>
+<a href=""a.md"">a</a>
+<a href=""../b/invalid.md""></a>
+<a href=""../c/d/d.md#anchor"">d</a></p>
+<!--END INCLUDE -->".Replace("\r\n", "\n"), marked);
+            marked = DocfxFlavoredMarked.Markup(d, Path.GetFullPath("r/c/d/d.md"));
+            Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""../../img/img.jpg"" alt="""">
+<a href=""#anchor""></a>
+<a href=""../../a/a.md"">a</a>
+<a href=""../../b/invalid.md""></a>
+<a href=""d.md#anchor"">d</a></p>
+<!--END INCLUDE -->".Replace("\r\n", "\n"), marked);
+            marked = DocfxFlavoredMarked.Markup(r, Path.GetFullPath("r/r.md"));
+            Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;r/a/a.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""img/img.jpg"" alt="""">
+<a href=""#anchor""></a>
+<a href=""a/a.md"">a</a>
+<a href=""b/invalid.md""></a>
+<a href=""c/d/d.md#anchor"">d</a></p>
+<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/c/d/d.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""img/img.jpg"" alt="""">
+<a href=""#anchor""></a>
+<a href=""a/a.md"">a</a>
+<a href=""b/invalid.md""></a>
+<a href=""c/d/d.md#anchor"">d</a></p>
+<!--END INCLUDE --><!--END INCLUDE -->".Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestInclusion_InlineLevel()
         {
             // 1. Prepare data
