@@ -5,10 +5,10 @@ namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Linq;
-    using System.Text.RegularExpressions;
 
     public struct Coordinate : IComparable<Coordinate>
     {
+        private const char NewLineCharacter = '\n';
         public int Line { get; set; }
         public int Column { get; set; }
 
@@ -35,10 +35,11 @@ namespace Microsoft.DocAsCode.Build.Common
                 return Default;
             }
             int index = content.Length - 1;
-            int line = Regex.Matches(content, Environment.NewLine).Count;
+            int line = content.Count(c => c == NewLineCharacter);
 
-            int lineStart = content.LastIndexOf(Environment.NewLine, index);
-            int col = index - lineStart - 1;
+            int lineStart = content.LastIndexOf(NewLineCharacter, index);
+
+            int col = index - lineStart;
             return new Coordinate { Line = line, Column = col };
         }
 

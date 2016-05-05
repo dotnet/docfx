@@ -26,7 +26,7 @@ This is unit test!";
             Assert.Equal(1, results.Count);
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal(@"This is unit test!", results[0].Conceptual);
+            Assert.Equal("\r\nThis is unit test!", results[0].Conceptual);
             File.Delete(FileName);
 
             // Test conceptual content between two yamlheader
@@ -46,8 +46,20 @@ uid: Test2
             Assert.Equal("Test1", results[0].Uid);
             Assert.Equal("Test2", results[1].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal(@"This is unit test!", results[0].Conceptual);
+            Assert.Equal("This is unit test!", results[0].Conceptual);
             Assert.Equal(String.Empty, results[1].Conceptual);
+            File.Delete(FileName);
+
+            // Test different line ending
+            // Test conceptual content between two yamlheader
+            content = "---\nuid: Test\nremarks: Hello\n---\nThis is unit test!";
+            File.WriteAllText(FileName, content);
+            results = MarkdownReader.ReadMarkdownAsOverwrite(Environment.CurrentDirectory, FileName);
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
+            Assert.Equal("Test", results[0].Uid);
+            Assert.Equal("Hello", results[0].Metadata["remarks"]);
+            Assert.Equal(@"This is unit test!", results[0].Conceptual);
             File.Delete(FileName);
         }
     }

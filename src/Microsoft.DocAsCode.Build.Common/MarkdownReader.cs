@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     {
                         Uid = item.Id,
                         Metadata = item.Detail.Properties,
-                        Conceptual = content.Substring(start, end - start).Trim(),
+                        Conceptual = content.Substring(start, end - start),
                         Documentation = new SourceDetail
                         {
                             Remote = repoInfo,

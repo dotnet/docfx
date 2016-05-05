@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.Common
         private static readonly List<string> RequiredProperties = new List<string> { Constants.PropertyName.Uid };
 
         // If is not the end of the file, then \n should be appended to ---
-        public static readonly Regex YamlHeaderRegex = new Regex(@"((((?!\n)\s)*\n)|^)((?!\n)\s)*(?<wholeMatch>\-\-\-((?!\n)\s)*\n((?!\n)\s)*(?<content>uid:.*?)\s*\-\-\-)((?!\n)\s)*\n", RegexOptions.Compiled | RegexOptions.Singleline);
+        public static readonly Regex YamlHeaderRegex = new Regex(@"((((?!\n)\s)*\n)|^)((?!\n)\s)*\-\-\-((?!\n)\s)*\n((?!\n)\s)*(?<content>uid:.*?)\s*\-\-\-((?!\n)\s)*\n", RegexOptions.Compiled | RegexOptions.Singleline);
 
         public static IList<MatchDetail> Select(string input)
         {
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
         private static MatchDetail SelectSingle(Match match, string input)
         {
-            var wholeMatch = match.Groups["wholeMatch"];
+            var wholeMatch = match.Groups[0];
 
             string content = match.Groups["content"].Value;
             Dictionary<string, object> properties;
