@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
@@ -73,7 +74,13 @@ by a blank line.</p>
 
             var builder = new GfmEngineBuilder(new Options());
             var source1000 = string.Concat(Enumerable.Repeat(source, 1000));
-            var expected1000 = string.Concat(Enumerable.Repeat(expected.Replace("\r\n", "\n"), 1000));
+            var expectedArray = Enumerable.Repeat(expected.Replace("\r\n", "\n"), 1000).ToArray();
+            var rewriteIdRegex = new Regex(@"(id=)""([\p{L}\p{Nd}-]+)""", RegexOptions.Compiled);
+            for (var i = 1; i < expectedArray.Length; i++)
+            {
+                expectedArray[i] = rewriteIdRegex.Replace(expectedArray[i], string.Concat(@"$1""$2-", i - 1, @""""));
+            }
+            var expected1000 = string.Concat(expectedArray);
             var engine = builder.CreateEngine(new HtmlRenderer());
             for (int i = 0; i < 2; i++)
             {
