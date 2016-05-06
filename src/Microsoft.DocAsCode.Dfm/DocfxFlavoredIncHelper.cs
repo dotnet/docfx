@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -13,7 +14,7 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
-    using System.Collections.Generic;
+
     internal sealed class DocfxFlavoredIncHelper : IDisposable
     {
         private readonly FileCacheLite _cache;
@@ -32,46 +33,34 @@ namespace Microsoft.DocAsCode.Dfm
 
         private string LoadCore(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
         {
-            if (!PathUtility.IsRelativePath(currentPath))
+            try
             {
-                if (!Path.IsPathRooted(currentPath))
+                if (!PathUtility.IsRelativePath(currentPath))
                 {
                     return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw);
                 }
-                else
+
+                var parents = context.GetFilePathStack();
+                var originalPath = currentPath;
+                string parent = string.Empty;
+                if (parents == null) parents = ImmutableStack<string>.Empty;
+
+                // Update currentPath to be referencing to sourcePath
+                else if (!parents.IsEmpty)
                 {
-                    // TODO: Environment.CurrentDirectory is not accurate
-                    currentPath = PathUtility.MakeRelativePath(Environment.CurrentDirectory, currentPath);
-                    if (!PathUtility.IsRelativePath(currentPath))
-                    {
-                        return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw);
-                    }
+                    parent = parents.Peek();
+                    currentPath = ((RelativePath)currentPath).BasedOn((RelativePath)parent);
                 }
-            }
-            var parents = context.GetFilePathStack();
-            var originalPath = currentPath;
-            string parent = string.Empty;
-            if (parents == null) parents = ImmutableStack<string>.Empty;
 
-            // Update currentPath to be referencing to sourcePath
-            else if (!parents.IsEmpty)
-            {
-                parent = parents.Peek();
-                currentPath = ((RelativePath)currentPath).BasedOn((RelativePath)parent);
-            }
+                if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
+                {
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
+                }
 
-            if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
-            {
-                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
-            }
-
-            string result = string.Empty;
-
-            // Add current file path to chain when entering recursion
-            parents = parents.Push(currentPath);
-            if (!_cache.TryGet(currentPath, out result))
-            {
-                try
+                // Add current file path to chain when entering recursion
+                parents = parents.Push(currentPath);
+                string result;
+                if (!_cache.TryGet(currentPath, out result))
                 {
                     var src = File.ReadAllText(currentPath);
 
@@ -79,16 +68,16 @@ namespace Microsoft.DocAsCode.Dfm
 
                     result = UpdateToHrefFromWorkingFolder(src, currentPath);
                     result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
-                }
-                catch (Exception e)
-                {
-                    result = GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw);
-                }
-                _cache.Add(currentPath, result);
-            }
 
-            // Convert back to relative path
-            return UpdateToRelativeHref(result, parent);
+                    _cache.Add(currentPath, result);
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw);
+            }
         }
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html)
@@ -103,27 +92,9 @@ namespace Microsoft.DocAsCode.Dfm
             return $"<!-- BEGIN {escapedTag}: {StringHelper.Escape(comment)} -->{html}<!--END {escapedTag} -->";
         }
 
-        private static string UpdateToRelativeHref(string html, string filePath)
-        {
-            return UpdateHtml(html, node => UpdateToRelativeHref(node, filePath));
-        }
-
         private static string UpdateToHrefFromWorkingFolder(string html, string filePath)
         {
             return UpdateHtml(html, node => UpdateToHrefFromWorkingFolder(node, filePath));
-        }
-
-        private static void UpdateToRelativeHref(HtmlNode html, string filePath)
-        {
-            foreach (var pair in GetHrefNodes(html))
-            {
-                var link = pair.Attr;
-                string path;
-                if (RelativePath.TryGetPathWithoutWorkingFolderChar(link.Value, out path))
-                {
-                    link.Value = ((RelativePath)path).MakeRelativeTo((RelativePath)filePath).ToString();
-                }
-            }
         }
 
         private static void UpdateToHrefFromWorkingFolder(HtmlNode html, string filePath)

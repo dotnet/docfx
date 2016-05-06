@@ -103,7 +103,14 @@ Paragraph1
             WriteToFile("r/c/c.md", c);
             WriteToFile("r/empty.md", string.Empty);
             var marked = DocfxFlavoredMarked.Markup(root, Path.GetFullPath("r/root.md"));
-            Assert.Equal("<!-- BEGIN INCLUDE: Include content from &quot;r/b/linkAndRefRoot.md&quot; --><p>Paragraph1\n<a href=\"b/a.md\">link</a>\n<!-- BEGIN INCLUDE: Include content from &quot;r/link/link2.md&quot; --><a href=\"link/md/c.md\">link</a><!--END INCLUDE -->\n<img src=\"b/img/img.jpg\" alt=\"Image\">\n<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include[root](../root.md)]<!--END ERROR INCLUDE --></p>\n<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>\n<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>\n<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/empty.md&quot; --><!--END INCLUDE --><!-- BEGIN ERROR INCLUDE: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->", marked);
+            Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;r/b/linkAndRefRoot.md&quot; --><p>Paragraph1
+<a href=""~/r/b/a.md"">link</a>
+<!-- BEGIN INCLUDE: Include content from &quot;r/link/link2.md&quot; --><a href=""~/r/link/md/c.md"">link</a><!--END INCLUDE -->
+<img src=""~/r/b/img/img.jpg"" alt=""Image"">
+<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include[root](../root.md)]<!--END ERROR INCLUDE --></p>
+<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
+<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
+<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/empty.md&quot; --><!--END INCLUDE --><!-- BEGIN ERROR INCLUDE: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n"), marked);
         }
 
         [Fact]
@@ -141,31 +148,17 @@ Paragraph1
             WriteToFile("r/b/token.md", token);
             WriteToFile("r/c/d/d.md", d);
             var marked = DocfxFlavoredMarked.Markup(a, Path.GetFullPath("r/a/a.md"));
-            Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""../img/img.jpg"" alt="""">
+            var expected = @"<!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""~/r/img/img.jpg"" alt="""">
 <a href=""#anchor""></a>
-<a href=""a.md"">a</a>
-<a href=""../b/invalid.md""></a>
-<a href=""../c/d/d.md#anchor"">d</a></p>
-<!--END INCLUDE -->".Replace("\r\n", "\n"), marked);
+<a href=""~/r/a/a.md"">a</a>
+<a href=""~/r/b/invalid.md""></a>
+<a href=""~/r/c/d/d.md#anchor"">d</a></p>
+<!--END INCLUDE -->".Replace("\r\n", "\n");
+            Assert.Equal(expected, marked);
             marked = DocfxFlavoredMarked.Markup(d, Path.GetFullPath("r/c/d/d.md"));
-            Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""../../img/img.jpg"" alt="""">
-<a href=""#anchor""></a>
-<a href=""../../a/a.md"">a</a>
-<a href=""../../b/invalid.md""></a>
-<a href=""d.md#anchor"">d</a></p>
-<!--END INCLUDE -->".Replace("\r\n", "\n"), marked);
+            Assert.Equal(expected, marked);
             marked = DocfxFlavoredMarked.Markup(r, Path.GetFullPath("r/r.md"));
-            Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;r/a/a.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""img/img.jpg"" alt="""">
-<a href=""#anchor""></a>
-<a href=""a/a.md"">a</a>
-<a href=""b/invalid.md""></a>
-<a href=""c/d/d.md#anchor"">d</a></p>
-<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/c/d/d.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""img/img.jpg"" alt="""">
-<a href=""#anchor""></a>
-<a href=""a/a.md"">a</a>
-<a href=""b/invalid.md""></a>
-<a href=""c/d/d.md#anchor"">d</a></p>
-<!--END INCLUDE --><!--END INCLUDE -->".Replace("\r\n", "\n"), marked);
+            Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;r/a/a.md&quot; -->{expected}<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/c/d/d.md&quot; -->{expected}<!--END INCLUDE -->", marked);
         }
 
         [Fact]
