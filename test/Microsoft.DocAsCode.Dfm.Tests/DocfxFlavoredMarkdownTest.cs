@@ -54,6 +54,8 @@ b:
         [InlineData(
             @"[*a*](xref:uid)",
             "<p><a href=\"xref:uid\"><em>a</em></a></p>\n")]
+        [InlineData("# Hello World\n# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n<h1 id=\"hello-world-0\">Hello World</h1>\n")]
+        [InlineData("# 微软。上海\n# 微软。上海", "<h1 id=\"微软-上海\">微软。上海</h1>\n<h1 id=\"微软-上海-0\">微软。上海</h1>\n")]
         public void TestDfmInGeneral(string source, string expected)
         {
             Assert.Equal(expected.Replace("\r\n", "\n"), DocfxFlavoredMarked.Markup(source));

@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     t.Rule,
                     t.Context,
                     p.TokenizeInline(match.Groups[2].Value),
-                    Regex.Replace(match.Groups[2].Value.ToLower(), @"[^\w]+", "-"),
+                    Regex.Replace(match.Groups[2].Value.ToLower(), @"[^\p{L}\p{Nd}]+", "-"),
                     match.Groups[1].Value.Length,
                     t.RawMarkdown));
         }
