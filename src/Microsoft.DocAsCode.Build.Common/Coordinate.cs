@@ -36,16 +36,11 @@ namespace Microsoft.DocAsCode.Build.Common
                 return Default;
             }
             int index = content.Length - 1;
-            int line = content.Count(c => c == NewLineCharacter); // Assume there is no new line at the end of the file, count(line) = count(newline) + 1
+            int line = content.Count(c => c == NewLineCharacter);
 
-            // Remove last new line character if it is last character of the content
-            if (content[content.Length - 1] == NewLineCharacter)
-            {
-                line--;
-                index--;
-            }
             int lineStart = content.LastIndexOf(NewLineCharacter, index);
-            int col = index - lineStart - 1;
+
+            int col = index - lineStart;
             return new Coordinate { Line = line, Column = col };
         }
 

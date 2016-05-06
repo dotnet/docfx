@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.Common
     /// 2. Followed by three dashes `---` as a line, spaces are allowed before 
     /// 3. Followed by and must followed by `uid: `
     /// 4. Followed by other properties in YAML format
-    /// 5. Ended with three dashes `---` as a line, spaces are allowed before 
+    /// 5. Ended with three dashes `---` and environment newline as a line, spaces are allowed before 
     /// </summary>
     public static class YamlHeaderParser
     {
@@ -50,9 +50,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
             var overridenProperties = RemoveRequiredProperties(properties, RequiredProperties);
 
-            // Get one character larger then the actual match
-            var location = Location.GetLocation(input, wholeMatch.Index - 1, wholeMatch.Length + 2);
-
+            var location = Location.GetLocation(input, wholeMatch.Index, wholeMatch.Length);
             return new MatchDetail
             {
                            Id = properties[Constants.PropertyName.Uid].ToString(),
