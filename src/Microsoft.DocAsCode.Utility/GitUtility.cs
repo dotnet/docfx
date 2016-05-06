@@ -59,8 +59,10 @@ namespace Microsoft.DocAsCode.Utility
                 detail = new GitDetail();
 
                 var walker = wrapper.Walker;
-                var commitDetail = walker.GetCommitDetail(path);
-                detail.CommitDetail = commitDetail;
+
+                // TODO: Disable fetching commit detail for now until GlobalContext is added
+                // var commitDetail = walker.GetCommitDetail(path);
+                // detail.CommitDetail = commitDetail;
 
                 // Convert to forward slash
                 detail.LocalWorkingDirectory = repo.WorkingDirectory.FullName;

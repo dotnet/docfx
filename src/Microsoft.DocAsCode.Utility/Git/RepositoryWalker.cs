@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Utility.Git
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
 
     using GitSharp.Core;
     using GitSharp.Core.RevWalk;
@@ -43,14 +44,16 @@ namespace Microsoft.DocAsCode.Utility.Git
 
         private CommitDetail GetCommitDetailNoLock(string path)
         {
+            var cache = new FileIdCache(this, path);
+
             // REset must be called according to https://github.com/henon/GitSharp/blob/master/GitSharp.Core/RevWalk/RevWalk.cs#L55
             _walker.reset();
             _walker.markStart(_initCommit);
             for (var currentRev = _walker.next(); currentRev != null; currentRev = _walker.next())
             {
                 var currentCommit = GetCommit(currentRev);
-                var currentEntry = currentCommit.TreeEntry.FindBlobMember(path);
-                if (currentEntry == null)
+                var currentFileId = cache.GetFileId(currentRev);
+                if (currentFileId == null)
                 {
                     return null;
                 }
@@ -65,9 +68,8 @@ namespace Microsoft.DocAsCode.Utility.Git
                     continue;
                 }
 
-                var parentCommit = GetCommitFromObjectId(currentCommit.Commit.ParentIds[0]);
-                var parentEntry = parentCommit.TreeEntry.FindBlobMember(path);
-                if (parentEntry == null || currentEntry.Id != parentEntry.Id)
+                var parentFileId = cache.GetFileId(currentCommit.Commit.ParentIds[0]);
+                if (parentFileId == null || currentFileId != parentFileId)
                 {
                     return currentCommit.Detail;
                 }
@@ -141,6 +143,31 @@ namespace Microsoft.DocAsCode.Utility.Git
                 },
                 ShortMessage = commit.Message,
             };
+        }
+
+        private sealed class FileIdCache
+        {
+            private Dictionary<ObjectId, ObjectId> _cache = new Dictionary<ObjectId, ObjectId>();
+            private RepositoryWalker _walker;
+            private string _path;
+            public FileIdCache(RepositoryWalker walker, string path)
+            {
+                _walker = walker;
+                _path = path;
+            }
+
+            public ObjectId GetFileId(ObjectId commitId)
+            {
+                ObjectId fileId;
+                if (!_cache.TryGetValue(commitId, out fileId))
+                {
+                    var commit = _walker.GetCommitFromObjectId(commitId);
+                    fileId = commit.TreeEntry.FindBlobMember(_path)?.Id;
+                    _cache[commitId] = fileId;
+                }
+
+                return fileId;
+            }
         }
 
         private sealed class CommitWrapper
