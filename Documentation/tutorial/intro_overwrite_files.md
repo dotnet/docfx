@@ -22,6 +22,7 @@ The format of *Overwrite File*s
 ```md
 ---
 uid: microsoft.com/docfx/Contacts
+some_property: value
 ---
 Further description for `microsoft.com/docfx/Contacts`
 ```
@@ -55,7 +56,7 @@ uid: microsoft.com/docfx/Contacts
 footer: <p>Footer for <code>microsoft.com/docfx/Contacts</code></p>
 ```
 
-`uid` for a *Overwrite Model* stands for the Unique IDentifier of the *Model* it will overwrite. So it is allowed to have multiple *Overwrite Section*s with YAML Header containing the same `uid`. For one *Overwrite File*, the latter *Overwrite Section* overwrites the former one with the same `uid`. For different *Overwrite File*s, the order of overwrite is **Undetermined**. So it is suggested to have *Overwrite Sections* with the same `uid` in the same *Overwrite File*.
+`uid` for an *Overwrite Model* stands for the Unique IDentifier of the *Model* it will overwrite. So it is allowed to have multiple *Overwrite Section*s with YAML Header containing the same `uid`. For one *Overwrite File*, the latter *Overwrite Section* overwrites the former one with the same `uid`. For different *Overwrite File*s, the order of overwrite is **Undetermined**. So it is suggested to have *Overwrite Sections* with the same `uid` in the same *Overwrite File*.
 
 When processing *Conceptual File*s and *Metadata File*s, *Overwrite Model*s with the same `uid` are applied to the processed *Model*s. Different *Model*s have different overwrite principles, [Overwrite principles](#overwrite-principles) section describes the them in detail.
 
@@ -99,8 +100,6 @@ Key | Type | Overwrite behavior
 Key | Type | Overwrite behavior
 --- | --- | ---
 *uid* | string | Key
-
-#### REST API item model
 
 ### Conceptual model
 Key | Type | Overwrite behavior
