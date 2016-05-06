@@ -9,12 +9,10 @@
   });
   lunr.tokenizer.seperator = /[\s\-\.]+/;
 
-  var stopWords = [];
   var stopWordsRequest = new XMLHttpRequest();
-
   stopWordsRequest.open('GET', '../search-stopwords.json');
   stopWordsRequest.onload = function() {
-    stopWords = JSON.parse(this.responseText);
+    var stopWords = JSON.parse(this.responseText);
     var docfxStopWordFilter = lunr.generateStopWordFilter(stopWords);
     lunr.Pipeline.registerFunction(docfxStopWordFilter, 'docfxStopWordFilter');
     lunrIndex.pipeline.add(docfxStopWordFilter);
