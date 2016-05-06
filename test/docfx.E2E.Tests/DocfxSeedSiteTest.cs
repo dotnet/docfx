@@ -211,6 +211,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
         private void TestLinkTitle(IWebElement element, params string[] titlePart)
         {
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);window.scrollBy(0,-100);", element);
             element.Click();
             foreach (var part in titlePart)
             {
