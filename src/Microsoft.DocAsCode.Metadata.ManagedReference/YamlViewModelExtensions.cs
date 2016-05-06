@@ -216,6 +216,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var result = new ItemViewModel
             {
                 Uid = model.Name,
+                CommentId = model.CommentId,
                 Parent = model.Parent?.Name,
                 Children = model.Items?.Select(x => x.Name).OrderBy(s => s).ToList(),
                 Type = model.Type,

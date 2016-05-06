@@ -27,6 +27,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty(Constants.PropertyName.Id)]
         public string Name { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.CommentId)]
+        [JsonProperty(Constants.PropertyName.CommentId)]
+        public string CommentId { get; set; }
+
         [YamlMember(Alias = "language")]
         [JsonProperty("language")]
         public SyntaxLanguage Language { get; set; }

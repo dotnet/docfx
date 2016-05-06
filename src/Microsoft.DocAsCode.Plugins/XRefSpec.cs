@@ -9,6 +9,7 @@
         public const string UidKey = "uid";
         public const string NameKey = "name";
         public const string HrefKey = "href";
+        public const string CommentIdKey = "commentId";
 
         private Dictionary<string, string> _dict;
         private bool _isReadOnly;
@@ -67,6 +68,17 @@
                 return value;
             }
             set { _dict[HrefKey] = value; }
+        }
+
+        public string CommentId
+        {
+            get
+            {
+                string value;
+                _dict.TryGetValue(CommentIdKey, out value);
+                return value;
+            }
+            set { _dict[CommentIdKey] = value; }
         }
 
         private void ThrowIfReadOnly()

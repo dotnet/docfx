@@ -58,6 +58,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return str.ToString().Substring(2);
         }
 
+        public static string GetCommentId(ISymbol symbol)
+        {
+            if (symbol == null || symbol is IAssemblySymbol)
+            {
+                return null;
+            }
+
+            if (symbol is IDynamicTypeSymbol)
+            {
+                return "T:" + typeof(object).FullName;
+            }
+            return symbol.GetDocumentationCommentId();
+        }
+
         public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, ITripleSlashCommentParserContext context)
         {
             string comment = isReturn ? item.CommentModel?.Returns : item.CommentModel?.GetParameter(symbol.Name);

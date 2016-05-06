@@ -22,6 +22,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [MergeOption(MergeOption.MergeKey)]
         public string Uid { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.CommentId)]
+        [JsonProperty(Constants.PropertyName.CommentId)]
+        public string CommentId { get; set; }
+
         [YamlMember(Alias = Constants.PropertyName.Id)]
         [JsonProperty(Constants.PropertyName.Id)]
         public string Id { get; set; }
