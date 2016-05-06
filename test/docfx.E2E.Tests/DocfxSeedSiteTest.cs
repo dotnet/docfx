@@ -211,6 +211,8 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
         private void TestLinkTitle(IWebElement element, params string[] titlePart)
         {
+            // 1. scroll to the element before clicking on it
+            // 2. scroll up 100px to prevent element from being covered by navbar
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);window.scrollBy(0,-100);", element);
             element.Click();
             foreach (var part in titlePart)
