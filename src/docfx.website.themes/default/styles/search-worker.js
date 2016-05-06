@@ -2,11 +2,23 @@
   importScripts('lunr.min.js');
 
   var lunrIndex = lunr(function() {
+      this.pipeline.remove(lunr.stopWordFilter);
       this.ref('href');
       this.field('title', {boost: 50});
       this.field('keywords', {boost: 20});
   });
   lunr.tokenizer.seperator = /[\s\-\.]+/;
+
+  var stopWordsRequest = new XMLHttpRequest();
+  stopWordsRequest.open('GET', '../search-stopwords.json');
+  stopWordsRequest.onload = function() {
+    var stopWords = JSON.parse(this.responseText);
+    var docfxStopWordFilter = lunr.generateStopWordFilter(stopWords);
+    lunr.Pipeline.registerFunction(docfxStopWordFilter, 'docfxStopWordFilter');
+    lunrIndex.pipeline.add(docfxStopWordFilter);
+  }
+  stopWordsRequest.send();
+
   var searchData = {};
   var searchDataRequest = new XMLHttpRequest();
 
