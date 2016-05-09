@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.8.2)
+Version Notes (Current Version: v1.8.3)
 =======================================
+v1.8.3
+-----------
+1. Fix bug for [!include()[]] when multiple articles in different subfolder including one file that v1.8.2 not resolved
+
 v1.8.2
 -----------
 1. Fix bug for [!include()[]] when multiple articles in different subfolder including one file
