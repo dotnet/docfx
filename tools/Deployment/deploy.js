@@ -371,7 +371,6 @@ function uploadAssetsPromiseFn() {
       let uploadOptions = {
         method: 'POST',
         url: globalOptions.upload_url.slice(0, -13) + "?name=docfx.zip",
-        json: true,
         headers: {
           'User-Agent': 'request',
           'Authorization': 'token ' + process.env.TOKEN,
