@@ -40,9 +40,10 @@ namespace Microsoft.DocAsCode.SubCommands
         public void Exec(SubCommandRunningContext context)
         {
             var config = Config;
-            var baseDirectory = string.IsNullOrEmpty(config.BaseDirectory) ? Environment.CurrentDirectory : config.BaseDirectory;
+            // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
+            var baseDirectory = Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Environment.CurrentDirectory : config.BaseDirectory);
             var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
-            var outputFolder = Path.Combine(config.OutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
+            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(config.OutputFolder) ? baseDirectory : config.OutputFolder, config.Destination ?? string.Empty));
 
             // TODO: Refactor
             var original = Environment.CurrentDirectory;
