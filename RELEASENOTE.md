@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.8.1)
+Version Notes (Current Version: v1.8.2)
 =======================================
+v1.8.2
+-----------
+1. Fix bug for [!include()[]] when multiple articles in different subfolder including one file
+
 v1.8.1
 -----------
 1. Fix bug when serialize attribute argument for type array. (https://github.com/dotnet/docfx/issues/280)
