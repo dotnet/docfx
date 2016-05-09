@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var config = Config;
             var baseDirectory = Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Environment.CurrentDirectory : config.BaseDirectory);
             var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
-            var outputFolder = Path.Combine(config.OutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
+            var outputFolder = Path.GetFullPath(Path.Combine(config.OutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty));
 
             // TODO: Refactor
             var original = Environment.CurrentDirectory;
