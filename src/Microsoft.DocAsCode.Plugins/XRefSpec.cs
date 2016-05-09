@@ -78,7 +78,17 @@
                 _dict.TryGetValue(CommentIdKey, out value);
                 return value;
             }
-            set { _dict[CommentIdKey] = value; }
+            set
+            {
+                if (value != null)
+                {
+                    _dict[CommentIdKey] = value;
+                }
+                else
+                {
+                    _dict.Remove(CommentIdKey);
+                }
+            }
         }
 
         private void ThrowIfReadOnly()
