@@ -159,6 +159,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Uid = item.Uid,
                 Name = item.Name,
                 Href = key,
+                CommentId = item.CommentId,
             };
             if (!string.IsNullOrEmpty(item.NameForCSharp))
             {

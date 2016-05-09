@@ -58,6 +58,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var item = new MetadataItem
             {
                 Name = VisitorHelper.GetId(symbol),
+                CommentId = VisitorHelper.GetCommentId(symbol),
                 RawComment = symbol.GetDocumentationCommentXml(),
                 Language = Language,
             };

@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         public static class PropertyName
         {
             public const string Uid = "uid";
+            public const string CommentId = "commentId";
             public const string Id = "id";
             public const string Href = "href";
             public const string Type = "type";
