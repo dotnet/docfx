@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public void Exec(SubCommandRunningContext context)
         {
             var config = Config;
-            var baseDirectory = string.IsNullOrEmpty(config.BaseDirectory) ? Environment.CurrentDirectory : config.BaseDirectory;
+            var baseDirectory = Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Environment.CurrentDirectory : config.BaseDirectory);
             var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
             var outputFolder = Path.Combine(config.OutputFolder ?? config.BaseDirectory ?? string.Empty, config.Destination ?? string.Empty);
 
