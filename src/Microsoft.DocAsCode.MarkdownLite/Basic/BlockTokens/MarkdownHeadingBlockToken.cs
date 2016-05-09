@@ -41,14 +41,28 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public MarkdownHeadingBlockToken RewriteId(Dictionary<string, int> idTable)
         {
+            var newId = GenerateNewId(idTable, Id);
+            if (string.Equals(newId, Id))
+            {
+                return null;
+            }
+            return new MarkdownHeadingBlockToken(Rule, Context, Content, newId, Depth, RawMarkdown);
+        }
+
+        private string GenerateNewId(Dictionary<string, int> idTable, string Id)
+        {
             if (idTable.ContainsKey(Id))
             {
-                var newId = string.Concat(Id, "-",idTable[Id]);
+                var newId = string.Concat(Id, "-", idTable[Id]);
                 idTable[Id]++;
-                return new MarkdownHeadingBlockToken(Rule, Context, Content, newId, Depth, RawMarkdown);
+                return GenerateNewId(idTable, newId);
             }
-            idTable[Id] = 0;
-            return null;
+            else
+            {
+                idTable[Id] = 0;
+                return Id;
+            }
+            
         }
     }
 }
