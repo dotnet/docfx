@@ -114,6 +114,12 @@
 <h5 id="{{id}}_remarks">{{__global.remarks}}</h5>
 <div class="markdown level1 remarks">{{{remarks}}}</div>
 {{/remarks}}
+{{#example.0}}
+<h5 id="{{id}}_examples">{{__global.examples}}</h5>
+{{#example}}
+{{{.}}}
+{{/example}}
+{{/example.0}}
 <h5 class="decalaration">{{__global.declaration}}</h5>
 {{#syntax}}
 <div class="codewrapper">
