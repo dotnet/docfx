@@ -1,4 +1,4 @@
-Doc-as-Code: Metadata Format for .NET Languages
+DocFx: Metadata Format for .NET Languages
 ===============================================
 
 0. Introduction
