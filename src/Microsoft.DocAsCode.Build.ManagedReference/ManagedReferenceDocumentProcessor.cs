@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -110,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             var vm = (PageViewModel)model.Content;
 
-            model.Content = ApiBuildOutput.FromModel(vm); // Fill in details
+            UpdateModelContent(model);
 
             return new SaveResult
             {
@@ -122,6 +121,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                              select GetXRefInfo(item, model.Key)).ToImmutableArray(),
                 ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
             };
+        }
+
+        protected virtual void UpdateModelContent(FileModel model)
+        {
+            model.Content = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
         }
 
         private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
