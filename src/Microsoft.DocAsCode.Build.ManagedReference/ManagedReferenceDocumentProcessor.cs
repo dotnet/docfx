@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             var vm = (PageViewModel)model.Content;
 
-            model.Content = ApiBuildOutput.FromModel(vm); // Fill in details
+            UpdateModelContent(model);
 
             return new SaveResult
             {
@@ -122,6 +122,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                              select GetXRefInfo(item, model.Key)).ToImmutableArray(),
                 ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
             };
+        }
+
+        public virtual void UpdateModelContent(FileModel model)
+        {
+            model.Content = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
         }
 
         private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
