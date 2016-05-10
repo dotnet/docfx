@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -124,7 +123,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             };
         }
 
-        public virtual void UpdateModelContent(FileModel model)
+        protected virtual void UpdateModelContent(FileModel model)
         {
             model.Content = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
         }
