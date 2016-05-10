@@ -89,10 +89,10 @@
 {{/remarks}}
 {{#example.0}}
 <h5 id="{{id}}_examples"><strong>{{__global.examples}}</strong></h5>
+{{/example.0}}
 {{#example}}
 {{{.}}}
 {{/example}}
-{{/example.0}}
 {{#children}}
 <h3 id="{{id}}">{{>partials/classSubtitle}}</h3>
 {{#children}}
@@ -110,16 +110,6 @@
 <h4 id="{{id}}" data-uid="{{uid}}">{{name.0.value}}</h4>
 <div class="markdown level1 summary">{{{summary}}}</div>
 <div class="markdown level1 conceptual">{{{conceptual}}}</div>
-{{#remarks}}
-<h5 id="{{id}}_remarks">{{__global.remarks}}</h5>
-<div class="markdown level1 remarks">{{{remarks}}}</div>
-{{/remarks}}
-{{#example.0}}
-<h5 id="{{id}}_examples">{{__global.examples}}</h5>
-{{#example}}
-{{{.}}}
-{{/example}}
-{{/example.0}}
 <h5 class="decalaration">{{__global.declaration}}</h5>
 {{#syntax}}
 <div class="codewrapper">
@@ -238,6 +228,16 @@
 </table>
 {{/eventType}}
 {{/syntax}}
+{{#remarks}}
+<h5 id="{{id}}_remarks">{{__global.remarks}}</h5>
+<div class="markdown level1 remarks">{{{remarks}}}</div>
+{{/remarks}}
+{{#example.0}}
+<h5 id="{{id}}_examples">{{__global.examples}}</h5>
+{{/example.0}}
+{{#example}}
+{{{.}}}
+{{/example}}
 {{#exceptions.0}}
 <h5 class="exceptions">{{__global.exceptions}}</h5>
 <table class="table table-bordered table-striped table-condensed">
