@@ -1,5 +1,10 @@
-Version Notes (Current Version: v1.8.3)
+Version Notes (Current Version: v1.8.4)
 =======================================
+v1.8.4
+-----------
+1. Fix bug when outputFolder, basedirectory and destination are all not set
+2. fix `<a>` tag when href has invalid value with anchor
+
 v1.8.3
 -----------
 1. Fix bug for [!include()[]] when multiple articles in different subfolder including one file that v1.8.2 not resolved
