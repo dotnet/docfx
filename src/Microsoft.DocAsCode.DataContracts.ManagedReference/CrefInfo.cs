@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Utility.EntityMergers;
     using Newtonsoft.Json;
 
@@ -16,6 +17,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [MergeOption(MergeOption.MergeKey)]
         [JsonProperty("type")]
         public string Type { get; set; }
+
+        [YamlMember(Alias = Constants.PropertyName.CommentId)]
+        [JsonProperty(Constants.PropertyName.CommentId)]
+        public string CommentId { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]

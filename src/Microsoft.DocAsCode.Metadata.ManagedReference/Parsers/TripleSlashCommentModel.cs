@@ -337,15 +337,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 string description = GetXmlValue(nav);
 
-                string type = nav.GetAttribute("cref", string.Empty);
-                if (!string.IsNullOrEmpty(type))
+                string commentId = nav.GetAttribute("cref", string.Empty);
+                if (!string.IsNullOrEmpty(commentId))
                 {
                     // Check if exception type is valid and trim prefix
-                    if (CommentIdRegex.IsMatch(type))
+                    if (CommentIdRegex.IsMatch(commentId))
                     {
-                        type = type.Substring(2);
+                        string type = commentId.Substring(2);
                         if (string.IsNullOrEmpty(description)) description = null;
-                        yield return new CrefInfo { Description = description, Type = type };
+                        yield return new CrefInfo { Description = description, Type = type, CommentId = commentId };
                     }
                 }
             }
