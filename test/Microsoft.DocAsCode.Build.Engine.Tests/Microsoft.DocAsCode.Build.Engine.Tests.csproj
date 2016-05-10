@@ -80,6 +80,7 @@
     <Compile Include="TemplateManagerUnitTest.cs" />
     <Compile Include="DocumentBuilderTest.cs" />
     <Compile Include="TestLoggerListener.cs" />
+    <Compile Include="XRefArchiveBuilderTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

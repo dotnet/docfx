@@ -5,20 +5,26 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.YamlSerialization;
 
     public class XRefMap
     {
         [YamlMember(Alias = "sorted")]
-        public bool Sorted { get; set; }
+        public bool? Sorted { get; set; }
+
+        [YamlMember(Alias = "hrefUpdated")]
+        public bool? HrefUpdated { get; set; }
 
         [YamlMember(Alias = "baseUrl")]
         public string BaseUrl { get; set; }
+
+        [YamlMember(Alias = "redirections")]
+        public List<XRefMapRedirection> Redirections { get; set; }
 
         [YamlMember(Alias = "references")]
         public List<XRefSpec> References { get; set; }
@@ -28,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Sort()
         {
-            if (Sorted)
+            if (Sorted == true)
             {
                 return;
             }
@@ -39,24 +45,45 @@ namespace Microsoft.DocAsCode.Build.Engine
             Sorted = true;
         }
 
-        public void UpdateHref(Uri baseuri)
+        public void UpdateHref(Uri baseUri)
         {
+            if (HrefUpdated == true)
+            {
+                return;
+            }
             if (References == null)
             {
                 return;
             }
-            References = (from r in References
-                          let uri = new Uri(r.Href)
-                          select uri.IsAbsoluteUri ? r : new XRefSpec(r) { Href = new Uri(baseuri, uri).AbsoluteUri }).ToList();
+            var list = new List<XRefSpec>(References.Count);
+            foreach (var r in References)
+            {
+                Uri uri;
+                if (!Uri.TryCreate(r.Href, UriKind.RelativeOrAbsolute, out uri))
+                {
+                    Logger.LogWarning($"Bad uri in xref map: {r.Href}");
+                    continue;
+                }
+                if (uri.IsAbsoluteUri)
+                {
+                    list.Add(r);
+                }
+                else
+                {
+                    list.Add(new XRefSpec(r) { Href = new Uri(baseUri, uri).AbsoluteUri });
+                }
+            }
+            References = list;
+            HrefUpdated = true;
         }
 
-        public XRefSpec Find(string uid)
+        public virtual XRefSpec Find(string uid)
         {
             if (References == null)
             {
                 return null;
             }
-            if (Sorted)
+            if (Sorted == true)
             {
                 var index = References.BinarySearch(new XRefSpec { Uid = uid }, XRefSpecComparer.Instance);
                 if (index >= 0)
