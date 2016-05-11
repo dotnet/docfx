@@ -51,10 +51,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private string GenerateNewId(Dictionary<string, int> idTable, string Id)
         {
-            if (idTable.ContainsKey(Id))
+            int count;
+            if (idTable.TryGetValue(Id, out count))
             {
-                var newId = string.Concat(Id, "-", idTable[Id]);
-                idTable[Id]++;
+                var newId = string.Concat(Id, "-", count);
+                count++;
                 return GenerateNewId(idTable, newId);
             }
             else

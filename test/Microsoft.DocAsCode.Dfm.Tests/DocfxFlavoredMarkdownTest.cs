@@ -54,6 +54,7 @@ b:
         [InlineData(
             @"[*a*](xref:uid)",
             "<p><a href=\"xref:uid\"><em>a</em></a></p>\n")]
+        [InlineData("# sān　空格　 sān\n", "<h1 id=\"sān-空格-sān\">sān　空格　 sān</h1>\n")]
         [InlineData("# Hello World\n# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n<h1 id=\"hello-world-0\">Hello World</h1>\n")]
         [InlineData("# a-0\n# a\n# a", "<h1 id=\"a-0\">a-0</h1>\n<h1 id=\"a\">a</h1>\n<h1 id=\"a-0-0\">a</h1>\n")]
         [InlineData("# 测试。用例\n# 测试。用例", "<h1 id=\"测试-用例\">测试。用例</h1>\n<h1 id=\"测试-用例-0\">测试。用例</h1>\n")]
