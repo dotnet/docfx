@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Dfm
         private const string DedentQueryStringKey = "dedent";
         private const char RegionSeparatorInRangeQueryString = ',';
 
-        public string Name => "RestApiFences";
+        public string Name => "Fences";
 
         public static readonly Regex _dfmFencesRegex = new Regex(@"^\[\!((?i)code(\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[\s\S]*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled);
         public static readonly Regex _dfmFencesSharpQueryStringRegex = new Regex(@"^L(?<start>\d+)\-L(?<end>\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
