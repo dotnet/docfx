@@ -33,7 +33,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     {
                         BuildItem(host, item, model);
                     }
-
                     break;
                 case DocumentType.Overwrite:
                     break;

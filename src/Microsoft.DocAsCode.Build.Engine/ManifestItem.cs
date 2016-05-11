@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System.Collections.Generic;
+
     using Microsoft.DocAsCode.Plugins;
 
     public class ManifestItem
@@ -15,5 +17,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string ResourceFile { get; set; }
         public string InputFolder { get; set; }
         public ModelWithCache Model { get; set; }
+        public Dictionary<string, object> Metadata { get; set; }
     }
 }

@@ -20,6 +20,7 @@
   "frameworks": {
     "dnx451": {
       "frameworkAssemblies": {
+        "Microsoft.CSharp": "",
         "System.Runtime": "",
         "System": "",
         "System.Reflection": "",
@@ -29,6 +30,7 @@
     },
     "net45": {
       "frameworkAssemblies": {
+        "Microsoft.CSharp": "",
         "System.Net.Http": "",
         "System.Web": ""
       }

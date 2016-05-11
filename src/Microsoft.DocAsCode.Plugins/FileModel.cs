@@ -82,6 +82,8 @@ namespace Microsoft.DocAsCode.Plugins
 
         public dynamic Properties { get; } = new ExpandoObject();
 
+        public dynamic ManifestProperties { get; } = new ExpandoObject();
+
         public string LocalPathFromRepoRoot
         {
             get

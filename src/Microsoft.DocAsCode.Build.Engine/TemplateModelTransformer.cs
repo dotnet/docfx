@@ -52,7 +52,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 DocumentType = item.DocumentType,
                 OriginalFile = item.LocalPathFromRepoRoot,
-                OutputFiles = new Dictionary<string, string>()
+                OutputFiles = new Dictionary<string, string>(),
+                Metadata = item.Metadata,
             };
             var outputDirectory = _settings.OutputFolder ?? Environment.CurrentDirectory;
 

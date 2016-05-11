@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             configuration.WithAssembly(typeof(DocumentBuilder).Assembly);
 
-            if (assemblies!= null)
+            if (assemblies != null)
             {
                 foreach (var assembly in assemblies)
                 {
@@ -469,7 +469,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
                 LocalPathFromRepoRoot = model.LocalPathFromRepoRoot,
                 Model = model.ModelWithCache,
-                InputFolder = model.OriginalFileAndType.BaseDir
+                InputFolder = model.OriginalFileAndType.BaseDir,
+                Metadata = new Dictionary<string, object>((IDictionary<string, object>)model.ManifestProperties),
             };
         }
 

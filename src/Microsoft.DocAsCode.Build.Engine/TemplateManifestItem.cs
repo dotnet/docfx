@@ -3,9 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
+
+    using Newtonsoft.Json;
     using YamlDotNet.Serialization;
+
+    using Microsoft.DocAsCode.YamlSerialization;
 
     public class TemplateManifestItem
     {
@@ -18,5 +21,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         [YamlMember(Alias = "output")]
         [JsonProperty("output")]
         public Dictionary<string, string> OutputFiles { get; set; }
+        [ExtensibleMember]
+        [JsonExtensionData]
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }
