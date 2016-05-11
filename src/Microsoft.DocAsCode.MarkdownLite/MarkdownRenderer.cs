@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 content += render.Render(t);
             }
-            return content;
+            return content + "\n";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
@@ -280,7 +280,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     tokenRenderContent += render.Render(t);
                 }
 
-                var lines = tokenRenderContent.ToString().Split('\n');
+                var lines = tokenRenderContent.ToString().TrimEnd('\n').Split('\n');
                 content += lines[0];
                 content += "\n";
                 foreach (var line in lines.Skip(1))

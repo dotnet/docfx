@@ -34,6 +34,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
         {
             try
             {
+                var exitCode = 0;
                 if (args.Length != 3 && args.Length != 4)
                 {
                     PrintUsage();
@@ -56,12 +57,17 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     {
                         continue;
                     }
-                    p.Rewrite();
+
+                    var result = p.Rewrite();
+                    if (result != 0)
+                    {
+                        exitCode = result;
+                    }
 
                     // Ignore this generate part currently
                     // p.GenerateTocForEveryFolder(new DirectoryInfo(p._destDirectory));
                 }
-                return 0;
+                return exitCode;
             }
             catch (Exception ex)
             {
@@ -246,8 +252,9 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             return true;
         }
 
-        private void Rewrite()
+        private int Rewrite()
         {
+            var exitCode = 0;
             try
             {
                 var consoleLogListener = new ConsoleLogListener();
@@ -263,23 +270,31 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     fileInfo =>
                     {
                         var relativePathToSourceFolder = fileInfo.FullName.Substring(_srcDirectory.Length + 1);
-                        if (IsIgnoreFile(relativePathToSourceFolder))
+                        try
                         {
-                            return;
+                            if (IsIgnoreFile(relativePathToSourceFolder))
+                            {
+                                return;
+                            }
+                            var outputPath = Path.Combine(_destDirectory, relativePathToSourceFolder);
+                            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+                            if (string.Equals(fileInfo.Extension, MarkdownExtension, StringComparison.OrdinalIgnoreCase))
+                            {
+                                Console.WriteLine("Convert article {0}", fileInfo.FullName);
+                                var source = File.ReadAllText(fileInfo.FullName);
+                                var result = AzureMarked.Markup(source, fileInfo.FullName, _azureMarkdownFileInfoMapping, _azureVideoInfoMapping, _azureResourceFileInfoMapping);
+                                File.WriteAllText(outputPath, result);
+                            }
+                            else
+                            {
+                                //Console.WriteLine("Copy file {0} to output path {1}", fileInfo.FullName, outputPath);
+                                //File.Copy(fileInfo.FullName, outputPath, true);
+                            }
                         }
-                        var outputPath = Path.Combine(_destDirectory, relativePathToSourceFolder);
-                        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-                        if (string.Equals(fileInfo.Extension, MarkdownExtension, StringComparison.OrdinalIgnoreCase))
+                        catch (Exception e)
                         {
-                            Console.WriteLine("Convert article {0}", fileInfo.FullName);
-                            var source = File.ReadAllText(fileInfo.FullName);
-                            var result = AzureMarked.Markup(source, fileInfo.FullName, _azureMarkdownFileInfoMapping, _azureVideoInfoMapping, _azureResourceFileInfoMapping);
-                            File.WriteAllText(outputPath, result);
-                        }
-                        else
-                        {
-                            //Console.WriteLine("Copy file {0} to output path {1}", fileInfo.FullName, outputPath);
-                            //File.Copy(fileInfo.FullName, outputPath, true);
+                            exitCode = 1;
+                            Console.WriteLine($"Transform article: {relativePathToSourceFolder} failed. Exception: {e}");
                         }
                     });
                 Console.WriteLine("End transform dir '{0}' to dest dir '{1}' at {2}", _srcDirectory, _destDirectory, DateTime.UtcNow);
@@ -289,6 +304,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 Logger.Flush();
                 Logger.UnregisterAllListeners();
             }
+            return exitCode;
         }
 
         private void GenerateTocForEveryFolder(DirectoryInfo rootFolder)

@@ -199,52 +199,60 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             var currentFilePath = (string)context.Variables["path"];
             var currentFolderPath = Path.GetDirectoryName(currentFilePath);
 
-            // if the relative path (not from azure resource file info mapping) is under docset. Just return it.
-            var nonMdHrefFullPath = Path.GetFullPath(Path.Combine(currentFolderPath, nonMdHref));
-            if (PathUtility.IsPathUnderSpecificFolder(nonMdHrefFullPath, currentFolderPath))
+            try
             {
+                // if the relative path (not from azure resource file info mapping) is under docset. Just return it.
+                var nonMdHrefFullPath = Path.GetFullPath(Path.Combine(currentFolderPath, nonMdHref));
+                if (PathUtility.IsPathUnderSpecificFolder(nonMdHrefFullPath, currentFolderPath))
+                {
+                    return nonMdHref;
+                }
+                else
+                {
+                    Logger.LogVerbose($"Relative path:{nonMdHref} is not under {currentFolderPath} of file {currentFilePath}. Use ex_resource to replace the link.");
+                }
+
+                // if azure resource file info doesn't exist, log warning and return
+                if (!context.Variables.ContainsKey("azureResourceFileInfoMapping"))
+                {
+                    Logger.LogWarning($"Can't find azure resource file info mapping. Couldn't fix href: {nonMdHref} in file {currentFilePath}. raw: {rawMarkdown}");
+                    return nonMdHref;
+                }
+
+                var nonMdHrefFileName = Path.GetFileName(nonMdHref);
+                var azureResourceFileInfoMapping = (Dictionary<string, AzureFileInfo>)context.Variables["azureResourceFileInfoMapping"];
+                AzureFileInfo azureResourceFileInfo;
+                if (!azureResourceFileInfoMapping.TryGetValue(nonMdHrefFileName, out azureResourceFileInfo))
+                {
+                    Logger.LogWarning($"Can't find info for file name {nonMdHrefFileName} in azure resource file info mapping. Couldn't fix href: {nonMdHref} in file {currentFilePath}. raw: {rawMarkdown}");
+                    return nonMdHref;
+                }
+
+                // If the nonMdHref is under same docset with current file. No need to fix that.
+                if (PathUtility.IsPathUnderSpecificFolder(azureResourceFileInfo.FilePath, currentFolderPath))
+                {
+                    return nonMdHref;
+                }
+
+                // If the nonMdHref is under different docset with current file but not exists. Then log warning and won't fix.
+                if (!File.Exists(azureResourceFileInfo.FilePath))
+                {
+                    Logger.LogWarning($"{nonMdHref} refer by {currentFilePath} doesn't exists. Won't do link fix. raw: {rawMarkdown}");
+                    return nonMdHref;
+                }
+
+                // If the nonMdHref is under different docset with current file and also exists, then fix the link.
+                // 1. copy the external file to ex_resource folder. 2. Return new href path to the file under external folder
+                var exResourceDir = Directory.CreateDirectory(Path.Combine(currentFolderPath, ExternalResourceFolderName));
+                var resDestPath = Path.Combine(exResourceDir.FullName, Path.GetFileName(azureResourceFileInfo.FilePath));
+                File.Copy(azureResourceFileInfo.FilePath, resDestPath, true);
+                return PathUtility.MakeRelativePath(currentFolderPath, resDestPath);
+            }
+            catch(NotSupportedException nse)
+            {
+                Logger.LogWarning($"Warning: FixNonMdRelativeFileHref can't be apply on reference: {nonMdHref}. Exception: {nse.Message}");
                 return nonMdHref;
             }
-            else
-            {
-                Logger.LogVerbose($"Relative path:{nonMdHref} is not under {currentFolderPath} of file {currentFilePath}. Use ex_resource to replace the link.");
-            }
-
-            // if azure resource file info doesn't exist, log warning and return
-            if (!context.Variables.ContainsKey("azureResourceFileInfoMapping"))
-            {
-                Logger.LogWarning($"Can't find azure resource file info mapping. Couldn't fix href: {nonMdHref} in file {currentFilePath}. raw: {rawMarkdown}");
-                return nonMdHref;
-            }
-
-            var nonMdHrefFileName = Path.GetFileName(nonMdHref);
-            var azureResourceFileInfoMapping = (Dictionary<string, AzureFileInfo>)context.Variables["azureResourceFileInfoMapping"];
-            AzureFileInfo azureResourceFileInfo;
-            if (!azureResourceFileInfoMapping.TryGetValue(nonMdHrefFileName, out azureResourceFileInfo))
-            {
-                Logger.LogWarning($"Can't find info for file name {nonMdHrefFileName} in azure resource file info mapping. Couldn't fix href: {nonMdHref} in file {currentFilePath}. raw: {rawMarkdown}");
-                return nonMdHref;
-            }
-
-            // If the nonMdHref is under same docset with current file. No need to fix that.
-            if (PathUtility.IsPathUnderSpecificFolder(azureResourceFileInfo.FilePath, currentFolderPath))
-            {
-                return nonMdHref;
-            }
-
-            // If the nonMdHref is under different docset with current file but not exists. Then log warning and won't fix.
-            if (!File.Exists(azureResourceFileInfo.FilePath))
-            {
-                Logger.LogWarning($"{nonMdHref} refer by {currentFilePath} doesn't exists. Won't do link fix. raw: {rawMarkdown}");
-                return nonMdHref;
-            }
-
-            // If the nonMdHref is under different docset with current file and also exists, then fix the link.
-            // 1. copy the external file to ex_resource folder. 2. Return new href path to the file under external folder
-            var exResourceDir = Directory.CreateDirectory(Path.Combine(currentFolderPath, ExternalResourceFolderName));
-            var resDestPath = Path.Combine(exResourceDir.FullName, Path.GetFileName(azureResourceFileInfo.FilePath));
-            File.Copy(azureResourceFileInfo.FilePath, resDestPath, true);
-            return PathUtility.MakeRelativePath(currentFolderPath, resDestPath);
         }
 
         private string GenerateAzureSelectorAttributes(string selectorType, string selectorConditions)

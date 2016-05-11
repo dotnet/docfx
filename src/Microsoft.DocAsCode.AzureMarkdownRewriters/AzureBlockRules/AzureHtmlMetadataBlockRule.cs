@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 var tagsNode = htmlDoc.DocumentNode.SelectSingleNode("//tags");
                 azureHtmlMetadata.Tags = GetAttributesFromNode(tagsNode);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.LogWarning($"Parse azure html metadata error. {htmlContent} is not a valid html. ex: {e}");
                 return null;
@@ -80,23 +80,26 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         private Dictionary<string, string> GetAttributesFromNode(HtmlNode node)
         {
             var attributes = new Dictionary<string, string>();
-            foreach(var attribute in node.Attributes)
+            if (node != null)
             {
-                if (string.Equals(attribute.Name, "pageTitle", StringComparison.OrdinalIgnoreCase))
+                foreach (var attribute in node.Attributes)
                 {
-                    attributes["title"] = attribute.Value;
-                }
-                else if(string.Equals(attribute.Name, "authors", StringComparison.OrdinalIgnoreCase))
-                {
-                    var authors = attribute.Value.Split(';');
-                    if(authors.Length >= 1)
+                    if (string.Equals(attribute.Name, "pageTitle", StringComparison.OrdinalIgnoreCase))
                     {
-                        attributes["author"] = authors[0].Trim();
+                        attributes["title"] = attribute.Value;
                     }
-                }
-                else
-                {
-                    attributes[attribute.Name] = attribute.Value;
+                    else if (string.Equals(attribute.Name, "authors", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var authors = attribute.Value.Split(';');
+                        if (authors.Length >= 1)
+                        {
+                            attributes["author"] = authors[0].Trim();
+                        }
+                    }
+                    else
+                    {
+                        attributes[attribute.Name] = attribute.Value;
+                    }
                 }
             }
             return attributes;

@@ -296,8 +296,6 @@ This is azure include block.
   this should be same line with the above one
   
   this should be another line
-  
-  
 * list item2
 * list item3
 * list item4
@@ -1067,16 +1065,31 @@ This command must be run in the context of each domain user that has signed into
   1. On the Windows 8.1 device, navigate to **PC Settings** > **Network** > **Workplace**
   2. Select **Leave**.
      This process must be repeated for each domain user that has signed into the machine and has been automatically workplace joined.
-  
-  
 * Option 2: Unregister a Windows 8.1 domain joined device using a script
   
       1. Open a command prompt on the Windows 8.1 machine and execute the following command:
    ` %SystemRoot%\System32\AutoWorkplace.exe leave`
-  
-  
 
 This command must be run in the context of each domain user that has signed into the machine.
+
+";
+
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_NestedList_Bug551102()
+        {
+            var source = @"1. Click the check mark icon to run the report.
+2. If applicable, click **Download** to download the report to a compressed file in comma-separated values (CSV) format for offline viewing or archiving purposes.
+   - Up to 75,000 events will be included in the downloaded file.
+   - For more data, check out the [Azure AD Reporting API](active-directory-reporting-api-getting-started.md).";
+            var expected = @"1. Click the check mark icon to run the report.
+2. If applicable, click **Download** to download the report to a compressed file in comma-separated values (CSV) format for offline viewing or archiving purposes.
+   * Up to 75,000 events will be included in the downloaded file.
+   * For more data, check out the [Azure AD Reporting API](active-directory-reporting-api-getting-started.md).
 
 ";
 
