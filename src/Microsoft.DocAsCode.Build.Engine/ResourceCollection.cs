@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public sealed class ArchiveResourceCollection : ResourceCollection
     {
+        private readonly object _locker = new object();
         private ZipArchive _zipped;
         private bool disposed = false;
         public override string Name { get; }
@@ -42,6 +43,31 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (IsEmpty) return null;
 
+            lock (_locker)
+            {
+                var memoryStream = new MemoryStream();
+                using (var stream = GetResourceStreamCore(name))
+                {
+                    stream.CopyTo(memoryStream);
+                }
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                return memoryStream;
+            }
+        }
+
+        public override string GetResource(string name)
+        {
+            lock (_locker)
+            {
+                using (var stream = GetResourceStreamCore(name))
+                {
+                    return GetString(stream);
+                }
+            }
+        }
+
+        private Stream GetResourceStreamCore(string name)
+        {
             // zip entry is case sensitive
             // incase relative path is combined by backslash \
             return _zipped.GetEntry(name.Trim().ToNormalizedPath())?.Open();
@@ -198,7 +224,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public abstract IEnumerable<string> Names { get; }
 
-        public string GetResource(string name)
+        public virtual string GetResource(string name)
         {
             using (var stream = GetResourceStream(name))
                 return GetString(stream);
@@ -258,7 +284,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Dispose(false);
         }
 
-        private static string GetString(Stream stream)
+        protected static string GetString(Stream stream)
         {
             if (stream == null) return null;
 
