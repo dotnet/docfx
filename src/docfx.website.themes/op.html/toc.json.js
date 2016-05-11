@@ -1,4 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+var common = require('./common.js');
+
 function transform(model, _attrs){
   var path = _attrs._path;
   var directory = "";
@@ -17,7 +20,7 @@ function transform(model, _attrs){
     item.name = undefined;
     item.level = level;
     if (item.href){
-      if (isAbsolutePath(item.href)){
+      if (common.isAbsolutePath(item.href)){
         item.external_link = item.href;
       }else{
         if (item.href.indexOf('/') == 0) {
@@ -38,9 +41,5 @@ function transform(model, _attrs){
       item.items = undefined;
     }
     return item;
-  }
-
-  function isAbsolutePath(path){
-    return /^(\w+:)?\/\//g.test(path);
   }
 }

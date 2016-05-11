@@ -1,3 +1,4 @@
+// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 exports.path = {};
 exports.path.getFileNameWithoutExtension = getFileNameWithoutExtension;
 
@@ -5,6 +6,10 @@ exports.getHtmlId = getHtmlId;
 
 exports.getViewSourceHref = getViewSourceHref;
 exports.getImproveTheDocHref = getImproveTheDocHref;
+
+exports.isAbsolutePath = function (path) {
+  return /^(\w+:)?\/\//g.test(path);
+}
 
 function getFileNameWithoutExtension(path) {
     if (!path || path[path.length - 1] === '/' || path[path.length - 1] === '\\') return '';

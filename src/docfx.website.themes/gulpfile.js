@@ -54,6 +54,7 @@ var pack = {
         },
         {
             "files": [
+                "op.common.js",
                 "partials/title.tmpl.partial",
                 "partials/namespace.tmpl.partial",
                 "global.json",
@@ -98,6 +99,7 @@ var pack = {
         },
         {
             "files": [
+                "op.common.js",
                 "partials/title.tmpl.partial",
                 "partials/namespace.tmpl.partial",
                 "global.json",
@@ -126,6 +128,7 @@ var pack = {
         {
             "files": [
                 "global.json",
+                "op.common.js",
             ],
             "cwd": "op.html",
         },
