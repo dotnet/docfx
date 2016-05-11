@@ -48,6 +48,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var memoryStream = new MemoryStream();
                 using (var stream = GetResourceStreamCore(name))
                 {
+                    if (stream == null)
+                    {
+                        return null;
+                    }
+
                     stream.CopyTo(memoryStream);
                 }
                 memoryStream.Seek(0, SeekOrigin.Begin);
