@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (idTable.TryGetValue(Id, out count))
             {
                 var newId = string.Concat(Id, "-", count);
-                count++;
+                idTable[Id] = count + 1;
                 return GenerateNewId(idTable, newId);
             }
             else
