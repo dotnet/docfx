@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("return")]
         public ApiParameterBuildOutput Return { get; set; }
 
-        private bool _isExpanded = false;
+        ApiExpandStatus status = ApiExpandStatus.UnExpanded;
 
         public static ApiSyntaxBuildOutput FromModel(SyntaxDetailViewModel model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Parameters = model.Parameters?.Select(s => ApiParameterBuildOutput.FromModel(s, references, supportedLanguages)).ToList(),
                 TypeParameters = model.TypeParameters?.Select(s => ApiParameterBuildOutput.FromModel(s)).ToList(),
                 Return = ApiParameterBuildOutput.FromModel(model.Return, references, supportedLanguages),
-                _isExpanded = true,
+                status = ApiExpandStatus.Expanded,
             };
         }
 
@@ -63,12 +63,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (!_isExpanded)
+            if (status == ApiExpandStatus.UnExpanded)
             {
+                status = ApiExpandStatus.IsExpanding;
                 Parameters?.ForEach(p => p.Expand(references, supportedLanguages));
                 TypeParameters?.ForEach(t => t.Expand(references, supportedLanguages));
                 Return?.Expand(references, supportedLanguages);
-                _isExpanded = true;
+                status = ApiExpandStatus.Expanded;
             }
         }
 
