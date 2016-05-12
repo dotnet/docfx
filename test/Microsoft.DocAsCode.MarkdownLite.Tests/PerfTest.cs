@@ -4,6 +4,8 @@
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
     using System.Linq;
+    using System.Collections.Generic;
+    using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
@@ -48,9 +50,9 @@ Numbered list:
 2. oranges
 3. pears
 ";
-            const string expected = @"<h1 id=""heading"">Heading</h1>
-<h2 id=""sub-heading"">Sub-heading</h2>
-<h3 id=""another-deeper-heading"">Another deeper heading</h3>
+            const string expectedTemplate = @"<h1 id=""heading{0}"">Heading</h1>
+<h2 id=""sub-heading{0}"">Sub-heading</h2>
+<h3 id=""another-deeper-heading{0}"">Another deeper heading</h3>
 <p>Paragraphs are separated
 by a blank line.</p>
 <p>Leave 2 spaces at the end of a line to do a<br>line break</p>
@@ -73,7 +75,15 @@ by a blank line.</p>
 
             var builder = new GfmEngineBuilder(new Options());
             var source1000 = string.Concat(Enumerable.Repeat(source, 1000));
-            var expected1000 = string.Concat(Enumerable.Repeat(expected.Replace("\r\n", "\n"), 1000));
+            var template = Regex.Replace(expectedTemplate, "\r?\n", "\n");
+            var first = string.Format(template, "");
+            var expectedList = new List<string> { first };
+            for (var i = 1; i < 1000; i++)
+            {
+                var content = string.Concat("-", i - 1);
+                expectedList.Add(string.Format(template, content));
+            }
+            var expected1000 = string.Concat(expectedList);
             var engine = builder.CreateEngine(new HtmlRenderer());
             for (int i = 0; i < 2; i++)
             {

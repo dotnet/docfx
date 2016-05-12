@@ -64,6 +64,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                             (e, t) => t.Extract(parser)),
                     MaxExtractCount + 1));
             tokens = internalRewriteEngine.Rewrite(tokens);
+            var idTable = new Dictionary<string, int>();
+            var idRewriteEngine = new MarkdownRewriteEngine(
+                this,
+                MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
+                    (e, t) => t.RewriteId(idTable)));
+            tokens = idRewriteEngine.Rewrite(tokens);
             tokens = RewriteEngine.Rewrite(tokens);
             var renderer = Renderer;
             foreach (var token in tokens)
