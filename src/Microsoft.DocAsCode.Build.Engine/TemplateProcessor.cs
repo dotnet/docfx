@@ -166,6 +166,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 },
                 context.MaxParallelism);
 
+            foreach (var duplicates in from m in manifest
+                                       from output in m.OutputFiles.Values
+                                       group m.OriginalFile by output into g
+                                       where g.Count() > 1
+                                       select g)
+            {
+                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
+            }
+
             return manifest.ToList();
         }
 
