@@ -89,7 +89,7 @@
 </header>
 <ul class="list-clean">
   {{#children}}
-  <li class="expand-container{{#platform}} platform-{{.}}{{/platform}}" id="{{id}}">
+  <li class="expand-container{{#platform}} platform-{{.}}{{/platform}} enable-platform-filter" id="{{id}}">
     <h4><a href class="expander">
     {{#name}}
       <code class="lang-{{lang}}">{{value}}</code>

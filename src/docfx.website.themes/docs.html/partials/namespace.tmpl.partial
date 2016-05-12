@@ -50,7 +50,7 @@
 </header>
 <ul class="list-clean">
   {{#children}}
-  <li id="{{id}}" class="{{#platform}}platform-{{.}} {{/platform}}">
+  <li id="{{id}}" class="{{#platform}}platform-{{.}} {{/platform}}enable-platform-filter">
     <div class="level">
       <section class="primary">
         <h4>
