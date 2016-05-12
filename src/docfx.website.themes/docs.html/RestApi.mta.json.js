@@ -2,21 +2,21 @@
 var common = require('./common.js');
 var opCommon = require('./op.common.js');
 
-function transform(model, _attrs) {
+exports.transform = function (model) {
   model.title = model.name;
   model.layout = model.layout || "Rest";
   model.pagetype = "REST";
   model.langs = model.langs || ["http"];
 
-  model.toc_asset_id = model.toc_asset_id || _attrs._tocPath;
-  model.toc_rel = model.toc_rel || _attrs._tocRel;
+  model.toc_asset_id = model.toc_asset_id || model._tocPath;
+  model.toc_rel = model.toc_rel || model._tocRel;
 
   model.breadcrumb_path = model.breadcrumb_path || "/toc.html";
   model.content_git_url = model.content_git_url || common.getImproveTheDocHref(model, model.newFileRepository);
 
   var canonicalUrl;
-  if (model._op_canonicalUrlPrefix && _attrs._path) {
-    canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, _attrs._path);
+  if (model._op_canonicalUrlPrefix && model._path) {
+    canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, model._path);
   }
 
   // Clean up unused predefined properties

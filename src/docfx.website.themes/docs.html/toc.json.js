@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var common = require('./common.js');
 
-function transform(model, _attrs){
+exports.transform = function (model) {
   var transformed = [];
-  var path = _attrs._path;
+  var path = model._path;
   var directory = "";
   var index = path.lastIndexOf('/');
   if (index > -1){

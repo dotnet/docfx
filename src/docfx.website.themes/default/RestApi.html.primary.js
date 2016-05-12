@@ -1,32 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var common = require('./common.js');
 
-function transform(model, _attrs) {
-    var vm = {};
-    // Copy default _attrs and override name/id
-    for (var key in _attrs) {
-        if (_attrs.hasOwnProperty(key)) {
-            vm[key] = _attrs[key];
-        }
-    }
-    // Copy model
-    for (var key in model) {
-        if (model.hasOwnProperty(key)) {
-            vm[key] = model[key];
-        }
-    }
-    var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(_attrs._path);
-    vm._jsonPath = _fileNameWithoutExt + ".swagger.json";
-    vm._disableToc = vm._disableToc || !vm._tocPath || (vm._navPath === vm._tocPath);
-    vm.title = vm.title || vm.name;
+exports.transform = function (model) {
+    var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
+    model._jsonPath = _fileNameWithoutExt + ".swagger.json";
+    model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+    model.title = model.title || model.name;
 
-    vm.docurl = vm.docurl || common.getImproveTheDocHref(vm, vm.newFileRepository);
-    vm.sourceurl = vm.sourceurl || common.getViewSourceHref(vm);
-    if (vm.children) {
+    model.docurl = model.docurl || common.getImproveTheDocHref(model, model.newFileRepository);
+    model.sourceurl = model.sourceurl || common.getViewSourceHref(model);
+    if (model.children) {
         var ordered = [];
-        for (var i = 0; i < vm.children.length; i++) {
-            var child = vm.children[i];
-            child.docurl = child.docurl || common.getImproveTheDocHref(child, vm.newFileRepository);
+        for (var i = 0; i < model.children.length; i++) {
+            var child = model.children[i];
+            child.docurl = child.docurl || common.getImproveTheDocHref(child, model.newFileRepository);
             if (child.operation) {
                 child.operation = child.operation.toUpperCase();
             }
@@ -34,23 +21,23 @@ function transform(model, _attrs) {
             child.sourceurl = child.sourceurl || common.getViewSourceHref(child);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
-            if (vm.sections && child.uid) {
-                var index = vm.sections.indexOf(child.uid);
+            if (model.sections && child.uid) {
+                var index = model.sections.indexOf(child.uid);
                 if (index > -1) {
                     ordered[index] = child;
                 }
             }
 
             formatExample(child.responses);
-            vm.children[i] = transformReference(vm.children[i]);
+            model.children[i] = transformReference(model.children[i]);
         };
-        if (vm.sections) {
+        if (model.sections) {
             // Remove empty values from ordered, in case item in sections is not in swagger json 
-            vm.children = ordered.filter(function(o) { return o; });
+            model.children = ordered.filter(function(o) { return o; });
         }
     }
 
-    return vm;
+    return model;
 
     function formatExample(responses) {
         if (!responses) return;

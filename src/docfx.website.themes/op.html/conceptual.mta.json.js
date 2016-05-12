@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var opCommon = require('./op.common.js');
 
-function transform(model, _attrs) {
+exports.transform = function (model) {
   model.pagetype = "Conceptual";
-  model.toc_asset_id = model.toc_asset_id || _attrs._tocPath;
+  model.toc_asset_id = model.toc_asset_id || model._tocPath;
 
   var resetKeys = [
     "conceptual",

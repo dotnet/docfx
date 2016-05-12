@@ -2,16 +2,9 @@
 
 var common = require('./common.js');
 var opCommon = require('./op.common.js');
-
-function transform(model, _attrs) {
+exports.transform = function (model) {
   model.pagetype = "Reference";
-
-  // If toc is not defined in model, read it from __attrs
-  if (_attrs._tocPath && _attrs._tocPath.indexOf("~/") == 0) {
-    _attrs._tocPath = _attrs._tocPath.substring(2);
-  }
-
-  model.toc_asset_id = model.toc_asset_id || _attrs._tocPath;
+  model.toc_asset_id = model.toc_asset_id || model._tocPath;
 
   model.content_git_url = model.content_git_url || common.getImproveTheDocHref(model, model.newFileRepository);
 

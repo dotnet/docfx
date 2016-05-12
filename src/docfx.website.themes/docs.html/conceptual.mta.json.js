@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var opCommon = require('./op.common.js');
 
-function transform(model, _attrs) {
+exports.transform = function (model) {
   model.layout = model.layout || "Conceptual";
   model.pagetype = "Conceptual";
 
   var canonicalUrl;
-  if (model._op_canonicalUrlPrefix && _attrs._path) {
-    canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, _attrs._path);
+  if (model._op_canonicalUrlPrefix && model._path) {
+    canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, model._path);
   }
 
-  model.toc_asset_id = model.toc_asset_id || _attrs._tocPath;
-  model.toc_rel = _attrs._tocRel;
+  model.toc_asset_id = model.toc_asset_id || model._tocPath;
+  model.toc_rel = model._tocRel;
   model.breadcrumb_path = model.breadcrumb_path || "/toc.html";
 
   // Clean up unused predefined properties

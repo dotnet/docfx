@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var common = require('./common.js');
 
-function transform(model, _attrs, _global) {
+exports.transform = function (model)  {
   var namespaceItems = {
     "class":        { inClass: true,        typePropertyName: "inClass",        id: "classes" },
     "struct":       { inStruct: true,       typePropertyName: "inStruct",       id: "structs" },
@@ -45,26 +45,8 @@ function transform(model, _attrs, _global) {
     }
   }
 
-  var result = {item: model};
-  if (_global) {
-    result.__global = {};
-    for (var key in _global) {
-      if (_global.hasOwnProperty(key)) {
-        result.__global[key] = _global[key];
-      }
-    }
-  }
-  if (_attrs) {
-    for (var key in _attrs) {
-      if (_attrs.hasOwnProperty(key)) {
-        result[key] = _attrs[key];
-      }
-    }
-    result._disableToc = model._disableToc || !_attrs._tocPath || (_attrs._navPath === _attrs._tocPath);
-  }
-
-
-  return result;
+  model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+  return {item: model};
 }
 
 function groupChildren(model, typeChildrenItems) {
