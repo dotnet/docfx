@@ -28,7 +28,10 @@ function transform(model, _attrs) {
     "swagger",
     "name",
     "uid",
-    "newFileRepository"
+    "newFileRepository",
+    "documentation",
+    "conceptual",
+    "sections"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys);
