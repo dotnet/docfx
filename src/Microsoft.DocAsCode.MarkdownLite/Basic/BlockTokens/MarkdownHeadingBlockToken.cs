@@ -63,7 +63,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 idTable[Id] = 0;
                 return Id;
             }
-            
         }
     }
 }
