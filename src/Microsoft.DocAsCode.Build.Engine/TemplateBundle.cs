@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
     public class TemplateBundle
@@ -31,6 +32,52 @@ namespace Microsoft.DocAsCode.Build.Engine
                 ?? Templates.FirstOrDefault(s=>s.TemplateType != TemplateType.Auxiliary);
             Extension = defaultTemplate?.Extension ?? string.Empty;
             Resources = Templates.SelectMany(s => s.Resources).Distinct();
+        }
+
+        public TransformModelOptions GetOptions(ManifestItem item , IDocumentBuildContext context)
+        {
+            return MergeOptions(GetOptionsForEachTemplate(item, context));
+        }
+
+        private TransformModelOptions MergeOptions(IEnumerable<TransformModelOptions> optionsList)
+        {
+            var result = new TransformModelOptions();
+            var bookmarks = new Dictionary<string, string>();
+            foreach(var options in optionsList)
+            {
+                // The model is shared if options defined in any template is shared
+                if (options.IsShared)
+                {
+                    result.IsShared = true;
+                }
+
+                // If one uid is defined in multiple templates, the value is undetermined
+                if (options.Bookmarks != null)
+                {
+                    foreach (var pair in options.Bookmarks)
+                    {
+                        bookmarks[pair.Key] = pair.Value;
+                    }
+                }
+            }
+            result.Bookmarks = bookmarks;
+            return result;
+        }
+
+        private IEnumerable<TransformModelOptions> GetOptionsForEachTemplate(ManifestItem item, IDocumentBuildContext context)
+        {
+            if (item == null)
+            {
+                yield break;
+            }
+
+            foreach(var template in Templates)
+            {
+                if (template.ContainsGetOptions)
+                {
+                    yield return template.GetOptions(item.Model.Content);
+                }
+            }
         }
     }
 }

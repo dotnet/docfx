@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Text.RegularExpressions;
 
+    using Newtonsoft.Json.Linq;
+
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
@@ -29,6 +31,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         public TemplateType TemplateType { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
 
+        public readonly bool ContainsGetOptions;
+        public readonly bool ContainsModelTransformation;
+        public readonly bool ContainsTemplateRenderer;
+
         public Template(string name, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, ResourceCollection resourceCollection, int maxParallelism)
         {
             if (string.IsNullOrEmpty(name))
@@ -48,8 +54,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(resourceCollection, scriptResource), maxParallelism);
                 try
                 {
-                    using (_preprocessorPool.Rent())
+                    using (var preprocessor = _preprocessorPool.Rent())
                     {
+                        ContainsGetOptions = preprocessor.Resource.GetOptionsFunc != null;
+                        ContainsModelTransformation = preprocessor.Resource.TransformModelFunc != null;
                     }
                 }
                 catch (Exception e)
@@ -62,9 +70,40 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrEmpty(templateResource?.Content) && resourceCollection != null)
             {
                 _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, templateResource), maxParallelism);
+                ContainsTemplateRenderer = true;
+            }
+
+            if (!ContainsGetOptions && !ContainsModelTransformation && !ContainsTemplateRenderer)
+            {
+                Logger.LogWarning($"Template {name} contains neither preprocessor to process model nor template to render model. Please check if the template is correctly defined. Allowed preprocessor functions are [exports.getOptions] and [exports.transform].");
             }
 
             Resources = ExtractDependentResources(Name);
+        }
+
+        /// <summary>
+        /// exports.getOptions = function (model) {
+        ///     return {
+        ///         bookmarks : {
+        ///             uid1: "bookmark1"
+        ///         },
+        ///         isShared: true
+        ///     }
+        /// 
+        /// }
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public TransformModelOptions GetOptions(object model)
+        {
+            if (_preprocessorPool == null || !ContainsGetOptions) return null;
+            using (var lease = _preprocessorPool.Rent())
+            {
+                var obj = lease.Resource.GetOptionsFunc(model);
+                
+                var config = JObject.FromObject(obj).ToObject<TransformModelOptions>();
+                return config;
+            }
         }
 
         /// <summary>
@@ -74,12 +113,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <param name="model">The raw model</param>
         /// <param name="attrs">The system generated attributes</param>
         /// <returns>The view model</returns>
-        public object TransformModel(object model, object attrs, object global)
+        public object TransformModel(object model)
         {
-            if (_preprocessorPool == null) return model;
+            if (_preprocessorPool == null || !ContainsModelTransformation) return model;
             using (var lease = _preprocessorPool.Rent())
             {
-                return lease.Resource.Process(model, attrs, global);
+                return lease.Resource.TransformModelFunc(model);
             }
         }
 
@@ -91,26 +130,27 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns>The output after applying template</returns>
         public string Transform(object model)
         {
-            if (_rendererPool == null || model == null) return null;
+            if (_rendererPool == null || !ContainsTemplateRenderer || model == null) return null;
             using (var lease = _rendererPool.Rent())
             {
                 return lease.Resource.Render(model);
             }
         }
 
-        private string GetRelativeResourceKey(string templateName, string relativePath)
+        private static string GetRelativeResourceKey(string templateName, string relativePath)
         {
             if (string.IsNullOrEmpty(templateName))
             {
                 return relativePath;
             }
+
             // Make sure resource keys are combined using '/'
             return Path.GetDirectoryName(templateName).ToNormalizedPath().ForwardSlashCombine(relativePath);
         }
 
         private static TemplateInfo GetTemplateInfo(string templateName)
         {
-            // Remove folder and .tmpl
+            // Remove folder
             templateName = Path.GetFileName(templateName);
             var splitterIndex = templateName.IndexOf('.');
             if (splitterIndex < 0)

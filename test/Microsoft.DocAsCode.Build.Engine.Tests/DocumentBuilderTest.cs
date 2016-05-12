@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.IO;
     using System.Reflection;
 
+    using Newtonsoft.Json.Linq;
     using Xunit;
 
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
@@ -223,7 +224,7 @@ tagRules : [
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
                     var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
-                    Assert.Equal(3, meta.Count);
+                    Assert.Equal(8, meta.Count);
                     Assert.True(meta.ContainsKey("meta"));
                     Assert.Equal("Hello world!", meta["meta"]);
                     Assert.True(meta.ContainsKey("abc"));
@@ -237,6 +238,206 @@ tagRules : [
                 CleanUp();
                 File.Delete(resourceMetaFile);
             }
+        }
+
+        [Fact]
+        public void TestBuildConceptualWithTemplateShouldSucceed()
+        {
+            CreateFile("conceptual.html.js", @"
+exports.transform = function (model){
+  return JSON.stringify(model, null, '  ');
+};
+exports.xref = null;
+", _templateFolder);
+            CreateFile("toc.tmpl.js", @"
+exports.getOptions = function (){
+    return {
+        isShared: true
+    };
+};
+", _templateFolder);
+            CreateFile("conceptual.html.tmpl", "{{.}}", _templateFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "---",
+                    "# Hello World",
+                    "Test link: [link text](test/test.md)",
+                    "test",
+                },
+                _inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef2",
+                    "---",
+                    "test",
+                },
+                _inputFolder);
+            var tocFile = CreateFile("toc.md", new[]
+                {
+                    "#[Test](test.md)"
+                },
+                _inputFolder);
+            var tocFile2 = CreateFile("test/toc.md", new[]
+                {
+                    "#[Test](test.md)"
+                },
+                _inputFolder);
+            FileCollection files = new FileCollection(Environment.CurrentDirectory);
+            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2, tocFile, tocFile2});
+            BuildDocument(files, new Dictionary<string, object>
+            {
+                ["meta"] = "Hello world!",
+            });
+
+            {
+                // check toc.
+                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension)));
+                var expected = new Dictionary<string, object>
+                {
+                    ["_lang"] = "csharp",
+                    ["_tocPath"] = $"{_inputFolder}/toc",
+                    ["_rel"] = "../",
+                    ["_path"] = $"{_inputFolder}/toc",
+                    ["_dir"] = $"{_inputFolder}/",
+                    ["_tocRel"] = "toc",
+                    ["_tocRelDir"] = string.Empty,
+                    ["homepage"] = "test.html",
+                    ["items"] = new object[]
+                    {
+                        new {
+                            name = "Test",
+                            href = "test.html"
+                        }
+                    },
+                    ["__global"] = new
+                    {
+                        _shared = new Dictionary<string, object>
+                        {
+                            [$"~/{_inputFolder}/toc.md"] = new Dictionary<string, object>
+                            {
+                                ["_lang"] = "csharp",
+                                ["_tocPath"] = $"{_inputFolder}/toc",
+                                ["_rel"] = "../",
+                                ["_path"] = $"{_inputFolder}/toc",
+                                ["_dir"] = $"{_inputFolder}/",
+                                ["_tocRel"] = "toc",
+                                ["_tocRelDir"] = string.Empty,
+                                ["homepage"] = "test.html",
+                                ["items"] = new object[]
+                                {
+                                    new {
+                                        name = "Test",
+                                        href = "test.html"
+                                    }
+                                },
+                            },
+                            [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
+                            {
+                                ["_lang"] = "csharp",
+                                ["_tocPath"] = $"{_inputFolder}/test/toc",
+                                ["_rel"] = "../../",
+                                ["_path"] = $"{_inputFolder}/test/toc",
+                                ["_dir"] = $"{_inputFolder}/test/",
+                                ["_tocRel"] = "toc",
+                                ["_tocRelDir"] = string.Empty,
+                                ["homepage"] = "test.html",
+                                ["items"] = new object[]
+                                {
+                                    new {
+                                        name = "Test",
+                                        href = "test.html"
+                                    }
+                                },
+                            }
+                        }
+                    }
+                };
+                AssertMetadataEqual(expected, model);
+            }
+
+            {
+                // check conceptual.
+                var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
+                Assert.True(File.Exists(conceptualOutputPath));
+                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
+                var expected = new Dictionary<string, object>
+                {
+                    ["_lang"] = "csharp",
+                    ["_tocPath"] = $"{_inputFolder}/toc",
+                    ["_rel"] = "../",
+                    ["_path"] = $"{_inputFolder}/test.html",
+                    ["_dir"] = $"{_inputFolder}/",
+                    ["_tocRel"] = "toc",
+                    ["_tocRelDir"] = string.Empty,
+                    ["conceptual"] = $"\n<p>Test link: <a href=\"~/{_inputFolder}/test/test.md\">link text</a>\ntest</p>\n",
+                    ["type"] = "Conceptual",
+                    ["source"] = model["source"], // reuse model's source, not testing this
+                    ["path"] = $"{_inputFolder}/test.md",
+                    ["meta"] = "Hello world!",
+                    ["title"] = "Hello World",
+                    ["rawTitle"] = "<h1 id=\"hello-world\">Hello World</h1>",
+                    ["uid"] = "XRef1",
+                    ["wordCount"] = 5,
+                    ["__global"] = new
+                    {
+                        _shared = new Dictionary<string, object>
+                        {
+                            [$"~/{_inputFolder}/toc.md"] = new Dictionary<string, object>
+                            {
+                                ["_lang"] = "csharp",
+                                ["_tocPath"] = $"{_inputFolder}/toc",
+                                ["_rel"] = "../",
+                                ["_path"] = $"{_inputFolder}/toc",
+                                ["_dir"] = $"{_inputFolder}/",
+                                ["_tocRel"] = "toc",
+                                ["_tocRelDir"] = string.Empty,
+                                ["homepage"] = "test.html",
+                                ["items"] = new object[]
+                                {
+                                    new {
+                                        name = "Test",
+                                        href = "test.html"
+                                    }
+                                },
+                            },
+                            [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
+                            {
+                                ["_lang"] = "csharp",
+                                ["_tocPath"] = $"{_inputFolder}/test/toc",
+                                ["_rel"] = "../../",
+                                ["_path"] = $"{_inputFolder}/test/toc",
+                                ["_dir"] = $"{_inputFolder}/test/",
+                                ["_tocRel"] = "toc",
+                                ["_tocRelDir"] = string.Empty,
+                                ["homepage"] = "test.html",
+                                ["items"] = new object[]
+                                {
+                                    new {
+                                        name = "Test",
+                                        href = "test.html"
+                                    }
+                                },
+                            }
+                        }
+                    }
+                };
+                AssertMetadataEqual(expected, model);
+            }
+        }
+
+        private static void AssertMetadataEqual(object expected, object actual)
+        {
+            var expectedJObject = JObject.FromObject(expected);
+            var actualJObject = JObject.FromObject(actual);
+            var equal = JObject.DeepEquals(expectedJObject, actualJObject);
+            Assert.True(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
         }
 
         private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null)

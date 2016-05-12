@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="InvalidPreprocessorException.cs" />
     <Compile Include="CrossReferenceNotResolvedException.cs" />
     <Compile Include="DocumentBuildContext.cs" />
     <Compile Include="DocumentBuilder.cs" />
@@ -18,6 +19,7 @@
     <Compile Include="FileMetadataItem.cs" />
     <Compile Include="HostService.cs" />
     <Compile Include="MarkdownProviders\DfmServiceProvider.cs" />
+    <Compile Include="TransformModelOptions.cs" />
     <Compile Include="TemplateRenderers\TemplateRendererResource.cs" />
     <Compile Include="TemplateRenderers\TemplateRendererType.cs" />
     <Compile Include="TemplatePreprocessors\TemplatePreprocessorResource.cs" />

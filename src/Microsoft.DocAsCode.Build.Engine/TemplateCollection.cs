@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public class TemplateCollection : Dictionary<string, TemplateBundle>
     {
+        private const string ScriptTemplateExtension = ".tmpl";
+
         private TemplateBundle _defaultTemplate = null;
 
         public new TemplateBundle this[string key]
@@ -82,24 +84,31 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     // If template file does not exists, while a js script ends with .tmpl.js exists
                     // we consider .tmpl.js file as a standalone preprocess file
-                    if (currentTemplates.Length == 0 && !group.Key.EndsWith(".tmpl", StringComparison.OrdinalIgnoreCase))
+                    var name = group.Key;
+                    if (currentTemplates.Length == 0)
                     {
-                        continue;
+                        if (name.EndsWith(ScriptTemplateExtension, StringComparison.OrdinalIgnoreCase))
+                        {
+                            name = name.Substring(0, name.Length - ScriptTemplateExtension.Length);
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
 
                     var currentTemplate = currentTemplates.FirstOrDefault();
                     var currentScript = currentScripts.FirstOrDefault();
                     if (currentTemplates.Length > 1)
                     {
-                        Logger.Log(LogLevel.Warning, $"Multiple templates for type '{group.Key}'(case insensitive) are found, the one from '{currentTemplate.item + currentTemplate.extension}' is taken.");
+                        Logger.Log(LogLevel.Warning, $"Multiple templates for type '{name}'(case insensitive) are found, the one from '{currentTemplate.item + currentTemplate.extension}' is taken.");
                     }
 
                     if (currentScripts.Length > 1)
                     {
-                        Logger.Log(LogLevel.Warning, $"Multiple template scripts for type '{group.Key}'(case insensitive) are found, the one from '{currentScript.item + currentScript.extension}' is taken.");
+                        Logger.Log(LogLevel.Warning, $"Multiple template scripts for type '{name}'(case insensitive) are found, the one from '{currentScript.item + currentScript.extension}' is taken.");
                     }
 
-                    var name = group.Key;
                     TemplateRendererResource templateResource =
                         currentTemplate == null ?
                         null :
@@ -108,7 +117,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         currentScript == null ?
                         null :
                         new TemplatePreprocessorResource(currentScript.name, currentScript.item);
-                    var template = new Template(group.Key, templateResource, templatePrepocessorResource, resource, maxParallelism);
+                    var template = new Template(name, templateResource, templatePrepocessorResource, resource, maxParallelism);
                     List<Template> templateList;
                     if (dict.TryGetValue(template.Type, out templateList))
                     {

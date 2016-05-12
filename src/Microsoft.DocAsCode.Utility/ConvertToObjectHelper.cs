@@ -54,6 +54,11 @@ namespace Microsoft.DocAsCode.Utility
 
         public static object ConvertStrongTypeToJObject(object raw)
         {
+            if (raw is JToken)
+            {
+                return raw;
+            }
+
             return JToken.FromObject(raw, JsonUtility.DefaultSerializer.Value);
         }
     }

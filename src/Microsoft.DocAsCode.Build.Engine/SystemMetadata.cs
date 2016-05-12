@@ -39,6 +39,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [JsonProperty("_path")]
         public string PathFromRoot { get; set; }
 
+        [JsonProperty("_dir")]
+        public string DirectoryFromRoot { get; set; }
+
         /// <summary>
         /// ROOT TOC file's relative path to ROOT
         /// </summary>
@@ -50,5 +53,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         [JsonProperty("_tocRel")]
         public string TocRelativePath { get; set; }
+
+        /// <summary>
+        /// ROOT TOC file's relative path to ROOT
+        /// </summary>
+        [JsonProperty("_navRelDir")]
+        public string RootTocRelativeFolder { get; set; }
+
+        /// <summary>
+        /// current file's TOC file's relative path to ROOT
+        /// </summary>
+        [JsonProperty("_tocRelDir")]
+        public string TocRelativeFolder { get; set; }
     }
 }

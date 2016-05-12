@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Common;
@@ -18,11 +17,12 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class TemplateProcessor : IDisposable
     {
         private readonly ResourceCollection _resourceProvider;
-        private readonly object _global;
 
         private readonly TemplateCollection _templateCollection;
 
         public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceCollection(), 1);
+
+        public IDictionary<string, object> DefaultGlobalVariables { get; }
 
         /// <summary>
         /// TemplateName can be either file or folder
@@ -39,8 +39,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             _resourceProvider = resourceProvider;
-            _global = LoadGlobalJson(resourceProvider);
             _templateCollection = new TemplateCollection(resourceProvider, maxParallelism);
+            DefaultGlobalVariables = LoadGlobalJson(resourceProvider) ?? new Dictionary<string, object>();
         }
 
         public TemplateBundle GetTemplateBundle(string documentType)
@@ -63,10 +63,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             return true;
         }
 
-        public List<TemplateManifestItem> Process(List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings)
+        public List<TemplateManifestItem> Process(List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
         {
             using (new LoggerPhaseScope("Apply Templates"))
             {
+                if (globals == null)
+                {
+                    globals = DefaultGlobalVariables;
+                }
+
                 var documentTypes = manifest.Select(s => s.DocumentType).Distinct();
                 var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null);
                 if (notSupportedDocumentTypes.Any())
@@ -87,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 var outputDirectory = context.BuildOutputFolder;
 
-                var templateManifest = ProcessCore(manifest, context, settings);
+                var templateManifest = ProcessCore(manifest, context, settings, globals);
                 SaveManifest(templateManifest, outputDirectory, context);
                 return templateManifest;
             }
@@ -150,11 +155,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private List<TemplateManifestItem> ProcessCore(List<ManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings)
+        private List<TemplateManifestItem> ProcessCore(List<ManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals)
         {
             var manifest = new ConcurrentBag<TemplateManifestItem>();
             var systemAttributeGenerator = new SystemMetadataGenerator(context);
-            var transformer = new TemplateModelTransformer(context, _templateCollection, settings, _global);
+            var transformer = new TemplateModelTransformer(context, _templateCollection, settings, globals);
             items.RunAll(
                 item =>
                 {
@@ -169,14 +174,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             return manifest.ToList();
         }
 
-        private static object LoadGlobalJson(ResourceCollection resource)
+        private static IDictionary<string, object> LoadGlobalJson(ResourceCollection resource)
         {
             var globalJson = resource.GetResource("global.json");
-            if (!string.IsNullOrEmpty(globalJson))
+            if (string.IsNullOrEmpty(globalJson))
             {
-                return JsonUtility.FromJsonString<object>(globalJson);
+                return null;
             }
-            return null;
+
+            return JsonUtility.FromJsonString<Dictionary<string, object>>(globalJson);
         }
 
         private static void SaveManifest(List<TemplateManifestItem> templateManifest, string outputDirectory, IDocumentBuildContext context)
