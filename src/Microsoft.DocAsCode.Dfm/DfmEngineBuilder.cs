@@ -17,8 +17,11 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public const string DefaultValidatorName = "default";
 
+        private readonly string _baseDir;
+
         public DfmEngineBuilder(Options options, string baseDir = null) : base(options)
         {
+            _baseDir = baseDir ?? string.Empty;
             var inlineRules = InlineRules.ToList();
 
             // xref auto link must be before MarkdownAutoLinkInlineRule
@@ -135,7 +138,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public DfmEngine CreateDfmEngine(object renderer)
         {
-            return new DfmEngine(CreateParseContext(), Rewriter, renderer, Options);
+            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty), Rewriter, renderer, Options);
         }
 
         public override IMarkdownEngine CreateEngine(object renderer)

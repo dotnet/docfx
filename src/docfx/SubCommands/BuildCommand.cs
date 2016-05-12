@@ -45,17 +45,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
             var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(config.OutputFolder) ? baseDirectory : config.OutputFolder, config.Destination ?? string.Empty));
 
-            // TODO: Refactor
-            var original = Environment.CurrentDirectory;
-            try
-            {
-                Environment.CurrentDirectory = baseDirectory;
-                BuildDocument(baseDirectory, outputFolder);
-            }
-            finally
-            {
-                Environment.CurrentDirectory = original;
-            }
+            BuildDocument(baseDirectory, outputFolder);
 
             _templateManager.ProcessTheme(outputFolder, true);
             // TODO: SEARCH DATA

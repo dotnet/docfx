@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
@@ -20,10 +21,11 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string Markup(string src, string path)
         {
-            if (string.IsNullOrEmpty(src) && string.IsNullOrEmpty(path)) return string.Empty;
-            // bug : Environment.CurrentDirectory = c:\a, path = d:\b, MakeRelativePath is not work ...
-            path = PathUtility.MakeRelativePath(Environment.CurrentDirectory, path);
-            return InternalMarkup(src, ImmutableStack<string>.Empty.Push(path));
+            if (string.IsNullOrEmpty(src))
+            {
+                return string.Empty;
+            }
+            return InternalMarkup(src, ImmutableStack.Create(path));
         }
 
         internal string InternalMarkup(string src, ImmutableStack<string> parents)

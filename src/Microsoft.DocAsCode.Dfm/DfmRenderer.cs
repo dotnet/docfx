@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.Dfm
             try
             {
                 // TODO: Valid REST and REST-i script.
-                var fencesPath = ((RelativePath)token.Path).BasedOn((RelativePath)context.GetFilePathStack().Peek());
+                var fencesPath = Path.Combine(context.GetBaseFolder(), (RelativePath)context.GetFilePathStack().Peek() + (RelativePath)token.Path);
                 var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
                 return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
             }

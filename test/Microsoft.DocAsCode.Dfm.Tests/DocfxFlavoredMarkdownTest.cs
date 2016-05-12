@@ -106,7 +106,7 @@ Paragraph1
             WriteToFile("r/link/link2.md", link2);
             WriteToFile("r/c/c.md", c);
             WriteToFile("r/empty.md", string.Empty);
-            var marked = DocfxFlavoredMarked.Markup(root, Path.GetFullPath("r/root.md"));
+            var marked = DocfxFlavoredMarked.Markup(root, "r/root.md");
             Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;r/b/linkAndRefRoot.md&quot; --><p>Paragraph1
 <a href=""~/r/b/a.md"">link</a>
 <!-- BEGIN INCLUDE: Include content from &quot;r/link/link2.md&quot; --><a href=""~/r/link/md/c.md"">link</a><!--END INCLUDE -->
@@ -151,7 +151,7 @@ Paragraph1
             WriteToFile("r/a/a.md", a);
             WriteToFile("r/b/token.md", token);
             WriteToFile("r/c/d/d.md", d);
-            var marked = DocfxFlavoredMarked.Markup(a, Path.GetFullPath("r/a/a.md"));
+            var marked = DocfxFlavoredMarked.Markup(a, "r/a/a.md");
             var expected = @"<!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""~/r/img/img.jpg"" alt="""">
 <a href=""#anchor""></a>
 <a href=""~/r/a/a.md"">a</a>
@@ -159,9 +159,9 @@ Paragraph1
 <a href=""~/r/c/d/d.md#anchor"">d</a></p>
 <!--END INCLUDE -->".Replace("\r\n", "\n");
             Assert.Equal(expected, marked);
-            marked = DocfxFlavoredMarked.Markup(d, Path.GetFullPath("r/c/d/d.md"));
+            marked = DocfxFlavoredMarked.Markup(d, "r/c/d/d.md");
             Assert.Equal(expected, marked);
-            marked = DocfxFlavoredMarked.Markup(r, Path.GetFullPath("r/r.md"));
+            marked = DocfxFlavoredMarked.Markup(r, "r/r.md");
             Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;r/a/a.md&quot; -->{expected}<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/c/d/d.md&quot; -->{expected}<!--END INCLUDE -->", marked);
         }
 
@@ -617,7 +617,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
    }
 }";
             File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
-            var marked = DocfxFlavoredMarked.Markup(root, Path.GetFullPath("api.json"));
+            var marked = DocfxFlavoredMarked.Markup(root, "api.json");
             Assert.Equal("<pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre>", marked);
         }
 
@@ -903,7 +903,7 @@ public static void Foo()
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
             // act
-            var marked = DocfxFlavoredMarked.Markup(fencesPath, Path.GetFullPath("Program.cs"));
+            var marked = DocfxFlavoredMarked.Markup(fencesPath, "Program.cs");
 
             // assert
             Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);

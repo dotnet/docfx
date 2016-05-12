@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Dfm
                 string result;
                 if (!_cache.TryGet(currentPath, out result))
                 {
-                    var src = File.ReadAllText(currentPath);
+                    var src = File.ReadAllText(Path.Combine(context.GetBaseFolder(), currentPath));
 
                     src = resolver(src, context.SetFilePathStack(parents));
 

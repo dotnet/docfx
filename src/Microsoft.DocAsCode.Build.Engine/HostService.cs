@@ -181,7 +181,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private MarkupResult MarkupCore(string markdown, FileAndType ft)
         {
-            var html = MarkdownService.Markup(markdown, Path.Combine(ft.BaseDir, ft.File));
+            var html = MarkdownService.Markup(markdown, ft.File);
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             var result = new MarkupResult();

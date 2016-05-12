@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public static class DfmContextExtensions
     {
+        private const string BaseFolderKey = "BaseFolder";
         private const string FilePathStackKey = "FilePathStack";
 
         public static ImmutableStack<string> GetFilePathStack(this IMarkdownContext context)
@@ -28,6 +29,24 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(context));
             }
             return context.CreateContext(context.Variables.SetItem(FilePathStackKey, filePathStack));
+        }
+
+        public static string GetBaseFolder(this IMarkdownContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return (string)context.Variables[BaseFolderKey]; ;
+        }
+
+        public static IMarkdownContext SetBaseFolder(this IMarkdownContext context, string baseFolder)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return context.CreateContext(context.Variables.SetItem(BaseFolderKey, baseFolder));
         }
     }
 }
