@@ -8,14 +8,14 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
 
     using Jint;
+    using Jint.Native;
+    using Jint.Native.Object;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
 
     public class TemplateJintPreprocessor : ITemplatePreprocessor
     {
-        private const string TransformFuncVariableName = "transform";
-
         /// <summary>
         /// Support
         ///     console.log
@@ -26,6 +26,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// in preprocessor script
         /// </summary>
         private const string ConsoleVariableName = "console";
+        private const string ExportsVariableName = "exports";
+        private const string GetOptionsFuncVariableName = "getOptions";
+        private const string TransformFuncVariableName = "transform";
 
         /// <summary>
         /// Support require functionality as similar to NodeJS and RequireJS:
@@ -50,8 +53,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string RequireFuncVariableName = "require";
         private const string RequireRelativePathPrefix = "./";
 
-        private const string ExportsVariableName = "exports";
-
         private static readonly object ConsoleObject = new
         {
             log = new Action<object>(s => Logger.Log(s)),
@@ -63,28 +64,21 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly Engine _engine;
 
+        public Func<object, object> TransformModelFunc { get; private set; }
+
+        public Func<object, object> GetOptionsFunc { get; private set; }
+
         public TemplateJintPreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)
         {
             if (!string.IsNullOrWhiteSpace(scriptResource.Content))
             {
-                
                 _engine = SetupEngine(resourceCollection, scriptResource);
             }
             else
             {
                 _engine = null;
             }
-        }
 
-        public object Process(params object[] args)
-        {
-            if (_engine == null)
-            {
-                return args.FirstOrDefault();
-            }
-
-            var model = args.Select(s => (object)JintProcessorHelper.ConvertStrongTypeToJsValue(s)).ToArray();
-            return _engine.Invoke(TransformFuncVariableName, model).ToObject();
         }
 
         private Engine SetupEngine(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)
@@ -124,6 +118,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             engine.SetValue(RequireFuncVariableName, requireAction);
             engineCache[rootPath] = engine;
             engine.Execute(scriptResource.Content);
+
+            var value = engine.GetValue(ExportsVariableName);
+            if (value.IsObject())
+            {
+                var exports = value.AsObject();
+                GetOptionsFunc = GetFunc(GetOptionsFuncVariableName, exports);
+                TransformModelFunc = GetFunc(TransformFuncVariableName, exports);
+            }
+            else
+            {
+                throw new InvalidPreprocessorException("Invalid 'exports' variable definition. 'exports' MUST be an object.");
+            }
+
             return engine;
         }
 
@@ -144,9 +151,31 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static Engine CreateDefaultEngine()
         {
             var engine = new Engine();
+
             engine.SetValue(ExportsVariableName, engine.Object.Construct(Jint.Runtime.Arguments.Empty));
             engine.SetValue(ConsoleVariableName, ConsoleObject);
             return engine;
+        }
+
+        private static Func<object, object> GetFunc(string funcName, ObjectInstance exports)
+        {
+            var func = exports.Get(funcName);
+            if (func.IsUndefined() || func.IsNull())
+            {
+                return null;
+            }
+            if (func.Is<ICallable>())
+            {
+                return s =>
+                {
+                    var model = JintProcessorHelper.ConvertStrongTypeToJsValue(s);
+                    return func.Invoke(model).ToObject();
+                };
+            }
+            else
+            {
+                throw new InvalidPreprocessorException($"Invalid '{funcName}' variable definition. '{funcName} MUST be a function");
+            }
         }
     }
 }

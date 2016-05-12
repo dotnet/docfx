@@ -2,29 +2,23 @@
 var common = require('./common.js');
 var opCommon = require('./op.common.js');
 
-function transform(model, _attrs) {
+exports.transform = function (model) {
   model.layout = model.layout || "Reference";
   model.pagetype = "Reference";
-  if (!model.title) {
-    model.title = model.name[0].value + " " + model.type;
-  }
+  model.title = model.title || (model.name[0].value + " " + model.type);
 
-  // If toc is not defined in model, read it from __attrs
-  if (_attrs._tocPath && _attrs._tocPath.indexOf("~/") == 0) {
-    _attrs._tocPath = _attrs._tocPath.substring(2);
-  }
-  model.toc_asset_id = model.toc_asset_id || _attrs._tocPath;
-  model.toc_rel = model.toc_rel || _attrs._tocRel;
+  model.toc_asset_id = model.toc_asset_id || model._tocPath;
+  model.toc_rel = model.toc_rel || model._tocRel;
 
   model.platforms = model.platforms || model.platform;
   model.breadcrumb_path = model.breadcrumb_path || "/toc.html";
   model.content_git_url = model.content_git_url || common.getImproveTheDocHref(model, model.newFileRepository);
   model.source_url = model.source_url || common.getViewSourceHref(model);
   model.asset_id = model.asset_id || opCommon.getAssetId(model);
-  
+
   var canonicalUrl;
-  if (model._op_canonicalUrlPrefix && _attrs._path) {
-    canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, _attrs._path);
+  if (model._op_canonicalUrlPrefix && model._path) {
+    canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, model._path);
   }
 
   // Clean up unused predefined properties

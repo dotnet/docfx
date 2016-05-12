@@ -1,15 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-function transform(model, _attrs, _global){
-  var result = setArrayLength(model);
-  if (_global) {
-    result.__global = {};
-    for (var key in _global) {
-      if (_global.hasOwnProperty(key)) {
-        result.__global[key] = _global[key];
-      }
-    }
-  }
-  return result;
+exports.transform = function (model) {
+  return setArrayLength(model);
 }
 
 function setArrayLength(entity)

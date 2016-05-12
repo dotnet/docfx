@@ -3,8 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
+
     public interface ITemplatePreprocessor
     {
-        object Process(params object[] args);
+        Func<object, object> GetOptionsFunc { get; }
+        Func<object, object> TransformModelFunc { get; }
     }
 }
