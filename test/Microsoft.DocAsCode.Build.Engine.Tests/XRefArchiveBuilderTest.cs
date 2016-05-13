@@ -20,9 +20,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             const string ZipFile = "test.zip";
             var builder = new XRefArchiveBuilder();
-            Assert.True(await builder.DownloadAsync(new Uri("http://dotnet.github.io/docfx/xrefmap.yml"), ZipFile));
-            // todo : validate zip file.
 
+            Assert.True(await builder.DownloadAsync(new Uri("http://dotnet.github.io/docfx/xrefmap.yml"), ZipFile));
+
+            using (var xar = XRefArchive.Open(ZipFile))
+            {
+                var map = xar.GetMajor();
+                Assert.True(map.HrefUpdated);
+                Assert.True(map.Sorted);
+                Assert.NotNull(map.References);
+                Assert.Null(map.Redirections);
+            }
             File.Delete(ZipFile);
         }
     }
