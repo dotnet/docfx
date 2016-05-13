@@ -24,6 +24,6 @@
 
 # Extensibility
 ## [Extensibility Overview](extensibility_overview.md)
-## [Creating Document Processor](creating_document_processor.md)
-## [Adding Build Step](adding_build_step.md)
+## [Creating Document Processors](creating_document_processors.md)
+## [Adding Build Steps](adding_build_steps.md)
 ## [Markdown Validation](markdown_validation.md)
