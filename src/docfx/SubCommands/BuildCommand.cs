@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.SubCommands
             BuildJsonConfig config;
             if (string.IsNullOrEmpty(configFile))
             {
-                if (!File.Exists(DocAsCode.Constants.ConfigFileName))
+                if (!File.Exists(Constants.ConfigFileName))
                 {
                     if (options.Content == null && options.Resource == null)
                     {
@@ -91,8 +91,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 else
                 {
-                    Logger.Log(LogLevel.Verbose, $"Config file {DocAsCode.Constants.ConfigFileName} is found.");
-                    configFile = DocAsCode.Constants.ConfigFileName;
+                    Logger.Log(LogLevel.Verbose, $"Config file {Constants.ConfigFileName} is found.");
+                    configFile = Constants.ConfigFileName;
                 }
             }
 
@@ -214,6 +214,23 @@ namespace Microsoft.DocAsCode.SubCommands
             if (options.MaxParallelism != null)
             {
                 config.MaxParallelism = options.MaxParallelism;
+            }
+            if (options.MarkdownEngineName != null)
+            {
+                config.MarkdownEngineName = options.MarkdownEngineName;
+            }
+            if (options.MarkdownEngineProperties != null)
+            {
+                config.MarkdownEngineProperties =
+                    JsonConvert.DeserializeObject<Dictionary<string, object>>(
+                        options.MarkdownEngineProperties,
+                        new JsonSerializerSettings
+                        {
+                            Converters =
+                            {
+                                new JObjectDictionaryToObjectDictionaryConverter()
+                            }
+                        });
             }
 
             config.FileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);

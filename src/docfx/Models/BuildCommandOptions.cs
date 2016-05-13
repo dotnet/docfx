@@ -83,5 +83,11 @@ namespace Microsoft.DocAsCode
 
         [Option("maxParallelism", HelpText = "Set the max parallelism, 0 is auto.")]
         public int? MaxParallelism { get; set; }
+
+        [Option("markdownEngineName", HelpText = "Set the name of markdown engine, default is 'dfm'.")]
+        public string MarkdownEngineName { get; set; }
+
+        [Option("markdownEngineProperties", HelpText = "Set the parameters for markdown engine, value should be a JSON string.")]
+        public string MarkdownEngineProperties { get; set; }
     }
 }

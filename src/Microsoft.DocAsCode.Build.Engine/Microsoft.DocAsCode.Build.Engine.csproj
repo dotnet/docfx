@@ -17,6 +17,7 @@
     <Compile Include="FileMetadata.cs" />
     <Compile Include="FileMetadataItem.cs" />
     <Compile Include="HostService.cs" />
+    <Compile Include="MarkdownProviders\GfmServiceProvider.cs" />
     <Compile Include="MarkdownProviders\DfmServiceProvider.cs" />
     <Compile Include="TemplateRenderers\TemplateRendererResource.cs" />
     <Compile Include="TemplateRenderers\TemplateRendererType.cs" />
