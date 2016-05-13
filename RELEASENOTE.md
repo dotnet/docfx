@@ -2,6 +2,8 @@ Version Notes (Current Version: v1.9)
 =======================================
 v1.9 (Pre-Release)
 -----------
+1.  Allow switch markdown engine.
+2.  Allow export metadata to manifest file.
 
 v1.8
 -----------
