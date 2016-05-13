@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             set { }
         }
 
-        private bool _isExpanded = false;
+        private bool _needExpand = true;
 
         public static ApiReferenceBuildOutput FromUid(string uid)
         {
@@ -231,14 +231,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (!_isExpanded)
+            if (_needExpand)
             {
+                _needExpand = false;
                 Inheritance = Inheritance?.Select(i => ApiBuildOutputUtility.GetReferenceViewModel(i.Uid, references, supportedLanguages)).ToList();
                 Syntax?.Expand(references, supportedLanguages);
                 SeeAlsos?.ForEach(e => e.Expand(references, supportedLanguages));
                 Sees?.ForEach(e => e.Expand(references, supportedLanguages));
                 Exceptions?.ForEach(e => e.Expand(references, supportedLanguages));
-                _isExpanded = true;
             }
         }
 

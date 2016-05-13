@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("description")]
         public string Description { get; set; }
 
-        private bool _isExpanded = false;
+        private bool _needExpand = true;
 
         public static ApiParameterBuildOutput FromModel(ApiParameter model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
@@ -54,10 +54,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (!_isExpanded)
+            if (_needExpand)
             {
+                _needExpand = false;
                 Type = ApiBuildOutputUtility.GetReferenceViewModel(Type?.Uid, references, supportedLanguages);
-                _isExpanded = true;
             }
         }
     }

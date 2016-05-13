@@ -15,14 +15,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     public class ApiCrefInfoBuildOutput
     {
         [YamlMember(Alias = "type")]
-        [JsonProperty("type")]
+        [JsonProperty("type", IsReference = true)]
         public ApiReferenceBuildOutput Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
         public string Description { get; set; }
 
-        private bool _isExpanded = false;
+        private bool _needExpand = true;
 
         public static ApiCrefInfoBuildOutput FromModel(CrefInfo model)
         {
@@ -43,16 +43,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             {
                 Type = ApiBuildOutputUtility.GetReferenceViewModel(model.Type, references, supportedLanguages),
                 Description = model.Description,
-                _isExpanded = true,
+                _needExpand = false,
             };
         }
 
         public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (!_isExpanded)
+            if (_needExpand)
             {
+                _needExpand = false;
                 Type = ApiBuildOutputUtility.GetReferenceViewModel(Type?.Uid, references, supportedLanguages);
-                _isExpanded = true;
             }
         }
     }
