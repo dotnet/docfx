@@ -18,14 +18,16 @@ namespace Microsoft.DocAsCode.Build.Engine
         public const string MajorFileName = "xrefmap.yml";
 
         private readonly object _syncRoot = new object();
+        private readonly XRefArchiveMode _mode;
         private readonly ZipArchive _archive;
         private readonly List<string> _entries;
         #endregion
 
         #region Ctors
 
-        private XRefArchive(ZipArchive archive, List<string> entries)
+        private XRefArchive(XRefArchiveMode mode, ZipArchive archive, List<string> entries)
         {
+            _mode = mode;
             _archive = archive;
             _entries = entries;
         }
@@ -34,52 +36,55 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Public Members
 
-        public static XRefArchive Create(string file)
+        public static XRefArchive Open(string file, XRefArchiveMode mode)
         {
             if (file == null)
             {
                 throw new ArgumentNullException(nameof(file));
             }
-            var directory = Path.GetDirectoryName(file);
-            if (!string.IsNullOrEmpty(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-            var fs = File.Create(file);
+            FileStream fs = null;
+            ZipArchive archive = null;
             try
             {
-                return new XRefArchive(
-                    new ZipArchive(fs, ZipArchiveMode.Create),
-                    new List<string>());
+                bool isReadOnly = false;
+                List<string> entries;
+                switch (mode)
+                {
+                    case XRefArchiveMode.Read:
+                        isReadOnly = true;
+                        goto case XRefArchiveMode.Update;
+                    case XRefArchiveMode.Update:
+                        if (!File.Exists(file))
+                        {
+                            throw new FileNotFoundException($"File not found: {file}", file);
+                        }
+                        fs = File.Open(file, FileMode.Open, isReadOnly ? FileAccess.Read : FileAccess.ReadWrite);
+                        archive = new ZipArchive(fs, isReadOnly ? ZipArchiveMode.Read : ZipArchiveMode.Update);
+                        entries = (from entry in archive.Entries
+                                   select entry.FullName).ToList();
+                        entries.Sort(StringComparer.OrdinalIgnoreCase);
+                        break;
+                    case XRefArchiveMode.Create:
+                        var directory = Path.GetDirectoryName(file);
+                        if (!string.IsNullOrEmpty(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+                        fs = File.Create(file);
+                        archive = new ZipArchive(fs, ZipArchiveMode.Update);
+                        entries = new List<string>();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(mode));
+                }
+                return new XRefArchive(mode, archive, entries);
             }
-            catch (Exception)
+            catch (Exception) when (fs != null)
             {
-                fs.Close();
-                throw;
-            }
-        }
-
-        public static XRefArchive Open(string file)
-        {
-            if (file == null)
-            {
-                throw new ArgumentNullException(nameof(file));
-            }
-            if (!File.Exists(file))
-            {
-                throw new FileNotFoundException($"File not found: {file}", file);
-            }
-            var fs = File.Open(file, FileMode.Open);
-            try
-            {
-                var zip = new ZipArchive(fs, ZipArchiveMode.Update);
-                var list = (from entry in zip.Entries
-                            select entry.FullName).ToList();
-                list.Sort(StringComparer.OrdinalIgnoreCase);
-                return new XRefArchive(zip, list);
-            }
-            catch (Exception)
-            {
+                if (archive != null)
+                {
+                    archive.Dispose();
+                }
                 fs.Close();
                 throw;
             }
@@ -90,6 +95,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (map == null)
             {
                 throw new ArgumentNullException(nameof(map));
+            }
+            if (_mode == XRefArchiveMode.Read)
+            {
+                throw new InvalidOperationException("Cannot create entry for readonly archive.");
             }
             if (HasEntryCore(MajorFileName))
             {
@@ -103,6 +112,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (map == null)
             {
                 throw new ArgumentNullException(nameof(map));
+            }
+            if (_mode == XRefArchiveMode.Read)
+            {
+                throw new InvalidOperationException("Cannot create entry for readonly archive.");
             }
             if (names != null)
             {
@@ -154,6 +167,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(map));
             }
+            if (_mode == XRefArchiveMode.Read)
+            {
+                throw new InvalidOperationException("Cannot create entry for readonly archive.");
+            }
             var entryName = GetEntry(name);
             if (entryName == null)
             {
@@ -169,6 +186,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (name == null)
             {
                 throw new ArgumentNullException(nameof(name));
+            }
+            if (_mode == XRefArchiveMode.Read)
+            {
+                throw new InvalidOperationException("Cannot create entry for readonly archive.");
             }
             var index = IndexOfEntry(name);
             if (index < 0)

@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogInfo($"Creating xref archive file...");
                 try
                 {
-                    using (var xa = XRefArchive.Create(outputFile))
+                    using (var xa = XRefArchive.Open(outputFile, XRefArchiveMode.Create))
                     {
                         await DownloadCoreAsync(uri, xa, true);
                     }

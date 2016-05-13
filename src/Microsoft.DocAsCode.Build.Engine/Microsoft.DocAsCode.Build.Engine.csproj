@@ -55,6 +55,7 @@
     <Compile Include="XRefMaps\XRefArchive.cs" />
     <Compile Include="XRefMaps\XRefArchiveBuilder.cs" />
     <Compile Include="XRefDetails.cs" />
+    <Compile Include="XRefMaps\XRefArchiveMode.cs" />
     <Compile Include="XRefMaps\XRefMap.cs" />
     <Compile Include="XRefMaps\XRefMapRedirection.cs" />
   </ItemGroup>

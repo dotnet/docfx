@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             Assert.True(await builder.DownloadAsync(new Uri("http://dotnet.github.io/docfx/xrefmap.yml"), ZipFile));
 
-            using (var xar = XRefArchive.Open(ZipFile))
+            using (var xar = XRefArchive.Open(ZipFile, XRefArchiveMode.Read))
             {
                 var map = xar.GetMajor();
                 Assert.True(map.HrefUpdated);
