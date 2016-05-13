@@ -4,6 +4,9 @@ v1.9 (Pre-Release)
 -----------
 1.  Allow switch markdown engine.
 2.  Allow export metadata to manifest file.
+3.  Improve `exclude` logic to help avoid `PathTooLongException`. (https://github.com/dotnet/docfx/issues/156)
+4.  Bug fixes:
+    1. Fix bug when cref contains loop. (https://github.com/dotnet/docfx/issues/289)
 
 v1.8
 -----------
