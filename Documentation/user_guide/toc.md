@@ -15,6 +15,7 @@
 ## [Links and Cross References](links_and_cross_references.md)
 ## [Using File Includes](using_file_includes.md)
 ## [Code Snippets](code_snippets.md)
+## [Creating TOC](creating_toc.md)
 
 # Working with Templates
 ## [Template Overview](template_overview.md)
