@@ -224,7 +224,7 @@ tagRules : [
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
                     var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
-                    Assert.Equal(8, meta.Count);
+                    Assert.Equal(7, meta.Count);
                     Assert.True(meta.ContainsKey("meta"));
                     Assert.Equal("Hello world!", meta["meta"]);
                     Assert.True(meta.ContainsKey("abc"));
