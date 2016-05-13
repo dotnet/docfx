@@ -5,8 +5,11 @@ v1.9 (Pre-Release)
 1.  Allow switch markdown engine.
 2.  Allow export metadata to manifest file.
 3.  Improve `exclude` logic to help avoid `PathTooLongException`. (https://github.com/dotnet/docfx/issues/156)
-4.  Bug fixes:
+4.  Provide with a config file named `search-stopwords.json` to customise full-text search stop-words. (https://github.com/dotnet/docfx/issues/279)
+5.  Bug fixes:
     1. Fix bug when cref contains loop. (https://github.com/dotnet/docfx/issues/289)
+    2. Make sure id is unique for each HTML in markdown transforming. (https://github.com/dotnet/docfx/issues/224)
+    3. Fix index range bugs in `YamlHeaderParser`. (https://github.com/dotnet/docfx/issues/265)
 
 v1.8
 -----------
