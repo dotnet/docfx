@@ -377,6 +377,9 @@ $(function () {
       $('.toc .nav > li > .expand-stub').click(function (e) {
         $(e.target).parent().toggleClass(expanded);
       });
+      $('.toc .nav > li > .expand-stub + a:not([href])').click(function (e) {
+        $(e.target).parent().toggleClass(expanded);
+      });
       $('#toc_filter_input').on('input', function (e) {
         var val = this.value;
         if (val === '') {
