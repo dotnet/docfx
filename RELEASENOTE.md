@@ -1,5 +1,8 @@
-Version Notes (Current Version: v1.9)
+Version Notes (Current Version: v1.10)
 =======================================
+v1.10(Pre-Release)
+-----------
+
 v1.9
 -----------
 1. **Breaking Change** Refactor template system:
