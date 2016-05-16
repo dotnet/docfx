@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Dfm
     public class DfmYamlHeaderBlockRule : IMarkdownRule
     {
         public static readonly Regex _yamlHeaderRegex = new Regex(@"^\-{3}(?:\s*?)\n([\s\S]+?)(?:\s*?)\n\-{3}(?:\s*?)(?:\n|$)", RegexOptions.Compiled | RegexOptions.Singleline);
-        public string Name => "YamlHeader";
+        public string Name => "DfmYamlHeader";
         public virtual Regex YamlHeader => _yamlHeaderRegex;
 
         public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)

@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex XrefShortcutRegexWithQuote = new Regex("^" + XrefShortcutRegexWithQuoteString, RegexOptions.Compiled);
         private static readonly Regex XrefShortcutRegex = new Regex("^" + XrefShortcutRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public string Name => "XrefShortcut";
+        public string Name => "DfmXrefShortcut";
 
         public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {

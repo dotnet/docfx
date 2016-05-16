@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex XrefAutoLinkRegex = new Regex("^" + XrefAutoLinkRegexString, RegexOptions.Compiled);
         private static readonly Regex XrefAutoLinkRegexWithQuote = new Regex("^" + XrefAutoLinkRegexWithQuoteString, RegexOptions.Compiled);
 
-        public string Name => "XrefAutoLink";
+        public string Name => "DfmXrefAutoLink";
 
         public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
         {
