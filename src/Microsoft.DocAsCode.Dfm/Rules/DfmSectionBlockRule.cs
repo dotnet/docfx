@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmSectionBlockRule : IMarkdownRule
     {
-        public string Name => "Section";
+        public string Name => "DfmSection";
 
         public static readonly Regex _sectionRegex = new Regex(@"^(?<rawmarkdown> *\[\!div( +(?<quote>`?)(?<attributes>.*?)(\k<quote>))?\]\s*(?:\n|$))", RegexOptions.Compiled);
 

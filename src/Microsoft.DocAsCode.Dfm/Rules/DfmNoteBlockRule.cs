@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmNoteBlockRule : IMarkdownRule
     {
-        public virtual string Name => "DfmNoteBlockRule";
+        public virtual string Name => "DfmNote";
 
         public virtual Regex DfmNoteRegex => new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\] *\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

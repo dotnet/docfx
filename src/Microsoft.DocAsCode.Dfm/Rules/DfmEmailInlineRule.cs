@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
     public class DfmEmailInlineRule : IMarkdownRule
     {
         private static readonly Regex _emailRegex = new Regex(@"^\s*[\w._%+-]*[\w_%+-]@[\w.-]+\.[\w]{2,}\b", RegexOptions.Compiled);
-        public string Name => "Email";
+        public string Name => "DfmEmail";
         
         public virtual Regex Xref => _emailRegex;
 
