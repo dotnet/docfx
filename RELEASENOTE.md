@@ -1,6 +1,6 @@
 Version Notes (Current Version: v1.9)
 =======================================
-v1.9 (Pre-Release)
+v1.9
 -----------
 1. **Breaking Change** Refactor template system:
     1. The input data model now contains all the properties including system generated metadata starting with underscore `_` and globally shared variables stored in `__global`. You can use `docfx build --exportRawModel` to view the data model.
@@ -22,6 +22,25 @@ v1.9 (Pre-Release)
     1. Fix bug when cref contains loop. (https://github.com/dotnet/docfx/issues/289)
     2. Make sure id is unique for each HTML in markdown transforming. (https://github.com/dotnet/docfx/issues/224)
     3. Fix index range bugs in `YamlHeaderParser`. (https://github.com/dotnet/docfx/issues/265)
+
+v1.8.4
+-----------
+1. Fix bug when outputFolder, basedirectory and destination are all not set
+2. fix `<a>` tag when href has invalid value with anchor
+
+v1.8.3
+-----------
+1. Fix bug for [!include()[]] when multiple articles in different subfolder including one file that v1.8.2 not resolved
+
+v1.8.2
+-----------
+1. Fix bug for [!include()[]] when multiple articles in different subfolder including one file
+
+v1.8.1
+-----------
+1. Fix bug when serialize attribute argument for type array. (https://github.com/dotnet/docfx/issues/280)
+2. Fix bug when include file link to an anchor.
+3. Don't modify link when target file not existed.
 
 v1.8
 -----------
