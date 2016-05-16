@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class Template
    | DocFX website ">
-    <meta name="generator" content="docfx 1.8.4.0">
+    <meta name="generator" content="docfx 1.9.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -33,7 +33,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="../">
+              <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
@@ -75,8 +75,8 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content">
               
-              <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L14" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L16" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_Build_Engine_Template" data-uid="Microsoft.DocAsCode.Build.Engine.Template">Class Template
               </h1>
               <div class="markdown level0 summary"></div>
@@ -96,17 +96,17 @@
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template__ctor_System_String_System_String_System_String_System_String_Microsoft_DocAsCode_Build_Engine_ResourceCollection_System_Int32_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.%23ctor(System.String%2CSystem.String%2CSystem.String%2CSystem.String%2CMicrosoft.DocAsCode.Build.Engine.ResourceCollection%2CSystem.Int32)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template__ctor_System_String_Microsoft_DocAsCode_Build_Engine_TemplateRendererResource_Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource_Microsoft_DocAsCode_Build_Engine_ResourceCollection_System_Int32_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.%23ctor(System.String%2CMicrosoft.DocAsCode.Build.Engine.TemplateRendererResource%2CMicrosoft.DocAsCode.Build.Engine.TemplatePreprocessorResource%2CMicrosoft.DocAsCode.Build.Engine.ResourceCollection%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L32">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L38">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_Template__ctor_System_String_System_String_System_String_System_String_Microsoft_DocAsCode_Build_Engine_ResourceCollection_System_Int32_" data-uid="Microsoft.DocAsCode.Build.Engine.Template.#ctor(System.String,System.String,System.String,System.String,Microsoft.DocAsCode.Build.Engine.ResourceCollection,System.Int32)">Template(String, String, String, String, ResourceCollection, Int32)</h4>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Template__ctor_System_String_Microsoft_DocAsCode_Build_Engine_TemplateRendererResource_Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource_Microsoft_DocAsCode_Build_Engine_ResourceCollection_System_Int32_" data-uid="Microsoft.DocAsCode.Build.Engine.Template.#ctor(System.String,Microsoft.DocAsCode.Build.Engine.TemplateRendererResource,Microsoft.DocAsCode.Build.Engine.TemplatePreprocessorResource,Microsoft.DocAsCode.Build.Engine.ResourceCollection,System.Int32)">Template(String, TemplateRendererResource, TemplatePreprocessorResource, ResourceCollection, Int32)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public Template(string name, string rendererType, string template, string script, ResourceCollection resourceCollection, int maxParallelism)</code></pre>
+                <pre><code class="lang-csharp hljs">public Template(string name, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, ResourceCollection resourceCollection, int maxParallelism)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -124,18 +124,13 @@
                     <td></td>
                   </tr>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>rendererType</em></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.html#Microsoft_DocAsCode_Build_Engine_TemplateRendererResource">TemplateRendererResource</a></td>
+                    <td><em>templateResource</em></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>template</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>script</em></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.TemplatePreprocessorResource.html#Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource">TemplatePreprocessorResource</a></td>
+                    <td><em>scriptResource</em></td>
                     <td></td>
                   </tr>
                   <tr>
@@ -150,14 +145,103 @@
                   </tr>
                 </tbody>
               </table>
+              <h3 id="fields">Fields
+              </h3>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_ContainsGetOptions.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.ContainsGetOptions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L34">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Template_ContainsGetOptions" data-uid="Microsoft.DocAsCode.Build.Engine.Template.ContainsGetOptions">ContainsGetOptions</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public readonly bool ContainsGetOptions</code></pre>
+              </div>
+              <h5 class="fieldValue">Field Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_ContainsModelTransformation.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.ContainsModelTransformation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L35">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Template_ContainsModelTransformation" data-uid="Microsoft.DocAsCode.Build.Engine.Template.ContainsModelTransformation">ContainsModelTransformation</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public readonly bool ContainsModelTransformation</code></pre>
+              </div>
+              <h5 class="fieldValue">Field Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_ContainsTemplateRenderer.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.ContainsTemplateRenderer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L36">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Template_ContainsTemplateRenderer" data-uid="Microsoft.DocAsCode.Build.Engine.Template.ContainsTemplateRenderer">ContainsTemplateRenderer</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public readonly bool ContainsTemplateRenderer</code></pre>
+              </div>
+              <h5 class="fieldValue">Field Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <h3 id="properties">Properties
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Extension.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Extension%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Extension.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Extension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L27">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L29">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Template_Extension" data-uid="Microsoft.DocAsCode.Build.Engine.Template.Extension">Extension</h4>
               <div class="markdown level1 summary"></div>
@@ -186,10 +270,10 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Name%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L25">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L27">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Template_Name" data-uid="Microsoft.DocAsCode.Build.Engine.Template.Name">Name</h4>
               <div class="markdown level1 summary"></div>
@@ -218,10 +302,10 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Resources.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Resources%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Resources.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Resources%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L30">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L32">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Template_Resources" data-uid="Microsoft.DocAsCode.Build.Engine.Template.Resources">Resources</h4>
               <div class="markdown level1 summary"></div>
@@ -243,17 +327,17 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo">TemplateResourceInfo</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo">TemplateResourceInfo</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_ScriptName.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.ScriptName%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_ScriptName.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.ScriptName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L26">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L28">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Template_ScriptName" data-uid="Microsoft.DocAsCode.Build.Engine.Template.ScriptName">ScriptName</h4>
               <div class="markdown level1 summary"></div>
@@ -282,10 +366,10 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_TemplateType.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.TemplateType%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_TemplateType.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.TemplateType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L29">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L31">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Template_TemplateType" data-uid="Microsoft.DocAsCode.Build.Engine.Template.TemplateType">TemplateType</h4>
               <div class="markdown level1 summary"></div>
@@ -314,10 +398,10 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Type.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Type%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Type.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Type%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L28">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L30">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Template_Type" data-uid="Microsoft.DocAsCode.Build.Engine.Template.Type">Type</h4>
               <div class="markdown level1 summary"></div>
@@ -348,10 +432,64 @@
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Transform_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Transform(System.Object)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_GetOptions_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.GetOptions(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L92">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L97">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Template_GetOptions_System_Object_" data-uid="Microsoft.DocAsCode.Build.Engine.Template.GetOptions(System.Object)">GetOptions(Object)</h4>
+              <div class="markdown level1 summary"><p>exports.getOptions = function (model) {
+    return {
+        bookmarks : {
+            uid1: &quot;bookmark1&quot;
+        },
+        isShared: true
+    }</p>
+<p>}</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public TransformModelOptions GetOptions(object model)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+                    <td><em>model</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.TransformModelOptions.html#Microsoft_DocAsCode_Build_Engine_TransformModelOptions">TransformModelOptions</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_Transform_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.Transform(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L131">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Template_Transform_System_Object_" data-uid="Microsoft.DocAsCode.Build.Engine.Template.Transform(System.Object)">Transform(Object)</h4>
               <div class="markdown level1 summary"><p>Transform from view model to the final result using template
@@ -398,19 +536,19 @@ Supported template languages are mustache and liquid</p>
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_TransformModel_System_Object_System_Object_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.TransformModel(System.Object%2CSystem.Object%2CSystem.Object)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Template_TransformModel_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Template.TransformModel(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L77">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Template.cs/#L116">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_Template_TransformModel_System_Object_System_Object_System_Object_" data-uid="Microsoft.DocAsCode.Build.Engine.Template.TransformModel(System.Object,System.Object,System.Object)">TransformModel(Object, Object, Object)</h4>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Template_TransformModel_System_Object_" data-uid="Microsoft.DocAsCode.Build.Engine.Template.TransformModel(System.Object)">TransformModel(Object)</h4>
               <div class="markdown level1 summary"><p>Transform from raw model to view model
 TODO: refactor to merge model and attrs into one input model</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public object TransformModel(object model, object attrs, object global)</code></pre>
+                <pre><code class="lang-csharp hljs">public object TransformModel(object model)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -427,17 +565,6 @@ TODO: refactor to merge model and attrs into one input model</p>
                     <td><em>model</em></td>
                     <td><p>The raw model</p>
 </td>
-                  </tr>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
-                    <td><em>attrs</em></td>
-                    <td><p>The system generated attributes</p>
-</td>
-                  </tr>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
-                    <td><em>global</em></td>
-                    <td></td>
                   </tr>
                 </tbody>
               </table>

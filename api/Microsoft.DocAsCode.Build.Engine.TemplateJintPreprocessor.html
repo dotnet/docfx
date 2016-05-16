@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class TemplateJintPreprocessor
    | DocFX website ">
-    <meta name="generator" content="docfx 1.8.4.0">
+    <meta name="generator" content="docfx 1.9.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -33,7 +33,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="../">
+              <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
@@ -75,8 +75,8 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content">
               
-              <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L14" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L17" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor">Class TemplateJintPreprocessor
               </h1>
               <div class="markdown level0 summary"></div>
@@ -96,17 +96,17 @@
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor__ctor_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.%23ctor(System.String)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.%23ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection%2CMicrosoft.DocAsCode.Build.Engine.TemplatePreprocessorResource)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L30">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L71">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor__ctor_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.#ctor(System.String)">TemplateJintPreprocessor(String)</h4>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.#ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection,Microsoft.DocAsCode.Build.Engine.TemplatePreprocessorResource)">TemplateJintPreprocessor(ResourceCollection, TemplatePreprocessorResource)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public TemplateJintPreprocessor(string script)</code></pre>
+                <pre><code class="lang-csharp hljs">public TemplateJintPreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -119,46 +119,69 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>script</em></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.ResourceCollection.html#Microsoft_DocAsCode_Build_Engine_ResourceCollection">ResourceCollection</a></td>
+                    <td><em>resourceCollection</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.TemplatePreprocessorResource.html#Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource">TemplatePreprocessorResource</a></td>
+                    <td><em>scriptResource</em></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
-              <h3 id="methods">Methods
+              <h3 id="properties">Properties
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_Process_System_Object___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.Process(System.Object%5B%5D)%0Aremarks%3A%20'*THIS*%20is%20remarks%20overriden%20in%20*MARKDOWN*%20file'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_GetOptionsFunc.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.GetOptionsFunc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L47">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L69">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_Process_System_Object___" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.Process(System.Object[])">Process(Object[])</h4>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_GetOptionsFunc" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.GetOptionsFunc">GetOptionsFunc</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public object Process(params object[] args)</code></pre>
+                <pre><code class="lang-csharp hljs">public Func&lt;object, object&gt; GetOptionsFunc
+{
+    get;
+}</code></pre>
               </div>
-              <h5 class="parameters">Parameters</h5>
+              <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
                     <th>Type</th>
-                    <th>Name</th>
                     <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>[]</td>
-                    <td><em>args</em></td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/bb549151(v=vs.110).aspx">Func</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
-              <h5 class="returns">Returns</h5>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_TransformModelFunc.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.TransformModelFunc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L67">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_TransformModelFunc" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.TransformModelFunc">TransformModelFunc</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public Func&lt;object, object&gt; TransformModelFunc
+{
+    get;
+}</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
@@ -168,7 +191,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/bb549151(v=vs.110).aspx">Func</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>

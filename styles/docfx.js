@@ -70,10 +70,12 @@ $(function () {
   (function () {
     var query;
     var relHref = $("meta[property='docfx\\:rel']").attr("content");
-    var search = searchFactory();
-    search();
-    highlightKeywords();
-    addSearchEvent();
+    if (relHref) {
+      var search = searchFactory();
+      search();
+      highlightKeywords();
+      addSearchEvent();
+    }
 
     // Search factory
     function searchFactory() {

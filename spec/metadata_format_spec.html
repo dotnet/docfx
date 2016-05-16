@@ -8,7 +8,7 @@
     <title>Doc-as-Code: Metadata Format Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Doc-as-Code: Metadata Format Specification | DocFX website ">
-    <meta name="generator" content="docfx 1.8.4.0">
+    <meta name="generator" content="docfx 1.9.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -31,7 +31,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="../">
+              <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
@@ -310,7 +310,7 @@ For example, to cross reference <code>System.String</code>:</p>
 <pre><code class="lang-markdown">[Dictionary](xref:System.Collections.Generic.Dictionary`2)&lt;[String](xref:System.String), [String](xref:System.String)&gt;
 </code></pre>
 <p>Will be rendered to:
-<a href="xref:System.Collections.Generic.Dictionary`2">Dictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</p>
+<a class="xref" href="https://msdn.microsoft.com/en-us/library/xfhwa508(v=vs.110).aspx">Dictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</p>
 <p>Besides <em>UID</em>, we also allow referencing items using <em>ID</em> and <em>alias</em>, in the Markdown processor, the below algorithm <strong>SHOULD</strong> be implemented to resolve references.</p>
 <p>Check whether the reference matches:</p>
 <ol>
