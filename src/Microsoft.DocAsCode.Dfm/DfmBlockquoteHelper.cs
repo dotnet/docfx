@@ -8,21 +8,8 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.MarkdownLite;
 
-    internal class DfmBlockquoteHelper
+    public class DfmBlockquoteHelper
     {
-        public class SplitToken
-        {
-            public IMarkdownToken Token { get; set; }
-
-            public List<IMarkdownToken> InnerTokens { get; set; }
-
-            public SplitToken(IMarkdownToken token)
-            {
-                Token = token;
-                InnerTokens = new List<IMarkdownToken>();
-            }
-        }
-
         public static List<SplitToken> SplitBlockquoteTokens(ImmutableArray<IMarkdownToken> tokens)
         {
             var splitTokens = new List<SplitToken>();
