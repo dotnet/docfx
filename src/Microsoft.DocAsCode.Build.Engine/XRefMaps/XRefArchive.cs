@@ -9,10 +9,11 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Common;
 
-    public sealed class XRefArchive : IDisposable
+    public sealed class XRefArchive : IXRefContainer, IDisposable
     {
         #region Consts / Fields
         public const string MajorFileName = "xrefmap.yml";
@@ -305,5 +306,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         #endregion
+
+        #region IXRefContainer Members
+
+        public Task<IXRefContainerReader> GetReaderAsync()
+        {
+            return Task.FromResult<IXRefContainerReader>(new XRefArchiveReader(this));
+        }
+
+        #endregion
+
     }
 }

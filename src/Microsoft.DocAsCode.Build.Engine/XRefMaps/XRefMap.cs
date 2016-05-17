@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using YamlDotNet.Serialization;
 
@@ -12,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.YamlSerialization;
 
-    public class XRefMap
+    public class XRefMap : IXRefContainer
     {
         [YamlMember(Alias = "sorted")]
         public bool? Sorted { get; set; }
@@ -40,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (References != null)
             {
-                References.Sort(XRefSpecComparer.Instance);
+                References.Sort(XRefSpecUidComparer.Instance);
             }
             Sorted = true;
         }
@@ -77,35 +78,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             HrefUpdated = true;
         }
 
-        public virtual XRefSpec Find(string uid)
+        public Task<IXRefContainerReader> GetReaderAsync()
         {
-            if (References == null)
-            {
-                return null;
-            }
-            if (Sorted == true)
-            {
-                var index = References.BinarySearch(new XRefSpec { Uid = uid }, XRefSpecComparer.Instance);
-                if (index >= 0)
-                {
-                    return References[index];
-                }
-                return null;
-            }
-            else
-            {
-                return References.Find(x => x.Uid == uid);
-            }
-        }
-
-        private sealed class XRefSpecComparer : Comparer<XRefSpec>
-        {
-            public static readonly XRefSpecComparer Instance = new XRefSpecComparer();
-
-            public override int Compare(XRefSpec x, XRefSpec y)
-            {
-                return string.Compare(x.Uid, y.Uid);
-            }
+            // todo : get reader.
+            throw new NotImplementedException();
         }
     }
 }

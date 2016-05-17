@@ -52,12 +52,19 @@
     <Compile Include="TemplateModelTransformer.cs" />
     <Compile Include="TemplateProcessor.cs" />
     <Compile Include="TemplateResourceInfo.cs" />
+    <Compile Include="XRefMaps\IXRefContainer.cs" />
+    <Compile Include="XRefMaps\IXRefContainerReader.cs" />
     <Compile Include="XRefMaps\XRefArchive.cs" />
     <Compile Include="XRefMaps\XRefArchiveBuilder.cs" />
     <Compile Include="XRefDetails.cs" />
     <Compile Include="XRefMaps\XRefArchiveMode.cs" />
+    <Compile Include="XRefMaps\XRefArchiveReader.cs" />
     <Compile Include="XRefMaps\XRefMap.cs" />
+    <Compile Include="XRefMaps\BasicXRefMapReader.cs" />
+    <Compile Include="XRefMaps\XRefRedirectionReader.cs" />
+    <Compile Include="XRefMaps\XRefMapReader.cs" />
     <Compile Include="XRefMaps\XRefMapRedirection.cs" />
+    <Compile Include="XRefMaps\XRefSpecUidComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">

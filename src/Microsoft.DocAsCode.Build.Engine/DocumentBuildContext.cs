@@ -139,7 +139,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             foreach (var uid in uidList)
             {
-                var spec = (from map in XRefMaps select map.Find(uid)).FirstOrDefault();
+                var spec = (from map in XRefMaps select new BasicXRefMapReader(map).Find(uid)).FirstOrDefault();
                 if (spec != null)
                 {
                     externalXRefSpec.AddOrUpdate(uid, spec, (_, old) => old + spec);
@@ -248,7 +248,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             if (XRefMaps != null && XRefMaps.Count > 0)
             {
-                xref = (from map in XRefMaps select map.Find(uid)).FirstOrDefault();
+                xref = (from map in XRefMaps select new BasicXRefMapReader(map).Find(uid)).FirstOrDefault();
                 if (xref != null)
                 {
                     return ExternalXRefSpec.AddOrUpdate(uid, xref, (_, old) => old + xref);
