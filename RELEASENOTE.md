@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.9)
+Version Notes (Current Version: v1.9.1)
 =======================================
+v1.9.1
+-----------
+1. Fix OP template.
+
 v1.9
 -----------
 1. **Breaking Change** Refactor template system:
