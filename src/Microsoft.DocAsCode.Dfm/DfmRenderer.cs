@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    using System.Collections.Immutable;
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
@@ -60,7 +59,7 @@ namespace Microsoft.DocAsCode.Dfm
         public override StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
         {
             StringBuffer content = string.Empty;
-            var splitTokens = DfmRendererHelper.SplitBlockquoteTokens(token.Tokens);
+            var splitTokens = DfmBlockquoteHelper.SplitBlockquoteTokens(token.Tokens);
             foreach (var splitToken in splitTokens)
             {
                 if (splitToken.Token is DfmSectionBlockToken)
@@ -107,7 +106,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 string errorMessage = $"Code absolute path: {token.Path} is not supported in file {context.GetFilePathStack().Peek()}";
                 Logger.LogError(errorMessage);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
+                return DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
             }
 
             try
@@ -115,23 +114,16 @@ namespace Microsoft.DocAsCode.Dfm
                 // TODO: Valid REST and REST-i script.
                 var fencesPath = Path.Combine(context.GetBaseFolder(), (RelativePath)context.GetFilePathStack().Peek() + (RelativePath)token.Path);
                 var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
-                return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
+                return DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
             }
             catch (DirectoryNotFoundException)
             {
-                return GenerateReferenceNotFoundErrorMessage(renderer, token);
+                return DfmFencesBlockHelper.GenerateReferenceNotFoundErrorMessage(renderer, token);
             }
             catch (FileNotFoundException)
             {
-                return GenerateReferenceNotFoundErrorMessage(renderer, token);
+                return DfmFencesBlockHelper.GenerateReferenceNotFoundErrorMessage(renderer, token);
             }
-        }
-
-        private static StringBuffer GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesBlockToken token)
-        {
-            string errorMessage = $"Can not find reference {token.Path}";
-            Logger.LogError(errorMessage);
-            return DfmRendererHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmNoteBlockToken token, MarkdownBlockContext context)

@@ -51,6 +51,7 @@
     <Compile Include="CodeSnippetExtractor\FlatNameCodeSnippetExtractor.cs" />
     <Compile Include="CodeSnippetExtractor\RecursiveNameCodeSnippetExtractor.cs" />
     <Compile Include="DfmCodeExtractorHelper.cs" />
+    <Compile Include="DfmFencesBlockHelper.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\DfmFencesBlockPathQueryOption.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\FullFileBlockPathQueryOption.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\MultipleLineRangeBlockPathQueryOption.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Rules\DfmXrefAutoLinkInlineRule.cs" />
     <Compile Include="Rules\DfmXrefShortcutInlineRule.cs" />
     <Compile Include="Rules\DfmYamlHeaderBlockRule.cs" />
+    <Compile Include="SplitToken.cs" />
     <Compile Include="Tokens\DfmFencesBlockToken.cs" />
     <Compile Include="Tokens\DfmIncludeBlockToken.cs" />
     <Compile Include="Tokens\DfmIncludeInlineToken.cs" />
@@ -90,7 +92,7 @@
     <Compile Include="DfmEngineBuilder.cs" />
     <Compile Include="DfmExtractCodeResult.cs" />
     <Compile Include="DfmRenderer.cs" />
-    <Compile Include="DfmRendererHelper.cs" />
+    <Compile Include="DfmBlockquoteHelper.cs" />
     <Compile Include="DocfxFlavoredIncHelper.cs" />
     <Compile Include="DocfxFlavoredMarked.cs" />
     <Compile Include="FileCacheLite.cs" />
