@@ -91,6 +91,8 @@
             return false;
         }
 
+        public virtual bool Contains(T item) => _index.ContainsKey(item);
+
         private sealed class SynchronizedLruList : LruList<T>
         {
             private readonly object _syncRoot = new object();
@@ -113,6 +115,14 @@
                 lock (_syncRoot)
                 {
                     return base.TryFind(func, out item);
+                }
+            }
+
+            public override bool Contains(T item)
+            {
+                lock (_syncRoot)
+                {
+                    return base.Contains(item);
                 }
             }
         }
