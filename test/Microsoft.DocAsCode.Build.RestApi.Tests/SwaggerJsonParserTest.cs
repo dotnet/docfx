@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal(1, swagger.Paths["/contacts"].Count);
             var action = swagger.Paths["/contacts"]["patch"];
             var parameters = action.Parameters;
-            Assert.Equal(1, parameters.Count);
+            Assert.Equal(2, parameters.Count);
             Assert.Equal("body", parameters[0].Metadata["in"]);
             var schema = parameters[0].Metadata["schema"] as JObject;
             Assert.NotNull(schema);
@@ -58,6 +58,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var refProperty = properties["provisioningErrors"]["items"]["schema"] as JObject;
             Assert.NotNull(refProperty);
             Assert.Equal("string", refProperty["properties"]["errorDetail"]["type"]);
+
+            schema = parameters[1].Metadata["schema"] as JObject;
+            properties = schema["properties"] as JObject;
+            var message = properties["message"];
+            Assert.Equal("A message describing the error, intended to be suitable for display in a user interface.", message["description"]);
 
             Assert.Equal(1, action.Responses.Count);
             var response = action.Responses["204"];

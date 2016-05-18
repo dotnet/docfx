@@ -37,10 +37,13 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             JToken existing;
                             if (jObject.TryGetValue(k.Key, out existing))
                             {
-                                throw new JsonException($"{k.Key} is already defined in referenced object \"{swagger.DeferredReference}\".");
+                                // Overwrite the value if the key is already defined.
+                                jObject[k.Key] = k.Value;
                             }
-
-                            jObject.Add(k.Key, k.Value);
+                            else
+                            {
+                                jObject.Add(k.Key, k.Value);
+                            }
                         }
 
                         jObject.WriteTo(writer);
