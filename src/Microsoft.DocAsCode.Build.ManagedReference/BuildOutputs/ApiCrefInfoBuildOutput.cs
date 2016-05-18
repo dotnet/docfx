@@ -15,8 +15,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     public class ApiCrefInfoBuildOutput
     {
         [YamlMember(Alias = "type")]
-        [JsonProperty("type", IsReference = true)]
-        public ApiReferenceBuildOutput Type { get; set; }
+        [JsonProperty("type")]
+        public ApiTypeAndSpec Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
             return new ApiCrefInfoBuildOutput
             {
-                Type = ApiReferenceBuildOutput.FromUid(model.Type),
+                Type = new ApiTypeAndSpec { Uid = model.Type },
                 Description = model.Description,
             };
         }
@@ -41,7 +41,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
             return new ApiCrefInfoBuildOutput
             {
-                Type = ApiBuildOutputUtility.GetReferenceViewModel(model.Type, references, supportedLanguages),
+                Type = new ApiTypeAndSpec
+                {
+                    Uid = model.Type,
+                    Spec = ApiBuildOutputUtility.GetSpec(model.Type, references, supportedLanguages),
+                },
                 Description = model.Description,
                 _needExpand = false,
             };
@@ -52,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (_needExpand)
             {
                 _needExpand = false;
-                Type = ApiBuildOutputUtility.GetReferenceViewModel(Type?.Uid, references, supportedLanguages);
+                Type.Spec = ApiBuildOutputUtility.GetSpec(Type.Uid, references, supportedLanguages);
             }
         }
     }
