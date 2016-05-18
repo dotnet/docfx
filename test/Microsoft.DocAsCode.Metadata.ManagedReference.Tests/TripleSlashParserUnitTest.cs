@@ -39,7 +39,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                 <list type='number'>
                     <item>
                         <description>
-                            word inside list->listItem->list->listItem->para.
+                            word inside list->listItem->list->listItem->para.>
+                            the second line.
                         </description>
                     </item>
                     <item>
@@ -103,7 +104,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     ```
     Classes in assemblies are by definition complete.
     ```
-", summary);
+".Replace("\r\n", "\n"), summary);
 
             var returns = commentModel.Returns;
             Assert.Equal("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);
@@ -115,15 +116,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             Assert.Equal(@"
 <p>This is <em>ref</em> a sample of exception node</p>
 <ul><li>
-            <pre><code class=""c#"">
-            public class XmlElement
-                : XmlLinkedNode
-            </code></pre>
-            <ol><li>
-                        word inside list->listItem->list->listItem->para.
-                    </li><li>item2 in numbered list</li></ol>
-        </li><li>item2 in bullet list</li></ul>
-", remarks);
+<pre><code class=""c#"">public class XmlElement
+    : XmlLinkedNode</code></pre>
+<ol><li>
+            word inside list->listItem->list->listItem->para.>
+            the second line.
+</li><li>item2 in numbered list</li></ol>
+</li><li>item2 in bullet list</li></ul>
+".Replace("\r\n", "\n"),
+remarks);
 
             var exceptions = commentModel.Exceptions;
             Assert.Equal(1, exceptions.Count);
@@ -134,19 +135,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             var expected = new List<string> {
 @"
 This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)""></see> method.
-<pre><code>
-class TestClass
+<pre><code>class TestClass
 {
     static int Main()
     {
         return GetExceptions(null, null).Count();
     }
-} 
-</code></pre> 
-",
+} </code></pre> 
+".Replace("\r\n", "\n"),
 @"
 This is another example
-"};
+".Replace("\r\n", "\n")};
             Assert.Equal(expected, example);
 
             context.PreserveRawInlineComments = true;
