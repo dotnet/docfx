@@ -23,7 +23,7 @@ exports.transform = function (model) {
     "source",
     "newFileRepository"
   ];
-  model = opCommon.resetKeysAndSystemAttributes(model, resetKeys);
+  model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
 
   // For metadata consumed by docs themes, rename with prefix "_op_"
   var metaForThemes = ["wordCount", "rawTitle"];
