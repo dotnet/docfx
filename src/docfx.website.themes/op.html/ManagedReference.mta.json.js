@@ -45,7 +45,7 @@ exports.transform = function (model) {
     "rawTitle"
   ];
 
-  model = opCommon.resetKeysAndSystemAttributes(model, resetKeys);
+  model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, false);
 
   return {
     content: JSON.stringify(model)

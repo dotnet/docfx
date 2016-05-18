@@ -20,11 +20,17 @@ exports.removeExtension = function (path) {
   return path;
 }
 
-exports.resetKeysAndSystemAttributes = function (model, resetKeys){
+exports.resetKeysAndSystemAttributes = function (model, resetKeys, keepOpAttributes){
   return exports.batchSetProperties(
     model,
     function (key) {
-      return key.indexOf('_') === 0 || (exports.isArray(resetKeys) && resetKeys.indexOf(key) > -1);
+      if (exports.isArray(resetKeys) && resetKeys.indexOf(key) > -1) {
+        return true;
+      }
+      if (key.indexOf('_op_') === 0 && keepOpAttributes) {
+        return false;
+      }
+      return key.indexOf('_') === 0;
     },
     undefined);
 }

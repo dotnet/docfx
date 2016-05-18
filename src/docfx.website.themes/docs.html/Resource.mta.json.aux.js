@@ -6,7 +6,7 @@ exports.transform = function (model) {
   var resetKeys = [
     "newFileRepository"
   ];
-  model = opCommon.resetKeysAndSystemAttributes(model, resetKeys);
+  model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
   return {
     content: JSON.stringify(model)
   };
