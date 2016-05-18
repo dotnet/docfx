@@ -467,12 +467,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 if (templateProcessor.TryGetFileExtension(result.DocumentType, out extension))
                                 {
-                                    // For backward-compatibility, will remove ModelFile in v1.9
-                                    if (string.IsNullOrEmpty(result.FileWithoutExtension))
-                                    {
-                                        result.FileWithoutExtension = Path.ChangeExtension(result.ModelFile, null);
-                                    }
-
                                     m.File = result.FileWithoutExtension + extension;
                                 }
                             }
