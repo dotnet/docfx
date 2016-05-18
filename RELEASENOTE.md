@@ -1,12 +1,16 @@
-Version Notes (Current Version: v1.9.2)
+Version Notes (Current Version: v1.9.3)
 =======================================
+v1.9.3
+-----------
+1. Fix OP template for metadata.
+
 v1.9.2
 -----------
 1. Fix OP template for metadata.
 
 v1.9.1
 -----------
-1. Fix OP template.
+1. Fix OP template for contributor.
 
 v1.9
 -----------
