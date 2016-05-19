@@ -15,6 +15,7 @@
   "inheritance": "Inheritance",
   "namespace": "Namespace",
   "assembly": "Assembly",
+  "package": "Package",
   "syntax": "Syntax",
   "remarks": "Remarks",
   "examples": "Examples",

@@ -15,6 +15,7 @@
   "inheritance": "继承",
   "namespace": "命名空间",
   "assembly": "程序集",
+  "package":"包版本",
   "syntax": "语法",
   "remarks": "备注",
   "examples": "示例",
