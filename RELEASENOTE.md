@@ -1,5 +1,9 @@
-Version Notes (Current Version: v1.9.3)
+Version Notes (Current Version: v1.9.4)
 =======================================
+v1.9.4
+-----------
+1. Fix Bug that may cause missing exception type in API reference documentation.
+
 v1.9.3
 -----------
 1. Fix OP template for metadata.
