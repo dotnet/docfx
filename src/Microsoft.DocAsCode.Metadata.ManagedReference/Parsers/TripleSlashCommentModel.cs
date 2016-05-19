@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
         private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
         private static Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
-        private static Regex codeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
+        private static Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
 
         private readonly ITripleSlashCommentParserContext _context;
         private readonly TripleSlashCommentTransformer _transformer = new TripleSlashCommentTransformer();
@@ -384,7 +384,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         }
 
         /// <summary>
-        /// Split xml to lines. Trim meaningless whitespaces.
+        /// Split xml into lines. Trim meaningless whitespaces.
         /// if a line starts with xml node, all leading whitespaces would be trimmed
         /// otherwise text node start position always aligns with the start position of its parent line(the last previous line that starts with xml node)
         /// Trim newline character for code element.
@@ -405,6 +405,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 else
                 {
+                    // TO-DO: special logic for TAB case
                     int index = line.TakeWhile(char.IsWhiteSpace).Count();
                     if (line[index] == '<')
                     {
@@ -416,7 +417,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             // trim newline character for code element
-            return codeElementRegex.Replace(string.Join("\n", normalized), m => { var group = m.Groups[1]; return m.Value.Replace(group.ToString(), group.ToString().Trim('\n')); });
+            return CodeElementRegex.Replace(string.Join("\n", normalized), m => { var group = m.Groups[1]; return m.Value.Replace(group.ToString(), group.ToString().Trim('\n')); });
         }
     }
 }
