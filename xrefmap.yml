@@ -2696,6 +2696,13 @@ references:
   name.vb: GetReferenceViewModel(String, Dictionary(Of String, ApiReferenceBuildOutput), String(), Int32)
   fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.GetReferenceViewModel(System.String, System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput>, System.String[], System.Int32)
   fullName.vb: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.GetReferenceViewModel(System.String, System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput), System.String(), System.Int32)
+- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.GetSpec(System.String,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput},System.String[])
+  name: GetSpec(String, Dictionary<String, ApiReferenceBuildOutput>, String[])
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutputUtility_GetSpec_System_String_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput__System_String___
+  commentId: M:Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.GetSpec(System.String,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput},System.String[])
+  name.vb: GetSpec(String, Dictionary(Of String, ApiReferenceBuildOutput), String())
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.GetSpec(System.String, System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput>, System.String[])
+  fullName.vb: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.GetSpec(System.String, System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput), System.String())
 - uid: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.GetXref(System.String,System.String,System.String)
   name: GetXref(String, String, String)
   href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutputUtility.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutputUtility_GetXref_System_String_System_String_System_String_
@@ -3023,6 +3030,21 @@ references:
   href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiSyntaxBuildOutput.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiSyntaxBuildOutput_TypeParameters
   commentId: P:Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiSyntaxBuildOutput.TypeParameters
   fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiSyntaxBuildOutput.TypeParameters
+- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec
+  name: ApiTypeAndSpec
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiTypeAndSpec
+  commentId: T:Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec
+- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.Spec
+  name: Spec
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiTypeAndSpec_Spec
+  commentId: P:Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.Spec
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.Spec
+- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.Uid
+  name: Uid
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiTypeAndSpec_Uid
+  commentId: P:Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.Uid
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiTypeAndSpec.Uid
 - uid: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation
   name: FillReferenceInformation
   href: api/Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.html#Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation
