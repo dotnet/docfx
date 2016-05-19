@@ -76,8 +76,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 #if NET451
             var name = Path.GetFileName(ProjectPath);
             if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase)) {
-                var project = ProjectReader.GetProject(ProjectPath);
-                var packageName = $"{assemblyName}({project.Version.ToString()})";
+                Microsoft.DotNet.ProjectModel.Project project = null;
+                try
+                {
+                    project = ProjectReader.GetProject(ProjectPath);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Warning, $"Can't parse package name and version of {ProjectPath}, {e.Message}");
+                }
+                var packageName = project == null ? string.Empty : $"{assemblyName}({project.Version.ToString()})";
                 item.PackageNameList = string.IsNullOrEmpty(packageName) ? null : new List<string> { packageName };
             }
 #endif
