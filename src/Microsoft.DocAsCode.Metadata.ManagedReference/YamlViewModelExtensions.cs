@@ -223,6 +223,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Source = model.Source,
                 Documentation = model.Documentation,
                 AssemblyNameList = model.AssemblyNameList,
+                PackageNameList = model.PackageNameList,
                 NamespaceName = model.NamespaceName,
                 Summary = model.Summary,
                 Remarks = model.Remarks,
