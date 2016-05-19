@@ -34,16 +34,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         // Preserve value inside swagger.Token
                         foreach (var k in swagger.Token)
                         {
-                            JToken existing;
-                            if (jObject.TryGetValue(k.Key, out existing))
-                            {
-                                // Overwrite the value if the key is already defined.
-                                jObject[k.Key] = k.Value;
-                            }
-                            else
-                            {
-                                jObject.Add(k.Key, k.Value);
-                            }
+                            // Overwrite the value if the key is already defined.
+                            jObject[k.Key] = k.Value;
                         }
 
                         jObject.WriteTo(writer);
