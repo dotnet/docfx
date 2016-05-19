@@ -62,7 +62,7 @@ namespace Test1
             Assert.Equal("Test1.Class1", @class.DisplayQualifiedNames.First().Value);
             Assert.Equal(@"
 This is a test
-", @class.Summary);
+".Replace("\r\n", "\n"), @class.Summary);
             Assert.Equal("Test1.Class1.Func1(System.Int32)", @class.SeeAlsos[0].Type);
             Assert.Equal(@"[Serializable]
 public class Class1", @class.Syntax.Content[SyntaxLanguage.CSharp]);
@@ -74,7 +74,7 @@ public class Class1", @class.Syntax.Content[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Class1.Func1(System.Int32)", function.Name);
             Assert.Equal(@"
 This is a function
-", function.Summary);
+".Replace("\r\n", "\n"), function.Summary);
             Assert.Equal("System.Int32", function.SeeAlsos[0].Type);
             Assert.Equal("This is a param as <xref href=\"System.Int32\" data-throw-if-not-resolved=\"false\"></xref>", function.Syntax.Parameters[0].Description);
             Assert.Equal(1, output.Items.Count);
