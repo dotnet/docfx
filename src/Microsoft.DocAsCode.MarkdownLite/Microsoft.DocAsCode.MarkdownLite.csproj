@@ -47,7 +47,7 @@
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
     <Compile Include="IMarkdownRewritable.cs" />
-    <Compile Include="LineInfo.cs" />
+    <Compile Include="SourceInfo.cs" />
     <Compile Include="MarkdownEngine.cs" />
     <Compile Include="MarkdownParsingContext.cs" />
     <Compile Include="MarkdownParserExtensions.cs" />

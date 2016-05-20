@@ -22,22 +22,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             var content = match.Groups[1].Value[match.Groups[1].Value.Length - 1] == '\n'
                 ? match.Groups[1].Value.Substring(0, match.Groups[1].Value.Length - 1)
                 : match.Groups[1].Value;
             return new TwoPhaseBlockToken(
                 this,
                 parser.Context,
-                match.Value,
-                lineInfo,
+                sourceInfo,
                 (p, t) => new MarkdownParagraphBlockToken(
                     t.Rule,
                     t.Context,
-                    p.TokenizeInline(content, t.LineInfo),
-                    t.RawMarkdown,
-                    t.LineInfo));
+                    p.TokenizeInline(t.SourceInfo.Copy(content)),
+                    t.SourceInfo));
         }
     }
 }

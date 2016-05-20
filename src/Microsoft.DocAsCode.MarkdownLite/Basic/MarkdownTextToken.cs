@@ -5,13 +5,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownTextToken : IMarkdownToken
     {
-        public MarkdownTextToken(IMarkdownRule rule, IMarkdownContext context, string content, string rawMarkdown, LineInfo lineInfo)
+        public MarkdownTextToken(IMarkdownRule rule, IMarkdownContext context, string content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            RawMarkdown = rawMarkdown;
-            LineInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -20,8 +19,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public string Content { get; }
 
-        public string RawMarkdown { get; }
-
-        public LineInfo LineInfo { get; }
+        public SourceInfo SourceInfo { get; }
     }
 }

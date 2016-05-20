@@ -19,8 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             bool isPre = parser.Options.Sanitizer == null &&
                 (match.Groups[1].Value == "pre" || match.Groups[1].Value == "script" || match.Groups[1].Value == "style");
@@ -29,22 +28,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return new TwoPhaseBlockToken(
                     this,
                     parser.Context,
-                    match.Value,
-                    lineInfo,
+                    sourceInfo,
                     (p, t) => new MarkdownParagraphBlockToken(
                         t.Rule,
                         t.Context,
-                        p.TokenizeInline(match.Value, lineInfo),
-                        t.RawMarkdown,
-                        t.LineInfo));
+                        p.TokenizeInline(t.SourceInfo.Copy(match.Value)),
+                        t.SourceInfo));
             }
             else
             {
                 return new TwoPhaseBlockToken(
                     this,
                     parser.Context,
-                    match.Value,
-                    lineInfo,
+                    sourceInfo,
                     (p, t) => new MarkdownHtmlBlockToken(
                         t.Rule,
                         t.Context,
@@ -54,12 +50,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
                                     new MarkdownRawToken(
                                         this,
                                         parser.Context,
-                                        t.RawMarkdown,
-                                        t.LineInfo)))
+                                        t.SourceInfo)))
                         :
-                            p.TokenizeInline(t.RawMarkdown, t.LineInfo),
-                        t.RawMarkdown,
-                        t.LineInfo));
+                            p.TokenizeInline(t.SourceInfo),
+                        t.SourceInfo));
             }
         }
     }

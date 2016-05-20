@@ -15,9 +15,9 @@ namespace Microsoft.DocAsCode.Dfm
         public ImmutableArray<IMarkdownToken> Content { get; }
         public string Title { get; }
         public bool ThrowIfNotResolved { get; }
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
-        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, ImmutableArray<IMarkdownToken> content, string title, bool throwIfNotResolved, string rawMarkdown)
+        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, ImmutableArray<IMarkdownToken> content, string title, bool throwIfNotResolved, SourceInfo lineInfo)
         {
             Rule = rule;
             Context = context;
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Dfm
             Content = content;
             Title = title;
             ThrowIfNotResolved = throwIfNotResolved;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = lineInfo;
         }
 
         public DfmXrefInlineToken Rewrite(IMarkdownRewriteEngine rewriteEngine)
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return this;
             }
-            return new DfmXrefInlineToken(Rule, Context, Href, tokens, Title, ThrowIfNotResolved, RawMarkdown);
+            return new DfmXrefInlineToken(Rule, Context, Href, tokens, Title, ThrowIfNotResolved, SourceInfo);
         }
     }
 }

@@ -19,21 +19,20 @@ namespace Microsoft.DocAsCode.Dfm
 
         private const string SectionReplacementHtmlTag = "div";
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             if (!parser.Context.Variables.ContainsKey(MarkdownBlockContext.IsBlockQuote) || !(bool)parser.Context.Variables[MarkdownBlockContext.IsBlockQuote])
             {
                 return null;
             }
-            var match = _sectionRegex.Match(source);
+            var match = _sectionRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-
+            var sourceInfo = context.Consume(match.Length);
             var attributes = ExtractAttibutes(match.Groups["attributes"].Value);
-            return new DfmSectionBlockToken(this, parser.Context, attributes, match.Groups["rawmarkdown"].Value);
+            return new DfmSectionBlockToken(this, parser.Context, attributes, sourceInfo);
         }
 
         private string ExtractAttibutes(string attributeText)

@@ -20,8 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             var header = match.Groups[1].Value.ReplaceRegex(Regexes.Lexers.UselessTableHeader, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter);
             var align = ParseAligns(match.Groups[2].Value.ReplaceRegex(Regexes.Lexers.UselessTableAlign, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter));
             var cells = match.Groups[3].Value.ReplaceRegex(Regexes.Lexers.UselessGfmTableCell, string.Empty).Split('\n').Select(x => new string[] { x }).ToArray();
@@ -42,19 +41,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return new TwoPhaseBlockToken(
                 this,
                 parser.Context,
-                match.Value,
-                lineInfo,
+                sourceInfo,
                 (p, t) => new MarkdownTableBlockToken(
                     t.Rule,
                     t.Context,
                     (from text in header
-                        select p.TokenizeInline(text, t.LineInfo)).ToImmutableArray(),
+                     select p.TokenizeInline(t.SourceInfo.Copy(text))).ToImmutableArray(),
                     align.ToImmutableArray(),
                     (from row in cells
-                        select (from col in row
-                                select p.TokenizeInline(col, t.LineInfo)).ToImmutableArray()).ToImmutableArray(),
-                    t.RawMarkdown,
-                    t.LineInfo));
+                     select (from col in row
+                             select p.TokenizeInline(t.SourceInfo.Copy(col))).ToImmutableArray()).ToImmutableArray(),
+                    t.SourceInfo));
         }
 
         protected virtual Align[] ParseAligns(string[] aligns)

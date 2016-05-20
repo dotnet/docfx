@@ -300,11 +300,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 if (renderer.Options.Sanitizer != null)
                 {
-                    return renderer.Options.Sanitizer(token.RawMarkdown);
+                    return renderer.Options.Sanitizer(token.SourceInfo.Markdown);
                 }
-                return StringHelper.Escape(token.RawMarkdown);
+                return StringHelper.Escape(token.SourceInfo.Markdown);
             }
-            return token.RawMarkdown;
+            return token.SourceInfo.Markdown;
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBrInlineToken token, MarkdownInlineContext context)
@@ -328,7 +328,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownRawToken token, IMarkdownContext context)
         {
-            return token.RawMarkdown;
+            return token.SourceInfo.Markdown;
         }
 
         #endregion

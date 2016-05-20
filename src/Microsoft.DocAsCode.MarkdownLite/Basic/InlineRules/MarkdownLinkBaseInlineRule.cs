@@ -9,17 +9,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
-        protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, string rawMarkdown, LineInfo lineInfo)
+        protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo lineInfo)
         {
             var escapedHref = StringHelper.Escape(href);
             var escapedTitle = !string.IsNullOrEmpty(title) ? StringHelper.Escape(title) : null;
             if (isImage)
             {
-                return new MarkdownImageInlineToken(this, parser.Context, escapedHref, escapedTitle, text, rawMarkdown, lineInfo);
+                return new MarkdownImageInlineToken(this, parser.Context, escapedHref, escapedTitle, text, lineInfo);
             }
             else
             {
-                return new MarkdownLinkInlineToken(this, parser.Context, escapedHref, escapedTitle, parser.Tokenize(text, lineInfo), rawMarkdown, lineInfo);
+                return new MarkdownLinkInlineToken(this, parser.Context, escapedHref, escapedTitle, parser.Tokenize(lineInfo.Copy(text)), lineInfo);
             }
         }
     }

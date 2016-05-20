@@ -44,14 +44,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return Regexes.Lexers.WhiteSpaceLine.Replace(src, string.Empty);
         }
 
-        public ImmutableArray<IMarkdownToken> Tokenize(string markdown, LineInfo lineInfo)
+        public ImmutableArray<IMarkdownToken> Tokenize(SourceInfo lineInfo)
         {
-            return TokenizeCore(Preprocess(markdown), lineInfo).ToImmutableArray();
+            var markdown = Preprocess(lineInfo.Markdown);
+            if (lineInfo.Markdown != markdown)
+            {
+                lineInfo = new SourceInfo(markdown, lineInfo.File, lineInfo.LineNumber);
+            }
+            return TokenizeCore(lineInfo).ToImmutableArray();
         }
 
-        private List<IMarkdownToken> TokenizeCore(string markdown, LineInfo lineInfo)
+        private List<IMarkdownToken> TokenizeCore(SourceInfo lineInfo)
         {
-            var pc = new MarkdownParsingContext(markdown, lineInfo);
+            var pc = new MarkdownParsingContext(lineInfo);
             var tokens = new List<IMarkdownToken>();
             while (pc.CurrentMarkdown.Length > 0)
             {

@@ -18,10 +18,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
-
-            return new MarkdownCodeInlineToken(this, parser.Context, match.Groups[2].Value, match.Value, lineInfo);
+            var sourceInfo = context.Consume(match.Length);
+            return new MarkdownCodeInlineToken(this, parser.Context, match.Groups[2].Value, sourceInfo);
         }
     }
 }

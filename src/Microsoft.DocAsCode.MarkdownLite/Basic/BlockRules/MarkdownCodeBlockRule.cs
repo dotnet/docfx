@@ -18,16 +18,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             var capStr = Regexes.Lexers.LeadingWhiteSpaces.Replace(match.Value, string.Empty);
             if (parser.Options.Pedantic)
             {
-                return new MarkdownCodeBlockToken(this, parser.Context, capStr, match.Value, null, lineInfo);
+                return new MarkdownCodeBlockToken(this, parser.Context, capStr, null, sourceInfo);
             }
             else
             {
-                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), match.Value, null, lineInfo);
+                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), null, sourceInfo);
             }
         }
     }

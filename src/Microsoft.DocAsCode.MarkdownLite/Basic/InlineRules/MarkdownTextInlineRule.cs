@@ -18,10 +18,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
-
-            return new MarkdownTextToken(this, parser.Context, StringHelper.Escape(Smartypants(parser.Options, match.Groups[0].Value)), match.Value, lineInfo);
+            var sourceInfo = context.Consume(match.Length);
+            return new MarkdownTextToken(this, parser.Context, StringHelper.Escape(Smartypants(parser.Options, match.Groups[0].Value)), sourceInfo);
         }
 
         /// <summary>

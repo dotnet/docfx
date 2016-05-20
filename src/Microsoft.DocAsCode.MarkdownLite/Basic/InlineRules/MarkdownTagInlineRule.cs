@@ -18,8 +18,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             var c = parser.Context;
             var inLink = (bool)c.Variables[MarkdownInlineContext.IsInLink];
@@ -31,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 parser.SwitchContext(MarkdownInlineContext.IsInLink, false);
             }
-            return new MarkdownTagInlineToken(this, parser.Context, match.Value, lineInfo);
+            return new MarkdownTagInlineToken(this, parser.Context, sourceInfo);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             IMarkdownRule rule,
             ImmutableArray<IMarkdownToken> blockTokens,
             bool wrapParagraph,
-            LineInfo lineInfo)
+            SourceInfo lineInfo)
         {
             var result = new List<IMarkdownToken>(blockTokens.Length);
             var textContent = StringBuffer.Empty;
@@ -31,14 +31,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     continue;
                 }
                 var newLine = token as MarkdownNewLineBlockToken;
-                if (newLine?.RawMarkdown.Length == 1)
+                if (newLine?.SourceInfo.Markdown.Length == 1)
                 {
                     continue;
                 }
                 if (textContent != StringBuffer.Empty)
                 {
                     var rawMarkdown = textContent.ToString();
-                    result.Add(CreateToken(parser, rule, wrapParagraph, rawMarkdown, lineInfo));
+                    result.Add(CreateToken(parser, rule, wrapParagraph, lineInfo.Copy(rawMarkdown)));
                     textContent = StringBuffer.Empty;
                 }
                 if (newLine != null)
@@ -50,21 +50,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (textContent != StringBuffer.Empty)
             {
                 var rawMarkdown = textContent.ToString();
-                result.Add(CreateToken(parser, rule, wrapParagraph, rawMarkdown, lineInfo));
+                result.Add(CreateToken(parser, rule, wrapParagraph, lineInfo.Copy(rawMarkdown)));
             }
             return result.ToImmutableArray();
         }
 
-        private static IMarkdownToken CreateToken(IMarkdownParser parser, IMarkdownRule rule, bool wrapParagraph, string rawMarkdown, LineInfo lineInfo)
+        private static IMarkdownToken CreateToken(IMarkdownParser parser, IMarkdownRule rule, bool wrapParagraph, SourceInfo lineInfo)
         {
-            var inlineContent = parser.TokenizeInline(rawMarkdown, lineInfo);
+            var inlineContent = parser.TokenizeInline(lineInfo);
             if (wrapParagraph)
             {
-                return new MarkdownParagraphBlockToken(rule, parser.Context, inlineContent, rawMarkdown, lineInfo);
+                return new MarkdownParagraphBlockToken(rule, parser.Context, inlineContent, lineInfo);
             }
             else
             {
-                return new MarkdownNonParagraphBlockToken(rule, parser.Context, inlineContent, rawMarkdown, lineInfo);
+                return new MarkdownNonParagraphBlockToken(rule, parser.Context, inlineContent, lineInfo);
             }
         }
     }

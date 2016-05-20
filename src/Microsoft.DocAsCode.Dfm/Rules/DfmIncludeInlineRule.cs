@@ -13,14 +13,14 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex _inlineIncludeRegex = new Regex(DocfxFlavoredIncHelper.InlineIncRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public virtual Regex Include => _inlineIncludeRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Include.Match(source);
+            var match = Include.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             // [!include[title](path "optionalTitle")]
             // 1. Get include file path 
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups[4].Value;
 
             // 3. Apply inline rules to the included content
-            return new DfmIncludeInlineToken(this, parser.Context, path, value, title, match.Groups[0].Value, match.Value);
+            return new DfmIncludeInlineToken(this, parser.Context, path, value, title, match.Groups[0].Value, sourceInfo);
         }
     }
 }

@@ -7,13 +7,13 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmNoteBlockToken : IMarkdownToken
     {
-        public DfmNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content, string rawMarkdown)
+        public DfmNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content, SourceInfo lineInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            RawMarkdown = rawMarkdown;
             NoteType = noteType;
+            SourceInfo = lineInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -22,8 +22,8 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string Content { get; }
 
-        public string RawMarkdown { get; set; }
-
         public string NoteType { get; }
+
+        public SourceInfo SourceInfo { get; }
     }
 }

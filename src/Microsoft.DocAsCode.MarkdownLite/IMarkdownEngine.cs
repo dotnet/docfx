@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <param name="context">The markdown context contains rules.</param>
         /// <param name="lineInfo">The line info for markdown text.</param>
         /// <returns>Rendered text.</returns>
-        StringBuffer Mark(string markdown, IMarkdownContext context = null, LineInfo lineInfo = default(LineInfo));
+        StringBuffer Mark(SourceInfo lineInfo, IMarkdownContext context = null);
         /// <summary>
         /// Mark markdown text.
         /// </summary>

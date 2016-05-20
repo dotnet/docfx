@@ -30,17 +30,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
 
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             return new MarkdownLinkInlineToken(
                 this,
                 parser.Context,
                 text,
                 null,
                 ImmutableArray.Create<IMarkdownToken>(
-                    new MarkdownRawToken(this, parser.Context, text)),
-                match.Value,
-                lineInfo);
+                    new MarkdownRawToken(this, parser.Context, sourceInfo.Copy(match.Groups[1].Value))),
+                sourceInfo);
         }
     }
 }

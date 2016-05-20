@@ -13,9 +13,9 @@ namespace Microsoft.DocAsCode.Dfm
         public string Name { get; }
         public string Title { get; }
         public string Raw { get; }
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
-        public DfmIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, string rawMarkdown)
+        public DfmIncludeInlineToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, SourceInfo lineInfo)
         {
             Rule = rule;
             Context = context;
@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Dfm
             Name = name;
             Title = title;
             Raw = raw;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = lineInfo;
         }
     }
 }

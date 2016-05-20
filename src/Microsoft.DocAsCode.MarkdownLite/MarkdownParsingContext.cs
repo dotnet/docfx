@@ -7,27 +7,38 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownParsingContext : IMarkdownParsingContext
     {
-        private readonly LineInfo _lineInfo;
         private readonly int _markdownLength;
         private readonly List<int> _lineIndexer;
-        private int _offset;
+        private readonly string _file;
+        private readonly int _lineNumber;
 
-        public MarkdownParsingContext(string markdown, LineInfo lineInfo)
+        public MarkdownParsingContext(SourceInfo lineInfo)
         {
-            CurrentMarkdown = markdown;
-            _lineInfo = lineInfo;
-            _markdownLength = markdown.Length;
-            _lineIndexer = CreateLineIndexer(markdown);
+            CurrentMarkdown = lineInfo.Markdown;
+            _markdownLength = lineInfo.Markdown.Length;
+            _file = lineInfo.File;
+            _lineNumber = lineInfo.LineNumber;
+            _lineIndexer = CreateLineIndexer(lineInfo.Markdown);
         }
 
         public string CurrentMarkdown { get; private set; }
 
-        public LineInfo LineInfo => _lineInfo.Move(_offset);
+        public SourceInfo LineInfo => default(SourceInfo);
 
-        public void Consume(int charCount)
+        public SourceInfo Consume(int charCount)
         {
-            CurrentMarkdown = CurrentMarkdown.Substring(charCount);
-            _offset = CalcLineNumber();
+            string markdown;
+            if (CurrentMarkdown.Length == charCount)
+            {
+                markdown = CurrentMarkdown;
+                CurrentMarkdown = string.Empty;
+            }
+            else
+            {
+                markdown = CurrentMarkdown.Remove(charCount);
+                CurrentMarkdown = CurrentMarkdown.Substring(charCount);
+            }
+            return new SourceInfo(markdown, _file, _lineNumber + CalcLineNumber());
         }
 
         private static List<int> CreateLineIndexer(string markdown)

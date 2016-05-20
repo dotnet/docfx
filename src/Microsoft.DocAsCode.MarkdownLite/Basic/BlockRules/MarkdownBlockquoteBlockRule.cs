@@ -20,19 +20,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             return new TwoPhaseBlockToken(
                 this,
                 parser.Context,
-                match.Value,
-                lineInfo,
+                sourceInfo,
                 (p, t) =>
                 {
-                    var capStr = LeadingBlockquote.Replace(t.RawMarkdown, string.Empty);
-                    var blockTokens = p.Tokenize(capStr, t.LineInfo);
-                    blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true, t.LineInfo);
-                    return new MarkdownBlockquoteBlockToken(t.Rule, t.Context, blockTokens, match.Value, t.LineInfo);
+                    var capStr = LeadingBlockquote.Replace(t.SourceInfo.Markdown, string.Empty);
+                    var blockTokens = p.Tokenize(t.SourceInfo.Copy(capStr));
+                    blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true, t.SourceInfo);
+                    return new MarkdownBlockquoteBlockToken(t.Rule, t.Context, blockTokens, t.SourceInfo);
                 });
         }
     }

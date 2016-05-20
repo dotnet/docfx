@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                     MarkdownTokenValidatorFactory.FromLambda(
                         (MarkdownHeadingBlockToken token) =>
                         {
-                            if (!token.RawMarkdown.StartsWith("# "))
+                            if (!token.SourceInfo.Markdown.StartsWith("# "))
                             {
                                 message = expectedMessage;
                             }
@@ -97,7 +97,7 @@ by a blank line.</p>
             var builder = new GfmEngineBuilder(new Options());
             builder.Rewriter =
                 MarkdownTokenRewriterFactory.FromLambda(
-                    (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context, t.RawMarkdown, t.LineInfo) // ignore all heading
+                    (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownIgnoreToken(t.Rule, t.Context, t.SourceInfo) // ignore all heading
                 );
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
@@ -122,10 +122,10 @@ by a blank line.</p>
                 MarkdownTokenRewriterFactory.Sequence(
                     MarkdownTokenRewriterFactory.FromLambda(
                         (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) =>
-                            t.Depth <= 2 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.RawMarkdown, t.LineInfo) : null),
+                            t.Depth <= 2 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.SourceInfo) : null),
                     MarkdownTokenRewriterFactory.FromLambda(
                         (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) =>
-                            t.Depth == 3 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.RawMarkdown, t.LineInfo) : null)
+                            t.Depth == 3 ? new MarkdownHeadingBlockToken(t.Rule, t.Context, t.Content, t.Id, t.Depth + 1, t.SourceInfo) : null)
                 );
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
@@ -145,10 +145,10 @@ by a blank line.</p>
                 MarkdownTokenRewriterFactory.Loop(
                     MarkdownTokenRewriterFactory.Composite(
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.RawMarkdown, t.RawMarkdown, t.LineInfo)
+                            (IMarkdownRewriteEngine e, MarkdownHeadingBlockToken t) => new MarkdownTextToken(t.Rule, t.Context, t.SourceInfo.Markdown, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa", 1, t.RawMarkdown, t.LineInfo)
+                            (IMarkdownRewriteEngine e, MarkdownTextToken t) => new MarkdownHeadingBlockToken(t.Rule, t.Context, new InlineContent(ImmutableArray<IMarkdownToken>.Empty), "aaaa", 1, t.SourceInfo)
                         )
                     ),
                 10);

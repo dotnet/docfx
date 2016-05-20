@@ -18,9 +18,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo= context.LineInfo;
-            context.Consume(match.Length);
-            return new MarkdownHrBlockToken(this, parser.Context, match.Value, lineInfo);
+            var sourceInfo = context.Consume(match.Length);
+            return new MarkdownHrBlockToken(this, parser.Context, sourceInfo);
         }
     }
 }

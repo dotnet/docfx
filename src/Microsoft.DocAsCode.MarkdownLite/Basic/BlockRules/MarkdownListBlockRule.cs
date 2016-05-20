@@ -31,8 +31,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     return null;
                 }
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             var bull = match.Groups[2].Value;
 
@@ -75,18 +74,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     new TwoPhaseBlockToken(
                         this,
                         parser.Context,
-                        item,
-                        lineInfo,
+                        sourceInfo,
                         (p, t) =>
                         {
                             p.SwitchContext(MarkdownBlockContext.IsTop, false);
-                            var blockTokens = p.Tokenize(item, t.LineInfo);
-                            blockTokens = TokenHelper.ParseInlineToken(p, this, blockTokens, loose, t.LineInfo);
-                            return new MarkdownListItemBlockToken(t.Rule, t.Context, blockTokens, loose, t.RawMarkdown, t.LineInfo);
+                            var blockTokens = p.Tokenize(t.SourceInfo.Copy(item));
+                            blockTokens = TokenHelper.ParseInlineToken(p, this, blockTokens, loose, t.SourceInfo);
+                            return new MarkdownListItemBlockToken(t.Rule, t.Context, blockTokens, loose, t.SourceInfo);
                         }));
             }
 
-            return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), bull.Length > 1, match.Value, lineInfo);
+            return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), bull.Length > 1, sourceInfo);
         }
     }
 }

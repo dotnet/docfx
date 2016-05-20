@@ -20,13 +20,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         IMarkdownContext Context { get; }
 
         /// <summary>
-        /// The raw markdown.
+        /// The source info of this token.
         /// </summary>
-        string RawMarkdown { get; }
-
-        /// <summary>
-        /// The line info of this token.
-        /// </summary>
-        LineInfo LineInfo { get; }
+        SourceInfo SourceInfo { get; }
     }
 }

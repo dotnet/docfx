@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
 
             var linkStr = match.NotEmpty(2, 1).ReplaceRegex(Regexes.Lexers.WhiteSpaces, " ");
 
@@ -27,12 +26,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             if (string.IsNullOrEmpty(link?.Href))
             {
-                context.Consume(1);
+                var lineInfo = context.Consume(1);
                 var text = match.Value.Remove(1);
-                return new MarkdownTextToken(this, parser.Context, text, text, lineInfo);
+                return new MarkdownTextToken(this, parser.Context, text, lineInfo);
             }
-            context.Consume(match.Length);
-            return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', match.Value, lineInfo);
+            else
+            {
+                var lineInfo = context.Consume(match.Length);
+                return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', lineInfo);
+            }
         }
     }
 }

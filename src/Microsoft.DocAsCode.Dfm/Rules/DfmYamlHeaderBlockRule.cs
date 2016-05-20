@@ -17,9 +17,9 @@ namespace Microsoft.DocAsCode.Dfm
         public string Name => "DfmYamlHeader";
         public virtual Regex YamlHeader => _yamlHeaderRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = YamlHeader.Match(source);
+            var match = YamlHeader.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Dfm
                 using (StringReader reader = new StringReader(value))
                 {
                     var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
-                    if(result == null)
+                    if (result == null)
                     {
                         return null;
                     }
@@ -44,9 +44,8 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return null;
             }
-
-            source = source.Substring(match.Length);
-            return new DfmYamlHeaderBlockToken(this, parser.Context, value, match.Value);
+            var lineInfo = context.Consume(match.Length);
+            return new DfmYamlHeaderBlockToken(this, parser.Context, value, lineInfo);
         }
     }
 }

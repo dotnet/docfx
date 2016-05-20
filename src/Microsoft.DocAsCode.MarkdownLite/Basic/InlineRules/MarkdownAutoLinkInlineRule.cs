@@ -21,8 +21,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             StringBuffer text;
             StringBuffer href;
@@ -44,10 +43,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 parser.Context, 
                 href, 
                 null, 
-                ImmutableArray<IMarkdownToken>.Empty.Add(
-                    new MarkdownRawToken(this, parser.Context, text)),
-                match.Value,
-                lineInfo);
+                ImmutableArray.Create<IMarkdownToken>(
+                    new MarkdownRawToken(this, parser.Context, sourceInfo.Copy(text))),
+                sourceInfo);
         }
 
         private StringBuffer Mangle(bool enableMangle, string text)

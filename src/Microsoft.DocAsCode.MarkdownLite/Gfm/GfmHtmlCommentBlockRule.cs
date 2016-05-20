@@ -19,8 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             return new MarkdownHtmlBlockToken(
                 this,
                 parser.Context,
@@ -29,10 +28,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         new MarkdownRawToken(
                             this,
                             parser.Context,
-                            match.Value,
-                            lineInfo))),
-                match.Value,
-                lineInfo);
+                            sourceInfo))),
+                sourceInfo);
         }
     }
 }

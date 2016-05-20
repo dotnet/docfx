@@ -5,13 +5,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownParagraphBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownParagraphBlockToken>
     {
-        public MarkdownParagraphBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent inlineTokens, string rawMarkdown, LineInfo lineInfo)
+        public MarkdownParagraphBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent inlineTokens, SourceInfo lineInfo)
         {
             Rule = rule;
             Context = context;
             InlineTokens = inlineTokens;
-            RawMarkdown = rawMarkdown;
-            LineInfo = lineInfo;
+            SourceInfo = lineInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -20,13 +19,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public InlineContent InlineTokens { get; }
 
-        public string RawMarkdown { get; }
+        public SourceInfo SourceInfo { get; }
 
-        public LineInfo LineInfo { get; }
-
-        public static MarkdownParagraphBlockToken Create(IMarkdownRule rule, MarkdownParser engine, string content, string rawMarkdown, LineInfo lineInfo)
+        public static MarkdownParagraphBlockToken Create(IMarkdownRule rule, MarkdownParser engine, string content, SourceInfo lineInfo)
         {
-            return new MarkdownParagraphBlockToken(rule, engine.Context, engine.TokenizeInline(content, lineInfo), rawMarkdown, lineInfo);
+            return new MarkdownParagraphBlockToken(rule, engine.Context, engine.TokenizeInline(lineInfo.Copy(content)), lineInfo);
         }
 
         public MarkdownParagraphBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
@@ -36,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownParagraphBlockToken(Rule, Context, c, RawMarkdown, LineInfo);
+            return new MarkdownParagraphBlockToken(Rule, Context, c, SourceInfo);
         }
     }
 }

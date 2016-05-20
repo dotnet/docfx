@@ -3,27 +3,24 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    public struct LineInfo
+    public struct SourceInfo
     {
-        public LineInfo(string file, int lineNumber)
+        public SourceInfo(string markdown, string file, int lineNumber)
         {
+            Markdown = markdown;
             File = file;
             LineNumber = lineNumber;
         }
+
+        public string Markdown { get; }
 
         public string File { get; }
 
         public int LineNumber { get; }
 
-        public bool HasInfo => File != null && LineNumber != 0;
-
-        public LineInfo Move(int offset)
+        public SourceInfo Copy(string markdown, int lineOffset = 0)
         {
-            if (!HasInfo)
-            {
-                return this;
-            }
-            return new LineInfo(File, LineNumber + offset);
+            return new SourceInfo(markdown, File, LineNumber + lineOffset);
         }
     }
 }

@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         string CurrentMarkdown { get; }
 
-        LineInfo LineInfo { get; }
-
-        void Consume(int charCount);
+        SourceInfo Consume(int charCount);
     }
 }

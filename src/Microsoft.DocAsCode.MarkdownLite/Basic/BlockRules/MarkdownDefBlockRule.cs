@@ -22,14 +22,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             parser.Links[match.Groups[1].Value.ToLower()] = new LinkObj
             {
                 Href = match.Groups[2].Value,
                 Title = match.Groups[3].Value
             };
-            return new MarkdownIgnoreToken(this, parser.Context, match.Value, lineInfo);
+            return new MarkdownIgnoreToken(this, parser.Context, sourceInfo);
         }
     }
 }

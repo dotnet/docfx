@@ -18,21 +18,18 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var lineInfo = context.LineInfo;
-            context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             return new TwoPhaseBlockToken(
                 this,
                 parser.Context,
-                match.Value,
-                lineInfo,
+                sourceInfo,
                 (p, t) => new MarkdownHeadingBlockToken(
                     t.Rule,
                     t.Context,
-                    p.TokenizeInline(match.Groups[2].Value, t.LineInfo),
+                    p.TokenizeInline(t.SourceInfo.Copy(match.Groups[2].Value)),
                     Regex.Replace(match.Groups[2].Value.ToLower(), @"[^\p{L}\p{N}]+", "-"),
                     match.Groups[1].Value.Length,
-                    t.RawMarkdown,
-                    t.LineInfo));
+                    t.SourceInfo));
         }
     }
 }

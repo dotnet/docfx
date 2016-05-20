@@ -11,18 +11,18 @@ namespace Microsoft.DocAsCode.Dfm
     {
         private static readonly Regex _emailRegex = new Regex(@"^\s*[\w._%+-]*[\w_%+-]@[\w.-]+\.[\w]{2,}\b", RegexOptions.Compiled);
         public string Name => "DfmEmail";
-        
+
         public virtual Regex Xref => _emailRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Xref.Match(source);
+            var match = Xref.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-            return new MarkdownTextToken(this, parser.Context, match.Groups[0].Value, match.Value);
+            var sourceInfo = context.Consume(match.Length);
+            return new MarkdownTextToken(this, parser.Context, match.Groups[0].Value, sourceInfo);
         }
     }
 }
