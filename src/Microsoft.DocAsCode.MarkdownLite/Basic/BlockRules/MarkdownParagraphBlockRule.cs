@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Paragraph => Regexes.Block.Paragraph;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             if (!(bool)parser.Context.Variables[MarkdownBlockContext.IsTop])
             {

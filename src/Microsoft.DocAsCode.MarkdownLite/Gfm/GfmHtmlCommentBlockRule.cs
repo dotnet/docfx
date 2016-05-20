@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex HtmlComment => Regexes.Block.Gfm.HtmlComment;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = HtmlComment.Match(context.CurrentMarkdown);
             if (match.Length == 0)

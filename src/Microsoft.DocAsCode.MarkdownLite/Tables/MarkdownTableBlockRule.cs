@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Table => Regexes.Block.Tables.Table;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = Table.Match(context.CurrentMarkdown);
             if (match.Length == 0)

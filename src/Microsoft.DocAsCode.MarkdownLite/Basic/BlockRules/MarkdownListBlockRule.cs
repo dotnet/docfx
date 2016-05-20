@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Bullet => Regexes.Block.Bullet;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = OrderList.Match(context.CurrentMarkdown);
             if (match.Length == 0)

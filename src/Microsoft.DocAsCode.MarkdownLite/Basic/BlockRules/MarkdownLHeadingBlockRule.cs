@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex LHeading => Regexes.Block.LHeading;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = LHeading.Match(context.CurrentMarkdown);
             if (match.Length == 0)

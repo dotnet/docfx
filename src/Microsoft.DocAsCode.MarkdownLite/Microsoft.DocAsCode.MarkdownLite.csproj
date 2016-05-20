@@ -37,11 +37,10 @@
     <Compile Include="Gfm\GfmParagraphBlockRule.cs" />
     <Compile Include="Gfm\GfmTextInlineRule.cs" />
     <Compile Include="Gfm\GfmUrlInlineRule.cs" />
-    <Compile Include="IHasLineInfo.cs" />
     <Compile Include="IMarkdownContext.cs" />
     <Compile Include="IMarkdownEngine.cs" />
     <Compile Include="IMarkdownParser.cs" />
-    <Compile Include="IMarkdownParserContext.cs" />
+    <Compile Include="IMarkdownParsingContext.cs" />
     <Compile Include="IMarkdownRenderer.cs" />
     <Compile Include="IMarkdownRewriteEngine.cs" />
     <Compile Include="IMarkdownRule.cs" />
@@ -50,7 +49,7 @@
     <Compile Include="IMarkdownRewritable.cs" />
     <Compile Include="LineInfo.cs" />
     <Compile Include="MarkdownEngine.cs" />
-    <Compile Include="MarkdownParserContext.cs" />
+    <Compile Include="MarkdownParsingContext.cs" />
     <Compile Include="MarkdownParserExtensions.cs" />
     <Compile Include="MarkdownRendererAdapter.cs" />
     <Compile Include="MarkdownParser.cs" />

@@ -20,8 +20,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public string Content { get; }
 
-        public string RawMarkdown { get; set; }
+        public string RawMarkdown { get; }
 
-        public LineInfo LineInfo { get; set; }
+        public LineInfo LineInfo { get; }
     }
 }

@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    public interface IMarkdownParserContext
+    public interface IMarkdownParsingContext
     {
         string CurrentMarkdown { get; }
 

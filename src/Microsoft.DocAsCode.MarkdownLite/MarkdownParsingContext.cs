@@ -1,22 +1,18 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    public class MarkdownParserContext : IMarkdownParserContext
+    using System.Collections.Generic;
+
+    public class MarkdownParsingContext : IMarkdownParsingContext
     {
         private readonly LineInfo _lineInfo;
         private readonly int _markdownLength;
         private readonly List<int> _lineIndexer;
         private int _offset;
 
-        public MarkdownParserContext(string markdown, LineInfo lineInfo)
+        public MarkdownParsingContext(string markdown, LineInfo lineInfo)
         {
             CurrentMarkdown = markdown;
             _lineInfo = lineInfo;
@@ -34,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             _offset = CalcLineNumber();
         }
 
-        private List<int> CreateLineIndexer(string markdown)
+        private static List<int> CreateLineIndexer(string markdown)
         {
             var lineIndexer = new List<int>();
             var index = markdown.IndexOf('\n');

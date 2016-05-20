@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         public abstract string Name { get; }
 
-        public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context);
+        public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
         protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, string rawMarkdown, LineInfo lineInfo)
         {

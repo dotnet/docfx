@@ -23,8 +23,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public Dictionary<string, LinkObj> Links { get; }
 
-        public string File { get; set; }
-
         public IMarkdownContext SwitchContext(IMarkdownContext context)
         {
             if (context == null)
@@ -53,7 +51,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private List<IMarkdownToken> TokenizeCore(string markdown, LineInfo lineInfo)
         {
-            var pc = new MarkdownParserContext(markdown, lineInfo);
+            var pc = new MarkdownParsingContext(markdown, lineInfo);
             var tokens = new List<IMarkdownToken>();
             while (pc.CurrentMarkdown.Length > 0)
             {
@@ -61,7 +59,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                              select r.TryMatch(this, pc)).FirstOrDefault(t => t != null);
                 if (token == null)
                 {
-                    throw new InvalidOperationException($"Cannot parse markdown for file {File}, line {pc.LineInfo.LineNumber}.");
+                    throw new InvalidOperationException($"Cannot parse markdown for file {lineInfo.File}, line {pc.LineInfo.LineNumber}.");
                 }
                 tokens.Add(token);
             }
