@@ -11,15 +11,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Hr => Regexes.Block.Hr;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
-            var match = Hr.Match(source);
+            var match = Hr.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-            return new MarkdownHrBlockToken(this, parser.Context, match.Value);
+            var lineInfo= context.LineInfo;
+            context.Consume(match.Length);
+            return new MarkdownHrBlockToken(this, parser.Context, match.Value, lineInfo);
         }
     }
 }

@@ -13,11 +13,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
             IMarkdownRule rule,
             IMarkdownContext context,
             string rawMarkdown,
+            LineInfo lineInfo,
             Func<IMarkdownParser, TwoPhaseBlockToken, IMarkdownToken> extractor)
         {
             Rule = rule;
             Context = context;
             RawMarkdown = rawMarkdown;
+            LineInfo = lineInfo;
             _extractor = extractor;
         }
 
@@ -25,7 +27,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownContext Context { get; }
 
-        public string RawMarkdown { get; set; }
+        public string RawMarkdown { get; }
+
+        public LineInfo LineInfo { get; }
 
         public IMarkdownToken Extract(IMarkdownParser parser)
         {

@@ -7,12 +7,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownBlockquoteBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownBlockquoteBlockToken>
     {
-        public MarkdownBlockquoteBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, string rawMarkdown)
+        public MarkdownBlockquoteBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, string rawMarkdown, LineInfo lineInfo = default(LineInfo))
         {
             Rule = rule;
             Context = context;
             Tokens = tokens;
             RawMarkdown = rawMarkdown;
+            LineInfo = lineInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -22,6 +23,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public ImmutableArray<IMarkdownToken> Tokens { get; }
 
         public string RawMarkdown { get; set; }
+
+        public LineInfo LineInfo { get; }
 
         public MarkdownBlockquoteBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {

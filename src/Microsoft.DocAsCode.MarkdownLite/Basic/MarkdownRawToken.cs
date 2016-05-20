@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownRawToken : IMarkdownToken
     {
-        public MarkdownRawToken(IMarkdownRule rule, IMarkdownContext context, string rawMarkdown)
+        public MarkdownRawToken(IMarkdownRule rule, IMarkdownContext context, string rawMarkdown, LineInfo lineInfo = default(LineInfo))
         {
             Rule = rule;
             Context = context;
@@ -16,6 +16,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownContext Context { get; }
 
-        public string RawMarkdown { get; set; }
+        public string RawMarkdown { get; }
+
+        public LineInfo LineInfo { get; }
     }
 }

@@ -12,39 +12,41 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex StrongEm => Regexes.Inline.Gfm.StrongEm;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
-            var match = StrongEm.Match(source);
+            var match = StrongEm.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
+            var lineInfo = context.LineInfo;
             if (match.Groups[1].Length > 0)
             {
-                source = source.Substring(match.Groups[1].Length);
-                return new MarkdownTextToken(this, parser.Context, match.Groups[1].Value, match.Groups[1].Value);
+                context.Consume(match.Groups[1].Length);
+                return new MarkdownTextToken(this, parser.Context, match.Groups[1].Value, match.Groups[1].Value, lineInfo);
             }
 
-            source = source.Substring(match.Length);
+            context.Consume(match.Length);
 
             return new MarkdownStrongInlineToken(
                 this,
                 parser.Context,
-                GetContent(parser, match),
+                GetContent(parser, match, lineInfo),
                 match.Value);
         }
 
-        private ImmutableArray<IMarkdownToken> GetContent(IMarkdownParser parser, Match match)
+        private ImmutableArray<IMarkdownToken> GetContent(IMarkdownParser parser, Match match, LineInfo lineInfo)
         {
             var emContent = new MarkdownEmInlineToken(
                 this,
                 parser.Context,
-                parser.Tokenize(match.Groups[2].Value),
-                "*" + match.Groups[1].Value + "*");
+                parser.Tokenize(match.Groups[2].Value, lineInfo),
+                "*" + match.Groups[1].Value + "*",
+                lineInfo);
 
             if (match.Groups[2].Length > 0)
             {
-                return parser.Tokenize(match.Groups[3].Value).Insert(0, emContent);
+                return parser.Tokenize(match.Groups[3].Value, lineInfo).Insert(0, emContent);
             }
             else
             {

@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 .Replace("\u2424", "\n");
         }
 
-        public StringBuffer Mark(string markdown, IMarkdownContext context)
+        public StringBuffer Mark(string markdown, IMarkdownContext context, LineInfo lineInfo)
         {
             var result = StringBuffer.Empty;
             var parser = Parser;
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 parser.SwitchContext(context);
             }
-            var tokens = parser.Tokenize(Preprocess(markdown));
+            var tokens = parser.Tokenize(Preprocess(markdown), lineInfo);
             var internalRewriteEngine =
                 new MarkdownRewriteEngine(
                     this,
@@ -79,9 +79,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return result;
         }
 
-        public string Markup(string markdown)
+        public string Markup(string markdown, string file)
         {
-            return Mark(Normalize(markdown), null).ToString();
+            return Mark(Normalize(markdown), null, new LineInfo(file, 1)).ToString();
         }
         
         protected virtual string Preprocess(string src)

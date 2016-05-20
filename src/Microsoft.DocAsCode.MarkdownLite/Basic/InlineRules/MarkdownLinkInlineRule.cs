@@ -11,16 +11,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Link => Regexes.Inline.Link;
 
-        public override IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
-            var match = Link.Match(source);
+            var match = Link.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var lineInfo = context.LineInfo;
+            context.Consume(match.Length);
 
-            return GenerateToken(parser, match.Groups[2].Value, match.Groups[4].Value, match.Groups[1].Value, match.Value[0] == '!', match.Value);
+            return GenerateToken(parser, match.Groups[2].Value, match.Groups[4].Value, match.Groups[1].Value, match.Value[0] == '!', match.Value, lineInfo);
         }
     }
 }

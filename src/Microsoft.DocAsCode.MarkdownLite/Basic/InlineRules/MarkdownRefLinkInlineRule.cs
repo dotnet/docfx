@@ -11,14 +11,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex RefLink => Regexes.Inline.RefLink;
 
-        public override IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
-            var match = RefLink.Match(source);
+            var match = RefLink.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var lineInfo = context.LineInfo;
 
             var linkStr = match.NotEmpty(2, 1).ReplaceRegex(Regexes.Lexers.WhiteSpaces, " ");
 
@@ -27,10 +27,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             if (string.IsNullOrEmpty(link?.Href))
             {
-                source = match.Groups[0].Value.Substring(1) + source;
-                return new MarkdownTextToken(this, parser.Context, match.Groups[0].Value[0].ToString(), match.Value);
+                context.Consume(1);
+                var text = match.Value.Remove(1);
+                return new MarkdownTextToken(this, parser.Context, text, text, lineInfo);
             }
-            return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', match.Value);
+            context.Consume(match.Length);
+            return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', match.Value, lineInfo);
         }
     }
 }

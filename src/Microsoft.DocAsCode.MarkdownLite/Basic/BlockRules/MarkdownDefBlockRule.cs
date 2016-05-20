@@ -11,24 +11,25 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Def => Regexes.Block.Def;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
             if (!(bool)parser.Context.Variables[MarkdownBlockContext.IsTop])
             {
                 return null;
             }
-            var match = Def.Match(source);
+            var match = Def.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var lineInfo = context.LineInfo;
+            context.Consume(match.Length);
             parser.Links[match.Groups[1].Value.ToLower()] = new LinkObj
             {
                 Href = match.Groups[2].Value,
                 Title = match.Groups[3].Value
             };
-            return new MarkdownIgnoreToken(this, parser.Context, match.Value);
+            return new MarkdownIgnoreToken(this, parser.Context, match.Value, lineInfo);
         }
     }
 }

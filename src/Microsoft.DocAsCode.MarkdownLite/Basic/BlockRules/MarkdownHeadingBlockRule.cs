@@ -11,22 +11,28 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Heading => Regexes.Block.Heading;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
-            var match = Heading.Match(source);
+            var match = Heading.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-            return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
-                new MarkdownHeadingBlockToken(
+            var lineInfo = context.LineInfo;
+            context.Consume(match.Length);
+            return new TwoPhaseBlockToken(
+                this,
+                parser.Context,
+                match.Value,
+                lineInfo,
+                (p, t) => new MarkdownHeadingBlockToken(
                     t.Rule,
                     t.Context,
-                    p.TokenizeInline(match.Groups[2].Value),
+                    p.TokenizeInline(match.Groups[2].Value, t.LineInfo),
                     Regex.Replace(match.Groups[2].Value.ToLower(), @"[^\p{L}\p{N}]+", "-"),
                     match.Groups[1].Value.Length,
-                    t.RawMarkdown));
+                    t.RawMarkdown,
+                    t.LineInfo));
         }
     }
 }

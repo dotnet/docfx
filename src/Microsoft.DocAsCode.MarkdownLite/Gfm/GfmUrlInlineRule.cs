@@ -13,13 +13,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Url => Regexes.Inline.Gfm.Url;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
             if ((bool)parser.Context.Variables[MarkdownInlineContext.IsInLink])
             {
                 return null;
             }
-            var match = Url.Match(source);
+            var match = Url.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
@@ -30,15 +30,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
 
-            source = source.Substring(match.Length);
+            var lineInfo = context.LineInfo;
+            context.Consume(match.Length);
             return new MarkdownLinkInlineToken(
                 this,
                 parser.Context,
                 text,
                 null,
-                ImmutableArray<IMarkdownToken>.Empty.Add(
+                ImmutableArray.Create<IMarkdownToken>(
                     new MarkdownRawToken(this, parser.Context, text)),
-                match.Value);
+                match.Value,
+                lineInfo);
         }
     }
 }

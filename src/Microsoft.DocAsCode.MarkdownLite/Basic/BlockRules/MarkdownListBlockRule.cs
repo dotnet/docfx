@@ -20,18 +20,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Bullet => Regexes.Block.Bullet;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
-            var match = OrderList.Match(source);
+            var match = OrderList.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
-                match = UnorderList.Match(source);
+                match = UnorderList.Match(context.CurrentMarkdown);
                 if (match.Length == 0)
                 {
                     return null;
                 }
             }
-            source = source.Substring(match.Length);
+            var lineInfo = context.LineInfo;
+            context.Consume(match.Length);
 
             var bull = match.Groups[2].Value;
 
@@ -60,18 +61,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
                       : Regex.Replace(item, @"^ {1,4}", "", RegexOptions.Multiline);
                 }
 
-                // Determine whether the next list item belongs here.
-                // Backpedal if it does not belong in this list.
-                if (parser.Options.SmartLists && i != l - 1)
-                {
-                    var b = Bullet.Apply(cap[i + 1])[0]; // !!!!!!!!!!!
-                    if (bull != b && !(bull.Length > 1 && b.Length > 1))
-                    {
-                        source = string.Join("\n", cap.Skip(i + 1)) + source;
-                        i = l - 1;
-                    }
-                }
-
                 // Determine whether item is loose or not.
                 // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
                 // for discount behavior.
@@ -83,16 +72,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
 
                 tokens.Add(
-                    new TwoPhaseBlockToken(this, parser.Context, item, (p, t) =>
-                    {
-                        p.SwitchContext(MarkdownBlockContext.IsTop, false);
-                        var blockTokens = p.Tokenize(item);
-                        blockTokens = TokenHelper.ParseInlineToken(p, this, blockTokens, loose);
-                        return new MarkdownListItemBlockToken(t.Rule, t.Context, blockTokens, loose, t.RawMarkdown);
-                    }));
+                    new TwoPhaseBlockToken(
+                        this,
+                        parser.Context,
+                        item,
+                        lineInfo,
+                        (p, t) =>
+                        {
+                            p.SwitchContext(MarkdownBlockContext.IsTop, false);
+                            var blockTokens = p.Tokenize(item, t.LineInfo);
+                            blockTokens = TokenHelper.ParseInlineToken(p, this, blockTokens, loose, t.LineInfo);
+                            return new MarkdownListItemBlockToken(t.Rule, t.Context, blockTokens, loose, t.RawMarkdown, t.LineInfo);
+                        }));
             }
 
-            return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), bull.Length > 1, match.Value);
+            return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), bull.Length > 1, match.Value, lineInfo);
         }
     }
 }

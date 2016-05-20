@@ -7,12 +7,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownStrongInlineToken : IMarkdownToken, IMarkdownRewritable<MarkdownStrongInlineToken>
     {
-        public MarkdownStrongInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, string rawMarkdown)
+        public MarkdownStrongInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, string rawMarkdown, LineInfo lineInfo = default(LineInfo))
         {
             Rule = rule;
             Context = context;
             Content = content;
             RawMarkdown = rawMarkdown;
+            LineInfo = lineInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -22,6 +23,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public ImmutableArray<IMarkdownToken> Content { get; }
 
         public string RawMarkdown { get; set; }
+
+        public LineInfo LineInfo { get; set; }
 
         public MarkdownStrongInlineToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {

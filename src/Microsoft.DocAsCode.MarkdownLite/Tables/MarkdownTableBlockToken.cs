@@ -15,13 +15,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
             IMarkdownContext context,
             ImmutableArray<InlineContent> header,
             ImmutableArray<Align> align,
-            ImmutableArray<ImmutableArray<InlineContent>> cells)
+            ImmutableArray<ImmutableArray<InlineContent>> cells,
+            string rawMarkdown,
+            LineInfo lineInfo)
         {
             Rule = rule;
             Context = context;
             Header = header;
             Align = align;
             Cells = cells;
+            RawMarkdown = rawMarkdown;
+            LineInfo = lineInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -34,7 +38,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public ImmutableArray<ImmutableArray<InlineContent>> Cells { get; }
 
-        public string RawMarkdown { get; set; }
+        public string RawMarkdown { get; }
+
+        public LineInfo LineInfo { get; }
 
         public MarkdownTableBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {
@@ -71,7 +77,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownTableBlockToken(Rule, Context, header, Align, cells);
+            return new MarkdownTableBlockToken(Rule, Context, header, Align, cells, RawMarkdown, LineInfo);
         }
     }
 }

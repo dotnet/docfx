@@ -14,14 +14,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex AutoLink => Regexes.Inline.AutoLink;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
-            var match = AutoLink.Match(source);
+            var match = AutoLink.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var lineInfo = context.LineInfo;
+            context.Consume(match.Length);
 
             StringBuffer text;
             StringBuffer href;
@@ -45,7 +46,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 null, 
                 ImmutableArray<IMarkdownToken>.Empty.Add(
                     new MarkdownRawToken(this, parser.Context, text)),
-                match.Value);
+                match.Value,
+                lineInfo);
         }
 
         private StringBuffer Mangle(bool enableMangle, string text)

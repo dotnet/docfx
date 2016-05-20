@@ -10,10 +10,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownParser : IMarkdownParser
     {
-        private const string IndentLevelOne = "  ";
-        private const string IndentLevelTwo = "    ";
-        private const string ThreeDot = "...";
-
         public MarkdownParser(IMarkdownContext context, Options options, Dictionary<string, LinkObj> links)
         {
             Context = context;
@@ -26,6 +22,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public IMarkdownContext Context { get; private set; }
 
         public Dictionary<string, LinkObj> Links { get; }
+
+        public string File { get; set; }
 
         public IMarkdownContext SwitchContext(IMarkdownContext context)
         {
@@ -48,109 +46,26 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return Regexes.Lexers.WhiteSpaceLine.Replace(src, string.Empty);
         }
 
-        public ImmutableArray<IMarkdownToken> Tokenize(string markdown)
+        public ImmutableArray<IMarkdownToken> Tokenize(string markdown, LineInfo lineInfo)
         {
-            return TokenizeCore(Preprocess(markdown)).ToImmutableArray();
+            return TokenizeCore(Preprocess(markdown), lineInfo).ToImmutableArray();
         }
 
-        private List<IMarkdownToken> TokenizeCore(string markdown)
+        private List<IMarkdownToken> TokenizeCore(string markdown, LineInfo lineInfo)
         {
-            var current = markdown;
+            var pc = new MarkdownParserContext(markdown, lineInfo);
             var tokens = new List<IMarkdownToken>();
-            while (current.Length > 0)
+            while (pc.CurrentMarkdown.Length > 0)
             {
                 var token = (from r in Context.Rules
-                             select r.TryMatch(this, ref current)).FirstOrDefault(t => t != null);
+                             select r.TryMatch(this, pc)).FirstOrDefault(t => t != null);
                 if (token == null)
                 {
-                    var nextLine = current.Split('\n')[0];
-                    var lineNumber = CountNewLine(markdown, markdown.Length - current.Length);
-                    throw new InvalidOperationException($"Cannot parse: {nextLine}{Environment.NewLine}{GetMarkdownContext(markdown, lineNumber)}{GetRuleContextMessage()}.");
+                    throw new InvalidOperationException($"Cannot parse markdown for file {File}, line {pc.LineInfo.LineNumber}.");
                 }
                 tokens.Add(token);
             }
             return tokens;
-        }
-
-        private static string GetMarkdownContext(string markdown, int lineNumber)
-        {
-            var lines = markdown.Split('\n');
-            StringBuffer sb = IndentLevelOne;
-            sb += "markdown context:";
-            if (lineNumber > 0)
-            {
-                if (lineNumber > 1)
-                {
-                    sb += IndentLevelTwo;
-                    sb += ThreeDot;
-                    sb += Environment.NewLine;
-                }
-                sb += IndentLevelTwo;
-                sb += lines[lineNumber - 1];
-                sb += Environment.NewLine;
-            }
-            sb += IndentLevelTwo;
-            sb += lines[lineNumber];
-            sb += Environment.NewLine;
-            if (lineNumber + 1 < lines.Length)
-            {
-                sb += IndentLevelTwo;
-                sb += lines[lineNumber + 1];
-                sb += Environment.NewLine;
-                if (lineNumber + 2 < lines.Length)
-                {
-                    sb += IndentLevelTwo;
-                    sb += ThreeDot;
-                    sb += Environment.NewLine;
-                }
-            }
-            return sb.ToString();
-        }
-
-        private string GetRuleContextMessage()
-        {
-            StringBuffer sb = IndentLevelOne;
-            sb += "rule context: ";
-            sb += Context.GetType().Name;
-            if (Context.Variables?.Count > 0)
-            {
-                sb += Environment.NewLine;
-                sb += IndentLevelOne;
-                sb += "{";
-                foreach (var item in Context.Variables)
-                {
-                    sb += Environment.NewLine;
-                    sb += IndentLevelTwo;
-                    sb += item.Key;
-                    sb += " = ";
-                    if (item.Value == null)
-                    {
-                        sb += "(null)";
-                    }
-                    else
-                    {
-                        sb += item.Value.ToString();
-                    }
-                    sb += ";";
-                }
-                sb += Environment.NewLine;
-                sb += IndentLevelOne;
-                sb += "}";
-            }
-            return sb.ToString();
-        }
-
-        private static int CountNewLine(string text, int charCount)
-        {
-            int count = 0;
-            for (int i = 0; i < charCount; i++)
-            {
-                if (text[i] == '\n')
-                {
-                    count++;
-                }
-            }
-            return count;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownImageInlineToken : IMarkdownToken
     {
-        public MarkdownImageInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, string text, string rawMarkdown)
+        public MarkdownImageInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, string text, string rawMarkdown, LineInfo lineInfo = default(LineInfo))
         {
             Rule = rule;
             Context = context;
@@ -25,6 +25,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public string Text { get; }
 
-        public string RawMarkdown { get; set; }
+        public string RawMarkdown { get; }
+
+        public LineInfo LineInfo { get; }
     }
 }

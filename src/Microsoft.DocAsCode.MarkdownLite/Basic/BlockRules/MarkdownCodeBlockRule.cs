@@ -11,22 +11,23 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Code => Regexes.Block.Code;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParserContext context)
         {
-            var match = Regexes.Block.Code.Match(source);
+            var match = Regexes.Block.Code.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var lineInfo = context.LineInfo;
+            context.Consume(match.Length);
             var capStr = Regexes.Lexers.LeadingWhiteSpaces.Replace(match.Value, string.Empty);
             if (parser.Options.Pedantic)
             {
-                return new MarkdownCodeBlockToken(this, parser.Context, capStr, match.Value);
+                return new MarkdownCodeBlockToken(this, parser.Context, capStr, match.Value, null, lineInfo);
             }
             else
             {
-                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), match.Value);
+                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), match.Value, null, lineInfo);
             }
         }
     }

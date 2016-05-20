@@ -22,6 +22,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <summary>
         /// The raw markdown.
         /// </summary>
-        string RawMarkdown { get; set; }
+        string RawMarkdown { get; }
+
+        /// <summary>
+        /// The line info of this token.
+        /// </summary>
+        LineInfo LineInfo { get; }
     }
 }
