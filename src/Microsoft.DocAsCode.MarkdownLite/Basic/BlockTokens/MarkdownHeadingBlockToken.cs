@@ -7,14 +7,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownHeadingBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownHeadingBlockToken>
     {
-        public MarkdownHeadingBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, string id, int depth, string rawMarkdown)
+        public MarkdownHeadingBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, string id, int depth, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
             Id = id;
             Depth = depth;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public int Depth { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
         public MarkdownHeadingBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {
@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownHeadingBlockToken(Rule, Context, c, Id, Depth, RawMarkdown);
+            return new MarkdownHeadingBlockToken(Rule, Context, c, Id, Depth, SourceInfo);
         }
 
         public MarkdownHeadingBlockToken RewriteId(Dictionary<string, int> idTable)
@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            return new MarkdownHeadingBlockToken(Rule, Context, Content, newId, Depth, RawMarkdown);
+            return new MarkdownHeadingBlockToken(Rule, Context, Content, newId, Depth, SourceInfo);
         }
 
         private string GenerateNewId(Dictionary<string, int> idTable, string Id)

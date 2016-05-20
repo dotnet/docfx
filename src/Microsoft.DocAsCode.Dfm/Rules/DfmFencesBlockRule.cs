@@ -26,14 +26,14 @@ namespace Microsoft.DocAsCode.Dfm
         public static readonly Regex _dfmFencesSharpQueryStringRegex = new Regex(@"^L(?<start>\d+)\-L(?<end>\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public static readonly Regex _dfmFencesRangeQueryStringRegex = new Regex(@"^(?<start>\d+)\-(?<end>\d+)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = _dfmFencesRegex.Match(source);
+            var match = _dfmFencesRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             // [!code-REST-i[name](path "optionalTitle")]
             var name = match.Groups["name"].Value;
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesBlockToken(this, parser.Context, name, path, match.Value, lang, title, pathQueryOption);
+            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
         }
 
         private static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)

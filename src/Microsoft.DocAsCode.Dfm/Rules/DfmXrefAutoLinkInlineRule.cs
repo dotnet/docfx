@@ -23,22 +23,20 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string Name => "DfmXrefAutoLink";
 
-        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = XrefAutoLinkRegexWithQuote.Match(source);
+            var match = XrefAutoLinkRegexWithQuote.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
-                match = XrefAutoLinkRegex.Match(source);
+                match = XrefAutoLinkRegex.Match(context.CurrentMarkdown);
                 if (match.Length == 0)
                 {
                     return null;
                 }
             }
-
-            source = source.Substring(match.Length);
-
+            var sourceInfo = context.Consume(match.Length);
             var content = match.Groups[2].Value;
-            return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, true, match.Value);
+            return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, true, sourceInfo);
         }
     }
 }

@@ -12,12 +12,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public TwoPhaseBlockToken(
             IMarkdownRule rule,
             IMarkdownContext context,
-            string rawMarkdown,
+            SourceInfo sourceInfo,
             Func<IMarkdownParser, TwoPhaseBlockToken, IMarkdownToken> extractor)
         {
             Rule = rule;
             Context = context;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
             _extractor = extractor;
         }
 
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownContext Context { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
         public IMarkdownToken Extract(IMarkdownParser parser)
         {

@@ -5,12 +5,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownHtmlBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownHtmlBlockToken>
     {
-        public MarkdownHtmlBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, string rawMarkdown)
+        public MarkdownHtmlBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public InlineContent Content { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
         public MarkdownHtmlBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {
@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownHtmlBlockToken(Rule, Context, c, RawMarkdown);
+            return new MarkdownHtmlBlockToken(Rule, Context, c, SourceInfo);
         }
     }
 }

@@ -10,14 +10,14 @@ namespace Microsoft.DocAsCode.Dfm
         public IMarkdownRule Rule { get; }
         public IMarkdownContext Context { get; }
         public string Content { get; }
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
-        public DfmYamlHeaderBlockToken(IMarkdownRule rule, IMarkdownContext context, string content, string rawMarkdown)
+        public DfmYamlHeaderBlockToken(IMarkdownRule rule, IMarkdownContext context, string content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
     }
 }

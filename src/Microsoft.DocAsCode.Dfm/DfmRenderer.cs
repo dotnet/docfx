@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Dfm
             result = AppendAttribute(result, "href", token.Href);
             result = AppendAttribute(result, "title", token.Title);
             result = AppendAttribute(result, "data-throw-if-not-resolved", token.ThrowIfNotResolved.ToString());
-            result = AppendAttribute(result, "data-raw", token.RawMarkdown);
+            result = AppendAttribute(result, "data-raw", token.SourceInfo.Markdown);
             
             result += ">";
             foreach (var item in token.Content)

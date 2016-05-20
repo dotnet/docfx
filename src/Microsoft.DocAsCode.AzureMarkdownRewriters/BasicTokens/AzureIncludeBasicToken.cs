@@ -15,10 +15,10 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         public string Name { get; }
         public string Title { get; }
         public string Raw { get; }
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
         public ImmutableArray<IMarkdownToken> Tokens { get; }
 
-        protected AzureIncludeBasicToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, ImmutableArray<IMarkdownToken> tokens, string raw, string rawMarkdown)
+        protected AzureIncludeBasicToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, ImmutableArray<IMarkdownToken> tokens, string raw, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             Name = name;
             Title = title;
             Raw = raw;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
             Tokens = tokens;
         }
     }

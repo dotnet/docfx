@@ -11,16 +11,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex CodeElement => Regexes.Inline.CodeElement;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = CodeElement.Match(source);
+            var match = CodeElement.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-
-            return new MarkdownRawToken(this, parser.Context, match.Value);
+            var sourceInfo = context.Consume(match.Length);
+            return new MarkdownRawToken(this, parser.Context, sourceInfo);
         }
     }
 }

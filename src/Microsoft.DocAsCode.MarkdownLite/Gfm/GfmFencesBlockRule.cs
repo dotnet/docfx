@@ -11,16 +11,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Fences => Regexes.Block.Gfm.Fences;
 
-        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Fences.Match(source);
+            var match = Fences.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-
-            return new MarkdownCodeBlockToken(this, parser.Context, match.Groups[3].Value, match.Value, match.Groups[2].Value);
+            var sourceInfo = context.Consume(match.Length);
+            return new MarkdownCodeBlockToken(this, parser.Context, match.Groups[3].Value, match.Groups[2].Value, sourceInfo);
         }
     }
 }

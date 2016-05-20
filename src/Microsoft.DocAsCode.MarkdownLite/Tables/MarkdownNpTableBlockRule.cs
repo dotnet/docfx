@@ -13,14 +13,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex NpTable => Regexes.Block.Tables.NpTable;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = NpTable.Match(source);
+            var match = NpTable.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             var header = match.Groups[1].Value.ReplaceRegex(Regexes.Lexers.UselessTableHeader, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter);
             var align = ParseAligns(match.Groups[2].Value.ReplaceRegex(Regexes.Lexers.UselessTableAlign, string.Empty).SplitRegex(Regexes.Lexers.TableSplitter));
             var cells = match.Groups[3].Value.ReplaceRegex(Regexes.Lexers.EndWithNewLine, string.Empty).Split('\n').Select(x => new string[] { x }).ToArray();
@@ -29,16 +29,20 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 cells[i] = cells[i][0].SplitRegex(Regexes.Lexers.TableSplitter);
             }
-            return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
-                    new MarkdownTableBlockToken(
-                        t.Rule,
-                        t.Context,
-                        (from text in header
-                         select p.TokenizeInline(text)).ToImmutableArray(),
-                        align.ToImmutableArray(),
-                        (from row in cells
-                         select (from col in row
-                                 select p.TokenizeInline(col)).ToImmutableArray()).ToImmutableArray()));
+            return new TwoPhaseBlockToken(
+                this,
+                parser.Context,
+                sourceInfo,
+                (p, t) => new MarkdownTableBlockToken(
+                    t.Rule,
+                    t.Context,
+                    (from text in header
+                     select p.TokenizeInline(t.SourceInfo.Copy(text))).ToImmutableArray(),
+                    align.ToImmutableArray(),
+                    (from row in cells
+                     select (from col in row
+                             select p.TokenizeInline(t.SourceInfo.Copy(col))).ToImmutableArray()).ToImmutableArray(),
+                    t.SourceInfo));
         }
 
         protected virtual Align[] ParseAligns(string[] aligns)

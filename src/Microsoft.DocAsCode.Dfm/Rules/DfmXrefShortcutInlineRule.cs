@@ -28,24 +28,24 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string Name => "DfmXrefShortcut";
 
-        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = XrefShortcutRegexWithQuote.Match(source);
+            var match = XrefShortcutRegexWithQuote.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
-                match = XrefShortcutRegex.Match(source);
+                match = XrefShortcutRegex.Match(context.CurrentMarkdown);
                 if (match.Length == 0)
                 {
                     return null;
                 }
             }
 
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             // @String=>cap[2]=String, @'string'=>cap[2]=string
             // For cross-reference, add ~/ prefix
             var content = match.Groups[2].Value;
-            return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, false, match.Value);
+            return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, false, sourceInfo);
         }
     }
 }

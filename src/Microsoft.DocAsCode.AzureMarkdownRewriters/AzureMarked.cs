@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 context = context.CreateContext(context.Variables.SetItem("azureResourceFileInfoMapping", azureResourceFileInfoMapping));
             }
 
-            return engine.Mark(MarkdownEngine.Normalize(src), context);
+            return engine.Mark(new SourceInfo(MarkdownEngine.Normalize(src), path, 1), context);
         }
     }
 }

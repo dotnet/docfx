@@ -94,22 +94,22 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         {
             Rewriter = MarkdownTokenRewriterFactory.Composite(
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureNoteBlockToken t) => new DfmNoteBlockToken(t.Rule, t.Context, t.NoteType.Substring("AZURE.".Length), t.Content, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureNoteBlockToken t) => new DfmNoteBlockToken(t.Rule, t.Context, t.NoteType.Substring("AZURE.".Length), t.Content, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownImageInlineToken t) => new MarkdownImageInlineToken(t.Rule, t.Context, FixNonMdRelativeFileHref(t.Href, t.Context, t.RawMarkdown), t.Title, t.Text, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownImageInlineToken t) => new MarkdownImageInlineToken(t.Rule, t.Context, FixNonMdRelativeFileHref(t.Href, t.Context, t.SourceInfo.Markdown), t.Title, t.Text, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.RawMarkdown), t.Title, t.Content, t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.SourceInfo.Markdown), t.Title, t.Content, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureHtmlMetadataBlockToken t) => new DfmYamlHeaderBlockToken(t.Rule, t.Context, GenerateYamlHeaderContent(t.Properties, t.Tags), t.RawMarkdown)
+                            (IMarkdownRewriteEngine e, AzureHtmlMetadataBlockToken t) => new DfmYamlHeaderBlockToken(t.Rule, t.Context, GenerateYamlHeaderContent(t.Properties, t.Tags), t.SourceInfo)
                         )
                     );
         }
@@ -248,7 +248,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 File.Copy(azureResourceFileInfo.FilePath, resDestPath, true);
                 return PathUtility.MakeRelativePath(currentFolderPath, resDestPath);
             }
-            catch(NotSupportedException nse)
+            catch (NotSupportedException nse)
             {
                 Logger.LogWarning($"Warning: FixNonMdRelativeFileHref can't be apply on reference: {nonMdHref}. Exception: {nse.Message}");
                 return nonMdHref;
@@ -269,7 +269,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 {
                     var conditions = selectorConditions.Split('|').Select(c => c.Trim());
                     int i = 0;
-                    foreach(var condition in conditions)
+                    foreach (var condition in conditions)
                     {
                         sb.Append($" title{++i}=\"{HttpUtility.HtmlEncode(condition)}\"");
                     }

@@ -11,23 +11,30 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Paragraph => Regexes.Block.Paragraph;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             if (!(bool)parser.Context.Variables[MarkdownBlockContext.IsTop])
             {
                 return null;
             }
-            var match = Paragraph.Match(source);
+            var match = Paragraph.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             var content = match.Groups[1].Value[match.Groups[1].Value.Length - 1] == '\n'
                 ? match.Groups[1].Value.Substring(0, match.Groups[1].Value.Length - 1)
                 : match.Groups[1].Value;
-            return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
-                new MarkdownParagraphBlockToken(t.Rule, t.Context, p.TokenizeInline(content), t.RawMarkdown));
+            return new TwoPhaseBlockToken(
+                this,
+                parser.Context,
+                sourceInfo,
+                (p, t) => new MarkdownParagraphBlockToken(
+                    t.Rule,
+                    t.Context,
+                    p.TokenizeInline(t.SourceInfo.Copy(content)),
+                    t.SourceInfo));
         }
     }
 }

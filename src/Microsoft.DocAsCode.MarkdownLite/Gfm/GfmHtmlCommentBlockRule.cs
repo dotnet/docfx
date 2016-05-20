@@ -12,14 +12,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex HtmlComment => Regexes.Block.Gfm.HtmlComment;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = HtmlComment.Match(source);
+            var match = HtmlComment.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             return new MarkdownHtmlBlockToken(
                 this,
                 parser.Context,
@@ -28,8 +28,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         new MarkdownRawToken(
                             this,
                             parser.Context,
-                            match.Value))),
-                match.Value);
+                            sourceInfo))),
+                sourceInfo);
         }
     }
 }

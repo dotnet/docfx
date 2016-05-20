@@ -13,21 +13,25 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex LeadingBlockquote => Regexes.Lexers.LeadingBlockquote;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Blockquote.Match(source);
+            var match = Blockquote.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-            return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
-            {
-                var capStr = LeadingBlockquote.Replace(t.RawMarkdown, string.Empty);
-                var blockTokens = p.Tokenize(capStr);
-                blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true);
-                return new MarkdownBlockquoteBlockToken(t.Rule, t.Context, blockTokens, match.Value);
-            });
+            var sourceInfo = context.Consume(match.Length);
+            return new TwoPhaseBlockToken(
+                this,
+                parser.Context,
+                sourceInfo,
+                (p, t) =>
+                {
+                    var capStr = LeadingBlockquote.Replace(t.SourceInfo.Markdown, string.Empty);
+                    var blockTokens = p.Tokenize(t.SourceInfo.Copy(capStr));
+                    blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true, t.SourceInfo);
+                    return new MarkdownBlockquoteBlockToken(t.Rule, t.Context, blockTokens, t.SourceInfo);
+                });
         }
     }
 }

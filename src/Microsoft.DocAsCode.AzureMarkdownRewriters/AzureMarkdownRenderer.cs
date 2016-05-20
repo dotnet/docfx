@@ -32,22 +32,22 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             if (!context.Variables.TryGetValue("path", out path))
             {
                 path = string.Empty;
-                content += token.RawMarkdown;
+                content += token.SourceInfo.Markdown;
                 return content += "\n\n";
             }
 
             if (!context.Variables.ContainsKey("azureVideoInfoMapping"))
             {
-                Logger.LogWarning($"Can't fild azure video info mapping. Raw: {token.RawMarkdown}");
-                content = token.RawMarkdown;
+                Logger.LogWarning($"Can't fild azure video info mapping. Raw: {token.SourceInfo.Markdown}");
+                content = token.SourceInfo.Markdown;
                 return content + "\n\n";
             }
 
             var azureVideoInfoMapping = (IReadOnlyDictionary<string, AzureVideoInfo>)context.Variables["azureVideoInfoMapping"];
             if (azureVideoInfoMapping == null || !azureVideoInfoMapping.ContainsKey(token.VideoId))
             {
-                Logger.LogWarning($"Can't fild azure video info mapping for file {path}. Raw: {token.RawMarkdown}");
-                content = token.RawMarkdown;
+                Logger.LogWarning($"Can't fild azure video info mapping for file {path}. Raw: {token.SourceInfo.Markdown}");
+                content = token.SourceInfo.Markdown;
                 return content + "\n\n";
             }
 
