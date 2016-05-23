@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode
     [OptionUsage("merge [<config file path>]")]
     internal class MergeCommandOptions : ICanPrintHelpMessage, ILoggable
     {
-        [Option('o', "output")]
         public string OutputFolder { get; set; }
 
         [ValueOption(0)]
