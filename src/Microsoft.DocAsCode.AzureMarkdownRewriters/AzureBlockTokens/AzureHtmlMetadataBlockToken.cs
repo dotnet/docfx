@@ -13,13 +13,13 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             IMarkdownContext context,
             IReadOnlyDictionary<string, string> properties,
             IReadOnlyDictionary<string, string> tags,
-            string rawMarkdown)
+            SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Properties = properties;
             Tags = tags;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
 
         public IReadOnlyDictionary<string, string> Properties { get; set; }
@@ -30,6 +30,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         public IMarkdownContext Context { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
     }
 }

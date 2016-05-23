@@ -9,19 +9,19 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     {
         public override string Name => "AzureBlockquote";
 
-        public override IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public override IMarkdownToken TryMatch(IMarkdownParser engine, IMarkdownParsingContext context)
         {
-            var match = Blockquote.Match(source);
+            var match = Blockquote.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
             var capStr = LeadingBlockquote.Replace(match.Value, string.Empty);
             var c = engine.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
-            var tokens = engine.Tokenize(capStr);
+            var tokens = engine.Tokenize(sourceInfo.Copy(capStr));
             engine.SwitchContext(c);
-            return new AzureBlockquoteBlockToken(this, engine.Context, tokens, match.Value);
+            return new AzureBlockquoteBlockToken(this, engine.Context, tokens, sourceInfo);
         }
     }
 }
