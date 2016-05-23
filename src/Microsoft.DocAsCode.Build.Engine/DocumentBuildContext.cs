@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
         private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
+        private readonly Task<IXRefContainerReader> _reader;
 
         public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1) { }
 
@@ -35,6 +36,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             ExternalReferencePackages = externalReferencePackages;
             XRefMapUrls = xrefMaps;
             MaxParallelism = maxParallelism;
+            if (xrefMaps.Length > 0)
+            {
+                _reader = new XRefMapCollection(
+                    from u in xrefMaps
+                    select new Uri(u)).GetReaderAsync();
+            }
         }
 
         public string BuildOutputFolder { get; }
@@ -128,18 +135,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private List<string> ResolveByXRefMaps(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
-            if (XRefMapUrls.Length == 0)
+            if (_reader == null)
             {
                 return uidList;
             }
-
-            var oldSpecCount = externalXRefSpec.Count;
+            var reader = _reader.Result;
             var list = new List<string>();
-            XRefMaps = LoadXRefMaps();
-
             foreach (var uid in uidList)
             {
-                var spec = (from map in XRefMaps select new BasicXRefMapReader(map).Find(uid)).FirstOrDefault();
+                var spec = reader.Find(uid);
                 if (spec != null)
                 {
                     externalXRefSpec.AddOrUpdate(uid, spec, (_, old) => old + spec);
@@ -149,8 +153,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     list.Add(uid);
                 }
             }
-
-            Logger.LogInfo($"{externalXRefSpec.Count - oldSpecCount} external references found in {XRefMaps.Count} xref maps.");
+            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {XRefMapUrls.Length} xref maps.");
             return list;
         }
 

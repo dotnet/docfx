@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             for (int i = current.Redirections.Count - 1; i >= 0; i--)
             {
                 var r = current.Redirections[i];
-                if (r.UidPrefix != null &&
+                if (r.UidPrefix == null ||
                     uid.StartsWith(r.UidPrefix))
                 {
                     if (r.Href != null)
