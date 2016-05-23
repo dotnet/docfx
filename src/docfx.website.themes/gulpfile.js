@@ -20,7 +20,8 @@ var files = [
     "*.tmpl",
     "favicon.ico",
     "logo.svg",
-    "global.json"];
+    "global.json",
+    "search-stopwords.json"];
 
 var pack = {
     "default": [
