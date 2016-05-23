@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         }
 
         #region Internal For UT
-        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null)
+        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null, string projectPath = null)
         {
             if (compilation == null)
             {
@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Logger.Log(LogLevel.Error, "Language not supported: " + compilation.Language);
                 return null;
             }
-
+            visitor.ProjectPath = projectPath;
             MetadataItem item = compilation.Assembly.Accept(visitor);
             return item;
         }
@@ -418,7 +418,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 },
                 outputFolder,
                 preserveRawInlineComments,
-                filterConfigFile);
+                filterConfigFile,
+                projectFilePath);
         }
 
         private static Task <MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile)
@@ -442,7 +443,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Func<T, IDictionary<string, List<string>>> containedFilesProvider,
             string outputFolder,
             bool preserveRawInlineComments,
-            string filterConfigFile)
+            string filterConfigFile,
+            string projectFilePath = null)
         {
             DateTime triggeredTime = DateTime.UtcNow;
             var projectLevelCache = ProjectLevelCache.Get(inputKey);
@@ -472,7 +474,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var compilation = await compilationProvider(input);
 
-            projectMetadata = GenerateYamlMetadata(compilation, preserveRawInlineComments, filterConfigFile);
+            projectMetadata = GenerateYamlMetadata(compilation, preserveRawInlineComments, filterConfigFile, projectFilePath);
             var file = Path.GetRandomFileName();
             var cacheOutputFolder = projectLevelCache.OutputFolder;
             var path = Path.Combine(cacheOutputFolder, file);

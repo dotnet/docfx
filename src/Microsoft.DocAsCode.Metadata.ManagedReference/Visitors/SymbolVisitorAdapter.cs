@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
+    using System.IO;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Diagnostics;
@@ -11,6 +12,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
+#if NET451
+    using Microsoft.DotNet.ProjectModel;
+#endif
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
@@ -18,16 +22,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public class SymbolVisitorAdapter
         : SymbolVisitor<MetadataItem>
     {
-        #region Fields
+#region Fields
         private static readonly Regex MemberSigRegex = new Regex(@"^([\w\{\}`]+\.)+", RegexOptions.Compiled);
         private static readonly IReadOnlyList<string> EmptyListOfString = new string[0];
         private readonly YamlModelGenerator _generator;
         private Dictionary<string, ReferenceItem> _references;
         private bool _preserveRawInlineComments;
 
-        #endregion
+#endregion
 
-        #region Constructor
+#region Constructor
 
         public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, bool preserveRawInlineComments = false, string filterConfigFile = null)
         {
@@ -37,17 +41,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             FilterVisitor = string.IsNullOrEmpty(filterConfigFile) ? new DefaultFilterVisitor() : new DefaultFilterVisitor().WithConfig(filterConfigFile).WithCache();
         }
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         public SyntaxLanguage Language { get; private set; }
 
         public IFilterVisitor FilterVisitor { get; private set; }
 
-        #endregion
+        public string ProjectPath { private get; set; }
+#endregion
 
-        #region Overrides
+#region Overrides
 
         public override MetadataItem DefaultVisit(ISymbol symbol)
         {
@@ -68,6 +73,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             item.Source = VisitorHelper.GetSourceDetail(symbol);
             var assemblyName = symbol.ContainingAssembly?.Name;
             item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) ? null : new List<string> { assemblyName };
+#if NET451
+            var name = Path.GetFileName(ProjectPath);
+            if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase)) {
+                Microsoft.DotNet.ProjectModel.Project project = null;
+                try
+                {
+                    project = ProjectReader.GetProject(ProjectPath);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Warning, $"Can't parse package name and version of {ProjectPath}, {e.Message}");
+                }
+                var packageName = project == null ? string.Empty : $"{assemblyName}({project.Version.ToString()})";
+                item.PackageNameList = string.IsNullOrEmpty(packageName) ? null : new List<string> { packageName };
+            }
+#endif
             if (!(symbol is INamespaceSymbol))
             {
                 var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);
@@ -376,9 +397,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return result;
         }
 
-        #endregion
+#endregion
 
-        #region Public Methods
+#region Public Methods
 
         public string AddReference(ISymbol symbol)
         {
@@ -404,9 +425,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
         }
 
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
 
         private MemberType GetMemberTypeFromSymbol(ISymbol symbol)
         {
@@ -788,6 +809,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
         }
 
-        #endregion
+#endregion
     }
 }
