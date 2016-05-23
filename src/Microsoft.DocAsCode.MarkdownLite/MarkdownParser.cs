@@ -44,19 +44,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return Regexes.Lexers.WhiteSpaceLine.Replace(src, string.Empty);
         }
 
-        public ImmutableArray<IMarkdownToken> Tokenize(SourceInfo lineInfo)
+        public ImmutableArray<IMarkdownToken> Tokenize(SourceInfo sourceInfo)
         {
-            var markdown = Preprocess(lineInfo.Markdown);
-            if (lineInfo.Markdown != markdown)
+            var markdown = Preprocess(sourceInfo.Markdown);
+            if (sourceInfo.Markdown != markdown)
             {
-                lineInfo = new SourceInfo(markdown, lineInfo.File, lineInfo.LineNumber);
+                sourceInfo = new SourceInfo(markdown, sourceInfo.File, sourceInfo.LineNumber);
             }
-            return TokenizeCore(lineInfo).ToImmutableArray();
+            return TokenizeCore(sourceInfo).ToImmutableArray();
         }
 
-        private List<IMarkdownToken> TokenizeCore(SourceInfo lineInfo)
+        private List<IMarkdownToken> TokenizeCore(SourceInfo sourceInfo)
         {
-            var pc = new MarkdownParsingContext(lineInfo);
+            var pc = new MarkdownParsingContext(sourceInfo);
             var tokens = new List<IMarkdownToken>();
             while (pc.CurrentMarkdown.Length > 0)
             {
@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                              select r.TryMatch(this, pc)).FirstOrDefault(t => t != null);
                 if (token == null)
                 {
-                    throw new InvalidOperationException($"Cannot parse markdown for file {lineInfo.File}, line {pc.LineInfo.LineNumber}.");
+                    throw new InvalidOperationException($"Cannot parse markdown for file {sourceInfo.File}, line {pc.LineNumber}.");
                 }
                 tokens.Add(token);
             }

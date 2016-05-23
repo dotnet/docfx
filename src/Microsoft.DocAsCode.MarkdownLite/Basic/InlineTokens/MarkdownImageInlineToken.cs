@@ -5,14 +5,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownImageInlineToken : IMarkdownToken
     {
-        public MarkdownImageInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, string text, SourceInfo lineInfo)
+        public MarkdownImageInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, string text, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Href = href;
             Title = title;
             Text = text;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

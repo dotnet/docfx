@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Dfm
         public string Raw { get; }
         public SourceInfo SourceInfo { get; }
 
-        public DfmIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, SourceInfo lineInfo)
+        public DfmIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Dfm
             Name = name;
             Title = title;
             Raw = raw;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
     }
 }

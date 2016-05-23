@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
         public bool ThrowIfNotResolved { get; }
         public SourceInfo SourceInfo { get; }
 
-        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, ImmutableArray<IMarkdownToken> content, string title, bool throwIfNotResolved, SourceInfo lineInfo)
+        public DfmXrefInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, ImmutableArray<IMarkdownToken> content, string title, bool throwIfNotResolved, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Dfm
             Content = content;
             Title = title;
             ThrowIfNotResolved = throwIfNotResolved;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public DfmXrefInlineToken Rewrite(IMarkdownRewriteEngine rewriteEngine)

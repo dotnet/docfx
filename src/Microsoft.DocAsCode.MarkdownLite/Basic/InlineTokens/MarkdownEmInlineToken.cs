@@ -7,12 +7,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownEmInlineToken : IMarkdownToken, IMarkdownRewritable<MarkdownEmInlineToken>
     {
-        public MarkdownEmInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, SourceInfo lineInfo)
+        public MarkdownEmInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

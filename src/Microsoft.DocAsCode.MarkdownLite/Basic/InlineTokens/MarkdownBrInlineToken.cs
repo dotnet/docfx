@@ -5,11 +5,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownBrInlineToken : IMarkdownToken
     {
-        public MarkdownBrInlineToken(IMarkdownRule rule, IMarkdownContext context, SourceInfo lineInfo)
+        public MarkdownBrInlineToken(IMarkdownRule rule, IMarkdownContext context, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

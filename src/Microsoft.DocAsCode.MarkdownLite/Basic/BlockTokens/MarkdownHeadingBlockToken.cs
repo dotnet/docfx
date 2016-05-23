@@ -7,14 +7,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownHeadingBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownHeadingBlockToken>
     {
-        public MarkdownHeadingBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, string id, int depth, SourceInfo lineInfo)
+        public MarkdownHeadingBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, string id, int depth, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
             Id = id;
             Depth = depth;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

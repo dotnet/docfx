@@ -5,11 +5,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public sealed class MarkdownIgnoreToken : IMarkdownToken
     {
-        public MarkdownIgnoreToken(IMarkdownRule rule, IMarkdownContext context, SourceInfo lineInfo)
+        public MarkdownIgnoreToken(IMarkdownRule rule, IMarkdownContext context, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

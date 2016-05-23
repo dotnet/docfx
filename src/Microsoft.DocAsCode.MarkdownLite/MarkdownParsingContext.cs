@@ -12,18 +12,20 @@ namespace Microsoft.DocAsCode.MarkdownLite
         private readonly string _file;
         private readonly int _lineNumber;
 
-        public MarkdownParsingContext(SourceInfo lineInfo)
+        public MarkdownParsingContext(SourceInfo sourceInfo)
         {
-            CurrentMarkdown = lineInfo.Markdown;
-            _markdownLength = lineInfo.Markdown.Length;
-            _file = lineInfo.File;
-            _lineNumber = lineInfo.LineNumber;
-            _lineIndexer = CreateLineIndexer(lineInfo.Markdown);
+            CurrentMarkdown = sourceInfo.Markdown;
+            _markdownLength = sourceInfo.Markdown.Length;
+            _file = sourceInfo.File;
+            _lineNumber = sourceInfo.LineNumber;
+            _lineIndexer = CreateLineIndexer(sourceInfo.Markdown);
         }
 
         public string CurrentMarkdown { get; private set; }
 
-        public SourceInfo LineInfo => default(SourceInfo);
+        public int LineNumber => _lineNumber;
+
+        public string File => _file;
 
         public SourceInfo Consume(int charCount)
         {

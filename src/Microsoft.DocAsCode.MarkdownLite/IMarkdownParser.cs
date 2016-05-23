@@ -35,6 +35,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// </summary>
         /// <param name="markdown">The markdown text.</param>
         /// <returns>A list of <see cref="IMarkdownToken"/>.</returns>
-        ImmutableArray<IMarkdownToken> Tokenize(SourceInfo lineInfo);
+        ImmutableArray<IMarkdownToken> Tokenize(SourceInfo sourceInfo);
     }
 }

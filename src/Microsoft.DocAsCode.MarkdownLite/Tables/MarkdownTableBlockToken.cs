@@ -16,14 +16,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
             ImmutableArray<InlineContent> header,
             ImmutableArray<Align> align,
             ImmutableArray<ImmutableArray<InlineContent>> cells,
-            SourceInfo lineInfo)
+            SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Header = header;
             Align = align;
             Cells = cells;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

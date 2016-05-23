@@ -44,8 +44,8 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return null;
             }
-            var lineInfo = context.Consume(match.Length);
-            return new DfmYamlHeaderBlockToken(this, parser.Context, value, lineInfo);
+            var sourceInfo = context.Consume(match.Length);
+            return new DfmYamlHeaderBlockToken(this, parser.Context, value, sourceInfo);
         }
     }
 }

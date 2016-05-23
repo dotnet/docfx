@@ -12,12 +12,12 @@ namespace Microsoft.DocAsCode.Dfm
         public string Content { get; }
         public SourceInfo SourceInfo { get; }
 
-        public DfmYamlHeaderBlockToken(IMarkdownRule rule, IMarkdownContext context, string content, SourceInfo lineInfo)
+        public DfmYamlHeaderBlockToken(IMarkdownRule rule, IMarkdownContext context, string content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
     }
 }

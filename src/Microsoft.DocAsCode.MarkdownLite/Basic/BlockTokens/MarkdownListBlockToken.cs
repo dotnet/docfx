@@ -7,13 +7,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownListBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownListBlockToken>
     {
-        public MarkdownListBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool ordered, SourceInfo lineInfo)
+        public MarkdownListBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool ordered, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Tokens = tokens;
             Ordered = ordered;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

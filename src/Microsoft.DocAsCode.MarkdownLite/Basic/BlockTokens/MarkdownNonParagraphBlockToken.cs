@@ -5,12 +5,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownNonParagraphBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownNonParagraphBlockToken>
     {
-        public MarkdownNonParagraphBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, SourceInfo lineInfo)
+        public MarkdownNonParagraphBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

@@ -7,12 +7,12 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmSectionBlockToken : IMarkdownToken
     {
-        public DfmSectionBlockToken(IMarkdownRule rule, IMarkdownContext context, string attributes, SourceInfo lineInfo)
+        public DfmSectionBlockToken(IMarkdownRule rule, IMarkdownContext context, string attributes, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Attributes = attributes;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }

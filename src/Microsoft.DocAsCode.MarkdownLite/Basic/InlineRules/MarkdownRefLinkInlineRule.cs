@@ -26,14 +26,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             if (string.IsNullOrEmpty(link?.Href))
             {
-                var lineInfo = context.Consume(1);
+                var sourceInfo = context.Consume(1);
                 var text = match.Value.Remove(1);
-                return new MarkdownTextToken(this, parser.Context, text, lineInfo);
+                return new MarkdownTextToken(this, parser.Context, text, sourceInfo);
             }
             else
             {
-                var lineInfo = context.Consume(match.Length);
-                return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', lineInfo);
+                var sourceInfo = context.Consume(match.Length);
+                return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', sourceInfo);
             }
         }
     }

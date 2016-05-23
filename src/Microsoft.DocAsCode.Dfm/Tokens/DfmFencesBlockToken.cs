@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmFencesBlockToken : IMarkdownToken
     {
-        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo lineInfo, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null)
+        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null)
         {
             Rule = rule;
             Context = context;
@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Dfm
             Name = name;
             Title = title;
             PathQueryOption = pathQueryOption;
-            SourceInfo = lineInfo;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
