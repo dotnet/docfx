@@ -17,8 +17,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// Try match this rule.
         /// </summary>
         /// <param name="parser">The markdown parser.</param>
-        /// <param name="source">The source of markdown text.</param>
+        /// <param name="context">The context for parser, contains markdown text, line number and file.</param>
         /// <returns>If matched, an instance of <see cref="IMarkdownToken"/> should be return, otherwise null.</returns>
-        IMarkdownToken TryMatch(IMarkdownParser parser, ref string source);
+        IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
     }
 }

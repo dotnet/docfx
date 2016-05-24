@@ -43,15 +43,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     builder.ToImmutable()));
         }
 
-        public static InlineContent TokenizeInline(this IMarkdownParser parser, string markdown)
+        public static InlineContent TokenizeInline(this IMarkdownParser parser, SourceInfo sourceInfo)
         {
             if (parser == null)
             {
                 throw new ArgumentNullException(nameof(parser));
-            }
-            if (markdown == null)
-            {
-                throw new ArgumentNullException(nameof(markdown));
             }
             var context = parser.Context as MarkdownBlockContext;
             if (context == null)
@@ -59,7 +55,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 throw new InvalidOperationException($"{nameof(parser)}.{nameof(parser.Context)}(type:{parser.Context.GetType().FullName}) is invalid.");
             }
             var c = parser.SwitchContext(context.GetInlineContext());
-            var tokens = parser.Tokenize(markdown);
+            var tokens = parser.Tokenize(sourceInfo);
             parser.SwitchContext(c);
             return new InlineContent(tokens);
         }

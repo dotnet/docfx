@@ -12,30 +12,48 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Html => Regexes.Block.Html;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Html.Match(source);
+            var match = Html.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             bool isPre = parser.Options.Sanitizer == null &&
                 (match.Groups[1].Value == "pre" || match.Groups[1].Value == "script" || match.Groups[1].Value == "style");
             if (parser.Options.Sanitize)
             {
-                return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
-                    new MarkdownParagraphBlockToken(t.Rule, t.Context, p.TokenizeInline(match.Value), t.RawMarkdown));
+                return new TwoPhaseBlockToken(
+                    this,
+                    parser.Context,
+                    sourceInfo,
+                    (p, t) => new MarkdownParagraphBlockToken(
+                        t.Rule,
+                        t.Context,
+                        p.TokenizeInline(t.SourceInfo.Copy(match.Value)),
+                        t.SourceInfo));
             }
             else
             {
-                return new TwoPhaseBlockToken(this, parser.Context, match.Value, (p, t) =>
-                    new MarkdownHtmlBlockToken(
+                return new TwoPhaseBlockToken(
+                    this,
+                    parser.Context,
+                    sourceInfo,
+                    (p, t) => new MarkdownHtmlBlockToken(
                         t.Rule,
                         t.Context,
-                        isPre ? new InlineContent(new IMarkdownToken[] { new MarkdownRawToken(this, parser.Context, t.RawMarkdown) }.ToImmutableArray()) : p.TokenizeInline(t.RawMarkdown),
-                        t.RawMarkdown));
+                        isPre ?
+                            new InlineContent(
+                                ImmutableArray.Create<IMarkdownToken>(
+                                    new MarkdownRawToken(
+                                        this,
+                                        parser.Context,
+                                        t.SourceInfo)))
+                        :
+                            p.TokenizeInline(t.SourceInfo),
+                        t.SourceInfo));
             }
         }
     }

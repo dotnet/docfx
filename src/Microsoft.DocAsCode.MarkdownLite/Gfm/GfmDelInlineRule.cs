@@ -11,16 +11,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Del => Regexes.Inline.Gfm.Del;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Del.Match(source);
+            var match = Del.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-
-            return new GfmDelInlineToken(this, parser.Context, parser.Tokenize(match.Groups[1].Value), match.Value);
+            var sourceInfo = context.Consume(match.Length);
+            return new GfmDelInlineToken(this, parser.Context, parser.Tokenize(sourceInfo.Copy(match.Groups[1].Value)), sourceInfo);
         }
     }
 }

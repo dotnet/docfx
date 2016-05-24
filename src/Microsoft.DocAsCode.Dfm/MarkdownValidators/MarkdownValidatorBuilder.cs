@@ -93,11 +93,11 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
             public void Validate(MarkdownTagInlineToken token)
             {
-                var m = OpeningTag.Match(token.RawMarkdown);
+                var m = OpeningTag.Match(token.SourceInfo.Markdown);
                 bool isOpeningTag = true;
                 if (m.Length == 0)
                 {
-                    m = ClosingTag.Match(token.RawMarkdown);
+                    m = ClosingTag.Match(token.SourceInfo.Markdown);
                     if (m.Length == 0)
                     {
                         return;
@@ -142,7 +142,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                         Logger.LogWarning($"Cannot find custom markdown tag validator by contract name: {validator.CustomValidatorContractName}.");
                         return;
                     }
-                    if (customValidators.TrueForAll(av => av.Validate(token.RawMarkdown)))
+                    if (customValidators.TrueForAll(av => av.Validate(token.SourceInfo.Markdown)))
                     {
                         return;
                     }
@@ -163,10 +163,10 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 switch (validator.Behavior)
                 {
                     case TagValidationBehavior.Warning:
-                        Logger.LogWarning(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
+                        Logger.LogWarning(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.SourceInfo.Markdown));
                         return;
                     case TagValidationBehavior.Error:
-                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.RawMarkdown));
+                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.SourceInfo.Markdown));
                         return;
                     case TagValidationBehavior.None:
                     default:

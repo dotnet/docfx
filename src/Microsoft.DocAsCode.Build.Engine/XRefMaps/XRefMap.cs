@@ -80,8 +80,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public Task<IXRefContainerReader> GetReaderAsync()
         {
-            // todo : get reader.
-            throw new NotImplementedException();
+            return Task.FromResult<IXRefContainerReader>(new BasicXRefMapReader(this));
         }
     }
 }

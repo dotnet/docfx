@@ -15,19 +15,19 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         public virtual Regex AzureNoteRegex => _azureSelectorRegex;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser engine, IMarkdownParsingContext context)
         {
             if (!engine.Context.Variables.ContainsKey(MarkdownBlockContext.IsBlockQuote) || !(bool)engine.Context.Variables[MarkdownBlockContext.IsBlockQuote])
             {
                 return null;
             }
-            var match = AzureNoteRegex.Match(source);
+            var match = AzureNoteRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Value.Length);
-            return new AzureSelectorBlockToken(this, engine.Context, match.Groups["selecttype"].Value, match.Groups["selectorconditions"].Value, match.Value);
+            var sourceInfo = context.Consume(match.Value.Length);
+            return new AzureSelectorBlockToken(this, engine.Context, match.Groups["selecttype"].Value, match.Groups["selectorconditions"].Value, sourceInfo);
         }
     }
 }

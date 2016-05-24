@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode
         [Option('f', "force", HelpText = "Force re-generate all the metadata")]
         public bool ForceRebuild { get; set; }
 
-        [Option('o', "output")]
         public string OutputFolder { get; set; }
 
         [Option("raw", HelpText = "Preserve the existing xml comment tags inside 'summary' triple slash comments")]

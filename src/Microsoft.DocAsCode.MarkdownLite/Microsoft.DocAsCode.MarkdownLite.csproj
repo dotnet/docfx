@@ -40,13 +40,16 @@
     <Compile Include="IMarkdownContext.cs" />
     <Compile Include="IMarkdownEngine.cs" />
     <Compile Include="IMarkdownParser.cs" />
+    <Compile Include="IMarkdownParsingContext.cs" />
     <Compile Include="IMarkdownRenderer.cs" />
     <Compile Include="IMarkdownRewriteEngine.cs" />
     <Compile Include="IMarkdownRule.cs" />
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
     <Compile Include="IMarkdownRewritable.cs" />
+    <Compile Include="SourceInfo.cs" />
     <Compile Include="MarkdownEngine.cs" />
+    <Compile Include="MarkdownParsingContext.cs" />
     <Compile Include="MarkdownParserExtensions.cs" />
     <Compile Include="MarkdownRendererAdapter.cs" />
     <Compile Include="MarkdownParser.cs" />

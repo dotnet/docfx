@@ -11,19 +11,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual Regex Text => Regexes.Block.Text;
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             if ((bool)parser.Context.Variables[MarkdownBlockContext.IsTop])
             {
                 return null;
             }
-            var match = Text.Match(source);
+            var match = Text.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
-            return new MarkdownTextToken(this, parser.Context, match.Value, match.Value);
+            var sourceInfo = context.Consume(match.Length);
+            return new MarkdownTextToken(this, parser.Context, match.Value, sourceInfo);
         }
     }
 }

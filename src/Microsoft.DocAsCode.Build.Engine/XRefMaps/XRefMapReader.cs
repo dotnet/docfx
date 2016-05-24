@@ -3,16 +3,13 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System;
     using System.Collections.Generic;
-
-    using Microsoft.DocAsCode.Plugins;
 
     public sealed class XRefMapReader : XRefRedirectionReader
     {
         private readonly Dictionary<string, XRefMap> _maps;
 
-        private XRefMapReader(string majorKey, Dictionary<string, XRefMap> maps)
+        public XRefMapReader(string majorKey, Dictionary<string, XRefMap> maps)
             : base(majorKey, new HashSet<string>(maps.Keys))
         {
             _maps = maps;

@@ -22,6 +22,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
         private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+        private static Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
+        private static Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
 
         private readonly ITripleSlashCommentParserContext _context;
         private readonly TripleSlashCommentTransformer _transformer = new TripleSlashCommentTransformer();
@@ -37,7 +39,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public Dictionary<string, string> TypeParameters { get; private set; }
 
         private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
-        { 
+        {
             // Transform triple slash comment
             XDocument doc = _transformer.Transform(xml, language);
 
@@ -366,11 +368,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        /// <summary>
-        /// For multiple line comments, comment start position always aligns with its node tag's start position
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
         private string GetXmlValue(XPathNavigator node)
         {
             // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
@@ -383,38 +380,44 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var lineInfo = node as IXmlLineInfo;
             int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
 
-            var content = WebUtility.HtmlDecode(node.InnerXml);
-            var lines = GetLines(content, column);
-
-            return string.Join("\n", lines);
+            return WebUtility.HtmlDecode(NormalizeXml(node.InnerXml, column));
         }
 
-        private static IEnumerable<string> GetLines(string content, int column)
+        /// <summary>
+        /// Split xml into lines. Trim meaningless whitespaces.
+        /// if a line starts with xml node, all leading whitespaces would be trimmed
+        /// otherwise text node start position always aligns with the start position of its parent line(the last previous line that starts with xml node)
+        /// Trim newline character for code element.
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <param name="parentIndex">the start position of the last previous line that starts with xml node</param>
+        /// <returns>normalized xml</returns>
+        private static string NormalizeXml(string xml, int parentIndex)
         {
-            var lines = content.Split('\n');
-            yield return lines[0];
-            for (var i = 1; i < lines.Length; i++)
+            var lines = LineBreakRegex.Split(xml);
+            var normalized = new List<string>();
+
+            foreach (var line in lines)
             {
-                yield return NormalizeLine(lines[i], column);
-            }
-        }
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    normalized.Add(string.Empty);
+                }
+                else
+                {
+                    // TO-DO: special logic for TAB case
+                    int index = line.TakeWhile(char.IsWhiteSpace).Count();
+                    if (line[index] == '<')
+                    {
+                        parentIndex = index;
+                    }
 
-        private static string NormalizeLine(string line, int column)
-        {
-            int trimIndex = Math.Min(column, GetNonWhitespaceIndex(line));
-
-            return line.Substring(trimIndex);
-        }
-
-        private static int GetNonWhitespaceIndex(string line)
-        {
-            int index = 0;
-            while (index < line.Length && char.IsWhiteSpace(line[index]) && line[index] != '\r')
-            {
-                index++;
+                    normalized.Add(line.Substring(Math.Min(parentIndex, index)));
+                }
             }
 
-            return index;
+            // trim newline character for code element
+            return CodeElementRegex.Replace(string.Join("\n", normalized), m => { var group = m.Groups[1]; return m.Value.Replace(group.ToString(), group.ToString().Trim('\n')); });
         }
     }
 }

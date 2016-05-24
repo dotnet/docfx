@@ -5,12 +5,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class MarkdownEscapeInlineToken : IMarkdownToken
     {
-        public MarkdownEscapeInlineToken(IMarkdownRule rule, IMarkdownContext context, string content, string rawMarkdown)
+        public MarkdownEscapeInlineToken(IMarkdownRule rule, IMarkdownContext context, string content, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Content = content;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -19,6 +19,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public string Content { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
     }
 }

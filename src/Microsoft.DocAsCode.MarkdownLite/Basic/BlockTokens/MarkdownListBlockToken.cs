@@ -7,13 +7,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownListBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownListBlockToken>
     {
-        public MarkdownListBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool ordered, string rawMarkdown)
+        public MarkdownListBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool ordered, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Tokens = tokens;
             Ordered = ordered;
-            RawMarkdown = rawMarkdown;
+            SourceInfo = sourceInfo;
         }
 
         public IMarkdownRule Rule { get; }
@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool Ordered { get; }
 
-        public string RawMarkdown { get; set; }
+        public SourceInfo SourceInfo { get; }
 
         public MarkdownListBlockToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownListBlockToken(Rule, Context, tokens, Ordered, RawMarkdown);
+            return new MarkdownListBlockToken(Rule, Context, tokens, Ordered, SourceInfo);
         }
     }
 }

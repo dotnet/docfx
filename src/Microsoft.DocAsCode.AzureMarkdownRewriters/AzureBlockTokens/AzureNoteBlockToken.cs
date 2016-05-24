@@ -8,8 +8,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     public class AzureNoteBlockToken : MarkdownTextToken
     {
 
-        public AzureNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content, string rawMarkdown)
-            : base(rule, context, content, rawMarkdown)
+        public AzureNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content, SourceInfo sourceInfo)
+            : base(rule, context, content, sourceInfo)
         {
             NoteType = noteType;
         }

@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
         }
 
-        public string Markup(string src, string path)
+        public override string Markup(string src, string path)
         {
             if (string.IsNullOrEmpty(src))
             {
@@ -47,6 +47,6 @@ namespace Microsoft.DocAsCode.Dfm
         }
 
         internal string InternalMarkup(string src, IMarkdownContext context) =>
-            Mark(Normalize(src), context).ToString();
+            Mark(new SourceInfo(Normalize(src), context.GetFilePathStack().Peek(), 1), context).ToString();
     }
 }

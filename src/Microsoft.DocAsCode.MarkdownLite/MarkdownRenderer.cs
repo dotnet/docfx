@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         public virtual StringBuffer Render(IMarkdownRenderer render, IMarkdownToken token, IMarkdownContext context)
         {
-            return token.RawMarkdown;
+            return token.SourceInfo.Markdown;
         }
 
         #region Inline Token
@@ -244,7 +244,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     var listItemToken = t as MarkdownListItemBlockToken;
                     if (listItemToken == null)
                     {
-                        throw new Exception($"token {t.GetType()} is not unordered MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{t.RawMarkdown}");
+                        throw new Exception($"token {t.GetType()} is not unordered MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{t.SourceInfo.Markdown}");
                     }
                     content += ListStartString;
                     content += Render(render, listItemToken, "  ");
@@ -258,7 +258,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
                     if (listItemToken == null)
                     {
-                        throw new Exception($"token {token.Tokens[i].GetType()} is not ordered MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{token.Tokens[i].RawMarkdown}");
+                        throw new Exception($"token {token.Tokens[i].GetType()} is not ordered MarkdownListItemBlockToken in MarkdownListBlockToken. Token raw:{token.Tokens[i].SourceInfo.Markdown}");
                     }
 
                     content += $"{i + 1}. ";

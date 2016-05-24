@@ -13,14 +13,14 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual string Name => "DfmIncludeBlock";
         public virtual Regex Include => _incRegex;
 
-        public IMarkdownToken TryMatch(IMarkdownParser parser, ref string source)
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Include.Match(source);
+            var match = Include.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            source = source.Substring(match.Length);
+            var sourceInfo = context.Consume(match.Length);
 
             // [!include[title](path "optionalTitle")]
             // 1. Get include file path 
@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Dfm
             var value = match.Groups[1].Value;
             var title = match.Groups[4].Value;
 
-            return new DfmIncludeBlockToken(this, parser.Context, path, value, title, match.Groups[0].Value, match.Value);
+            return new DfmIncludeBlockToken(this, parser.Context, path, value, title, match.Groups[0].Value, sourceInfo);
         }
     }
 }
