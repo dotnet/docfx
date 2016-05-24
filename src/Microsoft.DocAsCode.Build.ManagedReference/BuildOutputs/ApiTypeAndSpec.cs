@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     [Serializable]
     public class ApiTypeAndSpec
     {
-
         [YamlMember(Alias = "uid")]
         [JsonProperty("uid")]
         public string Uid { get; set; }
@@ -35,6 +34,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiTypeAndSpec FromUid(string uid, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
+            if (string.IsNullOrEmpty(uid)) return null;
+
             return new ApiTypeAndSpec
             {
                 Uid = uid,
