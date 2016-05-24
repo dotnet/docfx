@@ -246,7 +246,7 @@
 {{/eventType}}
 {{/syntax}}
 {{#overridden}}
-<h5 class="overrides">Overrides</h5>
+<h5 class="overrides">{{__global.overrides}}</h5>
 <div>{{{specName.0.value}}}</div>
 {{/overridden}}
 {{#remarks}}

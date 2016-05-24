@@ -43,7 +43,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             };
         }
 
-
         public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
             if (_needExpand)

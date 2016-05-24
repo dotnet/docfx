@@ -17,6 +17,7 @@
   "namespace": "命名空间",
   "assembly": "程序集",
   "syntax": "语法",
+  "overrides": "替代",
   "remarks": "备注",
   "examples": "示例",
   "declaration": "声明",
