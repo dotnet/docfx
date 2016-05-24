@@ -20,5 +20,37 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [YamlMember(Alias = "specName")]
         [JsonProperty("specName")]
         public List<ApiLanguageValuePair> Spec { get; set; }
+
+        private bool _needExpand = true;
+
+        public static ApiTypeAndSpec FromUid(string uid)
+        {
+            if (string.IsNullOrEmpty(uid)) return null;
+
+            return new ApiTypeAndSpec
+            {
+                Uid = uid,
+            };
+        }
+
+        public static ApiTypeAndSpec FromUid(string uid, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
+        {
+            return new ApiTypeAndSpec
+            {
+                Uid = uid,
+                Spec = ApiBuildOutputUtility.GetSpec(uid, references, supportedLanguages),
+                _needExpand = false,
+            };
+        }
+
+
+        public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
+        {
+            if (_needExpand)
+            {
+                _needExpand = false;
+                Spec = ApiBuildOutputUtility.GetSpec(Uid, references, supportedLanguages);
+            }
+        }
     }
 }

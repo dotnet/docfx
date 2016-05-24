@@ -245,6 +245,10 @@
 </table>
 {{/eventType}}
 {{/syntax}}
+{{#overridden}}
+<h5 class="overrides">Overrides</h5>
+<div>{{{specName.0.value}}}</div>
+{{/overridden}}
 {{#remarks}}
 <h5 id="{{id}}_remarks">{{__global.remarks}}</h5>
 <div class="markdown level1 remarks">{{{remarks}}}</div>

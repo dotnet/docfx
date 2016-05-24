@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "overridden")]
         [JsonProperty("overridden")]
-        public string Overridden { get; set; }
+        public ApiTypeAndSpec Overridden { get; set; }
 
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
@@ -211,7 +211,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 NamespaceName = vm.NamespaceName,
                 Remarks = vm.Remarks,
                 Examples = vm.Examples,
-                Overridden = vm.Overridden,
+                Overridden = ApiTypeAndSpec.FromUid(vm.Overridden),
                 SeeAlsos = vm.SeeAlsos?.Select(s => ApiCrefInfoBuildOutput.FromModel(s)).ToList(),
                 Sees = vm.Sees?.Select(s => ApiCrefInfoBuildOutput.FromModel(s)).ToList(),
                 Inheritance = vm.Inheritance?.Select(i => FromUid(i)).ToList(),
@@ -236,6 +236,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 _needExpand = false;
                 Inheritance = Inheritance?.Select(i => ApiBuildOutputUtility.GetReferenceViewModel(i.Uid, references, supportedLanguages)).ToList();
                 Syntax?.Expand(references, supportedLanguages);
+                Overridden?.Expand(references, supportedLanguages);
                 SeeAlsos?.ForEach(e => e.Expand(references, supportedLanguages));
                 Sees?.ForEach(e => e.Expand(references, supportedLanguages));
                 Exceptions?.ForEach(e => e.Expand(references, supportedLanguages));
