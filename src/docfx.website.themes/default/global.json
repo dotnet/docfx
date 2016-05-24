@@ -17,6 +17,7 @@
   "namespace": "Namespace",
   "assembly": "Assembly",
   "syntax": "Syntax",
+  "overrides": "Overrides",
   "remarks": "Remarks",
   "examples": "Examples",
   "declaration": "Declaration",

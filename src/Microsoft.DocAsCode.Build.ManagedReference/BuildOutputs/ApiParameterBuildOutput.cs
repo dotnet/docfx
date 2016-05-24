@@ -35,11 +35,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return new ApiParameterBuildOutput
             {
                 Name = model.Name,
-                Type = new ApiTypeAndSpec
-                {
-                    Uid = model.Type,
-                    Spec = ApiBuildOutputUtility.GetSpec(model.Type, references, supportedLanguages),
-                },
+                Type = ApiTypeAndSpec.FromUid(model.Type, references, supportedLanguages),
                 Description = model.Description,
                 _needExpand = false,
             };
@@ -52,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return new ApiParameterBuildOutput
             {
                 Name = model.Name,
-                Type = new ApiTypeAndSpec { Uid = model.Type },
+                Type = ApiTypeAndSpec.FromUid(model.Type),
                 Description = model.Description,
             };
         }
@@ -62,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (_needExpand)
             {
                 _needExpand = false;
-                Type.Spec = ApiBuildOutputUtility.GetSpec(Type.Uid, references, supportedLanguages);
+                Type?.Expand(references, supportedLanguages);
             }
         }
     }
