@@ -20,30 +20,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
-        public ApiTypeAndSpec Type { get; set; }
+        public ApiNames Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
         public string Description { get; set; }
 
         private bool _needExpand = true;
-
-        public static ApiParameterBuildOutput FromModel(ApiParameter model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
-        {
-            if (model == null) return null;
-
-            return new ApiParameterBuildOutput
-            {
-                Name = model.Name,
-                Type = new ApiTypeAndSpec
-                {
-                    Uid = model.Type,
-                    Spec = ApiBuildOutputUtility.GetSpec(model.Type, references, supportedLanguages),
-                },
-                Description = model.Description,
-                _needExpand = false,
-            };
-        }
 
         public static ApiParameterBuildOutput FromModel(ApiParameter model)
         {
@@ -52,8 +35,21 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return new ApiParameterBuildOutput
             {
                 Name = model.Name,
-                Type = new ApiTypeAndSpec { Uid = model.Type },
+                Type = ApiNames.FromUid(model.Type),
                 Description = model.Description,
+            };
+        }
+
+        public static ApiParameterBuildOutput FromModel(ApiParameter model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
+        {
+            if (model == null) return null;
+
+            return new ApiParameterBuildOutput
+            {
+                Name = model.Name,
+                Type = ApiBuildOutputUtility.GetApiNames(model.Type, references, supportedLanguages),
+                Description = model.Description,
+                _needExpand = false,
             };
         }
 
@@ -62,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (_needExpand)
             {
                 _needExpand = false;
-                Type.Spec = ApiBuildOutputUtility.GetSpec(Type.Uid, references, supportedLanguages);
+                Type?.Expand(references, supportedLanguages);
             }
         }
     }

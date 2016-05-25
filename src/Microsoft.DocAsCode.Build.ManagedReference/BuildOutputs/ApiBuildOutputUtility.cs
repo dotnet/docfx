@@ -36,6 +36,23 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return ervm;
         }
 
+        public static ApiNames GetApiNames(string key, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
+        {
+            if (string.IsNullOrEmpty(key)) return null;
+
+            var result = ApiNames.FromUid(key);
+            ApiReferenceBuildOutput ervm;
+            if (references.TryGetValue(key, out ervm))
+            {
+                result.Definition = ervm.Definition;
+                result.Name = ervm.Name;
+                result.FullName = ervm.FullName;
+                result.Spec = ervm.Spec;
+            }
+
+            return result;
+        }
+
         public static List<ApiLanguageValuePair> GetSpec(string key, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
             if (string.IsNullOrEmpty(key)) return null;
