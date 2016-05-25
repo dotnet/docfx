@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
             return new TwoPhaseBlockToken(this, engine.Context, sourceInfo, (p, t) =>
             {
-                var blockTokens = p.Tokenize(new SourceInfo(MarkdownEngine.Normalize(File.ReadAllText(includeFilePath)), includeFilePath, 1));
+                var blockTokens = p.Tokenize(SourceInfo.Create(MarkdownEngine.Normalize(File.ReadAllText(includeFilePath)), includeFilePath));
                 blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true, t.SourceInfo);
                 return new AzureIncludeBlockToken(t.Rule, t.Context, path, value, title, blockTokens, match.Groups[0].Value, sourceInfo);
             });

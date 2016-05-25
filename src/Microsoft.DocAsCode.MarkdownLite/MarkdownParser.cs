@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var markdown = Preprocess(sourceInfo.Markdown);
             if (sourceInfo.Markdown != markdown)
             {
-                sourceInfo = new SourceInfo(markdown, sourceInfo.File, sourceInfo.LineNumber);
+                sourceInfo = sourceInfo.Copy(markdown);
             }
             return TokenizeCore(sourceInfo).ToImmutableArray();
         }

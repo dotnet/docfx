@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 markdown = CurrentMarkdown.Remove(charCount);
                 CurrentMarkdown = CurrentMarkdown.Substring(charCount);
             }
-            return new SourceInfo(markdown, _file, _lineNumber + CalcLineNumber());
+            return SourceInfo.Create(markdown, _file, _lineNumber + CalcLineNumber());
         }
 
         private static List<int> CreateLineIndexer(string markdown)

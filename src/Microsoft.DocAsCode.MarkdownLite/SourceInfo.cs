@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public struct SourceInfo
     {
-        public SourceInfo(string markdown, string file, int lineNumber)
+        private SourceInfo(string markdown, string file, int lineNumber)
         {
             Markdown = markdown;
             File = file;
@@ -17,6 +17,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public string File { get; }
 
         public int LineNumber { get; }
+
+        public static SourceInfo Create(string markdown, string file, int lineNumber = 1)
+        {
+            return new SourceInfo(markdown, file, lineNumber);
+        }
 
         public SourceInfo Copy(string markdown, int lineOffset = 0)
         {

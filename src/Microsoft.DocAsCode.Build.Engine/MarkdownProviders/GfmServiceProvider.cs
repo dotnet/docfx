@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public string Markup(string src, string path)
             {
-                return Builder.CreateEngine(Renderer).Markup(src);
+                return Builder.CreateEngine(Renderer).Markup(src, path);
             }
         }
     }

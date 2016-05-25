@@ -82,7 +82,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual string Markup(string markdown, string file)
         {
             var normalized = Normalize(markdown);
-            return Mark(new SourceInfo(normalized, file, 1), null).ToString();
+            return Mark(SourceInfo.Create(normalized, file), null).ToString();
         }
         
         protected virtual string Preprocess(string src)

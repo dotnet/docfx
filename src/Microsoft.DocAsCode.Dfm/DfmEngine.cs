@@ -47,6 +47,6 @@ namespace Microsoft.DocAsCode.Dfm
         }
 
         internal string InternalMarkup(string src, IMarkdownContext context) =>
-            Mark(new SourceInfo(Normalize(src), context.GetFilePathStack().Peek(), 1), context).ToString();
+            Mark(SourceInfo.Create(Normalize(src), context.GetFilePathStack().Peek()), context).ToString();
     }
 }
