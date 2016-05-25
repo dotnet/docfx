@@ -1,7 +1,8 @@
-Version Notes (Current Version: v1.10)
+Version Notes (Current Version: v2.0)
 =======================================
-v1.10(Pre-Release)
+v2.0(Pre-Release)
 -----------
+1.  **Breaking Change** Add line info for markdown parser.
 
 v1.9
 -----------
