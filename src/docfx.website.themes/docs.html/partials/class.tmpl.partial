@@ -90,7 +90,7 @@
 <ul class="list-clean">
   {{#children}}
   <li class="expand-container{{#platform}} platform-{{.}}{{/platform}} enable-platform-filter" id="{{id}}">
-    <h4><a href class="expander">
+    <h4><a href class="expander expanded">
     {{#name}}
       <code class="lang-{{lang}}">{{value}}</code>
     {{/name}}
