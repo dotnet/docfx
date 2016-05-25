@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         /// <remarks>
-        /// Support scheme: http/https/ftp/file.
+        /// Support scheme: http, https, ftp, file, embedded.
         /// </remarks>
         protected virtual async Task<XRefMap> DownloadBySchemeAsync(Uri uri)
         {
@@ -66,9 +66,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 result = await DownloadFromWebAsync(uri);
             }
+            else if (uri.Scheme == "embedded")
+            {
+                result = DownloadFromAssembly(uri);
+            }
             else
             {
-                throw new ArgumentException($"Unsupported scheme {uri.Scheme}, expected: http, https, ftp, file.", nameof(uri));
+                throw new ArgumentException($"Unsupported scheme {uri.Scheme}, expected: http, https, ftp, file, embedded.", nameof(uri));
             }
             if (result == null)
             {
@@ -89,6 +93,25 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (var wc = new WebClient())
             using (var stream = await wc.OpenReadTaskAsync(uri))
+            using (var sr = new StreamReader(stream))
+            {
+                return YamlUtility.Deserialize<XRefMap>(sr);
+            }
+        }
+
+        private XRefMap DownloadFromAssembly(Uri uri)
+        {
+            var path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
+            var index = path.IndexOf('/');
+            if (index == -1)
+            {
+                throw new ArgumentException($"Invalid uri {uri.OriginalString}, expect: {uri.Scheme}:{{assemblyName}}/{{resourceName}}", nameof(uri));
+            }
+            var assemblyName = path.Remove(index);
+            var resourceName = path.Substring(index + 1);
+
+            var assembly = AppDomain.CurrentDomain.Load(assemblyName);
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
             using (var sr = new StreamReader(stream))
             {
                 return YamlUtility.Deserialize<XRefMap>(sr);

@@ -5,7 +5,7 @@
     <ProjectGuid>{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.DocAsCode</RootNamespace>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -180,6 +180,7 @@
     <Compile Include="SubCommands\HelpCommandCreator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="langwordMapping.yml" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Template\default.zip">
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
