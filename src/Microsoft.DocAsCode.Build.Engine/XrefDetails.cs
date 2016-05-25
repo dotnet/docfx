@@ -102,11 +102,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             Href = HttpUtility.UrlDecode(href);
             Spec = spec;
-            if (!string.IsNullOrEmpty(AnchorDisplayName))
+            if (string.IsNullOrEmpty(AnchorDisplayName))
             {
                 AnchorDisplayName = spec.Name;
             }
-            if (!string.IsNullOrEmpty(PlainTextDisplayName))
+            if (string.IsNullOrEmpty(PlainTextDisplayName))
             {
                 PlainTextDisplayName = spec.Name;
             }
