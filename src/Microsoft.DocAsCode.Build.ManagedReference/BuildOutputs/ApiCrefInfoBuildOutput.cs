@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     {
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
-        public ApiTypeAndSpec Type { get; set; }
+        public ApiNames Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
             return new ApiCrefInfoBuildOutput
             {
-                Type = ApiTypeAndSpec.FromUid(model.Type),
+                Type = ApiNames.FromUid(model.Type),
                 Description = model.Description,
             };
         }
@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
             return new ApiCrefInfoBuildOutput
             {
-                Type = ApiTypeAndSpec.FromUid(model.Type, references, supportedLanguages),
+                Type = ApiBuildOutputUtility.GetApiNames(model.Type, references, supportedLanguages),
                 Description = model.Description,
                 _needExpand = false,
             };

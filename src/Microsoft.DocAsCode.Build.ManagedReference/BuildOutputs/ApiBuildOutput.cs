@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "overridden")]
         [JsonProperty("overridden")]
-        public ApiTypeAndSpec Overridden { get; set; }
+        public ApiNames Overridden { get; set; }
 
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
@@ -184,7 +184,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Remarks = model.Remarks,
                 Examples = model.Examples,
                 Syntax = ApiSyntaxBuildOutput.FromModel(model.Syntax, references, model.SupportedLanguages),
-                Overridden = ApiTypeAndSpec.FromUid(model.Overridden, references, model.SupportedLanguages),
+                Overridden = ApiBuildOutputUtility.GetApiNames(model.Overridden, references, model.SupportedLanguages),
                 Exceptions = GetCrefInfoList(model.Exceptions, references, model.SupportedLanguages),
                 SeeAlsos = GetCrefInfoList(model.SeeAlsos, references, model.SupportedLanguages),
                 Sees = GetCrefInfoList(model.Sees, references, model.SupportedLanguages),

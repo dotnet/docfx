@@ -14,7 +14,7 @@
     <Compile Include="BuildOutputs\ApiCrefInfoBuildOutput.cs" />
     <Compile Include="BuildOutputs\ApiLanguageValuePair.cs" />
     <Compile Include="BuildOutputs\ApiParameterBuildOutput.cs" />
-    <Compile Include="BuildOutputs\ApiTypeAndSpec.cs" />
+    <Compile Include="BuildOutputs\ApiNames.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="BuildOutputs\ApiReferenceBuildOutput.cs" />
     <Compile Include="BuildOutputs\ApiSyntaxBuildOutput.cs" />

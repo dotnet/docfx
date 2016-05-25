@@ -247,7 +247,7 @@
 {{/syntax}}
 {{#overridden}}
 <h5 class="overrides">{{__global.overrides}}</h5>
-<div>{{{specName.0.value}}}</div>
+<div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
 {{/overridden}}
 {{#remarks}}
 <h5 id="{{id}}_remarks">{{__global.remarks}}</h5>

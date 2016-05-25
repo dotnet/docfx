@@ -10,11 +10,23 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     using YamlDotNet.Serialization;
 
     [Serializable]
-    public class ApiTypeAndSpec
+    public class ApiNames
     {
         [YamlMember(Alias = "uid")]
         [JsonProperty("uid")]
         public string Uid { get; set; }
+
+        [YamlMember(Alias = "definition")]
+        [JsonProperty("definition")]
+        public string Definition { get; set; }
+
+        [YamlMember(Alias = "name")]
+        [JsonProperty("name")]
+        public List<ApiLanguageValuePair> Name { get; set; }
+
+        [YamlMember(Alias = "fullName")]
+        [JsonProperty("fullName")]
+        public List<ApiLanguageValuePair> FullName { get; set; }
 
         [YamlMember(Alias = "specName")]
         [JsonProperty("specName")]
@@ -22,25 +34,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         private bool _needExpand = true;
 
-        public static ApiTypeAndSpec FromUid(string uid)
+        public static ApiNames FromUid(string uid)
         {
             if (string.IsNullOrEmpty(uid)) return null;
 
-            return new ApiTypeAndSpec
+            return new ApiNames
             {
                 Uid = uid,
-            };
-        }
-
-        public static ApiTypeAndSpec FromUid(string uid, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
-        {
-            if (string.IsNullOrEmpty(uid)) return null;
-
-            return new ApiTypeAndSpec
-            {
-                Uid = uid,
-                Spec = ApiBuildOutputUtility.GetSpec(uid, references, supportedLanguages),
-                _needExpand = false,
             };
         }
 
