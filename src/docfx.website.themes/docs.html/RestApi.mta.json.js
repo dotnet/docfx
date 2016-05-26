@@ -21,17 +21,31 @@ exports.transform = function (model) {
 
   // Clean up unused predefined properties
   var resetKeys = [
+    "_raw",
+    "basePath",
     "children",
+    "conceptual",
+    "consumes",
+    "definitions",
+    "documentation",
+    "externalDocs",
+    "footer",
+    "host",
     "htmlId",
+    "info",
+    "name",
+    "newFileRepository",
+    "parameters",
+    "produces",
+    "responses",
     "schemes",
+    "sections",
+    "security",
+    "securityDefinitions",
     "source",
     "swagger",
-    "name",
-    "uid",
-    "newFileRepository",
-    "documentation",
-    "conceptual",
-    "sections"
+    "tags",
+    "uid"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
