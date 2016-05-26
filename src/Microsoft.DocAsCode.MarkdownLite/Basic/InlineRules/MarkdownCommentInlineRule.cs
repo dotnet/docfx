@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownCommentInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Comment";
+        public virtual string Name => "Inline.Comment";
 
         public virtual Regex Comment => Regexes.Inline.Comment;
 

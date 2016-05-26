@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownNewLineBlockRule : IMarkdownRule
     {
-        public string Name => "NewLine";
+        public virtual string Name => "NewLine";
 
         public virtual Regex Newline => Regexes.Block.Newline;
 

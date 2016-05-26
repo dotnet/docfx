@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownCodeElementInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.CodeElement";
+        public virtual string Name => "Inline.CodeElement";
 
         public virtual Regex CodeElement => Regexes.Inline.CodeElement;
 

@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownCodeBlockRule : IMarkdownRule
     {
-        public string Name => "Code";
+        public virtual string Name => "Code";
 
         public virtual Regex Code => Regexes.Block.Code;
 

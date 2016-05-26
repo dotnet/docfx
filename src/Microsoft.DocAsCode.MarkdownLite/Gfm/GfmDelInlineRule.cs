@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class GfmDelInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Del";
+        public virtual string Name => "Inline.Del";
 
         public virtual Regex Del => Regexes.Inline.Gfm.Del;
 

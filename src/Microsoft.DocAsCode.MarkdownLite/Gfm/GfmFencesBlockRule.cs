@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class GfmFencesBlockRule : IMarkdownRule
     {
-        public string Name => "Fences";
+        public virtual string Name => "Fences";
 
         public virtual Regex Fences => Regexes.Block.Gfm.Fences;
 

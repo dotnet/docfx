@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownTagInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Tag";
+        public virtual string Name => "Inline.Tag";
 
         public virtual Regex Tag => Regexes.Inline.Tag;
 

@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownCodeInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Code";
+        public virtual string Name => "Inline.Code";
 
         public virtual Regex Code => Regexes.Inline.Code;
 

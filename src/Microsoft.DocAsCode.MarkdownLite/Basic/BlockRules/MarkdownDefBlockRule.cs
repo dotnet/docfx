@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownDefBlockRule : IMarkdownRule
     {
-        public string Name => "Def";
+        public virtual string Name => "Def";
 
         public virtual Regex Def => Regexes.Block.Def;
 

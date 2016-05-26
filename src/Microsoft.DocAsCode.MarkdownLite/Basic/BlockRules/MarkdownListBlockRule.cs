@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownListBlockRule : IMarkdownRule
     {
-        public string Name => "List";
+        public virtual string Name => "List";
 
         public virtual Regex OrderList => Regexes.Block.OrderList;
 

@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownEscapeInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Escape";
+        public virtual string Name => "Inline.Escape";
 
         public virtual Regex Escape => Regexes.Inline.Escape;
 

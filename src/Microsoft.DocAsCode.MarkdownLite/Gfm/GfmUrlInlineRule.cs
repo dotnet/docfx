@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class GfmUrlInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Gfm.Url";
+        public virtual string Name => "Inline.Gfm.Url";
 
         public virtual Regex Url => Regexes.Inline.Gfm.Url;
 

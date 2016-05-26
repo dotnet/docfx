@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownLHeadingBlockRule : IMarkdownRule
     {
-        public string Name => "LHeading";
+        public virtual string Name => "LHeading";
 
         public virtual Regex LHeading => Regexes.Block.LHeading;
 

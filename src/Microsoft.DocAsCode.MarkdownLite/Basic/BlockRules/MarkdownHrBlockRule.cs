@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownHrBlockRule : IMarkdownRule
     {
-        public string Name => "Hr";
+        public virtual string Name => "Hr";
 
         public virtual Regex Hr => Regexes.Block.Hr;
 

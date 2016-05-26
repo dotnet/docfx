@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownTableBlockRule : IMarkdownRule
     {
-        public string Name => "Table";
+        public virtual string Name => "Table";
 
         public virtual Regex Table => Regexes.Block.Tables.Table;
 

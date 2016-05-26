@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownBrInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.Br";
+        public virtual string Name => "Inline.Br";
 
         public virtual Regex Br => Regexes.Inline.Br;
 

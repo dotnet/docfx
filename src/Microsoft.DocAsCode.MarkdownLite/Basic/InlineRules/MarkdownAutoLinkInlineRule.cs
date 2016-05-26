@@ -9,8 +9,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownAutoLinkInlineRule : IMarkdownRule
     {
-        public string Name => "Inline.AutoLink";
         private int _mangleCounter;
+
+        public virtual string Name => "Inline.AutoLink";
 
         public virtual Regex AutoLink => Regexes.Inline.AutoLink;
 
