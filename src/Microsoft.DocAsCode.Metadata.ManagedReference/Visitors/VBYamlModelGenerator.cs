@@ -439,7 +439,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 symbol.ReturnsVoid ?
                     SyntaxKind.SubStatement :
                     SyntaxKind.FunctionStatement,
-                GetAttributes(symbol, filterVisitor),
+                GetAttributes(symbol, filterVisitor, isExtensionMethod: symbol.IsExtensionMethod),
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
@@ -554,29 +554,37 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #endregion
 
-        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, IFilterVisitor filterVisitor, bool inOneLine = false)
+        private static SyntaxList<AttributeListSyntax> GetAttributes(ISymbol symbol, IFilterVisitor filterVisitor, bool inOneLine = false, bool isExtensionMethod = false)
         {
             var attrs = symbol.GetAttributes();
+            List<AttributeSyntax> attrList = null;
             if (attrs.Length > 0)
             {
-                var attrList = (from attr in attrs
-                                where !(attr.AttributeClass is IErrorTypeSymbol)
-                                where attr?.AttributeConstructor != null
-                                where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
-                                select GetAttributeSyntax(attr)).ToList();
-                if (attrList.Count > 0)
+                attrList = (from attr in attrs
+                            where !(attr.AttributeClass is IErrorTypeSymbol)
+                            where attr?.AttributeConstructor != null
+                            where filterVisitor.CanVisitAttribute(attr.AttributeConstructor)
+                            select GetAttributeSyntax(attr)).ToList();
+            }
+            if (isExtensionMethod)
+            {
+                attrList = attrList ?? new List<AttributeSyntax>();
+                attrList.Add(
+                    SyntaxFactory.Attribute(
+                        SyntaxFactory.ParseName(nameof(System.Runtime.CompilerServices.ExtensionAttribute))));
+            }
+            if (attrList?.Count > 0)
+            {
+                if (inOneLine)
                 {
-                    if (inOneLine)
-                    {
-                        return SyntaxFactory.SingletonList(
-                            SyntaxFactory.AttributeList(
-                                SyntaxFactory.SeparatedList(attrList)));
-                    }
-                    return SyntaxFactory.List(
-                        from attr in attrList
-                        select SyntaxFactory.AttributeList(
-                            SyntaxFactory.SingletonSeparatedList(attr)));
+                    return SyntaxFactory.SingletonList(
+                        SyntaxFactory.AttributeList(
+                            SyntaxFactory.SeparatedList(attrList)));
                 }
+                return SyntaxFactory.List(
+                    from attr in attrList
+                    select SyntaxFactory.AttributeList(
+                        SyntaxFactory.SingletonSeparatedList(attr)));
             }
             return new SyntaxList<AttributeListSyntax>();
         }

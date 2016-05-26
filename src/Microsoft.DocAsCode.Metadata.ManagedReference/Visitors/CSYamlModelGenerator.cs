@@ -400,8 +400,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 GetTypeParameters(symbol),
                 SyntaxFactory.ParameterList(
                     SyntaxFactory.SeparatedList(
-                        from p in symbol.Parameters
-                        select GetParameter(p, filterVisitor)
+                        symbol.Parameters.Select((p, i) => GetParameter(p, filterVisitor, i == 0 && symbol.IsExtensionMethod))
                     )
                 ),
                 SyntaxFactory.List(
@@ -733,18 +732,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static ParameterSyntax GetParameter(IParameterSymbol p, IFilterVisitor filterVisitor)
+        private static ParameterSyntax GetParameter(IParameterSymbol p, IFilterVisitor filterVisitor, bool isThisParameter = false)
         {
             return SyntaxFactory.Parameter(
                 GetAttributes(p, filterVisitor, true),
-                SyntaxFactory.TokenList(GetParameterModifiers(p)),
+                SyntaxFactory.TokenList(GetParameterModifiers(p, isThisParameter)),
                 GetTypeSyntax(p.Type),
                 SyntaxFactory.Identifier(p.Name),
                 GetDefaultValueClause(p));
         }
 
-        private static IEnumerable<SyntaxToken> GetParameterModifiers(IParameterSymbol parameter)
+        private static IEnumerable<SyntaxToken> GetParameterModifiers(IParameterSymbol parameter, bool isThisParameter)
         {
+            if (isThisParameter)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.ThisKeyword);
+            }
             switch (parameter.RefKind)
             {
                 case RefKind.None:

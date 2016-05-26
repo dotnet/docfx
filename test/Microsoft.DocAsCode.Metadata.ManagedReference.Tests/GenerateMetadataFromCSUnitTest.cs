@@ -2294,6 +2294,31 @@ namespace Test1
             }
         }
 
+        [Fact]
+        [Trait("Related", "ExtensionMethod")]
+        [Trait("Related", "Multilanguage")]
+        public void TestGenereateMetadataAsyncWithExtensionMethods()
+        {
+            string code = @"
+namespace Test1
+{
+    public static class Class1
+    {
+        public static void Method1(this object obj) {}
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var method = ns.Items[0].Items[0];
+            Assert.NotNull(method);
+            Assert.Equal(@"public static void Method1(this object obj)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(@"<ExtensionAttribute>
+Public Shared Sub Method1(obj As Object)", method.Syntax.Content[SyntaxLanguage.VB]);
+        }
+
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromCSharpCode(code, "test.dll", references);
