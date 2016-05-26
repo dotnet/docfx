@@ -29,6 +29,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public SourceInfo Consume(int charCount)
         {
+            var offset = CalcLineNumber();
             string markdown;
             if (CurrentMarkdown.Length == charCount)
             {
@@ -40,7 +41,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 markdown = CurrentMarkdown.Remove(charCount);
                 CurrentMarkdown = CurrentMarkdown.Substring(charCount);
             }
-            return SourceInfo.Create(markdown, _file, _lineNumber + CalcLineNumber());
+            return SourceInfo.Create(markdown, _file, _lineNumber + offset);
         }
 
         private static List<int> CreateLineIndexer(string markdown)

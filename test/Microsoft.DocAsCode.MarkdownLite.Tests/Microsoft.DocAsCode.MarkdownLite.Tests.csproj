@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="GfmTest.cs" />
     <Compile Include="PerfTest.cs" />
+    <Compile Include="SourceInfoTest.cs" />
     <Compile Include="StringBufferTest.cs" />
     <Compile Include="TokenRewriterTest.cs" />
   </ItemGroup>
