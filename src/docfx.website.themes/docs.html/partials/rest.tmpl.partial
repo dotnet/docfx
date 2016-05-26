@@ -15,7 +15,7 @@
   {{{conceptual}}}
   {{/conceptual}}
   {{^conceptual}}
-  <h3 id="{{htmlId}}" data-uid="{{uid}}">{{{summary}}}</h3>
+  <h3 id="{{htmlId}}" data-uid="{{uid}}">{{#summary}}{{{summary}}}{{/summary}}{{^summary}}{{operationId}}{{/summary}}</h3>
   {{{description}}}
   {{/conceptual}}
   </div>
