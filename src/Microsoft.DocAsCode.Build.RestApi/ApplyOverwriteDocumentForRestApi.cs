@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi
 {
+    using System;
     using System.Collections.Generic;
     using System.Composition;
     using System.Linq;
@@ -13,23 +14,30 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForRestApi : ApplyOverwriteDocument<RestApiItemViewModel>
+    public class ApplyOverwriteDocumentForRestApi : ApplyOverwriteDocument
     {
         public override string Name => nameof(ApplyOverwriteDocumentForRestApi);
 
         public override int BuildOrder => 0x10;
 
-        protected override IEnumerable<RestApiItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
-        {
-            return OverwriteDocumentReader.Transform<RestApiItemViewModel>(
-                fileModel,
-                uid,
-                s => BuildRestApiDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
-        }
+        public Func<FileModel, string, IHostService, IEnumerable<RestApiItemViewModel>> GetItemsFromOverwriteDocument =
+            (((fileModel, uid, host) =>
+            {
+                return OverwriteDocumentReader.Transform<RestApiItemViewModel>(
+                    fileModel,
+                    uid,
+                    s => BuildRestApiDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
+            }));
 
-        protected override IEnumerable<RestApiItemViewModel> GetItemsToOverwrite(FileModel model, string uid, IHostService host)
+        public Func<FileModel, string, IHostService, IEnumerable<RestApiItemViewModel>> GetItemsToOverwrite =
+            (((fileModel, uid, host) =>
+            {
+                return (new [] { (RestApiItemViewModel)fileModel.Content }.Concat(((RestApiItemViewModel)fileModel.Content).Children)).Where(s => s.Uid == uid);
+            }));
+
+        protected override void ApplyOvewriteDocument(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
         {
-            return (new RestApiItemViewModel[] { (RestApiItemViewModel)model.Content }.Concat(((RestApiItemViewModel)model.Content).Children)).Where(s => s.Uid == uid);
+            ApplyOvewriteDocument(host, od, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
         }
     }
 }
