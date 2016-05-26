@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "implements")]
         [JsonProperty("implements")]
-        public List<ApiReferenceBuildOutput> Implements { get; set; }
+        public List<ApiNames> Implements { get; set; }
 
         [YamlMember(Alias = "inheritedMembers")]
         [JsonProperty("inheritedMembers")]
@@ -189,7 +189,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 SeeAlsos = GetCrefInfoList(model.SeeAlsos, references, model.SupportedLanguages),
                 Sees = GetCrefInfoList(model.Sees, references, model.SupportedLanguages),
                 Inheritance = GetReferenceList(model.Inheritance, references, model.SupportedLanguages, true),
-                Implements = GetReferenceList(model.Implements, references, model.SupportedLanguages),
+                Implements = model.Implements?.Select(u => ApiBuildOutputUtility.GetApiNames(u, references, model.SupportedLanguages)).ToList(),
                 InheritedMembers = GetReferenceList(model.InheritedMembers, references, model.SupportedLanguages),
                 Conceptual = model.Conceptual,
                 Platform = model.Platform,
@@ -206,7 +206,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             {
                 return uids?.Select((u, i) => ApiBuildOutputUtility.GetReferenceViewModel(u, references, supportedLanguages, i)).ToList();
             }
-            else {
+            else
+            {
                 return uids?.Select(u => ApiBuildOutputUtility.GetReferenceViewModel(u, references, supportedLanguages)).ToList();
             }
         }
@@ -217,6 +218,5 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         {
             return crefs?.Select(c => ApiCrefInfoBuildOutput.FromModel(c, references, supportedLanguages)).ToList();
         }
-
     }
 }

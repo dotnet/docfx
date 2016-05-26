@@ -249,6 +249,12 @@
 <h5 class="overrides">{{__global.overrides}}</h5>
 <div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
 {{/overridden}}
+{{#implements.0}}
+<h5 class="implements">{{__global.implements}}</h5>
+{{/implements.0}}
+{{#implements}}
+<div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
+{{/implements}}
 {{#remarks}}
 <h5 id="{{id}}_remarks">{{__global.remarks}}</h5>
 <div class="markdown level1 remarks">{{{remarks}}}</div>

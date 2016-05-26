@@ -18,6 +18,7 @@
   "assembly": "程序集",
   "syntax": "语法",
   "overrides": "重写",
+  "implements": "实现",
   "remarks": "备注",
   "examples": "示例",
   "declaration": "声明",

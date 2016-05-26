@@ -734,6 +734,7 @@ namespace Test1
                 Assert.Equal("public override void M1()", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.M1", method.Overridden);
                 Assert.Equal(new[] { "public", "override" }, method.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFooBar.M1", method.Implements[0]);
             }
             {
                 var method = output.Items[0].Items[1].Items[1];
@@ -752,6 +753,7 @@ namespace Test1
                 Assert.Equal("Test1.Bar.M5``1(``0)", method.Name);
                 Assert.Equal("public int M5<TArg>(TArg arg)where TArg : struct, new ()", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFooBar.M5``1({TArg})", method.Implements[0]);
             }
             // IFooBar
             {
@@ -835,6 +837,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo`1.Test1#IFoo#Bar(System.Int32@)", method.Name);
                 Assert.Equal(@"object IFoo.Bar(ref int x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFoo.Bar(System.Int32@)", method.Implements[0]);
             }
             {
                 var method = output.Items[0].Items[0].Items[1];
@@ -844,6 +847,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{System#String}#Bar``1(``0[])", method.Name);
                 Assert.Equal(@"string IFoo<string>.Bar<TArg>(TArg[] x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFoo{System.String}.Bar``1({TArg}[])", method.Implements[0]);
             }
             {
                 var method = output.Items[0].Items[0].Items[2];
@@ -853,6 +857,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{T}#Bar``1(``0[])", method.Name);
                 Assert.Equal(@"T IFoo<T>.Bar<TArg>(TArg[] x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFoo{{T}}.Bar``1({TArg}[])", method.Implements[0]);
             }
             {
                 var p = output.Items[0].Items[0].Items[3];

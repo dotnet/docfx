@@ -43,14 +43,5 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Uid = uid,
             };
         }
-
-        public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
-        {
-            if (_needExpand)
-            {
-                _needExpand = false;
-                Spec = ApiBuildOutputUtility.GetSpec(Uid, references, supportedLanguages);
-            }
-        }
     }
 }

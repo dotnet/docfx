@@ -257,6 +257,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.Overridden = AddSpecReference(symbol.OverriddenMethod, typeGenericParameters, methodGenericParameters);
             }
 
+            if (symbol.ContainingType.AllInterfaces.Length > 0)
+            {
+                result.Implements = (from type in symbol.ContainingType.AllInterfaces
+                                     where FilterVisitor.CanVisitApi(type)
+                                     from member in type.GetMembers()
+                                     where FilterVisitor.CanVisitApi(member)
+                                     where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member))
+                                     select AddSpecReference(member, typeGenericParameters)).ToList();
+                if (result.Implements.Count == 0)
+                {
+                    result.Implements = null;
+                }
+            }
+
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
             return result;
