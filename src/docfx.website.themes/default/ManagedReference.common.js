@@ -99,11 +99,12 @@ function handleItem(vm, newFileRepository) {
   vm.docurl = common.getImproveTheDocHref(vm, newFileRepository);
   vm.sourceurl = common.getViewSourceHref(vm);
 
-  // fill "undefined" if key not existed
-  vm.summary = vm.summary;
-  vm.remarks = vm.remarks;
-  vm.conceptual = vm.conceptual;
-  vm.syntax = vm.syntax;
+  // set to null incase mustache looks up
+  vm.summary = vm.summary || null;
+  vm.remarks = vm.remarks || null;
+  vm.conceptual = vm.conceptual || null;
+  vm.syntax = vm.syntax || null;
+  vm.implements = vm.implements || null;
 
   if (vm.supported_platforms) {
       vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);
