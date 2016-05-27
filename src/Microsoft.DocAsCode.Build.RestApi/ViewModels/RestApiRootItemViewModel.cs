@@ -17,42 +17,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
-    public class RestApiItemViewModel : IOverwriteDocumentViewModel
+    public class RestApiRootItemViewModel : RestApiItemViewModelBase
     {
-        [YamlMember(Alias = Constants.PropertyName.Uid)]
-        [JsonProperty(Constants.PropertyName.Uid)]
-        [MergeOption(MergeOption.MergeKey)]
-        public string Uid { get; set; }
-
-        [YamlMember(Alias = "htmlId")]
-        [JsonProperty("htmlId")]
-        [MergeOption(MergeOption.Ignore)]
-        public string HtmlId { get; set; }
-
-        [YamlMember(Alias = "name")]
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [YamlMember(Alias = Constants.PropertyName.Path)]
-        [JsonProperty(Constants.PropertyName.Path)]
-        public string Path { get; set; }
-
-        [YamlMember(Alias = "operation")]
-        [JsonProperty("operation")]
-        public string OperationName { get; set; }
-
-        [YamlMember(Alias = "operationId")]
-        [JsonProperty("operationId")]
-        public string OperationId { get; set; }
-
-        [YamlMember(Alias = "description")]
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
-        [YamlMember(Alias = "summary")]
-        [JsonProperty("summary")]
-        public string Summary { get; set; }
-
         /// <summary>
         /// The original swagger.json cpntent
         /// `_` prefix indicates that this metadata is generated
@@ -62,34 +28,14 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
         [MergeOption(MergeOption.Ignore)]
         public string Raw { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Documentation)]
-        [JsonProperty(Constants.PropertyName.Documentation)]
-        public SourceDetail Documentation { get; set; }
-
-        [YamlMember(Alias = Constants.PropertyName.Conceptual)]
-        [JsonProperty(Constants.PropertyName.Conceptual)]
-        public string Conceptual { get; set; }
-
-        [YamlMember(Alias = "parameters")]
-        [JsonProperty("parameters")]
-        public List<RestApiParameterViewModel> Parameters { get; set; }
-
-        [YamlMember(Alias = "responses")]
-        [JsonProperty("responses")]
-        public List<RestApiResponseViewModel> Responses { get; set; }
-
         [YamlMember(Alias = "children")]
         [JsonProperty("children")]
-        public List<RestApiItemViewModel> Children { get; set; }
+        public List<RestApiChildItemViewModel> Children { get; set; }
 
-        [ExtensibleMember]
-        [JsonExtensionData]
-        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
-
-        public static RestApiItemViewModel FromSwaggerModel(Swagger.SwaggerModel swagger)
+        public static RestApiRootItemViewModel FromSwaggerModel(Swagger.SwaggerModel swagger)
         {
             var uid = GetUid(swagger);
-            var vm = new RestApiItemViewModel
+            var vm = new RestApiRootItemViewModel
             {
                 Name = swagger.Info.Title,
                 Uid = uid,
@@ -97,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
                 Metadata = swagger.Metadata,
                 Description = swagger.Description,
                 Summary = swagger.Summary,
-                Children = new List<RestApiItemViewModel>(),
+                Children = new List<RestApiChildItemViewModel>(),
                 Raw = swagger.Raw
             };
             foreach (var path in swagger.Paths)
@@ -105,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
                 foreach (var op in path.Value)
                 {
                     var itemUid = GetUidForOperation(uid, op.Value);
-                    var itemVm = new RestApiItemViewModel
+                    var itemVm = new RestApiChildItemViewModel
                     {
                         Path = path.Key,
                         OperationName = op.Key,
@@ -145,7 +91,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
 
         #region Private methods
 
-        private static Regex HtmlEncodeRegex = new Regex(@"\W", RegexOptions.Compiled);
+        private static readonly Regex HtmlEncodeRegex = new Regex(@"\W", RegexOptions.Compiled);
 
         /// <summary>
         /// TODO: merge with the one in XrefDetails

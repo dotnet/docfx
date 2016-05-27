@@ -6,7 +6,8 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ApplyOverwriteDocumentForRestApi.cs" />
+    <Compile Include="ApplyOverwriteDocumentForRestApiChild.cs" />
+    <Compile Include="ApplyOverwriteDocumentForRestApiRoot.cs" />
     <Compile Include="BuildRestApiDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Swagger\InfoObject.cs" />
@@ -26,7 +27,9 @@
     <Compile Include="Swagger\SwaggerJsonParser.cs" />
     <Compile Include="Swagger\SwaggerModel.cs" />
     <Compile Include="RestApiDocumentProcessor.cs" />
-    <Compile Include="ViewModels\RestApiItemViewModel.cs" />
+    <Compile Include="ViewModels\RestApiItemViewModelBase.cs" />
+    <Compile Include="ViewModels\RestApiRootItemViewModel.cs" />
+    <Compile Include="ViewModels\RestApiChildItemViewModel.cs" />
     <Compile Include="ViewModels\RestApiParameterViewModel.cs" />
     <Compile Include="ViewModels\RestApiResponseExampleViewModel.cs" />
     <Compile Include="ViewModels\RestApiResponseViewModel.cs" />

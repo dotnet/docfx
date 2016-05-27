@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             switch (model.Type)
             {
                 case DocumentType.Article:
-                    var restApi = (RestApiItemViewModel)model.Content;
+                    var restApi = (RestApiRootItemViewModel)model.Content;
                     BuildItem(host, restApi, model);
                     if (restApi.Children != null)
                     {
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
         }
 
-        public static RestApiItemViewModel BuildItem(IHostService host, RestApiItemViewModel item, FileModel model, Func<string, bool> filter = null)
+        public static RestApiItemViewModelBase BuildItem(IHostService host, RestApiItemViewModelBase item, FileModel model, Func<string, bool> filter = null)
         {
             item.Summary = Markup(host, item.Summary, model, filter);
             item.Description = Markup(host, item.Description, model, filter);
