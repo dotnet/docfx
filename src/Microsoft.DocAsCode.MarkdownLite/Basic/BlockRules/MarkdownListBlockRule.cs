@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             for (; i < l; i++)
             {
                 var item = cap[i];
-                lines = item.Count(ch => ch == '\n') + 1;
+                lines = CountLine(item);
                 // Remove the list item's bullet
                 // so it is seen as the next token.
                 var space = item.Length;
@@ -88,6 +88,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
 
             return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), bull.Length > 1, sourceInfo);
+        }
+
+        private static int CountLine(string item)
+        {
+            var count = 1;
+            for (int i = 0; i < item.Length; i++)
+            {
+                if (item[i] == '\n')
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
 }
