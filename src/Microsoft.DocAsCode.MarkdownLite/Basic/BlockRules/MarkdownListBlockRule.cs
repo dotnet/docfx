@@ -41,10 +41,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var l = cap.Length;
             int i = 0;
             var tokens = new List<IMarkdownToken>();
+            var lineOffset = 0;
+            var lines = 0;
             for (; i < l; i++)
             {
                 var item = cap[i];
-
+                lines = item.Count(ch => ch == '\n') + 1;
                 // Remove the list item's bullet
                 // so it is seen as the next token.
                 var space = item.Length;
@@ -74,7 +76,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     new TwoPhaseBlockToken(
                         this,
                         parser.Context,
-                        sourceInfo,
+                        sourceInfo.Copy(item, lineOffset),
                         (p, t) =>
                         {
                             p.SwitchContext(MarkdownBlockContext.IsTop, false);
@@ -82,6 +84,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                             blockTokens = TokenHelper.ParseInlineToken(p, this, blockTokens, loose, t.SourceInfo);
                             return new MarkdownListItemBlockToken(t.Rule, t.Context, blockTokens, loose, t.SourceInfo);
                         }));
+                lineOffset += lines;
             }
 
             return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), bull.Length > 1, sourceInfo);

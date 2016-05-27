@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
     {
         [Fact]
         [Trait("Related", "Markdown")]
-        [Trait("Related", "Markdown")]
         public void TestSourceInfo_Basic()
         {
             const string File = "test.md";
@@ -27,13 +26,13 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 First line.  
 More line.
 ## HEAD2
-Yeah!".Replace("\r\n", "\n"), File)).ToArray();
-            var rewriter = MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
-                (e, t) => t.Extract(gfm.Parser));
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                tokens[i] = rewriter.Rewrite(gfm.RewriteEngine, tokens[i]) ?? tokens[i];
-            }
+Yeah!".Replace("\r\n", "\n"), File));
+            var rewriter =
+                new MarkdownRewriteEngine(
+                    gfm,
+                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
+                        (e, t) => t.Extract(gfm.Parser)));
+            tokens = rewriter.Rewrite(tokens);
 
             Assert.Equal(5, tokens.Length);
             Assert.IsType<MarkdownNewLineBlockToken>(tokens[0]);
@@ -78,6 +77,109 @@ Yeah!".Replace("\r\n", "\n"), File)).ToArray();
             Assert.Equal(7, tokens[4].SourceInfo.LineNumber);
             Assert.Equal(File, tokens[4].SourceInfo.File);
             Assert.Equal("Yeah!", tokens[4].SourceInfo.Markdown);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestSourceInfo_BlockquoteAndList()
+        {
+            const string File = "test.md";
+            var gfm = new GfmEngineBuilder(new Options()).CreateEngine(new HtmlRenderer());
+            var tokens = gfm.Parser.Tokenize(
+                SourceInfo.Create(@"> blockquote
+> [link text](sometarget)
+> 
+> - list item 1
+>   - list item 1-1
+>   - list item 1-2
+> - list item 2
+>
+> more para.
+".Replace("\r\n", "\n"), File));
+            var rewriter =
+                new MarkdownRewriteEngine(
+                    gfm,
+                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
+                        (e, t) => t.Extract(gfm.Parser)));
+            tokens = rewriter.Rewrite(tokens);
+
+            Assert.Equal(1, tokens.Length);
+            Assert.IsType<MarkdownBlockquoteBlockToken>(tokens[0]);
+            var blockquote = (MarkdownBlockquoteBlockToken)tokens[0];
+            Assert.Equal(3, blockquote.Tokens.Length);
+
+            Assert.Equal(1, blockquote.SourceInfo.LineNumber);
+            Assert.Equal(File, blockquote.SourceInfo.File);
+
+            Assert.IsType<MarkdownParagraphBlockToken>(blockquote.Tokens[0]);
+            {
+                var para = (MarkdownParagraphBlockToken)blockquote.Tokens[0];
+
+                Assert.Equal(1, para.SourceInfo.LineNumber);
+                Assert.Equal(File, para.SourceInfo.File);
+
+                Assert.Equal(2, para.InlineTokens.Tokens.Length);
+
+                Assert.IsType<MarkdownTextToken>(para.InlineTokens.Tokens[0]);
+                var text = (MarkdownTextToken)para.InlineTokens.Tokens[0];
+                Assert.Equal(1, text.SourceInfo.LineNumber);
+                Assert.Equal(File, text.SourceInfo.File);
+
+                Assert.IsType<MarkdownLinkInlineToken>(para.InlineTokens.Tokens[1]);
+                var link = (MarkdownLinkInlineToken)para.InlineTokens.Tokens[1];
+                Assert.Equal(2, link.SourceInfo.LineNumber);
+                Assert.Equal(File, link.SourceInfo.File);
+            }
+            Assert.IsType<MarkdownListBlockToken>(blockquote.Tokens[1]);
+            {
+                var list = (MarkdownListBlockToken)blockquote.Tokens[1];
+
+                Assert.Equal(4, list.SourceInfo.LineNumber);
+                Assert.Equal(File, list.SourceInfo.File);
+                Assert.Equal(2, list.Tokens.Length);
+                Assert.IsType<MarkdownListItemBlockToken>(list.Tokens[0]);
+                {
+                    var listItem = (MarkdownListItemBlockToken)list.Tokens[0];
+                    Assert.Equal(4, listItem.SourceInfo.LineNumber);
+                    Assert.Equal(File, listItem.SourceInfo.File);
+
+                    Assert.IsType<MarkdownNonParagraphBlockToken>(listItem.Tokens[0]);
+                    var np = (MarkdownNonParagraphBlockToken)listItem.Tokens[0];
+                    Assert.Equal(1, np.Content.Tokens.Length);
+                    Assert.Equal(4, np.SourceInfo.LineNumber);
+                    Assert.Equal(File, np.SourceInfo.File);
+
+                    Assert.IsType<MarkdownListBlockToken>(listItem.Tokens[1]);
+                    var subList = (MarkdownListBlockToken)listItem.Tokens[1];
+                    Assert.Equal(2, subList.Tokens.Length);
+                    Assert.IsType<MarkdownListItemBlockToken>(subList.Tokens[0]);
+                    {
+                        var subListItem = (MarkdownListItemBlockToken)subList.Tokens[0];
+                        Assert.Equal(5, subListItem.SourceInfo.LineNumber);
+                        Assert.Equal(File, subListItem.SourceInfo.File);
+                    }
+                    Assert.IsType<MarkdownListItemBlockToken>(subList.Tokens[1]);
+                    {
+                        var subListItem = (MarkdownListItemBlockToken)subList.Tokens[1];
+                        Assert.Equal(6, subListItem.SourceInfo.LineNumber);
+                        Assert.Equal(File, subListItem.SourceInfo.File);
+                    }
+                }
+
+                Assert.IsType<MarkdownListItemBlockToken>(list.Tokens[1]);
+                {
+                    var listItem = (MarkdownListItemBlockToken)list.Tokens[1];
+                    Assert.Equal(7, listItem.SourceInfo.LineNumber);
+                    Assert.Equal(File, listItem.SourceInfo.File);
+                }
+            }
+
+            Assert.IsType<MarkdownParagraphBlockToken>(blockquote.Tokens[2]);
+            {
+                var para = (MarkdownParagraphBlockToken)blockquote.Tokens[2];
+                Assert.Equal(9, para.SourceInfo.LineNumber);
+                Assert.Equal(File, para.SourceInfo.File);
+            }
         }
     }
 }
