@@ -30,8 +30,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("isEii")]
         public bool IsExplicitInterfaceImplementation { get; set; }
 
-        [YamlMember(Alias = "isExtMethod")]
-        [JsonProperty("isExtMethod")]
+        [YamlMember(Alias = "isExtensionMethod")]
+        [JsonProperty("isExtensionMethod")]
         public bool IsExtensionMethod { get; set; }
 
         [YamlMember(Alias = "parent")]
