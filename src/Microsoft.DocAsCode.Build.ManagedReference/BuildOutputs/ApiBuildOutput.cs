@@ -26,6 +26,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        [YamlMember(Alias = "isEii")]
+        [JsonProperty("isEii")]
+        public bool IsExplicitInterfaceImplementation { get; set; }
+
+        [YamlMember(Alias = "isExtMethod")]
+        [JsonProperty("isExtMethod")]
+        public bool IsExtensionMethod { get; set; }
+
         [YamlMember(Alias = "parent")]
         [JsonProperty("parent")]
         public ApiReferenceBuildOutput Parent { get; set; }
@@ -169,6 +177,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             {
                 Uid = model.Uid,
                 Id = Utility.GetHtmlId(model.Uid),
+                IsExplicitInterfaceImplementation = model.IsExplicitInterfaceImplementation,
+                IsExtensionMethod = model.IsExtensionMethod,
                 Parent = ApiBuildOutputUtility.GetReferenceViewModel(model.Parent, references, model.SupportedLanguages),
                 Children = GetReferenceList(model.Children, references, model.SupportedLanguages),
                 Href = model.Href,

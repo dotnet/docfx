@@ -217,6 +217,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Uid = model.Name,
                 CommentId = model.CommentId,
+                IsExplicitInterfaceImplementation = model.IsExplicitInterfaceImplementation,
+                IsExtensionMethod = model.IsExtensionMethod,
                 Parent = model.Parent?.Name,
                 Children = model.Items?.Select(x => x.Name).OrderBy(s => s).ToList(),
                 Type = model.Type,
