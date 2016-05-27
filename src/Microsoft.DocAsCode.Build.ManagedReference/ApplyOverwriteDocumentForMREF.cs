@@ -35,9 +35,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
             }));
 
-        protected override void ApplyOvewriteDocument(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
+        protected override void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
         {
-            ApplyOvewriteDocument(host, od, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
+            ApplyOverwrite(host, od, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
         }
     }
 }

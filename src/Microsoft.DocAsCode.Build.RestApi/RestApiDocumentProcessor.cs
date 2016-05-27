@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     }
 
                     swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
-                    var vm = RestApiItemViewModel.FromSwaggerModel(swagger);
+                    var vm = RestApiRootItemViewModel.FromSwaggerModel(swagger);
                     var displayLocalPath = repoInfo?.RelativePath ?? filePath.ToDisplayPath();
                     return new FileModel(file, vm, serializer: new BinaryFormatter())
                     {
@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             {
                 throw new NotSupportedException();
             }
-            var vm = (RestApiItemViewModel)model.Content;
+            var vm = (RestApiRootItemViewModel)model.Content;
             string documentType = null;
             object documentTypeObject;
             if (vm.Metadata.TryGetValue(DocumentTypeKey, out documentTypeObject))

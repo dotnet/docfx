@@ -20,24 +20,43 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         public override int BuildOrder => 0x10;
 
-        public Func<FileModel, string, IHostService, IEnumerable<RestApiItemViewModel>> GetItemsFromOverwriteDocument =
-            (((fileModel, uid, host) =>
+        public Func<FileModel, string, IHostService, IEnumerable<RestApiRootItemViewModel>> GetRootItemsFromOverwriteDocument =
+            (((overwriteModel, uid, host) =>
             {
-                return OverwriteDocumentReader.Transform<RestApiItemViewModel>(
-                    fileModel,
+                return OverwriteDocumentReader.Transform<RestApiRootItemViewModel>(
+                    overwriteModel,
                     uid,
-                    s => BuildRestApiDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
+                    s => (RestApiRootItemViewModel)BuildRestApiDocument.BuildItem(host, s, overwriteModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
             }));
 
-        public Func<FileModel, string, IHostService, IEnumerable<RestApiItemViewModel>> GetItemsToOverwrite =
-            (((fileModel, uid, host) =>
+        public Func<FileModel, string, IHostService, IEnumerable<RestApiRootItemViewModel>> GetRootItemsToOverwrite =
+            (((articleModel, uid, host) => new[] { (RestApiRootItemViewModel)articleModel.Content }));
+
+        public Func<FileModel, string, IHostService, IEnumerable<RestApiChildItemViewModel>> GetChildItemsFromOverwriteDocument =
+            (((overwriteModel, uid, host) =>
             {
-                return (new [] { (RestApiItemViewModel)fileModel.Content }.Concat(((RestApiItemViewModel)fileModel.Content).Children)).Where(s => s.Uid == uid);
+                return OverwriteDocumentReader.Transform<RestApiChildItemViewModel>(
+                    overwriteModel,
+                    uid,
+                    s => (RestApiChildItemViewModel)BuildRestApiDocument.BuildItem(host, s, overwriteModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
             }));
 
-        protected override void ApplyOvewriteDocument(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
+        public Func<FileModel, string, IHostService, IEnumerable<RestApiChildItemViewModel>> GetChildItemsToOverwrite =
+            (((articleModel, uid, host) =>
+            {
+                return ((RestApiRootItemViewModel)articleModel.Content).Children.Where(c => c.Uid == uid);
+            }));
+
+        protected override void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
         {
-            ApplyOvewriteDocument(host, od, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
+            if (articles.Any(a => uid == ((RestApiRootItemViewModel)a.Content).Uid))
+            {
+                ApplyOverwrite(host, od, uid, articles, GetRootItemsFromOverwriteDocument, GetRootItemsToOverwrite);
+            }
+            else if (articles.Any(a => ((RestApiRootItemViewModel)a.Content).Children.Any(c => uid == c.Uid)))
+            {
+                ApplyOverwrite(host, od, uid, articles, GetChildItemsFromOverwriteDocument, GetChildItemsToOverwrite);
+            }
         }
     }
 }
