@@ -39,13 +39,13 @@ namespace Microsoft.DocAsCode.Build.Common
                     continue;
                 }
 
-                ApplyOvewriteDocument(host, od, uid, articles);
+                ApplyOverwrite(host, od, uid, articles);
             }
         }
 
-        protected abstract void ApplyOvewriteDocument(IHostService host, List<FileModel> od, string uid, List<FileModel> articles);
+        protected abstract void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles);
 
-        protected void ApplyOvewriteDocument<T>(
+        protected void ApplyOverwrite<T>(
             IHostService host,
             List<FileModel> od,
             string uid,

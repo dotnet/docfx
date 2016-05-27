@@ -6,8 +6,7 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ApplyOverwriteDocumentForRestApiChild.cs" />
-    <Compile Include="ApplyOverwriteDocumentForRestApiRoot.cs" />
+    <Compile Include="ApplyOverwriteDocumentForRestApi.cs" />
     <Compile Include="BuildRestApiDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Swagger\InfoObject.cs" />
