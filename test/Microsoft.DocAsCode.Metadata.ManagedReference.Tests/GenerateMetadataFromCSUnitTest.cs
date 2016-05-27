@@ -832,6 +832,7 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(method);
+                Assert.True(method.IsExplicitInterfaceImplementation);
                 Assert.Equal("IFoo.Bar(ref Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo.Bar(ref System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo#Bar(System.Int32@)", method.Name);
@@ -842,6 +843,7 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(method);
+                Assert.True(method.IsExplicitInterfaceImplementation);
                 Assert.Equal("IFoo<String>.Bar<TArg>(TArg[])", method.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<System.String>.Bar<TArg>(TArg[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{System#String}#Bar``1(``0[])", method.Name);
@@ -852,6 +854,7 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[2];
                 Assert.NotNull(method);
+                Assert.True(method.IsExplicitInterfaceImplementation);
                 Assert.Equal("IFoo<T>.Bar<TArg>(TArg[])", method.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<T>.Bar<TArg>(TArg[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{T}#Bar``1(``0[])", method.Name);
@@ -862,6 +865,7 @@ namespace Test1
             {
                 var p = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(p);
+                Assert.True(p.IsExplicitInterfaceImplementation);
                 Assert.Equal("IFoo<String>.P", p.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<System.String>.P", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{System#String}#P", p.Name);
@@ -875,6 +879,7 @@ namespace Test1
             {
                 var p = output.Items[0].Items[0].Items[4];
                 Assert.NotNull(p);
+                Assert.True(p.IsExplicitInterfaceImplementation);
                 Assert.Equal("IFoo<T>.P", p.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<T>.P", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{T}#P", p.Name);
@@ -888,6 +893,7 @@ namespace Test1
             {
                 var p = output.Items[0].Items[0].Items[5];
                 Assert.NotNull(p);
+                Assert.True(p.IsExplicitInterfaceImplementation);
                 Assert.Equal("IFoo<String>.Item[String]", p.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<System.String>.Item[System.String]", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{System#String}#Item(System.String)", p.Name);
@@ -900,6 +906,7 @@ namespace Test1
             {
                 var p = output.Items[0].Items[0].Items[6];
                 Assert.NotNull(p);
+                Assert.True(p.IsExplicitInterfaceImplementation);
                 Assert.Equal("IFoo<T>.Item[T]", p.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<T>.Item[T]", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{T}#Item(`0)", p.Name);
@@ -912,6 +919,7 @@ namespace Test1
             {
                 var e = output.Items[0].Items[0].Items[7];
                 Assert.NotNull(e);
+                Assert.True(e.IsExplicitInterfaceImplementation);
                 Assert.Equal("IFoo.E", e.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo.E", e.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo#E", e.Name);
@@ -2319,6 +2327,7 @@ namespace Test1
             Assert.NotNull(ns);
             var method = ns.Items[0].Items[0];
             Assert.NotNull(method);
+            Assert.True(method.IsExtensionMethod);
             Assert.Equal(@"public static void Method1(this object obj)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             Assert.Equal(@"<ExtensionAttribute>
 Public Shared Sub Method1(obj As Object)", method.Syntax.Content[SyntaxLanguage.VB]);

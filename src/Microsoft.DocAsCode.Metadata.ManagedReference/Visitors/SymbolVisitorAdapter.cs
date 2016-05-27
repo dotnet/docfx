@@ -273,6 +273,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
+            result.IsExplicitInterfaceImplementation = !symbol.ExplicitInterfaceImplementations.IsEmpty;
+            result.IsExtensionMethod = symbol.IsExtensionMethod;
+
             return result;
         }
 
@@ -336,6 +339,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
+            result.IsExplicitInterfaceImplementation = !symbol.ExplicitInterfaceImplementations.IsEmpty;
+
             return result;
         }
 
@@ -386,6 +391,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _generator.GenerateProperty(symbol, result, this);
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
+
+            result.IsExplicitInterfaceImplementation = !symbol.ExplicitInterfaceImplementations.IsEmpty;
 
             return result;
         }

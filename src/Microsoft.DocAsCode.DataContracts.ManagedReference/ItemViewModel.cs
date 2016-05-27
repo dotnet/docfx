@@ -30,6 +30,14 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty(Constants.PropertyName.Id)]
         public string Id { get; set; }
 
+        [YamlMember(Alias = "isEii")]
+        [JsonProperty("isEii")]
+        public bool IsExplicitInterfaceImplementation { get; set; }
+
+        [YamlMember(Alias = "isExtensionMethod")]
+        [JsonProperty("isExtensionMethod")]
+        public bool IsExtensionMethod { get; set; }
+
         [YamlMember(Alias = "parent")]
         [JsonProperty("parent")]
         public string Parent { get; set; }
