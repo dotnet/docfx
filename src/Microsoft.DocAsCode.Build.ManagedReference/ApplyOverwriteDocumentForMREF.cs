@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
+    using System;
     using System.Collections.Generic;
     using System.Composition;
     using System.Linq;
@@ -13,23 +14,30 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument<ItemViewModel>
+    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument
     {
         public override string Name => nameof(ApplyOverwriteDocumentForMref);
 
         public override int BuildOrder => 0x10;
 
-        protected override IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
-        {
-            return OverwriteDocumentReader.Transform<ItemViewModel>(
-                fileModel,
-                uid,
-                s => BuildManagedReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
-        }
+        public Func<FileModel, string, IHostService, IEnumerable<ItemViewModel>> GetItemsFromOverwriteDocument =
+            (((fileModel, uid, host) =>
+            {
+                return OverwriteDocumentReader.Transform<ItemViewModel>(
+                    fileModel,
+                    uid,
+                    s => BuildManagedReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
+            }));
 
-        protected override IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel model, string uid, IHostService host)
+        public Func<FileModel, string, IHostService, IEnumerable<ItemViewModel>> GetItemsToOverwrite =
+            (((fileModel, uid, host) =>
+            {
+                return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
+            }));
+
+        protected override void ApplyOvewriteDocument(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
         {
-            return ((PageViewModel)model.Content).Items.Where(s => s.Uid == uid);
+            ApplyOvewriteDocument(host, od, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
         }
     }
 }

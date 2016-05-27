@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
-    public abstract class ApplyOverwriteDocument<T> : BaseDocumentBuildStep where T : class, IOverwriteDocumentViewModel
+    public abstract class ApplyOverwriteDocument : BaseDocumentBuildStep
     {
         private readonly MergerFacade Merger = new MergerFacade(
                 new DictionaryMerger(
@@ -27,10 +27,6 @@ namespace Microsoft.DocAsCode.Build.Common
             }
         }
 
-        protected abstract IEnumerable<T> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host);
-
-        protected abstract IEnumerable<T> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host);
-
         protected virtual void ApplyOverwrites(ImmutableList<FileModel> models, IHostService host)
         {
             foreach (var uid in host.GetAllUids())
@@ -43,40 +39,54 @@ namespace Microsoft.DocAsCode.Build.Common
                     continue;
                 }
 
-                // Multiple UID in overwrite documents is allowed now
-                var ovms =
-                    (from fm in od.Distinct()
-                     from content in GetItemsFromOverwriteDocument(fm, uid, host)
-                     select new
-                     {
-                         model = content,
-                         fileModel = fm
-                     }).ToList();
-
-                if (ovms.Count == 0)
-                {
-                    continue;
-                }
-
-                // 1. merge all the overwrite document into one overwrite view model
-                var ovm = ovms.Skip(1).Aggregate(ovms[0].model, (accum, item) => Merge(accum, item.model, item.fileModel));
-                
-                // 2. apply the view model to articles matching the uid
-                foreach (
-                    var pair in
-                        from model in articles
-                        from item in GetItemsToOverwrite(model, uid, host)
-                        select new { model, item })
-                {
-                    var vm = pair.item;
-                    Merge(vm, ovm, ovms[0].fileModel);
-                    ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od[0].Properties.LinkToUids);
-                    ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od[0].Properties.LinkToFiles);
-                }
+                ApplyOvewriteDocument(host, od, uid, articles);
             }
         }
 
-        private T Merge(T baseModel, T overrideModel, FileModel model)
+        protected abstract void ApplyOvewriteDocument(IHostService host, List<FileModel> od, string uid, List<FileModel> articles);
+
+        protected void ApplyOvewriteDocument<T>(
+            IHostService host,
+            List<FileModel> od,
+            string uid,
+            List<FileModel> articles,
+            Func<FileModel, string, IHostService, IEnumerable<T>> getItemsFromOverwriteDocument,
+            Func<FileModel, string, IHostService, IEnumerable<T>> getItemsToOverwrite)
+            where T : class, IOverwriteDocumentViewModel
+        {
+            // Multiple UID in overwrite documents is allowed now
+            var ovms =
+                (from fm in od.Distinct()
+                 from content in getItemsFromOverwriteDocument(fm, uid, host)
+                 select new
+                 {
+                     model = content,
+                     fileModel = fm
+                 }).ToList();
+
+            if (ovms.Count == 0)
+            {
+                return;
+            }
+
+            // 1. merge all the overwrite document into one overwrite view model
+            var ovm = ovms.Skip(1).Aggregate(ovms[0].model, (accum, item) => Merge(accum, item.model, item.fileModel));
+
+            // 2. apply the view model to articles matching the uid
+            foreach (
+                var pair in
+                    from model in articles
+                    from item in getItemsToOverwrite(model, uid, host)
+                    select new { model, item })
+            {
+                var vm = pair.item;
+                Merge(vm, ovm, ovms[0].fileModel);
+                ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od[0].Properties.LinkToUids);
+                ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od[0].Properties.LinkToFiles);
+            }
+        }
+
+        private T Merge<T>(T baseModel, T overrideModel, FileModel model) where T : class, IOverwriteDocumentViewModel
         {
             try
             {
