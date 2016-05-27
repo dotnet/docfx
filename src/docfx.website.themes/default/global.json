@@ -18,6 +18,7 @@
   "assembly": "Assembly",
   "syntax": "Syntax",
   "overrides": "Overrides",
+  "implements": "Implements",
   "remarks": "Remarks",
   "examples": "Examples",
   "declaration": "Declaration",

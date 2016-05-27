@@ -32,8 +32,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("specName")]
         public List<ApiLanguageValuePair> Spec { get; set; }
 
-        private bool _needExpand = true;
-
         public static ApiNames FromUid(string uid)
         {
             if (string.IsNullOrEmpty(uid)) return null;
@@ -42,15 +40,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             {
                 Uid = uid,
             };
-        }
-
-        public void Expand(Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
-        {
-            if (_needExpand)
-            {
-                _needExpand = false;
-                Spec = ApiBuildOutputUtility.GetSpec(Uid, references, supportedLanguages);
-            }
         }
     }
 }

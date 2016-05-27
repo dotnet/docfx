@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (_needExpand)
             {
                 _needExpand = false;
-                Type?.Expand(references, supportedLanguages);
+                Type = ApiBuildOutputUtility.GetApiNames(Type?.Uid, references, supportedLanguages);
             }
         }
     }

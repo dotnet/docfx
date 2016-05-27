@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "implements")]
         [JsonProperty("implements")]
-        public List<string> Implements { get; set; }
+        public List<ApiNames> Implements { get; set; }
 
         [YamlMember(Alias = "inheritedMembers")]
         [JsonProperty("inheritedMembers")]
@@ -215,7 +215,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 SeeAlsos = vm.SeeAlsos?.Select(s => ApiCrefInfoBuildOutput.FromModel(s)).ToList(),
                 Sees = vm.Sees?.Select(s => ApiCrefInfoBuildOutput.FromModel(s)).ToList(),
                 Inheritance = vm.Inheritance?.Select(i => FromUid(i)).ToList(),
-                Implements = vm.Implements,
+                Implements = vm.Implements?.Select(i => ApiNames.FromUid(i)).ToList(),
                 InheritedMembers = vm.InheritedMembers,
                 Modifiers = vm.Modifiers,
                 Conceptual = vm.Conceptual,
@@ -235,6 +235,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             {
                 _needExpand = false;
                 Inheritance = Inheritance?.Select(i => ApiBuildOutputUtility.GetReferenceViewModel(i.Uid, references, supportedLanguages)).ToList();
+                Implements = Implements?.Select(i => ApiBuildOutputUtility.GetApiNames(i.Uid, references, supportedLanguages)).ToList();
                 Syntax?.Expand(references, supportedLanguages);
                 Overridden = ApiBuildOutputUtility.GetApiNames(Overridden?.Uid, references, supportedLanguages);
                 SeeAlsos?.ForEach(e => e.Expand(references, supportedLanguages));
@@ -255,7 +256,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             }
             return null;
         }
-
 
         private static string GetSpecName(List<SpecViewModel> spec)
         {
