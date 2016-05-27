@@ -3,19 +3,21 @@ var common = require('./common.js');
 
 exports.transform = function (model)  {
   var namespaceItems = {
-    "class":        { inClass: true,        typePropertyName: "inClass",        id: "classes" },
-    "struct":       { inStruct: true,       typePropertyName: "inStruct",       id: "structs" },
-    "interface":    { inInterface: true,    typePropertyName: "inInterface",    id: "interfaces" },
-    "enum":         { inEnum: true,         typePropertyName: "inEnum",         id: "enums" },
-    "delegate":     { inDelegate: true,     typePropertyName: "inDelegate",     id: "delegates" }
+    "class":           { inClass: true,           typePropertyName: "inClass",           id: "classes" },
+    "struct":          { inStruct: true,          typePropertyName: "inStruct",          id: "structs" },
+    "interface":       { inInterface: true,       typePropertyName: "inInterface",       id: "interfaces" },
+    "enum":            { inEnum: true,            typePropertyName: "inEnum",            id: "enums" },
+    "delegate":        { inDelegate: true,        typePropertyName: "inDelegate",        id: "delegates" }
   };
   var classItems = {
-    "constructor":  { inConstructor: true,  typePropertyName: "inConstructor",  id: "constructors" },
-    "field":        { inField: true,        typePropertyName: "inField",        id: "fields" },
-    "property":     { inProperty: true,     typePropertyName: "inProperty",     id: "properties" },
-    "method":       { inMethod: true,       typePropertyName: "inMethod",       id: "methods" },
-    "event":        { inEvent: true,        typePropertyName: "inEvent",        id: "events" },
-    "operator":     { inOperator: true,     typePropertyName: "inOperator",     id: "operators" }
+    "constructor":     { inConstructor: true,     typePropertyName: "inConstructor",     id: "constructors" },
+    "field":           { inField: true,           typePropertyName: "inField",           id: "fields" },
+    "property":        { inProperty: true,        typePropertyName: "inProperty",        id: "properties" },
+    "method":          { inMethod: true,          typePropertyName: "inMethod",          id: "methods" },
+    "event":           { inEvent: true,           typePropertyName: "inEvent",           id: "events" },
+    "operator":        { inOperator: true,        typePropertyName: "inOperator",        id: "operators" },
+    "eii":             { inEii: true,             typePropertyName: "inEii",             id: "eii" },
+    "extensionMethod": { inExtensionMethod: true, typePropertyName: "inExtensionMethod", id: "extensionMethod" }
   };
 
   if (!model) return null;
@@ -52,7 +54,13 @@ function groupChildren(model, typeChildrenItems) {
   var grouped = {};
 
   model.children.forEach(function (c) {
-    var type = c.type.toLowerCase();
+    if (c.isEii) {
+      var type = "eii";
+    } else if (c.isExtensionMethod) {
+      var type = "extensionMethod"
+    } else {
+      var type = c.type.toLowerCase();
+    }
     if (!grouped.hasOwnProperty(type)) {
       grouped[type] = [];
     }

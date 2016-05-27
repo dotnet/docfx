@@ -10,6 +10,8 @@
   "methodsInSubtitle": "Methods",
   "eventsInSubtitle": "Events",
   "operatorsInSubtitle": "Operators",
+  "eiisInSubtitle": "Explicit Interface Implementations",
+  "extensionMethodsInSubtitle": "Extension Methods",
   "improveThisDoc": "Improve this Doc",
   "viewSource": "View Source",
   "inheritance": "Inheritance",

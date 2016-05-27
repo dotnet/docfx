@@ -10,6 +10,8 @@
   "methodsInSubtitle": "方法",
   "eventsInSubtitle": "事件",
   "operatorsInSubtitle": "运算符",
+  "eiisInSubtitle": "显示接口实现",
+  "extensionMethodsInSubtitle": "扩展方法",
   "improveThisDoc": "改善此文档",
   "viewSource": "查看源代码",
   "inheritance": "继承",
