@@ -32,8 +32,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("specName")]
         public List<ApiLanguageValuePair> Spec { get; set; }
 
-        private bool _needExpand = true;
-
         public static ApiNames FromUid(string uid)
         {
             if (string.IsNullOrEmpty(uid)) return null;
