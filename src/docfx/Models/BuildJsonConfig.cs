@@ -90,5 +90,11 @@ namespace Microsoft.DocAsCode
         [JsonProperty("markdownEngineProperties")]
         [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
         public Dictionary<string, object> MarkdownEngineProperties { get; set; }
+
+        /// <summary>
+        /// Disable default lang keyword, e.g. <see langword="null"/>
+        /// </summary>
+        [JsonProperty("noLangKeyword")]
+        public bool NoLangKeyword { get; set; }
     }
 }

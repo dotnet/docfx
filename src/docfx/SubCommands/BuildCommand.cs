@@ -232,6 +232,10 @@ namespace Microsoft.DocAsCode.SubCommands
                             }
                         });
             }
+            if (options.NoLangKeyword != null)
+            {
+                config.NoLangKeyword = options.NoLangKeyword.Value;
+            }
 
             config.FileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
             config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);

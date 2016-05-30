@@ -89,5 +89,8 @@ namespace Microsoft.DocAsCode
 
         [Option("markdownEngineProperties", HelpText = "Set the parameters for markdown engine, value should be a JSON string.")]
         public string MarkdownEngineProperties { get; set; }
+
+        [Option("noLangKeyword", HelpText = "Disable default lang keyword.")]
+        public bool? NoLangKeyword { get; set; }
     }
 }

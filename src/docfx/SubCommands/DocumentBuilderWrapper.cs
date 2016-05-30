@@ -165,6 +165,10 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
             }
+            if (!config.NoLangKeyword)
+            {
+                parameters.XRefMaps = parameters.XRefMaps.Add("embedded:docfx/langwordMapping.yml");
+            }
 
             parameters.Files = GetFileCollectionFromFileMapping(
                 baseDirectory,
