@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using HtmlAgilityPack;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
@@ -81,11 +80,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public MarkupResult Markup(string markdown, FileAndType ft)
+        public MarkupResult Markup(string markdown, FileAndType ft, bool isMarkuped = false)
         {
             try
             {
-                return MarkupCore(markdown, ft);
+                return MarkupCore(markdown, ft, isMarkuped);
             }
             catch (Exception ex)
             {
@@ -93,6 +92,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning($"Markup failed:{Environment.NewLine}  Markdown: {markdown}{Environment.NewLine}  Details:{ex.ToString()}");
                 return new MarkupResult { Html = markdown };
             }
+        }
+
+        public string MarkupToHtml(string markdown, string file)
+        {
+            return MarkdownService.Markup(markdown, file);
+        }
+
+        private MarkupResult MarkupCore(string markdown, FileAndType ft, bool isMarkuped = false)
+        {
+            var html = isMarkuped ? markdown : MarkupToHtml(markdown, ft.File);
+            return ParseHtml(html, ft);
         }
 
         public void LogVerbose(string message, string file, string line)
@@ -179,9 +189,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private MarkupResult MarkupCore(string markdown, FileAndType ft)
+        private MarkupResult ParseHtml(string html, FileAndType ft)
         {
-            var html = MarkdownService.Markup(markdown, ft.File);
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
             var result = new MarkupResult();
