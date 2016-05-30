@@ -35,6 +35,13 @@ namespace Microsoft.DocAsCode.Build.RestApi
                             BuildItem(host, item, model);
                         }
                     }
+                    if (restApi.Tags != null)
+                    {
+                        foreach (var tag in restApi.Tags)
+                        {
+                            tag.Description = Markup(host, tag.Description, model);
+                        }
+                    }
                     break;
                 case DocumentType.Overwrite:
                     break;

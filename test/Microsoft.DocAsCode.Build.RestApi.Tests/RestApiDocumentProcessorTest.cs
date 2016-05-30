@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using System.Collections.Immutable;
     using System.IO;
 
+    using Newtonsoft.Json.Linq;
     using Xunit;
 
     using Microsoft.DocAsCode.Build.Engine;
@@ -42,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         }
 
         [Fact]
-        public void ProcessSwaggerhouldSucceed()
+        public void ProcessSwaggerShouldSucceed()
         {
             FileCollection files = new FileCollection(_defaultFiles);
             BuildDocument(files);
@@ -61,6 +62,28 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("1.6", item1.Parameters[0].Metadata["default"]);
             Assert.Equal(1, item1.Responses.Count);
             Assert.Equal("200", item1.Responses[0].HttpStatusCode);
+
+            // Verify tags of child
+            var item1Tag = (JArray)(item1.Metadata["tags"]);
+            Assert.NotNull(item1Tag);
+            Assert.Equal("contacts", item1Tag[0]);
+            var item2 = model.Children[1];
+            var item2Tag = (JArray)(item2.Metadata["tags"]);
+            Assert.NotNull(item2Tag);
+            Assert.Equal("contacts", item2Tag[0]);
+            Assert.Equal("store", item2Tag[1]);
+
+            // Verify tags of root
+            Assert.Equal(3, model.Tags.Count);
+            var tag1 = model.Tags[0];
+            Assert.Equal("contact", tag1.Name);
+            Assert.Equal("<p>Everything about the <strong>contacts</strong></p>\n", tag1.Description);
+            Assert.Equal("contact-bookmark", tag1.BookmarkId);
+            Assert.Equal(1, tag1.Metadata.Count);
+            var externalDocs = (JObject)tag1.Metadata["externalDocs"];
+            Assert.NotNull(externalDocs);
+            Assert.Equal("Find out more", externalDocs["description"]);
+            Assert.Equal("http://swagger.io", externalDocs["url"]);
         }
 
         [Fact]

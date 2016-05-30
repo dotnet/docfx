@@ -18,6 +18,7 @@ exports.transform = function (model) {
             child.sourceurl = child.sourceurl || common.getViewSourceHref(child);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
+            // todo: remove sections after content updated
             if (model.sections && child.uid) {
                 var index = model.sections.indexOf(child.uid);
                 if (index > -1) {
@@ -28,13 +29,42 @@ exports.transform = function (model) {
             formatExample(child.responses);
             model.children[i] = transformReference(model.children[i]);
         };
+        // todo: remove sections after content updated
         if (model.sections) {
             // Remove empty values from ordered, in case item in sections is not in swagger json 
-            model.children = ordered.filter(function(o) { return o; });
+            model.children = ordered.filter(function (o) { return o; });
+        }
+        if (model.tags) {
+            for (var i = 0; i < model.tags.length; i++) {
+                var children = getChildrenByTag(model.children, model.tags[i].name);
+                if (children) {
+                    // set children into tag section
+                    model.tags[i].children = children;
+                }
+            }
+            for (var i = 0; i < model.children.length; i++) {
+                var child = model.children[i];
+                if (child.includedInTags) {
+                    // set child to undefined, which is already moved to tag section
+                    model.children[i] = undefined;
+                }
+            }
+            // remove undefined child
+            model.children = model.children.filter(function (o) { return o; });
         }
     }
 
     return model;
+
+    function getChildrenByTag(children, tag) {
+        if (!children) return;
+        return children.filter(function (child) {
+            if (child.tags && child.tags.indexOf(tag) > -1) {
+                child.includedInTags = true;
+                return child;
+            }
+        })
+    }
 
     function formatExample(responses) {
         if (!responses) return;
@@ -118,12 +148,12 @@ exports.transform = function (model) {
     function appendQueryParamsToPath(path, parameters) {
         if (!path || !parameters) return path;
 
-        var requiredQueryParams = parameters.filter(function(p) { return p.in === 'query' && p.required; });
+        var requiredQueryParams = parameters.filter(function (p) { return p.in === 'query' && p.required; });
         if (requiredQueryParams.length > 0) {
             path = formatParams(path, requiredQueryParams, true);
         }
 
-        var optionalQueryParams = parameters.filter(function(p) { return p.in === 'query' && !p.required; });
+        var optionalQueryParams = parameters.filter(function (p) { return p.in === 'query' && !p.required; });
         if (optionalQueryParams.length > 0) {
             path += "[";
             path = formatParams(path, optionalQueryParams, requiredQueryParams.length == 0);

@@ -28,6 +28,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
         [MergeOption(MergeOption.Ignore)]
         public string Raw { get; set; }
 
+        [YamlMember(Alias = "tags")]
+        [JsonProperty("tags")]
+        public List<RestApiTagViewModel> Tags { get; set; }
+
         [YamlMember(Alias = "children")]
         [JsonProperty("children")]
         public List<RestApiChildItemViewModel> Children { get; set; }
@@ -44,8 +48,22 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
                 Description = swagger.Description,
                 Summary = swagger.Summary,
                 Children = new List<RestApiChildItemViewModel>(),
-                Raw = swagger.Raw
+                Raw = swagger.Raw,
+                Tags = new List<RestApiTagViewModel>()
             };
+            if (swagger.Tags != null)
+            {
+                foreach (var tag in swagger.Tags)
+                {
+                    vm.Tags.Add(new RestApiTagViewModel
+                    {
+                        Name = tag.Name,
+                        Description = tag.Description,
+                        BookmarkId = tag.BookmarkId,
+                        Metadata = tag.Metadata
+                    });
+                }
+            }
             foreach (var path in swagger.Paths)
             {
                 foreach (var op in path.Value)

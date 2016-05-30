@@ -20,6 +20,7 @@
     <Compile Include="Swagger\Internals\SwaggerValue.cs" />
     <Compile Include="Swagger\OperationObject.cs" />
     <Compile Include="Swagger\ParameterObject.cs" />
+    <Compile Include="Swagger\TagItemObject.cs" />
     <Compile Include="Swagger\PathItemObject.cs" />
     <Compile Include="Swagger\PathsObject.cs" />
     <Compile Include="Swagger\ResponseObject.cs" />
@@ -29,6 +30,7 @@
     <Compile Include="ViewModels\RestApiItemViewModelBase.cs" />
     <Compile Include="ViewModels\RestApiRootItemViewModel.cs" />
     <Compile Include="ViewModels\RestApiChildItemViewModel.cs" />
+    <Compile Include="ViewModels\RestApiTagViewModel.cs" />
     <Compile Include="ViewModels\RestApiParameterViewModel.cs" />
     <Compile Include="ViewModels\RestApiResponseExampleViewModel.cs" />
     <Compile Include="ViewModels\RestApiResponseViewModel.cs" />

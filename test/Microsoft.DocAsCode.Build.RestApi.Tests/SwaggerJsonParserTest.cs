@@ -72,6 +72,24 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         }
 
         [Fact]
+        public void ParseSwaggerJsonWithTagShouldSucceed()
+        {
+            const string swaggerFile = @"TestData\swagger\tag_swagger2.json";
+            var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
+
+            Assert.Equal(3, swagger.Tags.Count);
+            var tag0 = swagger.Tags[0];
+            Assert.Equal("contact", tag0.Name);
+            Assert.Equal("Everything about the **contacts**", tag0.Description);
+            Assert.Equal("contact-bookmark", tag0.BookmarkId);
+            Assert.Equal(1, tag0.Metadata.Count);
+            var externalDocs = (JObject)tag0.Metadata["externalDocs"];
+            Assert.NotNull(externalDocs);
+            Assert.Equal("Find out more", externalDocs["description"]);
+            Assert.Equal("http://swagger.io", externalDocs["url"]);
+        }
+
+        [Fact]
         public void ParseSwaggerJsonWithLoopReferenceShouldFail()
         {
             var swaggerFile = @"TestData\swagger\loopref_swagger2.json";

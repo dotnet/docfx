@@ -109,6 +109,9 @@
     <None Include="TestData\swagger\ref_swagger2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="TestData\swagger\tag_swagger2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\swagger\simple_swagger2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

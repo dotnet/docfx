@@ -78,6 +78,13 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
         [JsonProperty("responses")]
         public object Responses { get; set; }
 
+        /// <summary>
+        /// A list of tags used by the specification with additional metadata. The order of the tags can be used to reflect on their order by the parsing tools.
+        /// </summary>
+        [YamlMember(Alias = "tags")]
+        [JsonProperty("tags")]
+        public List<TagItemObject> Tags { get; set; }
+
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
