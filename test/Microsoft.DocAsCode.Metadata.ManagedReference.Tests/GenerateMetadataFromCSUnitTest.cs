@@ -828,6 +828,9 @@ namespace Test1
                 Assert.Equal("Test1.Foo`1", type.Name);
                 Assert.Equal(@"public class Foo<T> : IFoo, IFoo<string>, IFoo<T> where T : class", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public", "class" }, type.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Contains("Test1.IFoo", type.Implements);
+                Assert.Contains("Test1.IFoo{System.String}", type.Implements);
+                Assert.Contains("Test1.IFoo{{T}}", type.Implements);
             }
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -875,6 +878,7 @@ namespace Test1
     set;
 }", p.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "get", "set" }, p.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFoo{System.String}.P", p.Implements[0]);
             }
             {
                 var p = output.Items[0].Items[0].Items[4];
@@ -889,6 +893,7 @@ namespace Test1
     set;
 }", p.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "get", "set" }, p.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFoo{{T}}.P", p.Implements[0]);
             }
             {
                 var p = output.Items[0].Items[0].Items[5];
@@ -902,6 +907,7 @@ namespace Test1
     get;
 }", p.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "get", }, p.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFoo{System.String}.Item(System.String)", p.Implements[0]);
             }
             {
                 var p = output.Items[0].Items[0].Items[6];
@@ -915,6 +921,7 @@ namespace Test1
     get;
 }", p.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "get", }, p.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFoo{{T}}.Item({T})", p.Implements[0]);
             }
             {
                 var e = output.Items[0].Items[0].Items[7];
@@ -925,6 +932,7 @@ namespace Test1
                 Assert.Equal("Test1.Foo`1.Test1#IFoo#E", e.Name);
                 Assert.Equal(@"event EventHandler IFoo.E", e.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new string[0], e.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFoo.E", e.Implements[0]);
             }
         }
 
@@ -1800,6 +1808,7 @@ namespace Test1
     set;
 }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "public", "virtual", "get", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFooBar.Item(System.Int32)", indexer.Implements[0]);
             }
             {
                 var indexer = output.Items[0].Items[1].Items[1];
@@ -1813,6 +1822,7 @@ namespace Test1
 }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.Item(System.String)", indexer.Overridden);
                 Assert.Equal(new[] { "public", "override", "get" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFooBar.Item(System.String)", indexer.Implements[0]);
             }
             {
                 var indexer = output.Items[0].Items[1].Items[2];
@@ -1826,6 +1836,7 @@ namespace Test1
 }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.Item(System.Object)", indexer.Overridden);
                 Assert.Equal(new[] { "public", "override", "sealed", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFooBar.Item(System.Object)", indexer.Implements[0]);
             }
             // IFooBar
             {
