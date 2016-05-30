@@ -257,19 +257,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.Overridden = AddSpecReference(symbol.OverriddenMethod, typeGenericParameters, methodGenericParameters);
             }
 
-            if (symbol.ContainingType.AllInterfaces.Length > 0)
-            {
-                result.Implements = (from type in symbol.ContainingType.AllInterfaces
-                                     where FilterVisitor.CanVisitApi(type)
-                                     from member in type.GetMembers()
-                                     where FilterVisitor.CanVisitApi(member)
-                                     where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member))
-                                     select AddSpecReference(member, typeGenericParameters)).ToList();
-                if (result.Implements.Count == 0)
-                {
-                    result.Implements = null;
-                }
-            }
+            AddMemberImplements(symbol, result, typeGenericParameters, methodGenericParameters);
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
@@ -337,6 +325,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
             Debug.Assert(result.Syntax.Return.Type != null);
 
+            AddMemberImplements(symbol, result, typeGenericParameters);
+
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
             result.IsExplicitInterfaceImplementation = !symbol.ExplicitInterfaceImplementations.IsEmpty;
@@ -389,6 +379,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             _generator.GenerateProperty(symbol, result, this);
+
+            AddMemberImplements(symbol, result, typeGenericParameters);
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
@@ -612,6 +604,39 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var inheritedMembers = (from r in dict.Values where r != null select r).ToList();
                 item.InheritedMembers = inheritedMembers.Count > 0 ? inheritedMembers : null;
+            }
+        }
+
+        private void AddMemberImplements(ISymbol symbol, MetadataItem item, IReadOnlyList<string> typeGenericParameters = null)
+        {
+            if (symbol.ContainingType.AllInterfaces.Length <= 0) return;
+            item.Implements = (from type in symbol.ContainingType.AllInterfaces
+                               where FilterVisitor.CanVisitApi(type)
+                               from member in type.GetMembers()
+                               where FilterVisitor.CanVisitApi(member)
+                               where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member))
+                               select AddSpecReference(member, typeGenericParameters)).ToList();
+            if (item.Implements.Count == 0)
+            {
+                item.Implements = null;
+            }
+        }
+
+        private void AddMemberImplements(IMethodSymbol symbol, MetadataItem item, IReadOnlyList<string> typeGenericParameters = null, IReadOnlyList<string> methodGenericParameters = null)
+        {
+            if (symbol.ContainingType.AllInterfaces.Length <= 0) return;
+            item.Implements = (from type in symbol.ContainingType.AllInterfaces
+                               where FilterVisitor.CanVisitApi(type)
+                               from member in type.GetMembers()
+                               where FilterVisitor.CanVisitApi(member)
+                               where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member))
+                               select AddSpecReference(
+                                   symbol.TypeParameters.Length == 0 ? member : ((IMethodSymbol)member).Construct(symbol.TypeParameters.ToArray<ITypeSymbol>()),
+                                   typeGenericParameters,
+                                   methodGenericParameters)).ToList();
+            if (item.Implements.Count == 0)
+            {
+                item.Implements = null;
             }
         }
 

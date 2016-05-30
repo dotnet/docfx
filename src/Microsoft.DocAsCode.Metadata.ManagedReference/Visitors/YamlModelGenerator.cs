@@ -77,9 +77,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             IReadOnlyList<string> typeGenericParameters,
             IReadOnlyList<string> methodGenericParameters,
             Dictionary<string, ReferenceItem> references,
-            SymbolVisitorAdapter adapter)
+            SymbolVisitorAdapter adapter,
+            bool useDef = false)
         {
-            var id = SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
+            var id = useDef ? VisitorHelper.GetId(symbol) : SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
             ReferenceItem reference = new ReferenceItem();
             reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
             GenerateReferenceInternal(symbol, reference, adapter);
@@ -89,7 +90,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var def = symbol.OriginalDefinition;
                 var typeParameters = def.Accept(TypeGenericParameterNameVisitor.Instance);
-                reference.Definition = AddSpecReference(def, typeParameters, null, references, adapter);
+                reference.Definition = AddSpecReference(def, typeParameters, null, references, adapter, true);
             }
 
             reference.Parent = GetReferenceParent(symbol, typeGenericParameters, methodGenericParameters, references, adapter);
