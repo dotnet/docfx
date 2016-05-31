@@ -15,7 +15,8 @@ exports.transform = function (model)  {
     "property":     { inProperty: true,     typePropertyName: "inProperty",     id: "properties" },
     "method":       { inMethod: true,       typePropertyName: "inMethod",       id: "methods" },
     "event":        { inEvent: true,        typePropertyName: "inEvent",        id: "events" },
-    "operator":     { inOperator: true,     typePropertyName: "inOperator",     id: "operators" }
+    "operator":     { inOperator: true,     typePropertyName: "inOperator",     id: "operators" },
+    "eii":          { inEii: true,          typePropertyName: "inEii",          id: "eii" }
   };
 
   if (!model) return null;
@@ -52,7 +53,11 @@ function groupChildren(model, typeChildrenItems) {
   var grouped = {};
 
   model.children.forEach(function (c) {
-    var type = c.type.toLowerCase();
+    if (c.isEii) {
+      var type = "eii";
+    } else {
+      var type = c.type.toLowerCase();
+    }
     if (!grouped.hasOwnProperty(type)) {
       grouped[type] = [];
     }
