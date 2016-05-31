@@ -10,6 +10,15 @@
     {{/hideTitleType}}
   </h1>
 </header>
+{{#summary}}
+<div class="level">
+  <section class="primary">
+    {{{summary}}}
+  </section>
+  <section class="secondary">
+  </section>
+</div>
+{{/summary}}
 <div class="level">
   <section class="primary">
     <div class="alert alert-minimal inheritance">
@@ -51,18 +60,6 @@
     </div>
   </section>
 </div>
-{{#summary}}
-<header class="header" id="summary">
-  <h2>Introduction</h2>
-</header>
-<div class="level">
-  <section class="primary">
-    {{{summary}}}
-  </section>
-  <section class="secondary">
-  </section>
-</div>
-{{/summary}}
 {{#conceptual}}
 <header class="header" id="conceptual">
   <h2>Using</h2>
