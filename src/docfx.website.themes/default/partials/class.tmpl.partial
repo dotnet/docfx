@@ -253,7 +253,12 @@
 <h5 class="implements">{{__global.implements}}</h5>
 {{/implements.0}}
 {{#implements}}
-<div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
+  {{#definition}}
+    <div><xref href="{{definition}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
+  {{/definition}}
+  {{^definition}}
+    <div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
+  {{/definition}}
 {{/implements}}
 {{#remarks}}
 <h5 id="{{id}}_remarks">{{__global.remarks}}</h5>
