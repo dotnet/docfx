@@ -7,7 +7,6 @@ exports.transform = function (model) {
     model.docurl = model.docurl || common.getImproveTheDocHref(model, model.newFileRepository);
     model.sourceurl = model.sourceurl || common.getViewSourceHref(model);
     if (model.children) {
-        var ordered = [];
         for (var i = 0; i < model.children.length; i++) {
             var child = model.children[i];
             child.docurl = child.docurl || common.getImproveTheDocHref(child, model.newFileRepository);
@@ -18,22 +17,10 @@ exports.transform = function (model) {
             child.sourceurl = child.sourceurl || common.getViewSourceHref(child);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
-            // todo: remove sections after content updated
-            if (model.sections && child.uid) {
-                var index = model.sections.indexOf(child.uid);
-                if (index > -1) {
-                    ordered[index] = child;
-                }
-            }
 
             formatExample(child.responses);
             model.children[i] = transformReference(model.children[i]);
         };
-        // todo: remove sections after content updated
-        if (model.sections) {
-            // Remove empty values from ordered, in case item in sections is not in swagger json 
-            model.children = ordered.filter(function (o) { return o; });
-        }
         if (model.tags) {
             for (var i = 0; i < model.tags.length; i++) {
                 var children = getChildrenByTag(model.children, model.tags[i].name);
@@ -41,6 +28,7 @@ exports.transform = function (model) {
                     // set children into tag section
                     model.tags[i].children = children;
                 }
+                model.tags[i].conceptual = model.tags[i].conceptual || ''; // set to empty incase mustache looks up
             }
             for (var i = 0; i < model.children.length; i++) {
                 var child = model.children[i];

@@ -47,6 +47,21 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 return ((RestApiRootItemViewModel)articleModel.Content).Children.Where(c => c.Uid == uid);
             }));
 
+        public Func<FileModel, string, IHostService, IEnumerable<RestApiTagViewModel>> GetTagsFromOverwriteDocument =
+            (((overwriteModel, uid, host) =>
+            {
+                return OverwriteDocumentReader.Transform<RestApiTagViewModel>(
+                    overwriteModel,
+                    uid,
+                    s => BuildRestApiDocument.BuildTag(host, s, overwriteModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
+            }));
+
+        public Func<FileModel, string, IHostService, IEnumerable<RestApiTagViewModel>> GetTagItemsToOverwrite =
+            (((articleModel, uid, host) =>
+            {
+                return ((RestApiRootItemViewModel)articleModel.Content).Tags.Where(c => c.Uid == uid);
+            }));
+
         protected override void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
         {
             if (articles.Any(a => uid == ((RestApiRootItemViewModel)a.Content).Uid))
@@ -56,6 +71,10 @@ namespace Microsoft.DocAsCode.Build.RestApi
             else if (articles.Any(a => ((RestApiRootItemViewModel)a.Content).Children.Any(c => uid == c.Uid)))
             {
                 ApplyOverwrite(host, od, uid, articles, GetChildItemsFromOverwriteDocument, GetChildItemsToOverwrite);
+            }
+            else if (articles.Any(a => ((RestApiRootItemViewModel)a.Content).Tags.Any(t => uid == t.Uid)))
+            {
+                ApplyOverwrite(host, od, uid, articles, GetTagsFromOverwriteDocument, GetTagItemsToOverwrite);
             }
         }
     }

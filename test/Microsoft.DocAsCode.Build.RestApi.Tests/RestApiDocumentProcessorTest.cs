@@ -71,19 +71,41 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var item2Tag = (JArray)(item2.Metadata["tags"]);
             Assert.NotNull(item2Tag);
             Assert.Equal("contacts", item2Tag[0]);
-            Assert.Equal("store", item2Tag[1]);
+            Assert.Equal("pet store", item2Tag[1]);
 
             // Verify tags of root
             Assert.Equal(3, model.Tags.Count);
             var tag1 = model.Tags[0];
             Assert.Equal("contact", tag1.Name);
             Assert.Equal("<p>Everything about the <strong>contacts</strong></p>\n", tag1.Description);
-            Assert.Equal("contact-bookmark", tag1.BookmarkId);
+            Assert.Equal("contact-bookmark", tag1.HtmlId);
             Assert.Equal(1, tag1.Metadata.Count);
             var externalDocs = (JObject)tag1.Metadata["externalDocs"];
             Assert.NotNull(externalDocs);
             Assert.Equal("Find out more", externalDocs["description"]);
             Assert.Equal("http://swagger.io", externalDocs["url"]);
+            var tag2 = model.Tags[1];
+            Assert.Equal("pet_store", tag2.HtmlId);
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithTagsOverwriteShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.tags.md" });
+            BuildDocument(files);
+
+            {
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
+                var tag1 = model.Tags[0];
+                Assert.Equal("<p>Overwrite <em>description</em> content</p>\n", tag1.Description);
+                Assert.Null(tag1.Conceptual);
+                var tag2 = model.Tags[1];
+                Assert.Equal("<p>Access to Petstore orders</p>\n", tag2.Description);
+                Assert.Equal("<p>Overwrite <strong>conceptual</strong> content</p>\n", tag2.Conceptual);
+            }
         }
 
         [Fact]

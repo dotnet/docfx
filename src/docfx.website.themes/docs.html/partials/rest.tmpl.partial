@@ -9,12 +9,15 @@
   {{/conceptual}}
 </header>
 {{#tags}}
-<header class="header" id="tag-{{x-bookmark-id}}">
+<header class="header" id="tag-{{htmlId}}">
   <div class="conceptual primary">
-    <h2 id="{{x-bookmark-id}}">{{name}}</h2>
-    {{#description}}
+    <h2 id="{{htmlId}}">{{name}}</h2>
+    {{#conceptual}}
+    {{{conceptual}}}
+    {{/conceptual}}
+    {{^conceptual}}
     {{{description}}}
-    {{/description}}
+    {{/conceptual}}
   </div>
 </header>
 {{#children}}
