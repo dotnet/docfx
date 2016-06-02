@@ -9,6 +9,7 @@ v2.0(Pre-Release)
     2. display overridden members
     3. display implemented interface 
     4. seperate category for Explicit Interface Implementation
+4.  Rest api - Enable **Tag** in Swagger file to organize the **API**s.
 
 v1.9
 -----------
