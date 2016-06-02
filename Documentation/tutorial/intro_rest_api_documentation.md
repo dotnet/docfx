@@ -121,12 +121,12 @@ If `footer` is set, the content from `footer` will be appended to the last secti
 You can organize the sections of APIs by using tags in Swagger file, following definitions in [Tag Object](http://swagger.io/specification/#tagObject). 
 
 Each API can be specified with one or multiple tags, or not speficied with any tag.
-- If all APIs are not tagged, each API will not be included in any sections.
-- If the API is specified with one tag only, it will show inside this one tag section.
-- If the API is specified with multiple tags, it will show inside multiple tag sections.
+- If all APIs are *not* tagged, each API will not be included in any sections.
+- If the API is specified with *one* tag only, it will show inside this one tag section.
+- If the API is specified with *multiple* tags, it will show inside multiple tag sections.
 - If some APIs are specified with tags while some other APIs are not, the untagged APIs will be organized into one auto generated `Other apis` section.
 
-Specific **Bookmark** could be added to tag section using `x-bookmark-id`, which is Swagger schema extensions following [Specification Extensions](http://swagger.io/specification/#vendorExtensions). If no `x-bookmark-id` is specified, `name` of the tag will be the default **Bookmark**.
+Specific bookmark could be added to tag section using `x-bookmark-id`, which is Swagger schema extensions following [Specification Extensions](http://swagger.io/specification/#vendorExtensions). If no `x-bookmark-id` is specified, `name` of the tag will be the default bookmark.
 
 For example, the following swagger file defines `Basic` and `Advanced` tags.
 1. Sections in the layout:
@@ -135,7 +135,7 @@ For example, the following swagger file defines `Basic` and `Advanced` tags.
    - `delete_contacts` API is not tagged, it will show inside "Other apis" section.
 2. Bookmarks:
    - Bookmark of `Basic` tag is `BasicBookmark`, which is defined by `x-bookmark-id`.
-   - Bookmark of `Advanced` tag is `Advanced`, which use 'name' by default.
+   - Bookmark of `Advanced` tag is `Advanced`, which use `name` by default.
 
 ```json
 {
@@ -194,7 +194,7 @@ For example, the following swagger file defines `Basic` and `Advanced` tags.
 
    ```
 
-2. The `description' of the tag could be overwritten as following:
+2. The `description` of the tag could be overwritten as following:
    ```md
    ---
    uid: microsoft.com/docfx/Contacts/1.6/tag/Basic
