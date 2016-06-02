@@ -7,17 +7,17 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public sealed class XRefMapReader : XRefRedirectionReader
     {
-        private readonly Dictionary<string, XRefMap> _maps;
+        private readonly Dictionary<string, IXRefContainer> _maps;
 
-        public XRefMapReader(string majorKey, Dictionary<string, XRefMap> maps)
+        public XRefMapReader(string majorKey, Dictionary<string, IXRefContainer> maps)
             : base(majorKey, new HashSet<string>(maps.Keys))
         {
             _maps = maps;
         }
 
-        protected override XRefMap GetMap(string name)
+        protected override IXRefContainer GetMap(string name)
         {
-            XRefMap result;
+            IXRefContainer result;
             _maps.TryGetValue(name, out result);
             return result;
         }
