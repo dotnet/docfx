@@ -87,11 +87,11 @@ Key                     | Type                       | Overwrite behavior
 ----------------------- | -------------------------- | ------------------
 **uid**                 | uid                        | Merge key.
 assemblies              | string[]                   | Ignore.
-attributes              | [Attribute](#Attribute)[]  | Ignore.
+attributes              | [Attribute](#attribute)[]  | Ignore.
 children                | uid[]                      | Ignore.
-documentation           | [Source](#Source)          | Merge.
+documentation           | [Source](#source)          | Merge.
 example                 | string[]                   | Replace.
-exceptions              | [Cref](#Cref)[]            | Merge keyed list.
+exceptions              | [Cref](#cref)[]            | Merge keyed list.
 fullName                | string                     | Replace.
 fullName.<lang>         | string                     | Replace.
 id                      | string                     | Replace.
@@ -109,10 +109,10 @@ overridden              | uid                        | Replace.
 parent                  | uid                        | Replace.
 platform                | string[]                   | Replace.
 *remarks*               | markdown                   | Replace.
-see                     | [Cref](#Cref)[]            | Merge keyed list.
-seealso                 | [Cref](#Cref)[]            | Merge keyed list.
-source                  | [Source](#Source)          | Merge.
-*syntax*                | [Syntax](#Syntax)          | Merge.
+see                     | [Cref](#cref)[]            | Merge keyed list.
+seealso                 | [Cref](#cref)[]            | Merge keyed list.
+source                  | [Source](#source)          | Merge.
+*syntax*                | [Syntax](#syntax)          | Merge.
 *summary*               | markdown                   | Replace.
 type                    | string                     | Replace.
 
@@ -126,7 +126,7 @@ id                      | string                     | Replace.
 isExternal              | boolean                    | Replace.
 href                    | string                     | Replace.
 path                    | string                     | Replace.
-remote                  | [GitSource](#GitSource)    | Merge.
+remote                  | [GitSource](#gitsource)    | Merge.
 startLine               | integer                    | Replace.
 
 #### GitSource
@@ -135,14 +135,14 @@ Property                | Type                       | Overwrite behavior
 path                    | string                     | Replace.
 branch                  | string                     | Replace.
 repo                    | url                        | Replace.
-commit                  | [Commit](#Commit)          | Merge.
+commit                  | [Commit](#commit)          | Merge.
 key                     | string                     | Replace.
 
 #### Commit
 Property                | Type                       | Overwrite behavior
 ----------------------- | -------------------------- | ------------------
-committer               | [User](#User)              | Replace.
-author                  | [User](#User)              | Replace.
+committer               | [User](#user)              | Replace.
+author                  | [User](#user)              | Replace.
 id                      | string                     | Replace.
 message                 | string                     | Replace.
 
@@ -165,25 +165,25 @@ Property                | Type                       | Overwrite behavior
 ----------------------- | -------------------------- | ------------------
 content                 | string                     | Replace.
 content.<lang>          | string                     | Replace.
-parameters              | [Parameter](#Parameter)[]  | Merge keyed list.
-typeParameters          | [Parameter](#Parameter)[]  | Merge keyed list.
-return                  | [Parameter](#Parameter)    | Merge.
+parameters              | [Parameter](#parameter)[]  | Merge keyed list.
+typeParameters          | [Parameter](#parameter)[]  | Merge keyed list.
+return                  | [Parameter](#parameter)    | Merge.
 
 #### Parameter
 Property                | Type                       | Overwrite behavior
 ----------------------- | -------------------------- | ------------------
 **id**                  | string                     | Merge key.
 *description*           | markdown                   | Replace.
-attributes              | [Attribute](#Attribute)[]  | Ignore.
+attributes              | [Attribute](#attribute)[]  | Ignore.
 type                    | uid                        | Replace.
 
 #### Attribute
 
 Property                | Type                              | Overwrite behavior
 ----------------------- | --------------------------------- | ------------------
-arguments               | [Argument](#Argument)[]           | Ignore.
+arguments               | [Argument](#argument)[]           | Ignore.
 ctor                    | uid                               | Ignore.
-namedArguments          | [NamedArgument](#NamedArgument)[] | Ignore.
+namedArguments          | [NamedArgument](#namedargument)[] | Ignore.
 type                    | uid                               | Ignore.
 
 #### Argument
