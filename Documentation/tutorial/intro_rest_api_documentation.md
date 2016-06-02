@@ -58,7 +58,7 @@ A REST API **File** contains multiple **API**s as its children. An **API** is an
 
 > It is recommended that user provides a well-formed `operationId` name. We suggest that the `operationId` is one word in camelCase or snake_case.
 
-A REST API **File** could also contain multiple **Tag**s. A **Tag** is an [Tag Object](http://swagger.io/specification/#tagObject), which is optional and used by [Operation Object](http://swagger.io/specification/#operationObject). The **UID**(Unique IDentifier) for this **Tag** is defined as the combination of **UID** of the **File**, "tag" and `name` of the [Tag Object](http://swagger.io/specification/#tagObject). For example, the following `Basic` tag has **UID** `microsoft.com/docfx/Contacts/1.6/tag/Basic`:
+A REST API **File** could also contain multiple **Tag**s. The **Tag** is a [Tag Object](http://swagger.io/specification/#tagObject), which is optional and used by [Operation Object](http://swagger.io/specification/#operationObject). The **UID**(Unique IDentifier) for this **Tag** is defined as the combination of **UID** of the **File**, `tag`, and `name` of the [Tag Object](http://swagger.io/specification/#tagObject). For example, the following tag `Basic` has **UID** `microsoft.com/docfx/Contacts/1.6/tag/Basic`:
 ```json
 {
   "swagger": "2.0",
@@ -130,12 +130,12 @@ Specific **Bookmark** could be added to **Tag** section using `x-bookmark-id`, w
 
 For example, the following swagger file defines `Basic` and `Advanced` **Tag**s.
 1. Sections in the layout:
-  - `set_contacts` **API** is tagged with only `Advanced`, then it will only show inside `Advanced` tag section.
-  - `get_contacts` **API** is tagged with both `Basic` and `Advanced`, then it will show inside both of the tag sections.
-  - `delete_contacts` **API** is not tagged, it will show inside "Other apis" section.
+   - `set_contacts` **API** is tagged with `Advanced` only, then it will only show inside `Advanced` tag section.
+   - `get_contacts` **API** is tagged with both `Basic` and `Advanced`, then it will show inside both of the tag sections.
+   - `delete_contacts` **API** is not tagged, it will show inside "Other apis" section.
 2. Bookmarks:
-  - Bookmark of `Basic` **Tag** is `BasicBookmark`, which is defined by `x-bookmark-id`.
-  - Bookmark of `Advanced` **Tag** is `Advanced`, which use 'name' by default.
+   - Bookmark of `Basic` **Tag** is `BasicBookmark`, which is defined by `x-bookmark-id`.
+   - Bookmark of `Advanced` **Tag** is `Advanced`, which use 'name' by default.
 
 ```json
 {
