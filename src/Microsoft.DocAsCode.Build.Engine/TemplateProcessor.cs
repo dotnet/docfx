@@ -171,6 +171,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 },
                 context.MaxParallelism);
 
+            var itemsToRemove = new List<string>();
             foreach (var duplicates in from m in manifest
                                        from output in m.OutputFiles.Values
                                        group m.OriginalFile by output into g
@@ -178,9 +179,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                                        select g)
             {
                 Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
+                itemsToRemove.AddRange(duplicates.Skip(1));
             }
 
-            return manifest.ToList();
+            return manifest.Where(m => !itemsToRemove.Contains(m.OriginalFile)).ToList();
         }
 
         private static IDictionary<string, object> LoadGlobalJson(ResourceCollection resource)
