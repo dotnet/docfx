@@ -51,18 +51,44 @@ A REST API **File** contains multiple **API**s as its children. An **API** is an
         },
         "operationId": "get_contacts"
       }
-    },
+    }
   }
 }
 ```
 
 > It is recommended that user provides a well-formed `operationId` name. We suggest that the `operationId` is one word in camelCase or snake_case.
 
+A REST API **File** could also contain multiple **Tag**s. A **Tag** is an [Tag Object](http://swagger.io/specification/#tagObject), which is optional and used by [Operation Object](http://swagger.io/specification/#operationObject). The **UID**(Unique IDentifier) for this **Tag** is defined as the combination of **UID** of the **File**, "tag" and `name` of the [Tag Object](http://swagger.io/specification/#tagObject). For example, the following `Basic` tag has **UID** `microsoft.com/docfx/Contacts/1.6/tag/Basic`:
+```json
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts",
+    "version": "1.6"
+  },
+  "host": "microsoft.com",
+  "basePath": "/docfx",
+  "schemes": [
+    "https"
+  ],
+  "tags": [
+    {
+      "name": "Basic",
+      "description": "Basic description"
+    },
+    {
+      "name": "Advanced",
+      "description": "Advanced description"
+    }
+  ]
+}
+```
+
 HTML layout
 --------------
-By default, the generated HTML file lists all the **API**s inside the **File** in the order defined in the Swagger REST file.
+The generated HTML file lists all the **API**s inside the **File** in the order defined in the Swagger REST file.
 
-You can use *Overwrite File*s to redefine the layout of the **API**s and add more information to the **File** and **API**.
+You can use *Overwrite File*s to add more information to the **File** and **API**, and use **Tag**s to organize the sections of the **API**s.
 
 ### *Overwrite File*s
 *Overwrite File*s are Markdown files with multiple *Overwrite Section*s starting with YAML header block. A valid YAML header for an *Overwrite Section* *MUST* take the form of valid [YAML](http://www.yaml.org/spec/1.2/spec.html) set between triple-dashed lines and start with property `uid`. Here is a basic example of an *Overwrite Section*:
@@ -75,19 +101,6 @@ Further description for `microsoft.com/docfx/Contacts/1.6`
 ```
 
 The `uid` value *MUST* match the `uid` of the **File** or **API** that you want to overwrite. The content following YAML header is the additional Markdown description for the **File** or **API**. By default, it is transformed to HTML and appended below the description of the **File** or **API**.
-
-### Redefine the layout
-You can redefine the **API**s layout in the HTML page using `sections` property. For example, the following *Overwrite Section* specifies that only the two **API**s `get_contacts` and `add_contacts` are shown in the HTML page in order:
-
-```md
----
-uid: microsoft.com/docfx/Contacts/1.6
-sections:
-  - microsoft.com/docfx/Contacts/1.6/get_contacts
-  - microsoft.com/docfx/Contacts/1.6/add_contacts
----
-Further description for `microsoft.com/docfx/Contacts/1.6`
-```
 
 ### Add footer
 You can also define the `footer` of an **File** or **API** using the following syntax:
@@ -103,6 +116,94 @@ Footer for `microsoft.com/docfx/Contacts/1.6`
 `*content` is the keyword representing the Markdown content following YAML header. The value for `*content` is always transformed from Markdown content to HTML. In the above example, the value for `*content` is `<p>Footer for <code>microsoft.com/docfx/Contacts/1.6</code></p>`. In this way, the value of `footer` for **API** `microsoft.com/docfx/Contacts/1.6` is set to `<p>Footer for <code>microsoft.com/docfx/Contacts/1.6</code></p>`. We leverage [Anchors](http://www.yaml.org/spec/1.2/spec.html#id2765878) syntax in YAML specification for `*content`.
 
 If `footer` is set, the content from `footer` will be appended to the last section of the **File** or **API**. It is usually used to define **See Also** or **Additional Resources** for the documentation.
+
+### **Tag**s to organize the sections of **API**s
+You can organize the sections of **API**s by using **Tag**s in Swagger file, following definitions in [Tag Object](http://swagger.io/specification/#tagObject). 
+
+Each **API** can be specified with one or multiple **Tag**s, or not speficied with any **Tag**.
+- If all **API**s are not tagged, each **API** will not be included in any sections.
+- If the **API** is specified with only one **Tag**, it will show inside this one tag section.
+- If the **API** is specified with multiple **Tag**s, it will show inside multiple tag sections.
+- If some **API**s are specified with **Tag**s while some other **API**s are not, the untagged **API**s will be organized into one auto generated `Other apis` section.
+
+Specific **Bookmark** could be added to **Tag** section using `x-bookmark-id`, which is Swagger schema extensions following [Specification Extensions](http://swagger.io/specification/#vendorExtensions). If no `x-bookmark-id` is specified, `name` of the **Tag** will be the default **Bookmark**.
+
+For example, the following swagger file defines `Basic` and `Advanced` **Tag**s.
+1. Sections in the layout:
+  - `set_contacts` **API** is tagged with only `Advanced`, then it will only show inside `Advanced` tag section.
+  - `get_contacts` **API** is tagged with both `Basic` and `Advanced`, then it will show inside both of the tag sections.
+  - `delete_contacts` **API** is not tagged, it will show inside "Other apis" section.
+2. Bookmarks:
+  - Bookmark of `Basic` **Tag** is `BasicBookmark`, which is defined by `x-bookmark-id`.
+  - Bookmark of `Advanced` **Tag** is `Advanced`, which use 'name' by default.
+
+```json
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts",
+    "version": "1.6"
+  },
+  "host": "microsoft.com",
+  "basePath": "/docfx",
+  "schemes": [
+    "https"
+  ],
+  "tags": [
+    {
+      "name": "Basic",
+      "x-bookmark-id": "BasicBookmark",
+      "description": "Basic description"
+    },
+    {
+      "name": "Advanced",
+      "description": "Advanced description"
+    }
+  ],
+  "paths": {
+    "/contacts": {
+      "get": {
+        "operationId": "get_contacts",
+        "tags": [
+          "Basic",
+          "Advanced"
+        ]
+      },      
+      "set": {
+        "operationId": "set_contacts",
+        "tags": [
+          "Advanced"
+        ]
+      },      
+      "delete": {
+        "operationId": "delete_contacts"
+      }
+    }
+  }
+}
+```
+
+#### Overwrite the **Tag**s
+1. More information could be added to the **Tag** as following:
+   ```md
+   ---
+   uid: microsoft.com/docfx/Contacts/1.6/tag/Basic
+   ---
+
+   Additional comments for `microsoft.com/docfx/Contacts/1.6/tag/Basic`
+
+   ```
+
+2. The `description' of the **Tag** could be overwritten as following:
+   ```md
+   ---
+   uid: microsoft.com/docfx/Contacts/1.6/tag/Basic
+   description: *content
+   ---
+
+   Overwrite description for `microsoft.com/docfx/Contacts/1.6/tag/Basic`
+
+   ```
 
 ### Add other metadata
 You can define your own metadata with YAML header. This functionality is quite useful when your own template is used.

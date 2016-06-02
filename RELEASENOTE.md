@@ -4,6 +4,7 @@ v2.0(Pre-Release)
 -----------
 1.  **Breaking Change** Add line info for markdown parser.
 2.  Allow Markdown reference at the end of overwrite file.
+3.  Rest api - Enable **Tag** in Swagger file to organize the **API**s.
 
 v1.9
 -----------
