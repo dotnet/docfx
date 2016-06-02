@@ -30,5 +30,5 @@
   - name: Build your own type of documentation with custom plug-in
     href: "Build your own type of documentation with custom plug-in.md"
     items:
-    - name: "🔧 Advanced: Support Hyperlink"
+    - name: "Advanced: Support Hyperlink"
       href: advanced_support_hyperlink.md

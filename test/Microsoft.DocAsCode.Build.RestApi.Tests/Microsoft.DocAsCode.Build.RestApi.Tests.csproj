@@ -79,6 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestData\overwrite\rest.overwrite.tags.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\overwrite\rest.overwrite.unmergable.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

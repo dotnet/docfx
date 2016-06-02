@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     {
                         foreach (var tag in restApi.Tags)
                         {
-                            tag.Description = Markup(host, tag.Description, model);
+                            BuildTag(host, tag, model);
                         }
                     }
                     break;
@@ -56,6 +56,13 @@ namespace Microsoft.DocAsCode.Build.RestApi
             item.Description = Markup(host, item.Description, model, filter);
             item.Conceptual = Markup(host, item.Conceptual, model, filter);
             return item;
+        }
+
+        public static RestApiTagViewModel BuildTag(IHostService host, RestApiTagViewModel tag, FileModel model, Func<string, bool> filter = null)
+        {
+            tag.Conceptual = Markup(host, tag.Conceptual, model, filter);
+            tag.Description = Markup(host, tag.Description, model, filter);
+            return tag;
         }
 
         private static string Markup(IHostService host, string markdown, FileModel model, Func<string, bool> filter = null)

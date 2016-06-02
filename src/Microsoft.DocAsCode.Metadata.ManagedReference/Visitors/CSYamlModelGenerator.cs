@@ -528,6 +528,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private string GetPropertySyntax(IPropertySymbol symbol, IFilterVisitor filterVisitor)
         {
+            string result;
             ExplicitInterfaceSpecifierSyntax eii = null;
             if (symbol.ExplicitInterfaceImplementations.Length > 0)
             {
@@ -535,7 +536,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (symbol.IsIndexer)
             {
-                return SyntaxFactory.IndexerDeclaration(
+                result = SyntaxFactory.IndexerDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     GetTypeSyntax(symbol.Type),
@@ -550,7 +551,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else
             {
-                return SyntaxFactory.PropertyDeclaration(
+                result = SyntaxFactory.PropertyDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     GetTypeSyntax(symbol.Type),
@@ -560,6 +561,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     .NormalizeWhitespace()
                     .ToString();
             }
+            result = Regex.Replace(result, @"\s*\{\s*get;\s*set;\s*}\s*$", " { get; set; }");
+            result = Regex.Replace(result, @"\s*\{\s*get;\s*}\s*$", " { get; }");
+            result = Regex.Replace(result, @"\s*\{\s*set;\s*}\s*$", " { set; }");
+            result = Regex.Replace(result, @"\s*\{\s*get;\s*protected set;\s*}\s*$", " { get; protected set; }");
+            result = Regex.Replace(result, @"\s*\{\s*protected get;\s*set;\s*}\s*$", " { protected get; set; }");
+            return result;
         }
 
         #endregion

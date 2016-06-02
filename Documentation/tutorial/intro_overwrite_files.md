@@ -83,11 +83,122 @@ Data model inside DocFX
 -----------------------
 ### Managed reference model
 
-Key | Type | Overwrite behavior
---- | --- | ---
-*summary* | string | Overwrite
+Key                     | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+**uid**                 | uid                        | Merge key.
+assemblies              | string[]                   | Ignore.
+attributes              | [Attribute](#attribute)[]  | Ignore.
+children                | uid[]                      | Ignore.
+documentation           | [Source](#source)          | Merge.
+example                 | string[]                   | Replace.
+exceptions              | [Cref](#cref)[]            | Merge keyed list.
+fullName                | string                     | Replace.
+fullName.<lang>         | string                     | Replace.
+id                      | string                     | Replace.
+implements              | uid[]                      | Ignore.
+inheritance             | uid[]                      | Ignore.
+inheritedMembers        | uid[]                      | Ignore.
+isEii                   | boolean                    | Replace.
+isExtensionMethod       | boolean                    | Replace.
+langs                   | string[]                   | Replace.
+modifiers.<lang>        | string[]                   | Ignore.
+name                    | string                     | Replace.
+name.<lang>             | string                     | Replace.
+namespace               | uid                        | Replace.
+overridden              | uid                        | Replace.
+parent                  | uid                        | Replace.
+platform                | string[]                   | Replace.
+*remarks*               | markdown                   | Replace.
+see                     | [Cref](#cref)[]            | Merge keyed list.
+seealso                 | [Cref](#cref)[]            | Merge keyed list.
+source                  | [Source](#source)          | Merge.
+*syntax*                | [Syntax](#syntax)          | Merge.
+*summary*               | markdown                   | Replace.
+type                    | string                     | Replace.
 
-> TODO: Add more for managed reference model
+#### Source
+Property                | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+base                    | string                     | Replace.
+content                 | string                     | Replace.
+endLine                 | integer                    | Replace.
+id                      | string                     | Replace.
+isExternal              | boolean                    | Replace.
+href                    | string                     | Replace.
+path                    | string                     | Replace.
+remote                  | [GitSource](#gitsource)    | Merge.
+startLine               | integer                    | Replace.
+
+#### GitSource
+Property                | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+path                    | string                     | Replace.
+branch                  | string                     | Replace.
+repo                    | url                        | Replace.
+commit                  | [Commit](#commit)          | Merge.
+key                     | string                     | Replace.
+
+#### Commit
+Property                | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+committer               | [User](#user)              | Replace.
+author                  | [User](#user)              | Replace.
+id                      | string                     | Replace.
+message                 | string                     | Replace.
+
+#### User
+Property                | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+name                    | string                     | Replace.
+email                   | string                     | Replace.
+date                    | datetime                   | Replace.
+
+#### Cref
+Property                | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+**type**                | uid                        | Merge key.
+*description*           | markdown                   | Replace.
+commentId               | string                     | Replace.
+
+#### Syntax
+Property                | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+content                 | string                     | Replace.
+content.<lang>          | string                     | Replace.
+parameters              | [Parameter](#parameter)[]  | Merge keyed list.
+typeParameters          | [Parameter](#parameter)[]  | Merge keyed list.
+return                  | [Parameter](#parameter)    | Merge.
+
+#### Parameter
+Property                | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+**id**                  | string                     | Merge key.
+*description*           | markdown                   | Replace.
+attributes              | [Attribute](#attribute)[]  | Ignore.
+type                    | uid                        | Replace.
+
+#### Attribute
+
+Property                | Type                              | Overwrite behavior
+----------------------- | --------------------------------- | ------------------
+arguments               | [Argument](#argument)[]           | Ignore.
+ctor                    | uid                               | Ignore.
+namedArguments          | [NamedArgument](#namedargument)[] | Ignore.
+type                    | uid                               | Ignore.
+
+#### Argument
+Property                | Type                      | Overwrite behavior
+----------------------- | ------------------------- | ------------------
+type                    | uid                       | Ignore.
+value                   | object                    | Ignore.
+
+#### NamedArgument
+Property                | Type                      | Overwrite behavior
+----------------------- | ------------------------- | ------------------
+name                    | string                    | Ignore.
+type                    | string                    | Ignore.
+value                   | object                    | Ignore.
+
 
 ### REST API model
 Key | Type | Overwrite behavior

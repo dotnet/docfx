@@ -15,7 +15,7 @@
       }
     },
     {
-      "name": "store",
+      "name": "pet store",
       "description": "Access to Petstore orders"
     },
     {
@@ -217,7 +217,7 @@
     },
     "/contacts/{object_id}": {
       "get": {
-        "tags": [ "contacts", "store" ],
+        "tags": [ "contacts", "pet store" ],
         "parameters": [
           {
             "in": "path",
@@ -359,7 +359,7 @@
     },
     "/contacts/{object_id}/$links/manager": {
       "get": {
-        "tags": [ "store" ],
+        "tags": [ "pet store" ],
         "parameters": [
           {
             "in": "path",

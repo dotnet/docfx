@@ -20,20 +20,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public override int BuildOrder => 0x10;
 
-        public Func<FileModel, string, IHostService, IEnumerable<ItemViewModel>> GetItemsFromOverwriteDocument =
-            (((fileModel, uid, host) =>
-            {
-                return OverwriteDocumentReader.Transform<ItemViewModel>(
-                    fileModel,
-                    uid,
-                    s => BuildManagedReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
-            }));
+        public IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
+        {
+            return OverwriteDocumentReader.Transform<ItemViewModel>(
+                fileModel,
+                uid,
+                s => BuildManagedReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
+        }
 
-        public Func<FileModel, string, IHostService, IEnumerable<ItemViewModel>> GetItemsToOverwrite =
-            (((fileModel, uid, host) =>
-            {
-                return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
-            }));
+        public IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
+        {
+            return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
+        }
 
         protected override void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
         {
