@@ -15,10 +15,13 @@
   <div class="markdown level0 conceptual">{{{conceptual}}}</div>
 {{/conceptual}}
 {{#tags}}
-<h2 id="{{x-bookmark-id}}">{{name}}</h2>
+<h2 id="{{htmlId}}">{{name}}</h2>
 {{#description}}
 <div class="markdown level0 description">{{{description}}}</div>
 {{/description}}
+{{#conceptual}}
+  <div class="markdown level0 conceptual">{{{conceptual}}}</div>
+{{/conceptual}}
 {{#children}}
   {{>partials/rest.child}}
 {{/children}}

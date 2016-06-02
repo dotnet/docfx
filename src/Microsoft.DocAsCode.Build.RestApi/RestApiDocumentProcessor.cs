@@ -80,7 +80,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     var displayLocalPath = repoInfo?.RelativePath ?? filePath.ToDisplayPath();
                     return new FileModel(file, vm, serializer: new BinaryFormatter())
                     {
-                        Uids = new UidDefinition[] { new UidDefinition(vm.Uid, displayLocalPath) }.Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
+                        Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
+                            .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
+                            .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
                         LocalPathFromRepoRoot = displayLocalPath,
                         Properties =
                         {

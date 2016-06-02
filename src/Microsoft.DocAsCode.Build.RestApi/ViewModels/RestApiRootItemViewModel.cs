@@ -19,6 +19,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
     [Serializable]
     public class RestApiRootItemViewModel : RestApiItemViewModelBase
     {
+        private const string TagText = "tag";
+
         /// <summary>
         /// The original swagger.json cpntent
         /// `_` prefix indicates that this metadata is generated
@@ -59,8 +61,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
                     {
                         Name = tag.Name,
                         Description = tag.Description,
-                        BookmarkId = tag.BookmarkId,
-                        Metadata = tag.Metadata
+                        HtmlId = string.IsNullOrEmpty(tag.BookmarkId) ? GetHtmlId(tag.Name) : tag.BookmarkId, // Fall back to tag name's html id
+                        Metadata = tag.Metadata,
+                        Uid = GetUidForTag(uid, tag)
                     });
                 }
             }
@@ -130,6 +133,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
         private static string GetUidForOperation(string parentUid, Swagger.OperationObject item)
         {
             return GenerateUid(parentUid, item.OperationId);
+        }
+
+        private static string GetUidForTag(string parentUid, Swagger.TagItemObject tag)
+        {
+            return GenerateUid(parentUid, TagText, tag.Name);
         }
 
         /// <summary>
