@@ -183,6 +183,18 @@ For example, the following swagger file defines `Basic` and `Advanced` tags.
 }
 ```
 
+For the example above, the simple html layout will be:
+```html
+<h2 id="BasicBookmark">Basic</h2>
+  <h3 data-uid="microsoft.com/docfx/Contacts/1.6/get_contacts">get_contacts</h3>
+<h2 id="Advanced">Advanced</h2>
+  <h3 data-uid="microsoft.com/docfx/Contacts/1.6/get_contacts">get_contacts</h3>
+  <h3 data-uid="microsoft.com/docfx/Contacts/1.6/set_contacts">set_contacts</h3>
+<h2 id="other-apis">Other APIs</h2>
+  <h3 data-uid="microsoft.com/docfx/Contacts/1.6/delete_contacts">delete_contacts</h3>
+```
+
+
 #### Overwrite the tags
 1. More information could be added to the tag as following:
    ```md
