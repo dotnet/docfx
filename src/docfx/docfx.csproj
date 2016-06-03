@@ -152,8 +152,6 @@
     <Compile Include="Models\FileMetadataPairs.cs" />
     <Compile Include="Models\BuildJsonConfig.cs" />
     <Compile Include="Models\MetadataJsonItemConfig.cs" />
-    <Compile Include="Models\PackCommandOptions.cs" />
-    <Compile Include="Models\ExportCommandOptions.cs" />
     <Compile Include="Models\ServeCommandOptions.cs" />
     <Compile Include="Models\InitCommandOptions.cs" />
     <Compile Include="Models\HelpCommandOptions.cs" />
