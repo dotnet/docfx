@@ -255,6 +255,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.NameForVB = nameForVB;
             }
 
+            result.NameWithType = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.Default);
+            var nameWithTypeForCSharp = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.CSharp);
+            if (result.NameWithType != nameWithTypeForCSharp)
+            {
+                result.NameWithTypeForCSharp = nameWithTypeForCSharp;
+            }
+            var nameWithTypeForVB = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.VB);
+            if (result.NameWithType != nameWithTypeForVB)
+            {
+                result.NameWithTypeForVB = nameWithTypeForVB;
+            }
+
             result.FullName = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.Default);
             var fullnameForCSharp = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.CSharp);
             if (result.FullName != fullnameForCSharp)

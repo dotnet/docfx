@@ -80,7 +80,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         Qualified = 2,
         WithGenericParameter = 4,
         WithParameter = 8,
-        All = UseAlias | Qualified | WithGenericParameter | WithParameter,
+        WithType = 16,
+        All = UseAlias | Qualified | WithGenericParameter | WithParameter | WithType,
     }
 
     public class CSharpNameVisitorCreator : NameVisitorCreator
@@ -194,7 +195,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitMethod(IMethodSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified || (Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -283,7 +284,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitProperty(IPropertySymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified || (Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -331,7 +332,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitEvent(IEventSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified || (Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -354,7 +355,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitField(IFieldSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified || (Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -590,7 +591,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitMethod(IMethodSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified || (Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -665,7 +666,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitProperty(IPropertySymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified || (Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -691,7 +692,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitEvent(IEventSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified || (Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");
@@ -701,7 +702,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitField(IFieldSymbol symbol)
         {
-            if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
+            if ((Options & NameOptions.Qualified) == NameOptions.Qualified || (Options & NameOptions.WithType) == NameOptions.WithType)
             {
                 symbol.ContainingType.Accept(this);
                 Append(".");

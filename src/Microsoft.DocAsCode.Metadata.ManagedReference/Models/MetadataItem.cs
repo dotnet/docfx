@@ -47,6 +47,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("name")]
         public SortedList<SyntaxLanguage, string> DisplayNames { get; set; }
 
+        [YamlMember(Alias = "nameWithType")]
+        [JsonProperty("nameWithType")]
+        public SortedList<SyntaxLanguage, string> DisplayNamesWithType { get; set; }
+
         [YamlMember(Alias = "qualifiedName")]
         [JsonProperty("qualifiedName")]
         public SortedList<SyntaxLanguage, string> DisplayQualifiedNames { get; set; }

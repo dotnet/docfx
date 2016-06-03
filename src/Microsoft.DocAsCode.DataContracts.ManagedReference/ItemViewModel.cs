@@ -109,6 +109,59 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
             }
         }
 
+        [YamlMember(Alias = "nameWithType")]
+        [JsonProperty("name")]
+        public string NameWithType { get; set; }
+
+        [ExtensibleMember("nameWithType.")]
+        [JsonIgnore]
+        public SortedList<string, string> NamesWithType { get; set; } = new SortedList<string, string>();
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string NameWithTypeForCSharp
+        {
+            get
+            {
+                string result;
+                Names.TryGetValue("csharp", out result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    NamesWithType.Remove("csharp");
+                }
+                else
+                {
+                    NamesWithType["csharp"] = value;
+                }
+            }
+        }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string NameWithTypeForVB
+        {
+            get
+            {
+                string result;
+                Names.TryGetValue("vb", out result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    NamesWithType.Remove("vb");
+                }
+                else
+                {
+                    NamesWithType["vb"] = value;
+                }
+            }
+        }
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
         public string FullName { get; set; }
@@ -264,6 +317,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
                 foreach (var item in Names)
                 {
                     result["name." + item.Key] = item.Value;
+                }
+                foreach (var item in NamesWithType)
+                {
+                    result["nameWithType." + item.Key] = item.Value;
                 }
                 foreach (var item in FullNames)
                 {

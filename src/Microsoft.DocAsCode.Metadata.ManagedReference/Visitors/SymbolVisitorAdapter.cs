@@ -64,6 +64,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
 
             item.DisplayNames = new SortedList<SyntaxLanguage, string>();
+            item.DisplayNamesWithType = new SortedList<SyntaxLanguage, string>();
             item.DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>();
             item.Source = VisitorHelper.GetSourceDetail(symbol);
             var assemblyName = symbol.ContainingAssembly?.Name;
