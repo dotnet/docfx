@@ -15,13 +15,12 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private const int MaxParallelism = 0x10;
 
-        public XRefCollection()
-        {
-            Uris = ImmutableList<Uri>.Empty;
-        }
-
         public XRefCollection(IEnumerable<Uri> uris)
         {
+            if(uris == null)
+            {
+                throw new ArgumentNullException(nameof(uris));
+            }
             Uris = uris.ToImmutableList();
         }
 
@@ -113,9 +112,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
-
-            private async Task<Tuple<Uri, IXRefContainer>> DownloadAsync(Uri uri) =>
-                Tuple.Create(uri, await _downloader.DownloadAsync(uri));
         }
     }
 }
