@@ -4,6 +4,11 @@ v2.0(Pre-Release)
 -----------
 1.  **Breaking Change** Add line info for markdown parser.
 2.  Allow Markdown reference at the end of overwrite file.
+3.  Provide more information for API reference documentation
+    1. display inherited members
+    2. display overridden members
+    3. display implemented interface 
+    4. seperate category for Explicit Interface Implementation
 
 v1.9
 -----------
