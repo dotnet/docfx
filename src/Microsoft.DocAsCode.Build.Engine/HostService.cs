@@ -80,11 +80,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public MarkupResult Markup(string markdown, FileAndType ft, bool isMarkuped = false)
+        public MarkupResult Markup(string markdown, FileAndType ft)
         {
             try
             {
-                return MarkupCore(markdown, ft, isMarkuped);
+                var html = MarkupToHtml(markdown, ft.File);
+                return ParseHtml(html, ft);
             }
             catch (Exception ex)
             {
@@ -99,10 +100,76 @@ namespace Microsoft.DocAsCode.Build.Engine
             return MarkdownService.Markup(markdown, file);
         }
 
-        private MarkupResult MarkupCore(string markdown, FileAndType ft, bool isMarkuped = false)
+        public MarkupResult ParseHtml(string html, FileAndType ft)
         {
-            var html = isMarkuped ? markdown : MarkupToHtml(markdown, ft.File);
-            return ParseHtml(html, ft);
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            var result = new MarkupResult();
+
+            var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
+            if (node != null)
+            {
+                using (var sr = new StringReader(StringHelper.HtmlDecode(node.InnerHtml)))
+                {
+                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr).ToImmutableDictionary();
+                }
+                node.Remove();
+            }
+            var linkToFiles = new HashSet<string>();
+            foreach (var pair in (from n in doc.DocumentNode.Descendants()
+                                  where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                                  from attr in n.Attributes
+                                  where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
+                                        string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
+                                  where !string.IsNullOrWhiteSpace(attr.Value)
+                                  select new { Node = n, Attr = attr }).ToList())
+            {
+                string linkFile;
+                string anchor = null;
+                var link = pair.Attr;
+                if (PathUtility.IsRelativePath(link.Value))
+                {
+                    var index = link.Value.IndexOf('#');
+                    if (index == -1)
+                    {
+                        linkFile = link.Value;
+                    }
+                    else if (index == 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        linkFile = link.Value.Remove(index);
+                        anchor = link.Value.Substring(index);
+                    }
+                    var path = (RelativePath)ft.File + (RelativePath)linkFile;
+                    var file = path.GetPathFromWorkingFolder();
+                    if (SourceFiles.ContainsKey(file))
+                    {
+                        link.Value = file;
+                        if (!string.IsNullOrEmpty(anchor) &&
+                            string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
+                        {
+                            pair.Node.SetAttributeValue("anchor", anchor);
+                        }
+                    }
+                    linkToFiles.Add(HttpUtility.UrlDecode(file));
+                }
+            }
+            result.LinkToFiles = linkToFiles.ToImmutableArray();
+            result.LinkToUids = (from n in doc.DocumentNode.Descendants()
+                                 where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                                 from attr in n.Attributes
+                                 where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
+                                 where !string.IsNullOrWhiteSpace(attr.Value)
+                                 select attr.Value).ToImmutableHashSet();
+            using (var sw = new StringWriter())
+            {
+                doc.Save(sw);
+                result.Html = sw.ToString();
+            }
+            return result;
         }
 
         public void LogVerbose(string message, string file, string line)
@@ -187,78 +254,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     FileMap[m.FileAndType] = m.FileAndType;
                 }
             }
-        }
-
-        private MarkupResult ParseHtml(string html, FileAndType ft)
-        {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            var result = new MarkupResult();
-
-            var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
-            if (node != null)
-            {
-                using (var sr = new StringReader(StringHelper.HtmlDecode(node.InnerHtml)))
-                {
-                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr).ToImmutableDictionary();
-                }
-                node.Remove();
-            }
-            var linkToFiles = new HashSet<string>();
-            foreach (var pair in (from n in doc.DocumentNode.Descendants()
-                                  where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                  from attr in n.Attributes
-                                  where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
-                                        string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
-                                  where !string.IsNullOrWhiteSpace(attr.Value)
-                                  select new { Node = n, Attr = attr }).ToList())
-            {
-                string linkFile;
-                string anchor = null;
-                var link = pair.Attr;
-                if (PathUtility.IsRelativePath(link.Value))
-                {
-                    var index = link.Value.IndexOf('#');
-                    if (index == -1)
-                    {
-                        linkFile = link.Value;
-                    }
-                    else if (index == 0)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        linkFile = link.Value.Remove(index);
-                        anchor = link.Value.Substring(index);
-                    }
-                    var path = (RelativePath)ft.File + (RelativePath)linkFile;
-                    var file = path.GetPathFromWorkingFolder();
-                    if (SourceFiles.ContainsKey(file))
-                    {
-                        link.Value = file;
-                        if (!string.IsNullOrEmpty(anchor) &&
-                            string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
-                        {
-                            pair.Node.SetAttributeValue("anchor", anchor);
-                        }
-                    }
-                    linkToFiles.Add(HttpUtility.UrlDecode(file));
-                }
-            }
-            result.LinkToFiles = linkToFiles.ToImmutableArray();
-            result.LinkToUids = (from n in doc.DocumentNode.Descendants()
-                                 where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                 from attr in n.Attributes
-                                 where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                                 where !string.IsNullOrWhiteSpace(attr.Value)
-                                 select attr.Value).ToImmutableHashSet();
-            using (var sw = new StringWriter())
-            {
-                doc.Save(sw);
-                result.Html = sw.ToString();
-            }
-            return result;
         }
 
         private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<UidDefinition>> e)

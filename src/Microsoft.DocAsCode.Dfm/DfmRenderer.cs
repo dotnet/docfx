@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Dfm
             var startLine = token.SourceInfo.LineNumber;
             var endLine = startLine + token.Content.Count(ch => ch == '\n') + 2;
             var sourceFile = token.SourceInfo.File;
-            sourceFile = string.IsNullOrEmpty(sourceFile) ? "NotFound" : sourceFile;
+            sourceFile = string.IsNullOrEmpty(sourceFile) ? "NotFound" : StringHelper.HtmlEncode(sourceFile);
             StringBuffer result = "<yamlheader";
             result += $" start=\"{startLine}\" end=\"{endLine}\" sourceFile=\"{sourceFile}\"";
             result += ">";

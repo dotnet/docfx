@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 var parts = YamlHtmlPart.SplitYamlHtml(html);
                 foreach (var part in parts)
                 {
-                    var mr = host.Markup(part.OriginHtml, ft, true);
+                    var mr = host.ParseHtml(part.OriginHtml, ft);
                     part.LinkToFiles = mr.LinkToFiles;
                     part.LinkToUids = mr.LinkToUids;
                     part.YamlHeader = mr.YamlHeader;

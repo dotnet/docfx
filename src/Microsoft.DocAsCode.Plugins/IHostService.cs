@@ -8,7 +8,8 @@ namespace Microsoft.DocAsCode.Plugins
     public interface IHostService
     {
         string MarkupToHtml(string markdown, string file);
-        MarkupResult Markup(string markdown, FileAndType ft, bool isMarkuped = false);
+        MarkupResult ParseHtml(string html, FileAndType ft);
+        MarkupResult Markup(string markdown, FileAndType ft);
         ImmutableDictionary<string, FileAndType> SourceFiles { get; }
         ImmutableHashSet<string> GetAllUids();
         ImmutableList<FileModel> GetModels(DocumentType? type = null);
