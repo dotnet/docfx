@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         }
 
         [YamlMember(Alias = "nameWithType")]
-        [JsonProperty("name")]
+        [JsonProperty("nameWithType")]
         public string NameWithType { get; set; }
 
         [ExtensibleMember("nameWithType.")]
