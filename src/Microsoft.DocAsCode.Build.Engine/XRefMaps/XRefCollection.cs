@@ -11,16 +11,16 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
 
-    public class XRefMapCollection : IXRefContainer
+    internal sealed class XRefCollection
     {
         private const int MaxParallelism = 0x10;
 
-        public XRefMapCollection()
+        public XRefCollection()
         {
             Uris = ImmutableList<Uri>.Empty;
         }
 
-        public XRefMapCollection(IEnumerable<Uri> uris)
+        public XRefCollection(IEnumerable<Uri> uris)
         {
             Uris = uris.ToImmutableList();
         }
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             private readonly ImmutableList<Uri> _uris;
             private readonly HashSet<string> _set = new HashSet<string>();
-            private readonly Dictionary<Task<XRefMap>, Uri> _processing = new Dictionary<Task<XRefMap>, Uri>();
+            private readonly Dictionary<Task<IXRefContainer>, Uri> _processing = new Dictionary<Task<IXRefContainer>, Uri>();
             private readonly XRefMapDownloader _downloader;
 
             public ReaderCreator(ImmutableList<Uri> uris, int maxParallelism)
@@ -49,25 +49,22 @@ namespace Microsoft.DocAsCode.Build.Engine
             public async Task<IXRefContainerReader> CreateAsync()
             {
                 AddToDownloadList(_uris);
-                var dict = new Dictionary<string, XRefMap>();
+                var dict = new Dictionary<string, IXRefContainer>();
                 while (_processing.Count > 0)
                 {
-                    var mapTask = await Task.WhenAny(_processing.Keys);
-                    var uri = _processing[mapTask];
-                    _processing.Remove(mapTask);
+                    var task = await Task.WhenAny(_processing.Keys);
+                    var uri = _processing[task];
+                    _processing.Remove(task);
                     try
                     {
-                        var map = await mapTask;
-                        if (map?.Redirections?.Count > 0)
-                        {
-                            AddToDownloadList(
-                                from r in map.Redirections
-                                where r != null
-                                select GetUri(uri, r.Href) into u
-                                where u != null
-                                select u);
-                        }
-                        dict[uri.AbsoluteUri] = map;
+                        var container = await task;
+                        AddToDownloadList(
+                            from r in container.GetRedirections()
+                            where r != null
+                            select GetUri(uri, r.Href) into u
+                            where u != null
+                            select u);
+                        dict[uri.AbsoluteUri] = container;
                     }
                     catch (Exception ex)
                     {
@@ -117,7 +114,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            private async Task<Tuple<Uri, XRefMap>> DownloadAsync(Uri uri) =>
+            private async Task<Tuple<Uri, IXRefContainer>> DownloadAsync(Uri uri) =>
                 Tuple.Create(uri, await _downloader.DownloadAsync(uri));
         }
     }

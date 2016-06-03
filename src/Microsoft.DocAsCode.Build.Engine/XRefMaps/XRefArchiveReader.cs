@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #endregion
 
-        protected override XRefMap GetMap(string name)
+        protected override IXRefContainer GetMap(string name)
         {
             Tuple<string, XRefMap> tuple;
             if (_lru.TryFind(t => t.Item1 == name, out tuple))

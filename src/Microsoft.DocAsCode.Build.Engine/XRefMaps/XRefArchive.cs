@@ -309,9 +309,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region IXRefContainer Members
 
-        public Task<IXRefContainerReader> GetReaderAsync()
+        IEnumerable<XRefMapRedirection> IXRefContainer.GetRedirections() => Enumerable.Empty<XRefMapRedirection>();
+
+        public IXRefContainerReader GetReader()
         {
-            return Task.FromResult<IXRefContainerReader>(new XRefArchiveReader(this));
+            return new XRefArchiveReader(this);
         }
 
         #endregion

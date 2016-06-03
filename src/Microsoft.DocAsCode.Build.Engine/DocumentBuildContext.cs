@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             MaxParallelism = maxParallelism;
             if (xrefMaps.Length > 0)
             {
-                _reader = new XRefMapCollection(
+                _reader = new XRefCollection(
                     from u in xrefMaps
                     select new Uri(u)).GetReaderAsync();
             }

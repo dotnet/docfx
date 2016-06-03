@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <param name="uri">The uri of xref map file.</param>
         /// <returns>An instance of <see cref="XRefMap"/>.</returns>
         /// <threadsafety>This method is thread safe.</threadsafety>
-        public async Task<XRefMap> DownloadAsync(Uri uri)
+        public async Task<IXRefContainer> DownloadAsync(Uri uri)
         {
             if (uri == null)
             {
@@ -53,9 +53,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <remarks>
         /// Support scheme: http, https, ftp, file, embedded.
         /// </remarks>
-        protected virtual async Task<XRefMap> DownloadBySchemeAsync(Uri uri)
+        protected virtual async Task<IXRefContainer> DownloadBySchemeAsync(Uri uri)
         {
-            XRefMap result = null;
+            IXRefContainer result = null;
             if (uri.IsFile)
             {
                 result = DownloadFromLocal(uri);
@@ -81,9 +81,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
-        protected static XRefMap DownloadFromLocal(Uri uri)
+        protected static IXRefContainer DownloadFromLocal(Uri uri)
         {
-            using (var sr = File.OpenText(uri.LocalPath))
+            var filePath = uri.LocalPath;
+            if (".zip".Equals(Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
+            {
+                return XRefArchive.Open(filePath, XRefArchiveMode.Read);
+            }
+            using (var sr = File.OpenText(filePath))
             {
                 return YamlUtility.Deserialize<XRefMap>(sr);
             }

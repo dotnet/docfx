@@ -3,10 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System.Threading.Tasks;
+    using System.Collections.Generic;
 
     public interface IXRefContainer
     {
-        Task<IXRefContainerReader> GetReaderAsync();
+        IEnumerable<XRefMapRedirection> GetRedirections();
+        IXRefContainerReader GetReader();
     }
 }

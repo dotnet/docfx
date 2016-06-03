@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using YamlDotNet.Serialization;
@@ -78,9 +79,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             HrefUpdated = true;
         }
 
-        public Task<IXRefContainerReader> GetReaderAsync()
+        public IEnumerable<XRefMapRedirection> GetRedirections() =>
+            Redirections ?? Enumerable.Empty<XRefMapRedirection>();
+
+        public IXRefContainerReader GetReader()
         {
-            return Task.FromResult<IXRefContainerReader>(new BasicXRefMapReader(this));
+            return new BasicXRefMapReader(this);
         }
     }
 }
