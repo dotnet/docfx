@@ -114,12 +114,15 @@
     <Compile Include="CommandModels\CompositeOptions.cs" />
     <Compile Include="Exceptions\PluginDirectoryAlreadyExistsException.cs" />
     <Compile Include="Exceptions\PluginException.cs" />
+    <Compile Include="Models\DownloadCommandOptions.cs" />
     <Compile Include="Models\MergeCommandOptions.cs" />
     <Compile Include="Models\MergeJsonConfig.cs" />
     <Compile Include="Models\ICanPrintHelpMessage.cs" />
     <Compile Include="Models\ILoggable.cs" />
     <Compile Include="Models\OptionUsageAttribute.cs" />
     <Compile Include="Models\TemplateCommandOptions.cs" />
+    <Compile Include="SubCommands\DownloadCommandCreator.cs" />
+    <Compile Include="SubCommands\DownloadCommand.cs" />
     <Compile Include="SubCommands\DocumentBuilderWrapper.cs" />
     <Compile Include="SubCommands\MergeCommandCreator.cs" />
     <Compile Include="SubCommands\MergeCommand.cs" />
