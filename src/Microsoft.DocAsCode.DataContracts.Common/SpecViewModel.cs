@@ -19,6 +19,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        [YamlMember(Alias = "nameWithType")]
+        [JsonProperty("nameWithType")]
+        public string NameWithType { get; set; }
+
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
         public string FullName { get; set; }

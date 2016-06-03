@@ -43,6 +43,14 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonIgnore]
         public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();
 
+        [YamlMember(Alias = "nameWithType")]
+        [JsonProperty("nameWithType")]
+        public string NameWithType { get; set; }
+
+        [ExtensibleMember("nameWithType.")]
+        [JsonIgnore]
+        public SortedList<string, string> NameWithTypeInDevLangs { get; } = new SortedList<string, string>();
+
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
         public string FullName { get; set; }
@@ -70,6 +78,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                 foreach (var item in NameInDevLangs)
                 {
                     dict["name." + item.Key] = item.Value;
+                }
+                foreach (var item in NameWithTypeInDevLangs)
+                {
+                    dict["nameWithType." + item.Key] = item.Value;
                 }
                 foreach (var item in FullNameInDevLangs)
                 {
