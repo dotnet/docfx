@@ -4,19 +4,11 @@
 namespace Microsoft.DocAsCode.SubCommands
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
-
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     internal sealed class DownloadCommand : ISubCommand
     {

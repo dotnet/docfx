@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode
         [ValueOption(0)]
         public string ArchiveFile { get; set; }
 
-        [Option('x', "xref", HelpText = "Specifies the urls of xrefmap used by content files.")]
+        [Option('x', "xref", HelpText = "Specifies the urls of xrefmap.")]
         public string Uri { get; set; }
 
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
