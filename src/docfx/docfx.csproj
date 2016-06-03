@@ -5,7 +5,8 @@
     <ProjectGuid>{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -113,22 +114,20 @@
     <Compile Include="CommandModels\CompositeOptions.cs" />
     <Compile Include="Exceptions\PluginDirectoryAlreadyExistsException.cs" />
     <Compile Include="Exceptions\PluginException.cs" />
+    <Compile Include="Models\DownloadCommandOptions.cs" />
     <Compile Include="Models\MergeCommandOptions.cs" />
     <Compile Include="Models\MergeJsonConfig.cs" />
     <Compile Include="Models\ICanPrintHelpMessage.cs" />
     <Compile Include="Models\ILoggable.cs" />
     <Compile Include="Models\OptionUsageAttribute.cs" />
     <Compile Include="Models\TemplateCommandOptions.cs" />
+    <Compile Include="SubCommands\DownloadCommandCreator.cs" />
+    <Compile Include="SubCommands\DownloadCommand.cs" />
     <Compile Include="SubCommands\DocumentBuilderWrapper.cs" />
-    <Compile Include="SubCommands\ExternalReferencePackageHelper.cs" />
     <Compile Include="SubCommands\MergeCommandCreator.cs" />
     <Compile Include="SubCommands\MergeCommand.cs" />
     <Compile Include="SubCommands\MetadataMergeParameters.cs" />
     <Compile Include="SubCommands\MetadataMerger.cs" />
-    <Compile Include="SubCommands\PackCommandCreator.cs" />
-    <Compile Include="SubCommands\ExportCommandCreator.cs" />
-    <Compile Include="SubCommands\ExportCommand.cs" />
-    <Compile Include="SubCommands\PackCommand.cs" />
     <Compile Include="SubCommands\TemplateCommand.cs" />
     <Compile Include="SubCommands\ServeCommand.cs" />
     <Compile Include="SubCommands\InitCommand.cs" />
@@ -156,8 +155,6 @@
     <Compile Include="Models\FileMetadataPairs.cs" />
     <Compile Include="Models\BuildJsonConfig.cs" />
     <Compile Include="Models\MetadataJsonItemConfig.cs" />
-    <Compile Include="Models\PackCommandOptions.cs" />
-    <Compile Include="Models\ExportCommandOptions.cs" />
     <Compile Include="Models\ServeCommandOptions.cs" />
     <Compile Include="Models\InitCommandOptions.cs" />
     <Compile Include="Models\HelpCommandOptions.cs" />

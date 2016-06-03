@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
 
@@ -31,7 +32,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _mapNames = mapNames;
         }
 
-        protected abstract XRefMap GetMap(string name);
+        protected abstract IXRefContainer GetMap(string name);
 
         public XRefSpec Find(string uid)
         {
@@ -53,26 +54,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                     continue;
                 }
 
-                var result = new BasicXRefMapReader(currentMap).Find(uid);
+                var result = currentMap.GetReader().Find(uid);
                 if (result != null)
                 {
                     return result;
                 }
 
                 searched.Add(currentKey);
-                if (currentMap.Redirections != null)
-                {
-                    AddRedirections(uid, checkList, currentMap);
-                }
+                AddRedirections(uid, checkList, currentMap);
             }
             return null;
         }
 
-        private void AddRedirections(string uid, Stack<string> checkList, XRefMap current)
+        private void AddRedirections(string uid, Stack<string> checkList, IXRefContainer current)
         {
-            for (int i = current.Redirections.Count - 1; i >= 0; i--)
+            foreach (var r in current.GetRedirections().Reverse())
             {
-                var r = current.Redirections[i];
                 if (r.UidPrefix == null ||
                     uid.StartsWith(r.UidPrefix))
                 {

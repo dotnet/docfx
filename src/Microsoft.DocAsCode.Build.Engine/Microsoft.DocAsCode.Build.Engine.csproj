@@ -61,7 +61,7 @@
     <Compile Include="XRefMaps\XRefArchiveReader.cs" />
     <Compile Include="XRefMaps\XRefMap.cs" />
     <Compile Include="XRefMaps\BasicXRefMapReader.cs" />
-    <Compile Include="XRefMaps\XRefMapCollection.cs" />
+    <Compile Include="XRefMaps\XRefCollection.cs" />
     <Compile Include="XRefMaps\XRefMapDownloader.cs" />
     <Compile Include="XRefMaps\XRefMapReader.cs" />
     <Compile Include="XRefMaps\XRefRedirectionReader.cs" />

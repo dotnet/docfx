@@ -52,8 +52,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private async Task<string> DownloadCoreAsync(Uri uri, XRefArchive xa, bool isMajor)
         {
-            XRefMap map;
-            map = await _downloader.DownloadAsync(uri);
+            IXRefContainer container;
+            container = await _downloader.DownloadAsync(uri);
+            var map = container as XRefMap;
+            if (map == null)
+            {
+                // not support download an xref archive, or reference to an xref archive
+                return null;
+            }
             if (map.Redirections?.Count > 0)
             {
                 await RewriteRedirections(uri, xa, map);
@@ -106,6 +112,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         private async Task<List<XRefMapRedirection>> RewriteRedirectionsCore(List<XRefMapRedirection> redirections, Uri uri, XRefArchive xa)
         {
             var fileRef = await DownloadCoreAsync(uri, xa, false);
+            if (fileRef == null)
+            {
+                return new List<XRefMapRedirection>();
+            }
             return (from r in redirections
                     select new XRefMapRedirection { UidPrefix = r.UidPrefix, Href = fileRef }).ToList();
         }

@@ -7,7 +7,7 @@
     {{{conceptual}}}
   </div>
   <strong>Namespace:</strong> {{{namespaceExpanded.specName.0.value}}}
-  <br>
+  <br />
   <strong>Assembly:</strong> {{assemblies.0}} (in {{assemblies.0}}.dll)
   {{#inheritance.0}}
   <div>

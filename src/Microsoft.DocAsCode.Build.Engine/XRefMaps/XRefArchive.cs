@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly XRefArchiveMode _mode;
         private readonly ZipArchive _archive;
         private readonly List<string> _entries;
+        private IXRefContainerReader _reader;
         #endregion
 
         #region Ctors
@@ -309,9 +310,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region IXRefContainer Members
 
-        public Task<IXRefContainerReader> GetReaderAsync()
+        IEnumerable<XRefMapRedirection> IXRefContainer.GetRedirections() => Enumerable.Empty<XRefMapRedirection>();
+
+        public IXRefContainerReader GetReader()
         {
-            return Task.FromResult<IXRefContainerReader>(new XRefArchiveReader(this));
+            if (_reader == null)
+            {
+                _reader = new XRefArchiveReader(this);
+            }
+            return _reader;
         }
 
         #endregion
