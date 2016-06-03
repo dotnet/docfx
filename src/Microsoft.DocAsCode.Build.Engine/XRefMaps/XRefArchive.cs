@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly XRefArchiveMode _mode;
         private readonly ZipArchive _archive;
         private readonly List<string> _entries;
+        private IXRefContainerReader _reader;
         #endregion
 
         #region Ctors
@@ -313,7 +314,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public IXRefContainerReader GetReader()
         {
-            return new XRefArchiveReader(this);
+            if (_reader == null)
+            {
+                _reader = new XRefArchiveReader(this);
+            }
+            return _reader;
         }
 
         #endregion
