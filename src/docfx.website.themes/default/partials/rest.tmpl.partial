@@ -28,7 +28,7 @@
 {{/tags}}
 {{!if some children are not tagged while other children are tagged, add default title}}
 {{#children.0}}
-{{#includedInTags}}
+{{^includedInTags}}
 <h2 id="other-apis">Other APIs</h2>
 {{/includedInTags}}
 {{/children.0}}
