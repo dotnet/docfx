@@ -3,21 +3,25 @@
 
 namespace Microsoft.DocAsCode.Build.Common
 {
+    using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Plugins;
 
     public class MarkdownReader
     {
-        public static List<OverwriteDocumentModel> ReadMarkdownAsOverwrite(string baseDir, string file)
+        public static IEnumerable<OverwriteDocumentModel> ReadMarkdownAsOverwrite(IHostService host, FileAndType ft)
         {
             // Order the list from top to bottom
-            var list = ReadMarkDownCore(Path.Combine(baseDir, file)).ToList();
-            list.Reverse();
-            return list;
+            var markdown = File.ReadAllText(ft.FullPath);
+            var parts = MarkupMultiple(host, markdown, ft);
+            return parts.Select(part => TransformModel(ft.FullPath, part));
         }
 
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
@@ -33,50 +37,89 @@ namespace Microsoft.DocAsCode.Build.Common
             };
         }
 
-        private static IEnumerable<OverwriteDocumentModel> ReadMarkDownCore(string file)
+        private static OverwriteDocumentModel TransformModel(string filePath, YamlHtmlPart part)
         {
-            var content = File.ReadAllText(file);
-            var repoInfo = GitUtility.GetGitDetail(file);
-            var lineIndex = GetLineIndex(content).ToList();
-            var yamlDetails = YamlHeaderParser.Select(content);
-            var sections = from detail in yamlDetails
-                           let id = detail.Id
-                           from location in detail.MatchedSection.Locations
-                           orderby location.StartLocation descending
-                           select new { Detail = detail, Id = id, Location = location };
-            var currentEnd = Coordinate.GetCoordinate(content);
-            foreach (var item in sections)
+            if (part == null)
             {
-                if (!string.IsNullOrEmpty(item.Id))
+                return null;
+            }
+
+            var properties = part.YamlHeader;
+            string checkPropertyMessage;
+            var checkPropertyStatus = CheckRequiredProperties(properties, RequiredProperties, out checkPropertyMessage);
+            if (!checkPropertyStatus)
+            {
+                throw new InvalidDataException(checkPropertyMessage);
+            }
+
+            var overriden = RemoveRequiredProperties(properties, RequiredProperties);
+            var repoInfo = GitUtility.GetGitDetail(filePath);
+
+            return new OverwriteDocumentModel
+            {
+                Uid = properties[Constants.PropertyName.Uid].ToString(),
+                Metadata = overriden,
+                Conceptual = part.Conceptual,
+                Documentation = new SourceDetail
                 {
-                    int start = lineIndex[item.Location.EndLocation.Line] + item.Location.EndLocation.Column + 1;
-                    int end = lineIndex[currentEnd.Line] + currentEnd.Column + 1;
-                    yield return new OverwriteDocumentModel
-                    {
-                        Uid = item.Id,
-                        Metadata = item.Detail.Properties,
-                        Conceptual = content.Substring(start, end - start),
-                        Documentation = new SourceDetail
-                        {
-                            Remote = repoInfo,
-                            StartLine = item.Location.EndLocation.Line,
-                            EndLine = currentEnd.Line,
-                            Path = Path.GetFullPath(file).ToDisplayPath()
-                        }
-                    };
+                    Remote = repoInfo,
+                    StartLine = part.StartLine,
+                    EndLine = part.EndLine,
+                    Path = part.SourceFile
                 }
-                currentEnd = item.Location.StartLocation;
+            };
+        }
+
+        private static IEnumerable<YamlHtmlPart> MarkupMultiple(IHostService host, string markdown, FileAndType ft)
+        {
+            try
+            {
+                var html = host.MarkupToHtml(markdown, ft.File);
+                var parts = YamlHtmlPart.SplitYamlHtml(html);
+                foreach (var part in parts)
+                {
+                    var mr = host.ParseHtml(part.OriginHtml, ft);
+                    part.LinkToFiles = mr.LinkToFiles;
+                    part.LinkToUids = mr.LinkToUids;
+                    part.YamlHeader = mr.YamlHeader;
+                }
+                return parts;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.Fail("Markup failed!");
+                Logger.LogWarning($"Markup failed:{Environment.NewLine}  Markdown: {markdown}{Environment.NewLine}  Details:{ex.ToString()}");
+                return Enumerable.Empty<YamlHtmlPart>();
             }
         }
 
-        private static IEnumerable<int> GetLineIndex(string content)
+        private static readonly List<string> RequiredProperties = new List<string> { Constants.PropertyName.Uid };
+
+        private static Dictionary<string, object> RemoveRequiredProperties(ImmutableDictionary<string, object> properties, IEnumerable<string> requiredProperties)
         {
-            var index = 0;
-            while (index >= 0)
+            if (properties == null) return null;
+
+            var overridenProperties = new Dictionary<string, object>(properties);
+            foreach (var requiredProperty in requiredProperties)
             {
-                yield return index;
-                index = content.IndexOf('\n', index + 1);
+                if (requiredProperty != null) overridenProperties.Remove(requiredProperty);
             }
+
+            return overridenProperties;
+        }
+
+        private static bool CheckRequiredProperties(ImmutableDictionary<string, object> properties, IEnumerable<string> requiredKeys, out string message)
+        {
+            var notExistsKeys = requiredKeys.Where(k => !properties.Keys.Contains(k, StringComparer.OrdinalIgnoreCase));
+            if (notExistsKeys.Any())
+            {
+                message =
+                    $"Required properties {{{{{string.Join(",", notExistsKeys)}}}}} are not set. Note that keys are case insensitive.";
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
         }
     }
 }

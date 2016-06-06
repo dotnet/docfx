@@ -8,10 +8,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Composition;
     using System.Linq;
     using System.IO;
+    using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
@@ -35,20 +37,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     }
                     break;
                 case DocumentType.Overwrite:
+                    BuildItem(host, model);
                     break;
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        #region Private methods
-        private static IEnumerable<string> EmptyEnumerable = Enumerable.Empty<string>();
         public static ItemViewModel BuildItem(IHostService host, ItemViewModel item, FileModel model, Func<string, bool> filter = null)
         {
             var linkToUids = new HashSet<string>();
             item.Summary = Markup(host, item.Summary, model, filter);
             item.Remarks = Markup(host, item.Remarks, model, filter);
-            item.Conceptual = Markup(host, item.Conceptual, model, filter);
+            if (model.Type != DocumentType.Overwrite)
+            {
+                item.Conceptual = Markup(host, item.Conceptual, model, filter);
+            }
             linkToUids.UnionWith(item.Inheritance ?? EmptyEnumerable);
             linkToUids.UnionWith(item.InheritedMembers ?? EmptyEnumerable);
             linkToUids.UnionWith(item.Implements ?? EmptyEnumerable);
@@ -59,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 linkToUids.Add(item.Overridden);
             }
-            
+
             if (item.Syntax?.Return != null)
             {
                 if (item.Syntax.Return.Description != null)
@@ -90,6 +94,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             ((HashSet<string>)model.Properties.LinkToUids).UnionWith(linkToUids);
             return item;
+        }
+
+        #region Private methods
+        private static IEnumerable<string> EmptyEnumerable = Enumerable.Empty<string>();
+
+        private static void BuildItem(IHostService host, FileModel model)
+        {
+            var file = model.FileAndType;
+            var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
+            model.Content = overwrites;
+            model.LocalPathFromRepoRoot = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+            model.Uids = (from item in overwrites
+                          select new UidDefinition(
+                              item.Uid,
+                              model.LocalPathFromRepoRoot,
+                              item.Documentation.StartLine + 1)).ToImmutableArray();
         }
 
         private static string Markup(IHostService host, string markdown, FileModel model, Func<string, bool> filter = null)
