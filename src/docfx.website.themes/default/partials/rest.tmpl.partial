@@ -28,9 +28,9 @@
 {{/tags}}
 {{!if some children are not tagged while other children are tagged, add default title}}
 {{#children.0}}
-{{#tags.0}}
+{{#isTagLayout}}
 <h2 id="other-apis">Other APIs</h2>
-{{/tags.0}}
+{{/isTagLayout}}
 {{/children.0}}
 {{#children}}
   {{>partials/rest.child}}
