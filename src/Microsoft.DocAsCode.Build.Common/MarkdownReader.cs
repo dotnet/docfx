@@ -79,6 +79,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 foreach (var part in parts)
                 {
                     var mr = host.ParseHtml(part.OriginHtml, ft);
+                    part.Conceptual = mr.Html;
                     part.LinkToFiles = mr.LinkToFiles;
                     part.LinkToUids = mr.LinkToUids;
                     part.YamlHeader = mr.YamlHeader;
