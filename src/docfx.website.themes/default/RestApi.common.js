@@ -34,7 +34,7 @@ exports.transform = function (model) {
                 var child = model.children[i];
                 if (child.includedInTags) {
                     // set child to undefined, which is already moved to tag section
-                    child = undefined;
+                    model.children[i] = undefined;
                     if (!model.isTagLayout) {
                         // flags to indicate the model is tag layout
                         model.isTagLayout = true;
