@@ -79,7 +79,6 @@ Files can be combined using `,` as seperator and *search pattern*.
 
 4. If the argument is not specified, `docfx.exe` will try reading `docfx.json` under current directory.
 
-   
 The default output folder is `_site/` folder if it is not specified in `docfx.json` under current directory.
 
 ###2.3 Generate documentation command `docfx build`
