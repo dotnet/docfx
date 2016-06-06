@@ -123,6 +123,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
+            if (current.ExtensionMethods?.Count > 0)
+            {
+                foreach (var item in current.ExtensionMethods)
+                {
+                    yield return item;
+                }
+            }
+
             if (current.Exceptions?.Count > 0)
             {
                 foreach (var item in current.Exceptions)

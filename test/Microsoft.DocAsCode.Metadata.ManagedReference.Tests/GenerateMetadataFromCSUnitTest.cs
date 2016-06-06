@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
         [Fact]
         [Trait("Related", "Attribute")]
-        public void TestGenereateMetadataAsyncWithFuncVoidReturn()
+        public void TestGenerateMetadataAsyncWithFuncVoidReturn()
         {
             string code = @"
 using System;
@@ -86,7 +86,7 @@ This is a function
         }
 
         [Fact]
-        public void TestGenereateMetadataAsyncWithNamespace()
+        public void TestGenerateMetadataAsyncWithNamespace()
         {
             string code = @"
 namespace Test1.Test2
@@ -110,7 +110,7 @@ namespace Test1.Test2
         [Trait("Related", "Reference")]
         [Trait("Related", "TripleSlashComments")]
         [Fact]
-        public void TestGenereateMetadataWithGenericClass()
+        public void TestGenerateMetadataWithGenericClass()
         {
             string code = @"
 using System.Collections.Generic
@@ -254,7 +254,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadataWithInterface()
+        public void TestGenerateMetadataWithInterface()
         {
             string code = @"
 namespace Test1
@@ -311,7 +311,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadataWithInterfaceAndInherits()
+        public void TestGenerateMetadataWithInterfaceAndInherits()
         {
             string code = @"
 namespace Test1
@@ -350,7 +350,7 @@ namespace Test1
         [Trait("Related", "Inheritance")]
         [Trait("Related", "Reference")]
         [Fact]
-        public void TestGenereateMetadataWithClassAndInherits()
+        public void TestGenerateMetadataWithClassAndInherits()
         {
             string code = @"
 namespace Test1
@@ -487,7 +487,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadataWithEnum()
+        public void TestGenerateMetadataWithEnum()
         {
             string code = @"
 namespace Test1
@@ -530,7 +530,7 @@ namespace Test1
 
         [Trait("Related", "Inheritance")]
         [Fact]
-        public void TestGenereateMetadataWithStruct()
+        public void TestGenerateMetadataWithStruct()
         {
             string code = @"
 using System.Collections
@@ -587,7 +587,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadataWithDelegate()
+        public void TestGenerateMetadataWithDelegate()
         {
             string code = @"
 using System.Collections.Generic
@@ -651,7 +651,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadataWithMethod()
+        public void TestGenerateMetadataWithMethod()
         {
             string code = @"
 using System.Threading.Tasks
@@ -781,7 +781,7 @@ namespace Test1
         [Trait("Related", "Generic")]
         [Trait("Related", "EII")]
         [Fact]
-        public void TestGenereateMetadataWithEii()
+        public void TestGenerateMetadataWithEii()
         {
             string code = @"
 using System.Collections.Generic
@@ -915,8 +915,90 @@ namespace Test1
             }
         }
 
+        [Trait("Related", "Generic")]
+        [Trait("Related", "Extension Method")]
         [Fact]
-        public void TestGenereateMetadataWithOperator()
+        public void TestGenerateMetadataWithExtensionMethod()
+        {
+            string code = @"
+namespace Test1
+{
+    public abstract class Foo<T>
+    {
+    }
+    public class FooImple<T> : Foo<T[]>
+    {
+        public void M1<U>(T a, U b) { }
+    }
+    public class FooImple2<T> : Foo<dynamic>
+    {
+    }
+    public class FooImple3<T> : Foo<Foo<T[]>>
+    {
+    }
+
+    public static class Extension
+    {
+        public static void Eat<Tool>(this FooImple<Tool> impl)
+        { }
+        public static void Play<Tool, Way>(this Foo<Tool> foo, Tool t, Way w)
+        { }
+    }
+}
+";
+            var compilation = CreateCompilationFromCSharpCode(code);
+            MetadataItem output = GenerateYamlMetadata(compilation, extensionMethods: GetAllExtensionMethods(new[] { compilation }));
+            Assert.Equal(1, output.Items.Count);
+            // FooImple<T>
+            {
+                var method = output.Items[0].Items[1].Items[0];
+                Assert.NotNull(method);
+                Assert.Equal("M1<U>(T, U)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.FooImple<T>.M1<U>(T, U)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.FooImple`1.M1``1(`0,``0)", method.Name);
+                Assert.Equal("public void M1<U>(T a, U b)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
+            }
+            var extensionMethods = output.Items[0].Items[1].ExtensionMethods;
+            Assert.Equal(2, extensionMethods.Count);
+            {
+                Assert.Equal("Test1.Extension.Eat``1", extensionMethods[0]);
+                var reference = output.References[extensionMethods[0]];
+                Assert.Equal(false, reference.IsDefinition);
+                Assert.Equal("Test1.Extension.Eat``1(Test1.FooImple{``0})", reference.Definition);
+                Assert.Equal("Eat<T>()", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
+            }
+            {
+                Assert.Equal("Test1.Extension.Play``2({T}[],{Way})", extensionMethods[1]);
+                var reference = output.References[extensionMethods[1]];
+                Assert.Equal(false, reference.IsDefinition);
+                Assert.Equal("Test1.Extension.Play``2(Test1.Foo{``0},``0,``1)", reference.Definition);
+                Assert.Equal("Play<T[], Way>(T[], Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
+            }
+            // FooImple2<T>
+            extensionMethods = output.Items[0].Items[2].ExtensionMethods;
+            Assert.Equal(1, extensionMethods.Count);
+            {
+                Assert.Equal("Test1.Extension.Play``2(System.Object,{Way})", extensionMethods[0]);
+                var reference = output.References[extensionMethods[0]];
+                Assert.Equal(false, reference.IsDefinition);
+                Assert.Equal("Test1.Extension.Play``2(Test1.Foo{``0},``0,``1)", reference.Definition);
+                Assert.Equal("Play<Object, Way>(Object, Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
+            }
+            // FooImple3<T>
+            extensionMethods = output.Items[0].Items[3].ExtensionMethods;
+            Assert.Equal(1, extensionMethods.Count);
+            {
+                Assert.Equal("Test1.Extension.Play``2(Test1.Foo{{T}[]},{Way})", extensionMethods[0]);
+                var reference = output.References[extensionMethods[0]];
+                Assert.Equal(false, reference.IsDefinition);
+                Assert.Equal("Test1.Extension.Play``2(Test1.Foo{``0},``0,``1)", reference.Definition);
+                Assert.Equal("Play<Foo<T[]>, Way>(Foo<T[]>, Way)", string.Concat(reference.Parts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
+            }
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithOperator()
         {
             string code = @"
 using System.Collections.Generic
@@ -1200,7 +1282,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadataWithConstructor()
+        public void TestGenerateMetadataWithConstructor()
         {
             string code = @"
 namespace Test1
@@ -1270,7 +1352,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadataWithField()
+        public void TestGenerateMetadataWithField()
         {
             string code = @"
 namespace Test1
@@ -1369,7 +1451,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadataWithCSharpCodeAndEvent()
+        public void TestGenerateMetadataWithCSharpCodeAndEvent()
         {
             string code = @"
 using System;
@@ -1483,7 +1565,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadataWithProperty()
+        public void TestGenerateMetadataWithProperty()
         {
             string code = @"
 namespace Test1
@@ -1626,7 +1708,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Fact]
-        public void TestGenereateMetadataWithIndexer()
+        public void TestGenerateMetadataWithIndexer()
         {
             string code = @"
 using System;
@@ -1776,7 +1858,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadataWithMethodUsingDefaultValue()
+        public void TestGenerateMetadataWithMethodUsingDefaultValue()
         {
             string code = @"
 namespace Test1
@@ -1805,7 +1887,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenereateMetadataAsyncWithAssemblyInfoAndCrossReference()
+        public void TestGenerateMetadataAsyncWithAssemblyInfoAndCrossReference()
         {
             string referenceCode = @"
 namespace Test1
@@ -1857,7 +1939,7 @@ namespace Test1
         [Fact]
         [Trait("Related", "Multilanguage")]
         [Trait("Related", "Generic")]
-        public void TestGenereateMetadataAsyncWithMultilanguage()
+        public void TestGenerateMetadataAsyncWithMultilanguage()
         {
             string code = @"
 namespace Test1
@@ -1920,7 +2002,7 @@ namespace Test1
         [Fact]
         [Trait("Related", "Generic")]
         [Trait("Related", "Inheritance")]
-        public void TestGenereateMetadataAsyncWithGenericInheritance()
+        public void TestGenerateMetadataAsyncWithGenericInheritance()
         {
             string code = @"
 using System.Collections.Generic;
@@ -1964,7 +2046,7 @@ namespace Test1
         [Trait("Related", "Dynamic")]
         [Trait("Related", "Multilanguage")]
         [Fact]
-        public void TestGenereateMetadataWithDynamic()
+        public void TestGenerateMetadataWithDynamic()
         {
             string code = @"
 namespace Test1
@@ -2028,7 +2110,7 @@ namespace Test1
 
         [Fact]
         [Trait("Related", "Generic")]
-        public void TestGenereateMetadataAsyncWithNestedGeneric()
+        public void TestGenerateMetadataAsyncWithNestedGeneric()
         {
             string code = @"
 using System.Collections.Generic;
@@ -2079,7 +2161,7 @@ namespace Test1
 
         [Fact]
         [Trait("Related", "Attribute")]
-        public void TestGenereateMetadataAsyncWithAttributes()
+        public void TestGenerateMetadataAsyncWithAttributes()
         {
             string code = @"
 using System;
@@ -2188,7 +2270,7 @@ public object Property
         }
 
         [Fact]
-        public void TestGenereateMetadataWithFieldHasDefaultValue()
+        public void TestGenerateMetadataWithFieldHasDefaultValue()
         {
             string code = @"
 namespace Test1
@@ -2211,7 +2293,7 @@ namespace Test1
         [Fact]
         [Trait("Related", "ExtensionMethod")]
         [Trait("Related", "Multilanguage")]
-        public void TestGenereateMetadataAsyncWithExtensionMethods()
+        public void TestGenerateMetadataAsyncWithExtensionMethods()
         {
             string code = @"
 namespace Test1
