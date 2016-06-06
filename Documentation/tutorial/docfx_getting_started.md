@@ -99,6 +99,7 @@ Please refer to [*DocFX* User Manual](docfx.exe_user_manual.md) for detailed des
 
 5. Build from source code
 ----------------
+As a prerequisite, you will need to install [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
 
 *Step1.* `git clone https://github.com/dotnet/docfx.git` to get the latest code.
 
