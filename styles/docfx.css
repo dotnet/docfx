@@ -183,7 +183,7 @@ header .navbar {
   min-height: 40px;
 }
 
-.inheritance h5{
+.inheritance h5, .inheritedMembers h5{
   padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
 }

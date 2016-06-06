@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class YamlViewModelExtensions
    | DocFX website ">
-    <meta name="generator" content="docfx 1.9.4.0">
+    <meta name="generator" content="docfx 2.0.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -86,6 +86,30 @@
                   <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><span class="xref">YamlViewModelExtensions</span></div>
               </div>
+              <div class="inheritedMembers">
+                <h5>Inherited Members</h5>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">ToString()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Equals(Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Equals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">ReferenceEquals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">GetHashCode()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">GetType()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">MemberwiseClone()</a>
+                </div>
+              </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Metadata.ManagedReference</h6>
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Metadata.ManagedReference.dll</h6>
               <h5 id="Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_syntax">Syntax</h5>
@@ -107,7 +131,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static bool AllowMultipleItems(MemberType type)</code></pre>
+                <pre><code class="lang-csharp hljs">public static bool AllowMultipleItems(this MemberType type)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -146,14 +170,14 @@
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_GetLanguageProperty__1_System_Collections_Generic_SortedList_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage___0__Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage___0_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.GetLanguageProperty%60%601(System.Collections.Generic.SortedList%7BMicrosoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage%2C%60%600%7D%2CMicrosoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage%2C%60%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference/YamlViewModelExtensions.cs/#L328">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference/YamlViewModelExtensions.cs/#L330">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_GetLanguageProperty__1_System_Collections_Generic_SortedList_Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage___0__Microsoft_DocAsCode_DataContracts_ManagedReference_SyntaxLanguage___0_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.GetLanguageProperty``1(System.Collections.Generic.SortedList{Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,``0},Microsoft.DocAsCode.DataContracts.ManagedReference.SyntaxLanguage,``0)">GetLanguageProperty&lt;TValue&gt;(SortedList&lt;SyntaxLanguage, TValue&gt;, SyntaxLanguage, TValue)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static TValue GetLanguageProperty&lt;TValue&gt;(SortedList&lt;SyntaxLanguage, TValue&gt; dict, SyntaxLanguage language, TValue defaultValue = null)where TValue : class</code></pre>
+                <pre><code class="lang-csharp hljs">public static TValue GetLanguageProperty&lt;TValue&gt;(this SortedList&lt;SyntaxLanguage, TValue&gt; dict, SyntaxLanguage language, TValue defaultValue = null)where TValue : class</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -224,7 +248,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static bool IsPageLevel(MemberType type)</code></pre>
+                <pre><code class="lang-csharp hljs">public static bool IsPageLevel(this MemberType type)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -270,7 +294,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static MetadataItem ShrinkToSimpleToc(MetadataItem item)</code></pre>
+                <pre><code class="lang-csharp hljs">public static MetadataItem ShrinkToSimpleToc(this MetadataItem item)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -317,7 +341,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static MetadataItem ShrinkToSimpleTocWithNamespaceNotEmpty(MetadataItem item)</code></pre>
+                <pre><code class="lang-csharp hljs">public static MetadataItem ShrinkToSimpleTocWithNamespaceNotEmpty(this MetadataItem item)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -363,7 +387,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static ItemViewModel ToItemViewModel(MetadataItem model)</code></pre>
+                <pre><code class="lang-csharp hljs">public static ItemViewModel ToItemViewModel(this MetadataItem model)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -409,7 +433,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static PageViewModel ToPageViewModel(MetadataItem model)</code></pre>
+                <pre><code class="lang-csharp hljs">public static PageViewModel ToPageViewModel(this MetadataItem model)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -455,7 +479,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static ReferenceViewModel ToReferenceViewModel(KeyValuePair&lt;string, ReferenceItem&gt; model)</code></pre>
+                <pre><code class="lang-csharp hljs">public static ReferenceViewModel ToReferenceViewModel(this KeyValuePair&lt;string, ReferenceItem&gt; model)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -494,14 +518,14 @@
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_ToSpecViewModel_Microsoft_DocAsCode_Metadata_ManagedReference_LinkItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToSpecViewModel(Microsoft.DocAsCode.Metadata.ManagedReference.LinkItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference/YamlViewModelExtensions.cs/#L311">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference/YamlViewModelExtensions.cs/#L313">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_ToSpecViewModel_Microsoft_DocAsCode_Metadata_ManagedReference_LinkItem_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToSpecViewModel(Microsoft.DocAsCode.Metadata.ManagedReference.LinkItem)">ToSpecViewModel(LinkItem)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static SpecViewModel ToSpecViewModel(LinkItem model)</code></pre>
+                <pre><code class="lang-csharp hljs">public static SpecViewModel ToSpecViewModel(this LinkItem model)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -540,14 +564,14 @@
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_ToSyntaxDetailViewModel_Microsoft_DocAsCode_Metadata_ManagedReference_SyntaxDetail_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToSyntaxDetailViewModel(Microsoft.DocAsCode.Metadata.ManagedReference.SyntaxDetail)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference/YamlViewModelExtensions.cs/#L282">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Metadata.ManagedReference/YamlViewModelExtensions.cs/#L284">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Metadata_ManagedReference_YamlViewModelExtensions_ToSyntaxDetailViewModel_Microsoft_DocAsCode_Metadata_ManagedReference_SyntaxDetail_" data-uid="Microsoft.DocAsCode.Metadata.ManagedReference.YamlViewModelExtensions.ToSyntaxDetailViewModel(Microsoft.DocAsCode.Metadata.ManagedReference.SyntaxDetail)">ToSyntaxDetailViewModel(SyntaxDetail)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static SyntaxDetailViewModel ToSyntaxDetailViewModel(SyntaxDetail model)</code></pre>
+                <pre><code class="lang-csharp hljs">public static SyntaxDetailViewModel ToSyntaxDetailViewModel(this SyntaxDetail model)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -593,7 +617,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static TocItemViewModel ToTocItemViewModel(MetadataItem item)</code></pre>
+                <pre><code class="lang-csharp hljs">public static TocItemViewModel ToTocItemViewModel(this MetadataItem item)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -639,7 +663,7 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static TocViewModel ToTocViewModel(MetadataItem item)</code></pre>
+                <pre><code class="lang-csharp hljs">public static TocViewModel ToTocViewModel(this MetadataItem item)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -691,6 +715,7 @@
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
+            
             <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>

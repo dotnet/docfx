@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class XRefMap
    | DocFX website ">
-    <meta name="generator" content="docfx 1.9.4.0">
+    <meta name="generator" content="docfx 2.0.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -76,7 +76,7 @@
             <article class="content wrap" id="_content">
               
               <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L15" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L17" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_Build_Engine_XRefMap" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap">Class XRefMap
               </h1>
               <div class="markdown level0 summary"></div>
@@ -86,11 +86,35 @@
                   <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><span class="xref">XRefMap</span></div>
               </div>
+              <div class="inheritedMembers">
+                <h5>Inherited Members</h5>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">ToString()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Equals(Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Equals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">ReferenceEquals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">GetHashCode()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">GetType()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">MemberwiseClone()</a>
+                </div>
+              </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Build.Engine</h6>
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.Engine.dll</h6>
               <h5 id="Microsoft_DocAsCode_Build_Engine_XRefMap_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class XRefMap</code></pre>
+                <pre><code class="lang-csharp hljs">public class XRefMap : IXRefContainer</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
@@ -99,7 +123,7 @@
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_BaseUrl.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.BaseUrl%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L23">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L25">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_BaseUrl" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.BaseUrl">BaseUrl</h4>
               <div class="markdown level1 summary"></div>
@@ -107,11 +131,7 @@
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;baseUrl&quot;)]
-public string BaseUrl
-{
-    get;
-    set;
-}</code></pre>
+public string BaseUrl { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -133,7 +153,7 @@ public string BaseUrl
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_HrefUpdated.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.HrefUpdated%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L20">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L22">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_HrefUpdated" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.HrefUpdated">HrefUpdated</h4>
               <div class="markdown level1 summary"></div>
@@ -141,11 +161,7 @@ public string BaseUrl
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;hrefUpdated&quot;)]
-public bool ? HrefUpdated
-{
-    get;
-    set;
-}</code></pre>
+public bool ? HrefUpdated { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -167,7 +183,7 @@ public bool ? HrefUpdated
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_Others.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.Others%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L32">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L34">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_Others" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.Others">Others</h4>
               <div class="markdown level1 summary"></div>
@@ -175,11 +191,7 @@ public bool ? HrefUpdated
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember]
-public Dictionary&lt;string, object&gt; Others
-{
-    get;
-    set;
-}</code></pre>
+public Dictionary&lt;string, object&gt; Others { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -201,7 +213,7 @@ public Dictionary&lt;string, object&gt; Others
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_Redirections.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.Redirections%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L26">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L28">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_Redirections" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.Redirections">Redirections</h4>
               <div class="markdown level1 summary"></div>
@@ -209,11 +221,7 @@ public Dictionary&lt;string, object&gt; Others
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;redirections&quot;)]
-public List&lt;XRefMapRedirection&gt; Redirections
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;XRefMapRedirection&gt; Redirections { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -235,7 +243,7 @@ public List&lt;XRefMapRedirection&gt; Redirections
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_References.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.References%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L29">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L31">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_References" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.References">References</h4>
               <div class="markdown level1 summary"></div>
@@ -243,11 +251,7 @@ public List&lt;XRefMapRedirection&gt; Redirections
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;references&quot;)]
-public List&lt;XRefSpec&gt; References
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;XRefSpec&gt; References { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -269,7 +273,7 @@ public List&lt;XRefSpec&gt; References
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_Sorted.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.Sorted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L17">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L19">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_Sorted" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.Sorted">Sorted</h4>
               <div class="markdown level1 summary"></div>
@@ -277,11 +281,7 @@ public List&lt;XRefSpec&gt; References
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;sorted&quot;)]
-public bool ? Sorted
-{
-    get;
-    set;
-}</code></pre>
+public bool ? Sorted { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -302,35 +302,18 @@ public bool ? Sorted
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_Find_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.Find(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_GetReader.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.GetReader%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L80">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L85">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_Find_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.Find(System.String)">Find(String)</h4>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_GetReader" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.GetReader">GetReader()</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual XRefSpec Find(string uid)</code></pre>
+                <pre><code class="lang-csharp hljs">public IXRefContainerReader GetReader()</code></pre>
               </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>uid</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
               <h5 class="returns">Returns</h5>
               <table class="table table-bordered table-striped table-condensed">
                 <thead>
@@ -341,17 +324,50 @@ public bool ? Sorted
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.XRefSpec.html#Microsoft_DocAsCode_Plugins_XRefSpec">XRefSpec</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.IXRefContainerReader.html#Microsoft_DocAsCode_Build_Engine_IXRefContainerReader">IXRefContainerReader</a></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.IXRefContainer.html#Microsoft_DocAsCode_Build_Engine_IXRefContainer_GetReader">GetReader()</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_GetRedirections.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.GetRedirections%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L82">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_GetRedirections" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.GetRedirections">GetRedirections()</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IEnumerable&lt;XRefMapRedirection&gt; GetRedirections()</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Build.Engine.XRefMapRedirection.html#Microsoft_DocAsCode_Build_Engine_XRefMapRedirection">XRefMapRedirection</a>&gt;</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.IXRefContainer.html#Microsoft_DocAsCode_Build_Engine_IXRefContainer_GetRedirections">GetRedirections()</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_Sort.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.Sort%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L35">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L37">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_Sort" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.Sort">Sort()</h4>
               <div class="markdown level1 summary"></div>
@@ -365,7 +381,7 @@ public bool ? Sorted
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_XRefMap_UpdateHref_System_Uri_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.XRefMap.UpdateHref(System.Uri)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L48">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/XRefMaps/XRefMap.cs/#L50">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_XRefMap_UpdateHref_System_Uri_" data-uid="Microsoft.DocAsCode.Build.Engine.XRefMap.UpdateHref(System.Uri)">UpdateHref(Uri)</h4>
               <div class="markdown level1 summary"></div>
@@ -409,6 +425,7 @@ public bool ? Sorted
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
+            
             <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>

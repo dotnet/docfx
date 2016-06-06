@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class RoundtripObjectGraphTraversalStrategy
    | DocFX website ">
-    <meta name="generator" content="docfx 1.9.4.0">
+    <meta name="generator" content="docfx 2.0.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -79,7 +79,7 @@
               <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/ObjectGraphTraversalStrategies/RoundtripObjectGraphTraversalStrategy.cs/#L19" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_RoundtripObjectGraphTraversalStrategy" data-uid="Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.RoundtripObjectGraphTraversalStrategy">Class RoundtripObjectGraphTraversalStrategy
               </h1>
-              <div class="markdown level0 summary"><p>An implementation of <span class="xref">YamlDotNet.Serialization.IObjectGraphTraversalStrategy</span> that traverses
+              <div class="markdown level0 summary"><p>An implementation of <span class="xref">IObjectGraphTraversalStrategy</span> that traverses
 properties that are read/write, collections and dictionaries, while ensuring that
 the graph can be regenerated from the resulting document.</p>
 </div>
@@ -89,6 +89,48 @@ the graph can be regenerated from the resulting document.</p>
                   <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><a class="xref" href="Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy">FullObjectGraphTraversalStrategy</a></div>
                   <div class="level2"><span class="xref">RoundtripObjectGraphTraversalStrategy</span></div>
+              </div>
+              <div class="inheritedMembers">
+                <h5>Inherited Members</h5>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_Serializer">Serializer</a>
+                </div>
+                <div>
+                  <span class="xref">Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.YamlDotNet.Serialization.IObjectGraphTraversalStrategy.Traverse(YamlDotNet.Serialization.IObjectDescriptor, YamlDotNet.Serialization.IObjectGraphVisitor)</span>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_Traverse_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">Traverse(IObjectDescriptor, IObjectGraphVisitor, Int32)</a>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseObject_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">TraverseObject(IObjectDescriptor, IObjectGraphVisitor, Int32)</a>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseDictionary_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">TraverseDictionary(IObjectDescriptor, IObjectGraphVisitor, Int32)</a>
+                </div>
+                <div>
+                  <span class="xref">Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.TraverseGenericDictionaryHelper&lt;TKey, TValue&gt;(Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy, System.Collections.Generic.IDictionary&lt;TKey, TValue&gt;, YamlDotNet.Serialization.IObjectGraphVisitor, System.Int32, YamlDotNet.Serialization.INamingConvention)</span>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">ToString()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Equals(Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Equals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">ReferenceEquals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">GetHashCode()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">GetType()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">MemberwiseClone()</a>
+                </div>
               </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies</h6>
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.YamlSerialization.dll</h6>
@@ -187,6 +229,8 @@ the graph can be regenerated from the resulting document.</p>
                   </tr>
                 </tbody>
               </table>
+              <h5 class="overrides">Overrides</h5>
+              <div><a class="xref" href="Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseProperties_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_">TraverseProperties(IObjectDescriptor, IObjectGraphVisitor, Int32)</a></div>
             </article>
           </div>
           
@@ -205,6 +249,7 @@ the graph can be regenerated from the resulting document.</p>
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
+            
             <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>

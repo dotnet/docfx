@@ -8,7 +8,7 @@
     <title>Overwrite Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Overwrite Files | DocFX website ">
-    <meta name="generator" content="docfx 1.9.4.0">
+    <meta name="generator" content="docfx 2.0.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -138,14 +138,487 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </thead>
 <tbody>
 <tr>
-<td><em>summary</em></td>
+<td><strong>uid</strong></td>
+<td>uid</td>
+<td>Merge key.</td>
+</tr>
+<tr>
+<td>assemblies</td>
+<td>string[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>attributes</td>
+<td><a href="#attribute">Attribute</a>[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>children</td>
+<td>uid[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>documentation</td>
+<td><a href="#source">Source</a></td>
+<td>Merge.</td>
+</tr>
+<tr>
+<td>example</td>
+<td>string[]</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>exceptions</td>
+<td><a href="#cref">Cref</a>[]</td>
+<td>Merge keyed list.</td>
+</tr>
+<tr>
+<td>fullName</td>
 <td>string</td>
-<td>Overwrite</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>fullName.<lang></lang></td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>implements</td>
+<td>uid[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>inheritance</td>
+<td>uid[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>inheritedMembers</td>
+<td>uid[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>isEii</td>
+<td>boolean</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>isExtensionMethod</td>
+<td>boolean</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>langs</td>
+<td>string[]</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>modifiers.<lang></lang></td>
+<td>string[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>name.<lang></lang></td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>namespace</td>
+<td>uid</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>overridden</td>
+<td>uid</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>parent</td>
+<td>uid</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>platform</td>
+<td>string[]</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td><em>remarks</em></td>
+<td>markdown</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>see</td>
+<td><a href="#cref">Cref</a>[]</td>
+<td>Merge keyed list.</td>
+</tr>
+<tr>
+<td>seealso</td>
+<td><a href="#cref">Cref</a>[]</td>
+<td>Merge keyed list.</td>
+</tr>
+<tr>
+<td>source</td>
+<td><a href="#source">Source</a></td>
+<td>Merge.</td>
+</tr>
+<tr>
+<td><em>syntax</em></td>
+<td><a href="#syntax">Syntax</a></td>
+<td>Merge.</td>
+</tr>
+<tr>
+<td><em>summary</em></td>
+<td>markdown</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>Replace.</td>
 </tr>
 </tbody>
 </table>
-<blockquote><p>TODO: Add more for managed reference model</p>
-</blockquote>
+<h4 id="source">Source</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>content</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>endLine</td>
+<td>integer</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>isExternal</td>
+<td>boolean</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>href</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>path</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>remote</td>
+<td><a href="#gitsource">GitSource</a></td>
+<td>Merge.</td>
+</tr>
+<tr>
+<td>startLine</td>
+<td>integer</td>
+<td>Replace.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="gitsource">GitSource</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>branch</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>repo</td>
+<td>url</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>commit</td>
+<td><a href="#commit">Commit</a></td>
+<td>Merge.</td>
+</tr>
+<tr>
+<td>key</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="commit">Commit</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>committer</td>
+<td><a href="#user">User</a></td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>author</td>
+<td><a href="#user">User</a></td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="user">User</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>date</td>
+<td>datetime</td>
+<td>Replace.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="cref">Cref</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>type</strong></td>
+<td>uid</td>
+<td>Merge key.</td>
+</tr>
+<tr>
+<td><em>description</em></td>
+<td>markdown</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>commentId</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="syntax">Syntax</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>content</td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>content.<lang></lang></td>
+<td>string</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>parameters</td>
+<td><a href="#parameter">Parameter</a>[]</td>
+<td>Merge keyed list.</td>
+</tr>
+<tr>
+<td>typeParameters</td>
+<td><a href="#parameter">Parameter</a>[]</td>
+<td>Merge keyed list.</td>
+</tr>
+<tr>
+<td>return</td>
+<td><a href="#parameter">Parameter</a></td>
+<td>Merge.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="parameter">Parameter</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>id</strong></td>
+<td>string</td>
+<td>Merge key.</td>
+</tr>
+<tr>
+<td><em>description</em></td>
+<td>markdown</td>
+<td>Replace.</td>
+</tr>
+<tr>
+<td>attributes</td>
+<td><a href="#attribute">Attribute</a>[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>type</td>
+<td>uid</td>
+<td>Replace.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="attribute">Attribute</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>arguments</td>
+<td><a href="#argument">Argument</a>[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>ctor</td>
+<td>uid</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>namedArguments</td>
+<td><a href="#namedargument">NamedArgument</a>[]</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>type</td>
+<td>uid</td>
+<td>Ignore.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="argument">Argument</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>uid</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>object</td>
+<td>Ignore.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="namedargument">NamedArgument</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>object</td>
+<td>Ignore.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="rest-api-model">REST API model</h3>
 <table>
 <thead>
@@ -236,6 +709,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
+            
             <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>

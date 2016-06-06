@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class CascadableOptions
    | DocFX website ">
-    <meta name="generator" content="docfx 1.9.4.0">
+    <meta name="generator" content="docfx 2.0.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -86,6 +86,30 @@
                   <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><span class="xref">CascadableOptions</span></div>
               </div>
+              <div class="inheritedMembers">
+                <h5>Inherited Members</h5>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">ToString()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Equals(Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Equals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">ReferenceEquals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">GetHashCode()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">GetType()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">MemberwiseClone()</a>
+                </div>
+              </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode</h6>
               <h6><strong>Assembly</strong>:docfx.dll</h6>
               <h5 id="Microsoft_DocAsCode_CascadableOptions_syntax">Syntax</h5>
@@ -107,11 +131,7 @@
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Option('f', &quot;force&quot;)]
-public bool ForceRebuild
-{
-    get;
-    set;
-}</code></pre>
+public bool ForceRebuild { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -141,11 +161,7 @@ public bool ForceRebuild
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Option('l', &quot;log&quot;, HelpText = &quot;Specify the file name to save processing log&quot;)]
-public string Log
-{
-    get;
-    set;
-}</code></pre>
+public string Log { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -175,11 +191,7 @@ public string Log
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Option(&quot;logLevel&quot;, HelpText = &quot;Specify to which log level will be logged. By default log level &gt;= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.&quot;)]
-public LogLevel? LogLevel
-{
-    get;
-    set;
-}</code></pre>
+public LogLevel? LogLevel { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -209,11 +221,7 @@ public LogLevel? LogLevel
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Option('p', &quot;port&quot;, HelpText = &quot;Specify the port of the hosted website&quot;)]
-public int ? Port
-{
-    get;
-    set;
-}</code></pre>
+public int ? Port { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -243,11 +251,7 @@ public int ? Port
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Option(&quot;raw&quot;, HelpText = &quot;Preserve the existing xml comment tags inside 'summary' triple slash comments&quot;)]
-public bool PreserveRawInlineComments
-{
-    get;
-    set;
-}</code></pre>
+public bool PreserveRawInlineComments { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -277,11 +281,7 @@ public bool PreserveRawInlineComments
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Option('o', &quot;output&quot;)]
-public string RootOutputFolder
-{
-    get;
-    set;
-}</code></pre>
+public string RootOutputFolder { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -311,11 +311,7 @@ public string RootOutputFolder
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Option('s', &quot;serve&quot;, HelpText = &quot;Host the generated documentation to a website&quot;)]
-public bool Serve
-{
-    get;
-    set;
-}</code></pre>
+public bool Serve { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -345,11 +341,7 @@ public bool Serve
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[OptionList('t', &quot;template&quot;, Separator = ',', HelpText = &quot;Specifies the template name to apply to. If not specified, output YAML file will not be transformed.&quot;)]
-public List&lt;string&gt; Templates
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;string&gt; Templates { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -379,11 +371,7 @@ public List&lt;string&gt; Templates
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[OptionList(&quot;theme&quot;, Separator = ',', HelpText = &quot;Specifies which theme to use. By default 'default' theme is offered.&quot;)]
-public List&lt;string&gt; Themes
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;string&gt; Themes { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -418,6 +406,7 @@ public List&lt;string&gt; Themes
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
+            
             <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>

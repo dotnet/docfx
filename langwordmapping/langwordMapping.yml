@@ -1,10 +1,10 @@
 references:
 - uid: langword_csharp_null
-  name.csharp: null
-  name.vb: Nothing
+  name.csharp: "null"
+  name.vb: "Nothing"
 - uid: langword_vb_Nothing
-  name.csharp: null
-  name.vb: Nothing
+  name.csharp: "null"
+  name.vb: "Nothing"
 - uid: langword_csharp_static
   name.csharp: static
   name.vb: Shared
@@ -18,17 +18,17 @@ references:
   name.csharp: virtual
   name.vb: Overridable
 - uid: langword_csharp_true
-  name.csharp: true
-  name.vb: True
+  name.csharp: "true"
+  name.vb: "True"
 - uid: langword_vb_True
-  name.csharp: true
-  name.vb: True
+  name.csharp: "true"
+  name.vb: "True"
 - uid: langword_csharp_false
-  name.csharp: false
-  name.vb: False
+  name.csharp: "false"
+  name.vb: "False"
 - uid: langword_vb_False
-  name.csharp: false
-  name.vb: False
+  name.csharp: "false"
+  name.vb: "False"
 - uid: langword_csharp_abstract
   name.csharp: abstract
   name.vb: MustInherit

@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class FileMappingItem
    | DocFX website ">
-    <meta name="generator" content="docfx 1.9.4.0">
+    <meta name="generator" content="docfx 2.0.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -87,6 +87,30 @@
                   <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><span class="xref">FileMappingItem</span></div>
               </div>
+              <div class="inheritedMembers">
+                <h5>Inherited Members</h5>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">ToString()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Equals(Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Equals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">ReferenceEquals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">GetHashCode()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">GetType()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">MemberwiseClone()</a>
+                </div>
+              </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode</h6>
               <h6><strong>Assembly</strong>:docfx.dll</h6>
               <h5 id="Microsoft_DocAsCode_FileMappingItem_syntax">Syntax</h5>
@@ -158,11 +182,7 @@ By default files start with <code>.</code> will not be matched by <code>*</code>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;dot&quot;)]
-public bool ? AllowDotMatch
-{
-    get;
-    set;
-}</code></pre>
+public bool ? AllowDotMatch { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -194,11 +214,7 @@ By default the pattern is case insensitive</p>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;case&quot;)]
-public bool ? CaseSensitive
-{
-    get;
-    set;
-}</code></pre>
+public bool ? CaseSensitive { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -231,11 +247,7 @@ As discussed, <code>cwd</code> may lead to confusing and misunderstanding, so in
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;cwd&quot;)]
 [Obsolete]
-public string CurrentWorkingDirectory
-{
-    get;
-    set;
-}</code></pre>
+public string CurrentWorkingDirectory { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -266,11 +278,7 @@ public string CurrentWorkingDirectory
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;dest&quot;)]
-public string DestinationFolder
-{
-    get;
-    set;
-}</code></pre>
+public string DestinationFolder { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -302,11 +310,7 @@ By default the usage is enabled.</p>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;noEscape&quot;)]
-public bool ? DisableEscape
-{
-    get;
-    set;
-}</code></pre>
+public bool ? DisableEscape { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -338,11 +342,7 @@ By default the usage is enabled.</p>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;noExpand&quot;)]
-public bool ? DisableExpand
-{
-    get;
-    set;
-}</code></pre>
+public bool ? DisableExpand { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -374,11 +374,7 @@ By default the usage is enable.</p>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;noGlobStar&quot;)]
-public bool ? DisableGlobStar
-{
-    get;
-    set;
-}</code></pre>
+public bool ? DisableGlobStar { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -410,11 +406,7 @@ By default the usage is enabled.</p>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;noNegate&quot;)]
-public bool ? DisableNegate
-{
-    get;
-    set;
-}</code></pre>
+public bool ? DisableNegate { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -445,11 +437,7 @@ public bool ? DisableNegate
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;exclude&quot;)]
-public FileItems Exclude
-{
-    get;
-    set;
-}</code></pre>
+public FileItems Exclude { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -480,11 +468,7 @@ public FileItems Exclude
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;files&quot;)]
-public FileItems Files
-{
-    get;
-    set;
-}</code></pre>
+public FileItems Files { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -515,11 +499,7 @@ public FileItems Files
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;)]
-public string Name
-{
-    get;
-    set;
-}</code></pre>
+public string Name { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -550,11 +530,7 @@ public string Name
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonProperty(&quot;src&quot;)]
-public string SourceFolder
-{
-    get;
-    set;
-}</code></pre>
+public string SourceFolder { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -589,6 +565,7 @@ public string SourceFolder
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
+            
             <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>

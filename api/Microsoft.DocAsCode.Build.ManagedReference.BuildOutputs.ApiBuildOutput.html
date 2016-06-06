@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ApiBuildOutput
    | DocFX website ">
-    <meta name="generator" content="docfx 1.9.4.0">
+    <meta name="generator" content="docfx 2.0.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -86,6 +86,30 @@
                   <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><span class="xref">ApiBuildOutput</span></div>
               </div>
+              <div class="inheritedMembers">
+                <h5>Inherited Members</h5>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">ToString()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Equals(Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Equals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">ReferenceEquals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">GetHashCode()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">GetType()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">MemberwiseClone()</a>
+                </div>
+              </div>
               <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs</h6>
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.ManagedReference.dll</h6>
               <h5 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_syntax">Syntax</h5>
@@ -100,7 +124,7 @@ public class ApiBuildOutput</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_AssemblyNameList.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.AssemblyNameList%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L65">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L73">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_AssemblyNameList" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.AssemblyNameList">AssemblyNameList</h4>
               <div class="markdown level1 summary"></div>
@@ -109,11 +133,7 @@ public class ApiBuildOutput</code></pre>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;assemblies&quot;)]
 [JsonProperty(&quot;assemblies&quot;)]
-public List&lt;string&gt; AssemblyNameList
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;string&gt; AssemblyNameList { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -135,7 +155,7 @@ public List&lt;string&gt; AssemblyNameList
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Children.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Children%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L33">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L41">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Children" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Children">Children</h4>
               <div class="markdown level1 summary"></div>
@@ -144,11 +164,7 @@ public List&lt;string&gt; AssemblyNameList
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;children&quot;)]
 [JsonProperty(&quot;children&quot;)]
-public List&lt;ApiReferenceBuildOutput&gt; Children
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiReferenceBuildOutput&gt; Children { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -170,7 +186,7 @@ public List&lt;ApiReferenceBuildOutput&gt; Children
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Conceptual.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Conceptual%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L122">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L130">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Conceptual" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Conceptual">Conceptual</h4>
               <div class="markdown level1 summary"></div>
@@ -179,11 +195,7 @@ public List&lt;ApiReferenceBuildOutput&gt; Children
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;conceptual&quot;)]
 [JsonProperty(&quot;conceptual&quot;)]
-public string Conceptual
-{
-    get;
-    set;
-}</code></pre>
+public string Conceptual { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -205,7 +217,7 @@ public string Conceptual
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Documentation.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Documentation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L61">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L69">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Documentation" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Documentation">Documentation</h4>
               <div class="markdown level1 summary"></div>
@@ -214,11 +226,7 @@ public string Conceptual
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;documentation&quot;)]
 [JsonProperty(&quot;documentation&quot;)]
-public SourceDetail Documentation
-{
-    get;
-    set;
-}</code></pre>
+public SourceDetail Documentation { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -240,7 +248,7 @@ public SourceDetail Documentation
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Examples.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Examples%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L81">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L89">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Examples" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Examples">Examples</h4>
               <div class="markdown level1 summary"></div>
@@ -249,11 +257,7 @@ public SourceDetail Documentation
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;example&quot;)]
 [JsonProperty(&quot;example&quot;)]
-public List&lt;string&gt; Examples
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;string&gt; Examples { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -275,7 +279,7 @@ public List&lt;string&gt; Examples
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Exceptions.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Exceptions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L93">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L101">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Exceptions" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Exceptions">Exceptions</h4>
               <div class="markdown level1 summary"></div>
@@ -284,11 +288,7 @@ public List&lt;string&gt; Examples
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;exceptions&quot;)]
 [JsonProperty(&quot;exceptions&quot;)]
-public List&lt;ApiCrefInfoBuildOutput&gt; Exceptions
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiCrefInfoBuildOutput&gt; Exceptions { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -310,7 +310,7 @@ public List&lt;ApiCrefInfoBuildOutput&gt; Exceptions
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FullName.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FullName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L49">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L57">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FullName" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FullName">FullName</h4>
               <div class="markdown level1 summary"></div>
@@ -319,11 +319,7 @@ public List&lt;ApiCrefInfoBuildOutput&gt; Exceptions
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;fullName&quot;)]
 [JsonProperty(&quot;fullName&quot;)]
-public List&lt;ApiLanguageValuePair&gt; FullName
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiLanguageValuePair&gt; FullName { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -345,7 +341,7 @@ public List&lt;ApiLanguageValuePair&gt; FullName
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Href.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Href%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L37">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L45">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Href" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Href">Href</h4>
               <div class="markdown level1 summary"></div>
@@ -354,11 +350,7 @@ public List&lt;ApiLanguageValuePair&gt; FullName
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;href&quot;)]
 [JsonProperty(&quot;href&quot;)]
-public string Href
-{
-    get;
-    set;
-}</code></pre>
+public string Href { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -389,11 +381,7 @@ public string Href
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;id&quot;)]
 [JsonProperty(&quot;id&quot;)]
-public string Id
-{
-    get;
-    set;
-}</code></pre>
+public string Id { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -415,7 +403,7 @@ public string Id
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Implements.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Implements%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L114">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L122">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Implements" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Implements">Implements</h4>
               <div class="markdown level1 summary"></div>
@@ -424,11 +412,7 @@ public string Id
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;implements&quot;)]
 [JsonProperty(&quot;implements&quot;)]
-public List&lt;ApiReferenceBuildOutput&gt; Implements
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiNames&gt; Implements { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -440,7 +424,7 @@ public List&lt;ApiReferenceBuildOutput&gt; Implements
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput">ApiReferenceBuildOutput</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiNames.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiNames">ApiNames</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -450,7 +434,7 @@ public List&lt;ApiReferenceBuildOutput&gt; Implements
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Inheritance.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Inheritance%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L105">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L113">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Inheritance" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Inheritance">Inheritance</h4>
               <div class="markdown level1 summary"></div>
@@ -460,11 +444,7 @@ public List&lt;ApiReferenceBuildOutput&gt; Implements
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritance&quot;)]
 [MergeOption(MergeOption.Ignore)]
 [JsonProperty(&quot;inheritance&quot;)]
-public List&lt;ApiReferenceBuildOutput&gt; Inheritance
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiReferenceBuildOutput&gt; Inheritance { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -486,7 +466,7 @@ public List&lt;ApiReferenceBuildOutput&gt; Inheritance
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_InheritedMembers.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.InheritedMembers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L118">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L126">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_InheritedMembers" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.InheritedMembers">InheritedMembers</h4>
               <div class="markdown level1 summary"></div>
@@ -495,11 +475,7 @@ public List&lt;ApiReferenceBuildOutput&gt; Inheritance
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritedMembers&quot;)]
 [JsonProperty(&quot;inheritedMembers&quot;)]
-public List&lt;ApiReferenceBuildOutput&gt; InheritedMembers
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiReferenceBuildOutput&gt; InheritedMembers { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -518,10 +494,72 @@ public List&lt;ApiReferenceBuildOutput&gt; InheritedMembers
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_IsExplicitInterfaceImplementation.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.IsExplicitInterfaceImplementation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L29">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_IsExplicitInterfaceImplementation" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.IsExplicitInterfaceImplementation">IsExplicitInterfaceImplementation</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;isEii&quot;)]
+[JsonProperty(&quot;isEii&quot;)]
+public bool IsExplicitInterfaceImplementation { get; set; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_IsExtensionMethod.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.IsExtensionMethod%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L33">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_IsExtensionMethod" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.IsExtensionMethod">IsExtensionMethod</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;isExtensionMethod&quot;)]
+[JsonProperty(&quot;isExtensionMethod&quot;)]
+public bool IsExtensionMethod { get; set; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Level.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Level%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L110">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L118">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Level" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Level">Level</h4>
               <div class="markdown level1 summary"></div>
@@ -530,10 +568,7 @@ public List&lt;ApiReferenceBuildOutput&gt; InheritedMembers
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;level&quot;)]
 [JsonProperty(&quot;level&quot;)]
-public int Level
-{
-    get;
-}</code></pre>
+public int Level { get; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -555,7 +590,7 @@ public int Level
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Metadata.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Metadata%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L130">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L138">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Metadata" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Metadata">Metadata</h4>
               <div class="markdown level1 summary"></div>
@@ -564,11 +599,7 @@ public int Level
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember]
 [JsonExtensionData]
-public Dictionary&lt;string, object&gt; Metadata
-{
-    get;
-    set;
-}</code></pre>
+public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -590,7 +621,7 @@ public Dictionary&lt;string, object&gt; Metadata
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L45">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L53">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Name" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Name">Name</h4>
               <div class="markdown level1 summary"></div>
@@ -599,11 +630,7 @@ public Dictionary&lt;string, object&gt; Metadata
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;name&quot;)]
 [JsonProperty(&quot;name&quot;)]
-public List&lt;ApiLanguageValuePair&gt; Name
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiLanguageValuePair&gt; Name { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -625,7 +652,7 @@ public List&lt;ApiLanguageValuePair&gt; Name
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_NamespaceName.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.NamespaceName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L69">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L77">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_NamespaceName" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.NamespaceName">NamespaceName</h4>
               <div class="markdown level1 summary"></div>
@@ -634,11 +661,7 @@ public List&lt;ApiLanguageValuePair&gt; Name
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;namespace&quot;)]
 [JsonProperty(&quot;namespace&quot;)]
-public ApiReferenceBuildOutput NamespaceName
-{
-    get;
-    set;
-}</code></pre>
+public ApiReferenceBuildOutput NamespaceName { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -660,7 +683,7 @@ public ApiReferenceBuildOutput NamespaceName
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Overridden.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Overridden%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L89">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L97">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Overridden" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Overridden">Overridden</h4>
               <div class="markdown level1 summary"></div>
@@ -669,11 +692,7 @@ public ApiReferenceBuildOutput NamespaceName
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;overridden&quot;)]
 [JsonProperty(&quot;overridden&quot;)]
-public ApiReferenceBuildOutput Overridden
-{
-    get;
-    set;
-}</code></pre>
+public ApiNames Overridden { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -685,7 +704,7 @@ public ApiReferenceBuildOutput Overridden
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput">ApiReferenceBuildOutput</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiNames.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiNames">ApiNames</a></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -695,7 +714,7 @@ public ApiReferenceBuildOutput Overridden
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Parent.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Parent%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L29">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L37">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Parent" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Parent">Parent</h4>
               <div class="markdown level1 summary"></div>
@@ -704,11 +723,7 @@ public ApiReferenceBuildOutput Overridden
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;parent&quot;)]
 [JsonProperty(&quot;parent&quot;)]
-public ApiReferenceBuildOutput Parent
-{
-    get;
-    set;
-}</code></pre>
+public ApiReferenceBuildOutput Parent { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -730,7 +745,7 @@ public ApiReferenceBuildOutput Parent
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Platform.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Platform%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L126">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L134">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Platform" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Platform">Platform</h4>
               <div class="markdown level1 summary"></div>
@@ -739,11 +754,7 @@ public ApiReferenceBuildOutput Parent
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;platform&quot;)]
 [JsonProperty(&quot;platform&quot;)]
-public List&lt;string&gt; Platform
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;string&gt; Platform { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -765,7 +776,7 @@ public List&lt;string&gt; Platform
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Remarks.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Remarks%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L77">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L85">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Remarks" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Remarks">Remarks</h4>
               <div class="markdown level1 summary"></div>
@@ -774,11 +785,7 @@ public List&lt;string&gt; Platform
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;remarks&quot;)]
 [JsonProperty(&quot;remarks&quot;)]
-public string Remarks
-{
-    get;
-    set;
-}</code></pre>
+public string Remarks { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -800,7 +807,7 @@ public string Remarks
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_SeeAlsos.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.SeeAlsos%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L97">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L105">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_SeeAlsos" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.SeeAlsos">SeeAlsos</h4>
               <div class="markdown level1 summary"></div>
@@ -809,11 +816,7 @@ public string Remarks
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;seealso&quot;)]
 [JsonProperty(&quot;seealso&quot;)]
-public List&lt;ApiCrefInfoBuildOutput&gt; SeeAlsos
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiCrefInfoBuildOutput&gt; SeeAlsos { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -835,7 +838,7 @@ public List&lt;ApiCrefInfoBuildOutput&gt; SeeAlsos
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Sees.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Sees%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L101">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L109">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Sees" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Sees">Sees</h4>
               <div class="markdown level1 summary"></div>
@@ -844,11 +847,7 @@ public List&lt;ApiCrefInfoBuildOutput&gt; SeeAlsos
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;see&quot;)]
 [JsonProperty(&quot;see&quot;)]
-public List&lt;ApiCrefInfoBuildOutput&gt; Sees
-{
-    get;
-    set;
-}</code></pre>
+public List&lt;ApiCrefInfoBuildOutput&gt; Sees { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -870,7 +869,7 @@ public List&lt;ApiCrefInfoBuildOutput&gt; Sees
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Source.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Source%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L57">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L65">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Source" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Source">Source</h4>
               <div class="markdown level1 summary"></div>
@@ -879,11 +878,7 @@ public List&lt;ApiCrefInfoBuildOutput&gt; Sees
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;source&quot;)]
 [JsonProperty(&quot;source&quot;)]
-public SourceDetail Source
-{
-    get;
-    set;
-}</code></pre>
+public SourceDetail Source { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -905,7 +900,7 @@ public SourceDetail Source
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Summary.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Summary%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L73">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L81">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Summary" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Summary">Summary</h4>
               <div class="markdown level1 summary"></div>
@@ -914,11 +909,7 @@ public SourceDetail Source
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;summary&quot;)]
 [JsonProperty(&quot;summary&quot;)]
-public string Summary
-{
-    get;
-    set;
-}</code></pre>
+public string Summary { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -940,7 +931,7 @@ public string Summary
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_SupportedLanguages.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.SupportedLanguages%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L41">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L49">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_SupportedLanguages" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.SupportedLanguages">SupportedLanguages</h4>
               <div class="markdown level1 summary"></div>
@@ -949,11 +940,7 @@ public string Summary
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;langs&quot;)]
 [JsonProperty(&quot;langs&quot;)]
-public string[] SupportedLanguages
-{
-    get;
-    set;
-}</code></pre>
+public string[] SupportedLanguages { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -975,7 +962,7 @@ public string[] SupportedLanguages
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Syntax.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Syntax%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L85">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L93">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Syntax" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Syntax">Syntax</h4>
               <div class="markdown level1 summary"></div>
@@ -984,11 +971,7 @@ public string[] SupportedLanguages
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;syntax&quot;)]
 [JsonProperty(&quot;syntax&quot;)]
-public ApiSyntaxBuildOutput Syntax
-{
-    get;
-    set;
-}</code></pre>
+public ApiSyntaxBuildOutput Syntax { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1010,7 +993,7 @@ public ApiSyntaxBuildOutput Syntax
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Type.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Type%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L53">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L61">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_Type" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.Type">Type</h4>
               <div class="markdown level1 summary"></div>
@@ -1019,11 +1002,7 @@ public ApiSyntaxBuildOutput Syntax
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;type&quot;)]
 [JsonProperty(&quot;type&quot;)]
-public MemberType? Type
-{
-    get;
-    set;
-}</code></pre>
+public MemberType? Type { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1054,11 +1033,7 @@ public MemberType? Type
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;uid&quot;)]
 [JsonProperty(&quot;uid&quot;)]
-public string Uid
-{
-    get;
-    set;
-}</code></pre>
+public string Uid { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1082,7 +1057,7 @@ public string Uid
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FromModel_Microsoft_DocAsCode_DataContracts_ManagedReference_PageViewModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FromModel(Microsoft.DocAsCode.DataContracts.ManagedReference.PageViewModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L134">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildOutputs/ApiBuildOutput.cs/#L142">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiBuildOutput_FromModel_Microsoft_DocAsCode_DataContracts_ManagedReference_PageViewModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiBuildOutput.FromModel(Microsoft.DocAsCode.DataContracts.ManagedReference.PageViewModel)">FromModel(PageViewModel)</h4>
               <div class="markdown level1 summary"></div>
@@ -1141,6 +1116,7 @@ public string Uid
             <span class="pull-right">
               <a href="#top">Back to top</a>
             </span>
+            
             <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
