@@ -1,6 +1,6 @@
 Version Notes (Current Version: v2.0)
 =======================================
-v2.0(Pre-Release)
+v2.0
 -----------
 1.  **Breaking Change** Add line info for markdown parser.
 2.  Allow Markdown reference at the end of overwrite file.
