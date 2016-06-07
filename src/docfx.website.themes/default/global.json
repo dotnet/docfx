@@ -33,5 +33,6 @@
   "propertyValue": "Property Value",
   "eventType": "Event Type",
   "exceptions": "Exceptions",
-  "condition": "Condition"
+  "condition": "Condition",
+  "extensionMethods": "Extension Methods"
 }
