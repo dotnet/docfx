@@ -33,5 +33,6 @@
   "propertyValue": "属性值",
   "eventType": "事件类型",
   "exceptions": "异常",
-  "condition": "条件"
+  "condition": "条件",
+  "extensionMethods": "扩展方法"
 }

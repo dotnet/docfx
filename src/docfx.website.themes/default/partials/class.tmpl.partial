@@ -293,3 +293,16 @@
 {{/exceptions.0}}
 {{/children}}
 {{/children}}
+{{#extensionMethods.0}}
+<h3 id="{{id}}">{{__global.extensionMethods}}</h3>
+{{/extensionMethods.0}}
+{{#extensionMethods}}
+<div>
+  {{#definition}}
+    <xref href="{{definition}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/>
+  {{/definition}}
+  {{^definition}}
+    <xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/>
+  {{/definition}}
+</div>
+{{/extensionMethods}}
