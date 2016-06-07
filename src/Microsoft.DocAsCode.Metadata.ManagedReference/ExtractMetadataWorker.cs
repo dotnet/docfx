@@ -54,7 +54,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             _rawInput = input;
             _validInput = ValidateInput(input);
-            _rebuild = rebuild;
+            // To-do: enable rebuild option after dependency map is constructed
+            _rebuild = true;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
             _filterConfigFile = input.FilterConfigFile?.ToNormalizedFullPath();
         }
