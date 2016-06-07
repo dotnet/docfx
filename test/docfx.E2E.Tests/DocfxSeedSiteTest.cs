@@ -242,9 +242,11 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
         private bool CheckIfLinkValid(string href)
         {
+            var originHref = _driver.Url;
             try
             {
                 _driver.Navigate().GoToUrl(href);
+                _driver.Navigate().GoToUrl(originHref);
                 return true;
             }
             catch (Exception ex)
