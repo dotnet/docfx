@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.0)
+Version Notes (Current Version: v2.0.1)
 =======================================
+v2.0.1
+-----------
+1. Fix bug that file links can't be resolved in overwrite file
+
 v2.0
 -----------
 1.  **Breaking Change** Add line info for markdown parser.
