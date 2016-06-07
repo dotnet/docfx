@@ -219,6 +219,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             });
         }
 
+        public override void VisitDynamicType(IDynamicTypeSymbol symbol)
+        {
+            var id = VisitorHelper.GetId(symbol.OriginalDefinition);
+            ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+            {
+                DisplayName = NameVisitorCreator.GetCSharp(NameOptions.None).GetName(symbol),
+                DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified).GetName(symbol),
+                Name = id,
+            });
+        }
+
         protected override void AddBeginGenericParameter()
         {
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem

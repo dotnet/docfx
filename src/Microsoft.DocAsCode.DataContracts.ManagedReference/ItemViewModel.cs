@@ -231,6 +231,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("inheritedMembers")]
         public List<string> InheritedMembers { get; set; }
 
+        [YamlMember(Alias = "extensionMethods")]
+        [JsonProperty("extensionMethods")]
+        public List<string> ExtensionMethods { get; set; }
+
         [ExtensibleMember("modifiers.")]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
         [JsonIgnore]

@@ -122,6 +122,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("inheritedMembers")]
         public List<string> InheritedMembers { get; set; }
 
+        [YamlMember(Alias = "extensionMethods")]
+        [JsonProperty("extensionMethods")]
+        public List<string> ExtensionMethods { get; set; }
+
         [ExtensibleMember("modifiers.")]
         [JsonIgnore]
         public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
@@ -227,6 +231,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Inheritance = vm.Inheritance?.Select(i => FromUid(i)).ToList(),
                 Implements = vm.Implements?.Select(i => ApiNames.FromUid(i)).ToList(),
                 InheritedMembers = vm.InheritedMembers,
+                ExtensionMethods = vm.ExtensionMethods,
                 Modifiers = vm.Modifiers,
                 Conceptual = vm.Conceptual,
                 Metadata = vm.Metadata,
