@@ -29,6 +29,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Properties
 
+        public IDocumentProcessor Processor { get; set; }
+
+        public TemplateProcessor Template { get; set; }
+
         public ImmutableList<FileModel> Models { get; private set; }
 
         public ImmutableDictionary<string, FileAndType> SourceFiles { get; set; }

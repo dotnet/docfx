@@ -95,6 +95,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 parameters.Metadata = ImmutableDictionary<string, object>.Empty;
             }
 
+            BuildCore(parameters);
+        }
+
+        private void BuildCore(DocumentBuildParameters parameters)
+        {
             using (new LoggerPhaseScope(PhaseName))
             {
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism.ToString()}.");
@@ -107,16 +112,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.XRefMaps,
                     parameters.MaxParallelism);
                 Logger.LogVerbose("Start building document...");
-                List<InnerBuildContext> innerContexts = null;
+                List<HostService> hostServices = null;
                 try
                 {
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
-                        innerContexts = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
+                        hostServices = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
                         var manifest = new List<ManifestItemWithContext>();
-                        foreach (var item in innerContexts)
+                        foreach (var hostService in hostServices)
                         {
-                            manifest.AddRange(BuildCore(item, context));
+                            manifest.AddRange(BuildCore(hostService, context));
                         }
 
                         // Use manifest from now on
@@ -156,15 +161,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 finally
                 {
-                    if (innerContexts != null)
+                    if (hostServices != null)
                     {
-                        foreach (var item in innerContexts)
+                        foreach (var item in hostServices)
                         {
-                            if (item.HostService != null)
-                            {
-                                Cleanup(item.HostService);
-                                item.HostService.Dispose();
-                            }
+                            Cleanup(item);
+                            item.Dispose();
                         }
                     }
                 }
@@ -179,9 +181,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                  select Load(processor, parameters.Metadata, parameters.FileMetadata, file)
                  into model
                  where model != null
-                 select model);
-            hostService.MarkdownService = markdownService;
-            BuildCore(processor, hostService, parameters.MaxParallelism);
+                 select model)
+            {
+                Processor = processor,
+                MarkdownService = markdownService,
+            };
+            BuildCore(hostService, parameters.MaxParallelism);
             return hostService.Models;
         }
 
@@ -190,18 +195,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             hostService.Models.RunAll(m => m.Dispose());
         }
 
-        private IEnumerable<ManifestItemWithContext> BuildCore(InnerBuildContext buildContext, DocumentBuildContext context)
+        private IEnumerable<ManifestItemWithContext> BuildCore(HostService hostService, DocumentBuildContext context)
         {
-            var processor = buildContext.Processor;
-            buildContext.HostService.SourceFiles = context.AllSourceFiles;
-            BuildCore(processor, buildContext.HostService, context.MaxParallelism);
-            return ExportManifest(buildContext, context);
+            hostService.SourceFiles = context.AllSourceFiles;
+            BuildCore(hostService, context.MaxParallelism);
+            return ExportManifest(hostService, context);
         }
 
-        private static void BuildCore(IDocumentProcessor processor, HostService hostService, int maxParallelism)
+        private static void BuildCore(HostService hostService, int maxParallelism)
         {
-            Logger.LogVerbose($"Processor {processor.Name}: Loading document...");
-            using (new LoggerPhaseScope(processor.Name))
+            Logger.LogVerbose($"Processor {hostService.Processor.Name}: Loading document...");
+            using (new LoggerPhaseScope(hostService.Processor.Name))
             {
                 foreach (var m in hostService.Models)
                 {
@@ -210,15 +214,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                         m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
                     }
                 }
-                var steps = string.Join("=>", processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
-                Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {processor.Name}({steps})...");
-                Logger.LogVerbose($"Processor {processor.Name}: Preprocessing...");
-                Prebuild(processor, hostService);
-                Logger.LogVerbose($"Processor {processor.Name}: Building...");
-                BuildArticle(processor, hostService, maxParallelism);
-                Logger.LogVerbose($"Processor {processor.Name}: Postprocessing...");
-                Postbuild(processor, hostService);
-                Logger.LogVerbose($"Processor {processor.Name}: Generating manifest...");
+                var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
+                Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Preprocessing...");
+                Prebuild(hostService);
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
+                BuildArticle(hostService, maxParallelism);
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postprocessing...");
+                Postbuild(hostService);
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Generating manifest...");
             }
         }
 
@@ -385,38 +389,38 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result.ToImmutableDictionary();
         }
 
-        private static void Prebuild(IDocumentProcessor processor, HostService hostService)
+        private static void Prebuild(HostService hostService)
         {
             RunBuildSteps(
-                processor.BuildSteps,
+                hostService.Processor.BuildSteps,
                 buildStep =>
                 {
-                    Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Preprocessing...");
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Preprocessing...");
                     using (new LoggerPhaseScope(buildStep.Name))
                     {
                         var models = buildStep.Prebuild(hostService.Models, hostService);
                         if (!object.ReferenceEquals(models, hostService.Models))
                         {
-                            Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Reloading models...");
+                            Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Reloading models...");
                             hostService.Reload(models);
                         }
                     }
                 });
         }
 
-        private static void BuildArticle(IDocumentProcessor processor, HostService hostService, int maxParallelism)
+        private static void BuildArticle(HostService hostService, int maxParallelism)
         {
             hostService.Models.RunAll(
                 m =>
                 {
                     using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                     {
-                        Logger.LogVerbose($"Processor {processor.Name}: Building...");
+                        Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
                         RunBuildSteps(
-                            processor.BuildSteps,
+                            hostService.Processor.BuildSteps,
                             buildStep =>
                             {
-                                Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Building...");
+                                Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
                                 using (new LoggerPhaseScope(buildStep.Name))
                                 {
                                     buildStep.Build(m, hostService);
@@ -427,13 +431,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                 maxParallelism);
         }
 
-        private static void Postbuild(IDocumentProcessor processor, HostService hostService)
+        private static void Postbuild(HostService hostService)
         {
             RunBuildSteps(
-                processor.BuildSteps,
+                hostService.Processor.BuildSteps,
                 buildStep =>
                 {
-                    Logger.LogVerbose($"Processor {processor.Name}, step {buildStep.Name}: Postprocessing...");
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postprocessing...");
                     using (new LoggerPhaseScope(buildStep.Name))
                     {
                         buildStep.Postbuild(hostService.Models, hostService);
@@ -441,11 +445,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 });
         }
 
-        private IEnumerable<ManifestItemWithContext> ExportManifest(InnerBuildContext buildContext, DocumentBuildContext context)
+        private IEnumerable<ManifestItemWithContext> ExportManifest(HostService hostService, DocumentBuildContext context)
         {
-            var hostService = buildContext.HostService;
-            var processor = buildContext.Processor;
-            var templateProcessor = buildContext.TemplateProcessor;
             var manifestItems = new List<ManifestItemWithContext>();
             hostService.Models.RunAll(m =>
             {
@@ -453,19 +454,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                     {
-                        Logger.LogVerbose($"Plug-in {processor.Name}: Saving...");
+                        Logger.LogVerbose($"Plug-in {hostService.Processor.Name}: Saving...");
                         m.BaseDir = context.BuildOutputFolder;
                         if (m.PathRewriter != null)
                         {
                             m.File = m.PathRewriter(m.File);
                         }
-                        var result = processor.Save(m);
+                        var result = hostService.Processor.Save(m);
                         if (result != null)
                         {
                             string extension = string.Empty;
-                            if (templateProcessor != null)
+                            if (hostService.Template != null)
                             {
-                                if (templateProcessor.TryGetFileExtension(result.DocumentType, out extension))
+                                if (hostService.Template.TryGetFileExtension(result.DocumentType, out extension))
                                 {
                                     m.File = result.FileWithoutExtension + extension;
                                 }
@@ -474,7 +475,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             var item = HandleSaveResult(context, hostService, m, result);
                             item.Extension = extension;
 
-                            manifestItems.Add(new ManifestItemWithContext(item, m, processor, templateProcessor?.GetTemplateBundle(result.DocumentType)));
+                            manifestItems.Add(new ManifestItemWithContext(item, m, hostService.Processor, hostService.Template?.GetTemplateBundle(result.DocumentType)));
                         }
                     }
                 }
@@ -598,7 +599,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static IEnumerable<InnerBuildContext> GetInnerContexts(
+        private static IEnumerable<HostService> GetInnerContexts(
             DocumentBuildParameters parameters,
             IEnumerable<IDocumentProcessor> processors,
             TemplateProcessor templateProcessor,
@@ -630,19 +631,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
-                   select new InnerBuildContext(
-                       new HostService(
-                           parameters.Files.DefaultBaseDir,
-                           from file in item
-                           select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file.file)
-                           into model
-                           where model != null
-                           select model)
-                       {
-                           MarkdownService = markdownService,
-                       },
-                       item.Key,
-                       templateProcessor);
+                   select new HostService(
+                       parameters.Files.DefaultBaseDir,
+                       from file in item
+                       select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file.file) into model
+                       where model != null
+                       select model)
+                   {
+                       MarkdownService = markdownService,
+                       Processor = item.Key,
+                       Template = templateProcessor,
+                   };
         }
 
         /// <summary>
@@ -682,20 +681,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     BasePath = parameters.Files.DefaultBaseDir,
                     Extensions = parameters.MarkdownEngineParameters,
                 });
-        }
-
-        private sealed class InnerBuildContext
-        {
-            public HostService HostService { get; }
-            public IDocumentProcessor Processor { get; }
-            public TemplateProcessor TemplateProcessor { get; }
-
-            public InnerBuildContext(HostService hostService, IDocumentProcessor processor, TemplateProcessor templateProcessor)
-            {
-                HostService = hostService;
-                Processor = processor;
-                TemplateProcessor = templateProcessor;
-            }
         }
 
         public void Dispose()
