@@ -22,16 +22,6 @@ namespace Microsoft.DocAsCode.Utility
             return input.Replace('\\', '/');
         }
 
-        public static string[] ToArray(this string input, StringSplitOptions option, params char[] delimiter)
-        {
-            if (input == null)
-            {
-                return null;
-            }
-
-            return input.Split(delimiter, option);
-        }
-
         public static string ToDelimitedString(this IEnumerable<string> input, string delimiter = ",")
         {
             if (input == null)
@@ -90,15 +80,6 @@ namespace Microsoft.DocAsCode.Utility
         {
             if (string.IsNullOrEmpty(path)) return null;
             return path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-        }
-
-        public static string CoalesceNullOrEmpty(this string value, string defaultValue)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return defaultValue;
-            }
-            return value;
         }
     }
 }

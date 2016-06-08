@@ -238,6 +238,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Inheritance = model.Inheritance,
                 Implements = model.Implements,
                 InheritedMembers = model.InheritedMembers,
+                ExtensionMethods = model.ExtensionMethods,
                 Attributes = model.Attributes,
             };
 

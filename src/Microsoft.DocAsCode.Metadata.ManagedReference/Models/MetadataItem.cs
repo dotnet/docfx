@@ -121,6 +121,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("inheritedMembers")]
         public List<string> InheritedMembers { get; set; }
 
+        [YamlMember(Alias = "extensionMethods")]
+        [JsonProperty("extensionMethods")]
+        public List<string> ExtensionMethods { get; set; }
+
         [YamlMember(Alias = "attributes")]
         [JsonProperty("attributes")]
         [MergeOption(MergeOption.Ignore)]

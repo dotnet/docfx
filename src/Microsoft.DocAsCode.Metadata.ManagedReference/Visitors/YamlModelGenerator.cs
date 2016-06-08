@@ -84,16 +84,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem reference = new ReferenceItem();
             reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
             GenerateReferenceInternal(symbol, reference, adapter);
-            reference.IsDefinition = symbol.IsDefinition;
-
-            if (!symbol.IsDefinition)
+            var originalSymbol = symbol;
+            var reducedFrom = (symbol as IMethodSymbol)?.ReducedFrom;
+            if (reducedFrom != null)
             {
-                var def = symbol.OriginalDefinition;
+                originalSymbol = reducedFrom;
+            }
+            reference.IsDefinition = (originalSymbol == symbol) && originalSymbol.IsDefinition;
+
+            if (!reference.IsDefinition.Value)
+            {
+                var def = originalSymbol.OriginalDefinition;
                 var typeParameters = def.Accept(TypeGenericParameterNameVisitor.Instance);
                 reference.Definition = AddSpecReference(def, typeParameters, null, references, adapter, true);
             }
 
-            reference.Parent = GetReferenceParent(symbol, typeGenericParameters, methodGenericParameters, references, adapter);
+            reference.Parent = GetReferenceParent(originalSymbol, typeGenericParameters, methodGenericParameters, references, adapter);
 
             if (!references.ContainsKey(id))
             {

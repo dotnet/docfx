@@ -127,6 +127,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("inheritedMembers")]
         public List<ApiReferenceBuildOutput> InheritedMembers { get; set; }
 
+        [YamlMember(Alias = "extensionMethods")]
+        [JsonProperty("extensionMethods")]
+        public List<ApiReferenceBuildOutput> ExtensionMethods { get; set; }
+
         [YamlMember(Alias = "conceptual")]
         [JsonProperty("conceptual")]
         public string Conceptual { get; set; }
@@ -201,6 +205,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Inheritance = GetReferenceList(model.Inheritance, references, model.SupportedLanguages, true),
                 Implements = model.Implements?.Select(u => ApiBuildOutputUtility.GetApiNames(u, references, model.SupportedLanguages)).ToList(),
                 InheritedMembers = GetReferenceList(model.InheritedMembers, references, model.SupportedLanguages),
+                ExtensionMethods = GetReferenceList(model.ExtensionMethods, references, model.SupportedLanguages),
                 Conceptual = model.Conceptual,
                 Platform = model.Platform,
                 Metadata = metadata.Concat(model.Metadata.Where(p => !metadata.Keys.Contains(p.Key))).ToDictionary(p => p.Key, p => p.Value),

@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Linq;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
@@ -17,7 +16,6 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.YamlSerialization;
 
     public class OverwriteDocumentReader
@@ -34,24 +32,13 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new NotSupportedException(file.Type.ToString());
             }
 
-            var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(file.BaseDir, file.File);
-            if (overwrites == null || overwrites.Count == 0) return null;
-
-            var displayLocalPath = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
-            return new FileModel(file, overwrites, serializer: new BinaryFormatter())
+            return new FileModel(file, null, serializer:new BinaryFormatter())
             {
-                Uids = (from item in overwrites
-                        select new UidDefinition(
-                            item.Uid,
-                            displayLocalPath,
-                            item.Documentation.StartLine + 1
-                            )).ToImmutableArray(),
                 Properties =
                         {
                             LinkToFiles = new HashSet<string>(),
                             LinkToUids = new HashSet<string>(),
-                        },
-                LocalPathFromRepoRoot = displayLocalPath,
+                        }
             };
         }
 
