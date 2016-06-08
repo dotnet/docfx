@@ -647,7 +647,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private void GenerateExtensionMethods(INamedTypeSymbol symbol, MetadataItem item)
         {
             var extensions = new List<string>();
-            foreach (var e in _extensionMethods)
+            foreach (var e in _extensionMethods.Where(ext => ext.Language == symbol.Language))
             {
                 var reduced = e.ReduceExtensionMethod(symbol);
                 if ((object)reduced != null)
