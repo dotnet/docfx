@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 if (compilation.Assembly.MightContainExtensionMethods)
                 {
-                    namespaces.AddRange(GetAllNamespaceMembers(compilation.GlobalNamespace));
+                    namespaces.AddRange(GetAllNamespaceMembers(compilation.Assembly));
                 }
             }
             return from n in namespaces.Distinct()
@@ -438,17 +438,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static IEnumerable<INamespaceSymbol> GetAllNamespaceMembers(INamespaceSymbol globalNs)
+        private static IEnumerable<INamespaceSymbol> GetAllNamespaceMembers(IAssemblySymbol assembly)
         {
             var queue = new Queue<INamespaceSymbol>();
-            queue.Enqueue(globalNs);
+            queue.Enqueue(assembly.GlobalNamespace);
             while (queue.Count > 0)
             {
                 var space = queue.Dequeue();
-                if (space.NamespaceKind != NamespaceKind.Compilation && space.Name != "<CrtImplementationDetails>" && space.Name != "<CppImplementationDetails>")
-                {
-                    yield return space;
-                }
+                yield return space;
                 var childSpaces = space.GetNamespaceMembers();
                 foreach (var child in childSpaces)
                 {
