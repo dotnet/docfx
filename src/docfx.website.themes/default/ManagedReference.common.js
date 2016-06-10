@@ -35,8 +35,14 @@ exports.transform = function (model)  {
       case 'interface':
       case 'struct':
       case 'delegate':
-      case 'enum':
         model.isClass = true;
+        if (model.children) groupChildren(model, classItems);
+        model[namespaceItems[model.type.toLowerCase()].typePropertyName] = true;
+        handleNamespace(model);
+        break;
+      case 'enum':
+        model.isClass = false;
+        model.isEnum = true;
         if (model.children) groupChildren(model, classItems);
         model[namespaceItems[model.type.toLowerCase()].typePropertyName] = true;
         handleNamespace(model);

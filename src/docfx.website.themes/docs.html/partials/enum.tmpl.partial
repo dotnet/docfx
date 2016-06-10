@@ -1,0 +1,149 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+<!-- ENUM -->
+{{>partials/header}}
+{{>partials/summary}}
+<div class="level">
+  <section class="primary">
+    <div class="alert alert-minimal inheritance">
+      <h5><span class="icon icon-inheritance"></span> Inheritance Hierarchy</h5>
+      {{#inheritance.0}}
+      <ul>
+      {{#inheritance}}
+        <li class="l{{index}}">
+          {{#specName}}
+          <code class="lang-{{lang}}">
+            {{{value}}}
+          </code>
+          {{/specName}}
+        </li>
+      {{/inheritance}}
+        <li class="l{{item.level}}">
+          <span class="xref">
+            {{#item.name}}
+            <code class="lang-{{lang}}">{{value}}</code>
+            {{/item.name}}
+          </span>
+        </li>
+      </ul>
+      {{/inheritance.0}}
+      {{^inheritance.0}}
+      <p><code>None</code></p>
+      {{/inheritance.0}}
+    </div>
+  </section>
+  <section class="secondary">
+    <div class="alert alert-minimal">
+      <h5><span class="icon icon-assembly"></span> Assembly</h5>
+      {{#assemblies.0}}
+      <p><code>{{assemblies.0}}.dll</code></p>
+      {{/assemblies.0}}
+      {{^assemblies.0}}
+      <p><code>None</code></p>
+      {{/assemblies.0}}
+    </div>
+  </section>
+</div>
+{{#conceptual}}
+<header class="header" id="conceptual">
+  <h2>Using</h2>
+</header>
+<div class="level">
+  {{{conceptual}}}
+</div>
+{{/conceptual}}
+{{#remarks}}
+<header class="header" id="remarks">
+  <h2>Remarks</h2>
+</header>
+<div class="level">
+  <section class="primary">
+    {{{remarks}}}
+  </section>
+</div>
+{{/remarks}}
+{{#children}}
+<header class="header" id="{{id}}">
+  {{^hideSubtitle}}
+  <h2>{{>partials/classSubtitle}}</h2>
+  {{/hideSubtitle}}
+</header>
+<dl>
+  {{#children}}
+  <dt>{{#name}}
+      <code class="lang-{{lang}}">{{value}}</code>
+    {{/name}}</dt>
+  <dd>{{{summary}}}</dd>
+  {{/children}}
+</dl>
+{{#defined_in}}
+<header class="header" id="defined_in">
+  <h2>Defined in</h2>
+</header>
+<div class="level">
+  <section class="primary">
+    {{{defined_in}}}
+  </section>
+</div>
+{{/defined_in}}
+{{#supported_platforms.0}}
+<header class="header" id="supported_platforms">
+  <h2>Supported Platforms</h2>
+</header>
+{{/supported_platforms.0}}
+{{#supported_platforms}}
+<div class="level">
+  <section class="primary">
+    <table class="table table-bordered table-striped table-condensed" border="1">
+        <tbody>
+            <tr>
+            <td>{{{name}}}</td>
+            <td>{{{value}}}</td>
+            </tr>
+        </tbody>
+  </section>
+</div>
+{{/supported_platforms}}
+{{#requirements.0}}
+<header class="header" id="requirements">
+  <h2>Requirements</h2>
+</header>
+{{/requirements.0}}
+{{#requirements}}
+<div class="level">
+  <section class="primary">
+    <table class="table table-bordered table-striped table-condensed" border="1">
+        <tbody>
+            <tr>
+            <td>{{{name}}}</td>
+            <td>{{{value}}}</td>
+            </tr>
+        </tbody>
+  </section>
+</div>
+{{/requirements}}
+{{#thread_safety}}
+<header class="header" id="thread_safety">
+  <h2>Thread Safety</h2>
+</header>
+<div class="level">
+  <section class="primary">
+    {{{thread_safety}}}
+  </section>
+</div>
+{{/thread_safety}}
+{{#seealso.0}}
+<header class="header" id="seealso">
+  <h2>See Also</h2>
+</header>
+{{/seealso.0}}
+{{#seealso}}
+<div class="level">
+  <section class="primary">
+     {{#type.specName}}
+        {{{value}}}
+     {{/type.specName}}
+  </section>
+  <section class="secondary">
+  </section>
+</div>
+{{/seealso}}
