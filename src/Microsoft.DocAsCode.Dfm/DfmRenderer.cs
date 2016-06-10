@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
@@ -51,7 +52,17 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return StringBuffer.Empty;
             }
-            StringBuffer result = "<yamlheader>";
+            var startLine = token.SourceInfo.LineNumber;
+            var endLine = startLine + token.Content.Count(ch => ch == '\n') + 2;
+            var sourceFile = token.SourceInfo.File;
+
+            StringBuffer result = $"<yamlheader start=\"{startLine}\" end=\"{endLine}\"";
+            if (!string.IsNullOrEmpty(sourceFile))
+            {
+                sourceFile = StringHelper.HtmlEncode(sourceFile);
+                result += $" sourceFile=\"{sourceFile}\"";
+            }
+            result += ">";
             result += StringHelper.HtmlEncode(token.Content);
             return result + "</yamlheader>";
         }

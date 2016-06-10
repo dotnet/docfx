@@ -42,7 +42,7 @@ Now you can view the generated website on http://localhost:8080.
 3. Use *DocFX* in Visual Studio
 ---------------
 
-As a prerequisite, you will need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use *DocFX* in IDE.
+As a prerequisite, you need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use *DocFX* in IDE.
 
 *Step1.* Open Visual Studio and create a C# project as your documentation project. You can create an empty *ASP.NET Web Application* since it has a built-in *preview* feature that can be used to preview the generated website easily.
 
@@ -63,7 +63,7 @@ namespace WebApplication1
 
 4. Use *DocFX* under DNX
 ----------------
-As a prerequisite, you will need to install [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm) and [DNX](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx).
+As a prerequisite, you need to install [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm) and [DNX](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx).
 
 *Step1.* `SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/` as we depend upon the release version of ASP.NET 1.0.0-rc1.
 
@@ -99,6 +99,7 @@ Please refer to [*DocFX* User Manual](docfx.exe_user_manual.md) for detailed des
 
 5. Build from source code
 ----------------
+As a prerequisite, you need to install [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159).
 
 *Step1.* `git clone https://github.com/dotnet/docfx.git` to get the latest code.
 

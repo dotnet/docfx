@@ -3,11 +3,12 @@
 
 namespace Microsoft.DocAsCode.Tools
 {
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using System;
     using System.Collections.Generic;
     using System.IO;
+
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     class Program
     {
@@ -29,9 +30,11 @@ namespace Microsoft.DocAsCode.Tools
 
             foreach (var item in tgtVM.Items)
             {
-                if (map.ContainsKey(item.Uid))
+                ItemViewModel srcItem;
+                if (map.TryGetValue(item.Uid, out srcItem))
                 {
-                    item.Source = map[item.Uid].Source;
+                    item.Source = srcItem.Source;
+                    item.Syntax = srcItem.Syntax;
                 }
                 else
                 {

@@ -3,9 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -95,7 +93,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             }
                         }
 
-                        item.TocHref = tocFilePath;
+                        item.TocHref = tocFilePath - (RelativePath)file.File;
 
                         // Get homepage from the referenced toc
                         if (string.IsNullOrEmpty(item.Homepage) && string.IsNullOrEmpty(item.HomepageUid))

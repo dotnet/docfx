@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.E2E.Tests
 {
+    using System;
     using System.Collections.Generic;
 
     using OpenQA.Selenium;
@@ -188,6 +189,23 @@ namespace Microsoft.DocAsCode.E2E.Tests
             }
         }
 
+        [Fact]
+        [Trait("Related", "E2Etest")]
+        public void TestRestApiPage()
+        {
+            _driver.Navigate().GoToUrl(_urlHomepage);
+
+            // go to reference
+            _driver.FindElement(By.LinkText("REST API")).Click();
+            System.Threading.Thread.Sleep(1000);
+
+            // check link to file in overwrite
+            var results = _driver.FindElements(By.XPath("//div[@class='markdown level0 api-footer']/ul/li/a"));
+            Assert.NotEmpty(results);
+            var href = results[0].GetAttribute("href");
+            Assert.True(CheckIfLinkValid(href));
+        }
+
         private void TestPageCommon()
         {
             // check logo
@@ -220,6 +238,21 @@ namespace Microsoft.DocAsCode.E2E.Tests
                 Assert.Contains(part, _driver.Title);
             }
             _driver.Navigate().Back();
+        }
+
+        private bool CheckIfLinkValid(string href)
+        {
+            var originHref = _driver.Url;
+            try
+            {
+                _driver.Navigate().GoToUrl(href);
+                _driver.Navigate().GoToUrl(originHref);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

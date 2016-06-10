@@ -251,13 +251,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (symbol.IsGenericMethod)
             {
                 Append("<");
-                for (int i = 0; i < symbol.TypeParameters.Length; i++)
+                var typeParams = symbol.TypeArguments.Length > 0 ? symbol.TypeArguments.CastArray<ISymbol>() : symbol.TypeParameters.CastArray<ISymbol>();
+                for (int i = 0; i < typeParams.Length; i++)
                 {
                     if (i > 0)
                     {
                         Append(", ");
                     }
-                    symbol.TypeParameters[i].Accept(this);
+                    typeParams[i].Accept(this);
                 }
                 Append(">");
             }
@@ -633,13 +634,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (symbol.IsGenericMethod)
             {
                 Append("(Of ");
-                for (int i = 0; i < symbol.TypeParameters.Length; i++)
+                var typeParams = symbol.TypeArguments.Length > 0 ? symbol.TypeArguments.CastArray<ISymbol>() : symbol.TypeParameters.CastArray<ISymbol>();
+                for (int i = 0; i < typeParams.Length; i++)
                 {
                     if (i > 0)
                     {
                         Append(", ");
                     }
-                    symbol.TypeParameters[i].Accept(this);
+                    typeParams[i].Accept(this);
                 }
                 Append(")");
             }

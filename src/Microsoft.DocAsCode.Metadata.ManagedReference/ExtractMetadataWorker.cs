@@ -27,11 +27,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
         private static string[] SupportedSolutionExtensions = { ".sln" };
-        #if DNX451
+#if DNX451
         private static string[] SupportedProjectName = { "project.json" };
-        #else
+#else
         private static string[] SupportedProjectName = { };
-        #endif
+#endif
         private static string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
         private static string[] SupportedSourceFileExtensions = { ".cs", ".vb" };
         private static string[] SupportedVBSourceFileExtensions = { ".vb" };
@@ -54,7 +54,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             _rawInput = input;
             _validInput = ValidateInput(input);
-            _rebuild = rebuild;
+            // To-do: enable rebuild option after dependency map is constructed
+            _rebuild = true;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
             _filterConfigFile = input.FilterConfigFile?.ToNormalizedFullPath();
         }
@@ -83,7 +84,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         }
 
         #region Internal For UT
-        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null)
+        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null, IEnumerable<IMethodSymbol> extensionMethods = null)
         {
             if (compilation == null)
             {
@@ -94,11 +95,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             SymbolVisitorAdapter visitor;
             if (compilation.Language == "Visual Basic")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, preserveRawInlineComments, filterConfigFile);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, preserveRawInlineComments, filterConfigFile, extensionMethods);
             }
             else if (compilation.Language == "C#")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, preserveRawInlineComments, filterConfigFile);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, preserveRawInlineComments, filterConfigFile, extensionMethods);
             }
             else
             {
@@ -109,6 +110,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             MetadataItem item = compilation.Assembly.Accept(visitor);
             return item;
+        }
+
+        internal static IEnumerable<IMethodSymbol> GetAllExtensionMethods(IEnumerable<Compilation> compilations)
+        {
+            List<INamespaceSymbol> namespaces = new List<INamespaceSymbol>();
+            foreach (var compilation in compilations)
+            {
+                if (compilation.Assembly.MightContainExtensionMethods)
+                {
+                    namespaces.AddRange(GetAllNamespaceMembers(compilation.Assembly));
+                }
+            }
+            return from n in namespaces.Distinct()
+                   from m in GetExtensionMethodPerNamespace(n)
+                   select m;
         }
 
         #endregion
@@ -271,7 +287,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }, 60);
 
-            foreach(var item in projectCache)
+            foreach (var item in projectCache)
             {
                 var path = item.Key;
                 var project = item.Value;
@@ -340,10 +356,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
+            ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
+            var extensionMethods = GetAllExtensionMethods(compilationCache.Values).ToList();
 
             foreach (var project in projectCache)
             {
-                var projectMetadata = await GetProjectMetadataFromCacheAsync(project.Value, outputFolder, documentCache, forceRebuild, _preserveRawInlineComments, _filterConfigFile);
+                var projectMetadata = await GetProjectMetadataFromCacheAsync(project.Value, compilationCache[project.Key], outputFolder, documentCache, forceRebuild, _preserveRawInlineComments, _filterConfigFile, extensionMethods);
                 if (projectMetadata != null) projectMetadataList.Add(projectMetadata);
             }
 
@@ -354,7 +372,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
                 if (csCompilation != null)
                 {
-                    var csMetadata = await GetFileMetadataFromCacheAsync(csFiles, csCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _filterConfigFile);
+                    var csMetadata = await GetFileMetadataFromCacheAsync(csFiles, csCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _filterConfigFile, extensionMethods);
                     if (csMetadata != null) projectMetadataList.Add(csMetadata);
                 }
             }
@@ -366,14 +384,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
                 if (vbCompilation != null)
                 {
-                    var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _filterConfigFile);
+                    var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _filterConfigFile, extensionMethods);
                     if (vbMetadata != null) projectMetadataList.Add(vbMetadata);
                 }
             }
 
             var allMemebers = MergeYamlProjectMetadata(projectMetadataList);
             var allReferences = MergeYamlProjectReferences(projectMetadataList);
-            
+
             if (allMemebers == null || allMemebers.Count == 0)
             {
                 var value = projectMetadataList.Select(s => s.Name).ToDelimitedString();
@@ -386,6 +404,53 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 // Save output to output folder
                 var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments, _rawInput.ExternalReferences);
                 applicationCache.SaveToCache(inputs, documentCache.Cache, triggeredTime, outputFolder, outputFiles);
+            }
+        }
+
+        private static async Task<ConcurrentDictionary<string, Compilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, Project> projectCache)
+        {
+            var compilations = new ConcurrentDictionary<string, Compilation>();
+            foreach (var project in projectCache)
+            {
+                var compilation = await project.Value.GetCompilationAsync();
+                compilations.GetOrAdd(project.Key, compilation);
+            }
+            return compilations;
+        }
+
+        private static IEnumerable<IMethodSymbol> GetExtensionMethodPerNamespace(INamespaceSymbol space)
+        {
+            var typesWithExtensionMethods = space.GetTypeMembers().Where(t => t.MightContainExtensionMethods);
+            foreach (var type in typesWithExtensionMethods)
+            {
+                var members = type.GetMembers();
+                foreach (var member in members)
+                {
+                    if (member.Kind == SymbolKind.Method)
+                    {
+                        var method = (IMethodSymbol)member;
+                        if (method.IsExtensionMethod)
+                        {
+                            yield return method;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<INamespaceSymbol> GetAllNamespaceMembers(IAssemblySymbol assembly)
+        {
+            var queue = new Queue<INamespaceSymbol>();
+            queue.Enqueue(assembly.GlobalNamespace);
+            while (queue.Count > 0)
+            {
+                var space = queue.Dequeue();
+                yield return space;
+                var childSpaces = space.GetNamespaceMembers();
+                foreach (var child in childSpaces)
+                {
+                    queue.Enqueue(child);
+                }
             }
         }
 
@@ -402,8 +467,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Logger.Log(LogLevel.Info, $"'{inputs.ToDelimitedString()}' keep up-to-date since '{buildInfo.TriggeredUtcTime.ToString()}', cached result from '{buildInfo.OutputFolder}' is used.");
             relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
-        
-        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile)
+
+        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, Compilation compilation, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IEnumerable<IMethodSymbol> extensionMethods)
         {
             var projectFilePath = project.FilePath;
             var k = documentCache.GetDocuments(projectFilePath);
@@ -411,17 +476,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 project,
                 new[] { projectFilePath, filterConfigFile },
                 s => Task.FromResult(forceRebuild || s.AreFilesModified(k.Concat(new string[] { filterConfigFile }))),
-                s => project.GetCompilationAsync(),
+                s => Task.FromResult(compilation),
                 s =>
                 {
                     return new Dictionary<string, List<string>> { { s.FilePath.ToNormalizedFullPath(), k.ToList() } };
                 },
                 outputFolder,
                 preserveRawInlineComments,
-                filterConfigFile);
+                filterConfigFile,
+                extensionMethods);
         }
 
-        private static Task <MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile)
+        private static Task<MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IEnumerable<IMethodSymbol> extensionMethods)
         {
             if (files == null || !files.Any()) return null;
             return GetMetadataFromProjectLevelCacheAsync(
@@ -431,7 +497,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 s => null,
                 outputFolder,
                 preserveRawInlineComments,
-                filterConfigFile);
+                filterConfigFile,
+                extensionMethods);
         }
 
         private static async Task<MetadataItem> GetMetadataFromProjectLevelCacheAsync<T>(
@@ -442,7 +509,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Func<T, IDictionary<string, List<string>>> containedFilesProvider,
             string outputFolder,
             bool preserveRawInlineComments,
-            string filterConfigFile)
+            string filterConfigFile,
+            IEnumerable<IMethodSymbol> extensionMethods)
         {
             DateTime triggeredTime = DateTime.UtcNow;
             var projectLevelCache = ProjectLevelCache.Get(inputKey);
@@ -472,7 +540,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var compilation = await compilationProvider(input);
 
-            projectMetadata = GenerateYamlMetadata(compilation, preserveRawInlineComments, filterConfigFile);
+            projectMetadata = GenerateYamlMetadata(compilation, preserveRawInlineComments, filterConfigFile, extensionMethods);
             var file = Path.GetRandomFileName();
             var cacheOutputFolder = projectLevelCache.OutputFolder;
             var path = Path.Combine(cacheOutputFolder, file);
@@ -504,7 +572,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var outputFiles = new List<string>();
             var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, apiFolder, preserveRawInlineComments, externalReferencePackages);
-            
+
             // 1. generate toc.yml
             outputFiles.Add(tocFileName);
             model.TocYamlViewModel.Type = MemberType.Toc;
@@ -593,7 +661,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                         nsOther.Items = new List<MetadataItem>();
                                     }
 
-                                    foreach(var i in ns.Items)
+                                    foreach (var i in ns.Items)
                                     {
                                         if (!nsOther.Items.Any(s => s.Name == i.Name))
                                         {
@@ -715,13 +783,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             try
             {
                 string name = Path.GetFileName(path);
-                #if DNX451
+#if DNX451
                 if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase))
                 {
                     var workspace = new ProjectJsonWorkspace(path);
                     return workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
                 }
-                #endif
+#endif
 
                 return await _workspace.Value.OpenProjectAsync(path);
             }

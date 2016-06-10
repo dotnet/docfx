@@ -69,6 +69,10 @@
     <Compile Include="XRefMaps\XRefSpecUidComparer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj">
+      <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.Build.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
       <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
       <Name>Microsoft.DocAsCode.Common</Name>

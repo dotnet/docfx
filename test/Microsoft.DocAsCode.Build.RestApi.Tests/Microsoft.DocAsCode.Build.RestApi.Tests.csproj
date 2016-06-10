@@ -136,6 +136,10 @@
       <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
       <Name>Microsoft.DocAsCode.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
+      <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
       <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
       <Name>Microsoft.DocAsCode.Dfm</Name>

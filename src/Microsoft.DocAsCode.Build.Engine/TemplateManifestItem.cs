@@ -21,6 +21,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [YamlMember(Alias = "output")]
         [JsonProperty("output")]
         public Dictionary<string, string> OutputFiles { get; set; }
+        [YamlMember(Alias = "hashes")]
+        [JsonProperty("hashes")]
+        public Dictionary<string, string> Hashes { get; set; }
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();

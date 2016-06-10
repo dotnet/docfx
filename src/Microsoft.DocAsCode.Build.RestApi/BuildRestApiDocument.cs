@@ -6,10 +6,14 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System;
     using System.Collections.Generic;
     using System.Composition;
+    using System.Collections.Immutable;
+    using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.RestApi.ViewModels;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
@@ -44,6 +48,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     }
                     break;
                 case DocumentType.Overwrite:
+                    BuildItem(host, model);
                     break;
                 default:
                     throw new NotSupportedException();
@@ -54,8 +59,24 @@ namespace Microsoft.DocAsCode.Build.RestApi
         {
             item.Summary = Markup(host, item.Summary, model, filter);
             item.Description = Markup(host, item.Description, model, filter);
+            if (model.Type != DocumentType.Overwrite)
+            {
             item.Conceptual = Markup(host, item.Conceptual, model, filter);
+            }
             return item;
+        }
+
+        private static void BuildItem(IHostService host, FileModel model)
+        {
+            var file = model.FileAndType;
+            var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
+            model.Content = overwrites;
+            model.LocalPathFromRepoRoot = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+            model.Uids = (from item in overwrites
+                          select new UidDefinition(
+                              item.Uid,
+                              model.LocalPathFromRepoRoot,
+                              item.Documentation.StartLine + 1)).ToImmutableArray();
         }
 
         public static RestApiTagViewModel BuildTag(IHostService host, RestApiTagViewModel tag, FileModel model, Func<string, bool> filter = null)
