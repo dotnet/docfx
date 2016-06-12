@@ -2316,6 +2316,48 @@ namespace Test1
 Public Shared Sub Method1(obj As Object)", method.Syntax.Content[SyntaxLanguage.VB]);
         }
 
+        [Fact]
+        [Trait("Related", "Generic")]
+        public void TestGenerateMetadataAsyncWithInheritedFromGenericClass()
+        {
+            string code = @"
+namespace Test1
+{
+    public interface I1<T>
+    {
+        public void M1(T obj) {}
+    }
+    public interface I2<T> : I1<string>, I1<T> {}
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var i1 = ns.Items[0];
+            Assert.NotNull(i1);
+            Assert.Equal("Test1.I1`1", i1.Name);
+            Assert.Equal(1, i1.Items.Count);
+            Assert.Null(i1.InheritedMembers);
+            var m1 = i1.Items[0];
+            Assert.Equal("Test1.I1`1.M1(`0)", m1.Name);
+
+            var i2 = ns.Items[1];
+            Assert.NotNull(i2);
+            Assert.Equal("Test1.I2`1", i2.Name);
+            Assert.Equal(0, i2.Items.Count);
+            Assert.Equal(2, i2.InheritedMembers.Count);
+            Assert.Equal(new[] { "Test1.I1{System.String}.M1(System.String)", "Test1.I1{{T}}.M1({T})" }, i2.InheritedMembers);
+
+            var r1 = output.References["Test1.I1{System.String}.M1(System.String)"];
+            Assert.False(r1.IsDefinition);
+            Assert.Equal("Test1.I1`1.M1(`0)", r1.Definition);
+
+            var r2 = output.References["Test1.I1{{T}}.M1({T})"];
+            Assert.False(r1.IsDefinition);
+            Assert.Equal("Test1.I1`1.M1(`0)", r1.Definition);
+        }
+
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromCSharpCode(code, "test.dll", references);
