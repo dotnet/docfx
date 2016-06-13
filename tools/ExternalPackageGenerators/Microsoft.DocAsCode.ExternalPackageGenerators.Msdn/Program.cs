@@ -19,8 +19,9 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
     using System.Threading.Tasks;
     using System.Xml;
 
-    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Glob;
+    using Microsoft.DocAsCode.Plugins;
 
     internal sealed class Program
     {
@@ -163,16 +164,16 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         private static void PrintUsage()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("{0} <packageFile> <baseDirectory> <globPattern> <msdnVersion>", AppDomain.CurrentDomain.FriendlyName);
-            Console.WriteLine("    packageFile    The output package file.");
-            Console.WriteLine("                   e.g. \"msdn.rpk\"");
-            Console.WriteLine("    baseDirectory  The base directory contains develop comment xml file.");
-            Console.WriteLine("                   e.g. \"c:\\\"");
-            Console.WriteLine("    globPattern    The glob pattern for develop comment xml file.");
-            Console.WriteLine("                   '\' is considered as ESCAPE character, make sure to transform '\' in file path to '/'");
-            Console.WriteLine("                   e.g. \"**/*.xml\"");
-            Console.WriteLine("    msdnVersion    The version in msdn.");
-            Console.WriteLine("                   e.g. \"vs.110\"");
+            Console.WriteLine("{0} <outputDirectory> <baseDirectory> <globPattern> <msdnVersion>", AppDomain.CurrentDomain.FriendlyName);
+            Console.WriteLine("    outputDirectory The output directory for xref archive files.");
+            Console.WriteLine("                    e.g. \"msdn\"");
+            Console.WriteLine("    baseDirectory   The base directory contains develop comment xml file.");
+            Console.WriteLine("                    e.g. \"c:\\\"");
+            Console.WriteLine("    globPattern     The glob pattern for develop comment xml file.");
+            Console.WriteLine("                    '\' is considered as ESCAPE character, make sure to transform '\' in file path to '/'");
+            Console.WriteLine("                    e.g. \"**/*.xml\"");
+            Console.WriteLine("    msdnVersion     The version in msdn.");
+            Console.WriteLine("                    e.g. \"vs.110\"");
         }
 
         private void PackReference()
@@ -232,21 +233,41 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private async Task PackOneReferenceAsync(string file)
         {
-            var currentPackage = Path.ChangeExtension(Path.GetFileName(file), "rpk");
+            var currentPackage = Path.ChangeExtension(Path.GetFileName(file), "zip");
             lock (_currentPackages)
             {
                 _currentPackages[Array.IndexOf(_currentPackages, null)] = currentPackage;
             }
-            using (var writer = ExternalReferencePackageWriter.Append(Path.Combine(_packageDirectory, currentPackage), new Uri("https://msdn.microsoft.com/")))
+            using (var writer = XRefArchive.Open(Path.Combine(_packageDirectory, currentPackage), XRefArchiveMode.Create))
             {
+                var entries = new List<XRefMapRedirection>();
                 await GetItems(file).ForEachAsync(pair =>
                 {
                     lock (writer)
                     {
-                        writer.AddOrUpdateEntry(pair.EntryName + ".yml", pair.ViewModel);
+                        entries.Add(
+                            new XRefMapRedirection
+                            {
+                                UidPrefix = pair.EntryName,
+                                Href = writer.CreateMinor(
+                                    new XRefMap
+                                    {
+                                        Sorted = true,
+                                        HrefUpdated = true,
+                                        References = pair.ViewModel,
+                                    },
+                                    new[] { pair.EntryName })
+                            });
                         _entryCount++;
                         _apiCount += pair.ViewModel.Count;
                     }
+                });
+                writer.CreateMajor(new XRefMap
+                {
+                    HrefUpdated = true,
+                    Redirections = (from e in entries
+                                    orderby e.UidPrefix.Length descending
+                                    select e).ToList()
                 });
             }
             lock (_currentPackages)
@@ -312,40 +333,40 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             return from entry in
                        (from entry in GetAllCommentId(file)
                         select entry).AcquireSemaphore(_semaphoreForEntry).ToObservable(Scheduler.Default)
-                   from vm in Observable.FromAsync(() => GetReferenceVMAsync(entry)).Do(_ => _semaphoreForEntry.Release())
+                   from vm in Observable.FromAsync(() => GetXRefSpecAsync(entry)).Do(_ => _semaphoreForEntry.Release())
                    where vm.Count > 0
                    select new EntryNameAndViewModel(entry.EntryName, vm);
         }
 
-        private async Task<List<ReferenceViewModel>> GetReferenceVMAsync(ClassEntry entry)
+        private async Task<List<XRefSpec>> GetXRefSpecAsync(ClassEntry entry)
         {
-            List<ReferenceViewModel> result = new List<ReferenceViewModel>(entry.Items.Count);
+            var result = new List<XRefSpec>(entry.Items.Count);
             var type = entry.Items.Find(item => item.Uid == entry.EntryName);
-            ReferenceViewModel typeVM = null;
+            XRefSpec typeSpec = null;
             if (type != null)
             {
-                typeVM = await GetViewModelItemAsync(type);
-                result.Add(typeVM);
+                typeSpec = await GetXRefSpecAsync(type);
+                result.Add(typeSpec);
             }
             int size = 0;
 
-            foreach (var vmsTask in
+            foreach (var specsTask in
                 from block in
                     (from item in entry.Items
                      where item != type
                      select item).BlockBuffer(() => size = size * 2 + 1)
-                select Task.WhenAll(from item in block select GetViewModelItemAsync(item)))
+                select Task.WhenAll(from item in block select GetXRefSpecAsync(item)))
             {
-                result.AddRange(await vmsTask);
+                result.AddRange(await specsTask);
             }
-            if (typeVM != null && typeVM.Href != null)
+            if (typeSpec != null && typeSpec.Href != null)
             {
                 // handle enum field, or other one-page-member
                 foreach (var item in result)
                 {
                     if (item.Href == null)
                     {
-                        item.Href = typeVM.Href;
+                        item.Href = typeSpec.Href;
                     }
                 }
             }
@@ -353,10 +374,11 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             {
                 result.RemoveAll(item => item.Href == null);
             }
+            result.Sort(XRefSpecUidComparer.Instance);
             return result;
         }
 
-        private async Task<ReferenceViewModel> GetViewModelItemAsync(CommentIdAndUid pair)
+        private async Task<XRefSpec> GetXRefSpecAsync(CommentIdAndUid pair)
         {
             var alias = GetAlias(pair.CommentId);
             if (alias != null)
@@ -365,9 +387,10 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                 // verify alias exists
                 if ((await _checkUrlCache.GetAsync(url)).Value)
                 {
-                    return new ReferenceViewModel
+                    return new XRefSpec
                     {
                         Uid = pair.Uid,
+                        CommentId = pair.CommentId,
                         Href = url,
                     };
                 }
@@ -375,14 +398,16 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             var shortId = await _shortIdCache.GetAsync(pair.CommentId);
             if (string.IsNullOrEmpty(shortId))
             {
-                return new ReferenceViewModel
+                return new XRefSpec
                 {
                     Uid = pair.Uid,
+                    CommentId = pair.CommentId,
                 };
             }
-            return new ReferenceViewModel
+            return new XRefSpec
             {
                 Uid = pair.Uid,
+                CommentId = pair.CommentId,
                 Href = string.Format(MsdnUrlTemplate, shortId, _msdnVersion),
             };
         }

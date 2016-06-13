@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     var entryName = NormalizeName(name);
                     if (entryName != null &&
-                        HasEntryCore(entryName))
+                        !HasEntryCore(entryName))
                     {
                         return CreateCore(entryName, map);
                     }
@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             while (true)
             {
                 var entryName = Guid.NewGuid().ToString() + ".yml";
-                if (HasEntryCore(entryName))
+                if (!HasEntryCore(entryName))
                 {
                     return CreateCore(entryName, map);
                 }
