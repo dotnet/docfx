@@ -187,6 +187,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     result.NameInDevLangs[Constants.DevLang.VB] = nameForVB;
                 }
 
+                result.NameWithType = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayNamesWithType);
+                var nameWithTypeForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayNamesWithType);
+                if (result.NameWithType != nameWithTypeForCSharp)
+                {
+                    result.NameWithTypeInDevLangs[Constants.DevLang.CSharp] = nameWithTypeForCSharp;
+                }
+                var nameWithTypeForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayNamesWithType);
+                if (result.NameWithType != nameWithTypeForVB)
+                {
+                    result.NameWithTypeInDevLangs[Constants.DevLang.VB] = nameWithTypeForVB;
+                }
+
                 result.FullName = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayQualifiedNames);
                 var fullnameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayQualifiedNames);
                 if (result.FullName != fullnameForCSharp)
@@ -256,6 +268,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.NameForVB = nameForVB;
             }
 
+            result.NameWithType = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.Default);
+            var nameWithTypeForCSharp = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.CSharp);
+            if (result.NameWithType != nameWithTypeForCSharp)
+            {
+                result.NameWithTypeForCSharp = nameWithTypeForCSharp;
+            }
+            var nameWithTypeForVB = model.DisplayNamesWithType.GetLanguageProperty(SyntaxLanguage.VB);
+            if (result.NameWithType != nameWithTypeForVB)
+            {
+                result.NameWithTypeForVB = nameWithTypeForVB;
+            }
+
             result.FullName = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.Default);
             var fullnameForCSharp = model.DisplayQualifiedNames.GetLanguageProperty(SyntaxLanguage.CSharp);
             if (result.FullName != fullnameForCSharp)
@@ -321,6 +345,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Uid = model.Name,
                 Name = model.DisplayName,
+                NameWithType = model.DisplayNamesWithType,
                 FullName = model.DisplayQualifiedNames,
                 IsExternal = model.IsExternalPath,
                 Href = model.Href,

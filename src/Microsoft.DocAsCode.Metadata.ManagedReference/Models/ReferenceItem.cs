@@ -113,6 +113,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("name")]
         public string DisplayName { get; set; }
 
+        [YamlMember(Alias = "nameWithType")]
+        [JsonProperty("nameWithType")]
+        public string DisplayNamesWithType { get; set; }
+
         [YamlMember(Alias = "qualifiedName")]
         [JsonProperty("qualifiedName")]
         public string DisplayQualifiedNames { get; set; }

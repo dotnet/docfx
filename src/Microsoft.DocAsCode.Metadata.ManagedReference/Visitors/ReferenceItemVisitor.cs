@@ -79,6 +79,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetCSharp(NameOptions.None).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified).GetName(symbol),
             });
         }
@@ -88,6 +89,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = symbol.Name,
+                DisplayNamesWithType = symbol.Name,
                 DisplayQualifiedNames = symbol.Name,
             });
         }
@@ -100,6 +102,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
                 {
                     DisplayName = "[]",
+                    DisplayNamesWithType = "[]",
                     DisplayQualifiedNames = "[]",
                 });
             }
@@ -108,6 +111,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
                 {
                     DisplayName = "[" + new string(',', symbol.Rank - 1) + "]",
+                    DisplayNamesWithType = "[" + new string(',', symbol.Rank - 1) + "]",
                     DisplayQualifiedNames = "[" + new string(',', symbol.Rank - 1) + "]",
                 });
             }
@@ -119,6 +123,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = "*",
+                DisplayNamesWithType = "*",
                 DisplayQualifiedNames = "*",
             });
         }
@@ -129,6 +134,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetCSharp(NameOptions.WithGenericParameter).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                 Name = id,
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -136,6 +142,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = "(",
+                DisplayNamesWithType = "(",
                 DisplayQualifiedNames = "(",
             });
             for (int i = 0; i < symbol.Parameters.Length; i++)
@@ -145,6 +152,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
                     {
                         DisplayName = ", ",
+                        DisplayNamesWithType = ", ",
                         DisplayQualifiedNames = ", ",
                     });
                 }
@@ -153,6 +161,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = ")",
+                DisplayNamesWithType = ")",
                 DisplayQualifiedNames = ")",
             });
         }
@@ -163,6 +172,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetCSharp(NameOptions.WithGenericParameter).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                 Name = id,
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -173,6 +183,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
                 {
                     DisplayName = "[",
+                    DisplayNamesWithType = "[",
                     DisplayQualifiedNames = "[",
                 });
                 for (int i = 0; i < symbol.Parameters.Length; i++)
@@ -182,6 +193,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
                         {
                             DisplayName = ", ",
+                            DisplayNamesWithType = ", ",
                             DisplayQualifiedNames = ", ",
                         });
                     }
@@ -190,6 +202,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
                 {
                     DisplayName = "]",
+                    DisplayNamesWithType = "]",
                     DisplayQualifiedNames = "]",
                 });
             }
@@ -201,6 +214,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetCSharp(NameOptions.WithGenericParameter).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                 Name = id,
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -213,6 +227,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetCSharp(NameOptions.WithGenericParameter).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                 Name = id,
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -225,6 +240,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetCSharp(NameOptions.None).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified).GetName(symbol),
                 Name = id,
             });
@@ -235,6 +251,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = "<",
+                DisplayNamesWithType = "<",
                 DisplayQualifiedNames = "<",
             });
         }
@@ -244,6 +261,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = ">",
+                DisplayNamesWithType = ">",
                 DisplayQualifiedNames = ">",
             });
         }
@@ -253,6 +271,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
             {
                 DisplayName = ", ",
+                DisplayNamesWithType = ", ",
                 DisplayQualifiedNames = ", ",
             });
         }
@@ -265,6 +284,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
                 {
                     DisplayName = NameVisitorCreator.GetCSharp(NameOptions.WithGenericParameter).GetName(symbol),
+                    DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                     DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                     Name = id,
                     IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -275,6 +295,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
                 {
                     DisplayName = NameVisitorCreator.GetCSharp(NameOptions.None).GetName(symbol),
+                    DisplayNamesWithType = NameVisitorCreator.GetCSharp(NameOptions.WithType).GetName(symbol),
                     DisplayQualifiedNames = NameVisitorCreator.GetCSharp(NameOptions.Qualified).GetName(symbol),
                     Name = id,
                     IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -299,6 +320,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetVB(NameOptions.None).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetVB(NameOptions.WithType).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetVB(NameOptions.Qualified).GetName(symbol),
             });
         }
@@ -308,6 +330,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = symbol.Name,
+                DisplayNamesWithType = symbol.Name,
                 DisplayQualifiedNames = symbol.Name,
             });
         }
@@ -320,6 +343,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                 {
                     DisplayName = "()",
+                    DisplayNamesWithType = "()",
                     DisplayQualifiedNames = "()",
                 });
             }
@@ -328,6 +352,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                 {
                     DisplayName = "(" + new string(',', symbol.Rank - 1) + ")",
+                    DisplayNamesWithType = "(" + new string(',', symbol.Rank - 1) + ")",
                     DisplayQualifiedNames = "(" + new string(',', symbol.Rank - 1) + ")",
                 });
             }
@@ -339,6 +364,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = "*",
+                DisplayNamesWithType = "*",
                 DisplayQualifiedNames = "*",
             });
         }
@@ -349,6 +375,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetVB(NameOptions.WithGenericParameter).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetVB(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetVB(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                 Name = id,
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -356,6 +383,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = "(",
+                DisplayNamesWithType = "(",
                 DisplayQualifiedNames = "(",
             });
             for (int i = 0; i < symbol.Parameters.Length; i++)
@@ -365,6 +393,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                     {
                         DisplayName = ", ",
+                        DisplayNamesWithType = ", ",
                         DisplayQualifiedNames = ", ",
                     });
                 }
@@ -373,6 +402,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = ")",
+                DisplayNamesWithType = ")",
                 DisplayQualifiedNames = ")",
             });
         }
@@ -383,6 +413,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetVB(NameOptions.WithGenericParameter).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetVB(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetVB(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                 Name = id,
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -392,6 +423,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                 {
                     DisplayName = "(",
+                    DisplayNamesWithType = "(",
                     DisplayQualifiedNames = "(",
                 });
                 for (int i = 0; i < symbol.Parameters.Length; i++)
@@ -401,6 +433,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                         {
                             DisplayName = ", ",
+                            DisplayNamesWithType = ", ",
                             DisplayQualifiedNames = ", ",
                         });
                     }
@@ -409,6 +442,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                 {
                     DisplayName = ")",
+                    DisplayNamesWithType = ")",
                     DisplayQualifiedNames = ")",
                 });
             }
@@ -420,6 +454,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetVB(NameOptions.WithGenericParameter).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetVB(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetVB(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                 Name = id,
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -432,6 +467,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = NameVisitorCreator.GetVB(NameOptions.WithGenericParameter).GetName(symbol),
+                DisplayNamesWithType = NameVisitorCreator.GetVB(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                 DisplayQualifiedNames = NameVisitorCreator.GetVB(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                 Name = id,
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -443,6 +479,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = "(Of ",
+                DisplayNamesWithType = "(Of ",
                 DisplayQualifiedNames = "(Of ",
             });
         }
@@ -452,6 +489,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = ")",
+                DisplayNamesWithType = ")",
                 DisplayQualifiedNames = ")",
             });
         }
@@ -461,6 +499,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
             {
                 DisplayName = ", ",
+                DisplayNamesWithType = ", ",
                 DisplayQualifiedNames = ", ",
             });
         }
@@ -473,6 +512,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                 {
                     DisplayName = NameVisitorCreator.GetVB(NameOptions.WithGenericParameter).GetName(symbol),
+                    DisplayNamesWithType = NameVisitorCreator.GetVB(NameOptions.WithType | NameOptions.WithGenericParameter).GetName(symbol),
                     DisplayQualifiedNames = NameVisitorCreator.GetVB(NameOptions.Qualified | NameOptions.WithGenericParameter).GetName(symbol),
                     Name = id,
                     IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
@@ -483,6 +523,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                 {
                     DisplayName = NameVisitorCreator.GetVB(NameOptions.None).GetName(symbol),
+                    DisplayNamesWithType = NameVisitorCreator.GetVB(NameOptions.WithType).GetName(symbol),
                     DisplayQualifiedNames = NameVisitorCreator.GetVB(NameOptions.Qualified).GetName(symbol),
                     Name = id,
                     IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
