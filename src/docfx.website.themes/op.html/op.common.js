@@ -1,10 +1,21 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-exports.getCanonicalUrl = function (canonicalUrlPrefix, path) {
+exports.getCanonicalUrl = function (canonicalUrlPrefix, path, layout) {
   if (!canonicalUrlPrefix || !path) return '';
   if (canonicalUrlPrefix[canonicalUrlPrefix.length - 1] == '/') {
     canonicalUrlPrefix = canonicalUrlPrefix.slice(0, -1);
   }
-  return canonicalUrlPrefix + "/" + exports.removeExtension(path);
+
+  var canonicalUrl = canonicalUrlPrefix + "/" + exports.removeExtension(path);
+  
+  if (typeof(layout) !== "undefined" && layout === "HubPage")
+  {
+    if (canonicalUrl.toLowerCase().endsWith("index"))
+    {
+      canonicalUrl = canonicalUrl.slice(0, -5);
+    }
+  }
+
+  return canonicalUrl;
 }
 
 exports.getAssetId = function (item) {
