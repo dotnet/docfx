@@ -16,6 +16,13 @@ SET DefaultTemplate=%TemplateHome%default
 
 CALL npm install -g gulp
 
+:: Check if gulp install successfully
+WHERE gulp >NUL
+IF NOT '%ERRORLEVEL%'=='0' (
+    ECHO ERROR: UpdateTemplate.cmd requires gulp installed globally.
+    GOTO :Exit
+)
+
 CD %DefaultTemplate%
 CALL npm install
 CALL gulp
