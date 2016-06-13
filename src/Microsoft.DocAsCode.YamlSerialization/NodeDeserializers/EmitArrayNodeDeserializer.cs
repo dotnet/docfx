@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
 #else
             typeof(EmitArrayNodeDeserializer).GetMethod(nameof(DeserializeHelper));
 #endif
-        private static readonly Dictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>> _funcCache =
+        private readonly Dictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>> _funcCache =
             new Dictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>>();
 
         bool INodeDeserializer.Deserialize(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer, out object value)
