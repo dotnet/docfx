@@ -16,12 +16,12 @@ SET DefaultTemplate=%TemplateHome%default
 
 CALL npm install -g gulp
 
-PUSHD %DefaultTemplate%
+CD %DefaultTemplate%
 CALL npm install
 CALL gulp
-POPD
 
-PUSHD %TemplateHome%
+CD %TemplateHome%
 CALL npm install
 CALL gulp
+
 POPD
