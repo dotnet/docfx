@@ -40,7 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncConcurrentCache.cs" />
+    <Compile Include="CircularStream.cs" />
+    <Compile Include="CircularBuffer.cs" />
     <Compile Include="CollectionExtensions.cs" />
+    <Compile Include="CompositeStream.cs" />
     <Compile Include="Git\RepositoryWalker.cs" />
     <Compile Include="Git\UserInfo.cs" />
     <Compile Include="ConvertToObjectHelper.cs" />
