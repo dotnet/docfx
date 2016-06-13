@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
     using System.ComponentModel;
     using System.Reflection;
     using System.Reflection.Emit;
+    using System.Collections.Concurrent;
 
     using YamlDotNet.Core;
     using YamlDotNet.Serialization;
@@ -20,8 +21,8 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
 #else
             typeof(EmitArrayNodeDeserializer).GetMethod(nameof(DeserializeHelper));
 #endif
-        private readonly Dictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>> _funcCache =
-            new Dictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>>();
+        private static readonly ConcurrentDictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>> _funcCache =
+            new ConcurrentDictionary<Type, Func<EventReader, Type, Func<EventReader, Type, object>, object>>();
 
         bool INodeDeserializer.Deserialize(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer, out object value)
         {
