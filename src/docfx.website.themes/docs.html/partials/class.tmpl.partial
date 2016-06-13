@@ -208,6 +208,7 @@
                   <td>{{{value}}}</td>
                   </tr>
               </tbody>
+          </table>
       </section>
       <section class="secondary">
       </section>
@@ -243,6 +244,7 @@
             <td>{{{value}}}</td>
             </tr>
         </tbody>
+    </table>
   </section>
 </div>
 {{/supported_platforms}}
@@ -261,6 +263,7 @@
             <td>{{{value}}}</td>
             </tr>
         </tbody>
+    </table>
   </section>
 </div>
 {{/requirements}}

@@ -67,14 +67,18 @@
   <h2>{{>partials/classSubtitle}}</h2>
   {{/hideSubtitle}}
 </header>
-<dl>
+  <table class="enumfields">
+      <tbody>
   {{#children}}
-  <dt>{{#name}}
+        <tr>
+          <td id="{{id}}"><h4>{{#name}}
       <code class="lang-{{lang}}">{{value}}</code>
-    {{/name}}</dt>
-  <dd>{{{summary}}}</dd>
+    {{/name}}</h4></td>
+          <td>{{{summary}}}</td>
+        </tr>
   {{/children}}
-</dl>
+      </tbody>
+  </table>
 {{#defined_in}}
 <header class="header" id="defined_in">
   <h2>Defined in</h2>
@@ -100,6 +104,7 @@
             <td>{{{value}}}</td>
             </tr>
         </tbody>
+    </table>
   </section>
 </div>
 {{/supported_platforms}}
@@ -118,6 +123,7 @@
             <td>{{{value}}}</td>
             </tr>
         </tbody>
+    </table>
   </section>
 </div>
 {{/requirements}}
