@@ -93,7 +93,6 @@ namespace Microsoft.DocAsCode.E2E.Tests
             // go to reference
             _driver.FindElement(By.LinkText("API Documentation")).Click();
             _driver.FindElements(By.XPath("//h4/a"))[0].Click();
-            System.Threading.Thread.Sleep(1000);
 
             TestPageCommon();
 
@@ -208,6 +207,8 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
         private void TestPageCommon()
         {
+            System.Threading.Thread.Sleep(1000);
+
             // check logo
             IWebElement element = _driver.FindElement(By.Id("logo"));
             Assert.Equal("svg", element.TagName);
