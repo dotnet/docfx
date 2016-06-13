@@ -24,4 +24,7 @@ CD %TemplateHome%
 CALL npm install
 CALL gulp
 
+:Exit
 POPD
+
+EXIT /B %ERRORLEVEL%'
