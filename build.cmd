@@ -42,6 +42,15 @@ IF NOT '%ERRORLEVEL%'=='0' (
     GOTO :Exit
 )
 
+:: Update template before build
+ECHO Updating template
+CALL UpdateTemplate.cmd
+
+IF NOT '!ERRORLEVEL!'=='0' (
+    ECHO ERROR: Error occurs when updating template
+    GOTO :Exit
+)
+
 :: Restore packages for .csproj projects
 
 CALL :RestorePackage

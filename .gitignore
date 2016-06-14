@@ -41,3 +41,8 @@ launchSettings.json
 project.lock.json
 *.sublime-workspace
 *.nuget.targets
+
+###############
+#  template   #
+###############
+src/docfx/Template/*.zip
