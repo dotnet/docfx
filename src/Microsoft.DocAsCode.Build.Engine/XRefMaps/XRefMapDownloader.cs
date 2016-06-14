@@ -14,10 +14,19 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class XRefMapDownloader
     {
         private readonly SemaphoreSlim _semaphore;
+        private readonly string _baseFolder;
 
-        public XRefMapDownloader(int maxParallelism = 0x10)
+        public XRefMapDownloader(string baseFolder = null, int maxParallelism = 0x10)
         {
             _semaphore = new SemaphoreSlim(maxParallelism);
+            if (baseFolder == null)
+            {
+                _baseFolder = Environment.CurrentDirectory;
+            }
+            else
+            {
+                _baseFolder = Path.Combine(Environment.CurrentDirectory, baseFolder);
+            }
         }
 
         /// <summary>
@@ -32,16 +41,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(uri));
             }
-            if (!uri.IsAbsoluteUri)
-            {
-                throw new ArgumentException("Relative path is not allowed.", nameof(uri));
-            }
             await _semaphore.WaitAsync();
             return await Task.Run(async () =>
             {
                 try
                 {
-                    return await DownloadBySchemeAsync(uri);
+                    if (uri.IsAbsoluteUri)
+                    {
+                        return await DownloadBySchemeAsync(uri);
+                    }
+                    else
+                    {
+                        return ReadLocalFile(Path.Combine(_baseFolder, uri.OriginalString));
+                    }
                 }
                 finally
                 {
@@ -84,6 +96,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         protected static IXRefContainer DownloadFromLocal(Uri uri)
         {
             var filePath = uri.LocalPath;
+            return ReadLocalFile(filePath);
+        }
+
+        private static IXRefContainer ReadLocalFile(string filePath)
+        {
             if (".zip".Equals(Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
             {
                 return XRefArchive.Open(filePath, XRefArchiveMode.Read);

@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public interface IXRefContainer
     {
+        bool IsEmbeddedRedirections { get; }
         IEnumerable<XRefMapRedirection> GetRedirections();
         IXRefContainerReader GetReader();
     }

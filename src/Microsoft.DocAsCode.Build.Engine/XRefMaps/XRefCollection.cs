@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public XRefCollection(IEnumerable<Uri> uris)
         {
-            if(uris == null)
+            if (uris == null)
             {
                 throw new ArgumentNullException(nameof(uris));
             }
@@ -26,9 +26,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableList<Uri> Uris { get; set; }
 
-        public Task<IXRefContainerReader> GetReaderAsync()
+        public Task<IXRefContainerReader> GetReaderAsync(string baseFolder)
         {
-            var creator = new ReaderCreator(Uris, MaxParallelism);
+            var creator = new ReaderCreator(Uris, MaxParallelism, baseFolder);
             return creator.CreateAsync();
         }
 
@@ -39,10 +39,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             private readonly Dictionary<Task<IXRefContainer>, Uri> _processing = new Dictionary<Task<IXRefContainer>, Uri>();
             private readonly XRefMapDownloader _downloader;
 
-            public ReaderCreator(ImmutableList<Uri> uris, int maxParallelism)
+            public ReaderCreator(ImmutableList<Uri> uris, int maxParallelism, string baseFolder)
             {
                 _uris = uris;
-                _downloader = new XRefMapDownloader(maxParallelism);
+                _downloader = new XRefMapDownloader(baseFolder, maxParallelism);
             }
 
             public async Task<IXRefContainerReader> CreateAsync()
@@ -57,13 +57,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                     try
                     {
                         var container = await task;
-                        AddToDownloadList(
-                            from r in container.GetRedirections()
-                            where r != null
-                            select GetUri(uri, r.Href) into u
-                            where u != null
-                            select u);
-                        dict[uri.AbsoluteUri] = container;
+                        if (!container.IsEmbeddedRedirections)
+                        {
+                            AddToDownloadList(
+                                from r in container.GetRedirections()
+                                where r != null
+                                select GetUri(uri, r.Href) into u
+                                where u != null
+                                select u);
+                        }
+                        dict[uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.OriginalString] = container;
                     }
                     catch (Exception ex)
                     {
@@ -105,7 +108,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var uri in uris)
                 {
-                    if (_set.Add(uri.AbsoluteUri))
+                    if (uri.IsAbsoluteUri)
+                    {
+                        if (_set.Add(uri.AbsoluteUri))
+                        {
+                            var task = _downloader.DownloadAsync(uri);
+                            _processing[task] = uri;
+                        }
+                    }
+                    else if (_set.Add(uri.OriginalString))
                     {
                         var task = _downloader.DownloadAsync(uri);
                         _processing[task] = uri;
