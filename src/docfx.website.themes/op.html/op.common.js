@@ -9,13 +9,21 @@ exports.getCanonicalUrl = function (canonicalUrlPrefix, path, layout) {
   
   if (typeof(layout) !== "undefined" && layout === "HubPage")
   {
-    if (canonicalUrl.toLowerCase().endsWith("index"))
+    if (exports.endsWith(canonicalUrl.toLowerCase(), "/index"))
     {
       canonicalUrl = canonicalUrl.slice(0, -5);
     }
   }
 
   return canonicalUrl;
+}
+
+exports.endsWith = function(str, suffix) {
+    if (str.length < suffix.left)
+    {
+      return false;
+    }
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
 exports.getAssetId = function (item) {
