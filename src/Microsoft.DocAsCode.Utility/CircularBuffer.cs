@@ -70,8 +70,8 @@ namespace Microsoft.DocAsCode.Utility
             {
                 Array.Copy(_buffer, 0, buffer, startIndex + c, read - c);
             }
-            _index = (_index + c) % _buffer.Length;
-            _count -= c;
+            _index = (_index + read) % _buffer.Length;
+            _count -= read;
             return read;
         }
 
