@@ -294,7 +294,7 @@
 {{/children}}
 {{/children}}
 {{#extensionMethods.0}}
-<h3 id="{{id}}">{{__global.extensionMethods}}</h3>
+<h3 id="extensionmethods">{{__global.extensionMethods}}</h3>
 {{/extensionMethods.0}}
 {{#extensionMethods}}
 <div>
