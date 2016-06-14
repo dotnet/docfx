@@ -19,7 +19,7 @@ exports.getCanonicalUrl = function (canonicalUrlPrefix, path, layout) {
 }
 
 exports.endsWith = function(str, suffix) {
-    if (str.length < suffix.left)
+    if (str.length < suffix.length)
     {
       return false;
     }
