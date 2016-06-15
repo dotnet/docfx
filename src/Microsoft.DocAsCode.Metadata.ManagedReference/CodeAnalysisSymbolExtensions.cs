@@ -34,7 +34,7 @@
             }
             else if (members.Length > 1)
             {
-                Debug.Assert(false, "Found multiple members of specified name:\r\n" + string.Join("\r\n", members));
+                Debug.Fail($"Found multiple members of specified name:{qualifiedName}\r\n" + string.Join("\r\n", members));
             }
 
             return members.Single();
