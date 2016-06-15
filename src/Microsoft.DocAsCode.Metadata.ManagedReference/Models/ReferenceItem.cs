@@ -63,8 +63,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public void Merge(ReferenceItem other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other));
-            IsDefinition = Merge(other.IsDefinition, IsDefinition);
             Definition = Merge(other.Definition, Definition);
+            if (Definition == other.Definition)
+                IsDefinition = other.IsDefinition;
             Parent = Merge(other.Parent, Parent);
 
             if (other.Parts != null && Parts != null)
