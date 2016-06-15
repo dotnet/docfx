@@ -46,6 +46,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             {
                 result.Definition = ervm.Definition;
                 result.Name = ervm.Name;
+                result.NameWithTpye = ervm.NameWithType;
                 result.FullName = ervm.FullName;
                 result.Spec = ervm.Spec;
             }

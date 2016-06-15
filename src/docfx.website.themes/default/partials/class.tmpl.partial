@@ -23,10 +23,10 @@
 {{#inheritedMembers}}
   <div>
   {{#definition}}
-    <xref href="{{definition}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/>
+    <xref href="{{definition}}" fullName="{{fullName.0.value}}" name="{{nameWithType.0.value}}"/>
   {{/definition}}
   {{^definition}}
-    <xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/>
+    <xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{nameWithType.0.value}}"/>
   {{/definition}}
   </div>
 {{/inheritedMembers}}
@@ -247,17 +247,17 @@
 {{/syntax}}
 {{#overridden}}
 <h5 class="overrides">{{__global.overrides}}</h5>
-<div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
+<div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{nameWithType.0.value}}"/></div>
 {{/overridden}}
 {{#implements.0}}
 <h5 class="implements">{{__global.implements}}</h5>
 {{/implements.0}}
 {{#implements}}
   {{#definition}}
-    <div><xref href="{{definition}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
+    <div><xref href="{{definition}}" fullName="{{fullName.0.value}}" name="{{nameWithType.0.value}}"/></div>
   {{/definition}}
   {{^definition}}
-    <div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></div>
+    <div><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{nameWithType.0.value}}"/></div>
   {{/definition}}
 {{/implements}}
 {{#remarks}}
@@ -299,10 +299,10 @@
 {{#extensionMethods}}
 <div>
   {{#definition}}
-    <xref href="{{definition}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/>
+    <xref href="{{definition}}" fullName="{{fullName.0.value}}" name="{{nameWithType.0.value}}"/>
   {{/definition}}
   {{^definition}}
-    <xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/>
+    <xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{nameWithType.0.value}}"/>
   {{/definition}}
 </div>
 {{/extensionMethods}}

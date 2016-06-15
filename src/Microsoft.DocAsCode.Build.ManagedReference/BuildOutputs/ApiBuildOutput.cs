@@ -54,6 +54,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("name")]
         public List<ApiLanguageValuePair> Name { get; set; }
 
+        [YamlMember(Alias = "nameWithType")]
+        [JsonProperty("nameWithType")]
+        public List<ApiLanguageValuePair> NameWithType { get; set; }
+
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
         public List<ApiLanguageValuePair> FullName { get; set; }
@@ -188,6 +192,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Href = model.Href,
                 SupportedLanguages = model.SupportedLanguages,
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(model.Name, model.Names, model.SupportedLanguages),
+                NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(model.NameWithType, model.NamesWithType, model.SupportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(model.FullName, model.FullNames, model.SupportedLanguages),
                 Type = model.Type,
                 Source = model.Source,
