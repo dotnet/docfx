@@ -69,18 +69,10 @@
             Debug.Assert(pstrName != null);
             do
             {
-                var delimiter = -1;
-                for (int i = 0; i < pstrName.Length; i++)
-                {
-                    // If we see consecutive dots, the second is part of the method name
-                    // (i.e. ".ctor" or ".cctor").
-                    if (pstrName[i] == '.' && delimiter < i - 1)
-                    {
-                        delimiter = i;
-                        break;
-                    }
-                }
-
+                // If we see consecutive dots, the second is part of the method name
+                // (i.e. ".ctor" or ".cctor").
+                var delimiter = pstrName.IndexOf('.', 1);
+                
                 yield return pstrName.Substring(0, delimiter < 0 ? pstrName.Length : delimiter);
                 if (delimiter < 0)
                 {
