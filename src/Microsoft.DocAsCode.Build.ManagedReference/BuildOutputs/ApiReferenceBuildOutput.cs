@@ -54,6 +54,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("name")]
         public List<ApiLanguageValuePair> Name { get; set; }
 
+        [YamlMember(Alias = "nameWithType")]
+        [JsonProperty("nameWithType")]
+        public List<ApiLanguageValuePair> NameWithType { get; set; }
+
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
         public List<ApiLanguageValuePair> FullName { get; set; }
@@ -190,6 +194,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 IsExternal = vm.IsExternal,
                 Href = vm.Href,
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.NameInDevLangs, supportedLanguages),
+                NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(vm.NameWithType, vm.NameWithTypeInDevLangs, supportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNameInDevLangs, supportedLanguages),
                 Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.FullName, vm.Name), supportedLanguages, vm.Specs),
                 Metadata = vm.Additional,
@@ -217,6 +222,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 IsExternal = false,
                 Href = vm.Href,
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.Names, vm.SupportedLanguages),
+                NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(vm.NameWithType, vm.NamesWithType, vm.SupportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNames, vm.SupportedLanguages),
                 Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.FullName, vm.Name), vm.SupportedLanguages),
                 Source = vm.Source,

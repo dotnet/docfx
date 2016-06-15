@@ -1,6 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 exports.transform = function (model) {
-  return setArrayLength(model);
+  var vm = setArrayLength(model);
+
+  if (vm.locale && vm.bilingual_type === "hover over")
+  {
+    vm.isBilingual = true;
+  }
+
+  return vm;
 }
 
 function setArrayLength(entity)

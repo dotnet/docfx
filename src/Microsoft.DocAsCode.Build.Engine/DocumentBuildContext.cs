@@ -22,14 +22,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
 
-        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1) { }
+        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Environment.CurrentDirectory) { }
 
         public DocumentBuildContext(
             string buildOutputFolder,
             IEnumerable<FileAndType> allSourceFiles,
             ImmutableArray<string> externalReferencePackages,
             ImmutableArray<string> xrefMaps,
-            int maxParallelism)
+            int maxParallelism,
+            string baseFolder)
         {
             BuildOutputFolder = buildOutputFolder;
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
@@ -40,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 _reader = new XRefCollection(
                     from u in xrefMaps
-                    select new Uri(u)).GetReaderAsync();
+                    select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(baseFolder);
             }
         }
 

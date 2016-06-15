@@ -79,6 +79,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             HrefUpdated = true;
         }
 
+        public bool IsEmbeddedRedirections => false;
+
         public IEnumerable<XRefMapRedirection> GetRedirections() =>
             Redirections ?? Enumerable.Empty<XRefMapRedirection>();
 

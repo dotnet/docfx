@@ -310,6 +310,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region IXRefContainer Members
 
+        bool IXRefContainer.IsEmbeddedRedirections => true;
+
         IEnumerable<XRefMapRedirection> IXRefContainer.GetRedirections() => Enumerable.Empty<XRefMapRedirection>();
 
         public IXRefContainerReader GetReader()

@@ -1,0 +1,11 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+{{#isBilingual}}
+<div>
+  <script>OL=window.OL||{};OL.options=window.OL.options||{};
+  {{#translation_type}}
+  OL.options.translation_type='{{{translation_type}}}';
+  {{/translation_type}}
+  OL.options.tenant='OL';</script>
+  <script src='https://oljscdn.azureedge.net/js/popover.{{{locale}}}.min.js'></script>
+</div>
+{{/isBilingual}}

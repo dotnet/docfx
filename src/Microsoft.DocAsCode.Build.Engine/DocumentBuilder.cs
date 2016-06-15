@@ -110,7 +110,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.Files.EnumerateFiles(),
                     parameters.ExternalReferencePackages,
                     parameters.XRefMaps,
-                    parameters.MaxParallelism);
+                    parameters.MaxParallelism,
+                    parameters.Files.DefaultBaseDir);
                 Logger.LogVerbose("Start building document...");
                 List<HostService> hostServices = null;
                 try

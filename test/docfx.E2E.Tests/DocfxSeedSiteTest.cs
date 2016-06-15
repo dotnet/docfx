@@ -165,6 +165,17 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.NotEmpty(results);
             Assert.Contains(results[0].Text, title);
 
+            // check extension methods
+            results = _driver.FindElements(By.XPath("//h3[@id='extensionmethods']"));
+            if (results.Count > 0)
+            {
+                Assert.Equal(1, results.Count);
+                results = _driver.FindElements(By.XPath("//h3[@id='extensionmethods']/following-sibling::div/a"));
+                var value = results[0].Text;
+                Assert.NotEmpty(value);
+                results[0].Click();
+            }
+
             // check filter
             _driver.FindElement(By.Id("toc_filter_input")).SendKeys("tomfrombase");
             results = _driver.FindElements(By.XPath("//div[@id='toc']/ul/li/ul/li[@class='show']/a"));
