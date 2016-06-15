@@ -143,7 +143,6 @@ var pack = {
                 "common.js",
                 "ManagedReference.common.js",
                 "RestApi.common.js",
-                "ManagedReference.html.primary.js",
                 "partials/classSubtitle.tmpl.partial",
                 "partials/namespaceSubtitle.tmpl.partial",
                 "RestApi.html.primary.js",
