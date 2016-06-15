@@ -42,7 +42,11 @@ exports.transform = function (model) {
     "supported_platforms",
     "requirements",
     "wordCount",
-    "rawTitle"
+    "rawTitle",
+    "isEii",
+    "isExtensionMethod",
+    "nameWithType",
+    "extensionMethods"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, false);

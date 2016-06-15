@@ -53,7 +53,11 @@ exports.transform = function (model) {
     "thread_safety",
     "defined_in",
     "supported_platforms",
-    "requirements"
+    "requirements",
+    "isEii",
+    "isExtensionMethod",
+    "nameWithType",
+    "extensionMethods"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
