@@ -72,6 +72,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [ImportMany]
         internal IEnumerable<IDocumentProcessor> Processors { get; set; }
 
+        [ImportMany]
+        internal IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
+
         public void Build(DocumentBuildParameters parameters)
         {
             if (parameters == null)
@@ -600,7 +603,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static IEnumerable<HostService> GetInnerContexts(
+        private IEnumerable<HostService> GetInnerContexts(
             DocumentBuildParameters parameters,
             IEnumerable<IDocumentProcessor> processors,
             TemplateProcessor templateProcessor,
@@ -642,6 +645,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                        MarkdownService = markdownService,
                        Processor = item.Key,
                        Template = templateProcessor,
+                       Validators = MetadataValidators.ToImmutableList(),
                    };
         }
 
