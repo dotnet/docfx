@@ -16,6 +16,11 @@ exports.transform = function (model) {
   model.source_url = model.source_url || common.getViewSourceHref(model);
   model.asset_id = model.asset_id || opCommon.getAssetId(model);
 
+  if (model.langs && model.display_langs && model.display_langs.length > 0) {
+    model.display_langs = toLowerCase(model.display_langs);
+    model.langs = intersection(model.langs, model.display_langs);
+  }
+
   var canonicalUrl;
   if (model._op_canonicalUrlPrefix && model._path) {
     canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, model._path, model.layout);
@@ -73,4 +78,16 @@ exports.transform = function (model) {
   return {
     content: JSON.stringify(model)
   };
+}
+
+function intersection(arr1, arr2) {
+  return arr1.filter(function (item) {
+    return arr2.indexOf(item) != -1;
+  });
+}
+
+function toLowerCase(arr) {
+  return arr.map(function (item) {
+    return item.toLowerCase();
+  });
 }
