@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         private readonly Cache<Dictionary<string, string>> _commentIdToShortIdMapCache;
         private readonly Cache<StrongBox<bool>> _checkUrlCache;
 
-        private readonly string _packageDirectory;
+        private readonly string _packageFile;
         private readonly string _baseDirectory;
         private readonly string _globPattern;
         private readonly string _msdnVersion;
@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         public Program(string packageDirectory, string baseDirectory, string globPattern, string msdnVersion)
         {
-            _packageDirectory = packageDirectory;
+            _packageFile = packageDirectory;
             _baseDirectory = baseDirectory;
             _globPattern = globPattern;
             _msdnVersion = msdnVersion;
@@ -164,8 +164,8 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         private static void PrintUsage()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("{0} <outputDirectory> <baseDirectory> <globPattern> <msdnVersion>", AppDomain.CurrentDomain.FriendlyName);
-            Console.WriteLine("    outputDirectory The output directory for xref archive files.");
+            Console.WriteLine("{0} <outputFile> <baseDirectory> <globPattern> <msdnVersion>", AppDomain.CurrentDomain.FriendlyName);
+            Console.WriteLine("    outputFile      The output xref archive file.");
             Console.WriteLine("                    e.g. \"msdn\"");
             Console.WriteLine("    baseDirectory   The base directory contains develop comment xml file.");
             Console.WriteLine("                    e.g. \"c:\\\"");
@@ -178,7 +178,6 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private void PackReference()
         {
-            Directory.CreateDirectory(_packageDirectory);
             var task = PackReferenceAsync();
             PrintStatistics(task).Wait();
         }
@@ -190,85 +189,97 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             {
                 return;
             }
-            if (files.Count == 1)
+            var dir = Path.GetDirectoryName(_packageFile);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
             {
-                await PackOneReferenceAsync(files[0]);
-                return;
+                Directory.CreateDirectory(dir);
             }
-            // left is smaller files, right is bigger files.
-            var left = 0;
-            var right = files.Count - 1;
-            var leftTask = PackOneReferenceAsync(files[left]);
-            var rightTask = PackOneReferenceAsync(files[right]);
-            while (left <= right)
+            bool updateMode = File.Exists(_packageFile);
+            using (var writer = XRefArchive.Open(_packageFile, updateMode ? XRefArchiveMode.Update : XRefArchiveMode.Create))
             {
-                var completed = await Task.WhenAny(new[] { leftTask, rightTask }.Where(t => t != null));
-                await completed; // throw if any error.
-                if (completed == leftTask)
+                if (!updateMode)
                 {
-                    left++;
-                    if (left < right)
-                    {
-                        leftTask = PackOneReferenceAsync(files[left]);
-                    }
-                    else
-                    {
-                        leftTask = null;
-                    }
+                    writer.CreateMajor(new XRefMap { HrefUpdated = true, Redirections = new List<XRefMapRedirection>() });
                 }
-                else
+
+                if (files.Count == 1)
                 {
-                    right--;
-                    if (left < right)
+                    await PackOneReferenceAsync(files[0], writer);
+                    return;
+                }
+                // left is smaller files, right is bigger files.
+                var left = 0;
+                var right = files.Count - 1;
+                var leftTask = PackOneReferenceAsync(files[left], writer);
+                var rightTask = PackOneReferenceAsync(files[right], writer);
+                while (left <= right)
+                {
+                    var completed = await Task.WhenAny(new[] { leftTask, rightTask }.Where(t => t != null));
+                    await completed; // throw if any error.
+                    if (completed == leftTask)
                     {
-                        rightTask = PackOneReferenceAsync(files[right]);
+                        left++;
+                        if (left < right)
+                        {
+                            leftTask = PackOneReferenceAsync(files[left], writer);
+                        }
+                        else
+                        {
+                            leftTask = null;
+                        }
                     }
                     else
                     {
-                        rightTask = null;
+                        right--;
+                        if (left < right)
+                        {
+                            rightTask = PackOneReferenceAsync(files[right], writer);
+                        }
+                        else
+                        {
+                            rightTask = null;
+                        }
                     }
                 }
             }
         }
 
-        private async Task PackOneReferenceAsync(string file)
+        private async Task PackOneReferenceAsync(string file, XRefArchive writer)
         {
-            var currentPackage = Path.ChangeExtension(Path.GetFileName(file), "zip");
+            var currentPackage = Path.GetFileName(file);
             lock (_currentPackages)
             {
                 _currentPackages[Array.IndexOf(_currentPackages, null)] = currentPackage;
             }
-            using (var writer = XRefArchive.Open(Path.Combine(_packageDirectory, currentPackage), XRefArchiveMode.Create))
+            var entries = new List<XRefMapRedirection>();
+            await GetItems(file).ForEachAsync(pair =>
             {
-                var entries = new List<XRefMapRedirection>();
-                await GetItems(file).ForEachAsync(pair =>
+                lock (writer)
                 {
-                    lock (writer)
-                    {
-                        entries.Add(
-                            new XRefMapRedirection
-                            {
-                                UidPrefix = pair.EntryName,
-                                Href = writer.CreateMinor(
-                                    new XRefMap
-                                    {
-                                        Sorted = true,
-                                        HrefUpdated = true,
-                                        References = pair.ViewModel,
-                                    },
-                                    new[] { pair.EntryName })
-                            });
-                        _entryCount++;
-                        _apiCount += pair.ViewModel.Count;
-                    }
-                });
-                writer.CreateMajor(new XRefMap
-                {
-                    HrefUpdated = true,
-                    Redirections = (from e in entries
-                                    orderby e.UidPrefix.Length descending
-                                    select e).ToList()
-                });
+                    entries.Add(
+                        new XRefMapRedirection
+                        {
+                            UidPrefix = pair.EntryName,
+                            Href = writer.CreateMinor(
+                                new XRefMap
+                                {
+                                    Sorted = true,
+                                    HrefUpdated = true,
+                                    References = pair.ViewModel,
+                                },
+                                new[] { pair.EntryName })
+                        });
+                    _entryCount++;
+                    _apiCount += pair.ViewModel.Count;
+                }
+            });
+            lock (writer)
+            {
+                var map = writer.GetMajor();
+                map.Redirections = (from r in map.Redirections.Concat(entries)
+                                    orderby r.UidPrefix.Length descending
+                                    select r).ToList();
+                writer.UpdateMajor(map);
             }
             lock (_currentPackages)
             {
@@ -301,7 +312,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                 {
                     for (int i = 0; i < _currentPackages.Length; i++)
                     {
-                        Console.WriteLine("Package: " + (_currentPackages[i] ?? string.Empty).PadRight(Console.WindowWidth - "Package: ".Length - 1));
+                        Console.WriteLine("Packing: " + (_currentPackages[i] ?? string.Empty).PadRight(Console.WindowWidth - "Packing: ".Length - 1));
                     }
                 }
                 Console.WriteLine(
