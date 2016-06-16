@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiFilterUnitTest.cs" />
+    <Compile Include="CodeAnalysisSymbolExtensionUnitTest.cs" />
     <Compile Include="ConvertToViewModelUnitTest.cs" />
     <Compile Include="GenerateMetadataFromVBUnitTest.cs" />
     <Compile Include="GenerateMetadataFromCSUnitTest.cs" />

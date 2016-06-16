@@ -24,19 +24,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private readonly YamlModelGenerator _generator;
         private Dictionary<string, ReferenceItem> _references;
         private bool _preserveRawInlineComments;
-        private readonly IEnumerable<IMethodSymbol> _extensionMethods;
+        private readonly IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> _extensionMethods;
+        private readonly Compilation _currentCompilation;
+        private readonly CompilationReference _currentCompilationRef;
 
         #endregion
 
         #region Constructor
 
-        public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, bool preserveRawInlineComments = false, string filterConfigFile = null, IEnumerable<IMethodSymbol> extensionMethods = null)
+        public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods = null)
         {
             _generator = generator;
             Language = language;
+            _currentCompilation = compilation;
+            _currentCompilationRef = compilation.ToMetadataReference();
             _preserveRawInlineComments = preserveRawInlineComments;
             FilterVisitor = string.IsNullOrEmpty(filterConfigFile) ? new DefaultFilterVisitor() : new DefaultFilterVisitor().WithConfig(filterConfigFile).WithCache();
-            _extensionMethods = extensionMethods != null ? extensionMethods.Where(e => FilterVisitor.CanVisitApi(e)) : Enumerable.Empty<IMethodSymbol>();
+            _extensionMethods = extensionMethods != null ? extensionMethods.ToDictionary(p => p.Key, p => p.Value.Where(e => FilterVisitor.CanVisitApi(e))) : new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
         }
 
         #endregion
@@ -648,24 +652,40 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private void GenerateExtensionMethods(INamedTypeSymbol symbol, MetadataItem item)
         {
             var extensions = new List<string>();
-            foreach (var e in _extensionMethods.Where(ext => ext.Language == symbol.Language))
+            foreach (var pair in _extensionMethods.Where(p => p.Key.Language == symbol.Language))
             {
-                var reduced = e.ReduceExtensionMethod(symbol);
-                if ((object)reduced != null)
-                {
-                    // update reference
-                    // Roslyn could get the instaniated type. e.g.
-                    // <code>
-                    // public class Foo<T> {}
-                    // public class FooImple<T> : Foo<Foo<T[]>> {}
-                    // public static class Extension { public static void Play<Tool, Way>(this Foo<Tool> foo, Tool t, Way w) {} }
-                    // </code>
-                    // Roslyn generated id for the reduced extension method of FooImple<T> is like "Play``2(Foo{`0[]},``1)"
-                    var typeParamterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
-                    var methodGenericParameters = reduced.IsGenericMethod ? (from p in reduced.TypeParameters select p.Name).ToList() : EmptyListOfString;
-                    var id = AddSpecReference(reduced, typeParamterNames, methodGenericParameters);
+                ITypeSymbol retargetedSymbol = symbol;
 
-                    extensions.Add(id);
+                // get retargeted symbol for cross-assembly case.
+                if (pair.Key != _currentCompilation)
+                {
+                    var compilation = pair.Key.References.Any(r => r.Display == _currentCompilationRef.Display) ? pair.Key : pair.Key.AddReferences(new[] { _currentCompilationRef });
+                    retargetedSymbol = compilation.FindSymbol<INamedTypeSymbol>(symbol);
+                }
+                if (retargetedSymbol == null)
+                {
+                    continue;
+                }
+
+                foreach (var e in pair.Value)
+                {
+                    var reduced = e.ReduceExtensionMethod(retargetedSymbol);
+                    if ((object)reduced != null)
+                    {
+                        // update reference
+                        // Roslyn could get the instaniated type. e.g.
+                        // <code>
+                        // public class Foo<T> {}
+                        // public class FooImple<T> : Foo<Foo<T[]>> {}
+                        // public static class Extension { public static void Play<Tool, Way>(this Foo<Tool> foo, Tool t, Way w) {} }
+                        // </code>
+                        // Roslyn generated id for the reduced extension method of FooImple<T> is like "Play``2(Foo{`0[]},``1)"
+                        var typeParamterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
+                        var methodGenericParameters = reduced.IsGenericMethod ? (from p in reduced.TypeParameters select p.Name).ToList() : EmptyListOfString;
+                        var id = AddSpecReference(reduced, typeParamterNames, methodGenericParameters);
+
+                        extensions.Add(id);
+                    }
                 }
             }
             item.ExtensionMethods = extensions.Count > 0 ? extensions : null;
