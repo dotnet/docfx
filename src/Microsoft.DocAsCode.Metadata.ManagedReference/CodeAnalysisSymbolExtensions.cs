@@ -1,4 +1,7 @@
-﻿namespace Microsoft.DocAsCode.Metadata.ManagedReference
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
     using System.Collections.Generic;
@@ -31,10 +34,10 @@
         /// <returns>related symbol in the compilation</returns>
         public static ISymbol FindSymbol(this INamespaceOrTypeSymbol container, ISymbol symbol)
         {
-            return FindCore(container, GetQualifiedNameList(symbol)).SelectMany(x => x).SingleOrDefault(m => m.GetDocumentationCommentId() == symbol.GetDocumentationCommentId());
+            return FindCore(container, GetQualifiedNameList(symbol)).SingleOrDefault(m => m.GetDocumentationCommentId() == symbol.GetDocumentationCommentId());
         }
 
-        private static IEnumerable<ImmutableArray<ISymbol>> FindCore(INamespaceOrTypeSymbol container, List<string> parts)
+        private static IEnumerable<ISymbol> FindCore(INamespaceOrTypeSymbol container, List<string> parts)
         {
             var stack = new Stack<Tuple<ISymbol, int>>();
             stack.Push(Tuple.Create<ISymbol, int>(container, 0));
@@ -45,7 +48,7 @@
                 int index = pair.Item2;
                 if (index == parts.Count)
                 {
-                    yield return ImmutableArray.Create(parent);
+                    yield return parent;
                 }
                 else if (parent is INamespaceOrTypeSymbol)
                 {
