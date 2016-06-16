@@ -660,7 +660,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (pair.Key != _currentCompilation)
                 {
                     var compilation = pair.Key.References.Any(r => r.Display == _currentCompilationRef.Display) ? pair.Key : pair.Key.AddReferences(new[] { _currentCompilationRef });
-                    retargetedSymbol = compilation.GetMember<ITypeSymbol>(symbol.ToDisplayString());
+                    retargetedSymbol = compilation.FindSymbol<INamedTypeSymbol>(symbol);
                 }
                 if (retargetedSymbol == null)
                 {

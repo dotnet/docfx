@@ -9,84 +9,68 @@
 
     using Microsoft.CodeAnalysis;
 
-    public static class CodeAnalysisSymbolExtensions
+    internal static class CodeAnalysisSymbolExtensions
     {
-        private const string SystemString = "System";
-        private static Regex TemplateParameterRegex = new Regex(@"<.*>", RegexOptions.Compiled);
-
-        public static T GetMember<T>(this Compilation compilation, string qualifiedName) where T : ISymbol
+        /// <summary>
+        /// return a symbol in the assigned compilation
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="compilation">assigned compilation</param>
+        /// <param name="symbol">original symbol</param>
+        /// <returns>related symbol in the compilation</returns>
+        public static T FindSymbol<T>(this Compilation compilation, T symbol) where T : ISymbol
         {
-            return (T)compilation.GlobalNamespace.GetMember(qualifiedName);
+            return (T)(compilation).GlobalNamespace.FindSymbol(symbol);
         }
 
-        public static ISymbol GetMember(this INamespaceOrTypeSymbol container, string qualifiedName)
+        /// <summary>
+        /// return a symbol in the assigned container
+        /// </summary>
+        /// <param name="container">container</param>
+        /// <param name="symbol">symbol</param>
+        /// <returns>related symbol in the compilation</returns>
+        public static ISymbol FindSymbol(this INamespaceOrTypeSymbol container, ISymbol symbol)
         {
-            var name = TemplateParameterRegex.Replace(qualifiedName, string.Empty);
-            var index = name.IndexOf('(');
-            if (index != -1)
-            {
-                name = name.Remove(index);
-            }
-            var members = GetMembersCore(container, name);
-            if (members.Length == 0)
-            {
-                return null;
-            }
-            else if (members.Length > 1)
-            {
-                Debug.Fail($"Found multiple members of specified name:{qualifiedName}\r\n" + string.Join("\r\n", members));
-            }
-
-            return members.Single();
+            return FindCore(container, GetQualifiedNameList(symbol)).SelectMany(x => x).SingleOrDefault(m => m.GetDocumentationCommentId() == symbol.GetDocumentationCommentId());
         }
 
-        private static ImmutableArray<ISymbol> GetMembersCore(INamespaceOrTypeSymbol container, string name)
+        private static IEnumerable<ImmutableArray<ISymbol>> FindCore(INamespaceOrTypeSymbol container, List<string> parts)
         {
-            var parts = SplitQualifiedName(name).ToImmutableArray();
-
-            var lastContainer = container;
-            for (int i = 0; i < parts.Length - 1; i++)
+            var stack = new Stack<Tuple<ISymbol, int>>();
+            stack.Push(Tuple.Create<ISymbol, int>(container, 0));
+            while (stack.Count > 0)
             {
-                var nestedContainer = (INamespaceOrTypeSymbol)lastContainer.GetMember(parts[i]);
-                if (nestedContainer == null)
+                var pair = stack.Pop();
+                var parent = pair.Item1;
+                int index = pair.Item2;
+                if (index == parts.Count)
                 {
-                    // If there wasn't a nested namespace or type with that name, assume it's a
-                    // member name that includes dots (e.g. explicit interface implementation would contain its interface's name).
-                    return lastContainer.GetMembers(string.Join(".", parts.Skip(i)));
+                    yield return ImmutableArray.Create(parent);
                 }
-                else
+                else if (parent is INamespaceOrTypeSymbol)
                 {
-                    lastContainer = nestedContainer;
+                    var nestedContainers = (parent as INamespaceOrTypeSymbol).GetMembers(parts[index]);
+
+                    foreach (var c in nestedContainers)
+                    {
+                        stack.Push(Tuple.Create(c, index + 1));
+                    }
                 }
             }
-
-            return lastContainer.GetMembers(parts[parts.Length - 1]);
         }
 
-        private static IEnumerable<string> SplitQualifiedName(
-            string pstrName)
+        private static List<string> GetQualifiedNameList(ISymbol symbol)
         {
-            Debug.Assert(pstrName != null);
-            do
+            var names = new List<string>();
+            var current = symbol;
+            while ((current as INamespaceSymbol)?.IsGlobalNamespace != true)
             {
-                // If we see consecutive dots, the second is part of the method name
-                // (i.e. ".ctor" or ".cctor").
-                var delimiter = pstrName.IndexOf('.', 1);
-                
-                yield return pstrName.Substring(0, delimiter < 0 ? pstrName.Length : delimiter);
-                if (delimiter < 0)
-                {
-                    pstrName = string.Empty;
-                }
-                else if (delimiter == 6 && pstrName.StartsWith(SystemString, StringComparison.Ordinal))
-                {
-                    pstrName = SystemString;
-                }
-                else
-                {
-                    pstrName = pstrName.Substring(delimiter + 1);
-                }
-            } while (pstrName.Length > 0);
+                names.Add(current.Name);
+                current = current.ContainingSymbol;
+            }
+
+            names.Reverse();
+            return names;
         }
     }
 }
