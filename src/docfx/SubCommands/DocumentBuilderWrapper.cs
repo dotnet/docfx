@@ -64,7 +64,15 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory);
                 }
-                catch (Exception e) when (e is DocfxException || e is DocumentException)
+                catch (AggregateException agg) when (agg.InnerException is DocfxException || agg.InnerException is DocumentException)
+                {
+                    throw new DocfxException(agg.InnerException.Message);
+                }
+                catch (DocfxException e)
+                {
+                    throw new DocfxException(e.Message);
+                }
+                catch (DocumentException e)
                 {
                     throw new DocfxException(e.Message);
                 }
