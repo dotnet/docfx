@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="IResourceFileConfig.cs" />
     <Compile Include="ResourceDocumentProcessor.cs" />
+    <Compile Include="ValidateResourceMetadata.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj">

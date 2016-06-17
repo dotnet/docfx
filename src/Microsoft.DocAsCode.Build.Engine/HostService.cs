@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public IMarkdownService MarkdownService { get; set; }
 
-        public IEnumerable<IInputMetadataValidator> Validators { get; set; }
+        public ImmutableList<IInputMetadataValidator> Validators { get; set; }
 
         #endregion
 
@@ -178,11 +178,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
+        public bool HasMetadataValidation => Validators.Count > 0;
+
         public void ValidateInputMetadata(string sourceFile, ImmutableDictionary<string, object> metadata)
         {
             foreach (var v in Validators)
             {
-                v.Validate(sourceFile, metadata);
+                lock (v)
+                {
+                    v.Validate(sourceFile, metadata);
+                }
             }
         }
 

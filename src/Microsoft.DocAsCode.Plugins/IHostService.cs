@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.Plugins
         ImmutableHashSet<string> GetAllUids();
         ImmutableList<FileModel> GetModels(DocumentType? type = null);
         ImmutableList<FileModel> LookupByUid(string uid);
+
+        bool HasMetadataValidation { get; }
         void ValidateInputMetadata(string file, ImmutableDictionary<string, object> metadata);
 
         #region Log
