@@ -252,19 +252,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetListContent(navigator, "/member/typeparam", "type parameter", context);
         }
 
-        private void ResolveSeeAlsoCref(XNode node, Action<string> addReference)
+        private void ResolveSeeAlsoCref(XNode node, Action<string, string> addReference)
         {
             // Resolve <see cref> to <xref>
             ResolveCrefLink(node, "//seealso", addReference);
         }
 
-        private void ResolveSeeCref(XNode node, Action<string> addReference)
+        private void ResolveSeeCref(XNode node, Action<string, string> addReference)
         {
             // Resolve <see cref> to <xref>
             ResolveCrefLink(node, "//see", addReference);
         }
 
-        private void ResolveCrefLink(XNode node, string nodeSelector, Action<string> addReference)
+        private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference)
         {
             if (node == null || string.IsNullOrEmpty(nodeSelector)) return;
 
@@ -273,12 +273,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var nodes = node.XPathSelectElements(nodeSelector + "[@cref]").ToList();
                 foreach (var item in nodes)
                 {
-                    var value = item.Attribute("cref").Value;
+                    var cref = item.Attribute("cref").Value;
                     // Strict check is needed as value could be an invalid href, 
                     // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                    if (CommentIdRegex.IsMatch(value))
+                    if (CommentIdRegex.IsMatch(cref))
                     {
-                        value = value.Substring(2);
+                        var value = cref.Substring(2);
 
                         // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
                         if (item.Parent?.Parent != null)
@@ -289,7 +289,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                         if (addReference != null)
                         {
-                            addReference(value);
+                            addReference(value, cref);
                         }
                     }
                     else
@@ -311,7 +311,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             }
                         }
 
-                        Logger.Log(LogLevel.Warning, $"Invalid cref value \"{value}\" found in triple-slash-comments{detailedInfo}, ignored.");
+                        Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in triple-slash-comments{detailedInfo}, ignored.");
                     }
                 }
             }

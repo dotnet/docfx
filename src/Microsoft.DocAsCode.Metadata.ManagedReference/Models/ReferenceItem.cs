@@ -32,6 +32,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("parent")]
         public string Parent { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.CommentId)]
+        [JsonProperty(Constants.PropertyName.CommentId)]
+        public string CommentId { get; set; }
+
         public ReferenceItem Clone()
         {
             var result = (ReferenceItem)MemberwiseClone();
@@ -60,12 +64,35 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return source ?? target;
         }
 
+        private static string MergeCommentId(string source, string target)
+        {
+            bool sourceIsNotError = source?.StartsWith("!:") == false;
+            bool targetIsNotError = target?.StartsWith("!:") == false;
+            if (sourceIsNotError && targetIsNotError)
+            {
+                return Merge(source, target);
+            }
+            if (sourceIsNotError)
+            {
+                return source;
+            }
+            if (targetIsNotError)
+            {
+                return target;
+            }
+            return null;
+        }
+
         public void Merge(ReferenceItem other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other));
             IsDefinition = Merge(other.IsDefinition, IsDefinition);
             Definition = Merge(other.Definition, Definition);
             Parent = Merge(other.Parent, Parent);
+            if (IsDefinition == true)
+            {
+                CommentId = MergeCommentId(other.CommentId, CommentId);
+            }
 
             if (other.Parts != null && Parts != null)
             {

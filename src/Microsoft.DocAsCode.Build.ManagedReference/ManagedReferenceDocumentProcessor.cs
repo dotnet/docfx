@@ -136,7 +136,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             foreach (var reference in vm.References)
             {
-                if (reference?.IsExternal == true)
+                if (reference?.IsExternal != false)
                 {
                     var dict = YamlUtility.ConvertTo<Dictionary<string, object>>(reference);
                     if (dict != null)
