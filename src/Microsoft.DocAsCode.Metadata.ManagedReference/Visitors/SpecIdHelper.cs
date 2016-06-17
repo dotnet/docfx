@@ -28,6 +28,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 id = SpecMethodGenericParameter(methodGenericParameters, id);
             }
             id = SpecTypeGenericParameter(typeGenericParameters, id);
+            if (symbol is IMethodSymbol)
+            {
+                id = SpecExtensionMethodReceiverType(symbol as IMethodSymbol, id);
+            }
+            
             return id;
         }
 
@@ -75,6 +80,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Debug.Assert(names.Count > int.Parse(match.Value.Substring(2)));
                     return "{" + names[int.Parse(match.Value.Substring(2))] + "}";
                 });
+        }
+
+        /// <summary>
+        /// spec extension method's receiver type. 
+        /// for below overload: M(this A), M(this A, A), AddReference applies to the first method and AddSpecReference applies to the second method might get same id without prepending receiver type.
+        /// </summary>
+        /// <param name="symbol">symbol</param>
+        /// <param name="id">id</param>
+        /// <returns>id prefixed with receiver type</returns>
+        private static string SpecExtensionMethodReceiverType(IMethodSymbol symbol, string id)
+        {
+            if (symbol.ReducedFrom == null || symbol.ReceiverType == null)
+            {
+                return id;
+            }
+
+            return VisitorHelper.GetId(symbol.ReceiverType) + "." + id;
         }
     }
 }

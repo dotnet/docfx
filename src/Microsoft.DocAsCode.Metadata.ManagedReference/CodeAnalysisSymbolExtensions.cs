@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns>related symbol in the compilation</returns>
         public static ISymbol FindSymbol(this INamespaceOrTypeSymbol container, ISymbol symbol)
         {
-            return FindCore(container, GetQualifiedNameList(symbol)).SingleOrDefault(m => m.GetDocumentationCommentId() == symbol.GetDocumentationCommentId());
+            return FindCore(container, GetQualifiedNameList(symbol)).Where(m => VisitorHelper.GetCommentId(m) == VisitorHelper.GetCommentId(symbol)).FirstOrDefault();
         }
 
         private static IEnumerable<ISymbol> FindCore(INamespaceOrTypeSymbol container, List<string> parts)
