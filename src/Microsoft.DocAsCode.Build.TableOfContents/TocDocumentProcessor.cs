@@ -173,9 +173,20 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private string ResolveHref(string originalPathToFile, FileModel model, IDocumentBuildContext context)
         {
-            if (!Utility.IsSupportedRelativeHref(originalPathToFile)) return originalPathToFile;
+            if (!Utility.IsSupportedRelativeHref(originalPathToFile))
+            {
+                return originalPathToFile;
+            }
 
-            string href = context.GetFilePath(originalPathToFile);
+            var index = originalPathToFile.IndexOf('#');
+            if (index == 0)
+            {
+                throw new DocumentException($"Invalid toc link: {originalPathToFile}.");
+            }
+            string href = index == -1
+                ? context.GetFilePath(originalPathToFile)
+                : context.GetFilePath(originalPathToFile.Remove(index));
+
 
             if (href == null)
             {
@@ -184,7 +195,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             var relativePath = GetRelativePath(href, model.File);
-            return ((RelativePath)relativePath).UrlEncode();
+            var path = ((RelativePath)relativePath).UrlEncode().ToString();
+            if (index >= 0)
+            {
+                path += originalPathToFile.Substring(index);
+            }
+            return path;
         }
 
         private string GetRelativePath(string pathFromWorkingFolder, string relativeToPath)

@@ -75,12 +75,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var linkToFiles = new HashSet<string>();
             if (Utility.IsSupportedRelativeHref(item.Href))
             {
-                linkToFiles.Add(item.Href);
+                linkToFiles.Add(item.Href.Split('#')[0]);
             }
 
             if (Utility.IsSupportedRelativeHref(item.Homepage))
             {
-                linkToFiles.Add(item.Homepage);
+                linkToFiles.Add(item.Homepage.Split('#')[0]);
             }
 
             if (!string.IsNullOrEmpty(item.Uid))
