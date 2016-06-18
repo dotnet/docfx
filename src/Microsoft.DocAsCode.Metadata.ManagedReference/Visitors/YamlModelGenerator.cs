@@ -79,6 +79,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Dictionary<string, ReferenceItem> references,
             SymbolVisitorAdapter adapter)
         {
+            var rawId = VisitorHelper.GetId(symbol);
             var id = SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
             ReferenceItem reference = new ReferenceItem();
             reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
@@ -89,9 +90,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 originalSymbol = reducedFrom;
             }
-            reference.IsDefinition = (originalSymbol == symbol) && originalSymbol.IsDefinition;
+            reference.IsDefinition = (originalSymbol == symbol) && (id == rawId);
 
-            if (!reference.IsDefinition.Value)
+            if (!reference.IsDefinition.Value && rawId != null)
             {
                 reference.Definition = AddReference(originalSymbol.OriginalDefinition, references, adapter);
             }
