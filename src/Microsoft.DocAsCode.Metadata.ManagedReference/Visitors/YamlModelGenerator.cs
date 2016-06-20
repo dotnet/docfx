@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 originalSymbol = reducedFrom;
             }
-            reference.IsDefinition = (originalSymbol == symbol) && (id == rawId);
+            reference.IsDefinition = (originalSymbol == symbol) && (id == rawId) && symbol.IsDefinition;
 
             if (!reference.IsDefinition.Value && rawId != null)
             {
