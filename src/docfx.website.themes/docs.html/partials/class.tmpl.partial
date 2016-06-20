@@ -4,6 +4,16 @@
 {{>partials/summary}}
 <div class="level">
   <section class="primary">
+    <div class="alert alert-minimal syntax">
+      <h5><span class="icon icon-syntax"></span> Declaration</h5>
+        {{#syntax}}
+        <figure>
+          <pre>{{#content}}<code class="{{lang}} lang-{{lang}}">{{value}}</code>{{/content}}</pre>
+        </figure>
+        {{/syntax}}
+    </div>
+  </section>
+  <section class="secondary">
     <div class="alert alert-minimal inheritance">
       <h5><span class="icon icon-inheritance"></span> Inheritance Hierarchy</h5>
       {{#inheritance.0}}
@@ -30,8 +40,6 @@
       <p><code>None</code></p>
       {{/inheritance.0}}
     </div>
-  </section>
-  <section class="secondary">
     <div class="alert alert-minimal">
       <h5><span class="icon icon-assembly"></span> Assembly</h5>
       {{#assemblies.0}}
