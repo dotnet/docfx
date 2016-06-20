@@ -882,7 +882,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     item.References = new Dictionary<string, ReferenceItem>();
                 }
-                item.References[id] = _references[r];
+
+                // only record the id now, the value would be fed at later phase after merge
+                item.References[id] = null;
             };
         }
 
