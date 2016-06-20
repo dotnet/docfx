@@ -46,6 +46,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ReferenceItem reference = new ReferenceItem();
             reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
             reference.IsDefinition = symbol.IsDefinition;
+            reference.CommentId = VisitorHelper.GetCommentId(symbol);
             GenerateReferenceInternal(symbol, reference, adapter);
 
             if (!references.ContainsKey(id))
@@ -60,13 +61,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return id;
         }
 
-        internal string AddReference(string id, Dictionary<string, ReferenceItem> references)
+        internal string AddReference(string id, string commentId, Dictionary<string, ReferenceItem> references)
         {
             ReferenceItem reference;
             if (!references.TryGetValue(id, out reference))
             {
                 // Add id to reference dictionary
-                references[id] = new ReferenceItem();
+                references[id] = new ReferenceItem() { CommentId = commentId };
             }
 
             return id;
@@ -98,6 +99,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             reference.Parent = GetReferenceParent(originalSymbol, typeGenericParameters, methodGenericParameters, references, adapter);
+            reference.CommentId = VisitorHelper.GetCommentId(originalSymbol);
 
             if (!references.ContainsKey(id))
             {

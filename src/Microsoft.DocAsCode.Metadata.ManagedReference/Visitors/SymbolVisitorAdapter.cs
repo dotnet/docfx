@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 foreach (var exceptions in item.Exceptions)
                 {
-                    AddReference(exceptions.Type);
+                    AddReference(exceptions.Type, exceptions.CommentId);
                 }
             }
 
@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 foreach (var i in item.Sees)
                 {
-                    AddReference(i.Type);
+                    AddReference(i.Type, i.CommentId);
                 }
             }
 
@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 foreach (var i in item.SeeAlsos)
                 {
-                    AddReference(i.Type);
+                    AddReference(i.Type, i.CommentId);
                 }
             }
 
@@ -413,9 +413,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return _generator.AddReference(symbol, _references, this);
         }
 
-        public string AddReference(string id)
+        public string AddReference(string id, string commentId)
         {
-            return _generator.AddReference(id, _references);
+            return _generator.AddReference(id, commentId, _references);
         }
 
         public string AddSpecReference(
@@ -873,16 +873,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return result;
         }
 
-        private Action<string> GetAddReferenceDelegate(MetadataItem item)
+        private Action<string, string> GetAddReferenceDelegate(MetadataItem item)
         {
-            return id =>
+            return (id, commentId) =>
             {
-                AddReference(id);
+                var r = AddReference(id, commentId);
                 if (item.References == null)
                 {
                     item.References = new Dictionary<string, ReferenceItem>();
                 }
-                item.References[id] = null;
+                item.References[id] = _references[r];
             };
         }
 
