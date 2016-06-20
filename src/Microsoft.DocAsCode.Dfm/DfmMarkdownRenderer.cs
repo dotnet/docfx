@@ -20,8 +20,8 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmIncludeBlockToken token, MarkdownBlockContext context)
         {
             return string.IsNullOrEmpty(token.Title)
-                    ? $"[!INCLUDE [{token.Name}]({token.Src})]\n"
-                    : $"[!INCLUDE [{token.Name}]({token.Src} \"{token.Title}\")]\n";
+                    ? $"[!INCLUDE [{token.Name}]({token.Src})]\n\n"
+                    : $"[!INCLUDE [{token.Name}]({token.Src} \"{token.Title}\")]\n\n";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmNoteBlockToken token, MarkdownBlockContext context)

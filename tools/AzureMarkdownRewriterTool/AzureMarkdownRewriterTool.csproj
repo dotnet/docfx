@@ -29,6 +29,7 @@
   <ItemGroup>
     <Compile Include="AzureTransformArguments.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RewriterToolArguments.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
