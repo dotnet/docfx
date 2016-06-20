@@ -81,14 +81,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     var filePath = Path.Combine(file.BaseDir, file.File);
                     var displayLocalPath = filePath.ToDisplayPath();
 
-                    object rootRepoInfo;
-                    if (metadata.TryGetValue("newFileRepository", out rootRepoInfo))
+                    object baseDirectory;
+                    if (metadata.TryGetValue("baseRepositoryDirectory", out baseDirectory))
                     {
-                        var info = rootRepoInfo as GitDetail;
-                        if (info != null)
-                        {
-                            displayLocalPath = PathUtility.MakeRelativePath(info.LocalWorkingDirectory, filePath);
-                        }
+                        displayLocalPath = PathUtility.MakeRelativePath((string)baseDirectory, filePath);
                     }
 
                     return new FileModel(file, page, serializer: new BinaryFormatter())
