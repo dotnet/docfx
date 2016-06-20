@@ -2,6 +2,10 @@ Version Notes (Current Version: v2.1)
 =======================================
 v2.1(Pre-Release)
 -----------
+1.  Support for xref zip file in relative path.
+2.  Support anchor in toc file.
+3.  Support plug-in for validating markdown input metadata.
+4.  Add output file md5 hashes.
 
 v2.0
 -----------
