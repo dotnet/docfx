@@ -170,6 +170,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var result = new ReferenceViewModel
             {
                 Uid = model.Key,
+                CommentId = model.Value.CommentId,
                 Parent = model.Value.Parent,
                 Definition = model.Value.Definition,
             };

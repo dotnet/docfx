@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         }
 
         #region Internal For UT
-        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null, IEnumerable<IMethodSymbol> extensionMethods = null)
+        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods = null)
         {
             if (compilation == null)
             {
@@ -95,11 +95,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             SymbolVisitorAdapter visitor;
             if (compilation.Language == "Visual Basic")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, preserveRawInlineComments, filterConfigFile, extensionMethods);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, compilation, preserveRawInlineComments, filterConfigFile, extensionMethods);
             }
             else if (compilation.Language == "C#")
             {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, preserveRawInlineComments, filterConfigFile, extensionMethods);
+                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, compilation, preserveRawInlineComments, filterConfigFile, extensionMethods);
             }
             else
             {
@@ -112,19 +112,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return item;
         }
 
-        internal static IEnumerable<IMethodSymbol> GetAllExtensionMethods(IEnumerable<Compilation> compilations)
+        internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethods(IEnumerable<Compilation> compilations)
         {
-            List<INamespaceSymbol> namespaces = new List<INamespaceSymbol>();
+            var methods = new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
             foreach (var compilation in compilations)
             {
                 if (compilation.Assembly.MightContainExtensionMethods)
                 {
-                    namespaces.AddRange(GetAllNamespaceMembers(compilation.Assembly));
+                    var extensions = (from n in GetAllNamespaceMembers(compilation.Assembly).Distinct()
+                                      from m in GetExtensionMethodPerNamespace(n)
+                                      select m).ToList();
+                    if (extensions.Count > 0)
+                    {
+                        methods[compilation] = extensions;
+                    }
                 }
             }
-            return from n in namespaces.Distinct()
-                   from m in GetExtensionMethodPerNamespace(n)
-                   select m;
+            return methods;
         }
 
         #endregion
@@ -357,7 +361,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
             ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
-            var extensionMethods = GetAllExtensionMethods(compilationCache.Values).ToList();
+            var extensionMethods = GetAllExtensionMethods(compilationCache.Values);
 
             foreach (var project in projectCache)
             {
@@ -468,7 +472,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
 
-        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, Compilation compilation, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IEnumerable<IMethodSymbol> extensionMethods)
+        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, Compilation compilation, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
         {
             var projectFilePath = project.FilePath;
             var k = documentCache.GetDocuments(projectFilePath);
@@ -487,7 +491,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 extensionMethods);
         }
 
-        private static Task<MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IEnumerable<IMethodSymbol> extensionMethods)
+        private static Task<MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
         {
             if (files == null || !files.Any()) return null;
             return GetMetadataFromProjectLevelCacheAsync(
@@ -510,7 +514,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             string outputFolder,
             bool preserveRawInlineComments,
             string filterConfigFile,
-            IEnumerable<IMethodSymbol> extensionMethods)
+            IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
         {
             DateTime triggeredTime = DateTime.UtcNow;
             var projectLevelCache = ProjectLevelCache.Get(inputKey);

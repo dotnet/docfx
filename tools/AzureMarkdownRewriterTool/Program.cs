@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
     {
         public static IReadOnlyList<string> SystemMarkdownFileName = new List<string> { "TOC.md" };
 
+        public readonly bool _isMigration;
         public readonly string _srcDirectory;
         public readonly string _destDirectory;
         public readonly Dictionary<string, AzureFileInfo> _azureMarkdownFileInfoMapping;
@@ -41,18 +42,18 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     return 1;
                 }
 
-                var azureTransformArgumentsList = ParseAzureTransformArgumentsFile(args[0], args[1], args[2]);
+                var rewriterToolArguments = ParseRewriterToolArgumentsFile(args[0], args[1], args[2]);
                 var azureVideoInfoMapping = ParseAzureVideoFile(args[3]);
-                if (azureTransformArgumentsList == null)
+                if (rewriterToolArguments == null)
                 {
                     return 1;
                 }
 
-                var azureFileInfo = GenerateAzureFileInfo(args[0], azureTransformArgumentsList, args[2]);
+                var azureFileInfo = GenerateAzureFileInfo(args[0], rewriterToolArguments, args[2]);
 
-                foreach (var azureTransformArguments in azureTransformArgumentsList)
+                foreach (var azureTransformArguments in rewriterToolArguments.AzureTransformArgumentsList)
                 {
-                    var p = new Program(azureTransformArguments.SourceDir, azureTransformArguments.DestDir, azureFileInfo.Item1, azureFileInfo.Item2, azureVideoInfoMapping);
+                    var p = new Program(rewriterToolArguments.IsMigration, azureTransformArguments.SourceDir, azureTransformArguments.DestDir, azureFileInfo.Item1, azureFileInfo.Item2, azureVideoInfoMapping);
                     if (!p.CheckParameters())
                     {
                         continue;
@@ -82,7 +83,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             Console.WriteLine("\t{0} <repositoryRoot> <AzureTransformArgumentsFilePath> <azureDocumentUriPrefix> [<azureVideoMappingFilePath>]", AppDomain.CurrentDomain.FriendlyName);
         }
 
-        private static List<AzureTransformArguments> ParseAzureTransformArgumentsFile(string repositoryRoot, string argsFilePath, string azureDocumentUriPrefix)
+        private static RewriterToolArguments ParseRewriterToolArgumentsFile(string repositoryRoot, string argsFilePath, string azureDocumentUriPrefix)
         {
             if (!File.Exists(argsFilePath) || !Directory.Exists(repositoryRoot))
             {
@@ -99,12 +100,20 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             var argsContent = File.ReadAllText(argsFilePath);
             try
             {
-                return JsonConvert.DeserializeObject<List<AzureTransformArguments>>(argsContent);
+                return JsonConvert.DeserializeObject<RewriterToolArguments>(argsContent);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine($"Azure args json deserialize failed. Won't do transform step. args: {argsContent}. Ex: {e}");
-                return null;
+                try
+                {
+                    var azureTransformArgumentsList = JsonConvert.DeserializeObject<List<AzureTransformArguments>>(argsContent);
+                    return new RewriterToolArguments(azureTransformArgumentsList, false);
+                }
+                catch (Exception e2)
+                {
+                    Console.WriteLine($"Azure args json deserialize failed. Won't do transform step. args: {argsContent}. Ex: {e2}");
+                    return null;
+                }
             }
         }
 
@@ -134,7 +143,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             }
         }
 
-        private static Tuple<Dictionary<string, AzureFileInfo>, Dictionary<string, AzureFileInfo>> GenerateAzureFileInfo(string repositoryRoot, List<AzureTransformArguments> azureTransformArgumentsList, string azureDocumentUriPrefix)
+        private static Tuple<Dictionary<string, AzureFileInfo>, Dictionary<string, AzureFileInfo>> GenerateAzureFileInfo(string repositoryRoot, RewriterToolArguments rewriterToolArguments, string azureDocumentUriPrefix)
         {
             var azureMarkdownFileInfoMapping = new ConcurrentDictionary<string, AzureFileInfo>();
             var azureResourceFileInfoMapping = new ConcurrentDictionary<string, AzureFileInfo>();
@@ -147,13 +156,13 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 {
                     var relativePath = PathUtility.MakeRelativePath(repositoryRoot, file);
                     var isMarkdownFile = Path.GetExtension(relativePath).Equals(MarkdownExtension, StringComparison.OrdinalIgnoreCase);
-                    if (IsIgnoreFile(relativePath))
+                    if (IsIgnoreFile(relativePath, rewriterToolArguments.IsMigration))
                     {
                         return;
                     }
 
                     bool isSucceed = true;
-                    var azureTransformArguments = azureTransformArgumentsList.FirstOrDefault(a => PathUtility.IsPathUnderSpecificFolder(file, a.SourceDir));
+                    var azureTransformArguments = rewriterToolArguments.AzureTransformArgumentsList.FirstOrDefault(a => PathUtility.IsPathUnderSpecificFolder(file, a.SourceDir));
                     var fileName = Path.GetFileName(file);
 
                     if (azureTransformArguments == null)
@@ -204,7 +213,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             return Tuple.Create(azureMarkdownFileInfoMapping.ToDictionary(m => m.Key, m => m.Value), azureResourceFileInfoMapping.ToDictionary(m => m.Key, m => m.Value));
         }
 
-        private static bool IsIgnoreFile(string relativePath)
+        private static bool IsIgnoreFile(string relativePath, bool isMigration)
         {
             if (relativePath.StartsWith(".") || relativePath.StartsWith("_site") || relativePath.StartsWith("log")
                 || Path.GetFileName(relativePath).Equals("TOC.md", StringComparison.OrdinalIgnoreCase))
@@ -213,21 +222,26 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             }
 
             // Markdown file under includes file should be ignore. The resource file should also be calculated
-            if (relativePath.StartsWith("includes") && Path.GetExtension(relativePath).Equals(MarkdownExtension, StringComparison.OrdinalIgnoreCase))
+            if (!isMigration)
             {
-                return true;
+                if (relativePath.StartsWith("includes") && Path.GetExtension(relativePath).Equals(MarkdownExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
             }
 
             return false;
         }
 
         public Program(
+            bool isMigration,
             string srcDirectory,
             string destDirectory,
             Dictionary<string, AzureFileInfo> azureMarkdownFileInfoMapping,
             Dictionary<string, AzureFileInfo> azureResourceFileInfoMapping,
             Dictionary<string, AzureVideoInfo> azureVideoInfoMapping)
         {
+            _isMigration = isMigration;
             _srcDirectory = srcDirectory;
             _destDirectory = destDirectory;
             _azureMarkdownFileInfoMapping = azureMarkdownFileInfoMapping;
@@ -272,7 +286,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                         var relativePathToSourceFolder = fileInfo.FullName.Substring(_srcDirectory.Length + 1);
                         try
                         {
-                            if (IsIgnoreFile(relativePathToSourceFolder))
+                            if (IsIgnoreFile(relativePathToSourceFolder, _isMigration))
                             {
                                 return;
                             }
@@ -282,7 +296,15 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                             {
                                 Console.WriteLine("Convert article {0}", fileInfo.FullName);
                                 var source = File.ReadAllText(fileInfo.FullName);
-                                var result = AzureMarked.Markup(source, fileInfo.FullName, _azureMarkdownFileInfoMapping, _azureVideoInfoMapping, _azureResourceFileInfoMapping);
+                                string result;
+                                if (_isMigration)
+                                {
+                                    result = AzureMigrationMarked.Markup(source, fileInfo.FullName, _azureMarkdownFileInfoMapping, _azureVideoInfoMapping, _azureResourceFileInfoMapping);
+                                }
+                                else
+                                {
+                                    result = AzureMarked.Markup(source, fileInfo.FullName, _azureMarkdownFileInfoMapping, _azureVideoInfoMapping, _azureResourceFileInfoMapping);
+                                }
                                 File.WriteAllText(outputPath, result);
                             }
                             else

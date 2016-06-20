@@ -6,10 +6,11 @@ exports.getCanonicalUrl = function (canonicalUrlPrefix, path, layout) {
   }
 
   var canonicalUrl = canonicalUrlPrefix + "/" + exports.removeExtension(path);
-  
+  canonicalUrl = canonicalUrl.toLowerCase();
+
   if (typeof(layout) !== "undefined" && layout === "HubPage")
   {
-    if (exports.endsWith(canonicalUrl.toLowerCase(), "/index"))
+    if (exports.endsWith(canonicalUrl, "/index"))
     {
       canonicalUrl = canonicalUrl.slice(0, -5);
     }

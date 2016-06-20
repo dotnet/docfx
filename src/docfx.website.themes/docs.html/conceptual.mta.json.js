@@ -9,6 +9,7 @@ exports.transform = function (model) {
   if (model._op_canonicalUrlPrefix && model._path) {
     canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, model._path, model.layout);
   }
+  model.canonical_url = canonicalUrl;
 
   model.toc_asset_id = model.toc_asset_id || model._tocPath;
   model.toc_rel = model._tocRel;

@@ -7,9 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
-
-    using Newtonsoft.Json.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -59,6 +57,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 DocumentType = item.DocumentType,
                 OriginalFile = item.LocalPathFromRepoRoot,
                 OutputFiles = new Dictionary<string, string>(),
+                Hashes = new Dictionary<string, string>(),
                 Metadata = item.Metadata,
             };
             var outputDirectory = _settings.OutputFolder ?? Environment.CurrentDirectory;
@@ -139,11 +138,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     else
                     {
-                        TransformDocument(result, extension, _context, outputPath, outputFile, missingUids);
+                        TransformDocument(result, extension, _context, outputPath, outputFile, missingUids, manifestItem);
                         Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.LocalPathFromRepoRoot}\" to \"{outputPath}\".");
                     }
-
-                    manifestItem.OutputFiles.Add(extension, outputFile);
                 }
             }
 
@@ -202,38 +199,52 @@ namespace Microsoft.DocAsCode.Build.Engine
             return modelPath.ToDisplayPath();
         }
 
-        private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string outputPath, string relativeOutputPath, HashSet<string> missingUids)
+        private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string outputPath, string relativeOutputPath, HashSet<string> missingUids, TemplateManifestItem manifestItem)
         {
-            if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
+            var subDirectory = Path.GetDirectoryName(outputPath);
+            if (!string.IsNullOrEmpty(subDirectory) &&
+                !Directory.Exists(subDirectory))
             {
-                try
+                Directory.CreateDirectory(subDirectory);
+            }
+
+            Task<byte[]> hashTask;
+            using (var stream = File.Create(outputPath).WithMd5Hash(out hashTask))
+            using (var sw = new StreamWriter(stream))
+            {
+                if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
                 {
-                    TranformHtml(context, result, relativeOutputPath, outputPath);
-                }
-                catch (AggregateException e)
-                {
-                    e.Handle(s =>
+                    try
                     {
-                        var xrefExcetpion = s as CrossReferenceNotResolvedException;
-                        if (xrefExcetpion != null)
+                        TranformHtml(context, result, relativeOutputPath, sw);
+                    }
+                    catch (AggregateException e)
+                    {
+                        e.Handle(s =>
                         {
-                            missingUids.Add(xrefExcetpion.UidRawText);
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    });
+                            var xrefExcetpion = s as CrossReferenceNotResolvedException;
+                            if (xrefExcetpion != null)
+                            {
+                                missingUids.Add(xrefExcetpion.UidRawText);
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    sw.Write(result);
                 }
             }
-            else
-            {
-                File.WriteAllText(outputPath, result, Encoding.UTF8);
-            }
+            manifestItem.Hashes.Add(extension, Convert.ToBase64String(hashTask.Result));
+            manifestItem.OutputFiles.Add(extension, relativeOutputPath);
         }
 
-        private static void TranformHtml(IDocumentBuildContext context, string transformed, string relativeModelPath, string outputPath)
+        private static void TranformHtml(IDocumentBuildContext context, string transformed, string relativeModelPath, StreamWriter outputWriter)
         {
             // Update HREF and XREF
             HtmlAgilityPack.HtmlDocument html = new HtmlAgilityPack.HtmlDocument();
@@ -252,7 +263,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var xrefNodes = html.DocumentNode.SelectNodes("//xref/@href");
             if (xrefNodes != null)
             {
-                foreach(var xref in xrefNodes)
+                foreach (var xref in xrefNodes)
                 {
                     try
                     {
@@ -281,10 +292,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            // Save with extension changed
-            var subDirectory = Path.GetDirectoryName(outputPath);
-            if (!string.IsNullOrEmpty(subDirectory) && !Directory.Exists(subDirectory)) Directory.CreateDirectory(subDirectory);
-            html.Save(outputPath, Encoding.UTF8);
+            html.Save(outputWriter);
             if (xrefExceptions.Count > 0)
             {
                 throw new AggregateException(xrefExceptions);

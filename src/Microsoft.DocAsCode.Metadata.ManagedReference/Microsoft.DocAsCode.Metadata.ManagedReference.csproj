@@ -48,6 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeAnalysisSymbolExtensions.cs" />
     <Compile Include="Exceptions\ExtractMetadataException.cs" />
     <Compile Include="ExtractMetadata\SupportedSourceType.cs" />
     <Compile Include="ExtractMetadata\CompilationUtility.cs" />

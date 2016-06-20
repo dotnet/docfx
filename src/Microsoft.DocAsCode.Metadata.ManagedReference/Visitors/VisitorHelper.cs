@@ -51,8 +51,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             string str = symbol.GetDocumentationCommentId();
             if (string.IsNullOrEmpty(str))
             {
-                Debug.Fail("Cannot get documentation comment id");
-                return symbol.MetadataName;
+                return null;
             }
 
             return str.ToString().Substring(2);

@@ -19,6 +19,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Uid)]
         public string Uid { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.CommentId)]
+        [JsonProperty(Constants.PropertyName.CommentId)]
+        public string CommentId { get; set; }
+
         [YamlMember(Alias = "parent")]
         [JsonProperty("parent")]
         public string Parent { get; set; }

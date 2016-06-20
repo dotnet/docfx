@@ -244,6 +244,11 @@ namespace Microsoft.DocAsCode.SubCommands
         private static void MergeNewFileRepositoryToConfig(BuildJsonConfig config)
         {
             GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
+            if (repoInfoFromBaseDirectory?.LocalWorkingDirectory != null)
+            {
+                config.GlobalMetadata["baseRepositoryDirectory"] = repoInfoFromBaseDirectory.LocalWorkingDirectory;
+            }
+
             if (repoInfoFromBaseDirectory != null && repoInfoFromBaseDirectory.RelativePath != null)
             {
                 repoInfoFromBaseDirectory.RelativePath = Path.Combine(repoInfoFromBaseDirectory.RelativePath, DocAsCode.Constants.DefaultOverwriteFolderName);

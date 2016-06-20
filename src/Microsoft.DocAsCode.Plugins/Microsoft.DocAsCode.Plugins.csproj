@@ -19,6 +19,7 @@
     <Compile Include="DocumentExceptionExtensions.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FileAndType.cs" />
+    <Compile Include="IInputMetadataValidator.cs" />
     <Compile Include="IMarkdownServiceProvider.cs" />
     <Compile Include="IMarkdownService.cs" />
     <Compile Include="MarkdownServiceParameters.cs" />

@@ -27,6 +27,7 @@
     <Compile Include="Swagger\SwaggerJsonParser.cs" />
     <Compile Include="Swagger\SwaggerModel.cs" />
     <Compile Include="RestApiDocumentProcessor.cs" />
+    <Compile Include="ValidateRestApiDocumentMetadata.cs" />
     <Compile Include="ViewModels\RestApiItemViewModelBase.cs" />
     <Compile Include="ViewModels\RestApiRootItemViewModel.cs" />
     <Compile Include="ViewModels\RestApiChildItemViewModel.cs" />

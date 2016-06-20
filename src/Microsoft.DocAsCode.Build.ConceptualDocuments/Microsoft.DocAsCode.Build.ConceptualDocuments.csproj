@@ -28,6 +28,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ValidateConceptualDocumentMetadata.cs" />
     <Compile Include="BuildConceptualDocument.cs" />
     <Compile Include="ConceptualDocumentProcessor.cs" />
     <Compile Include="CountWord.cs" />
