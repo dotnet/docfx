@@ -18,6 +18,7 @@ exports.transform = function (model) {
   if (model._op_canonicalUrlPrefix && model._path) {
     canonicalUrl = opCommon.getCanonicalUrl(model._op_canonicalUrlPrefix, model._path, model.layout);
   }
+  model.canonical_url = canonicalUrl;
 
   // Clean up unused predefined properties
   var resetKeys = [
