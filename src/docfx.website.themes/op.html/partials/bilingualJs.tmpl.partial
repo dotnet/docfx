@@ -7,5 +7,6 @@
   {{/translation_type}}
   OL.options.tenant='OL';</script>
   <script src='https://oljscdn.azureedge.net/js/popover.{{{locale}}}.min.js'></script>
+  <link rel='stylesheet' type='text/css' href='https://oljscdn.azureedge.net/popover.css' />
 </div>
 {{/isBilingual}}
