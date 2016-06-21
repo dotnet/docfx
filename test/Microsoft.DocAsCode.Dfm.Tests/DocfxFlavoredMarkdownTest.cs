@@ -610,7 +610,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             mrb.AddValidators(HtmlMarkdownTokenValidatorProvider.ContractName);
             builder.Rewriter = mrb.Create();
 
-            var engine = builder.CreateDfmEngine(new DfmRenderer(null));
+            var engine = builder.CreateDfmEngine(new DfmRenderer());
             var listener = new TestLoggerListener("test!!!!" + "." + MarkdownValidatorBuilder.MarkdownValidatePhaseName);
             Logger.RegisterListener(listener);
             string result;

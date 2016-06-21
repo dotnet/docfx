@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
     using System.Linq;

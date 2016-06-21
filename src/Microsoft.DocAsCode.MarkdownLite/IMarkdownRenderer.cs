@@ -22,10 +22,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// Get the <see cref="Options"/>.
         /// </summary>
         Options Options { get; }
-        /// <summary>
-        /// Get the tokens for localization
-        /// </summary>
-        IDictionary<string, object> Tokens { get; }
 
         /// <summary>
         /// Render a token.

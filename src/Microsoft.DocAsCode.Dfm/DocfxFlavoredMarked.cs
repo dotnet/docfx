@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public static string Markup(string src, string path = null, ImmutableDictionary<string, string> tokens = null)
         {
-            var engine = CreateBuilder(null).CreateDfmEngine(new DfmRenderer(tokens ?? new Dictionary<string, string>().ToImmutableDictionary()));
+            var engine = CreateBuilder(null).CreateDfmEngine(new DfmRenderer(tokens));
             return engine.Markup(src, path);
         }
     }

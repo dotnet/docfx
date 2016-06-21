@@ -28,8 +28,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public Dictionary<string, LinkObj> Links { get; }
 
-        public IDictionary<string, object> Tokens { get; }
-
         public StringBuffer Render(IMarkdownToken token)
         {
             try
