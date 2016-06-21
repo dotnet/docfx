@@ -94,12 +94,11 @@ namespace Microsoft.DocAsCode.Dfm
                 else if (splitToken.Token is DfmNoteBlockToken)
                 {
                     var noteToken = (DfmNoteBlockToken)splitToken.Token;
-                    
                     content += "<div class=\"";
                     content += noteToken.NoteType.ToUpper();
                     content += "\">";
                     string heading;
-                    if (_tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
+                    if (_tokens != null && _tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
                     {
                         content += heading;
                     }
