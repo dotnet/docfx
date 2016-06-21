@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Composition;
 
     using Microsoft.DocAsCode.Dfm;
@@ -21,14 +21,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             private readonly DfmEngineBuilder _builder;
 
-            public DfmService(string baseDir, IDictionary<string, object> tokens)
+            private readonly ImmutableDictionary<string, string> _tokens;
+
+            public DfmService(string baseDir, ImmutableDictionary<string, string> tokens)
             {
-                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, tokens);
+                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir);
+                _tokens = tokens;
             }
 
             public string Markup(string src, string path)
             {
-                return _builder.CreateDfmEngine(DocfxFlavoredMarked.Renderer).Markup(src, path);
+                return _builder.CreateDfmEngine(new DfmRenderer(_tokens)).Markup(src, path);
             }
         }
     }

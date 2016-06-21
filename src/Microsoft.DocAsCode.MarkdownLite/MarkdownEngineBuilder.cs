@@ -37,11 +37,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public IMarkdownTokenRewriter Rewriter { get; set; }
 
         /// <summary>
-        /// The tokens for localization.
-        /// </summary>
-        public IDictionary<string, object> Tokens { get; set; }
-
-        /// <summary>
         /// Create markdown paring context.
         /// </summary>
         /// <returns>a instance of <see cref="IMarkdownContext"/></returns>
@@ -57,7 +52,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <returns>an instance of <see cref="IMarkdownEngine"/></returns>
         public virtual IMarkdownEngine CreateEngine(object renderer)
         {
-            return new MarkdownEngine(CreateParseContext(), Rewriter, renderer, Options, Tokens);
+            return new MarkdownEngine(CreateParseContext(), Rewriter, renderer, Options);
         }
     }
 }

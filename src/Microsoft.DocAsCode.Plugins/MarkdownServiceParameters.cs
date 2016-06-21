@@ -4,11 +4,12 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     public class MarkdownServiceParameters
     {
         public string BasePath { get; set; }
         public IReadOnlyDictionary<string, object> Extensions { get; set; }
-        public IDictionary<string, object> Tokens { get; set; }
+        public ImmutableDictionary<string, string> Tokens { get; set; }
     }
 }

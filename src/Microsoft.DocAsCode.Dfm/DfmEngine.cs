@@ -14,8 +14,8 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmEngine : MarkdownEngine
     {
-        public DfmEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options, IDictionary<string, object> tokens)
-            : base(context, rewriter, renderer, options, tokens, new Dictionary<string, LinkObj>())
+        public DfmEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options)
+            : base(context, rewriter, renderer, options, new Dictionary<string, LinkObj>())
         {
         }
 

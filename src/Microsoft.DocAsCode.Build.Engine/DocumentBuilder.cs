@@ -120,7 +120,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
-                        var markdownService = CreateMarkdownService(parameters, processor.DefaultGlobalVariables);
+                        var markdownService = CreateMarkdownService(parameters, processor.Tokens.ToImmutableDictionary());
                         hostServices = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
                         var manifest = new List<ManifestItemWithContext>();
                         foreach (var hostService in hostServices)
@@ -143,7 +143,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         ApplySystemMetadata(manifest, context);
 
                         // Register global variables after href are all updated
-                        IDictionary<string, object> globalVariables = FeedGlobalVariables(processor.DefaultGlobalVariables, manifest, context);
+                        IDictionary<string, object> globalVariables = FeedGlobalVariables(processor.Tokens, manifest, context);
 
                         // processor to add global variable to the model
                         var generatedManifest = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables);
@@ -306,13 +306,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             });
         }
 
-        private IDictionary<string, object> FeedGlobalVariables(IDictionary<string, object> initialGlobalVariables, List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
+        private IDictionary<string, object> FeedGlobalVariables(IDictionary<string, string> initialGlobalVariables, List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
         {
             Logger.LogVerbose($"Feeding global variables from template...");
 
             // E.g. we can set TOC model to be globally shared by every data model
             // Make sure it is single thread
-            IDictionary<string, object> metadata = initialGlobalVariables == null ? new Dictionary<string, object>() : new Dictionary<string, object>(initialGlobalVariables);
+            IDictionary<string, object> metadata = initialGlobalVariables == null ?
+                new Dictionary<string, object>() :
+                initialGlobalVariables.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
             var sharedObjects = new Dictionary<string, object>();
             manifest.RunAll(m =>
             {
@@ -669,7 +671,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Logger.LogInfo("XRef map exported.");
         }
 
-        private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters, IDictionary<string, object> tokens)
+        private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters, ImmutableDictionary<string, string> tokens)
         {
             var provider = (IMarkdownServiceProvider)_container.GetExport(
                 typeof(IMarkdownServiceProvider),

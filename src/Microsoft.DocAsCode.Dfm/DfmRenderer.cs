@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -12,9 +13,15 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmRenderer : HtmlRenderer
     {
+        private readonly ImmutableDictionary<string, string> _tokens;
         private static readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
+
+        public DfmRenderer(ImmutableDictionary<string, string> tokens)
+        {
+            _tokens = tokens;
+        }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
@@ -91,8 +98,8 @@ namespace Microsoft.DocAsCode.Dfm
                     content += "<div class=\"";
                     content += noteToken.NoteType.ToUpper();
                     content += "\">";
-                    object heading;
-                    if (renderer.Tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
+                    string heading;
+                    if (_tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
                     {
                         content += heading;
                     }

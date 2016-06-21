@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceCollection(), 1);
 
-        public IDictionary<string, object> DefaultGlobalVariables { get; }
+        public IDictionary<string, string> Tokens { get; }
 
         /// <summary>
         /// TemplateName can be either file or folder
@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _resourceProvider = resourceProvider;
             _templateCollection = new TemplateCollection(resourceProvider, maxParallelism);
-            DefaultGlobalVariables = LoadTokenJson(resourceProvider) ?? new Dictionary<string, object>();
+            Tokens = LoadTokenJson(resourceProvider) ?? new Dictionary<string, string>();
         }
 
         public TemplateBundle GetTemplateBundle(string documentType)
@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (globals == null)
                 {
-                    globals = DefaultGlobalVariables;
+                    globals = Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
                 }
 
                 var documentTypes = manifest.Select(s => s.DocumentType).Distinct();
@@ -185,7 +185,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return manifest.Where(m => !itemsToRemove.Contains(m.OriginalFile)).ToList();
         }
 
-        private static IDictionary<string, object> LoadTokenJson(ResourceCollection resource)
+        private static IDictionary<string, string> LoadTokenJson(ResourceCollection resource)
         {
             var tokenJson = resource.GetResource("token.json");
             if (string.IsNullOrEmpty(tokenJson))
@@ -199,7 +199,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            return JsonUtility.FromJsonString<Dictionary<string, object>>(tokenJson);
+            return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
         private static void SaveManifest(List<TemplateManifestItem> templateManifest, string outputDirectory, IDocumentBuildContext context)

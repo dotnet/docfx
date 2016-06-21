@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
 {
     using System.Collections.Generic;
     using System.Composition.Hosting;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Xml;
@@ -274,11 +275,11 @@ this is also warning</p>
 ";
             var marked = DocfxFlavoredMarked.Markup(source,
                 null,
-                new Dictionary<string, object>
+                new Dictionary<string, string>
                 {
                     {"note", "<h5>注意</h5>"},
                     {"warning", "<h5>警告</h5>" }
-                });
+                }.ToImmutableDictionary());
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
@@ -587,7 +588,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
-            var builder = new DfmEngineBuilder(new Options() { Mangle = false }, new Dictionary<string, object>());
+            var builder = new DfmEngineBuilder(new Options() { Mangle = false });
             var mrb = new MarkdownValidatorBuilder(
                 new ContainerConfiguration()
                     .WithAssembly(typeof(DocfxFlavoredMarkdownTest).Assembly)
@@ -609,7 +610,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             mrb.AddValidators(HtmlMarkdownTokenValidatorProvider.ContractName);
             builder.Rewriter = mrb.Create();
 
-            var engine = builder.CreateDfmEngine(new DfmRenderer());
+            var engine = builder.CreateDfmEngine(new DfmRenderer(null));
             var listener = new TestLoggerListener("test!!!!" + "." + MarkdownValidatorBuilder.MarkdownValidatePhaseName);
             Logger.RegisterListener(listener);
             string result;

@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         private readonly string _baseDir;
 
-        public DfmEngineBuilder(Options options, IDictionary<string, object> tokens, string baseDir = null) : base(options)
+        public DfmEngineBuilder(Options options, string baseDir = null) : base(options)
         {
             _baseDir = baseDir ?? string.Empty;
             var inlineRules = InlineRules.ToList();
@@ -81,7 +81,6 @@ namespace Microsoft.DocAsCode.Dfm
             BlockRules = blockRules.ToImmutableList();
 
             Rewriter = InitMarkdownStyle(GetContainer(), baseDir);
-            Tokens = tokens;
         }
 
         private CompositionHost GetContainer()
@@ -140,7 +139,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public DfmEngine CreateDfmEngine(object renderer)
         {
-            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty), Rewriter, renderer, Options, Tokens);
+            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty), Rewriter, renderer, Options);
         }
 
         public override IMarkdownEngine CreateEngine(object renderer)

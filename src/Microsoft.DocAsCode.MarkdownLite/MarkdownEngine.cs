@@ -7,24 +7,23 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownEngine : IMarkdownEngine
     {
-        public MarkdownEngine(IMarkdownContext context, object renderer, Options options, IDictionary<string, object> tokens)
-            : this(context, null, renderer, options, tokens, new Dictionary<string, LinkObj>())
+        public MarkdownEngine(IMarkdownContext context, object renderer, Options options)
+            : this(context, null, renderer, options, new Dictionary<string, LinkObj>())
         {
         }
 
-        public MarkdownEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options, IDictionary<string, object> tokens)
-            : this(context, rewriter, renderer, options, tokens, new Dictionary<string, LinkObj>())
+        public MarkdownEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options)
+            : this(context, rewriter, renderer, options, new Dictionary<string, LinkObj>())
         {
         }
 
-        protected MarkdownEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options, IDictionary<string, object> tokens, Dictionary<string, LinkObj> links)
+        protected MarkdownEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options, Dictionary<string, LinkObj> links)
         {
             Context = context;
             Rewriter = rewriter ?? MarkdownTokenRewriterFactory.Null;
             RendererImpl = renderer;
             Options = options;
             Links = links;
-            Tokens = tokens;
         }
 
         public object RendererImpl { get; }
@@ -36,9 +35,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public IMarkdownTokenRewriter Rewriter { get; }
 
         public Dictionary<string, LinkObj> Links { get; }
-
-        public IDictionary<string, object> Tokens { get; set;}
-
+        
         public int MaxExtractCount { get; set; } = 1;
 
         public static string Normalize(string markdown)
@@ -100,6 +97,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
             new MarkdownRewriteEngine(this, Rewriter);
 
         public virtual IMarkdownRenderer Renderer =>
-            new MarkdownRendererAdapter(this, RendererImpl, Options, Links, Tokens);
+            new MarkdownRendererAdapter(this, RendererImpl, Options, Links);
     }
 }
