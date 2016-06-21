@@ -71,15 +71,15 @@ Prepare
 Update rtf document processor
 -----------------------------
 1.  Following rules for hyperlink, add `FixLink` help method:
-    [!Code-csharp[FixLink](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs)]
+    [!Code-csharp[FixLink](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=FixLink)]
 
     `RelativePath` help us generate links correctly.
 
 2.  Then add `CollectLinksAndFixDocument` method:
-    [!Code-csharp[CollectLinksAndFixDocument](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs)]
+    [!Code-csharp[CollectLinksAndFixDocument](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=CollectLinksAndFixDocument)]
 
 3.  Modify `Save` method with report links:
-    [!Code-csharp[Save](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs)]
+    [!Code-csharp[Save](../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs?name=Save)]
 
 <!-- todo : `Update Reference` is preserved for next version of plugin. -->
 
