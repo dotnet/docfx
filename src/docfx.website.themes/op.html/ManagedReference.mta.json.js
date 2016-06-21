@@ -46,7 +46,8 @@ exports.transform = function (model) {
     "isEii",
     "isExtensionMethod",
     "nameWithType",
-    "extensionMethods"
+    "extensionMethods",
+    "baseRepositoryDirectory"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, false);

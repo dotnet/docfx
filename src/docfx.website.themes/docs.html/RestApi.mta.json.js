@@ -45,7 +45,8 @@ exports.transform = function (model) {
     "source",
     "swagger",
     "tags",
-    "uid"
+    "uid",
+    "baseRepositoryDirectory"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);

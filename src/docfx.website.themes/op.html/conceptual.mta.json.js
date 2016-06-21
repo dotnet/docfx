@@ -13,7 +13,8 @@ exports.transform = function (model) {
     "source",
     "rawTitle",
     "wordCount",
-    "newFileRepository"
+    "newFileRepository",
+    "baseRepositoryDirectory"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, false);

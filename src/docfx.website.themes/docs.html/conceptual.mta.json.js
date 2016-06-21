@@ -21,7 +21,8 @@ exports.transform = function (model) {
     "path",
     "type",
     "source",
-    "newFileRepository"
+    "newFileRepository",
+    "baseRepositoryDirectory"
   ];
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
 
