@@ -4,7 +4,8 @@ var opCommon = require('./op.common.js');
 exports.transform = function (model) {
   // Clean up unused predefined properties
   var resetKeys = [
-    "newFileRepository"
+    "newFileRepository",
+    "baseRepositoryDirectory"
   ];
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
   return {

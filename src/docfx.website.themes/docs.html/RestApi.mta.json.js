@@ -24,6 +24,7 @@ exports.transform = function (model) {
   var resetKeys = [
     "_raw",
     "basePath",
+    "baseRepositoryDirectory",    
     "children",
     "conceptual",
     "consumes",
