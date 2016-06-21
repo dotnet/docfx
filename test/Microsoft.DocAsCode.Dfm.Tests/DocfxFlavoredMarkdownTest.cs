@@ -391,6 +391,15 @@ This is also note<br/>This is also note with br</p>
             Assert.Equal(expected.Replace("\r\n", "\n"), markedContent);
         }
 
+        [Theory]
+        [Trait("Related", "DfmMarkdown")]
+        [InlineData(@"> [!div class=""All"" id=""All""] Followed text
+> We should support that.")]
+        public void TestSectionWithTextFollowed(string source)
+        {
+            var markedContent = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal("<div class=\"All\" id=\"All\"><p>Followed text\nWe should support that.</p>\n</div>\n", markedContent);
+        }
 
         [Theory]
         [Trait("Related", "DfmMarkdown")]

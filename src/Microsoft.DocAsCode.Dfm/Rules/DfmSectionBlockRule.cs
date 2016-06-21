@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public string Name => "DfmSection";
 
-        public static readonly Regex _sectionRegex = new Regex(@"^(?<rawmarkdown> *\[\!div( +(?<quote>`?)(?<attributes>.*?)(\k<quote>))?\]\s*(?:\n|$))", RegexOptions.Compiled);
+        public static readonly Regex _sectionRegex = new Regex(@"^(?<rawmarkdown> *\[\!div( +(?<quote>`?)(?<attributes>.*?)(\k<quote>))?\]\s*\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled);
 
         private const string SectionReplacementHtmlTag = "div";
 
@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return null;
             }
-            var sourceInfo = context.Consume(match.Length);
+            var sourceInfo = context.Consume(match.Groups["rawmarkdown"].Length);
             var attributes = ExtractAttibutes(match.Groups["attributes"].Value);
             return new DfmSectionBlockToken(this, parser.Context, attributes, sourceInfo);
         }

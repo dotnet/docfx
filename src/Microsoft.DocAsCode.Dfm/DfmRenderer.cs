@@ -75,6 +75,10 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 if (splitToken.Token is DfmSectionBlockToken)
                 {
+                    if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
+                    {
+                        Logger.LogWarning("A '\n' should be appended after the first line of [!div] syntax.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
+                    }
                     content += "<div";
                     content += ((DfmSectionBlockToken)splitToken.Token).Attributes;
                     content += ">";
@@ -86,6 +90,10 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 else if (splitToken.Token is DfmNoteBlockToken)
                 {
+                    if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
+                    {
+                        Logger.LogWarning("A '\n' should be appended after the first line of NOTE/WARNING/CAUTION/IMPORTANT syntax.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
+                    }
                     var noteToken = (DfmNoteBlockToken)splitToken.Token;
                     content += "<div class=\"";
                     content += noteToken.NoteType.ToUpper();
