@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public IMarkdownTokenRewriter Rewriter { get; }
 
         public Dictionary<string, LinkObj> Links { get; }
-        
+
         public int MaxExtractCount { get; set; } = 1;
 
         public static string Normalize(string markdown)
