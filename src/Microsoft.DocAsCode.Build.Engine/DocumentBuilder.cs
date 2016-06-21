@@ -106,7 +106,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerPhaseScope(PhaseName))
             {
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism.ToString()}.");
-                var markdownService = CreateMarkdownService(parameters);
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 var context = new DocumentBuildContext(
                     Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
@@ -121,6 +120,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
+                        var markdownService = CreateMarkdownService(parameters, processor.DefaultGlobalVariables);
                         hostServices = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
                         var manifest = new List<ManifestItemWithContext>();
                         foreach (var hostService in hostServices)
@@ -669,7 +669,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Logger.LogInfo("XRef map exported.");
         }
 
-        private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters)
+        private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters, IDictionary<string, object> tokens)
         {
             var provider = (IMarkdownServiceProvider)_container.GetExport(
                 typeof(IMarkdownServiceProvider),
@@ -685,6 +685,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     BasePath = parameters.Files.DefaultBaseDir,
                     Extensions = parameters.MarkdownEngineParameters,
+                    Tokens = tokens,
                 });
         }
 

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System.Collections.Generic;
     using System.Composition;
 
     using Microsoft.DocAsCode.Dfm;
@@ -13,16 +14,16 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
-            return new DfmService(parameters.BasePath);
+            return new DfmService(parameters.BasePath, parameters.Tokens);
         }
 
         private sealed class DfmService : IMarkdownService
         {
             private readonly DfmEngineBuilder _builder;
 
-            public DfmService(string baseDir)
+            public DfmService(string baseDir, IDictionary<string, object> tokens)
             {
-                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir);
+                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, tokens);
             }
 
             public string Markup(string src, string path)

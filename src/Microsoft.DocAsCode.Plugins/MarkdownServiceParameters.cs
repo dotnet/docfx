@@ -9,5 +9,6 @@ namespace Microsoft.DocAsCode.Plugins
     {
         public string BasePath { get; set; }
         public IReadOnlyDictionary<string, object> Extensions { get; set; }
+        public IDictionary<string, object> Tokens { get; set; }
     }
 }

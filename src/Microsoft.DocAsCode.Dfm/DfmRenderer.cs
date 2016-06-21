@@ -87,11 +87,21 @@ namespace Microsoft.DocAsCode.Dfm
                 else if (splitToken.Token is DfmNoteBlockToken)
                 {
                     var noteToken = (DfmNoteBlockToken)splitToken.Token;
+                    
                     content += "<div class=\"";
                     content += noteToken.NoteType.ToUpper();
-                    content += "\"><h5>";
-                    content += noteToken.NoteType.ToUpper();
-                    content += "</h5>";
+                    content += "\">";
+                    object heading;
+                    if (renderer.Tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
+                    {
+                        content += heading;
+                    }
+                    else
+                    {
+                        content += "<h5>";
+                        content += noteToken.NoteType.ToUpper();
+                        content += "</h5>";
+                    }
                     foreach (var item in splitToken.InnerTokens)
                     {
                         content += renderer.Render(item);

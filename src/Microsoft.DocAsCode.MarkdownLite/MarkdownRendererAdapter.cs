@@ -12,12 +12,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
     /// </summary>
     public class MarkdownRendererAdapter : IMarkdownRenderer
     {
-        public MarkdownRendererAdapter(IMarkdownEngine engine, object renderer, Options options, Dictionary<string, LinkObj> links)
+        public MarkdownRendererAdapter(IMarkdownEngine engine, object renderer, Options options, Dictionary<string, LinkObj> links, IDictionary<string, object> tokens)
         {
             Engine = engine;
             Renderer = renderer;
             Options = options;
             Links = links;
+            Tokens = tokens;
         }
 
         public IMarkdownEngine Engine { get; }
@@ -27,6 +28,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public Options Options { get; }
 
         public Dictionary<string, LinkObj> Links { get; }
+
+        public IDictionary<string, object> Tokens { get; }
 
         public StringBuffer Render(IMarkdownToken token)
         {
