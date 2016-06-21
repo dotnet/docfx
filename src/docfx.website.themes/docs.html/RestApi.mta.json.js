@@ -23,6 +23,7 @@ exports.transform = function (model) {
   var resetKeys = [
     "_raw",
     "basePath",
+    "baseRepositoryDirectory",    
     "children",
     "conceptual",
     "consumes",
@@ -45,8 +46,7 @@ exports.transform = function (model) {
     "source",
     "swagger",
     "tags",
-    "uid",
-    "baseRepositoryDirectory"
+    "uid"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
