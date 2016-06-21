@@ -23,7 +23,9 @@ exports.transform = function (model)  {
 
   langs = model.langs;
   handleItem(model, model.newFileRepository);
-  model.children.forEach(function(item) { handleItem(item, model.newFileRepository);});
+  if (model.children) {
+      model.children.forEach(function (item) { handleItem(item, model.newFileRepository); });
+  }
 
   if (model.type) {
     switch (model.type.toLowerCase()) {
@@ -95,8 +97,10 @@ function groupChildren(model, typeChildrenItems) {
 // reserve "namespace" of string for backward compatibility
 // will replace "namespace" with "namespaceExpanded" of object
 function handleNamespace(model) {
-  model.namespaceExpanded = model.namespace;
-  model.namespace = model.namespaceExpanded.uid;
+    model.namespaceExpanded = model.namespace;
+    if (model.namespaceExpanded) {
+        model.namespace = model.namespaceExpanded.uid;
+    }
 }
 
 function handleItem(vm, newFileRepository) {
