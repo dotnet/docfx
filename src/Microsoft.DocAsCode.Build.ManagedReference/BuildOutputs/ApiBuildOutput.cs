@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Utility.EntityMergers;
     using Microsoft.DocAsCode.YamlSerialization;
@@ -157,8 +158,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             object displayLangs;
             if (model.Metadata.TryGetValue("_displayLangs", out displayLangs))
             {
-                var langs = ((object[])displayLangs).Select(x => x?.ToString()).ToArray();
-                model.Items.ForEach(item => item.SupportedLanguages = IntersectLangs(item.SupportedLanguages, langs));
+                var langsObj = displayLangs as object[];
+                if (langsObj != null)
+                {
+                    var langs = langsObj.Select(x => x?.ToString()).ToArray();
+                    model.Items.ForEach(item => item.SupportedLanguages = IntersectLangs(item.SupportedLanguages, langs));
+                }
+                else
+                {
+                    Logger.LogWarning("Invalid displayLangs setting in docfx.json. Ignored.");
+                }
             }
 
             var metadata = model.Metadata;
@@ -248,7 +257,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         private static string[] IntersectLangs(string[] defaultLangs, string[] displayLangs)
         {
-            if (displayLangs == null || displayLangs.Length == 0)
+            if (displayLangs.Length == 0)
             {
                 return defaultLangs;
             }
