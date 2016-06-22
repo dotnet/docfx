@@ -77,8 +77,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (string.IsNullOrEmpty(content) || supportedLanguages == null || supportedLanguages.Length == 0) return null;
 
             var result = new List<ApiLanguageValuePair>() { new ApiLanguageValuePair() { Language = supportedLanguages[0], Value = content } };
-            if (!string.IsNullOrEmpty(contentForCSharp)) result.Add(new ApiLanguageValuePair() { Language = "csharp", Value = contentForCSharp });
-            if (!string.IsNullOrEmpty(contentForVB)) result.Add(new ApiLanguageValuePair() { Language = "vb", Value = contentForVB });
+            if (!string.IsNullOrEmpty(contentForCSharp) && supportedLanguages.Contains("csharp")) result.Add(new ApiLanguageValuePair() { Language = "csharp", Value = contentForCSharp });
+            if (!string.IsNullOrEmpty(contentForVB) && supportedLanguages.Contains("vb")) result.Add(new ApiLanguageValuePair() { Language = "vb", Value = contentForVB });
             return result;
         }
     }

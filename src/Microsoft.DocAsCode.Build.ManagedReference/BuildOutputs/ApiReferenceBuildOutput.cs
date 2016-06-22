@@ -269,7 +269,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         {
             if (specs != null && specs.Count > 0)
             {
-                return specs.Select(kv => new ApiLanguageValuePair() { Language = kv.Key, Value = GetSpecName(kv.Value) }).ToList();
+                return specs.Where(kv => supportedLanguages.Contains(kv.Key)).Select(kv => new ApiLanguageValuePair() { Language = kv.Key, Value = GetSpecName(kv.Value) }).ToList();
             }
             if (!string.IsNullOrEmpty(xref))
             {
