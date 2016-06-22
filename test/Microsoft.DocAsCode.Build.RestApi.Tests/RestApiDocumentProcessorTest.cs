@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0", model.Uid);
             Assert.Equal("graph_windows_net_myorganization_Contacts_1_0", model.HtmlId);
-            Assert.Equal(9, model.Children.Count);
+            Assert.Equal(10, model.Children.Count);
             Assert.Equal("Hello world!", model.Metadata["meta"]);
             var item1 = model.Children[0];
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/get contacts", item1.Uid);
@@ -86,6 +86,33 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("http://swagger.io", externalDocs["url"]);
             var tag2 = model.Tags[1];
             Assert.Equal("pet_store", tag2.HtmlId);
+
+            // Verify path parameters
+            // Path parameter applicable for get operation
+            Assert.Equal(2, item2.Parameters.Count);
+            Assert.Equal("object_id", item2.Parameters[0].Metadata["name"]);
+            Assert.Equal("api-version", item2.Parameters[1].Metadata["name"]);
+            Assert.Equal(true, item2.Parameters[1].Metadata["required"]);
+
+            // Override ""api-version" parameters by $ref for patch opearation
+            var item3 = model.Children[2];
+            Assert.Equal(3, item3.Parameters.Count);
+            Assert.Equal("object_id", item3.Parameters[0].Metadata["name"]);
+            Assert.Equal("api-version", item3.Parameters[1].Metadata["name"]);
+            Assert.Equal(false, item3.Parameters[1].Metadata["required"]);
+
+            // Override ""api-version" parameters by self definition for delete opearation
+            var item4 = model.Children[3];
+            Assert.Equal(2, item4.Parameters.Count);
+            Assert.Equal("object_id", item4.Parameters[0].Metadata["name"]);
+            Assert.Equal("api-version", item4.Parameters[1].Metadata["name"]);
+            Assert.Equal(false, item4.Parameters[1].Metadata["required"]);
+
+            // When operation parameters is not set, inherit from th parameters for post opearation
+            var item5 = model.Children[4];
+            Assert.Equal(1, item5.Parameters.Count);
+            Assert.Equal("api-version", item5.Parameters[0].Metadata["name"]);
+            Assert.Equal(true, item5.Parameters[0].Metadata["required"]);
         }
 
         [Fact]

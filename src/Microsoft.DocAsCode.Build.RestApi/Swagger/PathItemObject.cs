@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
+    using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.YamlSerialization;
 
@@ -14,8 +15,16 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
     /// TODO: need a converter
     /// </summary>
     [Serializable]
-    public class PathItemObject : Dictionary<string, OperationObject>
+    public class PathItemObject
     {
+        /// <summary>
+        /// A list of parameters that are applicable for all the operations described under this path.
+        /// These parameters can be overridden at the operation level, but cannot be removed there.
+        /// </summary>
+        [YamlMember(Alias = "parameters")]
+        [JsonProperty("parameters")]
+        public List<ParameterObject> Parameters { get; set; }
+
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();

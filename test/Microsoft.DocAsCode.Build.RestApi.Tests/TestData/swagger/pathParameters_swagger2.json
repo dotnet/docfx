@@ -1,0 +1,70 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts",
+    "version": "1.0"
+  },
+  "host": "graph.windows.net",
+  "basePath": "/myorganization",
+  "parameters": {
+    "ApiVersionParameter": {
+      "in": "query",
+      "description": "api version description",
+      "name": "api-version",
+      "required": false,
+      "type": "string",
+      "default": "1.6"
+    }
+  },
+  "paths": {
+    "/contacts": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/ApiVersionParameter"
+        },
+        {
+          "name": "subscriptionId",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "subscription id"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "operationId": "get contacts"
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "query",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "7163f3b8-70c9-43d2-b9e1-4467ddaf087a"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  }
+}
+
