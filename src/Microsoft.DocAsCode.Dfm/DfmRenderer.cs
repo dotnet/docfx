@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
 
-        public ImmutableDictionary<string, string> Tokens { get; set; };
+        public ImmutableDictionary<string, string> Tokens { get; set; }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm
             result = AppendAttribute(result, "title", token.Title);
             result = AppendAttribute(result, "data-throw-if-not-resolved", token.ThrowIfNotResolved.ToString());
             result = AppendAttribute(result, "data-raw", token.SourceInfo.Markdown);
-            
+
             result += ">";
             foreach (var item in token.Content)
             {
