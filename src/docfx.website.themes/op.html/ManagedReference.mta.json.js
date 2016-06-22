@@ -47,7 +47,8 @@ exports.transform = function (model) {
     "isExtensionMethod",
     "nameWithType",
     "extensionMethods",
-    "baseRepositoryDirectory"
+    "baseRepositoryDirectory",
+    "_displayLangs"
   ];
 
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, false);
