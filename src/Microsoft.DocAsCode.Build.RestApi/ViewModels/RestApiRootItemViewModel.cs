@@ -188,7 +188,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
 
             // Path parameters can be overridden at the operation level.
             var uniquePathParams = pathParameters.Where(
-                p => operationParameters.Any(o => IsParameterEquals(p, o)) != true).ToList();
+                p => operationParameters.Any(o => !IsParameterEquals(p, o))).ToList();
 
             return operationParameters.Union(uniquePathParams).ToList();
         }

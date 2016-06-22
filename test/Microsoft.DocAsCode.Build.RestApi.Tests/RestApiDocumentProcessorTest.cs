@@ -55,6 +55,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("graph_windows_net_myorganization_Contacts_1_0", model.HtmlId);
             Assert.Equal(10, model.Children.Count);
             Assert.Equal("Hello world!", model.Metadata["meta"]);
+
+            // Verify $ref in path
             var item1 = model.Children[0];
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/get contacts", item1.Uid);
             Assert.Equal("<p>You can get a collection of contacts from your tenant.</p>\n", item1.Summary);
