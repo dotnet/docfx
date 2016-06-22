@@ -231,7 +231,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var result = (StringBuffer)"<a href=\"" + token.Href + "\"";
             if (!string.IsNullOrEmpty(token.Title))
             {
-                result = result + " title=\"" + token.Title + "\"";
+                result = result + " title=\"" + StringHelper.HtmlEncode(token.Title) + "\"";
             }
             result += ">";
 
@@ -246,10 +246,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownImageInlineToken token, MarkdownInlineContext context)
         {
-            var result = (StringBuffer)"<img src=\"" + token.Href + "\" alt=\"" + token.Text + "\"";
+            var result = (StringBuffer)"<img src=\"" + token.Href + "\" alt=\"" + StringHelper.HtmlEncode(token.Text) + "\"";
             if (!string.IsNullOrEmpty(token.Title))
             {
-                result = result + " title=\"" + token.Title + "\"";
+                result = result + " title=\"" + StringHelper.HtmlEncode(token.Title) + "\"";
             }
 
             result += renderer.Options.XHtml ? "/>" : ">";

@@ -584,6 +584,30 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestDfmImageLink_WithSpecialCharactorsInAltText()
+        {
+            var source = @"![This is image alt text with quotation ' and double quotation ""hello"" world](girl.png)";
+
+            var expected = @"<p><img src=""girl.png"" alt=""This is image alt text with quotation &#39; and double quotation &quot;hello&quot; world""/></p>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmLink_WithSpecialCharactorsInTitle()
+        {
+            var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")";
+
+            var expected = @"<p><a href=""girl.png"" title=""title is &amp;quot;hello&amp;quot; world."">This is link text with quotation &#39; and double quotation &quot;hello&quot; world</a></p>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestPathUtility_AbsoluteLinkWithBracketAndBrackt()
         {
             var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
