@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -12,9 +13,15 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmRenderer : HtmlRenderer
     {
+        private readonly ImmutableDictionary<string, string> _tokens;
         private static readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
+
+        public DfmRenderer(ImmutableDictionary<string, string> tokens = null)
+        {
+            _tokens = tokens;
+        }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
@@ -89,9 +96,18 @@ namespace Microsoft.DocAsCode.Dfm
                     var noteToken = (DfmNoteBlockToken)splitToken.Token;
                     content += "<div class=\"";
                     content += noteToken.NoteType.ToUpper();
-                    content += "\"><h5>";
-                    content += noteToken.NoteType.ToUpper();
-                    content += "</h5>";
+                    content += "\">";
+                    string heading;
+                    if (_tokens != null && _tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
+                    {
+                        content += heading;
+                    }
+                    else
+                    {
+                        content += "<h5>";
+                        content += noteToken.NoteType.ToUpper();
+                        content += "</h5>";
+                    }
                     foreach (var item in splitToken.InnerTokens)
                     {
                         content += renderer.Render(item);

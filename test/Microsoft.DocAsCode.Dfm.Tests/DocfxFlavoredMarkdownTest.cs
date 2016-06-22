@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
 {
     using System.Collections.Generic;
     using System.Composition.Hosting;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Xml;
@@ -257,6 +258,33 @@ this is also warning</p>
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestDfmNote_NoteWithLocalization()
+        {
+            var source = @"# Note not in one line
+> [!NOTE]hello
+> world
+> [!WARNING]     Hello world
+this is also warning";
+            var expected = @"<h1 id=""note-not-in-one-line"">Note not in one line</h1>
+<div class=""NOTE""><h5>注意</h5><p>hello
+world</p>
+</div>
+<div class=""WARNING""><h5>警告</h5><p>Hello world
+this is also warning</p>
+</div>
+";
+            var marked = DocfxFlavoredMarked.Markup(source,
+                null,
+                new Dictionary<string, string>
+                {
+                    {"note", "<h5>注意</h5>"},
+                    {"warning", "<h5>警告</h5>" }
+                }.ToImmutableDictionary());
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestCode_ParentFolderNotExist()
         {
             var source = @"[!code-cs[not exist](not_exist_folder/file.cs)]";
@@ -443,7 +471,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             var jsNode = tabbedCodeNode.SelectSingleNode("./pre/code[@class='lang-javascript-i']");
             Assert.True(jsNode != null);
         }
-        
+
         [Theory]
         [Trait("Related", "DfmMarkdown")]
         [InlineData(@"> this is blockquote
@@ -593,7 +621,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
             Logger.UnregisterListener(listener);
             Assert.Equal("<div><i>x</i><EM>y</EM><h1>z</h1></div>", result);
             Assert.Equal(5, listener.Items.Count);
-            Assert.Equal(new[] { HtmlMarkdownTokenValidatorProvider.WarningMessage,  "Invalid tag(div)!", "Invalid tag(EM)!", "Warning tag(h1)!", "Warning tag(h1)!" }, from item in listener.Items select item.Message);
+            Assert.Equal(new[] { HtmlMarkdownTokenValidatorProvider.WarningMessage, "Invalid tag(div)!", "Invalid tag(EM)!", "Warning tag(h1)!", "Warning tag(h1)!" }, from item in listener.Items select item.Message);
         }
 
         [Fact]
