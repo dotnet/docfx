@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var inputModel in InputModels)
             {
                 // TODO: Use plugin to generate metadata for files with different extension?
-                using (var worker = new Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker(inputModel, inputModel.ForceRebuild))
+                using (var worker = new Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker(inputModel, inputModel.ForceRebuild, inputModel.UseCompatibilityFileName))
                 {
                     // Use task.run to get rid of current context (causing deadlock in xunit)
                     var task = Task.Run(worker.ExtractMetadataAsync);
@@ -96,6 +96,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 ForceRebuild = configModel?.Force ?? false,
                 ApiFolderName = string.Empty,
                 FilterConfigFile = configModel?.FilterConfigFile,
+                UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
             };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(Config.BaseDirectory, projects);
