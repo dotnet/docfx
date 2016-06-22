@@ -334,7 +334,7 @@ world</p>
 
 ---";
             var expected = @"<hr/>
-<h3 id=""-unconfigure"">/Unconfigure</h3>
+<h3 id=""unconfigure"">/Unconfigure</h3>
 <hr/>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);

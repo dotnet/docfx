@@ -86,7 +86,7 @@ uid: Test2
             Assert.Equal(1, results.Count);
             Assert.Equal("Test1", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<h2 id=\"this-is-unit-test-\">This is unit test!</h2>\n<h2 id=\"uid-test2\">uid: Test2</h2>\n", results[0].Conceptual);
+            Assert.Equal("<h2 id=\"this-is-unit-test\">This is unit test!</h2>\n<h2 id=\"uid-test2\">uid: Test2</h2>\n", results[0].Conceptual);
             File.Delete(fileName);
 
             // Test conceptual content with extra empty line between two yamlheader
