@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public string Markup(string src, string path)
             {
-                return _builder.CreateDfmEngine(new DfmRenderer(_tokens)).Markup(src, path);
+                return _builder.CreateDfmEngine(new DfmRenderer() { Tokens = _tokens }).Markup(src, path);
             }
         }
     }
