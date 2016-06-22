@@ -98,6 +98,7 @@ And you can disable default rules by following config:
 1.  Create a project in your code editor (e.g. visual studio).
 2.  Add nuget package `Microsoft.DocAsCode.MarkdownLite` and `Microsoft.Composition`.
 3.  Create a class and implements @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider
+
     > [!TIP]
     > @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory contains some help methods to create a validator.
 4.  Add ExportAttribute with contract name, and if contract name is `default` it will apply automatically.
@@ -110,13 +111,14 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 {
     public ImmutableArray<IMarkdownTokenValidator> GetValidators()
     {
-        return MarkdownTokenValidatorFactory.FromLambda<MarkdownCodeBlockToken>(t =>
-        {
-            if (t.Lang != "csharp")
+        return ImmutableArray.Create(
+            MarkdownTokenValidatorFactory.FromLambda<MarkdownCodeBlockToken>(t =>
             {
-                 throw new DocumentException($"Code lang {t.Lang} is not valid in file {t.SourceInfo.File}, line {t.SourceInfo.LineNumber}");
-            }
-        });
+                if (t.Lang != "csharp")
+                {
+                     throw new DocumentException($"Code lang {t.Lang} is not valid, in file: {t.SourceInfo.File}, at line: {t.SourceInfo.LineNumber}");
+                }
+            }));
     }
 }
 ```
