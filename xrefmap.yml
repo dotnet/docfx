@@ -2078,11 +2078,6 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_System_Int32_
   commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateProcessor.#ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection,System.Int32)
   fullName: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.TemplateProcessor(Microsoft.DocAsCode.Build.Engine.ResourceCollection, System.Int32)
-- uid: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.DefaultGlobalVariables
-  name: DefaultGlobalVariables
-  href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_DefaultGlobalVariables
-  commentId: P:Microsoft.DocAsCode.Build.Engine.TemplateProcessor.DefaultGlobalVariables
-  fullName: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.DefaultGlobalVariables
 - uid: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.DefaultProcessor
   name: DefaultProcessor
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_DefaultProcessor
@@ -2105,6 +2100,11 @@ references:
   name.vb: Process(List(Of ManifestItem), DocumentBuildContext, ApplyTemplateSettings, IDictionary(Of String, Object))
   fullName: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Process(System.Collections.Generic.List<Microsoft.DocAsCode.Build.Engine.ManifestItem>, Microsoft.DocAsCode.Build.Engine.DocumentBuildContext, Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings, System.Collections.Generic.IDictionary<System.String, System.Object>)
   fullName.vb: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Process(System.Collections.Generic.List(Of Microsoft.DocAsCode.Build.Engine.ManifestItem), Microsoft.DocAsCode.Build.Engine.DocumentBuildContext, Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings, System.Collections.Generic.IDictionary(Of System.String, System.Object))
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Tokens
+  name: Tokens
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_Tokens
+  commentId: P:Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Tokens
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Tokens
 - uid: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.TryGetFileExtension(System.String,System.String@)
   name: TryGetFileExtension(String, out String)
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_TryGetFileExtension_System_String_System_String__
@@ -6288,6 +6288,11 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockquoteBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
   commentId: M:Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockquoteBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
   fullName: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockquoteBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.Dfm.DfmRenderer.Tokens
+  name: Tokens
+  href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer_Tokens
+  commentId: P:Microsoft.DocAsCode.Dfm.DfmRenderer.Tokens
+  fullName: Microsoft.DocAsCode.Dfm.DfmRenderer.Tokens
 - uid: Microsoft.DocAsCode.Dfm.DfmSectionBlockRule
   name: DfmSectionBlockRule
   href: api/Microsoft.DocAsCode.Dfm.DfmSectionBlockRule.html#Microsoft_DocAsCode_Dfm_DfmSectionBlockRule
@@ -6545,16 +6550,13 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.html#Microsoft_DocAsCode_Dfm_DocfxFlavoredMarked_CreateBuilder_System_String_
   commentId: M:Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.CreateBuilder(System.String)
   fullName: Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.CreateBuilder(System.String)
-- uid: Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Markup(System.String,System.String)
-  name: Markup(String, String)
-  href: api/Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.html#Microsoft_DocAsCode_Dfm_DocfxFlavoredMarked_Markup_System_String_System_String_
-  commentId: M:Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Markup(System.String,System.String)
-  fullName: Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Markup(System.String, System.String)
-- uid: Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Renderer
-  name: Renderer
-  href: api/Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.html#Microsoft_DocAsCode_Dfm_DocfxFlavoredMarked_Renderer
-  commentId: P:Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Renderer
-  fullName: Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Renderer
+- uid: Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Markup(System.String,System.String,System.Collections.Immutable.ImmutableDictionary{System.String,System.String})
+  name: Markup(String, String, ImmutableDictionary<String, String>)
+  href: api/Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.html#Microsoft_DocAsCode_Dfm_DocfxFlavoredMarked_Markup_System_String_System_String_System_Collections_Immutable_ImmutableDictionary_System_String_System_String__
+  commentId: M:Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Markup(System.String,System.String,System.Collections.Immutable.ImmutableDictionary{System.String,System.String})
+  name.vb: Markup(String, String, ImmutableDictionary(Of String, String))
+  fullName: Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Markup(System.String, System.String, System.Collections.Immutable.ImmutableDictionary<System.String, System.String>)
+  fullName.vb: Microsoft.DocAsCode.Dfm.DocfxFlavoredMarked.Markup(System.String, System.String, System.Collections.Immutable.ImmutableDictionary(Of System.String, System.String))
 - uid: Microsoft.DocAsCode.Dfm.FileCacheLite
   name: FileCacheLite
   href: api/Microsoft.DocAsCode.Dfm.FileCacheLite.html#Microsoft_DocAsCode_Dfm_FileCacheLite
@@ -12661,6 +12663,11 @@ references:
   href: api/Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.html#Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_Extensions
   commentId: P:Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.Extensions
   fullName: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.Extensions
+- uid: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.Tokens
+  name: Tokens
+  href: api/Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.html#Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_Tokens
+  commentId: P:Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.Tokens
+  fullName: Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.Tokens
 - uid: Microsoft.DocAsCode.Plugins.MarkupResult
   name: MarkupResult
   href: api/Microsoft.DocAsCode.Plugins.MarkupResult.html#Microsoft_DocAsCode_Plugins_MarkupResult
@@ -13974,11 +13981,6 @@ references:
   href: api/Microsoft.DocAsCode.Utility.StringExtension.html#Microsoft_DocAsCode_Utility_StringExtension_BackSlashToForwardSlash_System_String_
   commentId: M:Microsoft.DocAsCode.Utility.StringExtension.BackSlashToForwardSlash(System.String)
   fullName: Microsoft.DocAsCode.Utility.StringExtension.BackSlashToForwardSlash(System.String)
-- uid: Microsoft.DocAsCode.Utility.StringExtension.CoalesceNullOrEmpty(System.String,System.String)
-  name: CoalesceNullOrEmpty(String, String)
-  href: api/Microsoft.DocAsCode.Utility.StringExtension.html#Microsoft_DocAsCode_Utility_StringExtension_CoalesceNullOrEmpty_System_String_System_String_
-  commentId: M:Microsoft.DocAsCode.Utility.StringExtension.CoalesceNullOrEmpty(System.String,System.String)
-  fullName: Microsoft.DocAsCode.Utility.StringExtension.CoalesceNullOrEmpty(System.String, System.String)
 - uid: Microsoft.DocAsCode.Utility.StringExtension.ForwardSlashCombine(System.String,System.String)
   name: ForwardSlashCombine(String, String)
   href: api/Microsoft.DocAsCode.Utility.StringExtension.html#Microsoft_DocAsCode_Utility_StringExtension_ForwardSlashCombine_System_String_System_String_
@@ -14005,13 +14007,6 @@ references:
   name.vb: GetNormalizedPathList(IEnumerable(Of String))
   fullName: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedPathList(System.Collections.Generic.IEnumerable<System.String>)
   fullName.vb: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedPathList(System.Collections.Generic.IEnumerable(Of System.String))
-- uid: Microsoft.DocAsCode.Utility.StringExtension.ToArray(System.String,System.StringSplitOptions,System.Char[])
-  name: ToArray(String, StringSplitOptions, Char[])
-  href: api/Microsoft.DocAsCode.Utility.StringExtension.html#Microsoft_DocAsCode_Utility_StringExtension_ToArray_System_String_System_StringSplitOptions_System_Char___
-  commentId: M:Microsoft.DocAsCode.Utility.StringExtension.ToArray(System.String,System.StringSplitOptions,System.Char[])
-  name.vb: ToArray(String, StringSplitOptions, Char())
-  fullName: Microsoft.DocAsCode.Utility.StringExtension.ToArray(System.String, System.StringSplitOptions, System.Char[])
-  fullName.vb: Microsoft.DocAsCode.Utility.StringExtension.ToArray(System.String, System.StringSplitOptions, System.Char())
 - uid: Microsoft.DocAsCode.Utility.StringExtension.ToDelimitedString(System.Collections.Generic.IEnumerable{System.String},System.String)
   name: ToDelimitedString(IEnumerable<String>, String)
   href: api/Microsoft.DocAsCode.Utility.StringExtension.html#Microsoft_DocAsCode_Utility_StringExtension_ToDelimitedString_System_Collections_Generic_IEnumerable_System_String__System_String_
