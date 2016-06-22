@@ -21,6 +21,7 @@ var files = [
     "favicon.ico",
     "logo.svg",
     "global.json",
+    "token.json",
     "search-stopwords.json"];
 
 var pack = {
@@ -54,6 +55,7 @@ var pack = {
                 "favicon.ico",
                 "logo.svg",
                 "global.json",
+                "token.json",
                 "!toc.html.*",
                 ],
             "cwd": "default",
@@ -79,6 +81,7 @@ var pack = {
                 "partials/title.tmpl.partial",
                 "partials/namespace.tmpl.partial",
                 "global.json",
+                "token.json",
             ],
             "cwd": "op.html",
         },
@@ -126,6 +129,7 @@ var pack = {
                 "partials/title.tmpl.partial",
                 "partials/namespace.tmpl.partial",
                 "global.json",
+                "token.json",
             ],
             "cwd": "op.html",
         },
@@ -153,6 +157,7 @@ var pack = {
         {
             "files": [
                 "global.json",
+                "token.json",
                 "op.common.js",
             ],
             "cwd": "op.html",
