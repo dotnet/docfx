@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.0.1)
+Version Notes (Current Version: v2.0.2)
 =======================================
+v2.0.2
+-----------
+1. Support localization tokens in DFM.
+
 v2.0.1
 -----------
 1. Fix bug that file links can't be resolved in overwrite file
