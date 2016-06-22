@@ -158,10 +158,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             object displayLangs;
             if (model.Metadata.TryGetValue("_displayLangs", out displayLangs))
             {
-                var langs = ((IEnumerable)displayLangs).Cast<object>()
-                                 .Select(x => x.ToString())
-                                 .ToArray();
-                model.Items[0].SupportedLanguages = IntersectLangs(model.Items[0].SupportedLanguages, langs);
+                var langs = ((object[])displayLangs).Select(x => x?.ToString()).ToArray();
+                model.Items.ForEach(item => item.SupportedLanguages = IntersectLangs(item.SupportedLanguages, langs));
             }
 
             var metadata = model.Metadata;
@@ -251,7 +249,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         private static string[] IntersectLangs(string[] defaultLangs, string[] displayLangs)
         {
-            if (displayLangs != null && displayLangs.Length == 0)
+            if (displayLangs == null || displayLangs.Length == 0)
             {
                 return defaultLangs;
             }
