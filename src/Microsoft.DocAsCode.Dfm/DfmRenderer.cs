@@ -13,15 +13,11 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmRenderer : HtmlRenderer
     {
-        private readonly ImmutableDictionary<string, string> _tokens;
         private static readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
 
-        public DfmRenderer(ImmutableDictionary<string, string> tokens = null)
-        {
-            _tokens = tokens;
-        }
+        public ImmutableDictionary<string, string> Tokens { get; set; }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
@@ -30,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm
             result = AppendAttribute(result, "title", token.Title);
             result = AppendAttribute(result, "data-throw-if-not-resolved", token.ThrowIfNotResolved.ToString());
             result = AppendAttribute(result, "data-raw", token.SourceInfo.Markdown);
-            
+
             result += ">";
             foreach (var item in token.Content)
             {
@@ -98,7 +94,7 @@ namespace Microsoft.DocAsCode.Dfm
                     content += noteToken.NoteType.ToUpper();
                     content += "\">";
                     string heading;
-                    if (_tokens != null && _tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
+                    if (Tokens != null && Tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
                     {
                         content += heading;
                     }
