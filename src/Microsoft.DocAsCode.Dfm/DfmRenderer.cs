@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
         private static readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
 
-        public ImmutableDictionary<string, string> Tokens;
+        public ImmutableDictionary<string, string> Tokens { get; set; };
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
