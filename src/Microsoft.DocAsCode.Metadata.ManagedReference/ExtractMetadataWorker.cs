@@ -42,6 +42,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private readonly bool _rebuild;
         private readonly bool _preserveRawInlineComments;
         private readonly string _filterConfigFile;
+        private readonly bool _useCompatibilityFileName;
 
         static ExtractMetadataWorker()
         {
@@ -50,7 +51,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             SupportedExtensions.AddRange(SupportedSourceFileExtensions);
         }
 
-        public ExtractMetadataWorker(ExtractMetadataInputModel input, bool rebuild)
+        public ExtractMetadataWorker(ExtractMetadataInputModel input, bool rebuild, bool useCompatibilityFileName)
         {
             _rawInput = input;
             _validInput = ValidateInput(input);
@@ -58,6 +59,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _rebuild = true;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
             _filterConfigFile = input.FilterConfigFile?.ToNormalizedFullPath();
+            _useCompatibilityFileName = useCompatibilityFileName;
         }
 
         public async Task ExtractMetadataAsync()
@@ -406,7 +408,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
-                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments, _rawInput.ExternalReferences);
+                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments, _rawInput.ExternalReferences, _useCompatibilityFileName);
                 applicationCache.SaveToCache(inputs, documentCache.Cache, triggeredTime, outputFolder, outputFiles);
             }
         }
@@ -572,7 +574,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             string tocFileName,
             string apiFolder,
             bool preserveRawInlineComments,
-            IEnumerable<string> externalReferencePackages)
+            IEnumerable<string> externalReferencePackages,
+            bool useCompatibilityFileName)
         {
             var outputFiles = new List<string>();
             var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, apiFolder, preserveRawInlineComments, externalReferencePackages);
@@ -594,6 +597,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             foreach (var memberModel in members)
             {
                 var outputPath = memberModel.Name + Constants.YamlExtension;
+                if (!useCompatibilityFileName)
+                {
+                    outputPath = outputPath.Replace('`', '-');
+                }
 
                 outputFiles.Add(Path.Combine(apiFolder, outputPath));
                 string itemFilePath = Path.Combine(folder, apiFolder, outputPath);

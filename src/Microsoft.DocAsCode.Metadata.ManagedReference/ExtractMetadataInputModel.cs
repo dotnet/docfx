@@ -26,6 +26,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public string FilterConfigFile { get; set; }
 
+        public bool UseCompatibilityFileName { get; set; }
+
         public override string ToString()
         {
             using(StringWriter writer = new StringWriter())

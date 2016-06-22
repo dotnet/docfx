@@ -21,6 +21,9 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("filter")]
         public string FilterConfigFile { get; set; }
+
+        [JsonProperty("useCompatibilityFileName")]
+        public bool? UseCompatibilityFileName { get; set; }
     }
 
 }
