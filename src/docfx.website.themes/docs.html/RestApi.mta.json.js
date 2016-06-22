@@ -29,6 +29,7 @@ exports.transform = function (model) {
     "conceptual",
     "consumes",
     "definitions",
+    "_displayLangs",
     "documentation",
     "externalDocs",
     "footer",

@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -154,6 +155,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 return null;
             }
 
+            object displayLangs;
+            if (model.Metadata.TryGetValue("_displayLangs", out displayLangs))
+            {
+                var langs = ((IEnumerable)displayLangs).Cast<object>()
+                                 .Select(x => x.ToString())
+                                 .ToArray();
+                model.Items[0].SupportedLanguages = IntersectLangs(model.Items[0].SupportedLanguages, langs);
+            }
+
             var metadata = model.Metadata;
             var references = new Dictionary<string, ApiReferenceBuildOutput>();
 
@@ -237,6 +247,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                                                                     string[] supportedLanguages)
         {
             return crefs?.Select(c => ApiCrefInfoBuildOutput.FromModel(c, references, supportedLanguages)).ToList();
+        }
+
+        private static string[] IntersectLangs(string[] defaultLangs, string[] displayLangs)
+        {
+            if (displayLangs != null && displayLangs.Length == 0)
+            {
+                return defaultLangs;
+            }
+
+            return defaultLangs?.Intersect(displayLangs, StringComparer.OrdinalIgnoreCase).ToArray();
         }
     }
 }

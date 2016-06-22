@@ -23,7 +23,8 @@ exports.transform = function (model) {
     "type",
     "source",
     "newFileRepository",
-    "baseRepositoryDirectory"
+    "baseRepositoryDirectory",
+    "_displayLangs"
   ];
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
 

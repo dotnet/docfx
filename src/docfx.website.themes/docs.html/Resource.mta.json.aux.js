@@ -5,7 +5,8 @@ exports.transform = function (model) {
   // Clean up unused predefined properties
   var resetKeys = [
     "newFileRepository",
-    "baseRepositoryDirectory"
+    "baseRepositoryDirectory",
+    "_displayLangs"
   ];
   model = opCommon.resetKeysAndSystemAttributes(model, resetKeys, true);
   return {
