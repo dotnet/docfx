@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceCollection(), 1);
 
-        public IDictionary<string, object> DefaultGlobalVariables { get; }
+        public IDictionary<string, string> Tokens { get; }
 
         /// <summary>
         /// TemplateName can be either file or folder
@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _resourceProvider = resourceProvider;
             _templateCollection = new TemplateCollection(resourceProvider, maxParallelism);
-            DefaultGlobalVariables = LoadGlobalJson(resourceProvider) ?? new Dictionary<string, object>();
+            Tokens = LoadTokenJson(resourceProvider) ?? new Dictionary<string, string>();
         }
 
         public TemplateBundle GetTemplateBundle(string documentType)
@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (globals == null)
                 {
-                    globals = DefaultGlobalVariables;
+                    globals = Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
                 }
 
                 var documentTypes = manifest.Select(s => s.DocumentType).Distinct();
@@ -185,15 +185,21 @@ namespace Microsoft.DocAsCode.Build.Engine
             return manifest.Where(m => !itemsToRemove.Contains(m.OriginalFile)).ToList();
         }
 
-        private static IDictionary<string, object> LoadGlobalJson(ResourceCollection resource)
+        private static IDictionary<string, string> LoadTokenJson(ResourceCollection resource)
         {
-            var globalJson = resource.GetResource("global.json");
-            if (string.IsNullOrEmpty(globalJson))
+            var tokenJson = resource.GetResource("token.json");
+            if (string.IsNullOrEmpty(tokenJson))
             {
-                return null;
+                // also load `global.json` for backward compatibility
+                // TODO: remove this
+                tokenJson = resource.GetResource("global.json");
+                if (string.IsNullOrEmpty(tokenJson))
+                {
+                    return null;
+                }
             }
 
-            return JsonUtility.FromJsonString<Dictionary<string, object>>(globalJson);
+            return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
         private static void SaveManifest(List<TemplateManifestItem> templateManifest, string outputDirectory, IDocumentBuildContext context)

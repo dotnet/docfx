@@ -3,21 +3,22 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DocfxFlavoredMarked
     {
-        public static DfmRenderer Renderer { get; } = new DfmRenderer();
-
         public static DfmEngineBuilder CreateBuilder(string baseDir)
         {
             // TODO: currently disable mangle as a quick workaround for OP Build Service compatibility
             return new DfmEngineBuilder(new Options() { Mangle = false, XHtml = true }, baseDir);
         }
 
-        public static string Markup(string src, string path = null)
+        public static string Markup(string src, string path = null, ImmutableDictionary<string, string> tokens = null)
         {
-            var engine = CreateBuilder(null).CreateDfmEngine(Renderer);
+            var engine = CreateBuilder(null).CreateDfmEngine(new DfmRenderer(tokens));
             return engine.Markup(src, path);
         }
     }

@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var normalized = Normalize(markdown);
             return Mark(SourceInfo.Create(normalized, file), null).ToString();
         }
-        
+
         protected virtual string Preprocess(string src)
         {
             return Regexes.Lexers.WhiteSpaceLine.Replace(src, string.Empty);
