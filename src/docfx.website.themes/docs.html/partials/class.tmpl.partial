@@ -286,7 +286,7 @@
 <div class="level">
   <section class="primary">
      {{#type.specName}}
-        <code class="lang-{{lang}}">{{{value}}}</code>
+        <span class="lang-{{lang}}">{{{value}}}</span>
      {{/type.specName}}
   </section>
   <section class="secondary">
