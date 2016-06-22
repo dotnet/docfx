@@ -550,5 +550,27 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 ";
             TestGfmInGeneral(source, expected);
         }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmImageLink_WithSpecialCharactorsInAltText()
+        {
+            var source = @"![This is image alt text with quotation ' and double quotation ""hello"" world](girl.png)";
+
+            var expected = @"<p><img src=""girl.png"" alt=""This is image alt text with quotation &#39; and double quotation &quot;hello&quot; world""></p>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmLink_WithSpecialCharactorsInTitle()
+        {
+            var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")";
+
+            var expected = @"<p><a href=""girl.png"" title=""title is &amp;quot;hello&amp;quot; world."">This is link text with quotation &#39; and double quotation &quot;hello&quot; world</a></p>
+";
+            TestGfmInGeneral(source, expected);
+        }
     }
 }
