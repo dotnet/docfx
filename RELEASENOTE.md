@@ -6,6 +6,15 @@ v2.1(Pre-Release)
 2.  Support anchor in toc file.
 3.  Support plug-in for validating markdown input metadata.
 4.  Add output file md5 hashes.
+5.  **Breaking Url** Rename generic type file name in metadata step
+
+    E.g. `System.Func<T>` will generate `System.Func-1.yml` instead of ``System.Func`1.yml``,
+    and after build the url will be `System.Func-1.html` instead of `System.Func%601.html`.
+
+    To keep old behavior, please add following option in metadata part in docfx.json:
+    ```json
+    "useCompatibilityFileName": true
+    ```
 
 v2.0
 -----------
