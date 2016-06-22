@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     t.Rule,
                     t.Context,
                     p.TokenizeInline(t.SourceInfo.Copy(match.Groups[2].Value)),
-                    Regex.Replace(match.Groups[2].Value.ToLower(), @"[^\p{L}\p{N}]+", "-"),
+                    Regex.Replace(match.Groups[2].Value.ToLower(), @"[^\p{L}\p{N}]+", "-").Trim('-'),
                     match.Groups[1].Value.Length,
                     t.SourceInfo));
         }
