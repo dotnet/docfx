@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.DataContracts.RestApi
     public class RestApiRootItemViewModel : RestApiItemViewModelBase
     {
         /// <summary>
-        /// The original swagger.json cpntent
+        /// The original swagger.json content
         /// `_` prefix indicates that this metadata is generated
         /// </summary>
         [YamlMember(Alias = "_raw")]
