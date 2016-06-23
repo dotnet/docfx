@@ -20,9 +20,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var swaggerFile = @"TestData\swagger\simple_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
 
-            Assert.Equal(1, swagger.Paths.Count);
-            Assert.Equal(1, swagger.Paths["/contacts"].Count);
-            var action = swagger.Paths["/contacts"]["get"];
+            Assert.Equal(1, swagger.Paths.Values.Count);
+            var actionJObject = swagger.Paths["/contacts"].Metadata["get"] as JObject;
+            Assert.NotNull(actionJObject);
+            var action = actionJObject.ToObject<OperationObject>();
             var parameters = action.Parameters;
             Assert.Equal(1, parameters.Count);
             Assert.Equal("query", parameters[0].Metadata["in"]);
@@ -40,11 +41,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
 
             Assert.Equal(1, swagger.Paths.Count);
-            Assert.Equal(1, swagger.Paths["/contacts"].Count);
-            var action = swagger.Paths["/contacts"]["patch"];
+            Assert.Equal(1, swagger.Paths["/contacts"].Metadata.Count);
+            var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
+            Assert.NotNull(actionJObject);
+            var action = actionJObject.ToObject<OperationObject>();
             var parameters = action.Parameters;
-            Assert.Equal(2, parameters.Count);
-            Assert.Equal("body", parameters[0].Metadata["in"]);
             var schema = parameters[0].Metadata["schema"] as JObject;
             Assert.NotNull(schema);
             Assert.Equal("Sales", schema["example"]["department"].ToString());
@@ -87,6 +88,28 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.NotNull(externalDocs);
             Assert.Equal("Find out more", externalDocs["description"]);
             Assert.Equal("http://swagger.io", externalDocs["url"]);
+        }
+
+
+        [Fact]
+        public void ParseSwaggerJsonWithPathParametersShouldSucceed()
+        {
+            const string swaggerFile = @"TestData\swagger\pathParameters_swagger2.json";
+            var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
+
+            Assert.Equal(1, swagger.Paths.Values.Count);
+            var parameters = swagger.Paths["/contacts"].Parameters;
+            Assert.Equal(2, parameters.Count);
+
+            // $ref parameter
+            Assert.Equal("api-version", parameters[0].Metadata["name"]);
+            Assert.Equal(false, parameters[0].Metadata["required"]);
+            Assert.Equal("api version description", parameters[0].Description);
+
+            // self defined parameter
+            Assert.Equal("subscriptionId", parameters[1].Metadata["name"]);
+            Assert.Equal(true, parameters[1].Metadata["required"]);
+            Assert.Equal("subscription id", parameters[1].Description);
         }
 
         [Fact]

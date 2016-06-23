@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
     public class RestApiChildItemViewModel : RestApiItemViewModelBase
