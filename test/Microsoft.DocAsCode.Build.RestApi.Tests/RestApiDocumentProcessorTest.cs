@@ -12,8 +12,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Build.RestApi.ViewModels;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Tests.Common;

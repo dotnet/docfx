@@ -9,6 +9,7 @@
     <Compile Include="ApplyOverwriteDocumentForRestApi.cs" />
     <Compile Include="BuildRestApiDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SwaggerModelConverter.cs" />
     <Compile Include="Swagger\InfoObject.cs" />
     <Compile Include="Swagger\Internals\SwaggerArray.cs" />
     <Compile Include="Swagger\Internals\SwaggerJsonBuilder.cs" />
@@ -28,13 +29,6 @@
     <Compile Include="Swagger\SwaggerModel.cs" />
     <Compile Include="RestApiDocumentProcessor.cs" />
     <Compile Include="ValidateRestApiDocumentMetadata.cs" />
-    <Compile Include="ViewModels\RestApiItemViewModelBase.cs" />
-    <Compile Include="ViewModels\RestApiRootItemViewModel.cs" />
-    <Compile Include="ViewModels\RestApiChildItemViewModel.cs" />
-    <Compile Include="ViewModels\RestApiTagViewModel.cs" />
-    <Compile Include="ViewModels\RestApiParameterViewModel.cs" />
-    <Compile Include="ViewModels\RestApiResponseExampleViewModel.cs" />
-    <Compile Include="ViewModels\RestApiResponseViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj">
@@ -48,6 +42,10 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj">
       <Project>{60f21edb-37f9-490d-b1b6-2ec482f76b50}</Project>
       <Name>Microsoft.DocAsCode.DataContracts.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.DataContracts.RestApi\Microsoft.DocAsCode.DataContracts.RestApi.csproj">
+      <Project>{c6844e9d-9c68-4947-84da-a0eaa5191664}</Project>
+      <Name>Microsoft.DocAsCode.DataContracts.RestApi</Name>
     </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
       <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>

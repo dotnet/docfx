@@ -9,8 +9,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Build.RestApi.ViewModels;
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]

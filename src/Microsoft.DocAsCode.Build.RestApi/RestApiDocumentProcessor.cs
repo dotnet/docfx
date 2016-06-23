@@ -13,9 +13,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.RestApi.Swagger;
-    using Microsoft.DocAsCode.Build.RestApi.ViewModels;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     }
 
                     swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
-                    var vm = RestApiRootItemViewModel.FromSwaggerModel(swagger);
+                    var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
                     var displayLocalPath = repoInfo?.RelativePath ?? filePath.ToDisplayPath();
                     return new FileModel(file, vm, serializer: new BinaryFormatter())
                     {

@@ -9,8 +9,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Build.RestApi.ViewModels;
 
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
     public class ValidateRestApiDocumentMetadata : BaseDocumentBuildStep
