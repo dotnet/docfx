@@ -43,7 +43,7 @@ footer{
       <div class="col-md-6 col-md-offset-3 text-center">
         <section>
           <h2>Run Everywhere</h2>
-          <p class="lead">DocFX can run on Linux, MacOS, and Windows. The generated website is pure static, and can be deployed to Github Pages, Azure Websites or any web host with no additional configurations.</p>
+          <p class="lead">DocFX can run on Linux, macOS, and Windows. The generated website is pure static, and can be deployed to Github Pages, Azure Websites or any web host with no additional configurations.</p>
         </section>
       </div>
     </div>
