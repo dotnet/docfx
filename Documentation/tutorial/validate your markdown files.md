@@ -18,7 +18,7 @@ Create a *JSON* file with name `md.style` in the same folder of `docfx.json`, an
 
 ## Build-in html tag validation rules
 
-For most cases, we might need some html tag rules, and we have a build-in tag rules.
+For most cases, you may want to prohibit using certain html tags in markdown, so we built a built-in html tag rule for you.
 
 For example, create `md.style` with following content:
 ```json
@@ -29,24 +29,31 @@ For example, create `md.style` with following content:
          "behavior": "Warning",
          "messageFormatter": "Some message.",
          "customValidatorContractName": null,
-         "openingTagOnly": true
+         "openingTagOnly": false
       }
    ]
 }
 ```
 Then when any one write `<H1>` or `<H2>` in markdown file, it will give a warning with message `Some message.`.
 
-1.  `tagName` is filter html tag names, and they are case-insensitive.
-2.  `behavior` is an enum value, it can be following:
-    * None
-    * Warning
-    * Error
-3.  `messageFormatter` can contain following variables:
+1.  `tagName` is filter html tag names, *required*, *case-insensitive*.
+2.  `behavior` is an enum value, *required*.
+
+    it can be following:
+    * None: Do nothing.
+    * Warning: Log a warning.
+    * Error: Log an error, it will break current build.
+3.  `messageFormatter` is the log message when hit, *required*.
+    It can contain following variables:
     * `{0}` the name of tag.
     * `{1}` the whole tag.
     For example, the `messageFormatter` is `{0} is the tag name of {1}.`, and the tag is `<H1 class="heading">` match the rule, then it will output following message: `H1 is the tag name of <H1 class="heading">.`
-4.  `customValidatorContractName` is an extension tag rule contract name for complex validation rule, see [How to create a custom html tag validator](#how-to-create-a-custom-html-tag-validator).
-5.  `openingTagOnly` is a boolean, if `true`, it will only apply to opening tag, e.g. `<H1>`, otherwise, it will also apply to closing tag, e.g. `</H1>`.
+4.  `customValidatorContractName` is an extension tag rule contract name for complex validation rule, *option*.
+
+    see [How to create a custom html tag validator](#how-to-create-a-custom-html-tag-validator).
+5.  `openingTagOnly` is a boolean, *option*, default is `false`
+
+    if `true`, it will only apply to opening tag, e.g. `<H1>`, otherwise, it will also apply to closing tag, e.g. `</H1>`.
 
 ### How to create a custom html tag validator
 1.  Create a project in your code editor (e.g. visual studio).
@@ -65,9 +72,23 @@ public class MyMarkdownTagValidator : ICustomMarkdownTagValidator
     }
 }
 ```
+And update your `md.style` with following content:
+```json
+{
+   "tagRules": [
+      {
+         "tagName": [ "H1", "H2" ],
+         "behavior": "Warning",
+         "messageFormatter": "Some message.",
+         "customValidatorContractName": "Require text class",
+         "openingTagOnly": true
+      }
+   ]
+}
+```
 
 ## Customize token validation rules
-In `rules` property, we can add any [validation plug-in](#how-to-create-a-plug-in-for-markdown-validation) by following style:
+In `rules` property, we can add any [validation plug-in](#how-to-create-a-plug-in-for-markdown-token-validation) by following style:
 ```json
 {
    "rules": [ { "name": "rule name", "disable": false } ]
@@ -94,7 +115,7 @@ And you can disable default rules by following config:
 }
 ```
 
-### How to create a plug-in for markdown validation
+### How to create a plug-in for markdown token validation
 1.  Create a project in your code editor (e.g. visual studio).
 2.  Add nuget package `Microsoft.DocAsCode.MarkdownLite` and `Microsoft.Composition`.
 3.  Create a class and implements @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider
@@ -122,6 +143,9 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
     }
 }
 ```
+
+> [!TIP]
+> If want to log error or warning, please add nuget `Microsoft.DocAsCode.Common`, then use @Microsoft.DocAsCode.Common.Logger to log message.
 
 ## How to enable custom validators
 1.  Config markdown validation rules in `md.style`.
