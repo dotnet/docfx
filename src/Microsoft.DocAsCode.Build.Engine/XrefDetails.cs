@@ -104,11 +104,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             Spec = spec;
             if (string.IsNullOrEmpty(AnchorDisplayName))
             {
-                AnchorDisplayName = spec.Name;
+                AnchorDisplayName = StringHelper.HtmlEncode(spec.Name);
             }
             if (string.IsNullOrEmpty(PlainTextDisplayName))
             {
-                PlainTextDisplayName = spec.Name;
+                PlainTextDisplayName = StringHelper.HtmlEncode(spec.Name);
             }
         }
 
