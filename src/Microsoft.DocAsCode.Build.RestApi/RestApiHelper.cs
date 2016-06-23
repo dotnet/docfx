@@ -9,33 +9,39 @@ namespace Microsoft.DocAsCode.Build.RestApi
     public static class RestApiHelper
     {
         /// <summary>
-        /// Use JSON String Representation instead of URI Fragment Identifier Representation, refer to: https://tools.ietf.org/html/rfc6901#section-5
         /// Reverse to reference unescape described in http://tools.ietf.org/html/rfc6901#section-4
         /// </summary>
         /// <param name="reference"></param>
         /// <returns></returns>
         public static string FormatDefinitionSinglePath(string reference)
         {
-            return Uri.UnescapeDataString(reference.Replace("~", "~0").Replace("/", "~1"));
+            return reference.Replace("~", "~0").Replace("/", "~1");
         }
 
+        /// <summary>
+        /// When the reference starts with '#/', treat it as URI Fragment Identifier Representation and decode.
+        /// When the reference starts with '/', treat it as JSON String Representation and keep it as.
+        /// Refer to: https://tools.ietf.org/html/rfc6901#section-5
+        /// </summary>
+        /// <param name="reference"></param>
+        /// <returns></returns>
         public static string FormatReferenceFullPath(string reference)
         {
-            if (reference.StartsWith("/"))
+            // Decode for URI Fragment Identifier Representation
+            if (reference.StartsWith("#/"))
             {
-                reference = reference.Substring(1);
-            }
-            else if (reference.StartsWith("#/"))
-            {
-                reference = reference.Substring(2);
-            }
-            else
-            {
-                throw new ArgumentException($"Full reference path \"{reference}\" must start with '/' or '#/'");
+                // Reuse relative path, to decode the values inside '/'.
+                var path = reference.Substring(2);
+                return "/" + ((RelativePath)path).UrlDecode();
             }
 
-            // Reuse relative path, to decode the values inside '/'.
-            return "/" + ((RelativePath)reference).UrlDecode();
+            // Not decode for JSON String Representation
+            if (reference.StartsWith("/"))
+            {
+                return reference;
+            }
+
+            throw new InvalidOperationException($"Full reference path \"{reference}\" must start with '/' or '#/'");
         }
     }
 }

@@ -405,7 +405,7 @@
   "basePath": "/myorganization",
   "schemes": [ "https" ],
   "definitions": {
-    "getDefinition[Key,Value]" : {
+    "getDefinition[Key,Value]": {
       "get": {
         "tags": [ "contacts" ],
         "parameters": [
@@ -658,23 +658,19 @@
           "type": "array",
           "items": {
             "schema": {
-              "$ref": "#/definitions/ProvisioningError"
+              "$ref": "#/definitions/Provision%25ing%7CError"
             }
           },
           "readOnly": "true"
-
         },
         "proxyAddresses": {
           "type": "array",
           "items": {
-            "type": "string"
+            "schema": {
+              "$ref": "/definitions/Provision%ing|Error"
+            }
           },
-          "readOnly": "true",
-          "example": {
-            "proxyAddresses": [
-              "SMTP:garthf@a830edad9050849NDA1.onmicrosoft.com"
-            ]
-          }
+          "readOnly": "true"
         },
         "sipProxyAddress": {
           "type": "string",
@@ -697,7 +693,7 @@
         }
       }
     },
-    "ProvisioningError": {
+    "Provision%ing|Error": {
       "properties": {
         "errorDetail": {
           "type": "string",
