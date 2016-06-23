@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25320.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -258,6 +258,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.Common.Tests", "test\Microsoft.DocAsCode.Build.Common.Tests\Microsoft.DocAsCode.Build.Common.Tests.csproj", "{6AA8604A-258B-4992-97C2-3F8D4AC5F191}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.ConceptualDocuments.Tests", "test\Microsoft.DocAsCode.Build.ConceptualDocuments.Tests\Microsoft.DocAsCode.Build.ConceptualDocuments.Tests.csproj", "{CEE4A009-B332-49A7-8A4F-7585E5EBAD00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RestApi", "RestApi", "{A2201525-25AC-4036-AED2-57945876BABE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.DataContracts.RestApi", "src\Microsoft.DocAsCode.DataContracts.RestApi\Microsoft.DocAsCode.DataContracts.RestApi.csproj", "{C6844E9D-9C68-4947-84DA-A0EAA5191664}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -747,6 +751,14 @@ Global
 		{CEE4A009-B332-49A7-8A4F-7585E5EBAD00}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CEE4A009-B332-49A7-8A4F-7585E5EBAD00}.Release|x86.ActiveCfg = Release|Any CPU
 		{CEE4A009-B332-49A7-8A4F-7585E5EBAD00}.Release|x86.Build.0 = Release|Any CPU
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664}.Debug|x86.Build.0 = Debug|Any CPU
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664}.Release|x86.ActiveCfg = Release|Any CPU
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -857,5 +869,7 @@ Global
 		{1FEBD1F7-5107-4F26-9E76-597AC9593DB7} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
 		{6AA8604A-258B-4992-97C2-3F8D4AC5F191} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
 		{CEE4A009-B332-49A7-8A4F-7585E5EBAD00} = {E872B0D7-6331-4E40-8264-0015330DA5D3}
+		{A2201525-25AC-4036-AED2-57945876BABE} = {FC516D58-DDAD-4DD7-87D8-CEB484DB86C8}
+		{C6844E9D-9C68-4947-84DA-A0EAA5191664} = {A2201525-25AC-4036-AED2-57945876BABE}
 	EndGlobalSection
 EndGlobal

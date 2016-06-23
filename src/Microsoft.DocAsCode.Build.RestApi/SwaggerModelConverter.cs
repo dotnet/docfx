@@ -1,45 +1,22 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
+namespace Microsoft.DocAsCode.Build.RestApi
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
 
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using YamlDotNet.Serialization;
-
     using Microsoft.DocAsCode.Build.RestApi.Swagger;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
+    using Microsoft.DocAsCode.DataContracts.RestApi;
 
-    [Serializable]
-    public class RestApiRootItemViewModel : RestApiItemViewModelBase
+    using Newtonsoft.Json.Linq;
+
+    public static class SwaggerModelConverter
     {
-        private const string TagText = "tag";
-        private static readonly string[] OperationNames = { "get", "put", "post", "delete", "options", "head", "patch" };
-
-        /// <summary>
-        /// The original swagger.json cpntent
-        /// `_` prefix indicates that this metadata is generated
-        /// </summary>
-        [YamlMember(Alias = "_raw")]
-        [JsonProperty("_raw")]
-        [MergeOption(MergeOption.Ignore)]
-        public string Raw { get; set; }
-
-        [YamlMember(Alias = "tags")]
-        [JsonProperty("tags")]
-        public List<RestApiTagViewModel> Tags { get; set; }
-
-        [YamlMember(Alias = "children")]
-        [JsonProperty("children")]
-        public List<RestApiChildItemViewModel> Children { get; set; }
-
         public static RestApiRootItemViewModel FromSwaggerModel(SwaggerModel swagger)
         {
             var uid = GetUid(swagger);
@@ -132,6 +109,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
         #region Private methods
 
         private static readonly Regex HtmlEncodeRegex = new Regex(@"\W", RegexOptions.Compiled);
+        private const string TagText = "tag";
+        private static readonly string[] OperationNames = { "get", "put", "post", "delete", "options", "head", "patch" };
 
         /// <summary>
         /// TODO: merge with the one in XrefDetails

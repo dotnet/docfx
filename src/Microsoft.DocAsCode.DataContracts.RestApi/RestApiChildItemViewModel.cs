@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
+namespace Microsoft.DocAsCode.DataContracts.RestApi
 {
     using System;
     using System.Collections.Generic;
@@ -18,6 +18,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.ViewModels
         [JsonProperty(Constants.PropertyName.Path)]
         public string Path { get; set; }
 
+        /// <summary>
+        /// operation name, for example get, put, post, delete, options, head and patch.
+        /// </summary>
         [YamlMember(Alias = "operation")]
         [JsonProperty("operation")]
         public string OperationName { get; set; }

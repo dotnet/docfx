@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Build.RestApi.ViewModels;
+    using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Utility.EntityMergers;
