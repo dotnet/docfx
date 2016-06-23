@@ -32,3 +32,5 @@
     items:
     - name: "Advanced: Support Hyperlink"
       href: advanced_support_hyperlink.md
+  - name: Validate your markdown files
+    href: Validate your markdown files.md
