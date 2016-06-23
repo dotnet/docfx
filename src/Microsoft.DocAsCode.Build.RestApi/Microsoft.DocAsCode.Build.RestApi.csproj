@@ -9,6 +9,7 @@
     <Compile Include="ApplyOverwriteDocumentForRestApi.cs" />
     <Compile Include="BuildRestApiDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RestApiHelper.cs" />
     <Compile Include="SwaggerModelConverter.cs" />
     <Compile Include="Swagger\InfoObject.cs" />
     <Compile Include="Swagger\Internals\SwaggerArray.cs" />

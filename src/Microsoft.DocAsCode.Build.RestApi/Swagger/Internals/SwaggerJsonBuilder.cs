@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                     }
 
                     SwaggerReferenceObject deferredObject = new SwaggerReferenceObject();
-                    deferredObject.DeferredReference = (string)referenceToken;
+                    deferredObject.DeferredReference = RestApiHelper.FormatReferenceFullPath((string)referenceToken);
 
                     // For swagger, other properties are still allowed besides $ref, e.g.
                     // "schema": {
@@ -107,9 +107,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         var swagger = (SwaggerReferenceObject)swaggerBase;
                         if (!string.IsNullOrEmpty(swagger.DeferredReference))
                         {
-                            if (swagger.DeferredReference[0] != '#')
+                            if (swagger.DeferredReference[0] != '/')
                             {
-                                throw new JsonException($"reference \"{swagger.DeferredReference}\" is not supported. Reference must be inside current schema document starting with #");
+                                throw new JsonException($"reference \"{swagger.DeferredReference}\" is not supported. Reference must be inside current schema document starting with /");
                             }
 
                             SwaggerObject referencedObject;
@@ -184,7 +184,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 state.WriteTo(sb);
             }
 
-            return "#" + sb.ToString();
+            return sb.ToString();
         }
 
         private class JsonIndexLocation : IJsonLocation
@@ -213,17 +213,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             public void WriteTo(StringBuilder sb)
             {
                 sb.Append('/');
-                sb.Append(EscapeReference(_propertyName));
-            }
-
-            /// <summary>
-            /// Reverse to reference unescape described in http://tools.ietf.org/html/rfc6901#section-4
-            /// </summary>
-            /// <param name="reference"></param>
-            /// <returns></returns>
-            private static string EscapeReference(string reference)
-            {
-                return Uri.EscapeDataString(reference.Replace("~", "~0").Replace("/", "~1"));
+                sb.Append(RestApiHelper.FormatDefinitionSinglePath(_propertyName));
             }
         }
 
