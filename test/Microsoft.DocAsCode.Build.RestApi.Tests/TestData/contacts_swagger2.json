@@ -35,7 +35,7 @@
   },
   "paths": {
     "/contacts": {
-      "$ref": "#/definitions/getDefinition"
+      "$ref": "#/definitions/getDefinition[Key,Value]"
     },
     "/contacts/{object_id}": {
       "parameters": [
@@ -121,7 +121,7 @@
             "name": "bodyparam",
             "required": false,
             "schema": {
-              "$ref": "#/definitions/contact",
+              "$ref": "#/definitions/contact~1def~0",
               "example": {
                 "department": "Sales",
                 "jobTitle": "Sales Rep"
@@ -405,7 +405,7 @@
   "basePath": "/myorganization",
   "schemes": [ "https" ],
   "definitions": {
-    "getDefinition" : {
+    "getDefinition[Key,Value]": {
       "get": {
         "tags": [ "contacts" ],
         "parameters": [
@@ -596,7 +596,7 @@
         "operationId": "get contacts"
       }
     },
-    "contact": {
+    "contact/def~": {
       "properties": {
         "objectType": {
           "type": "string",
@@ -658,23 +658,19 @@
           "type": "array",
           "items": {
             "schema": {
-              "$ref": "#/definitions/ProvisioningError"
+              "$ref": "#/definitions/Provision%25ing%7CError"
             }
           },
           "readOnly": "true"
-
         },
         "proxyAddresses": {
           "type": "array",
           "items": {
-            "type": "string"
+            "schema": {
+              "$ref": "/definitions/Provision%ing|Error"
+            }
           },
-          "readOnly": "true",
-          "example": {
-            "proxyAddresses": [
-              "SMTP:garthf@a830edad9050849NDA1.onmicrosoft.com"
-            ]
-          }
+          "readOnly": "true"
         },
         "sipProxyAddress": {
           "type": "string",
@@ -697,7 +693,7 @@
         }
       }
     },
-    "ProvisioningError": {
+    "Provision%ing|Error": {
       "properties": {
         "errorDetail": {
           "type": "string",
