@@ -19,8 +19,8 @@ exports.transform = function (model) {
             child.footer = child.footer || ''; // set to empty incase mustache looks up
 
             formatExample(child.responses);
-            resolveAllOf(model.children[i]);
-            model.children[i] = transformReference(model.children[i]);
+            resolveAllOf(child);
+            child = transformReference(child);
         };
         if (model.tags) {
             for (var i = 0; i < model.tags.length; i++) {
@@ -94,8 +94,7 @@ exports.transform = function (model) {
                         processAllOfArray(obj[key], obj);
                         // set 'allOf' to undefined
                         obj[key] = undefined;
-                    }
-                    else {
+                    } else {
                         resolveAllOf(obj[key]);
                     }
                 }
@@ -110,8 +109,7 @@ exports.transform = function (model) {
             for (var key in item) {
                 if (originalObj.hasOwnProperty(key)) {
                     mergeObjByKey(originalObj[key], item[key]);
-                }
-                else {
+                } else {
                     originalObj[key] = item[key];
                 }
             }
@@ -139,8 +137,7 @@ exports.transform = function (model) {
                     if (key === "schema") {
                         // transform schema.properties from obj to key value pair
                         obj[key] = transformProperties(obj[key]);
-                    }
-                    else {
+                    } else {
                         obj[key] = transformReference(obj[key]);
                     }
                 }
