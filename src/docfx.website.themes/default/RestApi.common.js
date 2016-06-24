@@ -20,7 +20,7 @@ exports.transform = function (model) {
 
             formatExample(child.responses);
             resolveAllOf(child);
-            child = transformReference(child);
+            transformReference(child);
         };
         if (model.tags) {
             for (var i = 0; i < model.tags.length; i++) {
@@ -92,8 +92,8 @@ exports.transform = function (model) {
                     if (key === "allOf" && Array.isArray(obj[key])) {
                         // find 'allOf' array and process
                         processAllOfArray(obj[key], obj);
-                        // set 'allOf' to undefined
-                        obj[key] = undefined;
+                        // delete 'allOf' value
+                        delete obj[key];
                     } else {
                         resolveAllOf(obj[key]);
                     }
@@ -128,7 +128,7 @@ exports.transform = function (model) {
     function transformReference(obj) {
         if (Array.isArray(obj)) {
             for (var i = 0; i < obj.length; i++) {
-                obj[i] = transformReference(obj[i]);
+                transformReference(obj[i]);
             }
         }
         else if (typeof obj === "object") {
@@ -138,12 +138,11 @@ exports.transform = function (model) {
                         // transform schema.properties from obj to key value pair
                         obj[key] = transformProperties(obj[key]);
                     } else {
-                        obj[key] = transformReference(obj[key]);
+                        transformReference(obj[key]);
                     }
                 }
             }
         }
-        return obj;
     }
 
     function transformProperties(obj) {
