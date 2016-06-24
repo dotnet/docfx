@@ -19,6 +19,7 @@ exports.transform = function (model) {
             child.footer = child.footer || ''; // set to empty incase mustache looks up
 
             formatExample(child.responses);
+            resolveAllOf(model.children[i]);
             model.children[i] = transformReference(model.children[i]);
         };
         if (model.tags) {
@@ -75,6 +76,53 @@ exports.transform = function (model) {
                         console.warn("example is not a valid JSON object.");
                     }
                 }
+            }
+        }
+    }
+
+    function resolveAllOf(obj) {
+        if (Array.isArray(obj)) {
+            for (var i = 0; i < obj.length; i++) {
+                resolveAllOf(obj[i]);
+            }
+        }
+        else if (typeof obj === "object") {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    if (key === "allOf" && Array.isArray(obj[key])) {
+                        // find 'allOf' array and process
+                        processAllOfArray(obj[key], obj);
+                        // set 'allOf' to undefined
+                        obj[key] = undefined;
+                    }
+                    else {
+                        resolveAllOf(obj[key]);
+                    }
+                }
+            }
+        }
+    }
+
+    function processAllOfArray(allOfArray, originalObj) {
+        // for each object in 'allOf' array, merge the values to those in the same level with 'allOf'
+        for (var i = 0; i < allOfArray.length; i++) {
+            var item = allOfArray[i];
+            for (var key in item) {
+                if (originalObj.hasOwnProperty(key)) {
+                    mergeObjByKey(originalObj[key], item[key]);
+                }
+                else {
+                    originalObj[key] = item[key];
+                }
+            }
+        }
+    }
+
+    function mergeObjByKey(targetObj, sourceObj) {
+        for (var key in sourceObj) {
+            // merge only when target object doesn't define the key
+            if (!targetObj.hasOwnProperty(key)) {
+                targetObj[key] = sourceObj[key];
             }
         }
     }
