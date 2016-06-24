@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex Comment = new Regex(@"^<!--[\s\S]*?-->", RegexOptionCompiled);
             public static readonly Regex AutoLink = new Regex(@"^<([^ >]+(@|:\/)[^ >]+)>", RegexOptionCompiled);
             public static readonly Regex CodeElement = new Regex(@"^\<code\>[\s\S]*?\</code\>", RegexOptionCompiled | RegexOptions.IgnoreCase);
-            public static readonly Regex Tag = new Regex(@"^<\/?\w+(?:""[^""]*""|'[^']*'|[^'"">])*?>", RegexOptionCompiled);
+            public static readonly Regex Tag = new Regex(@"^<\/?([A-Z]|[a-z])\w*(?:""[^""]*""|'[^']*'|[^'"">])*?>", RegexOptionCompiled);
             /// <summary>
             /// <![CDATA[
             /// ^                                           start of string

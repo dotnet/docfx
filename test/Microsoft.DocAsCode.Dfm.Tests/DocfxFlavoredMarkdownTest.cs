@@ -584,6 +584,20 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestDfm_EncodeInStrongEM()
+        {
+            var source = @"tag started with non-alphabet should be encoded <1-100>, <_hello>, <?world>, <1_2 href=""good"">, <1 att='bcd'>.
+tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b href=""good""> <AC att='bcd'>";
+
+            var expected = @"<p>tag started with non-alphabet should be encoded &lt;1-100&gt;, &lt;_hello&gt;, &lt;?world&gt;, &lt;1_2 href=&quot;good&quot;&gt;, &lt;1 att=&#39;bcd&#39;&gt;.
+tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b href=""good""> <AC att='bcd'></p>
+";
+            var marked = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestDfmImageLink_WithSpecialCharactorsInAltText()
         {
             var source = @"![This is image alt text with quotation ' and double quotation ""hello"" world](girl.png)";
