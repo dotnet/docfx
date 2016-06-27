@@ -15,6 +15,7 @@ v2.1(Pre-Release)
     ```json
     "useCompatibilityFileName": true
     ```
+6.  Display extension methods in API reference documentation
 
 v2.0
 -----------
