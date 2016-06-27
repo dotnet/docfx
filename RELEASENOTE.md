@@ -1,5 +1,8 @@
-Version Notes (Current Version: v2.1)
+Version Notes (Current Version: v2.2)
 =======================================
+v2.2(Pre-Release)
+-----------
+
 v2.1
 -----------
 1.  Support for xref zip file in relative path.
