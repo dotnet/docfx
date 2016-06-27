@@ -611,7 +611,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 [Ref a non md resource in another docset](ex_resource/docset2Resource.html)
 ![Ref a image content in another docset](ex_resource/docset2Image.png)
 ![Ref a image content not in another docset](../docset2/docset2FakeImage.png)
-![Ref a abs path image content in another docset](c:\\docset2\fullNameImage.img)
+![Ref a abs path image content in another docset](c:\\docset2\\fullNameImage.img)
 ![Ref a abs http image content in another docset](https://google/images/fullNameImage.img)
 
 ";
@@ -681,7 +681,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
         public void TestAzureMarkdownRewriters_LinkRefWithBackslash()
         {
             var source = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\/archive/complete.zip)";
-            var expected = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\/archive/complete.zip)
+            var expected = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\\/archive/complete.zip)
 
 ";
             var result = AzureMarked.Markup(source);

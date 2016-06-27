@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo)
         {
-            var escapedHref = StringHelper.Escape(href);
+            var escapedHref = StringHelper.Escape(Regexes.Helper.Escape.Replace(href, m => m.Groups[1].Value));
             var escapedTitle = !string.IsNullOrEmpty(title) ? StringHelper.Escape(title) : null;
             if (isImage)
             {

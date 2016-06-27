@@ -625,7 +625,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
         public void TestPathUtility_AbsoluteLinkWithBracketAndBrackt()
         {
             var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
-            var expected = @"<p><a href=""http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx"">User-Defined Date/Time Formats (Format Function)</a></p>
+            var expected = @"<p><a href=""http://msdn2.microsoft.com/library/73ctwf33(VS.90).aspx"">User-Defined Date/Time Formats (Format Function)</a></p>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);

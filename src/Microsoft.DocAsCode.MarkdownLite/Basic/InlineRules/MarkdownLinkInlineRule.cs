@@ -18,8 +18,24 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
+            if (IsEscape(match.Groups[1].Value) || IsEscape(match.Groups[2].Value))
+            {
+                return null;
+            }
             var sourceInfo = context.Consume(match.Length);
             return GenerateToken(parser, match.Groups[2].Value, match.Groups[4].Value, match.Groups[1].Value, match.Value[0] == '!', sourceInfo);
+        }
+
+        private bool IsEscape(string text)
+        {
+            for (int i = text.Length - 1; i >= 0; i--)
+            {
+                if (text[i] != '\\')
+                {
+                    return (text.Length - i) % 2 == 0;
+                }
+            }
+            return text.Length % 2 == 1;
         }
     }
 }
