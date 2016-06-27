@@ -17,6 +17,10 @@ v2.1(Pre-Release)
     ```
 6.  Display extension methods in API reference documentation
 7.  Provide with option `_displayLangs` in docfx.json to choose which language version you want to show.
+8.  Support more Swagger syntax:
+    - Support `allOf`. (https://github.com/dotnet/docfx/issues/360)
+    - Support $ref with `[` and `]` in json pointer. (https://github.com/dotnet/docfx/issues/359)
+    - Support `parameters` applicable for all the operations under `path`. (https://github.com/dotnet/docfx/issues/358)
 
 v2.0
 -----------
