@@ -380,7 +380,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var lineInfo = node as IXmlLineInfo;
             int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
 
-            return WebUtility.HtmlDecode(NormalizeXml(node.InnerXml, column));
+            return NormalizeXml(node.InnerXml, column);
         }
 
         /// <summary>
