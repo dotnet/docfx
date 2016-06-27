@@ -16,6 +16,7 @@ v2.1(Pre-Release)
     "useCompatibilityFileName": true
     ```
 6.  Display extension methods in API reference documentation
+7.  Provide with option `_displayLangs` in docfx.json to choose which language version you want to show.
 
 v2.0
 -----------
