@@ -24,5 +24,10 @@
     "name": "DocFX CI",
     "email": "vscopbld@microsoft.com",
     "message": "CI Updates"
+  },
+  "choco": {
+    "homeDir": "docfx/src/nuspec/chocolatey/docfx/",
+    "nuspec": "docfx/src/nuspec/chocolatey/docfx/docfx.nuspec",
+    "chocoScript": "docfx/src/nuspec/chocolatey/docfx/tools/chocolateyinstall.ps1"
   }
 }
