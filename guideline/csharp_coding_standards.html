@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>C# Coding Standards | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="C# Coding Standards | DocFX website ">
-    <meta name="generator" content="docfx 2.0.2.0">
+    <meta name="generator" content="docfx 2.1.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -93,12 +93,12 @@
 </ul>
 <h2 id="highlights-of-coding-standards">Highlights of Coding Standards</h2>
 <p>This section is not intended to give a summary of all the coding standards enabled by our customized StyleCop, but to give a highlight of some rules one will possibly meet in daily coding life. It also provides some coding standards that are recommended but not mandatory (that is, not enabled by StyleCop).</p>
-<h3 id="file-layout-recommended-">File Layout (Recommended)</h3>
+<h3 id="file-layout-recommended">File Layout (Recommended)</h3>
 <p>Only one public class is allowed per file.</p>
 <p>The file name derives from the class name.</p>
 <pre><code>Class   : Observer
 Filename: Observer.cs
-</code></pre><h3 id="class-definition-order-mandatory-">Class Definition Order (Mandatory)</h3>
+</code></pre><h3 id="class-definition-order-mandatory">Class Definition Order (Mandatory)</h3>
 <p>The class definition contains class members in the following order, from <em>less</em> restricted scope (public) to <em>more</em> restrictive (private):</p>
 <ul>
 <li><del>~ Nested types, e.g. classes, enum, struct, etc.</del>~ Non-private nested types are not allowed.</li>
@@ -111,7 +111,7 @@ Filename: Observer.cs
 </ul>
 </li>
 </ul>
-<h3 id="naming-mandatory-">Naming (Mandatory)</h3>
+<h3 id="naming-mandatory">Naming (Mandatory)</h3>
 <ul>
 <li><strong>DO</strong> use plural form for namespaces</li>
 <li><p><strong>DO</strong> use PascalCasing for all public member, type, and namespace names consisting of multiple words.</p>
@@ -140,7 +140,7 @@ Filename: Observer.cs
 <pre><code>public async Task&lt;string&gt; LoadContentAsync() { ... }
 </code></pre></li>
 </ul>
-<h3 id="formatting-mandatory-">Formatting (Mandatory)</h3>
+<h3 id="formatting-mandatory">Formatting (Mandatory)</h3>
 <ul>
 <li><strong>DO</strong> use spaces over tabs, and always show all spaces/tabs in IDE</li>
 </ul>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>Overwrite Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Overwrite Files | DocFX website ">
-    <meta name="generator" content="docfx 2.0.2.0">
+    <meta name="generator" content="docfx 2.1.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -98,7 +98,7 @@ Further description for `microsoft.com/docfx/Contacts`
 some_property: value
 conceptual: &lt;p&gt;&lt;b&gt;Content&lt;/b&gt; in Markdown&lt;/p&gt;
 </code></pre>
-<h3 id="anchor-content-">Anchor <code>*content</code></h3>
+<h3 id="anchor-content">Anchor <code>*content</code></h3>
 <p><code>*content</code> is the keyword invented and used specifically in <em>Overwrite File</em>s to represent the Markdown content following YAML header. We leverage <a href="http://www.yaml.org/spec/1.2/spec.html#id2765878">Anchors</a> syntax in YAML specification for <code>*content</code>.</p>
 <p>The value for <code>*content</code> is always transformed from Markdown content to HTML. When <code>*content</code> is not used, the Markdown content below YAML header will be set to <code>conceptual</code> property; When <code>*content</code> is used, the Markdown content below YAML header will no longer be set to <code>conceptual</code> property. With <code>*content</code>, we can easily add Markdown content to any properties. </p>
 <pre><code class="lang-md">---

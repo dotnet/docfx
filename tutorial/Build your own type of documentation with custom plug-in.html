@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>How-to: Build your own type of documentation with custom plug-in | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Build your own type of documentation with custom plug-in | DocFX website ">
-    <meta name="generator" content="docfx 2.0.2.0">
+    <meta name="generator" content="docfx 2.1.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -210,7 +210,7 @@ A.Postbuild([D1, D2, D3])
 B.Postbuild([D1, D2, D3])
 </code></pre></li>
 </ul>
-<h3 id="create-our-rtfbuildstep-">Create our RtfBuildStep:</h3>
+<h3 id="create-our-rtfbuildstep">Create our RtfBuildStep:</h3>
 <ol>
 <li><p>Create a new class (RtfBuildStep.cs), and declare it is a build step for <code>RtfDocumentProcessor</code>:</p>
 <pre><code class="lang-csharp">[Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]

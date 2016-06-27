@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.0.2.0">
+    <meta name="generator" content="docfx 2.1.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -92,12 +92,12 @@
 <h2 id="1-syntax">1. Syntax</h2>
 <pre><code>docfx &lt;command&gt; [&lt;args&gt;]
 </code></pre><h2 id="2-commands">2. Commands</h2>
-<h3 id="2-0-init-command-docfx-init-">2.0 Init command <code>docfx init</code></h3>
+<h3 id="2-0-init-command-docfx-init">2.0 Init command <code>docfx init</code></h3>
 <p><code>docfx init</code> helps generate an <code>docfx.json</code> file.</p>
-<h3 id="2-1-help-command-docfx-help-">2.1 Help command <code>docfx help</code></h3>
+<h3 id="2-1-help-command-docfx-help">2.1 Help command <code>docfx help</code></h3>
 <p><code>docfx help -a</code> list available subcommands.</p>
 <p><code>docfx help &lt;command&gt;</code> to read about a specific subcommand</p>
-<h3 id="2-2-extract-language-metadata-command-docfx-metadata-">2.2 Extract language metadata command <code>docfx metadata</code></h3>
+<h3 id="2-2-extract-language-metadata-command-docfx-metadata">2.2 Extract language metadata command <code>docfx metadata</code></h3>
 <p><strong>Syntax</strong></p>
 <pre><code>docfx metadata [&lt;projects&gt;]
 </code></pre><p><strong>Layout</strong></p>
@@ -128,7 +128,7 @@ Files can be combined using <code>,</code> as seperator and <em>search pattern</
 </li>
 </ol>
 <p>The default output folder is <code>_site/</code> folder if it is not specified in <code>docfx.json</code> under current directory.</p>
-<h3 id="2-3-generate-documentation-command-docfx-build-">2.3 Generate documentation command <code>docfx build</code></h3>
+<h3 id="2-3-generate-documentation-command-docfx-build">2.3 Generate documentation command <code>docfx build</code></h3>
 <p><strong>Syntax</strong></p>
 <pre><code>docfx build [-o:&lt;output_path&gt;] [-t:&lt;template folder&gt;]
 </code></pre><p><code>docfx build</code> generates documentation for current folder.</p>
@@ -190,7 +190,7 @@ Files can be combined using <code>,</code> as seperator and <em>search pattern</
       |-- logo.ico
 </code></pre><h2 id="3-docfx-json-format">3. <code>docfx.json</code> Format</h2>
 <p>Top level <code>docfx.json</code> structure is key-value pair. <code>key</code> is the name of the subcommand, current supported subcommands are <code>metadata</code> and <code>build</code>. </p>
-<h3 id="3-1-properties-for-metadata-">3.1 Properties for <code>metadata</code></h3>
+<h3 id="3-1-properties-for-metadata">3.1 Properties for <code>metadata</code></h3>
 <p><code>Metadata</code> section defines an array of source projects and their output folder. Each item has <code>src</code> and <code>dest</code> property. <code>src</code> defines the source projects to have metadata generated, which is in <code>File Mapping Format</code>. Detailed syntax is described in <strong>4. Supported <code>name-files</code> File Mapping Format</strong> below. <code>dest</code> defines the output folder of the generated metadata files.</p>
 <p><strong>Sample</strong></p>
 <pre><code class="lang-json">{
@@ -217,7 +217,7 @@ Files can be combined using <code>,</code> as seperator and <em>search pattern</
   ]
 }
 </code></pre>
-<h3 id="3-2-properties-for-build-">3.2 Properties for <code>build</code></h3>
+<h3 id="3-2-properties-for-build">3.2 Properties for <code>build</code></h3>
 <table>
 <thead>
 <tr>

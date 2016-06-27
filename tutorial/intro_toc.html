@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>Table-Of-Content (TOC) Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Table-Of-Content (TOC) Files | DocFX website ">
-    <meta name="generator" content="docfx 2.0.2.0">
+    <meta name="generator" content="docfx 2.1.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -79,7 +79,7 @@
 <p>DocFX supports processing Markdown files, which we call <em>Conceptual File</em>s, as well as structured data model in YAML or JSON format, which we call <em>Metadata File</em>s. Besides that, DocFX introduces a way to organize these files using <em>Table-Of-Content File</em>s, which we also call <em>TOC File</em>s, so that users can navigate through <em>Metadata File</em>s and <em>Conceptual File</em>s.</p>
 <p><em>TOC File</em>s must have file name <code>toc.md</code> or <code>toc.yml</code>, notice that file name is case-insensitive.</p>
 <h2 id="basic-format">Basic format</h2>
-<h3 id="markdown-format-toc-toc-md-">Markdown format TOC <code>toc.md</code></h3>
+<h3 id="markdown-format-toc-toc-md">Markdown format TOC <code>toc.md</code></h3>
 <p><code>toc.md</code> leverages Markdown <a href="http://daringfireball.net/projects/markdown/syntax#header">Atx-style headers</a> which use 1-6 hash characters at the start of the line to represent the TOC levels 1-6. We call each line starting with hash characters a <em>TOC Item</em>. A <em>TOC Item</em> with higher level is considered as the child of the nearest upper <em>TOC Item</em> with less level. A sample <code>toc.md</code> is as below:</p>
 <pre><code class="lang-md"># [Header1](href)
 ## [Header1.1](href)
@@ -96,7 +96,7 @@
 <li>Relative path, for example, <code>../example.md</code>. This kind of link has several advanced usages and is described in detail <a href="#relative-path-in-detail">below</a>.</li>
 <li>URI with <code>xref</code> scheme, for example, <code>xref:System.String</code>, the value is the <code>uid</code> of the file to be <a href="../spec/docfx_flavored_markdown.html#cross-reference">cross-referenced</a>.</li>
 </ol>
-<h3 id="yaml-format-toc-toc-yml-">YAML format TOC <code>toc.yml</code></h3>
+<h3 id="yaml-format-toc-toc-yml">YAML format TOC <code>toc.yml</code></h3>
 <pre><code class="lang-yml">- name:
   href:
   homepage:
@@ -109,9 +109,9 @@
       homepage:
 </code></pre>
 <p>Comparing to <code>toc.md</code>, <code>toc.yml</code> represents a structured data model and conforms to the <a href="http://www.yaml.org/spec/1.2/spec.html">YAML standard</a>. It supports advanced functionalities.</p>
-<h4 id="data-model-for-toc-yml-">Data model for <code>toc.yml</code></h4>
+<h4 id="data-model-for-toc-yml">Data model for <code>toc.yml</code></h4>
 <p>The data model for <code>toc.yml</code> is an <strong>array</strong> of <em>TOC Item Object</em>s.</p>
-<h5 id="-toc-item-object-"><em>TOC Item Object</em></h5>
+<h5 id="toc-item-object"><em>TOC Item Object</em></h5>
 <p><em>TOC Item Object</em> represents the data model for each <em>TOC Item</em>.</p>
 <p>Note that all the property names are <strong>case sensitive</strong>.</p>
 <table>
@@ -163,7 +163,7 @@
 <li>Linking to some local file.</li>
 </ol>
 <p>Each case is described in detail below.</p>
-<h3 id="link-to-another-toc-file-">Link to another <em>TOC File</em></h3>
+<h3 id="link-to-another-toc-file">Link to another <em>TOC File</em></h3>
 <p>If the <em>TOC Item</em> is linking to some other <em>TOC File</em>, it is considered as a placeholder of the referenced <em>TOC File</em>, and DocFX will extract content from that <em>TOC File</em> and insert into current <em>TOC Item</em> <strong>recursively</strong>.</p>
 <p>This technique is always used when you want to combine several <em>TOC File</em>s into one single <em>TOC File</em>.</p>
 <p>If <code>homepage</code> is set for this <em>TOC Item</em>, it will be considered as the <code>href</code> of the expanded <em>TOC Item</em>.</p>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Validate your markdown files | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Validate your markdown files | DocFX website ">
+    <meta name="generator" content="docfx 2.1.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/validate your markdown files.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <h1 id="validate-your-markdown-files">Validate your markdown files</h1>
+              
+<p>In GFM, we can write any document with right syntax. For example, we can write html tag <code>&lt;h1&gt;title&lt;/h1&gt;</code> instead of markdown syntax <code>#title</code>. But for some purpose, some behaviors are unwanted, so we add markdown validators for each markdown document.</p>
+<p>In this document, you&#39;ll learn how to define markdown validation rules, which will help you to validate markdown documents in an efficient way.</p>
+<p><em>This is part of DFM, if you switch markdown engine to other engine, validation might not work.</em></p>
+<h2 id="how-to-config-markdown-validation-rules">How to config markdown validation rules</h2>
+<p>Create a <em>JSON</em> file with name <code>md.style</code> in the same folder of <code>docfx.json</code>, and with following content:</p>
+<pre><code class="lang-json">{
+   &quot;rules&quot;: [],
+   &quot;tagRules&quot;: []
+}
+</code></pre>
+<h2 id="build-in-html-tag-validation-rules">Build-in html tag validation rules</h2>
+<p>For most cases, you may want to prohibit using certain html tags in markdown, so we built a built-in html tag rule for you.</p>
+<p>For example, create <code>md.style</code> with following content:</p>
+<pre><code class="lang-json">{
+   &quot;tagRules&quot;: [
+      {
+         &quot;tagName&quot;: [ &quot;H1&quot;, &quot;H2&quot; ],
+         &quot;behavior&quot;: &quot;Warning&quot;,
+         &quot;messageFormatter&quot;: &quot;Some message.&quot;,
+         &quot;customValidatorContractName&quot;: null,
+         &quot;openingTagOnly&quot;: false
+      }
+   ]
+}
+</code></pre>
+<p>Then when any one write <code>&lt;H1&gt;</code> or <code>&lt;H2&gt;</code> in markdown file, it will give a warning with message <code>Some message.</code>.</p>
+<ol>
+<li><code>tagName</code> is filter html tag names, <em>required</em>, <em>case-insensitive</em>.</li>
+<li><p><code>behavior</code> is an enum value, <em>required</em>.</p>
+<p>it can be following:</p>
+<ul>
+<li>None: Do nothing.</li>
+<li>Warning: Log a warning.</li>
+<li>Error: Log an error, it will break current build.</li>
+</ul>
+</li>
+<li><code>messageFormatter</code> is the log message when hit, <em>required</em>.
+It can contain following variables:<ul>
+<li><code>{0}</code> the name of tag.</li>
+<li><code>{1}</code> the whole tag.
+For example, the <code>messageFormatter</code> is <code>{0} is the tag name of {1}.</code>, and the tag is <code>&lt;H1 class=&quot;heading&quot;&gt;</code> match the rule, then it will output following message: <code>H1 is the tag name of &lt;H1 class=&quot;heading&quot;&gt;.</code></li>
+</ul>
+</li>
+<li><p><code>customValidatorContractName</code> is an extension tag rule contract name for complex validation rule, <em>option</em>.</p>
+<p>see <a href="#how-to-create-a-custom-html-tag-validator">How to create a custom html tag validator</a>.</p>
+</li>
+<li><p><code>openingTagOnly</code> is a boolean, <em>option</em>, default is <code>false</code></p>
+<p>if <code>true</code>, it will only apply to opening tag, e.g. <code>&lt;H1&gt;</code>, otherwise, it will also apply to closing tag, e.g. <code>&lt;/H1&gt;</code>.</p>
+</li>
+</ol>
+<h3 id="how-to-create-a-custom-html-tag-validator">How to create a custom html tag validator</h3>
+<ol>
+<li>Create a project in your code editor (e.g. visual studio).</li>
+<li>Add nuget package <code>Microsoft.DocAsCode.Plugins</code> and <code>Microsoft.Composition</code>.</li>
+<li>Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.html#Microsoft_DocAsCode_Plugins_ICustomMarkdownTagValidator">ICustomMarkdownTagValidator</a>.</li>
+<li>Add ExportAttribute with contract name.</li>
+</ol>
+<p>For example, we require tags should contain text <code>class</code>:</p>
+<pre><code class="lang-csharp">[Export(&quot;Require text class&quot;, typeof(ICustomMarkdownTagValidator))]
+public class MyMarkdownTagValidator : ICustomMarkdownTagValidator
+{
+    public bool Validate(string tag)
+    {
+        return tag.Contains(&quot;class&quot;);
+    }
+}
+</code></pre>
+<p>And update your <code>md.style</code> with following content:</p>
+<pre><code class="lang-json">{
+   &quot;tagRules&quot;: [
+      {
+         &quot;tagName&quot;: [ &quot;H1&quot;, &quot;H2&quot; ],
+         &quot;behavior&quot;: &quot;Warning&quot;,
+         &quot;messageFormatter&quot;: &quot;Some message.&quot;,
+         &quot;customValidatorContractName&quot;: &quot;Require text class&quot;,
+         &quot;openingTagOnly&quot;: true
+      }
+   ]
+}
+</code></pre>
+<h2 id="customize-token-validation-rules">Customize token validation rules</h2>
+<p>In <code>rules</code> property, we can add any <a href="#how-to-create-a-plug-in-for-markdown-token-validation">validation plug-in</a> by following style:</p>
+<pre><code class="lang-json">{
+   &quot;rules&quot;: [ { &quot;name&quot;: &quot;rule name&quot;, &quot;disable&quot;: false } ]
+}
+</code></pre>
+<p>or simplify it to:</p>
+<pre><code class="lang-json">{
+    &quot;rules&quot;: [ &quot;rule name&quot; ]
+}
+</code></pre>
+<h3 id="with-contract-name-default">With contract name <code>default</code></h3>
+<p>Any rules with contract name <code>default</code> will be enabled by default. This means when no <code>md.style</code> file, it is same as a <code>md.style</code> file with following content:</p>
+<pre><code class="lang-json">{
+   &quot;rules&quot;: [ { &quot;name&quot;: &quot;default&quot;, &quot;disable&quot;: false } ]
+}
+</code></pre>
+<p>And you can disable default rules by following config:</p>
+<pre><code class="lang-json">{
+   &quot;rules&quot;: [ { &quot;name&quot;: &quot;default&quot;, &quot;disable&quot;: true } ]
+}
+</code></pre>
+<h3 id="how-to-create-a-plug-in-for-markdown-token-validation">How to create a plug-in for markdown token validation</h3>
+<ol>
+<li>Create a project in your code editor (e.g. visual studio).</li>
+<li>Add nuget package <code>Microsoft.DocAsCode.MarkdownLite</code> and <code>Microsoft.Composition</code>.</li>
+<li><p>Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidatorProvider">IMarkdownTokenValidatorProvider</a></p>
+<div class="TIP"><h5>Tip</h5><p><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTokenValidatorFactory">MarkdownTokenValidatorFactory</a> contains some help methods to create a validator.</p>
+</div>
+</li>
+<li>Add ExportAttribute with contract name, and if contract name is <code>default</code> it will apply automatically.</li>
+</ol>
+<p>For example, we require all code block with language <code>csharp</code>:</p>
+<pre><code class="lang-csharp">[Export(&quot;default&quot;, typeof(IMarkdownTokenValidatorProvider))]
+public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
+{
+    public ImmutableArray&lt;IMarkdownTokenValidator&gt; GetValidators()
+    {
+        return ImmutableArray.Create(
+            MarkdownTokenValidatorFactory.FromLambda&lt;MarkdownCodeBlockToken&gt;(t =&gt;
+            {
+                if (t.Lang != &quot;csharp&quot;)
+                {
+                     throw new DocumentException($&quot;Code lang {t.Lang} is not valid, in file: {t.SourceInfo.File}, at line: {t.SourceInfo.LineNumber}&quot;);
+                }
+            }));
+    }
+}
+</code></pre>
+<div class="TIP"><h5>Tip</h5><p>If want to log error or warning, please add nuget <code>Microsoft.DocAsCode.Common</code>, then use <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger">Logger</a> to log message.</p>
+</div>
+<h2 id="how-to-enable-custom-validators">How to enable custom validators</h2>
+<ol>
+<li>Config markdown validation rules in <code>md.style</code>.</li>
+<li>Copy your extension assemblies to <code>plugin</code> folder in your <code>DocFX.exe</code> or template.</li>
+</ol>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+            </nav>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
