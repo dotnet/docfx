@@ -1,6 +1,6 @@
 Version Notes (Current Version: v2.1)
 =======================================
-v2.1(Pre-Release)
+v2.1
 -----------
 1.  Support for xref zip file in relative path.
 2.  Support anchor in toc file.
@@ -21,6 +21,14 @@ v2.1(Pre-Release)
     - Support `allOf`. (https://github.com/dotnet/docfx/issues/360)
     - Support $ref with `[` and `]` in json pointer. (https://github.com/dotnet/docfx/issues/359)
     - Support `parameters` applicable for all the operations under `path`. (https://github.com/dotnet/docfx/issues/358)
+
+v2.0.2
+-----------
+1. Support localization tokens in DFM.
+
+v2.0.1
+-----------
+1. Fix bug that file links can't be resolved in overwrite file
 
 v2.0
 -----------
