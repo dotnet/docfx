@@ -54,7 +54,7 @@ exports.transform = function (model) {
         return children.filter(function (child) {
             if (child.tags && child.tags.indexOf(tag) > -1) {
                 child.includedInTags = true;
-                return child;
+                return true;
             }
         })
     }
