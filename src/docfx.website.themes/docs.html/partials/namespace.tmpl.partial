@@ -23,12 +23,12 @@
 </div>
 {{/remarks}}
 {{#children}}
-<header class="header" id="{{id}}">
+<header class="header{{#platform}} platform-{{.}}{{/platform}} enable-platform-filter" id="{{id}}">
   {{^hideSubtitle}}
   <h2>{{>partials/namespaceSubtitle}}</h2>
   {{/hideSubtitle}}
 </header>
-<ul class="list-clean">
+<ul class="list-clean{{#platform}} platform-{{.}}{{/platform}} enable-platform-filter">
   {{#children}}
   <li id="{{id}}" class="{{#platform}}platform-{{.}} {{/platform}}enable-platform-filter">
     <div class="level">

@@ -70,12 +70,12 @@
 </div>
 {{/remarks}}
 {{#children}}
-<header class="header" id="{{id}}">
+<header class="header{{#platform}} platform-{{.}}{{/platform}} enable-platform-filter" id="{{id}}">
   {{^hideSubtitle}}
   <h2>{{>partials/classSubtitle}}</h2>
   {{/hideSubtitle}}
 </header>
-<ul class="list-clean">
+<ul class="list-clean{{#platform}} platform-{{.}}{{/platform}} enable-platform-filter">
   {{#children}}
   <li class="expand-container{{#platform}} platform-{{.}}{{/platform}} enable-platform-filter" id="{{id}}">
     <h4><a href class="expander expanded">
