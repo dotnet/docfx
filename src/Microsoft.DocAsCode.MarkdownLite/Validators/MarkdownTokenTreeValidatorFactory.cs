@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
 
@@ -14,9 +15,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public static IMarkdownTokenTreeValidator Combine(
             params IMarkdownTokenTreeValidator[] validators)
         {
+            return Combine((IEnumerable<IMarkdownTokenTreeValidator>)validators);
+        }
+
+        public static IMarkdownTokenTreeValidator Combine(
+            IEnumerable<IMarkdownTokenTreeValidator> validators)
+        {
             if (validators == null)
             {
-                throw new ArgumentNullException(nameof(validators));
+                return Null;
             }
             var array = (from v in validators
                          where v != null && v != Null

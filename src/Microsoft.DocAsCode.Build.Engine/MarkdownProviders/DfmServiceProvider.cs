@@ -3,10 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
 
     using Microsoft.DocAsCode.Dfm;
+    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
     [Export("dfm", typeof(IMarkdownServiceProvider))]
@@ -14,8 +16,14 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
-            return new DfmService(parameters.BasePath, parameters.Tokens);
+            return new DfmService(
+                parameters.BasePath,
+                parameters.Tokens,
+                MarkdownTokenTreeValidatorFactory.Combine(TokenTreeValidator));
         }
+
+        [ImportMany]
+        public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
 
         private sealed class DfmService : IMarkdownService
         {
@@ -23,9 +31,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             private readonly ImmutableDictionary<string, string> _tokens;
 
-            public DfmService(string baseDir, ImmutableDictionary<string, string> tokens)
+            public DfmService(string baseDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
             {
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir);
+                _builder.TokenTreeValidator = tokenTreeValidator;
                 _tokens = tokens;
             }
 
