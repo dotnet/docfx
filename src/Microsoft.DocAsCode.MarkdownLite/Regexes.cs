@@ -158,7 +158,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex EscapeWithoutEncode = new Regex(@"&(?!#?\w+;)", RegexOptionCompiled);
 
             public static readonly Regex Unescape = new Regex(@"&([#\w]+);", RegexOptionCompiled);
-            public static readonly Regex Escape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled);
+
+            public static readonly Regex MarkdownEscape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled);
             public static readonly Regex MarkdownUnescape = new Regex(@"[\\()\[\]]", RegexOptionCompiled);
         }
     }
