@@ -23,7 +23,7 @@ if /I [%1]==[PROD] (
 )
 
 if /I [%1]==[raw] (
-    SET UpdateTemplate=%1
+    SET SkipTemplate=true
     GOTO Next
 )
 if /I [%1]==[template] (
@@ -62,16 +62,15 @@ IF /I [%Environment%]==[PROD] (
     )
 )
 IF /I [%UpdateTemplate%]==[template] (
+    ECHO Updating template
     CALL UpdateTemplate.cmd
     IF NOT [!ERRORLEVEL!]==[0] (
         ECHO ERROR: Error occurs when updating template
     )
     GOTO Exit
 )
-IF /I [%UpdateTemplate%]==[raw] (
-    IF NOT [!ERRORLEVEL!]==[0] (
-        ECHO ERROR: Error occurs when updating template
-    )
+IF /I [%SkipTemplate%]==[true] (
+    ECHO Skip updating template
     GOTO CheckDnu
 )
 
