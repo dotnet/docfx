@@ -432,6 +432,22 @@ aaa",
             @"<!--aaa-->
 <p>aaa</p>
 ")]
+        [InlineData(
+            @"[a\](b)",
+            @"<p>[a](b)</p>
+")]
+        [InlineData(
+            @"[a](b\)",
+            @"<p>[a](b)</p>
+")]
+        [InlineData(
+            @"[a\\](b)",
+            @"<p><a href=""b"">a\</a></p>
+")]
+        [InlineData(
+            @"[a](b\\)",
+            @"<p><a href=""b\"">a</a></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
