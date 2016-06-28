@@ -20,6 +20,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// Get the rewriter (it can read markdown tokens, then rewrite them and return).
         /// </summary>
         IMarkdownRewriteEngine RewriteEngine { get; }
+        /// <summary>
+        /// Get the token tree validator.
+        /// </summary>
+        IMarkdownTokenTreeValidator TokenTreeValidator { get; set; }
 
         /// <summary>
         /// Mark markdown text.

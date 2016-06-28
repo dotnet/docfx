@@ -36,6 +36,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public IMarkdownTokenRewriter Rewriter { get; set; }
 
         /// <summary>
+        /// The markdown token tree validator.
+        /// </summary>
+        public IMarkdownTokenTreeValidator TokenTreeValidator { get; set; }
+
+        /// <summary>
         /// Create markdown paring context.
         /// </summary>
         /// <returns>a instance of <see cref="IMarkdownContext"/></returns>
@@ -51,7 +56,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <returns>an instance of <see cref="IMarkdownEngine"/></returns>
         public virtual IMarkdownEngine CreateEngine(object renderer)
         {
-            return new MarkdownEngine(CreateParseContext(), Rewriter, renderer, Options);
+            return new MarkdownEngine(CreateParseContext(), Rewriter, renderer, Options)
+            {
+                TokenTreeValidator = TokenTreeValidator,
+            };
         }
     }
 }

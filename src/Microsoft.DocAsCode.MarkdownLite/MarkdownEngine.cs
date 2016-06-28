@@ -34,6 +34,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownTokenRewriter Rewriter { get; }
 
+        public IMarkdownTokenTreeValidator TokenTreeValidator { get; set; }
+
         public Dictionary<string, LinkObj> Links { get; }
 
         public int MaxExtractCount { get; set; } = 1;
@@ -71,6 +73,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     (e, t) => t.RewriteId(idTable)));
             tokens = idRewriteEngine.Rewrite(tokens);
             tokens = RewriteEngine.Rewrite(tokens);
+            if (TokenTreeValidator != null)
+            {
+                TokenTreeValidator.Validate(tokens);
+            }
             var renderer = Renderer;
             foreach (var token in tokens)
             {

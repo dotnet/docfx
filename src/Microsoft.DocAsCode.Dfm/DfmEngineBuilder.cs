@@ -138,7 +138,10 @@ namespace Microsoft.DocAsCode.Dfm
 
         public DfmEngine CreateDfmEngine(object renderer)
         {
-            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty), Rewriter, renderer, Options);
+            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty), Rewriter, renderer, Options)
+            {
+                TokenTreeValidator = TokenTreeValidator,
+            };
         }
 
         public override IMarkdownEngine CreateEngine(object renderer)
