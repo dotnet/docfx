@@ -179,6 +179,10 @@
   <ItemGroup>
     <EmbeddedResource Include="langwordMapping.yml" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Template\common.zip">
+      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
+      <LogicalName>$(AssemblyName).Template.common.zip</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Template\default.zip">
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
       <LogicalName>$(AssemblyName).Template.default.zip</LogicalName>
