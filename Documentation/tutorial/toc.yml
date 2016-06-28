@@ -33,4 +33,6 @@
     - name: "Advanced: Support Hyperlink"
       href: advanced_support_hyperlink.md
   - name: Validate your markdown files
-    href: Validate your markdown files.md
+    href: validate your markdown files.md
+  - name: Intro markdown lite
+    href: intro markdown lite.md
