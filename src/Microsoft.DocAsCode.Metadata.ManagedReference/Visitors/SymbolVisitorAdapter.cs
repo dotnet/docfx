@@ -169,7 +169,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             GenerateInheritance(symbol, item);
 
-            GenerateExtensionMethods(symbol, item);
+            if (!symbol.IsStatic)
+            {
+                GenerateExtensionMethods(symbol, item);
+            }
 
             item.Type = VisitorHelper.GetMemberTypeFromTypeKind(symbol.TypeKind);
             if (item.Syntax == null)
