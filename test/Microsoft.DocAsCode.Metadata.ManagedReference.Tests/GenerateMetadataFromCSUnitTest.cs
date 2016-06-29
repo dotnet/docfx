@@ -2290,6 +2290,38 @@ namespace Test1
         }
 
         [Fact]
+        [Trait("Related", "Multilanguage")]
+        public void TestGenerateMetadataWithStaticClass()
+        {
+            string code = @"
+using System.Collections.Generic;
+namespace Test1
+{
+    public static class Foo
+    {
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            {
+                var type = output.Items[0].Items[0];
+                Assert.NotNull(type);
+                Assert.Equal("Foo", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo", type.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo", type.Name);
+                Assert.Equal(1, type.Inheritance.Count);
+                Assert.Equal("System.Object", type.Inheritance[0]);
+
+                Assert.Equal(@"public static class Foo", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"Public Module Foo", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(new[] { "public", "static", "class" }, type.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "Public", "Module" }, type.Modifiers[SyntaxLanguage.VB]);
+            }
+        }
+
+        [Fact]
         [Trait("Related", "Generic")]
         public void TestGenerateMetadataAsyncWithNestedGeneric()
         {
