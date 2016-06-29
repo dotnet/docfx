@@ -2,6 +2,7 @@ Version Notes (Current Version: v2.2)
 =======================================
 v2.2(Pre-Release)
 -----------
+1.  Fix bug: syntax for static class is incorrect.
 
 v2.1
 -----------
