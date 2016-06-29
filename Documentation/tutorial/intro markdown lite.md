@@ -14,7 +14,7 @@ We write this tool for good extensibility, so our implementation should obey fol
 2.  Correctness:
     We follow GFM syntax, but when some rules is too hard to implement, just breaking.
 3.  Performance:
-    Performance is not out major concern.
+    Performance is not our major concern.
 
 ## Steps
 
@@ -25,9 +25,8 @@ There are three steps when calling [markup method](xref:Microsoft.DocAsCode.Mark
 
 ### Step 1: Parse
 
-In this step, it will parse markdown text to [models](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken).
-And in this phase, it is [rule](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownRule) based.
-Then a set of rule is called [context](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownContext).
+In this step, it will parse markdown text to [tokens](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken).
+The parser is based on [rules](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownRule), which make up the [context](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownContext).
 
 For example,
 [heading token](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken) is created by [heading rule](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule),
@@ -49,22 +48,22 @@ MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingB
 
 In this step, it render models to text content (html format for normal).
 To simplify extension, we create an [adapter](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter),
-any class with following method will treat as render method:
+the adapter invoke methods by following rules:
 
 1.  Method name is `Render`
 2.  Instance method
 3.  Return type is @Microsoft.DocAsCode.MarkdownLite.StringBuffer
-4.  The count of parameters is 3, and type is following:
+4.  The count of parameters is 3, and types are following:
     1.  @Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer or any type implements it.
     2.  @Microsoft.DocAsCode.MarkdownLite.IMarkdownToken or any type implements it.
     3.  @Microsoft.DocAsCode.MarkdownLite.IMarkdownContext or any type implements it.
-5.  Adapter alway invoke the most match method.
+5.  Alway invoke the most match method.
 
 ## Engine and engine builder
 
-Engine is a set of parse, rewrite and render.
+Engine is a set of parser, rewriter and renderer.
 It can markup a markdown file to html file (or others).
-But it cannot be invoked parallel.
+But it cannot be invoked in parallel.
 
 So we create an [engine builder](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownEngineBuilder).
 It defines all the rules of parser, rewriter and renderer.
