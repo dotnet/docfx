@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "nameWithType")]
         [JsonProperty("nameWithType")]
-        public List<ApiLanguageValuePair> NameWithTpye { get; set; }
+        public List<ApiLanguageValuePair> NameWithType { get; set; }
 
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
