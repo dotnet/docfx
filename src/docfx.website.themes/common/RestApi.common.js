@@ -22,26 +22,26 @@ exports.transform = function (model) {
             resolveAllOf(child);
             transformReference(child);
         };
-        if (!model.tags || model.tags.length == 0) {
+        if (!model.tags || model.tags.length === 0) {
             var childTags = [];
             for (var i = 0; i < model.children.length; i++) {
                 var child = model.children[i];
                 if (child.tags && child.tags.length > 0) {
                     for (var k = 0; k < child.tags.length; k++) {
                         // for each tag in child, add unique tag string into childTags
-                        if (childTags.indexOf(child.tags[k]) == -1) {
+                        if (childTags.indexOf(child.tags[k]) === -1) {
                             childTags.push(child.tags[k]);
                         }
                     }
                 }
             }
-            // sort alphabetically            
+            // sort alphabetically
             childTags.sort();
             if (childTags.length > 0) {
                 model.tags = [];
                 for (var i = 0; i < childTags.length; i++) {
                     // add tags into model
-                    model.tags.push({"name":childTags[i]});
+                    model.tags.push({ "name": childTags[i] });
                 }
             }
         }
@@ -215,7 +215,7 @@ exports.transform = function (model) {
         var optionalQueryParams = parameters.filter(function (p) { return p.in === 'query' && !p.required; });
         if (optionalQueryParams.length > 0) {
             path += "[";
-            path = formatParams(path, optionalQueryParams, requiredQueryParams.length == 0);
+            path = formatParams(path, optionalQueryParams, requiredQueryParams.length === 0);
             path += "]";
         }
         return path;
@@ -223,7 +223,7 @@ exports.transform = function (model) {
 
     function formatParams(path, parameters, isFirst) {
         for (var i = 0; i < parameters.length; i++) {
-            if (i == 0 && isFirst) {
+            if (i === 0 && isFirst) {
                 path += "?";
             } else {
                 path += "&";
