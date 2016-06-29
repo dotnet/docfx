@@ -80,6 +80,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     <example>
     This is another example
     </example>
+    <example>
+    Check empty code.
+    <code></code>
+    </example>
     <see cref=""T:Microsoft.DocAsCode.EntityModel.SpecIdHelper""/>
     <see cref=""T:System.Diagnostics.SourceSwitch""/>
     <seealso cref=""T:System.IO.WaitForChangedResult""/>
@@ -145,6 +149,10 @@ This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel
 ".Replace("\r\n", "\n"),
 @"
 This is another example
+".Replace("\r\n", "\n"),
+@"
+Check empty code.
+<pre><code></code></pre>
 ".Replace("\r\n", "\n")};
             Assert.Equal(expected, example);
 

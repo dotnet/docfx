@@ -417,7 +417,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             // trim newline character for code element
-            return CodeElementRegex.Replace(string.Join("\n", normalized), m => { var group = m.Groups[1]; return m.Value.Replace(group.ToString(), group.ToString().Trim('\n')); });
+            return CodeElementRegex.Replace(
+                string.Join("\n", normalized),
+                m =>
+                {
+                    var group = m.Groups[1];
+                    if (group.ToString() == string.Empty)
+                    {
+                        return m.Value;
+                    }
+                    return m.Value.Replace(group.ToString(), group.ToString().Trim('\n'));
+                });
         }
     }
 }
