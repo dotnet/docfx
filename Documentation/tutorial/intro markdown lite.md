@@ -6,24 +6,24 @@ Markdown lite is a simple markdown tool to markup `md` file.
 
 ## Design goal
 
-We write this tool for good extensiblity, so our implements should obay following order:
+We write this tool for good extensibility, so our implementation should obey following order:
 
-1.  Extensiblity:
+1.  Extensibility:
     * Support markdown syntax extension.
     * Support validation extension.
 2.  Correctness:
-    We follow GFM syntax, but when some rule is too hard to implement, just breaking.
+    We follow GFM syntax, but when some rules is too hard to implement, just breaking.
 3.  Performance:
-    We almost don't care performance.
+    Performance is not out major concern.
 
 ## Steps
 
-There are three step when calling [markup method](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownEngine.Markup(System.String,System.String)):
+There are three steps when calling [markup method](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownEngine.Markup(System.String,System.String)):
 * [Parse](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownParser)
 * [Rewrite](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter) or [validate](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator)
 * [Render](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer)
 
-### Parse
+### Step 1: Parse
 
 In this step, it will parse markdown text to [models](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken).
 And in this phase, it is [rule](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownRule) based.
@@ -31,12 +31,12 @@ Then a set of rule is called [context](xref:Microsoft.DocAsCode.MarkdownLite.IMa
 
 For example,
 [heading token](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken) is created by [heading rule](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule),
-the heading rule is belong to [block context](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext).
+the heading rule is belonging to [block context](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext).
 
-### Rewrite or validate
+### Step 2: Rewrite or validate
 
 In this step, it will walk through all [models](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken),
-we can changed it to another, or just validate the content.
+we can change it to another, or just validate the content.
 
 For example, we can create a rewriter to change all heading token with depth + 1:
 
@@ -45,9 +45,9 @@ MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingB
     (engine, token) => new MarkdownHeadingBlockToken(token.Rule, token.Context, token.Content, token.Id, token.Depth + 1, token.SourceInfo);
 ```
 
-### Render
+### Step 3: Render
 
-In this step, it will render to text content (html format for normal).
+In this step, it render models to text content (html format for normal).
 To simplify extension, we create an [adapter](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter),
 any class with following method will treat as render method:
 
@@ -67,12 +67,12 @@ It can markup a markdown file to html file (or others).
 But it cannot be invoked parallel.
 
 So we create an [engine builder](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownEngineBuilder).
-It define all the rules of parser, rewriter and renderer.
+It defines all the rules of parser, rewriter and renderer.
 It can create instances when needed.
 
-## How to custom markdown syntax
+## How to customize markdown syntax
 
-### Set goal
+### Define markdown syntax
 
 Define markdown:
 
@@ -80,7 +80,7 @@ Define markdown:
 : My label
 ```
 
-should be render as following html:
+should be rendered as following html:
 
 ```html
 <div id="My label"></div>
@@ -89,7 +89,8 @@ should be render as following html:
 ### Select context
 
 First of all, we should select the context for this rule.
-And in this goal, it should be block context.
+And in this goal, the enter is required.
+So it should be block context, all of the names for class should contain `Block`.
 
 ### Define token
 
@@ -119,7 +120,7 @@ public class MarkdownMyLabelBlockToken : IMarkdownToken
 
 ### Define rule
 
-Create a rule class like following:
+Create a rule class as following:
 
 ```csharp
 public class MarkdownMyLabelBlockRule : IMarkdownRule
@@ -143,7 +144,7 @@ public class MarkdownMyLabelBlockRule : IMarkdownRule
 
 ### Define renderer
 
-Create a renderer class like following:
+Create a renderer class as following:
 
 ```csharp
 public class MyRenderer : HtmlRenderer
@@ -157,7 +158,7 @@ public class MyRenderer : HtmlRenderer
 
 ### Define engine builder
 
-Create a engine builder class like following:
+Create an engine builder class as following:
 
 ```csharp
 public class MyEngineBuilder : GfmEngineBuilder
