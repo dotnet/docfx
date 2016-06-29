@@ -448,6 +448,12 @@ aaa",
             @"[a](b\\)",
             @"<p><a href=""b\"">a</a></p>
 ")]
+        [InlineData(
+            @"<!--a-->[b](c)<!--d-->e
+<!--f-->",
+            @"<p><!--a--><a href=""c"">b</a><!--d-->e
+<!--f--></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
