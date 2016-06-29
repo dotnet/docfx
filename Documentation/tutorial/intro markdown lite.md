@@ -88,8 +88,24 @@ should be rendered as following html:
 ### Select context
 
 First of all, we should select the context for this rule.
-And in this goal, the enter is required.
+And in this goal, the new line is required.
 So it should be block context, all of the names for class should contain `Block`.
+
+> [!TIP]
+> In markdown, there is two context:
+> * block
+> * inline
+>
+> Block rules require a new line in the end.
+> And parser will resolve all block rules, then parse inline rules in block content,
+> e.g.:
+> ```md
+> some *text*.
+> ```
+>
+> There is a paragragh (block), in the paragraph, there are three inline items:
+> `some ` is text, `*text*` is em, `.` is text.
+> and in the em (`*text*`), there is one inline item: `text` is text.
 
 ### Define token
 
