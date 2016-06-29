@@ -22,6 +22,26 @@ exports.transform = function (model) {
             resolveAllOf(child);
             transformReference(child);
         };
+        if (!model.tags || model.tags.length == 0) {
+            var childTags = [];
+            for (var i = 0; i < model.children.length; i++) {
+                var child = model.children[i];
+                if (child.tags && child.tags.length > 0) {
+                    for (var k = 0; k < child.tags.length; k++) {
+                        if (childTags.indexOf(child.tags[k]) == -1) {
+                            childTags.push(child.tags[k]);
+                        }
+                    }
+                }
+            }
+            childTags.sort();
+            if (childTags.length > 0) {
+                model.tags = [];
+                for (var i = 0; i < childTags.length; i++) {
+                    model.tags.push({"name":childTags[i]});
+                }
+            }
+        }
         if (model.tags) {
             for (var i = 0; i < model.tags.length; i++) {
                 var children = getChildrenByTag(model.children, model.tags[i].name);
