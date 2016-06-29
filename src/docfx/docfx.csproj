@@ -199,22 +199,6 @@
       <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
       <LogicalName>$(AssemblyName).Template.iframe.html.zip</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Template\msdn.html.zip">
-      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Template.msdn.html.zip</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Template\op.html.zip">
-      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Template.op.html.zip</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Template\vs.html.zip">
-      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Template.vs.html.zip</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Template\docs.html.zip">
-      <!-- Default behavior of embedded resource name is DefaultNamespace.ExtendedNamespace.FileName, which is inconsistent with DNX version -->
-      <LogicalName>$(AssemblyName).Template.docs.html.zip</LogicalName>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj">
