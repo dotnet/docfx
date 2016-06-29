@@ -28,16 +28,19 @@ exports.transform = function (model) {
                 var child = model.children[i];
                 if (child.tags && child.tags.length > 0) {
                     for (var k = 0; k < child.tags.length; k++) {
+                        // for each tag in child, add unique tag string into childTags
                         if (childTags.indexOf(child.tags[k]) == -1) {
                             childTags.push(child.tags[k]);
                         }
                     }
                 }
             }
+            // sort alphabetically            
             childTags.sort();
             if (childTags.length > 0) {
                 model.tags = [];
                 for (var i = 0; i < childTags.length; i++) {
+                    // add tags into model
                     model.tags.push({"name":childTags[i]});
                 }
             }
