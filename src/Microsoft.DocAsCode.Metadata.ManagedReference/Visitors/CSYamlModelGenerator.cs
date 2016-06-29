@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (symbol.TypeKind == TypeKind.Class)
             {
-                if (symbol.IsAbstract && symbol.IsSealed)
+                if (symbol.IsStatic)
                 {
                     modifiers.Add("static");
                 }
@@ -1223,7 +1223,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             if (symbol.TypeKind == TypeKind.Class)
             {
-                if (symbol.IsAbstract && symbol.IsSealed)
+                if (symbol.IsStatic)
                 {
                     yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
                 }

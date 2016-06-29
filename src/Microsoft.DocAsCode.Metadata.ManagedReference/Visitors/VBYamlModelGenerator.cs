@@ -62,7 +62,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     modifiers.Add("Module");
                     break;
                 case TypeKind.Class:
-                    modifiers.Add("Class");
+                    if (symbol.IsStatic)
+                    {
+                        modifiers.Add("Module");
+                    }
+                    else
+                    {
+                        modifiers.Add("Class");
+                    }
                     break;
                 case TypeKind.Delegate:
                     modifiers.Add("Delegate");
@@ -320,7 +327,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private string GetClassSyntax(INamedTypeSymbol symbol, IFilterVisitor filterVisitor)
         {
             string syntaxStr;
-            if (symbol.TypeKind == TypeKind.Module)
+            if (symbol.TypeKind == TypeKind.Module || symbol.IsStatic)
             {
                 syntaxStr = SyntaxFactory.ModuleBlock(
                     SyntaxFactory.ModuleStatement(
