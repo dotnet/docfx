@@ -6,7 +6,7 @@ Markdown lite is a simple markdown tool to markup `md` file.
 
 ## Design goal
 
-We write this tool for good extensibility, so our implementation should obey following order:
+We write this tool for good extensibility, so our implementation should obey following principles:
 
 1.  Extensibility:
     * Support markdown syntax extension.
@@ -34,8 +34,8 @@ the heading rule is belonging to [block context](xref:Microsoft.DocAsCode.Markdo
 
 ### Step 2: Rewrite or validate
 
-In this step, it will walk through all [models](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken),
-we can change it to another, or just validate the content.
+In this step, it will walk through all [tokens](xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken),
+we can change it to another, or just validate.
 
 For example, we can create a rewriter to change all heading token with depth + 1:
 
@@ -46,8 +46,8 @@ MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingB
 
 ### Step 3: Render
 
-In this step, it render models to text content (html format for normal).
-To simplify extension, we create an [adapter](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter),
+In this step, it renders models to text content (html format by default).
+To simplify extension, we created an [adapter](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter),
 the adapter invoke methods by following rules:
 
 1.  Method name is `Render`
@@ -57,7 +57,7 @@ the adapter invoke methods by following rules:
     1.  @Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer or any type implements it.
     2.  @Microsoft.DocAsCode.MarkdownLite.IMarkdownToken or any type implements it.
     3.  @Microsoft.DocAsCode.MarkdownLite.IMarkdownContext or any type implements it.
-5.  Alway invoke the most match method.
+5.  Always invoke the best overloaded method (The best is defined by [binder](https://msdn.microsoft.com/en-us/library/microsoft.csharp.runtimebinder.binder.invoke(v=vs.110).aspx)).
 
 ## Engine and engine builder
 
@@ -75,7 +75,7 @@ It can create instances when needed.
 
 Define markdown:
 
-```
+```md
 : My label
 ```
 
@@ -85,27 +85,11 @@ should be rendered as following html:
 <div id="My label"></div>
 ```
 
-### Select context
+### Select token kind
 
 First of all, we should select the context for this rule.
 And in this goal, the new line is required.
-So it should be block context, all of the names for class should contain `Block`.
-
-> [!TIP]
-> In markdown, there is two context:
-> * block
-> * inline
->
-> Block rules require a new line in the end.
-> And parser will resolve all block rules, then parse inline rules in block content,
-> e.g.:
-> ```md
-> some *text*.
-> ```
->
-> There is a paragragh (block), in the paragraph, there are three inline items:
-> `some ` is text, `*text*` is em, `.` is text.
-> and in the em (`*text*`), there is one inline item: `text` is text.
+So it should be a [block token](https://daringfireball.net/projects/markdown/syntax#block), all of the names for class should contain `Block`.
 
 ### Define token
 
