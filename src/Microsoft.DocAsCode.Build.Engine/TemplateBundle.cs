@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Resources = Templates.SelectMany(s => s.Resources).Distinct();
         }
 
-        public TransformModelOptions GetOptions(ManifestItem item , IDocumentBuildContext context)
+        internal TransformModelOptions GetOptions(InternalManifestItem item , IDocumentBuildContext context)
         {
             return MergeOptions(GetOptionsForEachTemplate(item, context));
         }
@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
-        private IEnumerable<TransformModelOptions> GetOptionsForEachTemplate(ManifestItem item, IDocumentBuildContext context)
+        private IEnumerable<TransformModelOptions> GetOptionsForEachTemplate(InternalManifestItem item, IDocumentBuildContext context)
         {
             if (item == null)
             {

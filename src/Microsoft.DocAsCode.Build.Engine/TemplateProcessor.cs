@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return true;
         }
 
-        public List<TemplateManifestItem> Process(List<ManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
+        internal List<ManifestItem> Process(List<InternalManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
         {
             using (new LoggerPhaseScope("Apply Templates"))
             {
@@ -155,9 +155,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private List<TemplateManifestItem> ProcessCore(List<ManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals)
+        private List<ManifestItem> ProcessCore(List<InternalManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals)
         {
-            var manifest = new ConcurrentBag<TemplateManifestItem>();
+            var manifest = new ConcurrentBag<ManifestItem>();
             var systemAttributeGenerator = new SystemMetadataGenerator(context);
             var transformer = new TemplateModelTransformer(context, _templateCollection, settings, globals);
             items.RunAll(
@@ -202,23 +202,34 @@ namespace Microsoft.DocAsCode.Build.Engine
             return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
-        private static void SaveManifest(List<TemplateManifestItem> templateManifest, string outputDirectory, IDocumentBuildContext context)
+        private static void SaveManifest(List<ManifestItem> manifest, string outputDirectory, IDocumentBuildContext context)
         {
             // Save manifest from template
             // TODO: Keep .manifest for backward-compatability, will remove next sprint
             var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
-            JsonUtility.Serialize(manifestPath, templateManifest);
+            var deprecatedManifest = Transform(manifest);
+            JsonUtility.Serialize(manifestPath, deprecatedManifest);
             // Logger.LogInfo($"Manifest file saved to {manifestPath}. NOTE: This file is out-of-date and will be removed in version 1.8, if you rely on this file, please change to use {Constants.ManifestFileName} instead.");
 
             var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
 
             var toc = context.GetTocInfo();
-            var manifestObject = GenerateManifest(context, templateManifest);
+            var manifestObject = GenerateManifest(context, manifest);
             JsonUtility.Serialize(manifestJsonPath, manifestObject);
             Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
         }
 
-        private static Manifest GenerateManifest(IDocumentBuildContext context, List<TemplateManifestItem> items)
+        private static List<DeprecatedManifestItem> Transform(List<ManifestItem> manifest)
+        {
+            return manifest.Select(item => new DeprecatedManifestItem
+            {
+                DocumentType = item.DocumentType,
+                OriginalFile = item.OriginalFile,
+                OutputFiles = item.OutputFiles.ToDictionary(k => k.Key, k => k.Value.ReleativePath)
+            }).ToList();
+        }
+
+        private static Manifest GenerateManifest(IDocumentBuildContext context, List<ManifestItem> items)
         {
             var toc = context.GetTocInfo();
             var homepages = toc

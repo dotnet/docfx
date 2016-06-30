@@ -7,14 +7,21 @@
     <AssemblyName>Microsoft.DocAsCode.Plugins</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="YamlDotNet">
+      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeprecatedManifestItem.cs" />
     <Compile Include="DocumentException.cs" />
     <Compile Include="DocumentExceptionExtensions.cs" />
     <Compile Include="DocumentType.cs" />
@@ -22,7 +29,9 @@
     <Compile Include="IInputMetadataValidator.cs" />
     <Compile Include="IMarkdownServiceProvider.cs" />
     <Compile Include="IMarkdownService.cs" />
+    <Compile Include="ManifestItem.cs" />
     <Compile Include="MarkdownServiceParameters.cs" />
+    <Compile Include="OutputFileInfo.cs" />
     <Compile Include="TocInfo.cs" />
     <Compile Include="UidDefinition.cs" />
     <Compile Include="ModelWithCache.cs" />
@@ -45,6 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj">
+      <Project>{87efc656-3081-442e-902b-822714514768}</Project>
+      <Name>Microsoft.DocAsCode.YamlSerialization</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
