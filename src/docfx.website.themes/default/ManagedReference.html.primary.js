@@ -4,7 +4,7 @@ var mrefCommon = require('./ManagedReference.common.js');
 
 exports.transform = function (model) {
   model = mrefCommon.transform(model);
-  if (model.type.toLowerCase() == "enum") {
+  if (model.type.toLowerCase() === "enum") {
     model.isClass = false;
     model.isEnum = true;
   }
