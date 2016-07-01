@@ -20,6 +20,7 @@ We currently support C# and VB projects.
 ### Prerequisites
 1. [VS 2015 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx) or above
 2. [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)
+3. [Node.js](https://nodejs.org)
 
 ### Steps
 1. `dnvm install 1.0.0-rc1-final`
