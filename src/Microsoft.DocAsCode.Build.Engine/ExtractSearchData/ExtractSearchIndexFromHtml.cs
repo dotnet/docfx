@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
     using HtmlAgilityPack;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class ExtractSearchIndexFromHtml
@@ -24,7 +25,7 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
 
         private static readonly Regex RegexWhiteSpace = new Regex(@"\s+", RegexOptions.Compiled);
 
-        public static void GenerateFile(List<TemplateManifestItem> manifest, string baseDir)
+        public static void GenerateFile(List<ManifestItem> manifest, string baseDir)
         {
             if (baseDir == null)
             {
@@ -32,10 +33,10 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
             }
             var indexData = new Dictionary<string, SearchIndexItem>();
             var indexDataFilePath = Path.Combine(baseDir, IndexFileName);
-            var htmlFiles = (from item in manifest ?? Enumerable.Empty<TemplateManifestItem>()
+            var htmlFiles = (from item in manifest ?? Enumerable.Empty<ManifestItem>()
                              from output in item.OutputFiles
                              where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
-                             select output.Value).ToList();
+                             select output.Value.ReleativePath).ToList();
             if (htmlFiles.Count == 0)
             {
                 return;

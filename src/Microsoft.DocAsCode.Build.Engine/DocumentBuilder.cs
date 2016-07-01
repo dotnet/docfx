@@ -494,7 +494,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             context.ResolveExternalXRefSpec();
         }
 
-        private ManifestItem HandleSaveResult(
+        private InternalManifestItem HandleSaveResult(
             DocumentBuildContext context,
             HostService hostService,
             FileModel model,
@@ -578,9 +578,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static ManifestItem GetManifestItem(DocumentBuildContext context, FileModel model, SaveResult result)
+        private static InternalManifestItem GetManifestItem(DocumentBuildContext context, FileModel model, SaveResult result)
         {
-            return new ManifestItem
+            return new InternalManifestItem
             {
                 DocumentType = result.DocumentType,
                 FileWithoutExtension = result.FileWithoutExtension,
@@ -702,13 +702,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private sealed class ManifestItemWithContext
         {
-            public ManifestItem Item { get; }
+            public InternalManifestItem Item { get; }
             public FileModel FileModel { get; }
             public IDocumentProcessor Processor { get; }
             public TemplateBundle TemplateBundle { get; }
 
             public TransformModelOptions Options { get; set; }
-            public ManifestItemWithContext(ManifestItem item, FileModel model, IDocumentProcessor processor, TemplateBundle bundle)
+            public ManifestItemWithContext(InternalManifestItem item, FileModel model, IDocumentProcessor processor, TemplateBundle bundle)
             {
                 Item = item;
                 FileModel = model;

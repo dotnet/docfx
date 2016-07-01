@@ -5,6 +5,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System.Collections.Generic;
 
+    using Microsoft.DocAsCode.Plugins;
+
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
@@ -24,6 +26,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         [YamlMember(Alias = "files")]
         [JsonProperty("files")]
-        public List<TemplateManifestItem> Files { get; set; }
+        public List<ManifestItem> Files { get; set; }
     }
 }

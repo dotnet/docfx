@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 .OrderBy(s => s.File.SubdirectoryCount);
         }
 
-        public SystemMetadata Generate(ManifestItem item)
+        public SystemMetadata Generate(InternalManifestItem item)
         {
             var attrs = new SystemMetadata
             {
