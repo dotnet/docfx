@@ -14,6 +14,7 @@
     <Compile Include="Swagger\InfoObject.cs" />
     <Compile Include="Swagger\Internals\SwaggerArray.cs" />
     <Compile Include="Swagger\Internals\SwaggerJsonBuilder.cs" />
+    <Compile Include="Swagger\Internals\SwaggerLoopReferenceObject.cs" />
     <Compile Include="Swagger\Internals\SwaggerObject.cs" />
     <Compile Include="Swagger\Internals\SwaggerObjectBase.cs" />
     <Compile Include="Swagger\Internals\SwaggerObjectConverter.cs" />

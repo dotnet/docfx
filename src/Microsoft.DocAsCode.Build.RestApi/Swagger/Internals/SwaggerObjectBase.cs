@@ -3,9 +3,14 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 {
-    internal abstract class SwaggerObjectBase
+    using Microsoft.DocAsCode.Build.Common;
+
+    internal abstract class SwaggerObjectBase: ICloneable<SwaggerObjectBase>
     {
         public abstract SwaggerObjectType ObjectType { get; }
+
         public bool ReferencesResolved { get; set; }
+
+        public abstract SwaggerObjectBase Clone();
     }
 }

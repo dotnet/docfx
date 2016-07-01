@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Contacts",
-    "version":  "1.0"
+    "version": "1.0"
   },
   "paths": {
     "/contacts": {
@@ -45,11 +45,9 @@
         "provisioningErrors": {
           "type": "array",
           "items": {
-            "schema": {
-              "$ref": "#/definitions/ProvisioningError"
-            }
+            "$ref": "#/definitions/ProvisioningError"
           },
-          "readOnly": "true"
+          "readOnly": true
         }
       }
     },
@@ -58,9 +56,7 @@
         "errorDetail": {
           "type": "array",
           "items": {
-            "schema": {
-              "$ref": "#/definitions/contact"
-            }
+            "$ref": "#/definitions/contact"
           }
         }
       }

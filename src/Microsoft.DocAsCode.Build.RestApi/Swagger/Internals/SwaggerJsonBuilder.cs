@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             _documentObjectCache = new Dictionary<string, SwaggerObject>();
             var token = JToken.ReadFrom(reader);
             var swagger = Build(token);
-            return ResolveReferences(swagger);
+            return ResolveReferences(swagger, new Stack<string>());
         }
 
         private SwaggerObjectBase Build(JToken token)
@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             };
         }
 
-        private SwaggerObjectBase ResolveReferences(SwaggerObjectBase swaggerBase)
+        private SwaggerObjectBase ResolveReferences(SwaggerObjectBase swaggerBase, Stack<string> refStack)
         {
             if (swaggerBase.ReferencesResolved)
             {
@@ -118,7 +118,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                                 throw new JsonException($"Could not resolve reference '{swagger.DeferredReference}' in the document.");
                             }
 
-                            swagger.Reference = referencedObject;
+                            if (refStack.Contains(referencedObject.Location))
+                            {
+                                return new SwaggerLoopReferenceObject();
+                            }
+
+                            refStack.Push(referencedObject.Location);
+
+                            // Clone to avoid change the reference object in _documentObjectCache
+                            swagger.Reference = (SwaggerObject)ResolveReferences(referencedObject.Clone(), refStack);
+
+                            refStack.Pop();
                         }
                         return swagger;
                     }
@@ -127,7 +137,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         var swagger = (SwaggerObject)swaggerBase;
                         foreach (var key in swagger.Dictionary.Keys.ToList())
                         {
-                            swagger.Dictionary[key] = ResolveReferences(swagger.Dictionary[key]);
+                            swagger.Dictionary[key] = ResolveReferences(swagger.Dictionary[key], refStack);
                         }
                         return swagger;
                     }
@@ -136,7 +146,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         var swagger = (SwaggerArray)swaggerBase;
                         for (int i = 0; i < swagger.Array.Count; i++)
                         {
-                            swagger.Array[i] = ResolveReferences(swagger.Array[i]);
+                            swagger.Array[i] = ResolveReferences(swagger.Array[i], refStack);
                         }
                         return swagger;
                     }

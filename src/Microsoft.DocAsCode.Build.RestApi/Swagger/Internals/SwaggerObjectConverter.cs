@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                     {
                         var swagger = (SwaggerObject)swaggerBase;
                         var jObject = new JObject();
-                        foreach (var i in swagger.Dictionary)
+                        foreach (var i in swagger.Dictionary.Where(p => !(p.Value  is SwaggerLoopReferenceObject)))
                         {
                             jObject.Add(i.Key, JToken.FromObject(i.Value, serializer));
                         }
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 case SwaggerObjectType.Array:
                     {
                         var swagger = (SwaggerArray)swaggerBase;
-                        var jArray = JArray.FromObject(swagger.Array.Select(s => JToken.FromObject(s, serializer)));
+                        var jArray = JArray.FromObject(swagger.Array.Where(s => !(s is SwaggerLoopReferenceObject)).Select(s => JToken.FromObject(s, serializer)));
                         jArray.WriteTo(writer);
                     }
                     break;
