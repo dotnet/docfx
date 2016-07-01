@@ -150,3 +150,33 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 ## How to enable custom validators
 1.  Config markdown validation rules in `md.style`.
 2.  Copy your extension assemblies to `plugin` folder in your `DocFX.exe` or template.
+
+## Validate metadata in markdown files
+In markdown file, we can write some metadata in [conceptual](../spec/docfx_flavored_markdown.md#yaml-header) or [overwrite document](intro_overwrite_files.md)
+And we allow add some plug-ins to validate metadata write in markdown files.
+
+### Scope of validation
+Following metadata will be validate:
+1.  yaml header in markdown.
+2.  global metadata.
+3.  file metadata.
+
+### Create validation plug-ins
+1.  Create a project in your code editor (e.g. visual studio).
+2.  Add nuget package `Microsoft.DocAsCode.Plugins` and `Microsoft.Composition`.
+3.  Create a class and implements @Microsoft.DocAsCode.Plugins.IInputMetadataValidator
+
+For example, we don't allow any metadata with name `hello`:
+```csharp
+[Export(typeof(IInputMetadataValidator))]
+public class MyInputMetadataValidator : IInputMetadataValidator
+{
+    public void Validate(string sourceFile, ImmutableDictionary<string, object> metadata)
+    {
+        if (metadata.ContainKey("hello"))
+        {
+            throw new DocumentException($"Metadata 'hello' is not allowed, file: {sourceFile}");
+        }
+    }
+}
+```
