@@ -55,8 +55,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             _rawInput = input;
             _validInput = ValidateInput(input);
-            // To-do: enable rebuild option after dependency map is constructed
-            _rebuild = true;
+            _rebuild = rebuild;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
             _filterConfigFile = input.FilterConfigFile?.ToNormalizedFullPath();
             _useCompatibilityFileName = useCompatibilityFileName;
@@ -240,6 +239,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var projectCache = new ConcurrentDictionary<string, Project>();
             // Project<=>Documents
             var documentCache = new ProjectDocumentCache();
+            var projectDependencyGraph = new ConcurrentDictionary<string, List<string>>();
             DateTime triggeredTime = DateTime.UtcNow;
             var solutions = inputs.Where(s => IsSupportedSolution(s));
             var projects = inputs.Where(s => IsSupportedProject(s));
@@ -302,6 +302,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 documentCache.AddDocuments(path, project.MetadataReferences
                     .Where(s => s is PortableExecutableReference)
                     .Select(s => ((PortableExecutableReference)s).FilePath));
+                FillProjectDependencyGraph(projectDependencyGraph, project);
             }
 
             documentCache.AddDocuments(sourceFiles);
@@ -362,13 +363,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
+            ConcurrentDictionary<string, bool> projectRebuildInfo = new ConcurrentDictionary<string, bool>();
             ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
             var extensionMethods = GetAllExtensionMethods(compilationCache.Values);
 
-            foreach (var project in projectCache)
+            foreach (var key in GetTopologicalSortedItems(projectDependencyGraph))
             {
-                var projectMetadata = await GetProjectMetadataFromCacheAsync(project.Value, compilationCache[project.Key], outputFolder, documentCache, forceRebuild, _preserveRawInlineComments, _filterConfigFile, extensionMethods);
+                var dependencyRebuilt = projectDependencyGraph[key].Any(r => projectRebuildInfo[r]);
+                var projectMetadataResult = await GetProjectMetadataFromCacheAsync(projectCache[key], compilationCache[key], outputFolder, documentCache, forceRebuild, _preserveRawInlineComments, _filterConfigFile, extensionMethods, dependencyRebuilt);
+                var projectMetadata = projectMetadataResult.Item1;
                 if (projectMetadata != null) projectMetadataList.Add(projectMetadata);
+                projectRebuildInfo[key] = projectMetadataResult.Item2;
             }
 
             var csFiles = sourceFiles.Where(s => IsSupportedCSSourceFile(s));
@@ -379,7 +384,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (csCompilation != null)
                 {
                     var csMetadata = await GetFileMetadataFromCacheAsync(csFiles, csCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _filterConfigFile, extensionMethods);
-                    if (csMetadata != null) projectMetadataList.Add(csMetadata);
+                    if (csMetadata != null) projectMetadataList.Add(csMetadata.Item1);
                 }
             }
 
@@ -391,7 +396,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (vbCompilation != null)
                 {
                     var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _filterConfigFile, extensionMethods);
-                    if (vbMetadata != null) projectMetadataList.Add(vbMetadata);
+                    if (vbMetadata != null) projectMetadataList.Add(vbMetadata.Item1);
                 }
             }
 
@@ -411,6 +416,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments, _rawInput.ExternalReferences, _useCompatibilityFileName);
                 applicationCache.SaveToCache(inputs, documentCache.Cache, triggeredTime, outputFolder, outputFiles);
             }
+        }
+
+        private static void FillProjectDependencyGraph(ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
+        {
+            projectDependencyGraph.GetOrAdd(project.FilePath, project.ProjectReferences.Select(pr => project.Solution.GetProject(pr.ProjectId).FilePath).ToList());
         }
 
         private static async Task<ConcurrentDictionary<string, Compilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, Project> projectCache)
@@ -474,14 +484,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
 
-        private static Task<MetadataItem> GetProjectMetadataFromCacheAsync(Project project, Compilation compilation, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
+        private static Task<Tuple<MetadataItem, bool>> GetProjectMetadataFromCacheAsync(Project project, Compilation compilation, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods, bool isReferencedProjectRebuilt)
         {
             var projectFilePath = project.FilePath;
             var k = documentCache.GetDocuments(projectFilePath);
             return GetMetadataFromProjectLevelCacheAsync(
                 project,
                 new[] { projectFilePath, filterConfigFile },
-                s => Task.FromResult(forceRebuild || s.AreFilesModified(k.Concat(new string[] { filterConfigFile }))),
+                s => Task.FromResult(forceRebuild || s.AreFilesModified(k.Concat(new string[] { filterConfigFile })) || isReferencedProjectRebuilt),
                 s => Task.FromResult(compilation),
                 s =>
                 {
@@ -493,7 +503,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 extensionMethods);
         }
 
-        private static Task<MetadataItem> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
+        private static Task<Tuple<MetadataItem, bool>> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
         {
             if (files == null || !files.Any()) return null;
             return GetMetadataFromProjectLevelCacheAsync(
@@ -507,7 +517,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 extensionMethods);
         }
 
-        private static async Task<MetadataItem> GetMetadataFromProjectLevelCacheAsync<T>(
+        private static async Task<Tuple<MetadataItem, bool>> GetMetadataFromProjectLevelCacheAsync<T>(
             T input,
             IEnumerable<string> inputKey,
             Func<IncrementalCheck, Task<bool>> rebuildChecker,
@@ -536,7 +546,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' keep up-to-date since '{projectConfig.TriggeredUtcTime.ToString()}', cached intermediate result '{cacheFile}' is used.");
                 if (TryParseYamlMetadataFile(cacheFile, out projectMetadata))
                 {
-                    return projectMetadata;
+                    return Tuple.Create(projectMetadata, rebuildProject);
                 }
                 else
                 {
@@ -563,7 +573,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Save to cache
             projectLevelCache.SaveToCache(inputKey, containedFiles, triggeredTime, cacheOutputFolder, new List<string>() { file });
 
-            return projectMetadata;
+            return Tuple.Create(projectMetadata, rebuildProject);
         }
 
         private static IList<string> ResolveAndExportYamlMetadata(
@@ -809,6 +819,33 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
                 return null;
             }
+        }
+
+        /// <summary>
+        /// use DFS to get topological sorted items
+        /// </summary>
+        private static IEnumerable<string> GetTopologicalSortedItems(IDictionary<string, List<string>> graph)
+        {
+            var visited = new HashSet<string>();
+            var result = new List<string>();
+            foreach (var node in graph.Keys)
+            {
+                DepthFirstTraverse(graph, node, visited, result);
+            }
+            return result;
+        }
+
+        private static void DepthFirstTraverse(IDictionary<string, List<string>> graph, string start, HashSet<string> visited, List<string> result)
+        {
+            if (!visited.Add(start))
+            {
+                return;
+            }
+            foreach (var presequisite in graph[start])
+            {
+                DepthFirstTraverse(graph, presequisite, visited, result);
+            }
+            result.Add(start);
         }
 
         public void Dispose()
