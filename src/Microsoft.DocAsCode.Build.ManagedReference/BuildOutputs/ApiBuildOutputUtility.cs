@@ -94,5 +94,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             xref += "/>";
             return xref;
         }
+
+        public static string GetHref(string url, string altText = null)
+        {
+            var href = $"<span><a href=\"{HttpUtility.HtmlEncode(url)}\">";
+            if (!string.IsNullOrEmpty(altText)) href += HttpUtility.HtmlEncode(altText);
+            href += "</a></span>";
+            return href;
+        }
     }
 }

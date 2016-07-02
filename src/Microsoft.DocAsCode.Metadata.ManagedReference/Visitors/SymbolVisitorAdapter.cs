@@ -92,17 +92,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (item.Sees != null)
             {
-                foreach (var i in item.Sees)
+                foreach (var i in item.Sees.Where(l => l.LinkType == LinkType.CRef))
                 {
-                    AddReference(i.Type, i.CommentId);
+                    AddReference(i.LinkId, i.CommentId);
                 }
             }
 
             if (item.SeeAlsos != null)
             {
-                foreach (var i in item.SeeAlsos)
+                foreach (var i in item.SeeAlsos.Where(l => l.LinkType == LinkType.CRef))
                 {
-                    AddReference(i.Type, i.CommentId);
+                    AddReference(i.LinkId, i.CommentId);
                 }
             }
 

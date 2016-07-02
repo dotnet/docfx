@@ -161,13 +161,13 @@ Check empty code.
 
             var sees = commentModel.Sees;
             Assert.Equal(2, sees.Count);
-            Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].Type);
-            Assert.Null(sees[0].Description);
+            Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].LinkId);
+            Assert.Null(sees[0].AltText);
 
             var seeAlsos = commentModel.SeeAlsos;
             Assert.Equal(1, seeAlsos.Count);
-            Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].Type);
-            Assert.Null(seeAlsos[0].Description);
+            Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].LinkId);
+            Assert.Null(seeAlsos[0].AltText);
         }
     }
 }

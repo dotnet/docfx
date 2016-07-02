@@ -77,6 +77,18 @@
     </xref>
   </xsl:template>
 
+  <xsl:template match="see[@href and not(parent::member)]">
+    <a>
+      <xsl:apply-templates />
+    </a>
+  </xsl:template>
+
+  <xsl:template match="seealso[@href and not(parent::member)]">
+    <a>
+      <xsl:apply-templates />
+    </a>
+  </xsl:template>
+
   <xsl:template match="paramref">
     <xsl:if test="normalize-space(@name)">
       <em>

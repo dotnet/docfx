@@ -197,3 +197,18 @@
   {{/definition}}
 </div>
 {{/extensionMethods}}
+{{#seealso.0}}
+<h3 id="seealso">{{__global.seealso}}</h3>
+<div class="seealso">
+{{/seealso.0}}
+{{#seealso}}
+    {{#isCref}}
+      <div>{{{type.specName.0.value}}}</div>
+    {{/isCref}}
+	{{^isCref}}
+      <div>{{{url}}}</div>
+    {{/isCref}}
+{{/seealso}}
+{{#seealso.0}}
+</div>
+{{/seealso.0}}
