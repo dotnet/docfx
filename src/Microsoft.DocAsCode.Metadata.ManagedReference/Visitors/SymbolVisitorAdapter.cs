@@ -130,9 +130,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             item.Type = MemberType.Assembly;
             _references = new Dictionary<string, ReferenceItem>();
             var namespaces = symbol.GlobalNamespace.GetNamespaceMembers().ToList();
-            if (namespaces.Count == 0)
+            var allMembers = symbol.GlobalNamespace.GetMembers().ToList();
+            if (namespaces.Count != allMembers.Count)
             {
-                Logger.LogWarning($"No namespace is found in assembly {symbol.MetadataName}. DocFX currently only supports generating metadata with namespace defined.");
+                Logger.LogWarning($"DocFX currently only supports generating metadata with namespace defined. The following types in assembly \"{symbol.MetadataName}\" will have no metadata generated: {string.Join(", ", allMembers.Except(namespaces).Select(m => m.MetadataName))}. ");
             }
 
             item.Items = VisitDescendants(
