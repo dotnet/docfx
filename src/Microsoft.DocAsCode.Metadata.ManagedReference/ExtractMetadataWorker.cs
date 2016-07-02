@@ -270,7 +270,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         // If the project is csproj/vbproj, add to project dictionary, otherwise, ignore
                         if (IsSupportedProject(filePath))
                         {
-                            projectCache.GetOrAdd(project.FilePath, s => project);
+                            projectCache.GetOrAdd(project.FilePath.ToNormalizedFullPath(), s => project);
                         }
                         else
                         {
@@ -420,7 +420,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void FillProjectDependencyGraph(ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
         {
-            projectDependencyGraph.GetOrAdd(project.FilePath, project.ProjectReferences.Select(pr => project.Solution.GetProject(pr.ProjectId).FilePath).ToList());
+            projectDependencyGraph.GetOrAdd(project.FilePath.ToNormalizedFullPath(), project.ProjectReferences.Select(pr => project.Solution.GetProject(pr.ProjectId).FilePath.ToNormalizedFullPath()).ToList());
         }
 
         private static async Task<ConcurrentDictionary<string, Compilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, Project> projectCache)
