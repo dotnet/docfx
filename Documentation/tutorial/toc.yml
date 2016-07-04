@@ -28,11 +28,11 @@
 - name: Extensibility
   items:
   - name: Build your own type of documentation with custom plug-in
-    href: "Build your own type of documentation with custom plug-in.md"
+    href: "Build_your_own_type_of_documentation_with_custom_plug-in.md"
     items:
     - name: "Advanced: Support Hyperlink"
       href: advanced_support_hyperlink.md
   - name: Validate your markdown files
-    href: validate your markdown files.md
+    href: validate_your_markdown_files.md
   - name: Intro markdown lite
-    href: intro markdown lite.md
+    href: intro_markdown_lite.md
