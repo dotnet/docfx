@@ -114,9 +114,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         }
 
         [Fact]
-        public void ParseSwaggerJsonWithLoopReferenceShouldFail()
+        public void ParseSwaggerJsonWithLoopReferenceShouldSucceed()
         {
-            var swaggerFile = @"TestData\swagger\loopref_swagger2.json";
+            const string swaggerFile = @"TestData\swagger\loopref_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
 
             Assert.Equal(1, swagger.Paths.Values.Count);

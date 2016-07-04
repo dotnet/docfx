@@ -9,7 +9,6 @@
     <Compile Include="ApplyOverwriteDocument.cs" />
     <Compile Include="BaseDocumentBuildStep.cs" />
     <Compile Include="DisposableDocumentProcessor.cs" />
-    <Compile Include="ICloneable.cs" />
     <Compile Include="MarkdownReader.cs" />
     <Compile Include="OverwriteDocumentModel.cs" />
     <Compile Include="OverwriteDocumentReader.cs" />

@@ -14,12 +14,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     internal class SwaggerJsonBuilder
     {
         private IDictionary<string, SwaggerObject> _documentObjectCache;
+        private IDictionary<string, SwaggerObject> _resolvedObjectCache;
+        private const string DefinitionsKey = "definitions";
+        private const string ParametersKey = "parameters";
 
         public SwaggerObjectBase Read(JsonReader reader)
         {
             _documentObjectCache = new Dictionary<string, SwaggerObject>();
+            _resolvedObjectCache = new Dictionary<string, SwaggerObject>();
             var token = JToken.ReadFrom(reader);
             var swagger = Build(token);
+            RemoveReferenceDefinitions((SwaggerObject)swagger);
             return ResolveReferences(swagger, new Stack<string>());
         }
 
@@ -92,6 +97,19 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             };
         }
 
+        private static void RemoveReferenceDefinitions(SwaggerObject root)
+        {
+            // Remove definitions and parameters which has been added into _documentObjectCache
+            if (root.Dictionary.ContainsKey(DefinitionsKey))
+            {
+                root.Dictionary.Remove(DefinitionsKey);
+            }
+            if (root.Dictionary.ContainsKey(ParametersKey))
+            {
+                root.Dictionary.Remove(ParametersKey);
+            }
+        }
+
         private SwaggerObjectBase ResolveReferences(SwaggerObjectBase swaggerBase, Stack<string> refStack)
         {
             if (swaggerBase.ReferencesResolved)
@@ -123,12 +141,22 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                                 return new SwaggerLoopReferenceObject();
                             }
 
-                            refStack.Push(referencedObject.Location);
+                            SwaggerObject existingObject;
+                            if (_resolvedObjectCache.TryGetValue(swagger.DeferredReference, out existingObject))
+                            {
+                                return existingObject;
+                            }
 
                             // Clone to avoid change the reference object in _documentObjectCache
+                            refStack.Push(referencedObject.Location);
                             swagger.Reference = (SwaggerObject)ResolveReferences(referencedObject.Clone(), refStack);
-
                             refStack.Pop();
+
+                            if (refStack.Count == 0)
+                            {
+                                _resolvedObjectCache.Add(swagger.DeferredReference, swagger.Reference);
+                            }
+
                         }
                         return swagger;
                     }
