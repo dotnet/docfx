@@ -11,5 +11,11 @@ namespace Microsoft.DocAsCode.Plugins
         public ImmutableDictionary<string, object> YamlHeader { get; set; } = ImmutableDictionary<string, object>.Empty;
         public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
+        public ImmutableArray<string> Dependency { get; set; } = ImmutableArray<string>.Empty;
+
+        public MarkupResult Clone()
+        {
+            return (MarkupResult)MemberwiseClone();
+        }
     }
 }

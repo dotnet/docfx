@@ -74,11 +74,11 @@ namespace Microsoft.DocAsCode.Build.Common
         {
             try
             {
-                var html = host.MarkupToHtml(markdown, ft.File);
+                var html = host.Markup(markdown, ft, true);
                 var parts = YamlHtmlPart.SplitYamlHtml(html);
                 foreach (var part in parts)
                 {
-                    var mr = host.ParseHtml(part.OriginHtml, ft);
+                    var mr = host.Parse(part.ToMarkupResult(), ft);
                     part.Conceptual = mr.Html;
                     part.LinkToFiles = mr.LinkToFiles;
                     part.LinkToUids = mr.LinkToUids;
