@@ -11,45 +11,13 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
 
     [Serializable]
-    public class BuildJsonConfig
+    public class BuildJsonConfig : BuildJsonConfigCommon
     {
         [JsonIgnore]
         public string BaseDirectory { get; set; }
 
         [JsonIgnore]
         public string OutputFolder { get; set; }
-
-        [JsonProperty("content")]
-        public FileMapping Content { get; set; }
-
-        [JsonProperty("resource")]
-        public FileMapping Resource { get; set; }
-
-        [JsonProperty("overwrite")]
-        public FileMapping Overwrite { get; set; }
-
-        [JsonProperty("externalReference")]
-        public FileMapping ExternalReference { get; set; }
-
-        [JsonProperty("xref")]
-        public ListWithStringFallback XRefMaps { get; set; }
-
-        [JsonProperty("dest")]
-        public string Destination { get; set; }
-
-        [JsonProperty("globalMetadata")]
-        [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
-        public Dictionary<string, object> GlobalMetadata { get; set; }
-
-        /// <summary>
-        /// Metadata that applies to some specific files.
-        /// The key is the metadata name.
-        /// For each item of the value:
-        ///     The key is the glob pattern to match the files.
-        ///     The value is the value of the metadata.
-        /// </summary>
-        [JsonProperty("fileMetadata")]
-        public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
 
         [JsonProperty("template")]
         public ListWithStringFallback Templates { get; set; } = new ListWithStringFallback();
@@ -69,14 +37,8 @@ namespace Microsoft.DocAsCode
         [JsonProperty("exportRawModel")]
         public bool? ExportRawModel { get; set; }
 
-        [JsonProperty("rawModelOutputFolder")]
-        public string RawModelOutputFolder { get; set; }
-
         [JsonProperty("exportViewModel")]
         public bool? ExportViewModel { get; set; }
-
-        [JsonProperty("viewModelOutputFolder")]
-        public string ViewModelOutputFolder { get; set; }
 
         [JsonProperty("dryRun")]
         public bool? DryRun { get; set; }
@@ -96,5 +58,9 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("noLangKeyword")]
         public bool NoLangKeyword { get; set; }
+
+        [JsonProperty("docsets")]
+        public List<BuildJsonConfigCommon> Docsets { get; set; }
+
     }
 }
