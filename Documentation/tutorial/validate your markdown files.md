@@ -153,10 +153,10 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 
 ## Validate metadata in markdown files
 In markdown file, we can write some metadata in [conceptual](../spec/docfx_flavored_markdown.md#yaml-header) or [overwrite document](intro_overwrite_files.md)
-And we allow add some plug-ins to validate metadata write in markdown files.
+And we allow add some plug-ins to validate metadata writen in markdown files.
 
 ### Scope of validation
-Following metadata will be validate:
+Following metadata will be validated:
 1.  yaml header in markdown.
 2.  global metadata.
 3.  file metadata.
@@ -164,9 +164,9 @@ Following metadata will be validate:
 ### Create validation plug-ins
 1.  Create a project in your code editor (e.g. visual studio).
 2.  Add nuget package `Microsoft.DocAsCode.Plugins` and `Microsoft.Composition`.
-3.  Create a class and implements @Microsoft.DocAsCode.Plugins.IInputMetadataValidator
+3.  Create a class and implement @Microsoft.DocAsCode.Plugins.IInputMetadataValidator
 
-For example, we don't allow any metadata with name `hello`:
+For example, the following validator prohibits any metadata with name `hello`:
 ```csharp
 [Export(typeof(IInputMetadataValidator))]
 public class MyInputMetadataValidator : IInputMetadataValidator
