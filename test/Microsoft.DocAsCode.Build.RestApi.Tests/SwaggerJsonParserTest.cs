@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 {
     using System.IO;
 
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Xunit;
 
@@ -113,10 +114,19 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         }
 
         [Fact]
-        public void ParseSwaggerJsonWithLoopReferenceShouldFail()
+        public void ParseSwaggerJsonWithLoopReferenceShouldSucceed()
         {
-            var swaggerFile = @"TestData\swagger\loopref_swagger2.json";
-            Assert.Throws<Newtonsoft.Json.JsonSerializationException>(() => SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile)));
+            const string swaggerFile = @"TestData\swagger\loopref_swagger2.json";
+            var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
+
+            Assert.Equal(1, swagger.Paths.Values.Count);
+            var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
+            Assert.NotNull(actionJObject);
+            var action = actionJObject.ToObject<OperationObject>();
+            var schemaJObject = (JObject)action.Parameters[0].Metadata["schema"];
+            var schemaObj = schemaJObject.ToString(Formatting.None);
+            Assert.Equal(@"{""properties"":{""provisioningErrors"":{""type"":""array"",""items"":{""properties"":{""errorDetail"":{""type"":""array""}}},""readOnly"":true}},""example"":{""department"":""Sales"",""jobTitle"":""Sales Rep""}}",
+                schemaObj);
         }
     }
 }

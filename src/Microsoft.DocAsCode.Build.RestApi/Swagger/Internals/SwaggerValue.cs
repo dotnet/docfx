@@ -8,6 +8,14 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     internal class SwaggerValue : SwaggerObjectBase
     {
         public override SwaggerObjectType ObjectType => SwaggerObjectType.ValueType;
+
         public JToken Token { get; set; }
+
+        public override SwaggerObjectBase Clone()
+        {
+            var clone = (SwaggerValue)MemberwiseClone();
+            clone.ReferencesResolved = false;
+            return clone;
+        }
     }
 }
