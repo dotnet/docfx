@@ -23,6 +23,7 @@ exports.transform = function (model)  {
 
   langs = model.langs;
   handleItem(model, model.newFileRepository);
+  common.mergeSeeAlso(model);
   if (model.children) {
       model.children.forEach(function (item) { handleItem(item, model.newFileRepository); });
   }
@@ -114,6 +115,7 @@ function handleItem(vm, newFileRepository) {
   vm.conceptual = vm.conceptual || null;
   vm.syntax = vm.syntax || null;
   vm.implements = vm.implements || null;
+  vm.seealso = vm.seealso || null;
 
   if (vm.supported_platforms) {
       vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);
