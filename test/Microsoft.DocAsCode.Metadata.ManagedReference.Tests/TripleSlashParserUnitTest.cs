@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         <param name='input'>This is <see cref='T:System.AccessViolationException'/>the input</param>
 
         <param name = 'output' > This is the output </param >
-        <exception cref='T:System.Xml.XmlException'>This is a sample of exception node</exception>
+        <exception cref='T:System.Xml.XmlException'>This is a sample of exception node. Ref <see href=""http://exception.com"">Exception</see></exception>
         <exception cref='System.Xml.XmlException'>This is a sample of exception node with invalid cref</exception>
         <exception cref=''>This is a sample of invalid exception node</exception>
         <exception >This is a sample of another invalid exception node</exception>
@@ -86,8 +86,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     </example>
     <see cref=""T:Microsoft.DocAsCode.EntityModel.SpecIdHelper""/>
     <see cref=""T:System.Diagnostics.SourceSwitch""/>
+    <see href=""http://exception.com"">Global See section</see>
     <seealso cref=""T:System.IO.WaitForChangedResult""/>
     <seealso cref=""!:http://google.com"">ABCS</seealso>
+    <seealso href=""http://www.bing.com"">Hello Bing</seealso>
 
 </member>";
             var context = new TripleSlashCommentParserContext
@@ -133,7 +135,7 @@ remarks);
             var exceptions = commentModel.Exceptions;
             Assert.Equal(1, exceptions.Count);
             Assert.Equal("System.Xml.XmlException", exceptions[0].Type);
-            Assert.Equal("This is a sample of exception node", exceptions[0].Description);
+            Assert.Equal(@"This is a sample of exception node. Ref <a href=""http://exception.com"">Exception</a>", exceptions[0].Description);
 
             var example = commentModel.Examples;
             var expected = new List<string> {
@@ -160,14 +162,18 @@ Check empty code.
             commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
 
             var sees = commentModel.Sees;
-            Assert.Equal(2, sees.Count);
-            Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].Type);
-            Assert.Null(sees[0].Description);
+            Assert.Equal(3, sees.Count);
+            Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].LinkId);
+            Assert.Null(sees[0].AltText);
+            Assert.Equal("http://exception.com", sees[2].LinkId);
+            Assert.Equal("Global See section", sees[2].AltText);
 
             var seeAlsos = commentModel.SeeAlsos;
-            Assert.Equal(1, seeAlsos.Count);
-            Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].Type);
-            Assert.Null(seeAlsos[0].Description);
+            Assert.Equal(2, seeAlsos.Count);
+            Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].LinkId);
+            Assert.Null(seeAlsos[0].AltText);
+            Assert.Equal("http://www.bing.com", seeAlsos[1].LinkId);
+            Assert.Equal("Hello Bing", seeAlsos[1].AltText);
         }
     }
 }
