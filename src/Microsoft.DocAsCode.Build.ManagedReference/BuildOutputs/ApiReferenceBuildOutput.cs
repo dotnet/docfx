@@ -104,11 +104,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "seealso")]
         [JsonProperty("seealso")]
-        public List<ApiCrefInfoBuildOutput> SeeAlsos { get; set; }
+        public List<ApiLinkInfoBuildOutput> SeeAlsos { get; set; }
 
         [YamlMember(Alias = "see")]
         [JsonProperty("see")]
-        public List<ApiCrefInfoBuildOutput> Sees { get; set; }
+        public List<ApiLinkInfoBuildOutput> Sees { get; set; }
 
         [YamlMember(Alias = "inheritance")]
         [JsonProperty("inheritance")]
@@ -232,8 +232,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Remarks = vm.Remarks,
                 Examples = vm.Examples,
                 Overridden = ApiNames.FromUid(vm.Overridden),
-                SeeAlsos = vm.SeeAlsos?.Select(s => ApiCrefInfoBuildOutput.FromModel(s)).ToList(),
-                Sees = vm.Sees?.Select(s => ApiCrefInfoBuildOutput.FromModel(s)).ToList(),
+                SeeAlsos = vm.SeeAlsos?.Select(s => ApiLinkInfoBuildOutput.FromModel(s)).ToList(),
+                Sees = vm.Sees?.Select(s => ApiLinkInfoBuildOutput.FromModel(s)).ToList(),
                 Inheritance = vm.Inheritance?.Select(i => FromUid(i)).ToList(),
                 Implements = vm.Implements?.Select(i => ApiNames.FromUid(i)).ToList(),
                 InheritedMembers = vm.InheritedMembers,

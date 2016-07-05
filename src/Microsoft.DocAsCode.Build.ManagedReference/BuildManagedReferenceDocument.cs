@@ -56,8 +56,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             linkToUids.UnionWith(item.Inheritance ?? EmptyEnumerable);
             linkToUids.UnionWith(item.InheritedMembers ?? EmptyEnumerable);
             linkToUids.UnionWith(item.Implements ?? EmptyEnumerable);
-            linkToUids.UnionWith(item.SeeAlsos?.Select(s => s.Type) ?? EmptyEnumerable);
-            linkToUids.UnionWith(item.Sees?.Select(s => s.Type) ?? EmptyEnumerable);
+            linkToUids.UnionWith(item.SeeAlsos?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId) ?? EmptyEnumerable);
+            linkToUids.UnionWith(item.Sees?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId) ?? EmptyEnumerable);
 
             if (item.Overridden != null)
             {

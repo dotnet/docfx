@@ -12,6 +12,7 @@
     <Compile Include="AttributeInfo.cs" />
     <Compile Include="CrefInfo.cs" />
     <Compile Include="ItemViewModel.cs" />
+    <Compile Include="LinkInfo.cs" />
     <Compile Include="MemberType.cs" />
     <Compile Include="NamedArgumentInfo.cs" />
     <Compile Include="PageViewModel.cs" />
