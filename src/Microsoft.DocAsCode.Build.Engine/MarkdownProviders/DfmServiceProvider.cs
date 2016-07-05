@@ -38,9 +38,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _tokens = tokens;
             }
 
-            public string Markup(string src, string path)
+            public MarkupResult Markup(string src, string path)
             {
-                return _builder.CreateDfmEngine(new DfmRenderer() { Tokens = _tokens }).Markup(src, path);
+                var html = _builder.CreateDfmEngine(new DfmRenderer() { Tokens = _tokens }).Markup(src, path);
+                return new MarkupResult
+                {
+                    Html = html,
+                };
             }
         }
     }

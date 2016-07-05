@@ -9,9 +9,13 @@ namespace Microsoft.DocAsCode.Build.Common
 
     using HtmlAgilityPack;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public class YamlHtmlPart
     {
-        public string OriginHtml { get; set; }
+        public MarkupResult Origin { get; set; }
+
+        public string Html { get; set; }
 
         public string Conceptual { get; set; }
 
@@ -27,10 +31,22 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public ImmutableDictionary<string, object> YamlHeader { get; set; } = ImmutableDictionary<string, object>.Empty;
 
-        public static IList<YamlHtmlPart> SplitYamlHtml(string html)
+        public MarkupResult ToMarkupResult()
+        {
+            return new MarkupResult
+            {
+                Html = Html,
+                Dependency = Origin.Dependency,
+                LinkToFiles = LinkToFiles,
+                LinkToUids = LinkToUids,
+                YamlHeader = YamlHeader,
+            };
+        }
+
+        public static IList<YamlHtmlPart> SplitYamlHtml(MarkupResult origin)
         {
             var doc = new HtmlDocument();
-            doc.LoadHtml(html);
+            doc.LoadHtml(origin.Html);
             var parts = new List<YamlHtmlPart>();
 
             var nodes = doc.DocumentNode.SelectNodes("//yamlheader");
@@ -42,24 +58,30 @@ namespace Microsoft.DocAsCode.Build.Common
                 var startLine = node.GetAttributeValue("start", -1);
                 var endLine = node.GetAttributeValue("end", -1);
 
-                parts.Add(new YamlHtmlPart { SourceFile = sourceFile, StartLine = startLine, EndLine = endLine });
+                parts.Add(new YamlHtmlPart
+                {
+                    Origin = origin,
+                    SourceFile = sourceFile,
+                    StartLine = startLine,
+                    EndLine = endLine
+                });
             }
 
             var startIndexes = nodes.Select(node => node.StreamPosition).Skip(1).ToList();
-            startIndexes.Add(html.Length);
+            startIndexes.Add(origin.Html.Length);
             var endIndexes = nodes.Select(node => node.StreamPosition + node.OuterHtml.Length - 1).ToList();
 
             for (var i = 0; i < parts.Count; i++)
             {
                 if (i == 0)
                 {
-                    parts[i].OriginHtml = html.Substring(0, startIndexes[0]);
+                    parts[i].Html = origin.Html.Substring(0, startIndexes[0]);
                 }
                 else
                 {
-                    parts[i].OriginHtml = html.Substring(startIndexes[i-1], startIndexes[i] - startIndexes[i-1]);
+                    parts[i].Html = origin.Html.Substring(startIndexes[i - 1], startIndexes[i] - startIndexes[i - 1]);
                 }
-                parts[i].Conceptual = html.Substring(endIndexes[i] + 1, startIndexes[i] - endIndexes[i] - 1);
+                parts[i].Conceptual = origin.Html.Substring(endIndexes[i] + 1, startIndexes[i] - endIndexes[i] - 1);
             }
 
             return parts;
