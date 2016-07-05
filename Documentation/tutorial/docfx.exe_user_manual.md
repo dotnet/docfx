@@ -298,6 +298,50 @@ viewModelOutputFolder    | Concatenate. Like `[root_config viewModelOutputFolder
 
 The value of following keys in docset is directly inherited from the value in root config: template, theme, exportRawModel, exportViewModel, dryRun, maxParallelism, markdownEngineName, markdownEngineProperties, noLangKeyword, docsets.
 
+Here's a sample `docfx.json` with docsets:
+```json
+{
+  "build": {
+    "docsets": {
+      "v2.0": {
+        "content": [
+          {
+            "files": "**/*.yml",
+            "src": "v2.0",
+            "dest": "api"
+          }
+        ],
+        "globalMetadata": {
+          "apiVersion": "v2.0"
+        },
+        "dest": "v2.0"
+      },
+      "v2.1": {
+        "content": [
+          {
+            "files": "**/*.yml",
+            "src": "v2.1",
+            "dest": "api"
+          }
+        ],
+        "globalMetadata": {
+          "apiVersion": "v2.1"
+        },
+        "dest": "v2.1"
+      }
+    },
+    "content": [
+      {
+        "files": [
+          "*.md"
+        ]
+      }
+    ],
+    "dest": "_site"
+  }
+}
+```
+
 4. Supported `name-files` File Mapping Format
 ---------------------------------------------
 There are several ways to define `name-files` file mapping.
