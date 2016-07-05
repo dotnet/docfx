@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Utility;
@@ -141,17 +142,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (current.Sees?.Count > 0)
             {
-                foreach (var item in current.Sees)
+                foreach (var item in current.Sees.Where(l => l.LinkType == LinkType.CRef))
                 {
-                    yield return item.Type;
+                    yield return item.LinkId;
                 }
             }
 
             if (current.SeeAlsos?.Count > 0)
             {
-                foreach (var item in current.SeeAlsos)
+                foreach (var item in current.SeeAlsos.Where(l => l.LinkType == LinkType.CRef))
                 {
-                    yield return item.Type;
+                    yield return item.LinkId;
                 }
             }
 

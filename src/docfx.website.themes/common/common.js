@@ -7,20 +7,21 @@ exports.getHtmlId = getHtmlId;
 
 exports.getViewSourceHref = getViewSourceHref;
 exports.getImproveTheDocHref = getImproveTheDocHref;
+exports.mergeSeeAlso = mergeSeeAlso;
 
 exports.isAbsolutePath = function (path) {
-  return /^(\w+:)?\/\//g.test(path);
+    return /^(\w+:)?\/\//g.test(path);
 }
 
 exports.isRelativePath = function(path) {
-  if (!path) return false;
-  return !exports.isAbsolutePath(path);
+    if (!path) return false;
+    return !exports.isAbsolutePath(path);
 }
 
 function getDirectoryName(path) {
-  if (!path) return '';
-  var index = path.lastIndexOf('/');
-  return path.slice(0, index + 1);
+    if (!path) return '';
+    var index = path.lastIndexOf('/');
+    return path.slice(0, index + 1);
 }
 
 function getFileNameWithoutExtension(path) {
@@ -117,4 +118,31 @@ function getOverrideTemplate(uid) {
     content += "*Please type below more information about this API:*\n";
     content += "\n";
     return content;
+}
+
+function mergeSeeAlso(model) {
+    var seealso = [];
+    if (model.seealso) {
+        for (var key in model.seealso) {
+            addIsCref(model.seealso[key]);
+            seealso.push(model.seealso[key]);
+        }
+    }
+    if (model.children) {
+        model.children.forEach(function (c) {
+            if (c.seealso) {
+                for(var key in c.seealso) {
+                    addIsCref(c.seealso[key]);
+                    seealso.push(c.seealso[key]);
+                }
+            }
+        });
+    }   
+    model.seealso = seealso || null;
+}
+
+function addIsCref(seealso){
+    if (!seealso.linkType || seealso.linkType.toLowerCase() == "cref") {
+        seealso.isCref = true;
+    }
 }
