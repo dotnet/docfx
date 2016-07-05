@@ -47,8 +47,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
                     SwaggerReferenceObject deferredObject = new SwaggerReferenceObject();
                     var formatted = RestApiHelper.FormatReferenceFullPath((string)referenceToken);
-                    deferredObject.DeferredReference = formatted;
-                    deferredObject.ReferenceName = RestApiHelper.GetReferenceName(formatted);
+                    deferredObject.DeferredReference = formatted.Item1;
+                    deferredObject.ReferenceName = formatted.Item2;
 
                     // For swagger, other properties are still allowed besides $ref, e.g.
                     // "schema": {
@@ -143,7 +143,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             if (refStack.Contains(referencedObject.Location))
                             {
                                 var loopRef = new SwaggerLoopReferenceObject();
-                                loopRef.Dictionary.Add(InternalLoopRefNameKey, new SwaggerValue { Token = RestApiHelper.GetReferenceName(referencedObject.Location) });
+                                loopRef.Dictionary.Add(InternalLoopRefNameKey, new SwaggerValue { Token = swagger.ReferenceName });
                                 return loopRef;
                             }
 
