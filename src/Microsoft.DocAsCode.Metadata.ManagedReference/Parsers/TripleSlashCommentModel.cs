@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public string Summary { get; private set; }
         public string Remarks { get; private set; }
         public string Returns { get; private set; }
-        public List<CrefInfo> Exceptions { get; private set; }
+        public List<ExceptionInfo> Exceptions { get; private set; }
         public List<LinkInfo> Sees { get; private set; }
         public List<LinkInfo> SeeAlsos { get; private set; }
         public List<string> Examples { get; private set; }
@@ -153,7 +153,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-        private List<CrefInfo> GetExceptions(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        private List<ExceptionInfo> GetExceptions(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             string selector = "/member/exception";
             var result = GetMulitpleCrefInfo(nav, selector).ToList();
@@ -331,7 +331,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private IEnumerable<CrefInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector)
+        private IEnumerable<ExceptionInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector)
         {
             var iterator = navigator.Clone().Select(selector);
             if (iterator == null) yield break;
@@ -347,7 +347,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         string type = commentId.Substring(2);
                         if (string.IsNullOrEmpty(description)) description = null;
-                        yield return new CrefInfo { Description = description, Type = type, CommentId = commentId };
+                        yield return new ExceptionInfo { Description = description, Type = type, CommentId = commentId };
                     }
                 }
             }

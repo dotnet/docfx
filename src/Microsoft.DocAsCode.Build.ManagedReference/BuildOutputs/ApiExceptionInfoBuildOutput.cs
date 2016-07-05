@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     [Serializable]
-    public class ApiCrefInfoBuildOutput
+    public class ApiExceptionInfoBuildOutput
     {
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
@@ -24,22 +24,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         private bool _needExpand = true;
 
-        public static ApiCrefInfoBuildOutput FromModel(CrefInfo model)
+        public static ApiExceptionInfoBuildOutput FromModel(ExceptionInfo model)
         {
             if (model == null) return null;
 
-            return new ApiCrefInfoBuildOutput
+            return new ApiExceptionInfoBuildOutput
             {
                 Type = ApiNames.FromUid(model.Type),
                 Description = model.Description,
             };
         }
 
-        public static ApiCrefInfoBuildOutput FromModel(CrefInfo model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
+        public static ApiExceptionInfoBuildOutput FromModel(ExceptionInfo model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
             if (model == null) return null;
 
-            return new ApiCrefInfoBuildOutput
+            return new ApiExceptionInfoBuildOutput
             {
                 Type = ApiBuildOutputUtility.GetApiNames(model.Type, references, supportedLanguages),
                 Description = model.Description,

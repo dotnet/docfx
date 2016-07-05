@@ -13,7 +13,7 @@
     <Compile Include="BuildManagedReferenceDocument.cs" />
     <Compile Include="BuildOutputs\ApiBuildOutput.cs" />
     <Compile Include="BuildOutputs\ApiBuildOutputUtility.cs" />
-    <Compile Include="BuildOutputs\ApiCrefInfoBuildOutput.cs" />
+    <Compile Include="BuildOutputs\ApiExceptionInfoBuildOutput.cs" />
     <Compile Include="BuildOutputs\ApiLanguageValuePair.cs" />
     <Compile Include="BuildOutputs\ApiParameterBuildOutput.cs" />
     <Compile Include="BuildOutputs\ApiNames.cs" />
