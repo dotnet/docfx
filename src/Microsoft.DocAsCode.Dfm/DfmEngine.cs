@@ -3,10 +3,8 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.IO;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
@@ -21,32 +19,52 @@ namespace Microsoft.DocAsCode.Dfm
 
         public override string Markup(string src, string path)
         {
+            return Markup(src, path, null);
+        }
+
+        public string Markup(string src, string path, HashSet<string> dependency)
+        {
             if (string.IsNullOrEmpty(src))
             {
                 return string.Empty;
             }
-            return InternalMarkup(src, ImmutableStack.Create(path));
+            return InternalMarkup(src, ImmutableStack.Create(path), dependency ?? new HashSet<string>());
         }
 
-        internal string InternalMarkup(string src, ImmutableStack<string> parents)
+        internal string InternalMarkup(string src, ImmutableStack<string> parents, HashSet<string> dependency)
         {
-            LoggerFileScope fileScope = null;
+            using (GetFileScope(parents))
+            {
+                return InternalMarkup(
+                    src,
+                    Context
+                        .SetFilePathStack(parents)
+                        .SetDependency(dependency));
+            }
+        }
+
+        private static LoggerFileScope GetFileScope(ImmutableStack<string> parents)
+        {
             if (!parents.IsEmpty)
             {
                 var path = parents.Peek().ToDisplayPath();
+
                 if (!string.IsNullOrEmpty(path))
                 {
-                    fileScope = new LoggerFileScope(path);
+                    return new LoggerFileScope(path);
                 }
             }
 
-            using (fileScope)
-            {
-                return InternalMarkup(src, Context.SetFilePathStack(parents));
-            }
+            return null;
         }
 
         internal string InternalMarkup(string src, IMarkdownContext context) =>
-            Mark(SourceInfo.Create(Normalize(src), context.GetFilePathStack().Peek()), context).ToString();
+            Mark(
+                SourceInfo.Create(
+                    Normalize(src),
+                    context.GetFilePathStack().Peek()
+                ),
+                context
+            ).ToString();
     }
 }
