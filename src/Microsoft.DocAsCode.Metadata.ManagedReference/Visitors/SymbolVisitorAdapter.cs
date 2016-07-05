@@ -129,12 +129,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
             item.Type = MemberType.Assembly;
             _references = new Dictionary<string, ReferenceItem>();
-            var namespaces = symbol.GlobalNamespace.GetNamespaceMembers().ToList();
-            if (namespaces.Count == 0)
+
+            var typeMembers = symbol.GlobalNamespace.GetTypeMembers();
+            if (typeMembers.Any())
             {
-                Logger.LogWarning($"No namespace is found in assembly {symbol.MetadataName}. DocFX currently only supports generating metadata with namespace defined.");
+                Logger.LogWarning($"DocFX currently only supports generating metadata with namespace defined. The following types in assembly \"{symbol.MetadataName}\" will have no metadata generated: {string.Join(", ", typeMembers.Select(m => m.MetadataName))}. ");
             }
 
+            var namespaces = symbol.GlobalNamespace.GetNamespaceMembers().ToList();
             item.Items = VisitDescendants(
                 namespaces,
                 ns => ns.GetMembers().OfType<INamespaceSymbol>(),
