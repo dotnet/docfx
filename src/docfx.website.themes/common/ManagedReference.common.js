@@ -114,6 +114,7 @@ function handleItem(vm, newFileRepository) {
   vm.conceptual = vm.conceptual || null;
   vm.syntax = vm.syntax || null;
   vm.implements = vm.implements || null;
+  common.processSeeAlso(vm);
 
   if (vm.supported_platforms) {
       vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);

@@ -7,20 +7,21 @@ exports.getHtmlId = getHtmlId;
 
 exports.getViewSourceHref = getViewSourceHref;
 exports.getImproveTheDocHref = getImproveTheDocHref;
+exports.processSeeAlso = processSeeAlso;
 
 exports.isAbsolutePath = function (path) {
-  return /^(\w+:)?\/\//g.test(path);
+    return /^(\w+:)?\/\//g.test(path);
 }
 
-exports.isRelativePath = function(path) {
-  if (!path) return false;
-  return !exports.isAbsolutePath(path);
+exports.isRelativePath = function (path) {
+    if (!path) return false;
+    return !exports.isAbsolutePath(path);
 }
 
 function getDirectoryName(path) {
-  if (!path) return '';
-  var index = path.lastIndexOf('/');
-  return path.slice(0, index + 1);
+    if (!path) return '';
+    var index = path.lastIndexOf('/');
+    return path.slice(0, index + 1);
 }
 
 function getFileNameWithoutExtension(path) {
@@ -94,7 +95,7 @@ function getRemoteUrl(remote, startLine) {
 function getGithubUrlPrefix(repo) {
     var regex = /^(?:https?:\/\/)?(?:\S+\@)?(?:\S+\.)?(github\.com(?:\/|:).*)/gi;
     if (!regex.test(repo)) return '';
-    return repo.replace(regex, function(match, p1, offset, string) {
+    return repo.replace(regex, function (match, p1, offset, string) {
         return 'https://' + p1.replace(':', '/');
     })
 }
@@ -117,4 +118,20 @@ function getOverrideTemplate(uid) {
     content += "*Please type below more information about this API:*\n";
     content += "\n";
     return content;
+}
+
+function processSeeAlso(item) {
+
+    if (item.seealso) {
+        for (var key in item.seealso) {
+            addIsCref(item.seealso[key]);
+        }
+    }
+    item.seealso = item.seealso || null;
+}
+
+function addIsCref(seealso) {
+    if (!seealso.linkType || seealso.linkType.toLowerCase() == "cref") {
+        seealso.isCref = true;
+    }
 }
