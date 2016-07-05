@@ -7,13 +7,13 @@ exports.getHtmlId = getHtmlId;
 
 exports.getViewSourceHref = getViewSourceHref;
 exports.getImproveTheDocHref = getImproveTheDocHref;
-exports.mergeSeeAlso = mergeSeeAlso;
+exports.processSeeAlso = processSeeAlso;
 
 exports.isAbsolutePath = function (path) {
     return /^(\w+:)?\/\//g.test(path);
 }
 
-exports.isRelativePath = function(path) {
+exports.isRelativePath = function (path) {
     if (!path) return false;
     return !exports.isAbsolutePath(path);
 }
@@ -95,7 +95,7 @@ function getRemoteUrl(remote, startLine) {
 function getGithubUrlPrefix(repo) {
     var regex = /^(?:https?:\/\/)?(?:\S+\@)?(?:\S+\.)?(github\.com(?:\/|:).*)/gi;
     if (!regex.test(repo)) return '';
-    return repo.replace(regex, function(match, p1, offset, string) {
+    return repo.replace(regex, function (match, p1, offset, string) {
         return 'https://' + p1.replace(':', '/');
     })
 }
@@ -120,28 +120,17 @@ function getOverrideTemplate(uid) {
     return content;
 }
 
-function mergeSeeAlso(model) {
-    var seealso = [];
-    if (model.seealso) {
-        for (var key in model.seealso) {
-            addIsCref(model.seealso[key]);
-            seealso.push(model.seealso[key]);
+function processSeeAlso(item) {
+
+    if (item.seealso) {
+        for (var key in item.seealso) {
+            addIsCref(item.seealso[key]);
         }
     }
-    if (model.children) {
-        model.children.forEach(function (c) {
-            if (c.seealso) {
-                for(var key in c.seealso) {
-                    addIsCref(c.seealso[key]);
-                    seealso.push(c.seealso[key]);
-                }
-            }
-        });
-    }   
-    model.seealso = seealso || null;
+    item.seealso = item.seealso || null;
 }
 
-function addIsCref(seealso){
+function addIsCref(seealso) {
     if (!seealso.linkType || seealso.linkType.toLowerCase() == "cref") {
         seealso.isCref = true;
     }
