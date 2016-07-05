@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.RestApi
 {
     using System;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Utility;
 
@@ -26,20 +27,22 @@ namespace Microsoft.DocAsCode.Build.RestApi
         /// </summary>
         /// <param name="reference"></param>
         /// <returns></returns>
-        public static string FormatReferenceFullPath(string reference)
+        public static Tuple<string, string> FormatReferenceFullPath(string reference)
         {
             // Decode for URI Fragment Identifier Representation
             if (reference.StartsWith("#/"))
             {
                 // Reuse relative path, to decode the values inside '/'.
                 var path = reference.Substring(2);
-                return "/" + ((RelativePath)path).UrlDecode();
+                var decodedPath = ((RelativePath)path).UrlDecode();
+                return Tuple.Create("/" + decodedPath, decodedPath.FileName);
             }
 
             // Not decode for JSON String Representation
             if (reference.StartsWith("/"))
             {
-                return reference;
+                var fileName = reference.Split('/').Last();
+                return Tuple.Create(reference, fileName);
             }
 
             throw new InvalidOperationException($"Full reference path \"{reference}\" must start with '/' or '#/'");

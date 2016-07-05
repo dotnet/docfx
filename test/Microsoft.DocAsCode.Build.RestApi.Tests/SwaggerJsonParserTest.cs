@@ -124,9 +124,31 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.NotNull(actionJObject);
             var action = actionJObject.ToObject<OperationObject>();
             var schemaJObject = (JObject)action.Parameters[0].Metadata["schema"];
-            var schemaObj = schemaJObject.ToString(Formatting.None);
-            Assert.Equal(@"{""properties"":{""provisioningErrors"":{""type"":""array"",""items"":{""properties"":{""errorDetail"":{""type"":""array""}}},""readOnly"":true}},""example"":{""department"":""Sales"",""jobTitle"":""Sales Rep""}}",
-                schemaObj);
+            var schemaObj = schemaJObject.ToString(Formatting.Indented);
+            Assert.Equal(@"{
+  ""properties"": {
+    ""provisioningErrors"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""properties"": {
+          ""errorDetail"": {
+            ""type"": ""array"",
+            ""items"": {
+              ""x-internal-loop-ref-name"": ""contact""
+            }
+          }
+        },
+        ""x-internal-ref-name"": ""ProvisioningError""
+      },
+      ""readOnly"": true
+    }
+  },
+  ""x-internal-ref-name"": ""contact"",
+  ""example"": {
+    ""department"": ""Sales"",
+    ""jobTitle"": ""Sales Rep""
+  }
+}".Replace("\r\n", "\n"), schemaObj.Replace("\r\n", "\n"));
         }
     }
 }
