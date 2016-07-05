@@ -94,39 +94,40 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 var parameters = ConfigToParameter(config, templateManager, baseDirectory, outputDirectory);
                 var noDocsetHasOutput = false;
-                var docsetsParameters = new List<DocumentBuildParameters>();
+                var docsetsParameters = new Dictionary<string, DocumentBuildParameters>();
                 if (config.Docsets != null)
                 {
                     noDocsetHasOutput = true;
-                    docsetsParameters = new List<DocumentBuildParameters>();
-                    for (var i = 0; i < config.Docsets.Count; i++)
+                    foreach (var pair in config.Docsets)
                     {
-                        if (string.IsNullOrEmpty(config.Docsets[i].Destination))
+                        if (string.IsNullOrEmpty(pair.Value.Destination))
                         {
-                            Logger.LogWarning($"Docset[{i}] doesn't specify \"dest\", which may cause output conflict.");
+                            Logger.LogWarning($"Docset \"{pair.Key}\" doesn't specify \"dest\", which may cause output conflict.");
                         }
-                        var docsetParameter = DocsetConfigToParameter(config.Docsets[i], templateManager, baseDirectory,
+                        var docsetParameters = DocsetConfigToParameter(pair.Value, templateManager, baseDirectory,
                             outputDirectory, parameters, config);
-                        if (docsetParameter.Files.Count == 0)
+                        if (docsetParameters.Files.Count == 0)
                         {
-                            Logger.LogWarning($"No files found, nothing is to be generated for docset[{i}]");
+                            Logger.LogWarning($"No files found in docset \"{pair.Key}\", nothing is to be generated.");
                             continue;
                         }
-                        docsetsParameters.Add(docsetParameter);
+                        docsetsParameters.Add(pair.Key, docsetParameters);
                         noDocsetHasOutput = false;
                     }
                 }
 
                 if (parameters.Files.Count == 0 && noDocsetHasOutput)
                 {
-                    Logger.LogWarning("No files found, nothing is to be generated");
+                    Logger.LogWarning("No files found, nothing is to be generated.");
                     return;
                 }
-                var duplicatedDestinations =
-                    docsetsParameters.GroupBy(p => p.OutputBaseDir).Where(g => g.Count() > 1).Select(g => g.Key);
-                if (duplicatedDestinations.Any())
+                foreach (var group in
+                    from kv in docsetsParameters
+                    group kv.Key by kv.Value.OutputBaseDir into g
+                    where g.Count() > 1
+                    select g)
                 {
-                    Logger.LogWarning($"Multiple docsets specify the same destination, which may cause output conflict. Duplicated destinations: {string.Join("\t", duplicatedDestinations)}");
+                    Logger.LogWarning($"Multiple docsets \"{string.Join(", ", group)}\" specify the same destination \"{group.Key}\", which may cause output conflict.");
                 }
 
                 using (new PerformanceScope("building documents", LogLevel.Info))

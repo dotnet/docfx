@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode
         public bool NoLangKeyword { get; set; }
 
         [JsonProperty("docsets")]
-        public List<BuildJsonConfigCommon> Docsets { get; set; }
+        public Dictionary<string, BuildJsonConfigCommon> Docsets { get; set; }
 
     }
 }
