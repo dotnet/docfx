@@ -40,11 +40,17 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public MarkupResult Markup(string src, string path)
             {
-                var html = _builder.CreateDfmEngine(new DfmRenderer() { Tokens = _tokens }).Markup(src, path);
-                return new MarkupResult
+                var dependency = new HashSet<string>();
+                var html = _builder.CreateDfmEngine(new DfmRenderer() { Tokens = _tokens }).Markup(src, path, dependency);
+                var result = new MarkupResult
                 {
                     Html = html,
                 };
+                if (dependency.Count > 0)
+                {
+                    result.Dependency = dependency.ToImmutableArray();
+                }
+                return result;
             }
         }
     }

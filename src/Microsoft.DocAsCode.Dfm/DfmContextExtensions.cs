@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -12,6 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         private const string BaseFolderKey = "BaseFolder";
         private const string FilePathStackKey = "FilePathStack";
+        private const string DependencyKey = "Dependency";
 
         public static ImmutableStack<string> GetFilePathStack(this IMarkdownContext context)
         {
@@ -47,6 +49,21 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(context));
             }
             return context.CreateContext(context.Variables.SetItem(BaseFolderKey, baseFolder));
+        }
+
+        public static IMarkdownContext SetDependency(this IMarkdownContext context, HashSet<string> dependency)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return context.CreateContext(context.Variables.SetItem(DependencyKey, dependency));
+        }
+
+        public static void AddDependency(this IMarkdownContext context, string file)
+        {
+            var dependency = (HashSet<string>)context.Variables[DependencyKey];
+            dependency.Add(file);
         }
     }
 }
