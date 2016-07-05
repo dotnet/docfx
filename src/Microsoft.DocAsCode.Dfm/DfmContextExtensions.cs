@@ -60,10 +60,13 @@ namespace Microsoft.DocAsCode.Dfm
             return context.CreateContext(context.Variables.SetItem(DependencyKey, dependency));
         }
 
-        public static void AddDependency(this IMarkdownContext context, string file)
+        public static void ReportDependency(this IMarkdownContext context, string file)
         {
             var dependency = (HashSet<string>)context.Variables[DependencyKey];
-            dependency.Add(file);
+            if (dependency != null)
+            {
+                dependency.Add(file);
+            }
         }
     }
 }
