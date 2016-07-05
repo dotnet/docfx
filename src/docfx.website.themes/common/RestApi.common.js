@@ -199,6 +199,8 @@ exports.transform = function (model) {
     function transformPropertiesValue(obj) {
         if (obj.type === "array" && obj.items) {
             obj.items.properties = obj.items.properties || null;
+            obj.items['x-internal-ref-name'] = obj.items['x-internal-ref-name'] || null;
+            obj.items['x-internal-loop-ref-name'] = obj.items['x-internal-loop-ref-name'] || null;
             obj.items = transformProperties(obj.items);
         }
         return obj;

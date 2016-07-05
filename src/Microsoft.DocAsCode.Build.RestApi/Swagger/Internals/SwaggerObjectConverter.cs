@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                     {
                         var swagger = (SwaggerObject)swaggerBase;
                         var jObject = new JObject();
-                        foreach (var i in swagger.Dictionary.Where(p => !(p.Value is SwaggerLoopReferenceObject)))
+                        foreach (var i in swagger.Dictionary)
                         {
                             jObject.Add(i.Key, JToken.FromObject(i.Value, serializer));
                         }
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 case SwaggerObjectType.Array:
                     {
                         var swagger = (SwaggerArray)swaggerBase;
-                        var jArray = JArray.FromObject(swagger.Array.Where(s => !(s is SwaggerLoopReferenceObject)).Select(s => JToken.FromObject(s, serializer)));
+                        var jArray = JArray.FromObject(swagger.Array.Select(s => JToken.FromObject(s, serializer)));
                         jArray.WriteTo(writer);
                     }
                     break;
@@ -63,6 +63,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                     {
                         var swagger = (SwaggerValue)swaggerBase;
                         swagger.Token.WriteTo(writer);
+                    }
+                    break;
+                case SwaggerObjectType.LoopReference:
+                    {
+                        var swagger = (SwaggerLoopReferenceObject)swaggerBase;
+                        var jObject = new JObject();
+                        foreach (var i in swagger.Dictionary)
+                        {
+                            jObject.Add(i.Key, JToken.FromObject(i.Value, serializer));
+                        }
+                        jObject.WriteTo(writer);
                     }
                     break;
                 default:

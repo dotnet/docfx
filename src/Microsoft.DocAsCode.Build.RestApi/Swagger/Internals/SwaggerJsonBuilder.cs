@@ -17,6 +17,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
         private IDictionary<string, SwaggerObject> _resolvedObjectCache;
         private const string DefinitionsKey = "definitions";
         private const string ParametersKey = "parameters";
+        private const string InternalRefNameKey = "x-internal-ref-name";
+        private const string InternalLoopRefNameKey = "x-internal-loop-ref-name";
 
         public SwaggerObjectBase Read(JsonReader reader)
         {
@@ -44,7 +46,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                     }
 
                     SwaggerReferenceObject deferredObject = new SwaggerReferenceObject();
-                    deferredObject.DeferredReference = RestApiHelper.FormatReferenceFullPath((string)referenceToken);
+                    var formatted = RestApiHelper.FormatReferenceFullPath((string)referenceToken);
+                    deferredObject.DeferredReference = formatted;
+                    deferredObject.ReferenceName = RestApiHelper.GetReferenceName(formatted);
 
                     // For swagger, other properties are still allowed besides $ref, e.g.
                     // "schema": {
@@ -138,7 +142,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
                             if (refStack.Contains(referencedObject.Location))
                             {
-                                return new SwaggerLoopReferenceObject();
+                                var loopRef = new SwaggerLoopReferenceObject();
+                                loopRef.Dictionary.Add(InternalLoopRefNameKey, new SwaggerValue { Token = RestApiHelper.GetReferenceName(referencedObject.Location) });
+                                return loopRef;
                             }
 
                             SwaggerObject existingObject;
@@ -149,7 +155,12 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
                             // Clone to avoid change the reference object in _documentObjectCache
                             refStack.Push(referencedObject.Location);
-                            swagger.Reference = (SwaggerObject)ResolveReferences(referencedObject.Clone(), refStack);
+                            var swaggerObj = (SwaggerObject)ResolveReferences(referencedObject.Clone(), refStack);
+                            if (!swaggerObj.Dictionary.ContainsKey(InternalRefNameKey))
+                            {
+                                swaggerObj.Dictionary.Add(InternalRefNameKey, new SwaggerValue { Token = swagger.ReferenceName });
+                            }
+                            swagger.Reference = swaggerObj;
                             refStack.Pop();
 
                             if (refStack.Count == 0)

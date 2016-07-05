@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.RestApi
 {
     using System;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Utility;
 
@@ -43,6 +44,16 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             throw new InvalidOperationException($"Full reference path \"{reference}\" must start with '/' or '#/'");
+        }
+
+        public static string GetReferenceName(string formattedPath)
+        {
+            if (!formattedPath.StartsWith("#/") && !formattedPath.StartsWith("/"))
+            {
+                throw new ArgumentException($"Formatted reference path \"{formattedPath}\" must start with '/' or '#/'");
+            }
+
+            return formattedPath.Split('/').Last();
         }
     }
 }

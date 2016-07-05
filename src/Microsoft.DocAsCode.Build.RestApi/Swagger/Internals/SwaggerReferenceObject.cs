@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         public string DeferredReference { get; set; }
 
+        public string ReferenceName { get; set; }
+
         public JObject Token { get; set; }
 
         public SwaggerObject Reference { get; set; }
