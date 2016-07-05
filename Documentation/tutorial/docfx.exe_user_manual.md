@@ -199,7 +199,7 @@ maxParallelism           | Y                   | Set the max parallelism, 0 (def
 markdownEngineName       | Y                   | Set the name of markdown engine, default is `dfm`, and another build-in engine is `gfm`.
 markdownEngineProperties | Y                   | Set the parameters for markdown engine, value should be a JSON string.
 noLangKeyword            | Y                   | Disable default lang keyword, it can be downloaded from [here](http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml).
-docsets                  |                     | Contains the configs of docsets. It should be an array. More information can be found in **Section3.2.2**.
+docsets                  |                     | Contains the configs of docsets. It should be an dictionary with key as docset name, and value as docset config. More information about docset config can be found in **Section3.2.2**.
 
 #### 3.2.1 `Template`s and `Theme`s
 
@@ -278,7 +278,7 @@ Please refer to [How to Create Custom Templates](howto_create_custom_template.md
 }
 ```
 
-#### 3.2.2 Properties for docset
+#### 3.2.2 Properties for docset config
 
 *Docsets* are used to build multiple docsets with a single run of DocFX. The behavior is like running DocFX multiple times with different `docfx.json`. It's useful when building multiple versions of the same repository, which will lead to `uid` collusion if not put in different docsets.
 **NOTE** Cross Reference between different docsets is not allowed.
