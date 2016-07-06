@@ -281,13 +281,14 @@ Please refer to [How to Create Custom Templates](howto_create_custom_template.md
 #### 3.2.2 Properties for docset config
 
 *Docsets* are used to build multiple docsets with a single run of DocFX. The behavior is like running DocFX multiple times with different `docfx.json`. It's useful when building multiple versions of the same repository, which will lead to `uid` collusion if not put in different docsets.
+
 **NOTE** Cross Reference between different docsets is not allowed.
 
-Key                      | How to Merged with root config                                                                          | Description
+Key                      | How to merge with root config                                                                           | Description
 -------------------------|---------------------------------------------------------------------------------------------------------|-----------------------------
-content                  | *None*                                                                                                  | Contains all the files to generate documentation.
-resource                 | *None*                                                                                                  | Contains all the resource files that conceptual and metadata files dependent on.
-overwrite                | *None*                                                                                                  | Contains all the conceptual files which contains yaml header with `uid` and is intended to override the existing metadata `yml` files.
+content                  |                                                                                                         | Contains all the files to generate documentation.
+resource                 |                                                                                                         | Contains all the resource files that conceptual and metadata files dependent on.
+overwrite                |                                                                                                         | Contains all the conceptual files which contains yaml header with `uid` and is intended to override the existing metadata `yml` files.
 ~~externalReferences~~   | Concatenate                                                                                             | **Obsoleted**, Contains `rpk` files that define the external references.
 xref                     | Concatenate                                                                                             | Specifies the urls of xrefmap used by content files.
 globalMetadata           | Merge. Value in docset config will overwrite value in root config.                                      | Contains metadata that will be applied to every file, in key-value pair format.
