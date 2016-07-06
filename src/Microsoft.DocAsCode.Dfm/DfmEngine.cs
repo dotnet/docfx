@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return string.Empty;
             }
-            return InternalMarkup(src, ImmutableStack.Create(path), dependency ?? new HashSet<string>());
+            return InternalMarkup(src, ImmutableStack.Create(path), dependency);
         }
 
         internal string InternalMarkup(string src, ImmutableStack<string> parents, HashSet<string> dependency)

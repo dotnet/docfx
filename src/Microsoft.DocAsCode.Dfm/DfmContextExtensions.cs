@@ -68,5 +68,14 @@ namespace Microsoft.DocAsCode.Dfm
                 dependency.Add(file);
             }
         }
+
+        public static void ReportDependency(this IMarkdownContext context, IEnumerable<string> files)
+        {
+            var dependency = (HashSet<string>)context.Variables[DependencyKey];
+            if (dependency != null)
+            {
+                dependency.UnionWith(files);
+            }
+        }
     }
 }

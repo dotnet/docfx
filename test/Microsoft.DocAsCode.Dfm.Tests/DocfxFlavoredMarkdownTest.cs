@@ -72,7 +72,7 @@ b:
             //  |- root.md
             //  |- empty.md
             //  |- a
-            //  |  |- root.md
+            //  |  |- refc.md
             //  |- b
             //  |  |- linkAndRefRoot.md
             //  |  |- a.md
@@ -107,7 +107,8 @@ Paragraph1
             WriteToFile("r/link/link2.md", link2);
             WriteToFile("r/c/c.md", c);
             WriteToFile("r/empty.md", string.Empty);
-            var marked = DocfxFlavoredMarked.Markup(root, "r/root.md");
+            var dependency = new HashSet<string>();
+            var marked = DocfxFlavoredMarked.Markup(root, "r/root.md", dependency: dependency);
             Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;r/b/linkAndRefRoot.md&quot; --><p>Paragraph1
 <a href=""~/r/b/a.md"">link</a>
 <!-- BEGIN INCLUDE: Include content from &quot;r/link/link2.md&quot; --><a href=""~/r/link/md/c.md"">link</a><!--END INCLUDE -->
@@ -116,6 +117,17 @@ Paragraph1
 <!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
 <!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
 <!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/empty.md&quot; --><!--END INCLUDE --><!-- BEGIN ERROR INCLUDE: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n"), marked);
+            Assert.Equal(
+                new[]
+                {
+                    "a/refc.md",
+                    "b/linkAndRefRoot.md",
+                    "c/c.md",
+                    "empty.md",
+                    "link/link2.md",
+                    "root.md",
+                },
+                dependency.OrderBy(x => x));
         }
 
         [Fact]
@@ -152,7 +164,8 @@ Paragraph1
             WriteToFile("r/a/a.md", a);
             WriteToFile("r/b/token.md", token);
             WriteToFile("r/c/d/d.md", d);
-            var marked = DocfxFlavoredMarked.Markup(a, "r/a/a.md");
+            var dependency = new HashSet<string>();
+            var marked = DocfxFlavoredMarked.Markup(a, "r/a/a.md", dependency: dependency);
             var expected = @"<!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""~/r/img/img.jpg"" alt="""">
 <a href=""#anchor""></a>
 <a href=""~/r/a/a.md"">a</a>
@@ -160,10 +173,23 @@ Paragraph1
 <a href=""~/r/c/d/d.md#anchor"">d</a></p>
 <!--END INCLUDE -->".Replace("\r\n", "\n");
             Assert.Equal(expected, marked);
-            marked = DocfxFlavoredMarked.Markup(d, "r/c/d/d.md");
+            Assert.Equal(
+                new[] { "../b/token.md" },
+                dependency.OrderBy(x => x));
+
+            dependency.Clear();
+            marked = DocfxFlavoredMarked.Markup(d, "r/c/d/d.md", dependency: dependency);
             Assert.Equal(expected, marked);
-            marked = DocfxFlavoredMarked.Markup(r, "r/r.md");
+            Assert.Equal(
+                new[] { "../../b/token.md" },
+                dependency.OrderBy(x => x));
+
+            dependency.Clear();
+            marked = DocfxFlavoredMarked.Markup(r, "r/r.md", dependency: dependency);
             Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;r/a/a.md&quot; -->{expected}<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/c/d/d.md&quot; -->{expected}<!--END INCLUDE -->", marked);
+            Assert.Equal(
+                new[] { "a/a.md", "b/token.md", "c/d/d.md" },
+                dependency.OrderBy(x => x));
         }
 
         [Fact]
@@ -184,8 +210,12 @@ Inline [!include[ref3](ref3.md ""This is root"")]
             File.WriteAllText("ref2.md", ref2);
             File.WriteAllText("ref3.md", ref3);
 
-            var marked = DocfxFlavoredMarked.Markup(root, "root.md");
+            var dependency = new HashSet<string>();
+            var marked = DocfxFlavoredMarked.Markup(root, "root.md", dependency: dependency);
             Assert.Equal("<p>Inline <!-- BEGIN INCLUDE: Include content from &quot;ref1.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;ref2.md&quot; -->## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md \"This is root\")]<!--END ERROR INCLUDE --><!--END INCLUDE --><!--END INCLUDE -->\nInline <!-- BEGIN INCLUDE: Include content from &quot;ref3.md&quot; --><strong>Hello</strong><!--END INCLUDE --></p>\n", marked);
+            Assert.Equal(
+                new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
+                dependency.OrderBy(x => x));
         }
 
         [Fact]
@@ -213,8 +243,12 @@ Inline [!include[ref3](ref3.md ""This is root"")]
             File.WriteAllText("inc2.md", inc2);
             File.WriteAllText("inc3.md", inc3);
 
-            var marked = DocfxFlavoredMarked.Markup(root, "root.md");
+            var dependency = new HashSet<string>();
+            var marked = DocfxFlavoredMarked.Markup(root, "root.md", dependency: dependency);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+            Assert.Equal(
+              new[] { "inc1.md", "inc2.md", "inc3.md" },
+              dependency.OrderBy(x => x));
         }
 
         [Fact]
@@ -692,8 +726,12 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
    }
 }";
             File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
-            var marked = DocfxFlavoredMarked.Markup(root, "api.json");
+            var dependency = new HashSet<string>();
+            var marked = DocfxFlavoredMarked.Markup(root, "api.json", dependency: dependency);
             Assert.Equal("<pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre>", marked);
+            Assert.Equal(
+                new[] { "api.json" },
+                dependency.OrderBy(x => x));
         }
 
         [Theory]

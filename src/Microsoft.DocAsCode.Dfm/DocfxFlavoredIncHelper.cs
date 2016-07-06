@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Dfm
     internal sealed class DocfxFlavoredIncHelper : IDisposable
     {
         private readonly FileCacheLite _cache;
+        private readonly Dictionary<string, HashSet<string>> _dependencyCache = new Dictionary<string, HashSet<string>>();
 
         public static readonly string InlineIncRegexString = @"^\[!INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([^)]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]";
 
@@ -26,12 +27,12 @@ namespace Microsoft.DocAsCode.Dfm
             _cache = new FileCacheLite(new FilePathComparer());
         }
 
-        public string Load(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
+        public string Load(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, DfmEngine engine)
         {
-            return LoadCore(adapter, currentPath, raw, context, resolver);
+            return LoadCore(adapter, currentPath, raw, context, engine);
         }
 
-        private string LoadCore(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, Func<string, IMarkdownContext, string> resolver)
+        private string LoadCore(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, DfmEngine engine)
         {
             try
             {
@@ -42,6 +43,7 @@ namespace Microsoft.DocAsCode.Dfm
 
                 var parents = context.GetFilePathStack();
                 var originalPath = currentPath;
+                context.ReportDependency(originalPath);
                 string parent = string.Empty;
                 if (parents == null) parents = ImmutableStack<string>.Empty;
 
@@ -60,18 +62,24 @@ namespace Microsoft.DocAsCode.Dfm
                 // Add current file path to chain when entering recursion
                 parents = parents.Push(currentPath);
                 string result;
-                if (!_cache.TryGet(currentPath, out result))
+                HashSet<string> dependency;
+                if (!_dependencyCache.TryGetValue(currentPath, out dependency) ||
+                    !_cache.TryGet(currentPath, out result))
                 {
                     var src = File.ReadAllText(Path.Combine(context.GetBaseFolder(), currentPath));
 
-                    src = resolver(src, context.SetFilePathStack(parents));
+                    dependency = new HashSet<string>();
+                    src = engine.InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency));
 
                     result = UpdateToHrefFromWorkingFolder(src, currentPath);
                     result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
 
                     _cache.Add(currentPath, result);
+                    _dependencyCache[currentPath] = dependency;
                 }
-
+                context.ReportDependency(
+                    from d in dependency
+                    select (string)((RelativePath)currentPath + (RelativePath)d - (RelativePath)parent));
                 return result;
             }
             catch (Exception e)
