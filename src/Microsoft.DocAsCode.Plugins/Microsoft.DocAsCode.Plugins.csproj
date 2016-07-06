@@ -26,9 +26,11 @@
     <Compile Include="DocumentExceptionExtensions.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="FileAndType.cs" />
+    <Compile Include="HomepageInfo.cs" />
     <Compile Include="IInputMetadataValidator.cs" />
     <Compile Include="IMarkdownServiceProvider.cs" />
     <Compile Include="IMarkdownService.cs" />
+    <Compile Include="Manifest.cs" />
     <Compile Include="ManifestItem.cs" />
     <Compile Include="MarkdownServiceParameters.cs" />
     <Compile Include="OutputFileInfo.cs" />
@@ -62,7 +64,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

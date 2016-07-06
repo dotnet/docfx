@@ -26,7 +26,6 @@
     <Compile Include="TemplateRenderers\TemplateRendererType.cs" />
     <Compile Include="TemplatePreprocessors\TemplatePreprocessorResource.cs" />
     <Compile Include="TemplatePreprocessors\JintProcessorHelper.cs" />
-    <Compile Include="HomepageInfo.cs" />
     <Compile Include="InternalManifestItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateRenderers\ITemplateRenderer.cs" />
@@ -48,7 +47,6 @@
     <Compile Include="Template.cs" />
     <Compile Include="TemplateCollection.cs" />
     <Compile Include="TemplateManager.cs" />
-    <Compile Include="Manifest.cs" />
     <Compile Include="TemplateModelTransformer.cs" />
     <Compile Include="TemplateProcessor.cs" />
     <Compile Include="TemplateResourceInfo.cs" />
