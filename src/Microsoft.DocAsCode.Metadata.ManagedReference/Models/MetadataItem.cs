@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
-        public List<CrefInfo> Exceptions { get; set; }
+        public List<ExceptionInfo> Exceptions { get; set; }
 
         [YamlMember(Alias = "see")]
         [JsonProperty("see")]

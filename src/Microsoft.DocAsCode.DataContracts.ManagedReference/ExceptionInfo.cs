@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using Newtonsoft.Json;
 
     [Serializable]
-    public class CrefInfo
+    public class ExceptionInfo
     {
         [YamlMember(Alias = "type")]
         [MergeOption(MergeOption.MergeKey)]

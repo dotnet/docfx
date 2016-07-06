@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
-        public List<ApiCrefInfoBuildOutput> Exceptions { get; set; }
+        public List<ApiExceptionInfoBuildOutput> Exceptions { get; set; }
 
         [YamlMember(Alias = "seealso")]
         [JsonProperty("seealso")]
@@ -248,11 +248,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             }
         }
 
-        private static List<ApiCrefInfoBuildOutput> GetCrefInfoList(List<CrefInfo> crefs,
+        private static List<ApiExceptionInfoBuildOutput> GetCrefInfoList(List<ExceptionInfo> crefs,
                                                                     Dictionary<string, ApiReferenceBuildOutput> references,
                                                                     string[] supportedLanguages)
         {
-            return crefs?.Select(c => ApiCrefInfoBuildOutput.FromModel(c, references, supportedLanguages)).ToList();
+            return crefs?.Select(c => ApiExceptionInfoBuildOutput.FromModel(c, references, supportedLanguages)).ToList();
         }
 
         private static List<ApiLinkInfoBuildOutput> GetLinkInfoList(List<LinkInfo> links,

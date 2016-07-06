@@ -259,7 +259,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
-        public List<CrefInfo> Exceptions { get; set; }
+        public List<ExceptionInfo> Exceptions { get; set; }
 
         [YamlMember(Alias = "seealso")]
         [JsonProperty("seealso")]

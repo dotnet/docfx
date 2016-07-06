@@ -10,7 +10,7 @@
     <Compile Include="ApiReferenceViewModel.cs" />
     <Compile Include="ArgumentInfo.cs" />
     <Compile Include="AttributeInfo.cs" />
-    <Compile Include="CrefInfo.cs" />
+    <Compile Include="ExceptionInfo.cs" />
     <Compile Include="ItemViewModel.cs" />
     <Compile Include="LinkInfo.cs" />
     <Compile Include="MemberType.cs" />

@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
-        public List<ApiCrefInfoBuildOutput> Exceptions { get; set; }
+        public List<ApiExceptionInfoBuildOutput> Exceptions { get; set; }
 
         [YamlMember(Alias = "seealso")]
         [JsonProperty("seealso")]
@@ -242,7 +242,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Conceptual = vm.Conceptual,
                 Metadata = vm.Metadata,
                 Syntax = ApiSyntaxBuildOutput.FromModel(vm.Syntax, vm.SupportedLanguages),
-                Exceptions = vm.Exceptions?.Select(s => ApiCrefInfoBuildOutput.FromModel(s)).ToList(),
+                Exceptions = vm.Exceptions?.Select(s => ApiExceptionInfoBuildOutput.FromModel(s)).ToList(),
             };
             output.Metadata["type"] = vm.Type;
             output.Metadata["summary"] = vm.Summary;
