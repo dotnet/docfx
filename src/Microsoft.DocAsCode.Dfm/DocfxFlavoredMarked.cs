@@ -16,10 +16,10 @@ namespace Microsoft.DocAsCode.Dfm
             return new DfmEngineBuilder(new Options() { Mangle = false, XHtml = true }, baseDir);
         }
 
-        public static string Markup(string src, string path = null, ImmutableDictionary<string, string> tokens = null)
+        public static string Markup(string src, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
         {
             var engine = CreateBuilder(null).CreateDfmEngine(new DfmRenderer() { Tokens = tokens });
-            return engine.Markup(src, path);
+            return engine.Markup(src, path, dependency);
         }
     }
 }

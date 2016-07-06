@@ -39,14 +39,18 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmIncludeBlockToken token, MarkdownBlockContext context)
         {
-            var resolved = _blockInclusionHelper.Load(renderer, token.Src, token.Raw, context, ((DfmEngine)renderer.Engine).InternalMarkup);
-            return resolved;
+            lock (_blockInclusionHelper)
+            {
+                return _blockInclusionHelper.Load(renderer, token.Src, token.Raw, context, (DfmEngine)renderer.Engine);
+            }
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmIncludeInlineToken token, MarkdownInlineContext context)
         {
-            var resolved = _inlineInclusionHelper.Load(renderer, token.Src, token.Raw, context, ((DfmEngine)renderer.Engine).InternalMarkup);
-            return resolved;
+            lock (_inlineInclusionHelper)
+            {
+                return _inlineInclusionHelper.Load(renderer, token.Src, token.Raw, context, (DfmEngine)renderer.Engine);
+            }
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmYamlHeaderBlockToken token, MarkdownBlockContext context)
@@ -142,10 +146,11 @@ namespace Microsoft.DocAsCode.Dfm
 
             try
             {
-                // TODO: Valid REST and REST-i script.
                 var fencesPath = Path.Combine(context.GetBaseFolder(), (RelativePath)context.GetFilePathStack().Peek() + (RelativePath)token.Path);
                 var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
-                return DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
+                var result = DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
+                context.ReportDependency(token.Path);
+                return result;
             }
             catch (DirectoryNotFoundException)
             {
