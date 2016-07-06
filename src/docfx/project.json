@@ -42,5 +42,8 @@
   "commands": {
     "docfx": "docfx"
   },
-  "resource": [ "Template/**.zip", "langwordMapping.yml" ]
+  "namedResource": {
+    "langwordMapping.yml": "langwordMapping.yml"
+  },
+  "resource": [ "Template/**.zip" ]
 }
