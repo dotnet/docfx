@@ -115,6 +115,32 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.MaxParallelism,
                     parameters.Files.DefaultBaseDir);
                 Logger.LogVerbose("Start building document...");
+
+                // Prepare for post process
+                var postProcessorNames = parameters.PostProcessors;
+
+                // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
+                object value;
+                if (parameters.Metadata.TryGetValue("_enableSearch", out value))
+                {
+                    var isSearchable = value as bool?;
+                    if (isSearchable.HasValue && isSearchable.Value && !postProcessorNames.Contains("ExtractSearchIndex"))
+                    {
+                        postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
+                    }
+                }
+
+                var postProcessors = GetPostProcessor(postProcessorNames);
+                foreach (var postProcessor in postProcessors)
+                {
+                    parameters.Metadata = postProcessor.Item2.UpdateMetadata(parameters.Metadata);
+                    if (parameters.Metadata == null)
+                    {
+                        throw new DocfxException($"Plugin {postProcessor.Item1} should not return null metadata");
+                    }
+                }
+
+                // Start building document...
                 List<HostService> hostServices = null;
                 try
                 {
@@ -150,17 +176,22 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         ExportXRefMap(parameters, context);
 
-                        // todo : move to plugin.
-                        object value;
-                        if (parameters.Metadata.TryGetValue("_enableSearch", out value))
+                        // post process
+                        foreach (var postProcessor in postProcessors)
                         {
-                            var isSearchable = value as bool?;
-                            if (isSearchable.HasValue && isSearchable.Value)
+                            generatedManifest = postProcessor.Item2.Process(generatedManifest, parameters.OutputBaseDir);
+                            if (generatedManifest == null)
                             {
-                                ExtractSearchData.ExtractSearchIndexFromHtml.GenerateFile(generatedManifest, parameters.OutputBaseDir);
+                                throw new DocfxException($"Plugin {postProcessor.Item1} should not return null manifest");
                             }
                         }
-                        Logger.LogInfo($"Building {manifest.Count} file(s) completed.");
+
+                        // Last step: save manifest file
+                        var manifestJsonPath = Path.Combine(parameters.OutputBaseDir, Constants.ManifestFileName);
+                        JsonUtility.Serialize(manifestJsonPath, generatedManifest);
+                        Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
+
+                        Logger.LogInfo($"Completed building {generatedManifest.Files?.Count} file(s).");
                     }
                 }
                 finally
@@ -192,6 +223,38 @@ namespace Microsoft.DocAsCode.Build.Engine
             };
             BuildCore(hostService, parameters.MaxParallelism);
             return hostService.Models;
+        }
+
+        private List<Tuple<string, IPostProcessor>> GetPostProcessor(ImmutableArray<string> processors)
+        {
+            var processorList = new List<Tuple<string, IPostProcessor>>();
+            foreach (var processor in processors)
+            {
+                var p = GetExport(typeof (IPostProcessor), processor) as IPostProcessor;
+                if (p != null)
+                {
+                    processorList.Add(new Tuple<string, IPostProcessor>(processor, p));
+                }
+                else
+                {
+                    Logger.LogWarning($"Can't find the post-processor: {processor}");
+                }
+            }
+            return processorList;
+        } 
+
+        private object GetExport(Type type, string name)
+        {
+            object exportedObject = null;
+            try
+            {
+                exportedObject = _container.GetExport(type, name);
+            }
+            catch (CompositionFailedException ex)
+            {
+                Logger.LogWarning($"Can't import: {name}, {ex}");
+            }
+            return exportedObject;
         }
 
         private void Cleanup(HostService hostService)

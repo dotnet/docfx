@@ -3,13 +3,15 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
+    using Microsoft.DocAsCode.Build.Common;
+
     using HtmlAgilityPack;
     using Xunit;
 
-    using Microsoft.DocAsCode.Build.Engine.ExtractSearchData;
-
     public class ExtractSearchIndexFromHtmlTest
     {
+        private static ExtractSearchIndex _extractor = new ExtractSearchIndex();
+
         [Fact]
         public void TestBasicFeature()
         {
@@ -33,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var html = new HtmlDocument();
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
-            var item = ExtractSearchIndexFromHtml.ExtractItem(html, href);
+            var item = _extractor.ExtractItem(html, href);
             Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Hello World, Microsoft This is article title docfx can do anything..." }));
         }
 
@@ -51,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var html = new HtmlDocument();
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
-            var item = ExtractSearchIndexFromHtml.ExtractItem(html, href);
+            var item = _extractor.ExtractItem(html, href);
             Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Cooooooool!" }));
         }
 
@@ -71,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var html = new HtmlDocument();
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
-            var item = ExtractSearchIndexFromHtml.ExtractItem(html, href);
+            var item = _extractor.ExtractItem(html, href);
             Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once."}));
         }
 
@@ -88,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var html = new HtmlDocument();
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
-            var item = ExtractSearchIndexFromHtml.ExtractItem(html, href);
+            var item = _extractor.ExtractItem(html, href);
             Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = string.Empty }));
         }
     }

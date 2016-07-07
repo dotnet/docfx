@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ResourceFiles;
     using Microsoft.DocAsCode.Build.RestApi;
+    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
@@ -112,6 +113,7 @@ namespace Microsoft.DocAsCode.SubCommands
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(RestApiDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
+            yield return typeof(ExtractSearchIndex).Assembly;
 
             if (pluginDirectory == null || !Directory.Exists(pluginDirectory))
             {
@@ -163,6 +165,10 @@ namespace Microsoft.DocAsCode.SubCommands
             if (config.FileMetadata != null)
             {
                 parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
+            }
+            if (config.PostProcessors != null)
+            {
+                parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
             }
             parameters.ExternalReferencePackages =
                 GetFilesFromFileMapping(

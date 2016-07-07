@@ -1,31 +1,42 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-// todo : move to Plugin
-
-namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
+namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
-    using System.IO;
+    using System.Composition;
+    using System.Collections.Immutable;
 
-    using Newtonsoft.Json;
-    using HtmlAgilityPack;
-
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class ExtractSearchIndexFromHtml
-    {
-        public const string IndexFileName = "index.json";
+    using HtmlAgilityPack;
+    using Newtonsoft.Json;
 
+    [Export(nameof(ExtractSearchIndex), typeof(IPostProcessor))]
+    public class ExtractSearchIndex : IPostProcessor
+    {
         private static readonly Regex RegexWhiteSpace = new Regex(@"\s+", RegexOptions.Compiled);
 
-        public static void GenerateFile(List<ManifestItem> manifest, string baseDir)
+        public string Name => nameof(ExtractSearchIndex);
+        public const string IndexFileName = "index.json";
+
+        public ImmutableDictionary<string, object> UpdateMetadata(ImmutableDictionary<string, object> metadata)
+        {
+            if (!metadata.ContainsKey("_enableSearch"))
+            {
+                metadata = metadata.Add("_enableSearch", true);
+            }
+            return metadata;
+        }
+
+        public Manifest Process(Manifest manifest, string baseDir)
         {
             if (baseDir == null)
             {
@@ -33,13 +44,13 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
             }
             var indexData = new Dictionary<string, SearchIndexItem>();
             var indexDataFilePath = Path.Combine(baseDir, IndexFileName);
-            var htmlFiles = (from item in manifest ?? Enumerable.Empty<ManifestItem>()
+            var htmlFiles = (from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                              from output in item.OutputFiles
                              where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
                              select output.Value.ReleativePath).ToList();
             if (htmlFiles.Count == 0)
             {
-                return;
+                return manifest;
             }
 
             Logger.LogInfo($"Extracting index data from {htmlFiles.Count} html files");
@@ -68,9 +79,11 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
                 }
             }
             JsonUtility.Serialize(indexDataFilePath, indexData, Formatting.Indented);
+            // TODO: add index.json to manifest
+            return manifest;
         }
 
-        public static SearchIndexItem ExtractItem(HtmlDocument html, string href)
+        internal SearchIndexItem ExtractItem(HtmlDocument html, string href)
         {
             var contentBuilder = new StringBuilder();
 
@@ -89,14 +102,14 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
             return new SearchIndexItem { Href = href, Title = title, Keywords = content };
         }
 
-        private static string ExtractTitleFromHtml(HtmlDocument html)
+        private string ExtractTitleFromHtml(HtmlDocument html)
         {
             var titleNode = html.DocumentNode.SelectSingleNode("//head/title");
             var originalTitle = titleNode?.InnerText;
             return NormalizeContent(originalTitle);
         }
 
-        private static string NormalizeContent(string str)
+        private string NormalizeContent(string str)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -106,7 +119,7 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
             return RegexWhiteSpace.Replace(str, " ").Trim();
         }
 
-        private static void ExtractTextFromNode(HtmlNode root, StringBuilder contentBuilder)
+        private void ExtractTextFromNode(HtmlNode root, StringBuilder contentBuilder)
         {
             if (root == null)
             {
