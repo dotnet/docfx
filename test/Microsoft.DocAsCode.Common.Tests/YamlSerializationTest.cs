@@ -34,11 +34,13 @@ namespace Microsoft.DocAsCode.Common.Tests
         public void TestBasicClass()
         {
             var sw = new StringWriter();
-            YamlUtility.Serialize(sw, new BasicClass { B = 1, C = "Good!" });
+            YamlUtility.Serialize(sw, new BasicClass { B = 1, C = "Good!" }, "Test-Yaml-Mime");
             var yaml = sw.ToString();
-            Assert.Equal(@"B: 1
+            Assert.Equal(@"### Test-Yaml-Mime
+B: 1
 C: Good!
 ".Replace("\r\n", "\n"), yaml.Replace("\r\n", "\n"));
+            Assert.Equal("Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
             var value = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);

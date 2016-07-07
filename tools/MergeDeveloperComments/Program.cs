@@ -132,7 +132,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                 if (dirty)
                 {
                     Console.WriteLine($"Rebuilding references: {model.Item1}");
-                    YamlUtility.Serialize(model.Item1, model.Item2);
+                    YamlUtility.Serialize(model.Item1, model.Item2, YamlMime.ManagedReference);
                 }
             }
         }
@@ -380,7 +380,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                 PatchViewModel(item, uidAndComment.Comment);
             }
             Console.WriteLine($"Patching yaml: {yamlFile}");
-            YamlUtility.Serialize(path, pageVM);
+            YamlUtility.Serialize(path, pageVM, YamlMime.ManagedReference);
         }
 
         private void PatchViewModel(ItemViewModel item, string comment)

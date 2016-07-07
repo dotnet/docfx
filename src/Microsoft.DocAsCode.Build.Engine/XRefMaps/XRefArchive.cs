@@ -265,7 +265,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var entry = CreateEntry(name);
             using (var sw = new StreamWriter(entry.Open()))
             {
-                YamlUtility.Serialize(sw, map);
+                YamlUtility.Serialize(sw, map, YamlMime.XRefMap);
             }
             return name;
         }
@@ -286,7 +286,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             entry = _archive.CreateEntry(name);
             using (var sw = new StreamWriter(entry.Open()))
             {
-                YamlUtility.Serialize(sw, map);
+                YamlUtility.Serialize(sw, map, YamlMime.XRefMap);
             }
         }
 
