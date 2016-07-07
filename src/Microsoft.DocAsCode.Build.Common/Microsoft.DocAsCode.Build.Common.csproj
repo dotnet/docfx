@@ -7,11 +7,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ApplyOverwriteDocument.cs" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseDocumentBuildStep.cs" />
     <Compile Include="DisposableDocumentProcessor.cs" />
+    <Compile Include="ExtractSearchIndex.cs" />
     <Compile Include="MarkdownReader.cs" />
     <Compile Include="OverwriteDocumentModel.cs" />
     <Compile Include="OverwriteDocumentReader.cs" />
+    <Compile Include="SearchIndexItem.cs" />
     <Compile Include="YamlHtmlPart.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +58,21 @@
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.AttributedModel">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Convention">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Hosting">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Runtime">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
     </Reference>
     <Reference Include="System.XML" />
     <Reference Include="YamlDotNet">

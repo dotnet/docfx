@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableArray<string> XRefMaps { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
         public FileMetadata FileMetadata { get; set; }
+        public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
         public TemplateManager TemplateManager { get; set; }
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
         public int MaxParallelism { get; set; }

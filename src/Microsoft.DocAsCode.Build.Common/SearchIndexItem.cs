@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-// todo : move to Plugin
-
-namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
+namespace Microsoft.DocAsCode.Build.Common
 {
     using Newtonsoft.Json;
 
@@ -11,8 +9,10 @@ namespace Microsoft.DocAsCode.Build.Engine.ExtractSearchData
     {
         [JsonProperty("href")]
         public string Href { get; set; }
+
         [JsonProperty("title")]
         public string Title { get; set; }
+
         [JsonProperty("keywords")]
         public string Keywords { get; set; }
 

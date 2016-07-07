@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return true;
         }
 
-        internal List<ManifestItem> Process(List<InternalManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
+        internal Manifest Process(List<InternalManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
         {
             using (new LoggerPhaseScope("Apply Templates"))
             {
@@ -93,8 +93,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var outputDirectory = context.BuildOutputFolder;
 
                 var templateManifest = ProcessCore(manifest, context, settings, globals);
-                SaveManifest(templateManifest, outputDirectory, context);
-                return templateManifest;
+                return SaveManifest(templateManifest, outputDirectory, context);
             }
         }
 
@@ -202,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
-        private static void SaveManifest(List<ManifestItem> manifest, string outputDirectory, IDocumentBuildContext context)
+        private static Manifest SaveManifest(List<ManifestItem> manifest, string outputDirectory, IDocumentBuildContext context)
         {
             // Save manifest from template
             // TODO: Keep .manifest for backward-compatability, will remove next sprint
@@ -215,8 +214,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var toc = context.GetTocInfo();
             var manifestObject = GenerateManifest(context, manifest);
+            // TODO: Not serialize manifest here
             JsonUtility.Serialize(manifestJsonPath, manifestObject);
             Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
+            return manifestObject;
         }
 
         private static List<DeprecatedManifestItem> Transform(List<ManifestItem> manifest)
