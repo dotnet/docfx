@@ -75,6 +75,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableList<FileModel> LookupByUid(string uid)
         {
+            if (uid == null)
+            {
+                throw new ArgumentNullException(nameof(uid));
+            }
             lock (_syncRoot)
             {
                 List<FileModel> result;
@@ -88,10 +92,31 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public MarkupResult Markup(string markdown, FileAndType ft)
         {
-            return Markup(markdown, ft, false);
+            if (markdown == null)
+            {
+                throw new ArgumentNullException(nameof(markdown));
+            }
+            if (ft == null)
+            {
+                throw new ArgumentNullException(nameof(ft));
+            }
+            return MarkupCore(markdown, ft, false);
         }
 
         public MarkupResult Markup(string markdown, FileAndType ft, bool omitParse)
+        {
+            if (markdown == null)
+            {
+                throw new ArgumentNullException(nameof(markdown));
+            }
+            if (ft == null)
+            {
+                throw new ArgumentNullException(nameof(ft));
+            }
+            return MarkupCore(markdown, ft, omitParse);
+        }
+
+        private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse)
         {
             try
             {
@@ -189,6 +214,19 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public MarkupResult Parse(MarkupResult markupResult, FileAndType ft)
         {
+            if (markupResult == null)
+            {
+                throw new ArgumentNullException(nameof(markupResult));
+            }
+            if (ft == null)
+            {
+                throw new ArgumentNullException(nameof(ft));
+            }
+            return ParseCore(markupResult, ft);
+        }
+
+        private MarkupResult ParseCore(MarkupResult markupResult, FileAndType ft)
+        {
             var doc = new HtmlDocument();
             doc.LoadHtml(markupResult.Html);
             var result = markupResult.Clone();
@@ -251,6 +289,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                                  where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
                                  where !string.IsNullOrWhiteSpace(attr.Value)
                                  select attr.Value).ToImmutableHashSet();
+            if (result.Dependency.Length > 0)
+            {
+                result.Dependency =
+                    (from d in result.Dependency
+                     select
+                        ((RelativePath)ft.File + (RelativePath)d)
+                            .GetPathFromWorkingFolder()
+                            .ToString()
+                    ).ToImmutableArray();
+            }
             using (var sw = new StringWriter())
             {
                 doc.Save(sw);
