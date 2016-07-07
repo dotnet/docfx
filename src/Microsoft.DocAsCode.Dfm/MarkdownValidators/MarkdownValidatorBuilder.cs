@@ -40,7 +40,10 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
         public void AddTagValidators(IEnumerable<MarkdownTagValidationRule> validators)
         {
-            TagValidators = TagValidators.AddRange(validators);
+            TagValidators = TagValidators.AddRange(
+                from v in validators
+                where v.TagNames?.Count > 0
+                select v);
         }
 
         public void AddValidators(params string[] validatorContracts)
