@@ -132,7 +132,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var postProcessors = GetPostProcessor(postProcessorNames) ?? Enumerable.Empty<IPostProcessor>();
                 foreach (var postProcessor in postProcessors)
                 {
-                    parameters.Metadata = postProcessor.Update(parameters.Metadata);
+                    parameters.Metadata = postProcessor.UpdateMetadata(parameters.Metadata);
                 }
 
                 // Start building document...

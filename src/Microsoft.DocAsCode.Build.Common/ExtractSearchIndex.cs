@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-
 namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
@@ -21,14 +20,14 @@ namespace Microsoft.DocAsCode.Build.Common
     using Newtonsoft.Json;
 
     [Export(nameof(ExtractSearchIndex), typeof(IPostProcessor))]
-    public class ExtractSearchIndex:IPostProcessor
+    public class ExtractSearchIndex : IPostProcessor
     {
         private static readonly Regex RegexWhiteSpace = new Regex(@"\s+", RegexOptions.Compiled);
 
         public string Name => nameof(ExtractSearchIndex);
         public const string IndexFileName = "index.json";
 
-        public ImmutableDictionary<string, object> Update(ImmutableDictionary<string, object> metadata)
+        public ImmutableDictionary<string, object> UpdateMetadata(ImmutableDictionary<string, object> metadata)
         {
             if (!metadata.ContainsKey("_enableSearch"))
             {

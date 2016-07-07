@@ -7,9 +7,7 @@ namespace Microsoft.DocAsCode.Plugins
 
     public interface IPostProcessor
     {
-        string Name { get; }
-
-        ImmutableDictionary<string, object> Update(ImmutableDictionary<string, object> metadata);
+        ImmutableDictionary<string, object> UpdateMetadata(ImmutableDictionary<string, object> metadata);
 
         Manifest Process(Manifest manifest, string baseDir);
     }
