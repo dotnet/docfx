@@ -118,6 +118,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 // Prepare for post process
                 var postProcessorNames = parameters.PostProcessors;
+
                 // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
                 object value;
                 if (parameters.Metadata.TryGetValue("_enableSearch", out value))
@@ -129,13 +130,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
 
-                var postProcessors = GetPostProcessor(postProcessorNames) ?? Enumerable.Empty<IPostProcessor>();
+                var postProcessors = GetPostProcessor(postProcessorNames);
                 foreach (var postProcessor in postProcessors)
                 {
-                    parameters.Metadata = postProcessor.UpdateMetadata(parameters.Metadata);
+                    parameters.Metadata = postProcessor.Item2.UpdateMetadata(parameters.Metadata);
                     if (parameters.Metadata == null)
                     {
-                        throw new DocfxException($"Plugin {postProcessor} should not return null metadata");
+                        throw new DocfxException($"Plugin {postProcessor.Item1} should not return null metadata");
                     }
                 }
 
@@ -178,10 +179,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         // post process
                         foreach (var postProcessor in postProcessors)
                         {
-                            generatedManifest = postProcessor.Process(generatedManifest, parameters.OutputBaseDir);
+                            generatedManifest = postProcessor.Item2.Process(generatedManifest, parameters.OutputBaseDir);
                             if (generatedManifest == null)
                             {
-                                throw new DocfxException($"Plugin {postProcessor} should not return null manifest");
+                                throw new DocfxException($"Plugin {postProcessor.Item1} should not return null manifest");
                             }
                         }
 
@@ -190,7 +191,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         JsonUtility.Serialize(manifestJsonPath, generatedManifest);
                         Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
 
-                        Logger.LogInfo($"Building {generatedManifest.Files.Count} file(s) completed.");
+                        Logger.LogInfo($"Completed building {generatedManifest.Files?.Count} file(s).");
                     }
                 }
                 finally
@@ -224,20 +225,22 @@ namespace Microsoft.DocAsCode.Build.Engine
             return hostService.Models;
         }
 
-        private IEnumerable<IPostProcessor> GetPostProcessor(ImmutableArray<string> processors)
+        private List<Tuple<string, IPostProcessor>> GetPostProcessor(ImmutableArray<string> processors)
         {
+            var processorList = new List<Tuple<string, IPostProcessor>>();
             foreach (var processor in processors)
             {
                 var p = GetExport(typeof (IPostProcessor), processor) as IPostProcessor;
                 if (p != null)
                 {
-                    yield return p;
+                    processorList.Add(new Tuple<string, IPostProcessor>(processor, p));
                 }
                 else
                 {
                     Logger.LogWarning($"Can't find the post-processor: {processor}");
                 }
             }
+            return processorList;
         } 
 
         private object GetExport(Type type, string name)
