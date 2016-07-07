@@ -133,6 +133,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 foreach (var postProcessor in postProcessors)
                 {
                     parameters.Metadata = postProcessor.UpdateMetadata(parameters.Metadata);
+                    if (parameters.Metadata == null)
+                    {
+                        throw new DocfxException($"Plugin {postProcessor} should not return null metadata");
+                    }
                 }
 
                 // Start building document...
@@ -175,6 +179,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         foreach (var postProcessor in postProcessors)
                         {
                             generatedManifest = postProcessor.Process(generatedManifest, parameters.OutputBaseDir);
+                            if (generatedManifest == null)
+                            {
+                                throw new DocfxException($"Plugin {postProcessor} should not return null manifest");
+                            }
                         }
 
                         // Last step: save manifest file

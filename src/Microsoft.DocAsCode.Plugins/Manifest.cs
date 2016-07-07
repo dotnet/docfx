@@ -24,6 +24,6 @@ namespace Microsoft.DocAsCode.Plugins
 
         [YamlMember(Alias = "files")]
         [JsonProperty("files")]
-        public List<ManifestItem> Files { get; set; }
+        public List<ManifestItem> Files { get; set; } = new List<ManifestItem>();
     }
 }
