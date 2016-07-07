@@ -1,5 +1,9 @@
 ﻿{
   "version": "1.0.0",
+  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+  "projectUrl": "https://github.com/dotnet/docfx",
+  "authors": ["Microsoft"],
+  "owners": ["Microsoft"],
   "dependencies": {
     "HtmlAgilityPack": "1.4.9",
     "Microsoft.Composition": "1.0.27",

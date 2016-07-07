@@ -1,5 +1,9 @@
 {
   "version": "1.0.0",
+  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+  "projectUrl": "https://github.com/dotnet/docfx",
+  "authors": ["Microsoft"],
+  "owners": ["Microsoft"],
   "dependencies": {
     "CommandLineParser": "1.9.71",
     "Newtonsoft.Json": "7.0.1",

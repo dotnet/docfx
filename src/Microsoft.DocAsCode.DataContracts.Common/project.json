@@ -1,5 +1,9 @@
 ﻿{
   "version": "1.0.0",
+  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+  "projectUrl": "https://github.com/dotnet/docfx",
+  "authors": ["Microsoft"],
+  "owners": ["Microsoft"],
   "dependencies": {
     "GitSharp": "0.3.0",
     "Microsoft.DocAsCode.Utility": "1.0.0",
