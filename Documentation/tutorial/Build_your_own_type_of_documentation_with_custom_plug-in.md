@@ -19,7 +19,7 @@ Preparation
 
 2.  Add nuget packages:  
     * `System.Collections.Immutable` with version 1.1.37
-    * `System.Composition` with version 1.0.27
+    * `Microsoft.Composition` with version 1.0.27
 
 3.  Add `Microsoft.DocAsCode.Plugins`
     If build DocFX from source code, add reference to the project.
