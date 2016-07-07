@@ -25,7 +25,7 @@ For example, create `md.style` with following content:
 {
    "tagRules": [
       {
-         "tagName": [ "H1", "H2" ],
+         "tagNames": [ "H1", "H2" ],
          "behavior": "Warning",
          "messageFormatter": "Some message.",
          "customValidatorContractName": null,
@@ -36,7 +36,7 @@ For example, create `md.style` with following content:
 ```
 Then when any one write `<H1>` or `<H2>` in markdown file, it will give a warning with message `Some message.`.
 
-1.  `tagName` is filter html tag names, *required*, *case-insensitive*.
+1.  `tagNames` is filter html tag names, *required*, *case-insensitive*.
 2.  `behavior` is an enum value, *required*.
 
     it can be following:
@@ -77,7 +77,7 @@ And update your `md.style` with following content:
 {
    "tagRules": [
       {
-         "tagName": [ "H1", "H2" ],
+         "tagNames": [ "H1", "H2" ],
          "behavior": "Warning",
          "messageFormatter": "Some message.",
          "customValidatorContractName": "Require text class",
