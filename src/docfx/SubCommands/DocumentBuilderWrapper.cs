@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Runtime.Remoting.Lifetime;
 
@@ -93,14 +94,46 @@ namespace Microsoft.DocAsCode.SubCommands
             using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
             {
                 var parameters = ConfigToParameter(config, templateManager, baseDirectory, outputDirectory);
-                if (parameters.Files.Count == 0)
+                var noDocsetHasOutput = false;
+                var docsetsParameters = new Dictionary<string, DocumentBuildParameters>();
+                if (config.Docsets != null)
                 {
-                    Logger.LogWarning("No files found, nothing is to be generated");
+                    noDocsetHasOutput = true;
+                    foreach (var pair in config.Docsets)
+                    {
+                        if (string.IsNullOrEmpty(pair.Value.Destination))
+                        {
+                            Logger.LogWarning($"Docset \"{pair.Key}\" doesn't specify \"dest\", which may cause output conflict.");
+                        }
+                        var docsetParameters = DocsetConfigToParameter(pair.Value, templateManager, baseDirectory,
+                            outputDirectory, parameters, config);
+                        if (docsetParameters.Files.Count == 0)
+                        {
+                            Logger.LogWarning($"No files found in docset \"{pair.Key}\", nothing is to be generated.");
+                            continue;
+                        }
+                        docsetsParameters.Add(pair.Key, docsetParameters);
+                        noDocsetHasOutput = false;
+                    }
+                }
+
+                if (parameters.Files.Count == 0 && noDocsetHasOutput)
+                {
+                    Logger.LogWarning("No files found, nothing is to be generated.");
                     return;
+                }
+                foreach (var group in
+                    from kv in docsetsParameters
+                    group kv.Key by kv.Value.OutputBaseDir into g
+                    where g.Count() > 1
+                    select g)
+                {
+                    Logger.LogWarning($"Multiple docsets \"{string.Join(", ", group)}\" specify the same destination \"{group.Key}\", which may cause output conflict.");
                 }
 
                 using (new PerformanceScope("building documents", LogLevel.Info))
                 {
+                    //TODO: add build docsets
                     builder.Build(parameters);
                 }
             }
@@ -225,6 +258,80 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
             }
+            return parameters;
+        }
+
+        private static DocumentBuildParameters DocsetConfigToParameter(
+            BuildJsonConfigCommon config,
+            TemplateManager templateManager,
+            string baseDirectory,
+            string outputDirectory,
+            DocumentBuildParameters rootParameters,
+            BuildJsonConfig rootConfig)
+        {
+            var parameters = new DocumentBuildParameters();
+            parameters.OutputBaseDir = Path.GetFullPath(Path.Combine(outputDirectory, config.Destination ?? string.Empty)); ;
+            if (config.GlobalMetadata != null)
+            {
+                // Metadata in docset config will overwrite metadata in root config if metadata key conflicts.
+                parameters.Metadata = config.GlobalMetadata.Concat(rootParameters.Metadata)
+                        .GroupBy(d => d.Key)
+                        .ToImmutableDictionary(d => d.Key, d => d.First().Value);
+            }
+            if (config.FileMetadata != null)
+            {
+                // Dont use file metadata in root config to avoid ambiguity.
+                parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
+            }
+            parameters.ExternalReferencePackages =
+                GetFilesFromFileMapping(
+                    GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference))
+                .Concat(rootParameters.ExternalReferencePackages).ToImmutableArray();
+
+            if (config.XRefMaps != null)
+            {
+                parameters.XRefMaps = config.XRefMaps.Concat(rootParameters.XRefMaps).ToImmutableArray();
+            }
+            if (!rootConfig.NoLangKeyword)
+            {
+                parameters.XRefMaps = parameters.XRefMaps.Add("embedded:docfx/langwordMapping.yml");
+            }
+
+            parameters.Files = GetFileCollectionFromFileMapping(
+                baseDirectory,
+                GlobUtility.ExpandFileMapping(baseDirectory, config.Content),
+                GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite),
+                GlobUtility.ExpandFileMapping(baseDirectory, config.Resource));
+
+            var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory)
+            {
+                TransformDocument = rootParameters.ApplyTemplateSettings.TransformDocument
+            };
+
+            applyTemplateSettings.RawModelExportSettings.Export = rootConfig.ExportRawModel == true;
+            if (!string.IsNullOrEmpty(config.RawModelOutputFolder))
+            {
+                applyTemplateSettings.RawModelExportSettings.OutputFolder =
+                    Path.Combine(
+                        rootParameters.ApplyTemplateSettings.RawModelExportSettings.OutputFolder,
+                        config.RawModelOutputFolder);
+            }
+
+            applyTemplateSettings.ViewModelExportSettings.Export = rootConfig.ExportViewModel == true;
+            if (!string.IsNullOrEmpty(config.ViewModelOutputFolder))
+            {
+                applyTemplateSettings.ViewModelExportSettings.OutputFolder =
+                    Path.Combine(
+                        rootParameters.ApplyTemplateSettings.ViewModelExportSettings.OutputFolder,
+                        config.ViewModelOutputFolder);
+            }
+
+            parameters.ApplyTemplateSettings = applyTemplateSettings;
+            parameters.TemplateManager = templateManager;
+            parameters.MaxParallelism = rootParameters.MaxParallelism;
+            parameters.MarkdownEngineName = rootParameters.MarkdownEngineName;
+            parameters.MarkdownEngineParameters = rootParameters.MarkdownEngineParameters;
+
             return parameters;
         }
 

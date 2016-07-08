@@ -114,6 +114,7 @@
     <Compile Include="CommandModels\CompositeOptions.cs" />
     <Compile Include="Exceptions\PluginDirectoryAlreadyExistsException.cs" />
     <Compile Include="Exceptions\PluginException.cs" />
+    <Compile Include="Models\BuildJsonConfigCommon.cs" />
     <Compile Include="Models\DownloadCommandOptions.cs" />
     <Compile Include="Models\MergeCommandOptions.cs" />
     <Compile Include="Models\MergeJsonConfig.cs" />
