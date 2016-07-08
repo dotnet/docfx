@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode
 
         /// <summary>
         /// Version name for the current file-mapping item.
-        /// If not set, treat the current file-mapping item as in global version.
+        /// If not set, treat the current file-mapping item as in default version.
         /// Mappings with the same version name will be built together.
         /// Cross reference doesn't support cross different versions.
         /// </summary>

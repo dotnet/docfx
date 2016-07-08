@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.SubCommands
                         if (parameters.Files.Count == 0)
                         {
                             Logger.LogWarning(string.IsNullOrEmpty(parameters.VersionName)
-                                ? "No files found, nothing is generated in global version."
+                                ? "No files found, nothing is generated in default version."
                                 : $"No files found, nothing is generated in version \"{parameters.VersionName}\".");
                             return;
                         }
@@ -245,7 +245,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         /// <summary>
         /// Group FileMappings to a dictionary using VersionName as the key.
-        /// As global version has no VersionName, using empty string as the key.
+        /// As default version has no VersionName, using empty string as the key.
         /// </summary>
         private static Dictionary<string, FileMappingParameters> GroupFileMappings(FileMapping content,
             FileMapping overwrite, FileMapping resource)
