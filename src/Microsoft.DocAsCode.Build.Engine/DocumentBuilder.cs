@@ -186,9 +186,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context)
                         };
-                        _manifest.AddRange(generatedManifest.Files);
-                        _homepages.AddRange(generatedManifest.Homepages);
-                        _xrefMaps.Add((string)generatedManifest.XRefMap);
 
                         // post process
                         foreach (var postProcessor in postProcessors)
@@ -199,6 +196,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 throw new DocfxException($"Plugin {postProcessor.Item1} should not return null manifest");
                             }
                         }
+
+                        _manifest.AddRange(generatedManifest.Files);
+                        _homepages.AddRange(generatedManifest.Homepages);
+                        _xrefMaps.Add((string)generatedManifest.XRefMap);
 
                         // Last step: save manifest file
                         var manifestJsonPath = Path.Combine(parameters.OutputBaseDir, Constants.ManifestFileName);
