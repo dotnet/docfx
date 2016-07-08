@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             foreach (var m in models)
             {
-                YamlUtility.Serialize(Path.Combine(outputBase, m.File), m.Content);
+                YamlUtility.Serialize(Path.Combine(outputBase, m.File), m.Content, YamlMime.ManagedReference);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var vm = MergeTocViewModel(
                 from f in tocFiles
                 select YamlUtility.Deserialize<TocViewModel>(Path.Combine(f.BaseDir, f.File)));
-            YamlUtility.Serialize(Path.Combine(outputBase, tocFiles[0].PathRewriter(tocFiles[0].File)), vm);
+            YamlUtility.Serialize(Path.Combine(outputBase, tocFiles[0].PathRewriter(tocFiles[0].File)), vm, YamlMime.TableOfContent);
         }
 
         private static TocItemViewModel MergeTocItem(List<TocItemViewModel> items)

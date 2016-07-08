@@ -359,14 +359,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return null;
             }
-            using (var sw = new StringWriter())
-            {
-                YamlUtility.Serialize(sw, vm);
-                using (var sr = new StringReader(sw.ToString()))
-                {
-                    return YamlUtility.Deserialize<XRefSpec>(sr);
-                }
-            }
+            return YamlUtility.ConvertTo<XRefSpec>(vm);
         }
     }
 }

@@ -730,7 +730,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             xrefMap.Sort();
             YamlUtility.Serialize(
                 Path.Combine(parameters.OutputBaseDir, XRefMapFileName),
-                xrefMap);
+                xrefMap,
+                YamlMime.XRefMap);
             Logger.LogInfo("XRef map exported.");
         }
 

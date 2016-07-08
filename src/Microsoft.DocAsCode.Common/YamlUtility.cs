@@ -18,11 +18,29 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Serialize(TextWriter writer, object graph)
         {
+            Serialize(writer, graph, null);
+        }
+
+        public static void Serialize(TextWriter writer, object graph, string comments)
+        {
+            if (!string.IsNullOrEmpty(comments))
+            {
+                foreach (var comment in comments.Split('\n'))
+                {
+                    writer.Write("### ");
+                    writer.WriteLine(comment.TrimEnd('\r'));
+                }
+            }
             serializer.Value.Serialize(writer, graph);
         }
 
 #if !NetCore
         public static void Serialize(string path, object graph)
+        {
+            Serialize(path, graph, null);
+        }
+
+        public static void Serialize(string path, object graph, string comments)
         {
             var directory = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(directory))
@@ -32,7 +50,7 @@ namespace Microsoft.DocAsCode.Common
 
             using (StreamWriter writer = new StreamWriter(path))
             {
-                Serialize(writer, graph);
+                Serialize(writer, graph, comments);
             }
         }
 #endif

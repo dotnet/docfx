@@ -598,7 +598,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var tocViewModel = model.TocYamlViewModel.ToTocViewModel();
             string tocFilePath = Path.Combine(folder, tocFileName);
 
-            YamlUtility.Serialize(tocFilePath, tocViewModel);
+            YamlUtility.Serialize(tocFilePath, tocViewModel, YamlMime.TableOfContent);
 
             ApiReferenceViewModel indexer = new ApiReferenceViewModel();
 
@@ -616,7 +616,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 string itemFilePath = Path.Combine(folder, apiFolder, outputPath);
                 Directory.CreateDirectory(Path.GetDirectoryName(itemFilePath));
                 var memberViewModel = memberModel.ToPageViewModel();
-                YamlUtility.Serialize(itemFilePath, memberViewModel);
+                YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);
                 Logger.Log(LogLevel.Verbose, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
                 AddMemberToIndexer(memberModel, outputPath, indexer);
             }
