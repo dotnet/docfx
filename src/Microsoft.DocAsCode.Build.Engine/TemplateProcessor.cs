@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return true;
         }
 
-        internal Manifest Process(List<InternalManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
+        internal List<ManifestItem> Process(List<InternalManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
         {
             using (new LoggerPhaseScope("Apply Templates"))
             {
@@ -90,10 +90,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Logger.LogInfo("Dryrun, no template will be applied to the documents.");
                 }
 
-                var outputDirectory = context.BuildOutputFolder;
-
                 var templateManifest = ProcessCore(manifest, context, settings, globals);
-                return SaveManifest(templateManifest, outputDirectory, context);
+                return templateManifest;
             }
         }
 
@@ -169,19 +167,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 },
                 context.MaxParallelism);
+            return manifest.ToList();
 
-            var itemsToRemove = new List<string>();
-            foreach (var duplicates in from m in manifest
-                                       from output in m.OutputFiles.Values
-                                       group m.OriginalFile by output into g
-                                       where g.Count() > 1
-                                       select g)
-            {
-                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
-                itemsToRemove.AddRange(duplicates.Skip(1));
-            }
-
-            return manifest.Where(m => !itemsToRemove.Contains(m.OriginalFile)).ToList();
         }
 
         private static IDictionary<string, string> LoadTokenJson(ResourceCollection resource)
@@ -201,8 +188,20 @@ namespace Microsoft.DocAsCode.Build.Engine
             return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
-        private static Manifest SaveManifest(List<ManifestItem> manifest, string outputDirectory, IDocumentBuildContext context)
+        public static void SaveManifest(List<ManifestItem> manifest, List<HomepageInfo> homepages, List<string> xrefMaps, string outputDirectory)
         {
+            var itemsToRemove = new List<string>();
+            foreach (var duplicates in from m in manifest
+                                       from output in m.OutputFiles.Values
+                                       group m.OriginalFile by output into g
+                                       where g.Count() > 1
+                                       select g)
+            {
+                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
+                itemsToRemove.AddRange(duplicates.Skip(1));
+            }
+            manifest.RemoveAll(m => itemsToRemove.Contains(m.OriginalFile));
+
             // Save manifest from template
             // TODO: Keep .manifest for backward-compatability, will remove next sprint
             var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
@@ -211,13 +210,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             // Logger.LogInfo($"Manifest file saved to {manifestPath}. NOTE: This file is out-of-date and will be removed in version 1.8, if you rely on this file, please change to use {Constants.ManifestFileName} instead.");
 
             var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
-
-            var toc = context.GetTocInfo();
-            var manifestObject = GenerateManifest(context, manifest);
-            // TODO: Not serialize manifest here
+            object xrefMapsObject;
+            if (xrefMaps.Count == 1)
+            {
+                xrefMapsObject = xrefMaps[0];
+            }
+            else
+            {
+                xrefMapsObject = xrefMaps;
+            }
+            var manifestObject = new Manifest
+            {
+                Homepages = homepages,
+                Files = manifest,
+                XRefMap = xrefMapsObject,
+            };
             JsonUtility.Serialize(manifestJsonPath, manifestObject);
             Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
-            return manifestObject;
         }
 
         private static List<DeprecatedManifestItem> Transform(List<ManifestItem> manifest)

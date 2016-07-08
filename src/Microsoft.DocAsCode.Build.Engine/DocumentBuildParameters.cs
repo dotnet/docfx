@@ -20,5 +20,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public int MaxParallelism { get; set; }
         public string MarkdownEngineName { get; set; } = "dfm";
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
+        public string VersionName { get; set; }
     }
 }

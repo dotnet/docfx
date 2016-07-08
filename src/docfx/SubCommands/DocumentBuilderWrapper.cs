@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Runtime.Remoting.Lifetime;
 
@@ -92,16 +93,24 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
             {
-                var parameters = ConfigToParameter(config, templateManager, baseDirectory, outputDirectory);
-                if (parameters.Files.Count == 0)
-                {
-                    Logger.LogWarning("No files found, nothing is to be generated");
-                    return;
-                }
-
                 using (new PerformanceScope("building documents", LogLevel.Info))
                 {
-                    builder.Build(parameters);
+                    foreach (var parameters in ConfigToParameter(config, templateManager, baseDirectory, outputDirectory))
+                    {
+                        if (parameters.Files.Count == 0)
+                        {
+                            Logger.LogWarning(string.IsNullOrEmpty(parameters.VersionName)
+                                ? "No files found, nothing is generated in global version."
+                                : $"No files found, nothing is generated in version \"{parameters.VersionName}\".");
+                            return;
+                        }
+                        if (!string.IsNullOrEmpty(parameters.VersionName))
+                        {
+                            Logger.LogInfo($"Start building for version: {parameters.VersionName}");
+                        }
+                        builder.Build(parameters);
+                    }
+                    builder.SaveManifest(outputDirectory);
                 }
             }
         }
@@ -154,7 +163,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory)
+        private static IEnumerable<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory)
         {
             var parameters = new DocumentBuildParameters();
             parameters.OutputBaseDir = outputDirectory;
@@ -183,12 +192,6 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.XRefMaps = parameters.XRefMaps.Add("embedded:docfx/langwordMapping.yml");
             }
-
-            parameters.Files = GetFileCollectionFromFileMapping(
-                baseDirectory,
-                GlobUtility.ExpandFileMapping(baseDirectory, config.Content),
-                GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite),
-                GlobUtility.ExpandFileMapping(baseDirectory, config.Resource));
 
             var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory)
             {
@@ -225,7 +228,112 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
             }
-            return parameters;
+
+            var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
+
+            foreach (var pair in fileMappingParametersDictionary)
+            {
+                parameters.Files = GetFileCollectionFromFileMapping(
+                    baseDirectory,
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.Content),
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.Overwrite),
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.Resource));
+                parameters.VersionName = pair.Key;
+                yield return parameters;
+            }
+        }
+
+        /// <summary>
+        /// Group FileMappings to a dictionary using VersionName as the key.
+        /// As global version has no VersionName, using empty string as the key.
+        /// </summary>
+        private static Dictionary<string, FileMappingParameters> GroupFileMappings(FileMapping content,
+            FileMapping overwrite, FileMapping resource)
+        {
+            var result = new Dictionary<string, FileMappingParameters> { [string.Empty] = new FileMappingParameters() };
+
+            if (content != null)
+            {
+                foreach (var item in content.Items)
+                {
+                    var version = item.VersionName ?? string.Empty;
+                    FileMappingParameters fileMappingParameters;
+                    if (result.TryGetValue(version, out fileMappingParameters))
+                    {
+                        if (fileMappingParameters.Content != null)
+                        {
+                            fileMappingParameters.Content.Add(item);
+                        }
+                        else
+                        {
+                            fileMappingParameters.Content = new FileMapping(item);
+                        }
+                    }
+                    else
+                    {
+                        result[version] = new FileMappingParameters
+                        {
+                            Content = new FileMapping(item)
+                        };
+                    }
+                }
+            }
+
+            if (overwrite != null)
+            {
+                foreach (var item in overwrite.Items)
+                {
+                    var version = item.VersionName ?? string.Empty;
+                    FileMappingParameters fileMappingParameters;
+                    if (result.TryGetValue(version, out fileMappingParameters))
+                    {
+                        if (fileMappingParameters.Overwrite != null)
+                        {
+                            fileMappingParameters.Overwrite.Add(item);
+                        }
+                        else
+                        {
+                            fileMappingParameters.Overwrite = new FileMapping(item);
+                        }
+                    }
+                    else
+                    {
+                        result[version] = new FileMappingParameters
+                        {
+                            Overwrite = new FileMapping(item)
+                        };
+                    }
+                }
+            }
+
+            if (resource != null)
+            {
+                foreach (var item in resource.Items)
+                {
+                    var version = item.VersionName ?? string.Empty;
+                    FileMappingParameters fileMappingParameters;
+                    if (result.TryGetValue(version, out fileMappingParameters))
+                    {
+                        if (fileMappingParameters.Resource != null)
+                        {
+                            fileMappingParameters.Resource.Add(item);
+                        }
+                        else
+                        {
+                            fileMappingParameters.Resource = new FileMapping(item);
+                        }
+                    }
+                    else
+                    {
+                        result[version] = new FileMappingParameters
+                        {
+                            Resource = new FileMapping(item)
+                        };
+                    }
+                }
+            }
+
+            return result;
         }
 
         private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
@@ -297,6 +405,13 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             var relativePath = PathUtility.MakeRelativePath(src, path);
             return Path.Combine(dest ?? string.Empty, relativePath);
+        }
+
+        private class FileMappingParameters
+        {
+            public FileMapping Content { get; set; }
+            public FileMapping Overwrite { get; set; }
+            public FileMapping Resource { get; set; }
         }
     }
 }
