@@ -63,6 +63,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public HashSet<string> XRef { get; } = new HashSet<string>();
 
+        public DependencyGraph DependencyGraph { get; } = new DependencyGraph();
+
         private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
         private List<XRefMap> XRefMaps { get; set; }

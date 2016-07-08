@@ -220,6 +220,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Processor = processor,
                 MarkdownService = markdownService,
+                DependencyGraph = new DependencyGraph(),
             };
             BuildCore(hostService, parameters.MaxParallelism);
             return hostService.Models;
@@ -265,6 +266,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private IEnumerable<ManifestItemWithContext> BuildCore(HostService hostService, DocumentBuildContext context)
         {
             hostService.SourceFiles = context.AllSourceFiles;
+            hostService.DependencyGraph = context.DependencyGraph;
             BuildCore(hostService, context.MaxParallelism);
             return ExportManifest(hostService, context);
         }

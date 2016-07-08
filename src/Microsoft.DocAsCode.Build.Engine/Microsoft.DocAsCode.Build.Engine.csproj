@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="DependencyGraph.cs" />
     <Compile Include="HashStreamHelper.cs" />
     <Compile Include="InvalidPreprocessorException.cs" />
     <Compile Include="CrossReferenceNotResolvedException.cs" />
