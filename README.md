@@ -2,10 +2,13 @@
 
 [![Join the chat at https://gitter.im/dotnet/docfx](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-|            | Windows  |
-| ---------- | --------- | ------
-| **master** | [![masterstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCiWithScripts_DocfxCiForMasterBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForMasterBranch)
-| **dev**    | [![devstatus](http://docfx-ci-0.cloudapp.net/app/rest/builds/buildType:(id:DocfxCiWithScripts_DocfxCiForDevBranch)/statusIcon)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForDevBranch)
+[![masterstatus](https://img.shields.io/teamcity/http/docfx-ci-0.cloudapp.net/s/DocfxCiWithScripts_DocfxCiForMasterBranch.svg?maxAge=600&label=master)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForMasterBranch)
+[![devstatus](https://img.shields.io/teamcity/http/docfx-ci-0.cloudapp.net/s/DocfxCiWithScripts_DocfxCiForDevBranch.svg?maxAge=600&label=dev)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForDevBranch)
+[![NuGet](https://img.shields.io/nuget/v/docfx.svg?maxAge=600)](http://www.nuget.org/packages/docfx/)
+[![MyGet](https://img.shields.io/myget/docfx/v/docfx.svg?maxAge=600&label=myget)](https://www.myget.org/feed/Packages/docfx)
+[![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?maxAge=600&label=myget-nightly)](https://www.myget.org/feed/Packages/docfx-dev)
+[![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg?maxAge=600)](https://chocolatey.org/packages/docfx)
+[![Github All Releases](https://img.shields.io/github/downloads/dotnet/docfx/total.svg?maxAge=600)](https://github.com/dotnet/docfx/releases)
 
 ## What is it?
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
