@@ -235,9 +235,9 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.Files = GetFileCollectionFromFileMapping(
                     baseDirectory,
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.Content),
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.Overwrite),
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.Resource));
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content)),
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                 parameters.VersionName = pair.Key;
                 yield return parameters;
             }
@@ -250,90 +250,48 @@ namespace Microsoft.DocAsCode.SubCommands
         private static Dictionary<string, FileMappingParameters> GroupFileMappings(FileMapping content,
             FileMapping overwrite, FileMapping resource)
         {
-            var result = new Dictionary<string, FileMappingParameters> { [string.Empty] = new FileMappingParameters() };
-
-            if (content != null)
+            var result = new Dictionary<string, FileMappingParameters>
             {
-                foreach (var item in content.Items)
-                {
-                    var version = item.VersionName ?? string.Empty;
-                    FileMappingParameters fileMappingParameters;
-                    if (result.TryGetValue(version, out fileMappingParameters))
-                    {
-                        if (fileMappingParameters.Content != null)
-                        {
-                            fileMappingParameters.Content.Add(item);
-                        }
-                        else
-                        {
-                            fileMappingParameters.Content = new FileMapping(item);
-                        }
-                    }
-                    else
-                    {
-                        result[version] = new FileMappingParameters
-                        {
-                            Content = new FileMapping(item)
-                        };
-                    }
-                }
-            }
+                [string.Empty] = new FileMappingParameters()
+            };
 
-            if (overwrite != null)
-            {
-                foreach (var item in overwrite.Items)
-                {
-                    var version = item.VersionName ?? string.Empty;
-                    FileMappingParameters fileMappingParameters;
-                    if (result.TryGetValue(version, out fileMappingParameters))
-                    {
-                        if (fileMappingParameters.Overwrite != null)
-                        {
-                            fileMappingParameters.Overwrite.Add(item);
-                        }
-                        else
-                        {
-                            fileMappingParameters.Overwrite = new FileMapping(item);
-                        }
-                    }
-                    else
-                    {
-                        result[version] = new FileMappingParameters
-                        {
-                            Overwrite = new FileMapping(item)
-                        };
-                    }
-                }
-            }
-
-            if (resource != null)
-            {
-                foreach (var item in resource.Items)
-                {
-                    var version = item.VersionName ?? string.Empty;
-                    FileMappingParameters fileMappingParameters;
-                    if (result.TryGetValue(version, out fileMappingParameters))
-                    {
-                        if (fileMappingParameters.Resource != null)
-                        {
-                            fileMappingParameters.Resource.Add(item);
-                        }
-                        else
-                        {
-                            fileMappingParameters.Resource = new FileMapping(item);
-                        }
-                    }
-                    else
-                    {
-                        result[version] = new FileMappingParameters
-                        {
-                            Resource = new FileMapping(item)
-                        };
-                    }
-                }
-            }
+            AddFileMappingTypeGroup(result, content, FileMappingType.Content);
+            AddFileMappingTypeGroup(result, overwrite, FileMappingType.Overwrite);
+            AddFileMappingTypeGroup(result, resource, FileMappingType.Resource);
 
             return result;
+        }
+
+        private static void AddFileMappingTypeGroup(
+            Dictionary<string, FileMappingParameters> fileMappingsDictionary,
+            FileMapping fileMapping,
+            FileMappingType type)
+        {
+            if (fileMapping == null) return;
+            foreach (var item in fileMapping.Items)
+            {
+                var version = item.VersionName ?? string.Empty;
+                FileMappingParameters parameters;
+                if (fileMappingsDictionary.TryGetValue(version, out parameters))
+                {
+                    FileMapping mapping;
+                    if (parameters.TryGetValue(type, out mapping))
+                    {
+                        mapping.Add(item);
+                    }
+                    else
+                    {
+                        parameters[type] = new FileMapping(item);
+                    }
+                }
+                else
+                {
+                    fileMappingsDictionary[version] = new FileMappingParameters
+                    {
+                        [type] = new FileMapping(item)
+                    };
+                }
+            }
         }
 
         private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
@@ -407,11 +365,21 @@ namespace Microsoft.DocAsCode.SubCommands
             return Path.Combine(dest ?? string.Empty, relativePath);
         }
 
-        private class FileMappingParameters
+        private class FileMappingParameters : Dictionary<FileMappingType, FileMapping>
         {
-            public FileMapping Content { get; set; }
-            public FileMapping Overwrite { get; set; }
-            public FileMapping Resource { get; set; }
+            public FileMapping GetFileMapping(FileMappingType type)
+            {
+                FileMapping result;
+                this.TryGetValue(type, out result);
+                return result;
+            }
+        }
+
+        private enum FileMappingType
+        {
+            Content,
+            Overwrite,
+            Resource,
         }
     }
 }
