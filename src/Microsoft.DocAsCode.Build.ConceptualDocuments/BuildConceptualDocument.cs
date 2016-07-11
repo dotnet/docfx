@@ -81,6 +81,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
+            host.ReportDependency(model, result.Dependency);
         }
 
         private static string TitleThumbnail(string title, int maxLength)

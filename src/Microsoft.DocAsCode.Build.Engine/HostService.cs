@@ -43,6 +43,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableList<IInputMetadataValidator> Validators { get; set; }
 
+        public DependencyGraph DependencyGraph { get; set; }
+
         #endregion
 
         #region Constructors
@@ -305,6 +307,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                 result.Html = sw.ToString();
             }
             return result;
+        }
+
+        public void ReportDependency(FileModel currentFileModel, ImmutableArray<string> dependency)
+        {
+            if (currentFileModel == null)
+            {
+                throw new ArgumentNullException(nameof(currentFileModel));
+            }
+            lock (DependencyGraph)
+            {
+                DependencyGraph.ReportDependency(currentFileModel.OriginalFileAndType.File, dependency);
+            }
         }
 
         public bool HasMetadataValidation => Validators.Count > 0;

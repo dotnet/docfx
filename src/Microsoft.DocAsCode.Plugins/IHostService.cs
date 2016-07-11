@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.Plugins
         ImmutableList<FileModel> GetModels(DocumentType? type = null);
         ImmutableList<FileModel> LookupByUid(string uid);
 
+        void ReportDependency(FileModel currentFileModel, ImmutableArray<string> dependency);
+
         bool HasMetadataValidation { get; }
         void ValidateInputMetadata(string file, ImmutableDictionary<string, object> metadata);
 
