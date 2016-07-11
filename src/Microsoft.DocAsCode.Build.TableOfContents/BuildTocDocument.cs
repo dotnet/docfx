@@ -93,8 +93,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 linkToUids.Add(item.HomepageUid);
             }
 
-            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(linkToUids);
-            ((HashSet<string>)model.Properties.LinkToFiles).UnionWith(linkToFiles);
+            model.LinkToUids = model.LinkToUids.Union(linkToUids);
+            model.LinkToFiles = model.LinkToFiles.Union(linkToFiles);
 
             if (item.Items != null)
             {

@@ -69,8 +69,8 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             {
                 DocumentType = model.DocumentType ?? "Conceptual",
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = model.Properties.LinkToFiles,
-                LinkToUids = model.Properties.LinkToUids,
+                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
+                LinkToUids = model.LinkToUids,
             };
             if (model.Properties.XrefSpec != null)
             {

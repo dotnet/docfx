@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             item.Description = Markup(host, item.Description, model, filter);
             if (model.Type != DocumentType.Overwrite)
             {
-            item.Conceptual = Markup(host, item.Conceptual, model, filter);
+                item.Conceptual = Markup(host, item.Conceptual, model, filter);
             }
             return item;
         }
@@ -99,8 +99,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             var mr = host.Markup(markdown, model.FileAndType);
-            ((HashSet<string>)model.Properties.LinkToFiles).UnionWith(mr.LinkToFiles);
-            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(mr.LinkToUids);
+            model.LinkToFiles = model.LinkToFiles.Union(mr.LinkToFiles);
+            model.LinkToUids = model.LinkToUids.Union(mr.LinkToUids);
             return mr.Html;
         }
     }

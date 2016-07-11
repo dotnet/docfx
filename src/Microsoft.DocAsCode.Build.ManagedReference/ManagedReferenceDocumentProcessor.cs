@@ -90,12 +90,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     return new FileModel(file, page, serializer: new BinaryFormatter())
                     {
                         Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
-
-                        Properties =
-                        {
-                            LinkToFiles = new HashSet<string>(),
-                            LinkToUids = new HashSet<string>(),
-                        },
                         LocalPathFromRepoRoot = displayLocalPath,
                     };
                 case DocumentType.Overwrite:
@@ -120,8 +114,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 DocumentType = "ManagedReference",
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
-                LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableHashSet(),
+                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
+                LinkToUids = model.LinkToUids,
                 XRefSpecs = (from item in vm.Items
                              select GetXRefInfo(item, model.Key)).ToImmutableArray(),
                 ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),

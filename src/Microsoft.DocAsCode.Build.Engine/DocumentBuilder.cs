@@ -162,6 +162,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                             manifest.AddRange(BuildCore(hostService, context));
                         }
 
+                        UpdateUidDependency(context, hostServices);
+
                         // Use manifest from now on
                         UpdateContext(context);
 
@@ -219,6 +221,47 @@ namespace Microsoft.DocAsCode.Build.Engine
                             item.Dispose();
                         }
                     }
+                }
+            }
+        }
+
+        private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)
+        {
+            foreach (var hostService in hostServices)
+            {
+                foreach (var m in hostService.Models)
+                {
+                    if (m.Type == DocumentType.Overwrite)
+                    {
+                        continue;
+                    }
+                    if (m.LinkToUids.Count == 0)
+                    {
+                        continue;
+                    }
+                    context.DependencyGraph.ReportDependency(
+                        m.OriginalFileAndType.File,
+                        GetFilesFromUids(context, m.LinkToUids));
+                }
+            }
+        }
+
+        private static IEnumerable<string> GetFilesFromUids(DocumentBuildContext context, IEnumerable<string> uids)
+        {
+            foreach (var uid in uids)
+            {
+                if (string.IsNullOrEmpty(uid))
+                {
+                    continue;
+                }
+                XRefSpec spec;
+                if (!context.XRefSpecMap.TryGetValue(uid, out spec))
+                {
+                    continue;
+                }
+                if (spec.Href != null)
+                {
+                    yield return spec.Href;
                 }
             }
         }

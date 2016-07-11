@@ -69,8 +69,8 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                     }
                 }
             }
-            model.Properties.LinkToFiles = result.LinkToFiles;
-            model.Properties.LinkToUids = result.LinkToUids;
+            model.LinkToFiles = result.LinkToFiles.ToImmutableHashSet();
+            model.LinkToUids = result.LinkToUids;
             model.Properties.XrefSpec = null;
             if (model.Uids.Length > 0)
             {

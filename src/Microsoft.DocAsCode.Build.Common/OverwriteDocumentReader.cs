@@ -32,14 +32,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new NotSupportedException(file.Type.ToString());
             }
 
-            return new FileModel(file, null, serializer:new BinaryFormatter())
-            {
-                Properties =
-                        {
-                            LinkToFiles = new HashSet<string>(),
-                            LinkToUids = new HashSet<string>(),
-                        }
-            };
+            return new FileModel(file, null, serializer: new BinaryFormatter());
         }
 
         /// <summary>

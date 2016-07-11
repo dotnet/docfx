@@ -84,11 +84,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
                             .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
                             .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
                         LocalPathFromRepoRoot = displayLocalPath,
-                        Properties =
-                        {
-                            LinkToFiles = new HashSet<string>(),
-                            LinkToUids = new HashSet<string>(),
-                        },
                     };
                 case DocumentType.Overwrite:
                     // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors
@@ -117,8 +112,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
             {
                 DocumentType = documentType ?? RestApiDocumentType,
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = ((HashSet<string>)model.Properties.LinkToFiles).ToImmutableArray(),
-                LinkToUids = ((HashSet<string>)model.Properties.LinkToUids).ToImmutableHashSet(),
+                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
+                LinkToUids = model.LinkToUids,
             };
         }
 
