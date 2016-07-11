@@ -50,11 +50,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 Uids = new[] { new UidDefinition(file.File, displayLocalPath) }.ToImmutableArray(),
                 LocalPathFromRepoRoot = displayLocalPath,
-                Properties =
-                        {
-                            LinkToFiles = new HashSet<string>(),
-                            LinkToUids = new HashSet<string>(),
-                        },
             };
         }
 
@@ -64,6 +59,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 DocumentType = "Toc",
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
+                LinkToFiles = model.LinkToFiles,
+                LinkToUids = model.LinkToUids,
             };
         }
 

@@ -81,8 +81,8 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 var vm = pair.item;
                 Merge(vm, ovm, ovms[0].fileModel);
-                ((HashSet<string>)pair.model.Properties.LinkToUids).UnionWith((HashSet<string>)od[0].Properties.LinkToUids);
-                ((HashSet<string>)pair.model.Properties.LinkToFiles).UnionWith((HashSet<string>)od[0].Properties.LinkToFiles);
+                pair.model.LinkToUids = pair.model.LinkToUids.Union(od[0].LinkToUids);
+                pair.model.LinkToFiles = pair.model.LinkToFiles.AddRange(od[0].LinkToFiles);
             }
         }
 

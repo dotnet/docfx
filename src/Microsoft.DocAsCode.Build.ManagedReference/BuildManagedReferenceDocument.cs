@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
             }
 
-            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(linkToUids);
+            model.LinkToUids = model.LinkToUids.Union(linkToUids);
             return item;
         }
 
@@ -125,8 +125,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             var mr = host.Markup(markdown, model.FileAndType);
-            ((HashSet<string>)model.Properties.LinkToFiles).UnionWith(mr.LinkToFiles);
-            ((HashSet<string>)model.Properties.LinkToUids).UnionWith(mr.LinkToUids);
+            model.LinkToFiles = model.LinkToFiles.AddRange(mr.LinkToFiles);
+            model.LinkToUids = model.LinkToUids.Union(mr.LinkToUids);
             return mr.Html;
         }
 

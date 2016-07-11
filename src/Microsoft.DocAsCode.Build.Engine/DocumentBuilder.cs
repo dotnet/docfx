@@ -154,6 +154,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                             manifest.AddRange(BuildCore(hostService, context));
                         }
 
+                        UpdateUidDependency(context, hostServices);
+
                         // Use manifest from now on
                         UpdateContext(context);
 
@@ -208,6 +210,39 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)
+        {
+            foreach (var hostService in hostServices)
+            {
+                foreach (var m in hostService.Models)
+                {
+                    if (m.Type == DocumentType.Overwrite)
+                    {
+                        continue;
+                    }
+                    context.DependencyGraph.ReportDependency(
+                        m.OriginalFileAndType.File,
+                        GetFilesFromUids(context, m.LinkToUids));
+                }
+            }
+        }
+
+        private static IEnumerable<string> GetFilesFromUids(DocumentBuildContext context, IEnumerable<string> uids)
+        {
+            foreach (var uid in uids)
+            {
+                XRefSpec spec;
+                if (!context.XRefSpecMap.TryGetValue(uid, out spec))
+                {
+                    continue;
+                }
+                if (spec.Href != null)
+                {
+                    yield return spec.Href;
+                }
+            }
+        }
+
         public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
         {
             var hostService = new HostService(
@@ -231,7 +266,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var processorList = new List<Tuple<string, IPostProcessor>>();
             foreach (var processor in processors)
             {
-                var p = GetExport(typeof (IPostProcessor), processor) as IPostProcessor;
+                var p = GetExport(typeof(IPostProcessor), processor) as IPostProcessor;
                 if (p != null)
                 {
                     processorList.Add(new Tuple<string, IPostProcessor>(processor, p));
@@ -242,7 +277,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             return processorList;
-        } 
+        }
 
         private object GetExport(Type type, string name)
         {
