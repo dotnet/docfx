@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         [YamlMember(Alias = "xrefmap")]
         [JsonProperty("xrefmap")]
-        public string XRefMap { get; set; }
+        public object XRefMap { get; set; }
 
         [YamlMember(Alias = "files")]
         [JsonProperty("files")]

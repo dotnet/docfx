@@ -277,54 +277,45 @@ Please refer to [How to Create Custom Templates](howto_create_custom_template.md
 }
 ```
 
-4. Supported `name-files` File Mapping Format
+4. Supported File Mapping Format
 ---------------------------------------------
-There are several ways to define `name-files` file mapping.
+There are several ways to define file mapping.
 
-**NOTE** All the formats support `name` and `files` properties, while **Array Format** supports a few additional properties:
-* `exclude` Defines the files to be excuded from `files`
-
-### 4.1 Object Format
-This format supports multiple `name-files` file mappings, with the property name as the name, and the value as the files.
-
-```json
-"key": {
-  "name1": ["file1", "file2"],
-  "name2": "file3"
-}
-```
-
-### 4.2 Array Format
-This form supports multiple `name-files` file mappings, and also allows additional properties per mapping.
+### 4.1 Array Format
+This form supports multiple file mappings, and also allows additional properties per mapping.
 Supported properties:
 
 Property Name      | Description
 -------------------|----------------------------- 
 files              | **REQUIRED**. The file or file array, `glob` pattern is supported.
-name               | The folder name for the generated files.
+~~name~~           | **Obsoleted**, please use `dest`.
 exclude            | The files to be excluded, `glob` pattern is supported.
 ~~cwd~~            | **Obsoleted**, please use `src`.
 src                | Specifies the source directory. If omitted, the directory of the config file will be used. Use this option when you want to refer to files in relative folders while want to keep folder structure. e.g. set `src` to `..`.
+dest               | The folder name for the generated files.
+version            | Version name for the current file mapping. If not set, treat the current file-mapping item as in default version. Mappings with the same version name will be built together. Cross reference doesn't support cross different versions.
 caseSensitive      | **TOBEIMPLEMENTED**. Default value is `false`. If set to `true`, the glob pattern is case sensitive. e.g. `*.txt` will not match `1.TXT`. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.
 supportBackslash   | **TOBEIMPLEMENTED**. Default value is `true`. If set to `true`, `\` will be considered as file path seperator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path seperator.
 escape             | **TOBEIMPLEMENTED**. Default value is `false`. If set to `true`, `\` character is used as escape character, e.g. `\{\}.txt` will match `{}.txt`.
 
 ```json
 "key": [
-  {name: "name1", files: ["file1", "file2"]},
-  {name: "name2", files: "file3"},
-  {files:  ["file4", "file5"], exclude: ["file5"], src: "folder1"}
+  {"files": ["file1", "file2"], "dest": "dest1"},
+  {"files": "file3", "dest": "dest2"},
+  {"files": ["file4", "file5"], "exclude": ["file5"], "src": "folder1"},
+  {"files": "Example.yml", "src": "v1.0", "dest":"v1.0/api", "version": "v1.0"},
+  {"files": "Example.yml", "src": "v2.0", "dest":"v2.0/api", "version": "v2.0"}
 ]
 ```
 
-### 4.3 Compact Format
+### 4.2 Compact Format
 ```json
 "key": ["file1", "file2"]
 ```
 
 
 
-### 4.4 Glob Pattern
+### 4.3 Glob Pattern
 `DocFX` uses [Glob](https://github.com/vicancy/Glob) to support *glob* pattern in file path.
 It offers several options to determine how to parse the Glob pattern:
   * `caseSensitive`: Default value is `false`. If set to `true`, the glob pattern is case sensitive. e.g. `*.txt` will not match `1.TXT`. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.
@@ -340,7 +331,7 @@ In general, the *glob* pattern contains the following rules:
 **SAMPLES**
 
 
-4. Q & A
+5. Q & A
 ---------------
 1. Do we support files outside current project folder(the folder when `docfx.json` exists)? 
 A: YES. DO specify `src` and files outside of current folder will be copied to output folder keeping the same relative path to `src`.

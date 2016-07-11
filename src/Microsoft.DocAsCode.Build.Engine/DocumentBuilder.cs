@@ -23,6 +23,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         public const string PhaseName = "Build Document";
         public const string XRefMapFileName = "xrefmap.yml";
 
+        private readonly List<ManifestItem> _manifest = new List<ManifestItem>();
+        private readonly List<HomepageInfo> _homepages = new List<HomepageInfo>();
+        private readonly List<string> _xrefMaps = new List<string>();
         private readonly CompositionHost _container;
 
         private static CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
@@ -74,6 +77,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         [ImportMany]
         internal IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
+
+        public void SaveManifest(string outputDirectory)
+        {
+            TemplateProcessor.SaveManifest(_manifest, _homepages, _xrefMaps, outputDirectory);
+        }
 
         public void Build(DocumentBuildParameters parameters)
         {
@@ -172,9 +180,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                         IDictionary<string, object> globalVariables = FeedGlobalVariables(processor.Tokens, manifest, context);
 
                         // processor to add global variable to the model
-                        var generatedManifest = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables);
-
-                        ExportXRefMap(parameters, context);
+                        var generatedManifest = new Manifest
+                        {
+                            Files = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables),
+                            Homepages = GetHomepages(context),
+                            XRefMap = ExportXRefMap(parameters, context)
+                        };
 
                         // post process
                         foreach (var postProcessor in postProcessors)
@@ -185,6 +196,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 throw new DocfxException($"Plugin {postProcessor.Item1} should not return null manifest");
                             }
                         }
+
+                        _manifest.AddRange(generatedManifest.Files);
+                        _homepages.AddRange(generatedManifest.Homepages);
+                        _xrefMaps.Add((string)generatedManifest.XRefMap);
 
                         // Last step: save manifest file
                         var manifestJsonPath = Path.Combine(parameters.OutputBaseDir, Constants.ManifestFileName);
@@ -231,7 +246,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var processorList = new List<Tuple<string, IPostProcessor>>();
             foreach (var processor in processors)
             {
-                var p = GetExport(typeof (IPostProcessor), processor) as IPostProcessor;
+                var p = GetExport(typeof(IPostProcessor), processor) as IPostProcessor;
                 if (p != null)
                 {
                     processorList.Add(new Tuple<string, IPostProcessor>(processor, p));
@@ -242,7 +257,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             return processorList;
-        } 
+        }
 
         private object GetExport(Type type, string name)
         {
@@ -716,10 +731,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                    };
         }
 
+        private static List<HomepageInfo> GetHomepages(DocumentBuildContext context)
+        {
+            return context.GetTocInfo()
+                .Where(s => !string.IsNullOrEmpty(s.Homepage))
+                .Select(s => new HomepageInfo
+                {
+                    Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
+                    TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
+                }).ToList();
+        }
+
         /// <summary>
         /// Export xref map file.
         /// </summary>
-        private static void ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
+        private static string ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
         {
             Logger.LogVerbose("Exporting xref map...");
             var xrefMap = new XRefMap();
@@ -730,11 +756,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                      Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XRefDetails.GetHtmlId(xref.Uid),
                  }).ToList();
             xrefMap.Sort();
+            string xrefMapFileNameWithVersion = string.IsNullOrEmpty(parameters.VersionName) ?
+                XRefMapFileName :
+                parameters.VersionName + "." + XRefMapFileName;
             YamlUtility.Serialize(
-                Path.Combine(parameters.OutputBaseDir, XRefMapFileName),
+                Path.Combine(parameters.OutputBaseDir, xrefMapFileNameWithVersion),
                 xrefMap,
                 YamlMime.XRefMap);
             Logger.LogInfo("XRef map exported.");
+            return xrefMapFileNameWithVersion;
         }
 
         private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters, ImmutableDictionary<string, string> tokens)

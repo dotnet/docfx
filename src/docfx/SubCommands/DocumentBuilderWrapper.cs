@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Runtime.Remoting.Lifetime;
 
@@ -92,16 +93,24 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
             {
-                var parameters = ConfigToParameter(config, templateManager, baseDirectory, outputDirectory);
-                if (parameters.Files.Count == 0)
-                {
-                    Logger.LogWarning("No files found, nothing is to be generated");
-                    return;
-                }
-
                 using (new PerformanceScope("building documents", LogLevel.Info))
                 {
-                    builder.Build(parameters);
+                    foreach (var parameters in ConfigToParameter(config, templateManager, baseDirectory, outputDirectory))
+                    {
+                        if (parameters.Files.Count == 0)
+                        {
+                            Logger.LogWarning(string.IsNullOrEmpty(parameters.VersionName)
+                                ? "No files found, nothing is generated in default version."
+                                : $"No files found, nothing is generated in version \"{parameters.VersionName}\".");
+                            return;
+                        }
+                        if (!string.IsNullOrEmpty(parameters.VersionName))
+                        {
+                            Logger.LogInfo($"Start building for version: {parameters.VersionName}");
+                        }
+                        builder.Build(parameters);
+                    }
+                    builder.SaveManifest(outputDirectory);
                 }
             }
         }
@@ -154,7 +163,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static DocumentBuildParameters ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory)
+        private static IEnumerable<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory)
         {
             var parameters = new DocumentBuildParameters();
             parameters.OutputBaseDir = outputDirectory;
@@ -183,12 +192,6 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.XRefMaps = parameters.XRefMaps.Add("embedded:docfx/langwordMapping.yml");
             }
-
-            parameters.Files = GetFileCollectionFromFileMapping(
-                baseDirectory,
-                GlobUtility.ExpandFileMapping(baseDirectory, config.Content),
-                GlobUtility.ExpandFileMapping(baseDirectory, config.Overwrite),
-                GlobUtility.ExpandFileMapping(baseDirectory, config.Resource));
 
             var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory)
             {
@@ -225,7 +228,70 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
             }
-            return parameters;
+
+            var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
+
+            foreach (var pair in fileMappingParametersDictionary)
+            {
+                parameters.Files = GetFileCollectionFromFileMapping(
+                    baseDirectory,
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content)),
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
+                parameters.VersionName = pair.Key;
+                yield return parameters;
+            }
+        }
+
+        /// <summary>
+        /// Group FileMappings to a dictionary using VersionName as the key.
+        /// As default version has no VersionName, using empty string as the key.
+        /// </summary>
+        private static Dictionary<string, FileMappingParameters> GroupFileMappings(FileMapping content,
+            FileMapping overwrite, FileMapping resource)
+        {
+            var result = new Dictionary<string, FileMappingParameters>
+            {
+                [string.Empty] = new FileMappingParameters()
+            };
+
+            AddFileMappingTypeGroup(result, content, FileMappingType.Content);
+            AddFileMappingTypeGroup(result, overwrite, FileMappingType.Overwrite);
+            AddFileMappingTypeGroup(result, resource, FileMappingType.Resource);
+
+            return result;
+        }
+
+        private static void AddFileMappingTypeGroup(
+            Dictionary<string, FileMappingParameters> fileMappingsDictionary,
+            FileMapping fileMapping,
+            FileMappingType type)
+        {
+            if (fileMapping == null) return;
+            foreach (var item in fileMapping.Items)
+            {
+                var version = item.VersionName ?? string.Empty;
+                FileMappingParameters parameters;
+                if (fileMappingsDictionary.TryGetValue(version, out parameters))
+                {
+                    FileMapping mapping;
+                    if (parameters.TryGetValue(type, out mapping))
+                    {
+                        mapping.Add(item);
+                    }
+                    else
+                    {
+                        parameters[type] = new FileMapping(item);
+                    }
+                }
+                else
+                {
+                    fileMappingsDictionary[version] = new FileMappingParameters
+                    {
+                        [type] = new FileMapping(item)
+                    };
+                }
+            }
         }
 
         private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
@@ -297,6 +363,23 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             var relativePath = PathUtility.MakeRelativePath(src, path);
             return Path.Combine(dest ?? string.Empty, relativePath);
+        }
+
+        private class FileMappingParameters : Dictionary<FileMappingType, FileMapping>
+        {
+            public FileMapping GetFileMapping(FileMappingType type)
+            {
+                FileMapping result;
+                this.TryGetValue(type, out result);
+                return result;
+            }
+        }
+
+        private enum FileMappingType
+        {
+            Content,
+            Overwrite,
+            Resource,
         }
     }
 }

@@ -76,6 +76,15 @@ namespace Microsoft.DocAsCode
         public string DestinationFolder { get; set; }
 
         /// <summary>
+        /// Version name for the current file-mapping item.
+        /// If not set, treat the current file-mapping item as in default version.
+        /// Mappings with the same version name will be built together.
+        /// Cross reference doesn't support cross different versions.
+        /// </summary>
+        [JsonProperty("version")]
+        public string VersionName { get; set; }
+
+        /// <summary>
         /// Pattern match will be case sensitive.
         /// By default the pattern is case insensitive
         /// </summary>
