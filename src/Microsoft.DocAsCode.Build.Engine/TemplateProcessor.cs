@@ -239,24 +239,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }).ToList();
         }
 
-        private static Manifest GenerateManifest(IDocumentBuildContext context, List<ManifestItem> items)
-        {
-            var toc = context.GetTocInfo();
-            var homepages = toc
-                .Where(s => !string.IsNullOrEmpty(s.Homepage))
-                .Select(s => new HomepageInfo
-                {
-                    Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
-                    TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
-                }).ToList();
-            return new Manifest
-            {
-                Homepages = homepages,
-                Files = items,
-                XRefMap = DocumentBuilder.XRefMapFileName,
-            };
-        }
-
         public void Dispose()
         {
             _resourceProvider?.Dispose();
