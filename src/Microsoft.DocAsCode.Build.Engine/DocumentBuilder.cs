@@ -220,6 +220,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         continue;
                     }
+                    if (m.LinkToUids.Count == 0)
+                    {
+                        continue;
+                    }
                     context.DependencyGraph.ReportDependency(
                         m.OriginalFileAndType.File,
                         GetFilesFromUids(context, m.LinkToUids));
@@ -231,6 +235,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var uid in uids)
             {
+                if (string.IsNullOrEmpty(uid))
+                {
+                    continue;
+                }
                 XRefSpec spec;
                 if (!context.XRefSpecMap.TryGetValue(uid, out spec))
                 {
