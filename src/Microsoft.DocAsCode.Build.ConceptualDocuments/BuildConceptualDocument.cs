@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
             else
             {
-                content.RawTitle = "<h1></h1>";
+                content.RawTitle = string.Empty;
             }
 
             content.Content = document.DocumentNode.OuterHtml;
