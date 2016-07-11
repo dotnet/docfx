@@ -112,7 +112,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             {
                 DocumentType = documentType ?? RestApiDocumentType,
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = model.LinkToFiles,
+                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
                 LinkToUids = model.LinkToUids,
             };
         }

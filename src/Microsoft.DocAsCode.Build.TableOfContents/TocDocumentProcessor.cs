@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 DocumentType = "Toc",
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = model.LinkToFiles,
+                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
                 LinkToUids = model.LinkToUids,
             };
         }

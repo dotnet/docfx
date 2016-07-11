@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         public Func<string, string> PathRewriter => FileAndType.PathRewriter;
 
-        public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
+        public ImmutableHashSet<string> LinkToFiles { get; set; } = ImmutableHashSet<string>.Empty;
 
         public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
 

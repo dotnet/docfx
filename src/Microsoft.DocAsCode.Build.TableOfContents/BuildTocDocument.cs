@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             model.LinkToUids = model.LinkToUids.Union(linkToUids);
-            model.LinkToFiles = model.LinkToFiles.AddRange(linkToFiles);
+            model.LinkToFiles = model.LinkToFiles.Union(linkToFiles);
 
             if (item.Items != null)
             {

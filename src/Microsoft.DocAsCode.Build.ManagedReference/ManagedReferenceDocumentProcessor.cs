@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 DocumentType = "ManagedReference",
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = model.LinkToFiles,
+                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
                 LinkToUids = model.LinkToUids,
                 XRefSpecs = (from item in vm.Items
                              select GetXRefInfo(item, model.Key)).ToImmutableArray(),

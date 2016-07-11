@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             var mr = host.Markup(markdown, model.FileAndType);
-            model.LinkToFiles = model.LinkToFiles.AddRange(mr.LinkToFiles);
+            model.LinkToFiles = model.LinkToFiles.Union(mr.LinkToFiles);
             model.LinkToUids = model.LinkToUids.Union(mr.LinkToUids);
             return mr.Html;
         }
