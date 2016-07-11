@@ -29,8 +29,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Properties
 
-        public IDocumentProcessor Processor { get; set; }
-
         public TemplateProcessor Template { get; set; }
 
         public ImmutableList<FileModel> Models { get; private set; }
@@ -57,6 +55,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         #endregion
 
         #region IHostService Members
+
+        public IDocumentProcessor Processor { get; set; }
 
         public ImmutableList<FileModel> GetModels(DocumentType? type)
         {

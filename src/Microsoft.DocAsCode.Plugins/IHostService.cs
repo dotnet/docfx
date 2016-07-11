@@ -22,6 +22,11 @@ namespace Microsoft.DocAsCode.Plugins
 
         void ReportDependency(FileModel currentFileModel, ImmutableArray<string> dependency);
 
+        /// <summary>
+        /// Get current <see cref="IDocumentProcessor"/>.
+        /// </summary>
+        IDocumentProcessor Processor { get; }
+
         bool HasMetadataValidation { get; }
         void ValidateInputMetadata(string file, ImmutableDictionary<string, object> metadata);
 
