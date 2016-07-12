@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class BuildVersionInfo
     {
         /// <summary>
-        /// The name of version.
+        /// The version of documents.
         /// </summary>
         public string Version { get; set; }
         /// <summary>
@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string Dependency { get; set; }
         /// <summary>
         /// The file link for file attributes.
+        /// e.g. last modified time, md5.
         /// </summary>
         public string Attributes { get; set; }
     }
