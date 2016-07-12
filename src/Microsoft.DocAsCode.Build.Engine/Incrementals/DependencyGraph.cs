@@ -4,11 +4,23 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System.Collections.Generic;
+    using System.IO;
+
+    using Microsoft.DocAsCode.Common;
 
     public class DependencyGraph
     {
-        private readonly Dictionary<string, SortedSet<string>> _dictionary =
-            new Dictionary<string, SortedSet<string>>();
+        private readonly Dictionary<string, SortedSet<string>> _dictionary;
+
+        public DependencyGraph()
+            : this(new Dictionary<string, SortedSet<string>>())
+        {
+        }
+
+        private DependencyGraph(Dictionary<string, SortedSet<string>> dictionary)
+        {
+            _dictionary = dictionary;
+        }
 
         public void ReportDependency(string key, string value)
         {
@@ -63,6 +75,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             return result;
+        }
+
+        public void Save(TextWriter writer)
+        {
+            JsonUtility.Serialize(writer, _dictionary);
+        }
+
+        public static DependencyGraph Load(TextReader reader)
+        {
+            return new DependencyGraph(
+                JsonUtility.Deserialize<Dictionary<string, SortedSet<string>>>(
+                    reader));
         }
     }
 }

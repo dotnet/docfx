@@ -7,8 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="DependencyGraph.cs" />
     <Compile Include="HashStreamHelper.cs" />
+    <Compile Include="Incrementals\BuildVersionInfo.cs" />
+    <Compile Include="Incrementals\BuildInfo.cs" />
+    <Compile Include="Incrementals\DependencyGraph.cs" />
     <Compile Include="InvalidPreprocessorException.cs" />
     <Compile Include="CrossReferenceNotResolvedException.cs" />
     <Compile Include="DocumentBuildContext.cs" />

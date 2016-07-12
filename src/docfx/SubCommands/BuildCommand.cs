@@ -236,6 +236,10 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.NoLangKeyword = options.NoLangKeyword.Value;
             }
+            if (options.IntermediateFolder != null)
+            {
+                config.IntermediateFolder = options.IntermediateFolder;
+            }
 
             config.FileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
             config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);

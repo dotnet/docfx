@@ -99,5 +99,8 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("noLangKeyword")]
         public bool NoLangKeyword { get; set; }
+
+        [JsonProperty("intermediateFolder")]
+        public string IntermediateFolder { get; set; }
     }
 }
