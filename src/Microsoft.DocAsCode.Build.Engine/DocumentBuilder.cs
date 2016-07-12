@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     _currentBuildInfo.Versions.Add(
                         new BuildVersionInfo
                         {
-                            Version = parameters.VersionName,
+                            VersionName = parameters.VersionName,
                         });
                 }
                 Logger.LogVerbose("Start building document...");
@@ -263,7 +263,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void SaveDependency(DocumentBuildContext context, DocumentBuildParameters parameters)
         {
-            var vbi = _currentBuildInfo.Versions.Find(v => v.Version == parameters.VersionName);
+            var vbi = _currentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
             vbi.Dependency = Path.GetRandomFileName();
             using (var writer = File.CreateText(
                 Path.Combine(IntermediateFolder, vbi.Dependency)))

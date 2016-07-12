@@ -6,9 +6,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class BuildVersionInfo
     {
         /// <summary>
-        /// The version of documents.
+        /// The version name of documents.
         /// </summary>
-        public string Version { get; set; }
+        public string VersionName { get; set; }
         /// <summary>
         /// The file link for dependency.
         /// </summary>
