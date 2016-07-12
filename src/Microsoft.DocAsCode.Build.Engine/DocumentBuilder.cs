@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var postProcessors = GetPostProcessor(postProcessorNames);
                 foreach (var postProcessor in postProcessors)
                 {
-                    parameters.Metadata = postProcessor.Item2.UpdateMetadata(parameters.Metadata);
+                    parameters.Metadata = postProcessor.Item2.PrepareMetadata(parameters.Metadata);
                     if (parameters.Metadata == null)
                     {
                         throw new DocfxException($"Plugin {postProcessor.Item1} should not return null metadata");
