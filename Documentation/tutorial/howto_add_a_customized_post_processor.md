@@ -68,11 +68,11 @@ In this step, we need to enable the processor by adding its name in `docfx.json`
 {
   "build": {
     ...
-    "post-processors": ["OutputPDF", "BeautifyHTML", "OutputPDF"]
+    "postprocessors": ["OutputPDF", "BeautifyHTML", "OutputPDF"]
   }
 }
 ```
 
-As you can see, the `post-processors` is an array, which means it could have multiple processors.
-Needs to be pointed out is that the order of `post-processors` written in `docfx.json` is also the order to process output files.
+As you can see, the `postprocessors` is an array, which means it could have multiple processors.
+Needs to be pointed out is that the order of `postprocessors` written in `docfx.json` is also the order to process output files.
 In above example, DocFX will run `OutputPDF` first, then `BeautifyHTML`, and then `OutputPDF` again.
