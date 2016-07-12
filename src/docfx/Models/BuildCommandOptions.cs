@@ -92,5 +92,8 @@ namespace Microsoft.DocAsCode
 
         [Option("noLangKeyword", HelpText = "Disable default lang keyword.")]
         public bool? NoLangKeyword { get; set; }
+
+        [Option("intermediateFolder", HelpText = "Set folder for intermediate build results.")]
+        public string IntermediateFolder { get; set; }
     }
 }

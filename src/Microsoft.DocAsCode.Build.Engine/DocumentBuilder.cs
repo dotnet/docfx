@@ -26,7 +26,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly List<ManifestItem> _manifest = new List<ManifestItem>();
         private readonly List<HomepageInfo> _homepages = new List<HomepageInfo>();
         private readonly List<string> _xrefMaps = new List<string>();
+        private readonly BuildInfo _currentBuildInfo = new BuildInfo { BuildStartTime = DateTime.UtcNow };
         private readonly CompositionHost _container;
+
+        public string IntermediateFolder { get; set; }
 
         private static CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
         {
@@ -122,6 +125,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.XRefMaps,
                     parameters.MaxParallelism,
                     parameters.Files.DefaultBaseDir);
+                if (IntermediateFolder != null)
+                {
+                    _currentBuildInfo.Versions.Add(
+                        new BuildVersionInfo
+                        {
+                            Version = parameters.VersionName,
+                        });
+                }
                 Logger.LogVerbose("Start building document...");
 
                 // Prepare for post process
@@ -162,7 +173,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                             manifest.AddRange(BuildCore(hostService, context));
                         }
 
-                        UpdateUidDependency(context, hostServices);
+                        if (IntermediateFolder != null)
+                        {
+                            UpdateUidDependency(context, hostServices);
+                            SaveDependency(context, parameters);
+                        }
 
                         // Use manifest from now on
                         UpdateContext(context);
@@ -243,6 +258,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                         m.OriginalFileAndType.File,
                         GetFilesFromUids(context, m.LinkToUids));
                 }
+            }
+        }
+
+        private void SaveDependency(DocumentBuildContext context, DocumentBuildParameters parameters)
+        {
+            var vbi = _currentBuildInfo.Versions.Find(v => v.Version == parameters.VersionName);
+            vbi.Dependency = Path.GetRandomFileName();
+            using (var writer = File.CreateText(
+                Path.Combine(IntermediateFolder, vbi.Dependency)))
+            {
+                context.DependencyGraph.Save(writer);
             }
         }
 
@@ -832,6 +858,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Dispose()
         {
+            if (IntermediateFolder != null)
+            {
+                JsonUtility.Serialize(
+                    Path.Combine(IntermediateFolder, BuildInfo.FileName),
+                    _currentBuildInfo);
+            }
             foreach (var processor in Processors)
             {
                 Logger.LogVerbose($"Disposing processor {processor.Name} ...");

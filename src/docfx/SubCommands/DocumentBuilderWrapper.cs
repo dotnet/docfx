@@ -93,6 +93,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
             {
+                builder.IntermediateFolder = config.IntermediateFolder;
                 using (new PerformanceScope("building documents", LogLevel.Info))
                 {
                     foreach (var parameters in ConfigToParameter(config, templateManager, baseDirectory, outputDirectory))
