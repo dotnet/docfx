@@ -21,14 +21,14 @@ Preparation
     * `System.Collections.Immutable` with version 1.1.37
     * `Microsoft.Composition` with version 1.0.27
 
-3.  Add `Microsoft.DocAsCode.Plugins`
-    If build DocFX from source code, add reference to the project.
+3.  Add `Microsoft.DocAsCode.Plugins`  
+    If build DocFX from source code, add reference to the project.  
     Otherwise, add nuget package `Microsoft.DocAsCode.Plugins` with the same version of DocFX.
 
-4.  Add framework assembly reference:
+4.  Add framework assembly reference:  
     `PresentationCore`, `PresentationFramework`, `WindowsBase`
 
-5.  Add project for convert rtf to html:
+5.  Add project for convert rtf to html:  
     Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), and reference it.
 
 6.  Copy code file StaTaskScheduler.cs from [ParExtSamples](https://code.msdn.microsoft.com/ParExtSamples)
