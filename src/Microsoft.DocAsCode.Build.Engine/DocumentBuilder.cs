@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Composition.Hosting;
     using System.Collections.Immutable;
     using System.Reflection;
+    using System.Security.Cryptography;
     using System.Text;
 
     using Microsoft.DocAsCode.Common;
@@ -26,7 +27,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly List<ManifestItem> _manifest = new List<ManifestItem>();
         private readonly List<HomepageInfo> _homepages = new List<HomepageInfo>();
         private readonly List<string> _xrefMaps = new List<string>();
-        private readonly BuildInfo _currentBuildInfo = new BuildInfo { BuildStartTime = DateTime.UtcNow };
+        private readonly BuildInfo _currentBuildInfo =
+            new BuildInfo
+            {
+                BuildStartTime = DateTime.UtcNow,
+                DocfxVersion = typeof(DocumentBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString(),
+            };
         private readonly CompositionHost _container;
 
         public string IntermediateFolder { get; set; }
@@ -65,8 +71,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerPhaseScope(PhaseName))
             {
                 Logger.LogVerbose("Loading plug-in...");
-                _container = GetContainer(assemblies);
+                var assemblyList = assemblies?.ToList();
+                _container = GetContainer(assemblyList);
                 _container.SatisfyImports(this);
+                _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
                 Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
                 foreach (var processor in Processors)
                 {
@@ -854,6 +862,24 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Extensions = parameters.MarkdownEngineParameters,
                     Tokens = tokens,
                 });
+        }
+
+        private static string ComputePluginHash(List<Assembly> assemblyList)
+        {
+            using (var ms = new MemoryStream())
+            using (var writer = new StreamWriter(ms))
+            {
+                foreach (var item in from ass in assemblyList
+                                     select ass.FullName + "," + ass.GetCustomAttribute<AssemblyFileVersionAttribute>().Version.ToString() into item
+                                     orderby item
+                                     select item)
+                {
+                    writer.WriteLine(item);
+                }
+                writer.Flush();
+                ms.Seek(0, SeekOrigin.Begin);
+                return Convert.ToBase64String(MD5.Create().ComputeHash(ms));
+            }
         }
 
         public void Dispose()
