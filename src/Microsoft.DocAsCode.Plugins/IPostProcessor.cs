@@ -7,8 +7,14 @@ namespace Microsoft.DocAsCode.Plugins
 
     public interface IPostProcessor
     {
-        ImmutableDictionary<string, object> UpdateMetadata(ImmutableDictionary<string, object> metadata);
+        /// <summary>
+        /// Update global metadata before building all the files declared in `docfx.json`
+        /// </summary>
+        ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata);
 
-        Manifest Process(Manifest manifest, string baseDir);
+        /// <summary>
+        /// Add/remove/update all the files included in manifest
+        /// </summary>
+        Manifest Process(Manifest manifest, string outputFolder);
     }
 }

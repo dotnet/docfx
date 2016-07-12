@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Build.Common
         public string Name => nameof(ExtractSearchIndex);
         public const string IndexFileName = "index.json";
 
-        public ImmutableDictionary<string, object> UpdateMetadata(ImmutableDictionary<string, object> metadata)
+        public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {
             if (!metadata.ContainsKey("_enableSearch"))
             {
@@ -36,14 +36,14 @@ namespace Microsoft.DocAsCode.Build.Common
             return metadata;
         }
 
-        public Manifest Process(Manifest manifest, string baseDir)
+        public Manifest Process(Manifest manifest, string outputFolder)
         {
-            if (baseDir == null)
+            if (outputFolder == null)
             {
                 throw new ArgumentNullException("Base directory can not be null");
             }
             var indexData = new Dictionary<string, SearchIndexItem>();
-            var indexDataFilePath = Path.Combine(baseDir, IndexFileName);
+            var indexDataFilePath = Path.Combine(outputFolder, IndexFileName);
             var htmlFiles = (from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                              from output in item.OutputFiles
                              where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.Common
             Logger.LogInfo($"Extracting index data from {htmlFiles.Count} html files");
             foreach (var relativePath in htmlFiles)
             {
-                var filePath = Path.Combine(baseDir, relativePath);
+                var filePath = Path.Combine(outputFolder, relativePath);
                 var html = new HtmlDocument();
                 Logger.LogVerbose($"Extracting index data from {filePath}");
 
