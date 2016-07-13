@@ -866,20 +866,26 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string ComputePluginHash(List<Assembly> assemblyList)
         {
-            using (var ms = new MemoryStream())
-            using (var writer = new StreamWriter(ms))
+            if (assemblyList?.Count > 0)
             {
-                foreach (var item in from ass in assemblyList
-                                     select ass.FullName + "," + ass.GetCustomAttribute<AssemblyFileVersionAttribute>().Version.ToString() into item
-                                     orderby item
-                                     select item)
+                using (var ms = new MemoryStream())
+                using (var writer = new StreamWriter(ms))
                 {
-                    writer.WriteLine(item);
+                    foreach (var item in
+                        from assembly in assemblyList
+                        select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version.ToString()
+                        into item
+                        orderby item
+                        select item)
+                    {
+                        writer.WriteLine(item);
+                    }
+                    writer.Flush();
+                    ms.Seek(0, SeekOrigin.Begin);
+                    return Convert.ToBase64String(MD5.Create().ComputeHash(ms));
                 }
-                writer.Flush();
-                ms.Seek(0, SeekOrigin.Begin);
-                return Convert.ToBase64String(MD5.Create().ComputeHash(ms));
             }
+            return string.Empty;
         }
 
         public void Dispose()
