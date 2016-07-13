@@ -120,6 +120,11 @@ namespace Microsoft.DocAsCode.SubCommands
                 config.Templates = new ListWithStringFallback(options.Templates);
             }
 
+            if (options.PostProcessors != null && options.PostProcessors.Count > 0)
+            {
+                config.PostProcessors = new ListWithStringFallback(options.PostProcessors);
+            }
+
             if (options.Themes != null && options.Themes.Count > 0)
             {
                 config.Themes = new ListWithStringFallback(options.Themes);
