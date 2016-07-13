@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ValidateConceptualDocumentMetadata : BaseDocumentBuildStep
+    public class ValidateConceptualDocumentMetadata : BaseDocumentBuildStep, ISupportIncrementalBuild
     {
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
 
@@ -34,5 +34,19 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 model.OriginalFileAndType.File,
                 ((Dictionary<string, object>)model.Content).ToImmutableDictionary().Remove(ConceptualKey));
         }
+
+        #region ISupportIncrementalBuild Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType)
+        {
+            return true;
+        }
+
+        public string GetIncrementalContextHash()
+        {
+            return null;
+        }
+
+        #endregion
     }
 }
