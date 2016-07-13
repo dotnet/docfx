@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode
         [JsonProperty("theme")]
         public ListWithStringFallback Themes { get; set; }
 
-        [JsonProperty("postprocessors")]
+        [JsonProperty("postProcessors")]
         public ListWithStringFallback PostProcessors { get; set; } = new ListWithStringFallback();
 
         [JsonProperty("serve")]

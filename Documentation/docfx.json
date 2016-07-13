@@ -36,7 +36,7 @@
     "xref": [
       "../src/nuspec/msdn.4.5.2/content/msdn.4.5.2.zip"
     ],
-    "postprocessors": ["ExtractSearchIndex"],
+    "postProcessors": ["ExtractSearchIndex"],
     "globalMetadata": {
       "_appTitle": "DocFX website"
       // This option is deprecated

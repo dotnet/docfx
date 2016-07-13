@@ -324,13 +324,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var processor in processors)
             {
                 var p = GetExport(typeof(IPostProcessor), processor) as IPostProcessor;
+                Logger.LogInfo($"Post processor {processor} loaded.");
                 if (p != null)
                 {
                     processorList.Add(new Tuple<string, IPostProcessor>(processor, p));
                 }
                 else
                 {
-                    Logger.LogWarning($"Can't find the post-processor: {processor}");
+                    Logger.LogWarning($"Can't find the post processor: {processor}");
                 }
             }
             return processorList;
