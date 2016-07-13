@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Plugins
     {
         [YamlMember(Alias = "relative_path")]
         [JsonProperty("relative_path")]
-        public string ReleativePath { get; set; }
+        public string RelativePath { get; set; }
 
         [YamlMember(Alias = "link_to_path")]
         [JsonProperty("link_to_path")]

@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.Common
             var htmlFiles = (from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                              from output in item.OutputFiles
                              where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
-                             select output.Value.ReleativePath).ToList();
+                             select output.Value.RelativePath).ToList();
             if (htmlFiles.Count == 0)
             {
                 return manifest;
