@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Utility;
 
     using HtmlAgilityPack;
     using Newtonsoft.Json;
@@ -79,7 +80,20 @@ namespace Microsoft.DocAsCode.Build.Common
                 }
             }
             JsonUtility.Serialize(indexDataFilePath, indexData, Formatting.Indented);
-            // TODO: add index.json to manifest
+
+            // add index.json to mainfest as resource file
+            var manifestItem = new ManifestItem
+            {
+                DocumentType = "Resource",
+                Metadata = new Dictionary<string, object>(),
+                OutputFiles = new Dictionary<string, OutputFileInfo>()
+            };
+            manifestItem.OutputFiles.Add("resource", new OutputFileInfo
+            {
+                ReleativePath = PathUtility.MakeRelativePath(outputFolder, indexDataFilePath),
+            });
+
+            manifest.Files?.Add(manifestItem);
             return manifest;
         }
 
