@@ -190,17 +190,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public static void SaveManifest(List<ManifestItem> manifest, List<HomepageInfo> homepages, List<string> xrefMaps, string outputDirectory)
         {
-            var itemsToRemove = new List<string>();
-            foreach (var duplicates in from m in manifest
-                                       from output in m.OutputFiles.Values
-                                       group m.OriginalFile by output into g
-                                       where g.Count() > 1
-                                       select g)
-            {
-                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
-                itemsToRemove.AddRange(duplicates.Skip(1));
-            }
-            manifest.RemoveAll(m => itemsToRemove.Contains(m.OriginalFile));
+            // TODO: remove after post processor is extracted out of document builder
+            DocumentBuilder.RemoveDuplicateOutputFiles(manifest);
 
             // Save manifest from template
             // TODO: Keep .manifest for backward-compatability, will remove next sprint

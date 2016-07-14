@@ -215,6 +215,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                             XRefMap = ExportXRefMap(parameters, context)
                         };
 
+                        RemoveDuplicateOutputFiles(generatedManifest.Files);
+
                         // post process
                         foreach (var postProcessor in postProcessors)
                         {
@@ -225,6 +227,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 {
                                     throw new DocfxException($"Plugin {postProcessor.Item1} should not return null manifest");
                                 }
+
+                                // To make sure post processor won't generate duplicate output files
+                                RemoveDuplicateOutputFiles(generatedManifest.Files);
                             }
                         }
 
@@ -304,6 +309,26 @@ namespace Microsoft.DocAsCode.Build.Engine
                     yield return spec.Href;
                 }
             }
+        }
+
+        public static void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
+        {
+            if (manifestItems == null)
+            {
+                throw new ArgumentNullException(nameof(manifestItems));
+            }
+
+            var itemsToRemove = new List<string>();
+            foreach (var duplicates in from m in manifestItems
+                                       from output in m.OutputFiles.Values
+                                       group m.OriginalFile by output into g
+                                       where g.Count() > 1
+                                       select g)
+            {
+                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
+                itemsToRemove.AddRange(duplicates.Skip(1));
+            }
+            manifestItems.RemoveAll(m => itemsToRemove.Contains(m.OriginalFile));
         }
 
         public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
