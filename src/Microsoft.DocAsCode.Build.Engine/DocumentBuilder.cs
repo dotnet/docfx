@@ -880,7 +880,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     foreach (var item in
                         from assembly in assemblyList
-                        select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version.ToString()
+                        select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString()
                         into item
                         orderby item
                         select item)
