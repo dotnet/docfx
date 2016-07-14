@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Plugins;
 
     [Export(typeof(IDocumentProcessor))]
-    public class ConceptualDocumentProcessor : DisposableDocumentProcessor
+    public class ConceptualDocumentProcessor : DisposableDocumentProcessor, ISupportIncrementalBuild
     {
         [ImportMany(nameof(ConceptualDocumentProcessor))]
         public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
@@ -79,5 +79,19 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
             return result;
         }
+
+        #region ISupportIncrementalBuild Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType)
+        {
+            return true;
+        }
+
+        public string GetIncrementalContextHash()
+        {
+            return null;
+        }
+
+        #endregion
     }
 }
