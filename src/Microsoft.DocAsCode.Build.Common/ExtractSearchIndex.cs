@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.Common
             };
             manifestItem.OutputFiles.Add("resource", new OutputFileInfo
             {
-                ReleativePath = PathUtility.MakeRelativePath(outputFolder, indexDataFilePath),
+                RelativePath = PathUtility.MakeRelativePath(outputFolder, indexDataFilePath),
             });
 
             manifest.Files?.Add(manifestItem);
