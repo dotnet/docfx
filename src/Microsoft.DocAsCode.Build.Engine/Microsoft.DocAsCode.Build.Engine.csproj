@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="DocumentBuilder.cs" />
     <Compile Include="HashStreamHelper.cs" />
     <Compile Include="Incrementals\BuildVersionInfo.cs" />
     <Compile Include="Incrementals\BuildInfo.cs" />
@@ -14,7 +15,7 @@
     <Compile Include="InvalidPreprocessorException.cs" />
     <Compile Include="CrossReferenceNotResolvedException.cs" />
     <Compile Include="DocumentBuildContext.cs" />
-    <Compile Include="DocumentBuilder.cs" />
+    <Compile Include="DocumentBuilderCore.cs" />
     <Compile Include="DocumentBuildParameters.cs" />
     <Compile Include="FileCollection.cs" />
     <Compile Include="FileMetadata.cs" />

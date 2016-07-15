@@ -188,19 +188,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
-        public static void SaveManifest(List<ManifestItem> manifest, List<HomepageInfo> homepages, List<string> xrefMaps, string outputDirectory)
+        public static Manifest MergeManifest(List<Manifest> manifests)
         {
-            // TODO: remove after post processor is extracted out of document builder
-            DocumentBuilder.RemoveDuplicateOutputFiles(manifest);
-
-            // Save manifest from template
-            // TODO: Keep .manifest for backward-compatability, will remove next sprint
-            var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
-            var deprecatedManifest = Transform(manifest);
-            JsonUtility.Serialize(manifestPath, deprecatedManifest);
-            // Logger.LogInfo($"Manifest file saved to {manifestPath}. NOTE: This file is out-of-date and will be removed in version 1.8, if you rely on this file, please change to use {Constants.ManifestFileName} instead.");
-
-            var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
+            var xrefMaps = manifests.Select(item => item.XRefMap).ToList();
             object xrefMapsObject;
             if (xrefMaps.Count == 1)
             {
@@ -212,11 +202,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             var manifestObject = new Manifest
             {
-                Homepages = homepages,
-                Files = manifest,
+                Homepages = manifests.SelectMany(item => item.Homepages).Distinct().ToList(),
+                Files = manifests.SelectMany(item => item.Files).Distinct().ToList(),
                 XRefMap = xrefMapsObject,
             };
-            JsonUtility.Serialize(manifestJsonPath, manifestObject);
+
+            return manifestObject;
+        }
+
+        public static void SaveManifest(Manifest manifest, string outputDirectory)
+        {
+            // TODO: Keep .manifest for backward-compatability, will remove next sprint
+            var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
+            var deprecatedManifest = Transform(manifest.Files);
+            JsonUtility.Serialize(manifestPath, deprecatedManifest);
+
+            var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
+            JsonUtility.Serialize(manifestJsonPath, manifest);
             Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
         }
 
