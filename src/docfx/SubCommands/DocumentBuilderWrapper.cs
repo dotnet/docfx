@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory)
         {
             var assebmlies = LoadPluginAssemblies(pluginDirectory);
-            using (var builder = new DocumentBuilder(config.PostProcessors.ToImmutableArray(), config.GlobalMetadata.ToImmutableDictionary(), assebmlies))
+            using (var builder = new DocumentBuilder(config.PostProcessors.ToImmutableArray(), config.GlobalMetadata?.ToImmutableDictionary(), assebmlies))
             {
                 builder.IntermediateFolder = config.IntermediateFolder;
                 using (new PerformanceScope("building documents", LogLevel.Info))

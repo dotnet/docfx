@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
             object value;
-            if (metadata.TryGetValue("_enableSearch", out value))
+            if (metadata != null && metadata.TryGetValue("_enableSearch", out value))
             {
                 var isSearchable = value as bool?;
                 if (isSearchable.HasValue && isSearchable.Value && !postProcessorNames.Contains("ExtractSearchIndex"))
