@@ -36,6 +36,7 @@
     <Compile Include="Gfm\GfmHeadingBlockRule.cs" />
     <Compile Include="Gfm\GfmParagraphBlockRule.cs" />
     <Compile Include="Gfm\GfmTextInlineRule.cs" />
+    <Compile Include="Gfm\GfmEmojiInlineRule.cs" />
     <Compile Include="Gfm\GfmUrlInlineRule.cs" />
     <Compile Include="IMarkdownContext.cs" />
     <Compile Include="IMarkdownEngine.cs" />

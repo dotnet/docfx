@@ -543,6 +543,16 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestGfmBuilder_sdfsdfCodeTag()
+        {
+            var source = @"aabbcc:smile:ddee";
+            var expected = @"<p>aabbcc😄ddee</p>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestTable_WithRefLink()
         {
             var source = @"# Test table
