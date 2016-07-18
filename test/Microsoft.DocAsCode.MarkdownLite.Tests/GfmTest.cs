@@ -454,6 +454,10 @@ aaa",
             @"<p><!--a--><a href=""c"">b</a><!--d-->e
 <!--f--></p>
 ")]
+        [InlineData(
+            @"aabbcc:smile:ddee",
+            @"<p>aabbcc😄ddee</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
@@ -538,16 +542,6 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
         //*************************************************</code></pre>
 ";
             var expected = source;
-            TestGfmInGeneral(source, expected);
-        }
-
-        [Fact]
-        [Trait("Related", "Markdown")]
-        public void TestGfmBuilder_sdfsdfCodeTag()
-        {
-            var source = @"aabbcc:smile:ddee";
-            var expected = @"<p>aabbcc😄ddee</p>
-";
             TestGfmInGeneral(source, expected);
         }
 
