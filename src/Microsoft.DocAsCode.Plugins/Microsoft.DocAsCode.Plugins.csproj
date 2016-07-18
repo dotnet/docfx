@@ -36,7 +36,6 @@
     <Compile Include="ManifestItem.cs" />
     <Compile Include="MarkdownServiceParameters.cs" />
     <Compile Include="OutputFileInfo.cs" />
-    <Compile Include="PostProcessor.cs" />
     <Compile Include="TocInfo.cs" />
     <Compile Include="UidDefinition.cs" />
     <Compile Include="ModelWithCache.cs" />

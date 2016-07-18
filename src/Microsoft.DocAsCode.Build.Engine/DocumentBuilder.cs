@@ -135,6 +135,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.OriginalFile));
         }
 
+        private class PostProcessor
+        {
+            public string ContractName { get; set; }
+            public IPostProcessor Processor { get; set; }
+        }
+
         private List<PostProcessor> GetPostProcessor(ImmutableArray<string> processors)
         {
             var processorList = new List<PostProcessor>();
