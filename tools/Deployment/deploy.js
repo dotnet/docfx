@@ -536,14 +536,14 @@ switch (branchValue.toLowerCase()) {
       e2eTestStep,
       // step4: run docfx.exe to generate documentation
       genereateDocsStep,
-      // step5: upload release to myget.org
+      // step5: upload to chocolatey.org
+      updateChocoReleaseStep,
+      // step6: upload release to myget.org
       uploadMasterMygetStep,
-      // step6: update gh-pages
+      // step7: update gh-pages
       updateGhPageStep,
-      // step7: zip and upload release
-      updateGithubReleaseStep,
-      // step8: upload to chocolatey.org
-      updateChocoReleaseStep
+      // step8: zip and upload release
+      updateGithubReleaseStep
     ]);
     break;
   default:
