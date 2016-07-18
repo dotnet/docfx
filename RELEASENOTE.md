@@ -8,6 +8,7 @@ v2.2(Pre-Release)
 4.  Bug fixes:
     1. syntax for static class is incorrect.
     2. improve warning message about global namespace class. (https://github.com/dotnet/docfx/issues/417)
+5.  Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
 
 
 v2.1
