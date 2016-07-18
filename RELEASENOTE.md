@@ -4,12 +4,17 @@ v2.2(Pre-Release)
 -----------
 1.  Support plug-in for post processor.
 2.  Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
-3.  Improve API reference documentation of namespace and enum.
-4.  Bug fixes:
+3.  Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
+4.  Support href for see/seealso tags
+5.  Improve API reference documentation of namespace and enum.
+6.  Update prerequisite to build docfx
+7.  Update manifest schema
+8.  Add chocolatey support in CI script
+9.  Provide with options in build.cmd
+10.  Bug fixes:
     1. syntax for static class is incorrect.
     2. improve warning message about global namespace class. (https://github.com/dotnet/docfx/issues/417)
-5.  Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
-
+    3. fix normalizexml bug for empty `<code></code>` in tripleslashcomment
 
 v2.1
 -----------
