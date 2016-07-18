@@ -1,20 +1,20 @@
 Version Notes (Current Version: v2.2)
 =======================================
-v2.2(Pre-Release)
+v2.2
 -----------
-1.  Support plug-in for post processor.
-2.  Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
-3.  Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
-4.  Support href for see/seealso tags
+1.  Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
+2.  Support loop reference for Swagger Rest API. (https://github.com/dotnet/docfx/issues/223)
+3.  Support plug-in for post processor.
+4.  Support href for see/seealso tags.
 5.  Improve API reference documentation of namespace and enum.
-6.  Update prerequisite to build docfx
-7.  Update manifest schema
-8.  Add chocolatey support in CI script
-9.  Provide with options in build.cmd
+6.  Update prerequisite to build docfx.
+7.  Update manifest schema.
+8.  Add chocolatey support in CI script.
+9.  Provide with options in build.cmd.
 10.  Bug fixes:
     1. syntax for static class is incorrect.
     2. improve warning message about global namespace class. (https://github.com/dotnet/docfx/issues/417)
-    3. fix normalizexml bug for empty `<code></code>` in tripleslashcomment
+    3. fix normalizexml bug for empty `<code></code>` in tripleslashcomment.
 
 v2.1
 -----------
@@ -53,7 +53,7 @@ v2.0
 3.  Provide more information for API reference documentation
     1. display inherited members
     2. display overridden members
-    3. display implemented interface 
+    3. display implemented interface
     4. seperate category for Explicit Interface Implementation
 4.  Rest api - Enable **Tag** in Swagger file to organize the **API**s.
 
@@ -65,7 +65,7 @@ v1.9
 
     ```js
     exports.transform = function (model){
-        // transform the model 
+        // transform the model
         return model;
     }
     ```
