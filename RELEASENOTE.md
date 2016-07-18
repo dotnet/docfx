@@ -1,5 +1,8 @@
-Version Notes (Current Version: v2.2)
+Version Notes (Current Version: v2.3)
 =======================================
+v2.3(Pre-Release)
+-----------
+
 v2.2
 -----------
 1.  Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
