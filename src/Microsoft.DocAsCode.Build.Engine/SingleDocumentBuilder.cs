@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
-    public class DocumentBuilderSingle : IDisposable
+    public class SingleDocumentBuilder : IDisposable
     {
         private const string PhaseName = "Build Document";
         private const string XRefMapFileName = "xrefmap.yml";
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             new BuildInfo
             {
                 BuildStartTime = DateTime.UtcNow,
-                DocfxVersion = typeof(DocumentBuilderSingle).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString(),
+                DocfxVersion = typeof(SingleDocumentBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString(),
             };
 
         public CompositionHost Container { get; set; }

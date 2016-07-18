@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public Manifest Build(DocumentBuildParameters parameters)
         {
-            using (var builder = new DocumentBuilderSingle
+            using (var builder = new SingleDocumentBuilder
             {
                 Container = _container,
                 IntermediateFolder = IntermediateFolder,
