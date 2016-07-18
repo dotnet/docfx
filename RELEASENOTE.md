@@ -191,7 +191,7 @@ FIX Github pages compatibility issue( Github pages now disallow *iframe*, howeve
 v1.3
 -----------
 1. `docfx` improvements
-    1. Add subcommand `docfx template`. You can now `docfx template list` and `docfx template export -A` to list and export all the embeded templates!
+    1. Add subcommand `docfx template`. You can now `docfx template list` and `docfx template export -A` to list and export all the embedded templates!
     2. Add subcommand `docfx merge`. You can use this subcommand to merge `platform` from multiple APIs with the same `uid`
     3. Add two options to `build` subcommand, `--exportRawModel` and `--exportViewModel`. `--exportRawModel` exports the data model to apply templates, `--exportViewModel` exports the view model after running template's pre-process scripts.
     4. Add `--globalMetadata`, and `--globalMetadataFile` options to `build` subcommand. These options allow `globalMetadata` to be loaded from command line in json format or from a JSON file.
