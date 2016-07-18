@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.SubCommands
             };
             var fc = new FileCollection(parameters.Files);
             fc.RemoveAll(x => "toc.yml".Equals(Path.GetFileName(x.File), StringComparison.OrdinalIgnoreCase));
-            var models = DocumentBuilderCore.Build(
+            var models = DocumentBuilderSingle.Build(
                 p,
                 new DocumentBuildParameters
                 {

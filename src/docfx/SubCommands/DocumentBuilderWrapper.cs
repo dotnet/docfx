@@ -90,8 +90,22 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory)
         {
-            var assebmlies = LoadPluginAssemblies(pluginDirectory);
-            using (var builder = new DocumentBuilder(config.PostProcessors.ToImmutableArray(), config.GlobalMetadata?.ToImmutableDictionary(), assebmlies))
+            var assemblies = LoadPluginAssemblies(pluginDirectory);
+            var postProcessorNames = config.PostProcessors.ToImmutableArray();
+            var metadata = config.GlobalMetadata?.ToImmutableDictionary();
+
+            // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
+            object value;
+            if (metadata != null && metadata.TryGetValue("_enableSearch", out value))
+            {
+                var isSearchable = value as bool?;
+                if (isSearchable.HasValue && isSearchable.Value && !postProcessorNames.Contains("ExtractSearchIndex"))
+                {
+                    postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
+                }
+            }
+
+            using (var builder = new DocumentBuilder(postProcessorNames, assemblies))
             {
                 builder.IntermediateFolder = config.IntermediateFolder;
                 using (new PerformanceScope("building documents", LogLevel.Info))

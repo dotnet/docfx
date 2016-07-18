@@ -15,7 +15,7 @@
     <Compile Include="InvalidPreprocessorException.cs" />
     <Compile Include="CrossReferenceNotResolvedException.cs" />
     <Compile Include="DocumentBuildContext.cs" />
-    <Compile Include="DocumentBuilderCore.cs" />
+    <Compile Include="DocumentBuilderSingle.cs" />
     <Compile Include="DocumentBuildParameters.cs" />
     <Compile Include="FileCollection.cs" />
     <Compile Include="FileMetadata.cs" />

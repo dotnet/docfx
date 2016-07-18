@@ -33,27 +33,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             new BuildInfo
             {
                 BuildStartTime = DateTime.UtcNow,
-                DocfxVersion = typeof(DocumentBuilderCore).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
+                DocfxVersion = typeof(DocumentBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
             };
 
-        public DocumentBuilder(ImmutableArray<string> postProcessorNames, ImmutableDictionary<string, object> metadata, IEnumerable<Assembly> assemblies) :
+        public DocumentBuilder(ImmutableArray<string> postProcessorNames, IEnumerable<Assembly> assemblies) :
             this(assemblies)
         {
-            // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
-            object value;
-            if (metadata != null && metadata.TryGetValue("_enableSearch", out value))
-            {
-                var isSearchable = value as bool?;
-                if (isSearchable.HasValue && isSearchable.Value && !postProcessorNames.Contains("ExtractSearchIndex"))
-                {
-                    postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
-                }
-            }
-
             _postProcessors = GetPostProcessor(postProcessorNames);
         }
 
-        public DocumentBuilder(IEnumerable<Assembly> assemblies)
+        public DocumentBuilder(IEnumerable<Assembly> assemblies = null)
         {
             Logger.LogVerbose("Loading plug-in...");
             var assemblyList = assemblies?.ToList();
@@ -69,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public Manifest Build(DocumentBuildParameters parameters)
         {
-            using (var builder = new DocumentBuilderCore
+            using (var builder = new DocumentBuilderSingle
             {
                 Container = _container,
                 IntermediateFolder = IntermediateFolder,
@@ -122,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(manifestItems));
             }
 
-            var itemsToRemove = new List<string>();
+            var itemsToRemove = new HashSet<string>();
             foreach (var duplicates in from m in manifestItems
                                        from output in m.OutputFiles.Values
                                        group m.OriginalFile by output into g
@@ -130,7 +119,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                        select g)
             {
                 Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
-                itemsToRemove.AddRange(duplicates.Skip(1));
+                itemsToRemove.UnionWith(duplicates.Skip(1));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.OriginalFile));
         }
@@ -182,7 +171,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var configuration = new ContainerConfiguration();
 
-            configuration.WithAssembly(typeof(DocumentBuilderCore).Assembly);
+            configuration.WithAssembly(typeof(DocumentBuilder).Assembly);
 
             if (assemblies != null)
             {
