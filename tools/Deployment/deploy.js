@@ -543,7 +543,7 @@ switch (branchValue.toLowerCase()) {
       // step7: zip and upload release
       updateGithubReleaseStep,
       // step8: upload to chocolatey.org
-      updateChocoReleaseStep
+      // updateChocoReleaseStep
     ]);
     break;
   default:
