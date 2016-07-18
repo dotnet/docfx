@@ -456,7 +456,11 @@ aaa",
 ")]
         [InlineData(
             @"aabbcc:smile:ddee",
-            @"<p>aabbcc😄ddee</p>
+            @"<p>aabbcc<span class=""emoji"" shortCode=""smile"">😄</span>ddee</p>
+")]
+        [InlineData(
+            @"aabbcc:not_emoji:ddee",
+            @"<p>aabbcc:not_emoji:ddee</p>
 ")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)

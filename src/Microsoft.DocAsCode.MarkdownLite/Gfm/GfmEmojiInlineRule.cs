@@ -916,19 +916,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var text = GetEmoji(shortCode);
             if (text == null)
             {
-                var sourceInfo = context.Consume(1);
-                return new MarkdownTextToken(
-                    this,
-                    parser.Context,
-                    sourceInfo.Markdown,
-                    sourceInfo);
+                return null;
             }
             else
             {
                 var sourceInfo = context.Consume(match.Length);
-                return new MarkdownTextToken(
+                return new GfmEmojiInlineToken(
                     this,
                     parser.Context,
+                    shortCode,
                     text,
                     sourceInfo);
             }
