@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.1.0.0">
+    <meta name="generator" content="docfx 2.2.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -369,21 +369,10 @@ Files can be combined using <code>,</code> as seperator and <em>search pattern</
   }
 }
 </code></pre>
-<h2 id="4-supported-name-files-file-mapping-format">4. Supported <code>name-files</code> File Mapping Format</h2>
-<p>There are several ways to define <code>name-files</code> file mapping.</p>
-<p><strong>NOTE</strong> All the formats support <code>name</code> and <code>files</code> properties, while <strong>Array Format</strong> supports a few additional properties:</p>
-<ul>
-<li><code>exclude</code> Defines the files to be excuded from <code>files</code></li>
-</ul>
-<h3 id="4-1-object-format">4.1 Object Format</h3>
-<p>This format supports multiple <code>name-files</code> file mappings, with the property name as the name, and the value as the files.</p>
-<pre><code class="lang-json">&quot;key&quot;: {
-  &quot;name1&quot;: [&quot;file1&quot;, &quot;file2&quot;],
-  &quot;name2&quot;: &quot;file3&quot;
-}
-</code></pre>
-<h3 id="4-2-array-format">4.2 Array Format</h3>
-<p>This form supports multiple <code>name-files</code> file mappings, and also allows additional properties per mapping.
+<h2 id="4-supported-file-mapping-format">4. Supported File Mapping Format</h2>
+<p>There are several ways to define file mapping.</p>
+<h3 id="4-1-array-format">4.1 Array Format</h3>
+<p>This form supports multiple file mappings, and also allows additional properties per mapping.
 Supported properties:</p>
 <table>
 <thead>
@@ -398,8 +387,8 @@ Supported properties:</p>
 <td><strong>REQUIRED</strong>. The file or file array, <code>glob</code> pattern is supported.</td>
 </tr>
 <tr>
-<td>name</td>
-<td>The folder name for the generated files.</td>
+<td><del>name</del></td>
+<td><strong>Obsoleted</strong>, please use <code>dest</code>.</td>
 </tr>
 <tr>
 <td>exclude</td>
@@ -412,6 +401,14 @@ Supported properties:</p>
 <tr>
 <td>src</td>
 <td>Specifies the source directory. If omitted, the directory of the config file will be used. Use this option when you want to refer to files in relative folders while want to keep folder structure. e.g. set <code>src</code> to <code>..</code>.</td>
+</tr>
+<tr>
+<td>dest</td>
+<td>The folder name for the generated files.</td>
+</tr>
+<tr>
+<td>version</td>
+<td>Version name for the current file mapping. If not set, treat the current file-mapping item as in default version. Mappings with the same version name will be built together. Cross reference doesn&#39;t support cross different versions.</td>
 </tr>
 <tr>
 <td>caseSensitive</td>
@@ -428,15 +425,17 @@ Supported properties:</p>
 </tbody>
 </table>
 <pre><code class="lang-json">&quot;key&quot;: [
-  {name: &quot;name1&quot;, files: [&quot;file1&quot;, &quot;file2&quot;]},
-  {name: &quot;name2&quot;, files: &quot;file3&quot;},
-  {files:  [&quot;file4&quot;, &quot;file5&quot;], exclude: [&quot;file5&quot;], src: &quot;folder1&quot;}
+  {&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
+  {&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
+  {&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
+  {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
+  {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
 ]
 </code></pre>
-<h3 id="4-3-compact-format">4.3 Compact Format</h3>
+<h3 id="4-2-compact-format">4.2 Compact Format</h3>
 <pre><code class="lang-json">&quot;key&quot;: [&quot;file1&quot;, &quot;file2&quot;]
 </code></pre>
-<h3 id="4-4-glob-pattern">4.4 Glob Pattern</h3>
+<h3 id="4-3-glob-pattern">4.3 Glob Pattern</h3>
 <p><code>DocFX</code> uses <a href="https://github.com/vicancy/Glob">Glob</a> to support <em>glob</em> pattern in file path.
 It offers several options to determine how to parse the Glob pattern:</p>
 <ul>
@@ -452,7 +451,7 @@ It offers several options to determine how to parse the Glob pattern:</p>
 <li><code>{}</code> allows for a comma-separated list of <strong>OR</strong> expressions</li>
 </ol>
 <p><strong>SAMPLES</strong></p>
-<h2 id="4-q-a">4. Q &amp; A</h2>
+<h2 id="5-q-a">5. Q &amp; A</h2>
 <ol>
 <li>Do we support files outside current project folder(the folder when <code>docfx.json</code> exists)? 
 A: YES. DO specify <code>src</code> and files outside of current folder will be copied to output folder keeping the same relative path to <code>src</code>.</li>

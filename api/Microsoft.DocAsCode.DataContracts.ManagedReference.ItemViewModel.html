@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ItemViewModel
    | DocFX website ">
-    <meta name="generator" content="docfx 2.1.0.0">
+    <meta name="generator" content="docfx 2.2.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -74,6 +74,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content">
+              
               
               <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.DataContracts.ManagedReference/ItemViewModel.cs/#L17" class="btn btn-primary pull-right mobile-hide">View Source</a>
@@ -278,7 +279,7 @@ public string Conceptual { get; set; }</code></pre>
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html#Microsoft_DocAsCode_DataContracts_Common_IOverwriteDocumentViewModel_Conceptual">ItemViewModel.Conceptual</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html#Microsoft_DocAsCode_DataContracts_Common_IOverwriteDocumentViewModel_Conceptual">IOverwriteDocumentViewModel.Conceptual</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_Documentation.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.Documentation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -311,7 +312,7 @@ public SourceDetail Documentation { get; set; }</code></pre>
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html#Microsoft_DocAsCode_DataContracts_Common_IOverwriteDocumentViewModel_Documentation">ItemViewModel.Documentation</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html#Microsoft_DocAsCode_DataContracts_Common_IOverwriteDocumentViewModel_Documentation">IOverwriteDocumentViewModel.Documentation</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_Examples.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.Examples%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -357,7 +358,7 @@ public List&lt;string&gt; Examples { get; set; }</code></pre>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;exceptions&quot;)]
 [JsonProperty(&quot;exceptions&quot;)]
-public List&lt;CrefInfo&gt; Exceptions { get; set; }</code></pre>
+public List&lt;ExceptionInfo&gt; Exceptions { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -369,7 +370,7 @@ public List&lt;CrefInfo&gt; Exceptions { get; set; }</code></pre>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.CrefInfo.html#Microsoft_DocAsCode_DataContracts_ManagedReference_CrefInfo">CrefInfo</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.ExceptionInfo.html#Microsoft_DocAsCode_DataContracts_ManagedReference_ExceptionInfo">ExceptionInfo</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -1261,7 +1262,7 @@ public string Remarks { get; set; }</code></pre>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;seealso&quot;)]
 [JsonProperty(&quot;seealso&quot;)]
-public List&lt;CrefInfo&gt; SeeAlsos { get; set; }</code></pre>
+public List&lt;LinkInfo&gt; SeeAlsos { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1273,7 +1274,7 @@ public List&lt;CrefInfo&gt; SeeAlsos { get; set; }</code></pre>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.CrefInfo.html#Microsoft_DocAsCode_DataContracts_ManagedReference_CrefInfo">CrefInfo</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.LinkInfo.html#Microsoft_DocAsCode_DataContracts_ManagedReference_LinkInfo">LinkInfo</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -1292,7 +1293,7 @@ public List&lt;CrefInfo&gt; SeeAlsos { get; set; }</code></pre>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;see&quot;)]
 [JsonProperty(&quot;see&quot;)]
-public List&lt;CrefInfo&gt; Sees { get; set; }</code></pre>
+public List&lt;LinkInfo&gt; Sees { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1304,7 +1305,7 @@ public List&lt;CrefInfo&gt; Sees { get; set; }</code></pre>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.CrefInfo.html#Microsoft_DocAsCode_DataContracts_ManagedReference_CrefInfo">CrefInfo</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.DataContracts.ManagedReference.LinkInfo.html#Microsoft_DocAsCode_DataContracts_ManagedReference_LinkInfo">LinkInfo</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -1497,7 +1498,7 @@ public string Uid { get; set; }</code></pre>
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html#Microsoft_DocAsCode_DataContracts_Common_IOverwriteDocumentViewModel_Uid">ItemViewModel.Uid</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html#Microsoft_DocAsCode_DataContracts_Common_IOverwriteDocumentViewModel_Uid">IOverwriteDocumentViewModel.Uid</a></div>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
                   <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>

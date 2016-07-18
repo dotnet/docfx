@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class FileMapping
    | DocFX website ">
-    <meta name="generator" content="docfx 2.1.0.0">
+    <meta name="generator" content="docfx 2.2.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -75,25 +75,21 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content">
               
+              
               <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L36" class="btn btn-primary pull-right mobile-hide">View Source</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L29" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_FileMapping" data-uid="Microsoft.DocAsCode.FileMapping">Class FileMapping
               </h1>
-              <div class="markdown level0 summary"><p>FileMapping supports three forms:</p>
+              <div class="markdown level0 summary"><p>FileMapping supports two forms:</p>
 <ol>
-<li>Object form
- This form supports multiple name-files file mappings, with the property name as the name, and the value as the files.
- e.g. <pre><code> projects: {
-  &quot;name1&quot;: [&quot;file1&quot;, &quot;file2&quot;],
-  &quot;name2&quot;: &quot;file3&quot;
- }
-</code></pre></li>
 <li>Array form
- This form supports multiple name-files file mappings, and also allows additional properties per mapping.
- e.g. <pre><code> projects: [
-  {name: &quot;name1&quot;, files: [&quot;file1&quot;, &quot;file2&quot;]},
-  {name: &quot;name2&quot;, files: &quot;file3&quot;},
-  {files:  [&quot;file4&quot;, &quot;file5&quot;], exclude: [&quot;file5&quot;]}
+ This form supports multiple file mappings, and also allows additional properties per mapping.
+ e.g. <pre><code> &quot;key&quot;: [
+   {&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
+   {&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
+   {&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
+   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
+   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
  ]
 </code></pre></li>
 <li>Compact form
@@ -146,7 +142,7 @@ public class FileMapping</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping__ctor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L49">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L42">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_FileMapping__ctor" data-uid="Microsoft.DocAsCode.FileMapping.#ctor">FileMapping()</h4>
               <div class="markdown level1 summary"></div>
@@ -160,7 +156,7 @@ public class FileMapping</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping__ctor_Microsoft_DocAsCode_FileMappingItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping.%23ctor(Microsoft.DocAsCode.FileMappingItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L55">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L48">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_FileMapping__ctor_Microsoft_DocAsCode_FileMappingItem_" data-uid="Microsoft.DocAsCode.FileMapping.#ctor(Microsoft.DocAsCode.FileMappingItem)">FileMapping(FileMappingItem)</h4>
               <div class="markdown level1 summary"></div>
@@ -191,7 +187,7 @@ public class FileMapping</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping__ctor_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_FileMappingItem__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping.%23ctor(System.Collections.Generic.IEnumerable%7BMicrosoft.DocAsCode.FileMappingItem%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L51">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L44">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_FileMapping__ctor_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_FileMappingItem__" data-uid="Microsoft.DocAsCode.FileMapping.#ctor(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.FileMappingItem})">FileMapping(IEnumerable&lt;FileMappingItem&gt;)</h4>
               <div class="markdown level1 summary"></div>
@@ -224,7 +220,7 @@ public class FileMapping</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping_Expanded.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping.Expanded%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L42">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L35">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_FileMapping_Expanded" data-uid="Microsoft.DocAsCode.FileMapping.Expanded">Expanded</h4>
               <div class="markdown level1 summary"></div>
@@ -253,7 +249,7 @@ public class FileMapping</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping_Items.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping.Items%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L44">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L37">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_FileMapping_Items" data-uid="Microsoft.DocAsCode.FileMapping.Items">Items</h4>
               <div class="markdown level1 summary"></div>
@@ -284,7 +280,7 @@ public class FileMapping</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping_Add_Microsoft_DocAsCode_FileMappingItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping.Add(Microsoft.DocAsCode.FileMappingItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L64">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L57">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_FileMapping_Add_Microsoft_DocAsCode_FileMappingItem_" data-uid="Microsoft.DocAsCode.FileMapping.Add(Microsoft.DocAsCode.FileMappingItem)">Add(FileMappingItem)</h4>
               <div class="markdown level1 summary"><p>Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. cwd, exclude.</p>

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.1) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.2) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.1) | DocFX website ">
-    <meta name="generator" content="docfx 2.1.0.0">
+    <meta name="title" content="Version Notes (Current Version: v2.2) | DocFX website ">
+    <meta name="generator" content="docfx 2.2.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -66,8 +66,26 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
               <a href="https://github.com/dotnet/docfx/blob/master/RELEASENOTE.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <h1 id="version-notes-current-version-v2-1">Version Notes (Current Version: v2.1)</h1>
+              <h1 id="version-notes-current-version-v2-2">Version Notes (Current Version: v2.2)</h1>
               
+<h2 id="v2-2">v2.2</h2>
+<ol>
+<li>Support multi-version site. (<a href="https://github.com/dotnet/docfx/issues/396">https://github.com/dotnet/docfx/issues/396</a>)</li>
+<li>Support loop reference for Swagger Rest API. (<a href="https://github.com/dotnet/docfx/issues/223">https://github.com/dotnet/docfx/issues/223</a>)</li>
+<li>Support plug-in for post processor.</li>
+<li>Support href for see/seealso tags.</li>
+<li>Improve API reference documentation of namespace and enum.</li>
+<li>Update prerequisite to build docfx.</li>
+<li>Update manifest schema.</li>
+<li>Add chocolatey support in CI script.</li>
+<li>Provide with options in build.cmd.</li>
+<li>Bug fixes:<ol>
+<li>syntax for static class is incorrect.</li>
+<li>improve warning message about global namespace class. (<a href="https://github.com/dotnet/docfx/issues/417">https://github.com/dotnet/docfx/issues/417</a>)</li>
+<li>fix normalizexml bug for empty <code>&lt;code&gt;&lt;/code&gt;</code> in tripleslashcomment.</li>
+</ol>
+</li>
+</ol>
 <h2 id="v2-1">v2.1</h2>
 <ol>
 <li>Support for xref zip file in relative path.</li>
@@ -105,7 +123,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <li>Provide more information for API reference documentation<ol>
 <li>display inherited members</li>
 <li>display overridden members</li>
-<li>display implemented interface </li>
+<li>display implemented interface</li>
 <li>seperate category for Explicit Interface Implementation</li>
 </ol>
 </li>
@@ -118,7 +136,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 <li>The input data model now contains all the properties including system generated metadata starting with underscore <code>_</code> and globally shared variables stored in <code>__global</code>. You can use <code>docfx build --exportRawModel</code> to view the data model.</li>
 <li><p><em>Preprocessor</em>&#39;s <code>transform</code> function signature changes to:</p>
 <pre><code class="lang-js">exports.transform = function (model){
- // transform the model 
+ // transform the model
  return model;
 }
 </code></pre>

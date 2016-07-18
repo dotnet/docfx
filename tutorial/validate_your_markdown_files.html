@@ -8,7 +8,7 @@
     <title>Validate your markdown files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Validate your markdown files | DocFX website ">
-    <meta name="generator" content="docfx 2.1.0.0">
+    <meta name="generator" content="docfx 2.2.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/validate your markdown files.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/validate_your_markdown_files.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="validate-your-markdown-files">Validate your markdown files</h1>
               
 <p>In GFM, we can write any document with right syntax. For example, we can write html tag <code>&lt;h1&gt;title&lt;/h1&gt;</code> instead of markdown syntax <code>#title</code>. But for some purpose, some behaviors are unwanted, so we add markdown validators for each markdown document.</p>
@@ -91,7 +91,7 @@
 <pre><code class="lang-json">{
    &quot;tagRules&quot;: [
       {
-         &quot;tagName&quot;: [ &quot;H1&quot;, &quot;H2&quot; ],
+         &quot;tagNames&quot;: [ &quot;H1&quot;, &quot;H2&quot; ],
          &quot;behavior&quot;: &quot;Warning&quot;,
          &quot;messageFormatter&quot;: &quot;Some message.&quot;,
          &quot;customValidatorContractName&quot;: null,
@@ -102,7 +102,7 @@
 </code></pre>
 <p>Then when any one write <code>&lt;H1&gt;</code> or <code>&lt;H2&gt;</code> in markdown file, it will give a warning with message <code>Some message.</code>.</p>
 <ol>
-<li><code>tagName</code> is filter html tag names, <em>required</em>, <em>case-insensitive</em>.</li>
+<li><code>tagNames</code> is filter html tag names, <em>required</em>, <em>case-insensitive</em>.</li>
 <li><p><code>behavior</code> is an enum value, <em>required</em>.</p>
 <p>it can be following:</p>
 <ul>
@@ -146,7 +146,7 @@ public class MyMarkdownTagValidator : ICustomMarkdownTagValidator
 <pre><code class="lang-json">{
    &quot;tagRules&quot;: [
       {
-         &quot;tagName&quot;: [ &quot;H1&quot;, &quot;H2&quot; ],
+         &quot;tagNames&quot;: [ &quot;H1&quot;, &quot;H2&quot; ],
          &quot;behavior&quot;: &quot;Warning&quot;,
          &quot;messageFormatter&quot;: &quot;Some message.&quot;,
          &quot;customValidatorContractName&quot;: &quot;Require text class&quot;,
@@ -211,6 +211,35 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 <li>Config markdown validation rules in <code>md.style</code>.</li>
 <li>Copy your extension assemblies to <code>plugin</code> folder in your <code>DocFX.exe</code> or template.</li>
 </ol>
+<h2 id="validate-metadata-in-markdown-files">Validate metadata in markdown files</h2>
+<p>In markdown file, we can write some metadata in <a href="../spec/docfx_flavored_markdown.html#yaml-header">conceptual</a> or <a href="intro_overwrite_files.html">overwrite document</a>
+And we allow add some plug-ins to validate metadata writen in markdown files.</p>
+<h3 id="scope-of-validation">Scope of validation</h3>
+<p>Following metadata will be validated:</p>
+<ol>
+<li>yaml header in markdown.</li>
+<li>global metadata.</li>
+<li>file metadata.</li>
+</ol>
+<h3 id="create-validation-plug-ins">Create validation plug-ins</h3>
+<ol>
+<li>Create a project in your code editor (e.g. visual studio).</li>
+<li>Add nuget package <code>Microsoft.DocAsCode.Plugins</code> and <code>Microsoft.Composition</code>.</li>
+<li>Create a class and implement <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.IInputMetadataValidator.html#Microsoft_DocAsCode_Plugins_IInputMetadataValidator">IInputMetadataValidator</a></li>
+</ol>
+<p>For example, the following validator prohibits any metadata with name <code>hello</code>:</p>
+<pre><code class="lang-csharp">[Export(typeof(IInputMetadataValidator))]
+public class MyInputMetadataValidator : IInputMetadataValidator
+{
+    public void Validate(string sourceFile, ImmutableDictionary&lt;string, object&gt; metadata)
+    {
+        if (metadata.ContainKey(&quot;hello&quot;))
+        {
+            throw new DocumentException($&quot;Metadata &#39;hello&#39; is not allowed, file: {sourceFile}&quot;);
+        }
+    }
+}
+</code></pre>
 
             </article>
           </div>

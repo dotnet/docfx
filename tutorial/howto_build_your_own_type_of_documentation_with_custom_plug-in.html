@@ -8,7 +8,7 @@
     <title>How-to: Build your own type of documentation with custom plug-in | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Build your own type of documentation with custom plug-in | DocFX website ">
-    <meta name="generator" content="docfx 2.1.0.0">
+    <meta name="generator" content="docfx 2.2.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/Build your own type of documentation with custom plug-in.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="how-to-build-your-own-type-of-documentation-with-custom-plug-in">How-to: Build your own type of documentation with custom plug-in</h1>
               
 <p>In this topic, we will create a plug-in to build some simple <a href="https://en.wikipedia.org/wiki/Rich_Text_Format">rich text format</a> files to html documents.</p>
@@ -97,18 +97,14 @@
 <li><p>Add nuget packages:  </p>
 <ul>
 <li><code>System.Collections.Immutable</code> with version 1.1.37</li>
-<li><code>System.Composition</code> with version 1.0.27</li>
+<li><code>Microsoft.Composition</code> with version 1.0.27</li>
 </ul>
 </li>
-<li><p>Add <code>Microsoft.DocAsCode.Plugins</code>
-If build DocFX from source code, add reference to the project.
-Otherwise, add nuget package <code>Microsoft.DocAsCode.Plugins</code> with the same version of DocFX.</p>
+<li><p>Add <code>Microsoft.DocAsCode.Plugins</code><br>If build DocFX from source code, add reference to the project.<br>Otherwise, add nuget package <code>Microsoft.DocAsCode.Plugins</code> with the same version of DocFX.</p>
 </li>
-<li><p>Add framework assembly reference:
-<code>PresentationCore</code>, <code>PresentationFramework</code>, <code>WindowsBase</code></p>
+<li><p>Add framework assembly reference:<br><code>PresentationCore</code>, <code>PresentationFramework</code>, <code>WindowsBase</code></p>
 </li>
-<li><p>Add project for convert rtf to html:
-Clone project <a href="https://github.com/mmanela/MarkupConverter">MarkupConverter</a>, and reference it.</p>
+<li><p>Add project for convert rtf to html:<br>Clone project <a href="https://github.com/mmanela/MarkupConverter">MarkupConverter</a>, and reference it.</p>
 </li>
 <li><p>Copy code file StaTaskScheduler.cs from <a href="https://code.msdn.microsoft.com/ParExtSamples">ParExtSamples</a></p>
 </li>

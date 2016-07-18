@@ -8,7 +8,7 @@
     <title>C# Coding Standards | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="C# Coding Standards | DocFX website ">
-    <meta name="generator" content="docfx 2.1.0.0">
+    <meta name="generator" content="docfx 2.2.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -186,7 +186,7 @@ line2&quot;;
 <h3 id="unit-tests-and-functional-tests">Unit tests and functional tests</h3>
 <h4 id="assembly-naming">Assembly naming</h4>
 <p>The unit tests for the <code>Microsoft.Foo</code> assembly live in the <code>Microsoft.Foo.Tests</code> assembly.</p>
-<p>The functional tests for the <code>Microsoft.Foo</code> assmebly live in the <code>Microsoft.Foo.FunctionalTests</code> assembly.</p>
+<p>The functional tests for the <code>Microsoft.Foo</code> assembly live in the <code>Microsoft.Foo.FunctionalTests</code> assembly.</p>
 <p>In general there should be exactly one unit tests assembly for each product runtime assembly. In general there should be one functional tests assembly per repo. Exceptions can be made for both.</p>
 <h4 id="unit-test-class-naming">Unit test class naming</h4>
 <p>Test class names end with <code>Test</code> suffix and live in the same namespace as the class being tested. For example, the unit tests for the <code>Microsoft.Foo.Boo</code> class would be in a <code>Microsoft.Foo.BooTest</code> class in the unit tests assembly <code>Microsoft.Foo.Tests</code>.</p>
@@ -242,7 +242,7 @@ Assert.True(list1.Length == list2.Length);
 
 for (int i = 0; i &lt; list1.Length; i++) {
     Assert.True(
-        String.Equals
+        String.Equals(
             list1[i],
             list2[i],
             StringComparison.OrdinalIgnoreCase));
