@@ -312,6 +312,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return renderer.Options.XHtml ? "<br/>" : "<br>";
         }
 
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, GfmEmojiInlineToken token, MarkdownInlineContext context)
+        {
+            var result = StringBuffer.Empty;
+            result += "<span class=\"emoji\" shortCode=\"";
+            result += token.ShortCode;
+            result += "\">";
+            result += token.Emoji;
+            result += "</span>";
+            return result;
+        }
+
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownInlineContext context)
         {
             return token.Content;

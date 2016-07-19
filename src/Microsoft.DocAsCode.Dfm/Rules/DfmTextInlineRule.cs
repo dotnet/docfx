@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmTextInlineRule : MarkdownTextInlineRule
     {
-        private static readonly Regex _inlineTextRegex = new Regex(@"^[\s\S]+?(?=\S*@|[\\<!\[_*`]|https?:\/\/| {2,}\n|$)", RegexOptions.Compiled);
+        private static readonly Regex _inlineTextRegex = new Regex(@"^[\s\S]+?(?=\S*@|[\\<!\[_*`\:]|https?:\/\/| {2,}\n|$)", RegexOptions.Compiled);
 
         /// <summary>
         /// Override the one in MarkdownLite, difference is:

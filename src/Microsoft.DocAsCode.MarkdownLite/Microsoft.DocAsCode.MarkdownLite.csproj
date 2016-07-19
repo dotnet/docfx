@@ -17,6 +17,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Align.cs" />
+    <Compile Include="Gfm\GfmEmojiInlineToken.cs" />
+    <Compile Include="Gfm\GfmEmojiInlineRule.generated.cs">
+      <DependentUpon>GfmEmojiInlineRule.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gfm\GfmHtmlCommentBlockRule.cs" />
     <Compile Include="Basic\BlockTokens\TwoPhaseBlockToken.cs" />
     <Compile Include="Basic\InlineRules\MarkdownCommentInlineRule.cs" />
@@ -36,6 +40,7 @@
     <Compile Include="Gfm\GfmHeadingBlockRule.cs" />
     <Compile Include="Gfm\GfmParagraphBlockRule.cs" />
     <Compile Include="Gfm\GfmTextInlineRule.cs" />
+    <Compile Include="Gfm\GfmEmojiInlineRule.cs" />
     <Compile Include="Gfm\GfmUrlInlineRule.cs" />
     <Compile Include="IMarkdownContext.cs" />
     <Compile Include="IMarkdownEngine.cs" />
