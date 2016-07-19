@@ -1612,16 +1612,18 @@ references:
   name.vb: DocumentBuilder(IEnumerable(Of Assembly))
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.DocumentBuilder(System.Collections.Generic.IEnumerable<System.Reflection.Assembly>)
   fullName.vb: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.DocumentBuilder(System.Collections.Generic.IEnumerable(Of System.Reflection.Assembly))
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.#ctor(System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Generic.IEnumerable{System.Reflection.Assembly})
+  name: DocumentBuilder(ImmutableArray<String>, IEnumerable<Assembly>)
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder__ctor_System_Collections_Immutable_ImmutableArray_System_String__System_Collections_Generic_IEnumerable_System_Reflection_Assembly__
+  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.#ctor(System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Generic.IEnumerable{System.Reflection.Assembly})
+  name.vb: DocumentBuilder(ImmutableArray(Of String), IEnumerable(Of Assembly))
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.DocumentBuilder(System.Collections.Immutable.ImmutableArray<System.String>, System.Collections.Generic.IEnumerable<System.Reflection.Assembly>)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.DocumentBuilder(System.Collections.Immutable.ImmutableArray(Of System.String), System.Collections.Generic.IEnumerable(Of System.Reflection.Assembly))
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
   name: Build(DocumentBuildParameters)
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_
   commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
-- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor,Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters,Microsoft.DocAsCode.Plugins.IMarkdownService)
-  name: Build(IDocumentProcessor, DocumentBuildParameters, IMarkdownService)
-  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_Microsoft_DocAsCode_Plugins_IDocumentProcessor_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_Microsoft_DocAsCode_Plugins_IMarkdownService_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor,Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters,Microsoft.DocAsCode.Plugins.IMarkdownService)
-  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor, Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters, Microsoft.DocAsCode.Plugins.IMarkdownService)
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Dispose
   name: Dispose()
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Dispose
@@ -1632,11 +1634,16 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_IntermediateFolder
   commentId: P:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.IntermediateFolder
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.IntermediateFolder
-- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PhaseName
-  name: PhaseName
-  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_PhaseName
-  commentId: F:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PhaseName
-  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PhaseName
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PostProcess(Microsoft.DocAsCode.Plugins.Manifest,System.String)
+  name: PostProcess(Manifest, String)
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_PostProcess_Microsoft_DocAsCode_Plugins_Manifest_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PostProcess(Microsoft.DocAsCode.Plugins.Manifest,System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PostProcess(Microsoft.DocAsCode.Plugins.Manifest, System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PrepareMetadata(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
+  name: PrepareMetadata(DocumentBuildParameters)
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_PrepareMetadata_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PrepareMetadata(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.PrepareMetadata(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.RemoveDuplicateOutputFiles(System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.ManifestItem})
   name: RemoveDuplicateOutputFiles(List<ManifestItem>)
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_RemoveDuplicateOutputFiles_System_Collections_Generic_List_Microsoft_DocAsCode_Plugins_ManifestItem__
@@ -1644,16 +1651,6 @@ references:
   name.vb: RemoveDuplicateOutputFiles(List(Of ManifestItem))
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.RemoveDuplicateOutputFiles(System.Collections.Generic.List<Microsoft.DocAsCode.Plugins.ManifestItem>)
   fullName.vb: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.RemoveDuplicateOutputFiles(System.Collections.Generic.List(Of Microsoft.DocAsCode.Plugins.ManifestItem))
-- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.SaveManifest(System.String)
-  name: SaveManifest(String)
-  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_SaveManifest_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.SaveManifest(System.String)
-  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.SaveManifest(System.String)
-- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.XRefMapFileName
-  name: XRefMapFileName
-  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_XRefMapFileName
-  commentId: F:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.XRefMapFileName
-  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.XRefMapFileName
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters
   name: DocumentBuildParameters
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters
@@ -2117,6 +2114,53 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.ResourceFinder.html#Microsoft_DocAsCode_Build_Engine_ResourceFinder_Find_System_String_
   commentId: M:Microsoft.DocAsCode.Build.Engine.ResourceFinder.Find(System.String)
   fullName: Microsoft.DocAsCode.Build.Engine.ResourceFinder.Find(System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder
+  name: SingleDocumentBuilder
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder
+  commentId: T:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
+  name: Build(DocumentBuildParameters)
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder_Build_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor,Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters,Microsoft.DocAsCode.Plugins.IMarkdownService)
+  name: Build(IDocumentProcessor, DocumentBuildParameters, IMarkdownService)
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder_Build_Microsoft_DocAsCode_Plugins_IDocumentProcessor_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_Microsoft_DocAsCode_Plugins_IMarkdownService_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor,Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters,Microsoft.DocAsCode.Plugins.IMarkdownService)
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Build(Microsoft.DocAsCode.Plugins.IDocumentProcessor, Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters, Microsoft.DocAsCode.Plugins.IMarkdownService)
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Container
+  name: Container
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder_Container
+  commentId: P:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Container
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Container
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Dispose
+  name: Dispose()
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder_Dispose
+  commentId: M:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Dispose
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Dispose()
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.IntermediateFolder
+  name: IntermediateFolder
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder_IntermediateFolder
+  commentId: P:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.IntermediateFolder
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.IntermediateFolder
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.MetadataValidators
+  name: MetadataValidators
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder_MetadataValidators
+  commentId: P:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.MetadataValidators
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.MetadataValidators
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Processors
+  name: Processors
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder_Processors
+  commentId: P:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Processors
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.Processors
+- uid: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.RemoveDuplicateOutputFiles(System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.ManifestItem})
+  name: RemoveDuplicateOutputFiles(List<ManifestItem>)
+  href: api/Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_SingleDocumentBuilder_RemoveDuplicateOutputFiles_System_Collections_Generic_List_Microsoft_DocAsCode_Plugins_ManifestItem__
+  commentId: M:Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.RemoveDuplicateOutputFiles(System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.ManifestItem})
+  name.vb: RemoveDuplicateOutputFiles(List(Of ManifestItem))
+  fullName: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.RemoveDuplicateOutputFiles(System.Collections.Generic.List<Microsoft.DocAsCode.Plugins.ManifestItem>)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.SingleDocumentBuilder.RemoveDuplicateOutputFiles(System.Collections.Generic.List(Of Microsoft.DocAsCode.Plugins.ManifestItem))
 - uid: Microsoft.DocAsCode.Build.Engine.Template
   name: Template
   href: api/Microsoft.DocAsCode.Build.Engine.Template.html#Microsoft_DocAsCode_Build_Engine_Template
@@ -2340,13 +2384,18 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_GetTemplateBundle_System_String_
   commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateProcessor.GetTemplateBundle(System.String)
   fullName: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.GetTemplateBundle(System.String)
-- uid: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.SaveManifest(System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.ManifestItem},System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.HomepageInfo},System.Collections.Generic.List{System.String},System.String)
-  name: SaveManifest(List<ManifestItem>, List<HomepageInfo>, List<String>, String)
-  href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_SaveManifest_System_Collections_Generic_List_Microsoft_DocAsCode_Plugins_ManifestItem__System_Collections_Generic_List_Microsoft_DocAsCode_Plugins_HomepageInfo__System_Collections_Generic_List_System_String__System_String_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateProcessor.SaveManifest(System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.ManifestItem},System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.HomepageInfo},System.Collections.Generic.List{System.String},System.String)
-  name.vb: SaveManifest(List(Of ManifestItem), List(Of HomepageInfo), List(Of String), String)
-  fullName: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.SaveManifest(System.Collections.Generic.List<Microsoft.DocAsCode.Plugins.ManifestItem>, System.Collections.Generic.List<Microsoft.DocAsCode.Plugins.HomepageInfo>, System.Collections.Generic.List<System.String>, System.String)
-  fullName.vb: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.SaveManifest(System.Collections.Generic.List(Of Microsoft.DocAsCode.Plugins.ManifestItem), System.Collections.Generic.List(Of Microsoft.DocAsCode.Plugins.HomepageInfo), System.Collections.Generic.List(Of System.String), System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.MergeManifest(System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.Manifest})
+  name: MergeManifest(List<Manifest>)
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_MergeManifest_System_Collections_Generic_List_Microsoft_DocAsCode_Plugins_Manifest__
+  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateProcessor.MergeManifest(System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.Manifest})
+  name.vb: MergeManifest(List(Of Manifest))
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.MergeManifest(System.Collections.Generic.List<Microsoft.DocAsCode.Plugins.Manifest>)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.MergeManifest(System.Collections.Generic.List(Of Microsoft.DocAsCode.Plugins.Manifest))
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.SaveManifest(Microsoft.DocAsCode.Plugins.Manifest,System.String)
+  name: SaveManifest(Manifest, String)
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_SaveManifest_Microsoft_DocAsCode_Plugins_Manifest_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateProcessor.SaveManifest(Microsoft.DocAsCode.Plugins.Manifest,System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.SaveManifest(Microsoft.DocAsCode.Plugins.Manifest, System.String)
 - uid: Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Tokens
   name: Tokens
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html#Microsoft_DocAsCode_Build_Engine_TemplateProcessor_Tokens
