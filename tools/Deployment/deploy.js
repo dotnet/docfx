@@ -436,11 +436,16 @@ function updateChocoConfigPromiseFn() {
 
 function pushChocoPackage() {
   return function() {
-    return new Promise(function(reslove, reject) {
+    return new Promise(function(resolve, reject) {
       if (!globalOptions.pkgName) {
         reject(new Error('package name can not be null/empty/undefined while pushing choco package'));
       }
-      return execPromiseFn('choco', ['push', globalOptions.pkgName], config.choco.homeDir)();
+      let promiseFn = execPromiseFn('choco', ['push', globalOptions.pkgName], config.choco.homeDir);
+      promiseFn().then(function () {
+        resolve();
+      }).catch(function (err) {
+        reject(err);
+      });
     });
   }
 }
