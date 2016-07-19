@@ -1,5 +1,10 @@
-Version Notes (Current Version: v2.2)
+Version Notes (Current Version: v2.2.1)
 =======================================
+v2.2.1
+-----------
+1. Fix bug when metadata incremental check
+2. Move post process out of DocumentBuilder
+
 v2.2
 -----------
 1.  Support multi-version site. (https://github.com/dotnet/docfx/issues/396)
