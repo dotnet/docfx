@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Net;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Web;
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.XPath;
@@ -283,7 +284,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
                         if (item.Parent?.Parent != null)
                         {
-                            var replacement = XElement.Parse($"<xref href=\"{WebUtility.HtmlEncode(value)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                            var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(value)}\" data-throw-if-not-resolved=\"false\"></xref>");
                             item.ReplaceWith(replacement);
                         }
 
