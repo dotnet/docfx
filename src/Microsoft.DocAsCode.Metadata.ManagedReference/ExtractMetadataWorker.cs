@@ -302,7 +302,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 documentCache.AddDocuments(path, project.MetadataReferences
                     .Where(s => s is PortableExecutableReference)
                     .Select(s => ((PortableExecutableReference)s).FilePath));
-                FillProjectDependencyGraph(projectDependencyGraph, project);
+                FillProjectDependencyGraph(projectCache, projectDependencyGraph, project);
             }
 
             documentCache.AddDocuments(sourceFiles);
@@ -418,9 +418,30 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static void FillProjectDependencyGraph(ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
+        private static void FillProjectDependencyGraph(ConcurrentDictionary<string, Project> projectCache, ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
         {
-            projectDependencyGraph.GetOrAdd(project.FilePath.ToNormalizedFullPath(), project.ProjectReferences.Select(pr => project.Solution.GetProject(pr.ProjectId).FilePath.ToNormalizedFullPath()).ToList());
+            projectDependencyGraph.GetOrAdd(project.FilePath.ToNormalizedFullPath(), GetTransitiveProjectReferences(projectCache, project).Distinct().ToList());
+        }
+
+        private static IEnumerable<string> GetTransitiveProjectReferences(ConcurrentDictionary<string, Project> projectCache, Project project)
+        {
+            var solution = project.Solution;
+            foreach (var pr in project.ProjectReferences)
+            {
+                var refProject = solution.GetProject(pr.ProjectId);
+                var path = refProject.FilePath.ToNormalizedFullPath();
+                if (projectCache.ContainsKey(path))
+                {
+                    yield return path;
+                }
+                else
+                {
+                    foreach (var rpr in GetTransitiveProjectReferences(projectCache, refProject))
+                    {
+                        yield return rpr;
+                    }
+                }
+            }
         }
 
         private static async Task<ConcurrentDictionary<string, Compilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, Project> projectCache)
