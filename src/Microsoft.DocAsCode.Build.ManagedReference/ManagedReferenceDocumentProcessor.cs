@@ -78,19 +78,19 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                             }
                         }
                     }
-                    var filePath = Path.Combine(file.BaseDir, file.File);
-                    var displayLocalPath = filePath.ToDisplayPath();
+                    string displayLocalPath = null;
 
                     object baseDirectory;
                     if (metadata.TryGetValue("baseRepositoryDirectory", out baseDirectory))
                     {
-                        displayLocalPath = PathUtility.MakeRelativePath((string)baseDirectory, filePath);
+                        displayLocalPath = PathUtility.MakeRelativePath((string)baseDirectory, file.FullPath);
                     }
 
                     return new FileModel(file, page, serializer: new BinaryFormatter())
                     {
                         Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
                         LocalPathFromRepoRoot = displayLocalPath,
+                        LocalPathFromRoot = displayLocalPath
                     };
                 case DocumentType.Overwrite:
                     // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors
