@@ -397,11 +397,7 @@ function updateReleasePromiseFn() {
     return new Promise(function(resolve, reject) {
       getLastestReleasePromiseFn()().then(function() {
         let promiseFn = globalOptions.tag_name === globalOptions.version ? deleteAssetsPromiseFn() : createReleasePromiseFn();
-        promiseFn().then(function() {
-          resolve();
-        }).catch(function(err) {
-          reject(err);
-        });
+        promiseFn().then(resolve).catch(reject);
       });
     });
   }
@@ -441,11 +437,7 @@ function pushChocoPackage() {
         reject(new Error('package name can not be null/empty/undefined while pushing choco package'));
       }
       let promiseFn = execPromiseFn('choco', ['push', globalOptions.pkgName], config.choco.homeDir);
-      promiseFn().then(function () {
-        resolve();
-      }).catch(function (err) {
-        reject(err);
-      });
+      promiseFn().then(resolve).catch(reject);
     });
   }
 }
