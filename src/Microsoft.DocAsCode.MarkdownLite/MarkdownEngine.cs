@@ -66,13 +66,20 @@ namespace Microsoft.DocAsCode.MarkdownLite
                             (e, t) => t.Extract(parser)),
                     MaxExtractCount + 1));
             tokens = internalRewriteEngine.Rewrite(tokens);
+            internalRewriteEngine.Complete();
+
             var idTable = new Dictionary<string, int>();
             var idRewriteEngine = new MarkdownRewriteEngine(
                 this,
                 MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
                     (e, t) => t.RewriteId(idTable)));
             tokens = idRewriteEngine.Rewrite(tokens);
-            tokens = RewriteEngine.Rewrite(tokens);
+            idRewriteEngine.Complete();
+
+            var rewriteEngine = RewriteEngine;
+            tokens = rewriteEngine.Rewrite(tokens);
+            rewriteEngine.Complete();
+
             if (TokenTreeValidator != null)
             {
                 TokenTreeValidator.Validate(tokens);
