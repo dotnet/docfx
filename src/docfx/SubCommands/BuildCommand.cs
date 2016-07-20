@@ -263,7 +263,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 repoInfoFromBaseDirectory.RelativePath = Path.Combine(repoInfoFromBaseDirectory.RelativePath, DocAsCode.Constants.DefaultOverwriteFolderName);
             }
             object gitRespositoryOpenToPublicContributors;
-            if (config.GlobalMetadata.TryGetValue("gitContribute", out gitRespositoryOpenToPublicContributors))
+            if (config.GlobalMetadata.TryGetValue("_gitContribute", out gitRespositoryOpenToPublicContributors))
             {
                 GitDetail repoInfo;
                 try
@@ -272,7 +272,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 catch (Exception e)
                 {
-                    throw new DocumentException($"Unable to convert gitContribute to GitDetail in globalMetadata: {e.Message}", e);
+                    throw new DocumentException($"Unable to convert _gitContribute to GitDetail in globalMetadata: {e.Message}", e);
                 }
                 if (repoInfoFromBaseDirectory != null)
                 {
@@ -280,11 +280,11 @@ namespace Microsoft.DocAsCode.SubCommands
                     if (repoInfo.RemoteBranch == null) repoInfo.RemoteBranch = repoInfoFromBaseDirectory.RemoteBranch;
                     if (repoInfo.RemoteRepositoryUrl == null) repoInfo.RemoteRepositoryUrl = repoInfoFromBaseDirectory.RemoteRepositoryUrl;
                 }
-                config.GlobalMetadata["gitContribute"] = repoInfo;
+                config.GlobalMetadata["_gitContribute"] = repoInfo;
             }
             else
             {
-                config.GlobalMetadata["gitContribute"] = repoInfoFromBaseDirectory;
+                config.GlobalMetadata["_gitContribute"] = repoInfoFromBaseDirectory;
             }
         }
 

@@ -4,12 +4,12 @@ exports.transform = function (model) {
     var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
     model._jsonPath = _fileNameWithoutExt + ".swagger.json";
     model.title = model.title || model.name;
-    model.docurl = model.docurl || common.getImproveTheDocHref(model, model.gitContribute);
+    model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute);
     model.sourceurl = model.sourceurl || common.getViewSourceHref(model);
     if (model.children) {
         for (var i = 0; i < model.children.length; i++) {
             var child = model.children[i];
-            child.docurl = child.docurl || common.getImproveTheDocHref(child, model.gitContribute);
+            child.docurl = child.docurl || common.getImproveTheDocHref(child, model._gitContribute);
             if (child.operation) {
                 child.operation = child.operation.toUpperCase();
             }
