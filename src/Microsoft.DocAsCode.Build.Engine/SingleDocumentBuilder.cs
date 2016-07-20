@@ -651,14 +651,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             IMarkdownService markdownService)
         {
             var k = from fileItem in (
-                from file in parameters.Files.EnumerateFiles()
-                from p in (from processor in processors
-                           let priority = processor.GetProcessingPriority(file)
-                           where priority != ProcessingPriority.NotSupported
-                           group processor by priority into ps
-                           orderby ps.Key descending
-                           select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
-                select new { file, p })
+                    from file in parameters.Files.EnumerateFiles()
+                    from p in (from processor in processors
+                               let priority = processor.GetProcessingPriority(file)
+                               where priority != ProcessingPriority.NotSupported
+                               group processor by priority into ps
+                               orderby ps.Key descending
+                               select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
+                    select new { file, p })
                     group fileItem by fileItem.p;
 
             var toHandleItems = k.Where(s => s.Key != null);
@@ -675,16 +675,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning(sb.ToString());
             }
 
-            return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+            // todo : revert until PreProcessor ready
+            return from processor in processors
+                   join item in toHandleItems on processor equals item.Key into g
+                   from item in g.DefaultIfEmpty().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                    select new HostService(
                        parameters.Files.DefaultBaseDir,
-                       from file in item
-                       select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file.file) into model
-                       where model != null
-                       select model)
+                       item == null
+                            ? new FileModel[0]
+                            : from file in item
+                              select Load(processor, parameters.Metadata, parameters.FileMetadata, file.file) into model
+                              where model != null
+                              select model)
                    {
                        MarkdownService = markdownService,
-                       Processor = item.Key,
+                       Processor = processor,
                        Template = templateProcessor,
                        Validators = MetadataValidators.ToImmutableList(),
                    };
