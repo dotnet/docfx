@@ -22,9 +22,9 @@ exports.transform = function (model)  {
   if (!model) return null;
 
   langs = model.langs;
-  handleItem(model, model.gitContribute);
+  handleItem(model, model._gitContribute);
   if (model.children) {
-      model.children.forEach(function (item) { handleItem(item, model.gitContribute); });
+      model.children.forEach(function (item) { handleItem(item, model._gitContribute); });
   }
 
   if (model.type) {
