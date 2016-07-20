@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System;
     using System.Collections.Immutable;
 
     /// <summary>
@@ -21,5 +22,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <param name="tokens">Source markdown tokens.</param>
         /// <returns>Rewritten markdown tokens.</returns>
         ImmutableArray<IMarkdownToken> Rewrite(ImmutableArray<IMarkdownToken> tokens);
+
+        bool HasVariable(string name);
+
+        object GetVariable(string name);
+
+        void SetVariable(string name, object value);
+
+        void RemoveVariable(string name);
+
+        bool HasPostProcess(string name);
+
+        void SetPostProcess(string name, Action<IMarkdownRewriteEngine> action);
+
+        void RemovePostProcess(string name);
+
+        void Complete();
     }
 }
