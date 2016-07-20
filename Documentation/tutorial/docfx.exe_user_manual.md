@@ -285,7 +285,7 @@ Metadata Name         | Type    | Description
 ----------------------|---------|---------------------------
 _appTitle             | string  | Will be appended to each output page's head title.
 _appFooter            | string  | The footer text. Will show DocFX's Copyright text if not specified.
-_enableSearch         | bool    | Indicate whether show the search box on the top of page.
+_enableSearch         | bool    | Indicate whether to show the search box on the top of page.
 _disableNavbar        | bool    | Indicate whether to show the navigation bar on the top of page.
 _disableBreadcrumb    | bool    | Indicate whether to show breadcrumb on the top of page.
 _disableToc           | bool    | Indicate whether to show table of contents on the left of page.
