@@ -291,7 +291,7 @@ _disableBreadcrumb    | bool    | Indicate whether to show breadcrumb on the top
 _disableToc           | bool    | Indicate whether to show table of contents on the left of page.
 _disableAffix         | bool    | Indicate whether to show the affix bar on the right of page.
 _disableContribution  | bool    | Indicate whether to show the `View Source` and `Improve this Doc` buttons.
-gitContribute         | object  | Customized the `Improve this Doc` URL button for public contributors. Use `repo` to specify the contribution repository URL. Use `branch` to specify the contribution branch. Use `path` to specify the folder for new overwrite files .
+_gitContribute        | object  | Customize the `Improve this Doc` URL button for public contributors. Use `repo` to specify the contribution repository URL. Use `branch` to specify the contribution branch. Use `path` to specify the folder for new overwrite files .
 
 
 4. Supported File Mapping Format
