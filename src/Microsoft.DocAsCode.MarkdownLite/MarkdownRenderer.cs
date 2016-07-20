@@ -153,7 +153,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             foreach (var header in token.Header)
             {
                 content += " ";
-                foreach (var t in header.Tokens)
+                foreach (var t in header.Content.Tokens)
                 {
                     content += render.Render(t);
                 }
@@ -192,7 +192,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 content += "| ";
                 foreach (var column in row)
                 {
-                    foreach (var t in column.Tokens)
+                    foreach (var t in column.Content.Tokens)
                     {
                         content += render.Render(t);
                     }

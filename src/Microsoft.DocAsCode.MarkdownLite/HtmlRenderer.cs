@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     result += "<th>";
                 }
-                foreach (var item in token.Header[i].Tokens)
+                foreach (var item in token.Header[i].Content.Tokens)
                 {
                     result += renderer.Render(item);
                 }
@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     {
                         result += "<td>";
                     }
-                    foreach (var item in row[j].Tokens)
+                    foreach (var item in row[j].Content.Tokens)
                     {
                         result += renderer.Render(item);
                     }
