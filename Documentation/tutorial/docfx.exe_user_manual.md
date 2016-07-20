@@ -277,6 +277,23 @@ Please refer to [How to Create Custom Templates](howto_create_custom_template.md
 }
 ```
 
+#### 3.2.2 Reserved Metadata
+After passing values through global metadata or file metadata, DocFX can use these metadata in templates to control the output html.
+Reserved metadatas:
+
+Metadata Name         | Type    | Description
+----------------------|---------|---------------------------
+_appTitle             | string  | Will be appended to each output page's head title.
+_appFooter            | string  | The footer text. Will show DocFX's Copyright text if not specified.
+_enableSearch         | bool    | Indicate whether to show the search box on the top of page.
+_disableNavbar        | bool    | Indicate whether to show the navigation bar on the top of page.
+_disableBreadcrumb    | bool    | Indicate whether to show breadcrumb on the top of page.
+_disableToc           | bool    | Indicate whether to show table of contents on the left of page.
+_disableAffix         | bool    | Indicate whether to show the affix bar on the right of page.
+_disableContribution  | bool    | Indicate whether to show the `View Source` and `Improve this Doc` buttons.
+_gitContribute        | object  | Customize the `Improve this Doc` URL button for public contributors. Use `repo` to specify the contribution repository URL. Use `branch` to specify the contribution branch. Use `path` to specify the folder for new overwrite files .
+
+
 4. Supported File Mapping Format
 ---------------------------------------------
 There are several ways to define file mapping.

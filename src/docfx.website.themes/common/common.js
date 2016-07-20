@@ -34,33 +34,33 @@ function getHtmlId(input) {
     return input.replace(/\W/g, '_');
 }
 
-function getViewSourceHref(item) {
+function getViewSourceHref(item, gitContribute) {
     /* jshint validthis: true */
     if (!item || !item.source || !item.source.remote) return '';
-    return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1);
+    return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1, gitContribute);
 }
 
-function getImproveTheDocHref(item, newFileRepository) {
+function getImproveTheDocHref(item, gitContribute) {
     if (!item) return '';
     if (!item.documentation || !item.documentation.remote) {
-        return getNewFileUrl(item.uid, newFileRepository);
+        return getNewFileUrl(item.uid, gitContribute);
     } else {
-        return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1);
+        return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1, gitContribute);
     }
 }
 
-function getNewFileUrl(uid, newFileRepository) {
+function getNewFileUrl(uid, gitContribute) {
     // do not support VSO for now
-    if (newFileRepository && newFileRepository.repo) {
-        var repo = newFileRepository.repo;
+    if (gitContribute && gitContribute.repo) {
+        var repo = gitContribute.repo;
         if (repo.substr(-4) === '.git') {
             repo = repo.substr(0, repo.length - 4);
         }
         var path = getGithubUrlPrefix(repo);
         if (path != '') {
             path += '/new';
-            path += '/' + newFileRepository.branch;
-            path += '/' + getOverrideFolder(newFileRepository.path);
+            path += '/' + gitContribute.branch;
+            path += '/' + getOverrideFolder(gitContribute.path);
             path += '/new?filename=' + getHtmlId(uid) + '.md';
             path += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
         }
@@ -70,9 +70,12 @@ function getNewFileUrl(uid, newFileRepository) {
     }
 }
 
-function getRemoteUrl(remote, startLine) {
+function getRemoteUrl(remote, startLine, gitContribute) {
     if (remote && remote.repo) {
         var repo = remote.repo;
+        if (gitContribute && gitContribute.repo) repo = gitContribute.repo;
+        var branch = remote.branch;
+        if (gitContribute && gitContribute.branch) branch = gitContribute.branch;
         if (repo.substr(-4) === '.git') {
             repo = repo.substr(0, repo.length - 4);
         }
@@ -83,7 +86,7 @@ function getRemoteUrl(remote, startLine) {
         }
         var path = getGithubUrlPrefix(repo);
         if (path != '') {
-            path += '/blob' + '/' + remote.branch + '/' + remote.path;
+            path += '/blob' + '/' + branch + '/' + remote.path;
             if (linenum > 0) path += '/#L' + linenum;
         }
         return path;

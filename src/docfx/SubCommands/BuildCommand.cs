@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.SubCommands
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
             MergeOptionsToConfig(options, config);
-            MergeNewFileRepositoryToConfig(config);
+            MergeGitContributeToConfig(config);
             return config;
         }
 
@@ -250,7 +250,7 @@ namespace Microsoft.DocAsCode.SubCommands
             config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
         }
 
-        private static void MergeNewFileRepositoryToConfig(BuildJsonConfig config)
+        private static void MergeGitContributeToConfig(BuildJsonConfig config)
         {
             GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
             if (repoInfoFromBaseDirectory?.LocalWorkingDirectory != null)
@@ -258,21 +258,21 @@ namespace Microsoft.DocAsCode.SubCommands
                 config.GlobalMetadata["baseRepositoryDirectory"] = repoInfoFromBaseDirectory.LocalWorkingDirectory;
             }
 
-            if (repoInfoFromBaseDirectory != null && repoInfoFromBaseDirectory.RelativePath != null)
+            if (repoInfoFromBaseDirectory?.RelativePath != null)
             {
                 repoInfoFromBaseDirectory.RelativePath = Path.Combine(repoInfoFromBaseDirectory.RelativePath, DocAsCode.Constants.DefaultOverwriteFolderName);
             }
-            object newFileRepository;
-            if (config.GlobalMetadata.TryGetValue("newFileRepository", out newFileRepository))
+            object gitRespositoryOpenToPublicContributors;
+            if (config.GlobalMetadata.TryGetValue("_gitContribute", out gitRespositoryOpenToPublicContributors))
             {
-                GitDetail repoInfo = null;
+                GitDetail repoInfo;
                 try
                 {
-                    repoInfo = JObject.FromObject(newFileRepository).ToObject<GitDetail>();
+                    repoInfo = JObject.FromObject(gitRespositoryOpenToPublicContributors).ToObject<GitDetail>();
                 }
                 catch (Exception e)
                 {
-                    throw new DocumentException($"Unable to convert newFileRepository to GitDetail in globalMetadata: {e.Message}", e);
+                    throw new DocumentException($"Unable to convert _gitContribute to GitDetail in globalMetadata: {e.Message}", e);
                 }
                 if (repoInfoFromBaseDirectory != null)
                 {
@@ -280,11 +280,11 @@ namespace Microsoft.DocAsCode.SubCommands
                     if (repoInfo.RemoteBranch == null) repoInfo.RemoteBranch = repoInfoFromBaseDirectory.RemoteBranch;
                     if (repoInfo.RemoteRepositoryUrl == null) repoInfo.RemoteRepositoryUrl = repoInfoFromBaseDirectory.RemoteRepositoryUrl;
                 }
-                config.GlobalMetadata["newFileRepository"] = repoInfo;
+                config.GlobalMetadata["_gitContribute"] = repoInfo;
             }
             else
             {
-                config.GlobalMetadata["newFileRepository"] = repoInfoFromBaseDirectory;
+                config.GlobalMetadata["_gitContribute"] = repoInfoFromBaseDirectory;
             }
         }
 
