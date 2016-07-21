@@ -245,9 +245,26 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
-
-            config.FileMetadata = GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
-            config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
+            if (options.GlobalMetadataFilePath != null)
+            {
+                config.GlobalMetadataFilePath = options.GlobalMetadataFilePath;
+                Logger.LogWarning($"globalMetadata config file from command line overrides it from docfx config file.");
+            }
+            if (options.FileMetadataFilePath != null)
+            {
+                config.FileMetadataFilePath = options.FileMetadataFilePath;
+                Logger.LogWarning($"fileMetadata config file from command line overrides it from docfx config file.");
+            }
+            if (PathUtility.IsRelativePath(config.GlobalMetadataFilePath))
+            {
+                config.GlobalMetadataFilePath = Path.Combine(config.BaseDirectory, config.GlobalMetadataFilePath);
+            }
+            if (PathUtility.IsRelativePath(config.FileMetadataFilePath))
+            {
+                config.FileMetadataFilePath = Path.Combine(config.BaseDirectory, config.FileMetadataFilePath);
+            }
+            config.FileMetadata = GetFileMetadataFromOption(config.FileMetadataFilePath, config.FileMetadata);
+            config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, config.GlobalMetadataFilePath, config.GlobalMetadata);
         }
 
         private static void MergeGitContributeToConfig(BuildJsonConfig config)
@@ -298,26 +315,26 @@ namespace Microsoft.DocAsCode.SubCommands
                     fileMetadata = JsonUtility.Deserialize<BuildJsonConfig>(fileMetadataFilePath).FileMetadata;
                     if (fileMetadata == null)
                     {
-                        Logger.LogWarning($"File from \"--fileMetadataFile {fileMetadataFilePath}\" does not contain \"fileMetadata\" definition, ignored.");
+                        Logger.LogWarning($"File from \"{fileMetadataFilePath}\" does not contain \"fileMetadata\" definition, ignored.");
                     }
                     else
                     {
-                        Logger.LogInfo($"File metadata from \"--fileMetadataFile {fileMetadataFilePath}\" overrides the one defined in config file");
+                        Logger.LogInfo($"File metadata from \"{fileMetadataFilePath}\" overrides the one defined in config file");
                     }
                 }
                 catch (FileNotFoundException)
                 {
-                    Logger.LogWarning($"Invalid option \"--fileMetadataFile {fileMetadataFilePath}\": file does not exist, ignored.");
+                    Logger.LogWarning($"Invalid option \"{fileMetadataFilePath}\": file does not exist, ignored.");
                 }
                 catch (JsonException e)
                 {
-                    Logger.LogWarning($"File from \"--fileMetadataFile {fileMetadataFilePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
+                    Logger.LogWarning($"File from \"{fileMetadataFilePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
                 }
             }
 
             return MergeDictionary(
-                new DictionaryMergeContext<FileMetadataPairs>("fileMetadata from config file", fileMetadataFromConfig),
-                new DictionaryMergeContext<FileMetadataPairs>("fileMetadata command option", fileMetadata));
+                new DictionaryMergeContext<FileMetadataPairs>("fileMetadata from docfx config file", fileMetadataFromConfig),
+                new DictionaryMergeContext<FileMetadataPairs>("fileMetadata from fileMetadata config file", fileMetadata));
         }
 
         internal static Dictionary<string, object> GetGlobalMetadataFromOption(string globalMetadataContent, string globalMetadataFilePath, Dictionary<string, object> globalMetadataFromConfig)
@@ -345,26 +362,27 @@ namespace Microsoft.DocAsCode.SubCommands
                     var globalMetadataFromFile = JsonUtility.Deserialize<BuildJsonConfig>(globalMetadataFilePath).GlobalMetadata;
                     if (globalMetadataFromFile == null)
                     {
-                        Logger.LogWarning($" File from \"--globalMetadataFile {globalMetadataFilePath}\" does not contain \"globalMetadata\" definition.");
+                        Logger.LogWarning($" File from \"globalMetadata config file {globalMetadataFilePath}\" does not contain \"globalMetadata\" definition.");
                     }
                     else
                     {
-                        globalMetadata = MergeDictionary(new DictionaryMergeContext<object>("--globalMetadataFile", globalMetadataFromFile), new DictionaryMergeContext<object>("--globalMetadata", globalMetadata));
+                        globalMetadata = MergeDictionary(new DictionaryMergeContext<object>("globalMetadata config file", globalMetadataFromFile), new DictionaryMergeContext<object>("--globalMetadata", globalMetadata));
                     }
                 }
                 catch (FileNotFoundException)
                 {
-                    Logger.LogWarning($"Invalid option \"--globalMetadataFile {globalMetadataFilePath}\": file does not exist, ignored.");
+                    Logger.LogWarning($"Invalid option \"globalMetadata config file {globalMetadataFilePath}\": file does not exist, ignored.");
                 }
                 catch (JsonException e)
                 {
-                    Logger.LogWarning($"File from \"--globalMetadataFile {globalMetadataFilePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
+                    Logger.LogWarning($"File from \"globalMetadata config file {globalMetadataFilePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
                 }
             }
 
             return MergeDictionary(
-                new DictionaryMergeContext<object>("globalMetadata from config file", globalMetadataFromConfig),
-                new DictionaryMergeContext<object>("globalMetadata command option", globalMetadata));
+                new DictionaryMergeContext<object>("globalMetadata from docfx config file", globalMetadataFromConfig),
+                new DictionaryMergeContext<object>("globalMetadata merged with command option and globalMetadata config file", globalMetadata)
+                );
         }
 
         private static JsonSerializer GetToObjectSerializer()
@@ -375,7 +393,6 @@ namespace Microsoft.DocAsCode.SubCommands
             jsonSerializer.Converters.Add(new JObjectDictionaryToObjectDictionaryConverter());
             return jsonSerializer;
         }
-
 
         private static Dictionary<string, T> MergeDictionary<T>(DictionaryMergeContext<T> item, DictionaryMergeContext<T> overrideItem)
         {
