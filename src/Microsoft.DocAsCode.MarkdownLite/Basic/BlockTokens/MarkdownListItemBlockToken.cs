@@ -3,9 +3,10 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public class MarkdownListItemBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownListItemBlockToken>
+    public class MarkdownListItemBlockToken : IMarkdownExpression, IMarkdownRewritable<MarkdownListItemBlockToken>
     {
         public MarkdownListItemBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, bool loose, SourceInfo sourceInfo)
         {
@@ -35,5 +36,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return new MarkdownListItemBlockToken(Rule, Context, tokens, Loose, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() => Tokens;
     }
 }

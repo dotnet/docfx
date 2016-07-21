@@ -3,9 +3,11 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
 
-    public class MarkdownTableBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownTableBlockToken>
+    public class MarkdownTableBlockToken : IMarkdownExpression, IMarkdownRewritable<MarkdownTableBlockToken>
     {
         public MarkdownTableBlockToken(
             IMarkdownRule rule,
@@ -72,5 +74,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return new MarkdownTableBlockToken(Rule, Context, header, Align, cells, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() =>
+            (from token in Header select (IMarkdownToken)token)
+            .Concat(from row in Cells from cell in row select cell);
     }
 }

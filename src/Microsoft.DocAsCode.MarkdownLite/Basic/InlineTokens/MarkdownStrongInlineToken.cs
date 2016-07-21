@@ -3,9 +3,10 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public class MarkdownStrongInlineToken : IMarkdownToken, IMarkdownRewritable<MarkdownStrongInlineToken>
+    public class MarkdownStrongInlineToken : IMarkdownExpression, IMarkdownRewritable<MarkdownStrongInlineToken>
     {
         public MarkdownStrongInlineToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> content, SourceInfo sourceInfo)
         {
@@ -32,5 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return new MarkdownStrongInlineToken(Rule, Context, tokens, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() => Content;
     }
 }
