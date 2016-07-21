@@ -160,10 +160,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var postProcessors = GetPostProcessor(postProcessorNames);
                 foreach (var postProcessor in postProcessors)
                 {
-                    parameters.Metadata = postProcessor.Item2.PrepareMetadata(parameters.Metadata);
-                    if (parameters.Metadata == null)
+                    using (new LoggerPhaseScope(postProcessor.Item1))
                     {
-                        throw new DocfxException($"Plugin {postProcessor.Item1} should not return null metadata");
+                        parameters.Metadata = postProcessor.Item2.PrepareMetadata(parameters.Metadata);
+                        if (parameters.Metadata == null)
+                        {
+                            throw new DocfxException($"Plugin {postProcessor.Item1} should not return null metadata");
+                        }
                     }
                 }
 
@@ -215,10 +218,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                         // post process
                         foreach (var postProcessor in postProcessors)
                         {
-                            generatedManifest = postProcessor.Item2.Process(generatedManifest, parameters.OutputBaseDir);
-                            if (generatedManifest == null)
+                            using (new LoggerPhaseScope(postProcessor.Item1))
                             {
-                                throw new DocfxException($"Plugin {postProcessor.Item1} should not return null manifest");
+                                generatedManifest = postProcessor.Item2.Process(generatedManifest, parameters.OutputBaseDir);
+                                if (generatedManifest == null)
+                                {
+                                    throw new DocfxException($"Plugin {postProcessor.Item1} should not return null manifest");
+                                }
                             }
                         }
 
@@ -324,13 +330,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var processor in processors)
             {
                 var p = GetExport(typeof(IPostProcessor), processor) as IPostProcessor;
+                Logger.LogInfo($"Post processor {processor} loaded.");
                 if (p != null)
                 {
                     processorList.Add(new Tuple<string, IPostProcessor>(processor, p));
                 }
                 else
                 {
-                    Logger.LogWarning($"Can't find the post-processor: {processor}");
+                    Logger.LogWarning($"Can't find the post processor: {processor}");
                 }
             }
             return processorList;

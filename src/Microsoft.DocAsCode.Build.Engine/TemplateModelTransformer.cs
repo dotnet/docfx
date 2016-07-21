@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 // Resource file has already been processed in its plugin
                 manifestItem.OutputFiles.Add("resource", new OutputFileInfo
                 {
-                    ReleativePath = item.ResourceFile,
+                    RelativePath = item.ResourceFile,
                     LinkToPath = null,
                     Hash = null
                 });
@@ -246,7 +246,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             manifestItem.OutputFiles.Add(extension, new OutputFileInfo
             {
-                ReleativePath = relativeOutputPath,
+                RelativePath = relativeOutputPath,
                 LinkToPath = null,
                 Hash = Convert.ToBase64String(hashTask.Result)
             });

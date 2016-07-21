@@ -3,6 +3,7 @@ Version Notes (Current Version: v2.2)
 v2.2(Pre-Release)
 -----------
 1.  Fix bug: syntax for static class is incorrect.
+2.  Support plug-in for post processor
 
 v2.1
 -----------
