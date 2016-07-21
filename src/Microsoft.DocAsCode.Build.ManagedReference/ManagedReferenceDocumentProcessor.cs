@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     string displayLocalPath = null;
 
                     object baseDirectory;
-                    if (metadata.TryGetValue("baseRepositoryDirectory", out baseDirectory))
+                    if (metadata.TryGetValue("baseDirectory", out baseDirectory))
                     {
                         displayLocalPath = PathUtility.MakeRelativePath((string)baseDirectory, file.FullPath);
                     }

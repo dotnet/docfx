@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
             string displayLocalPath = null;
             object baseDirectory;
-            if (metadata.TryGetValue("baseRepositoryDirectory", out baseDirectory))
+            if (metadata.TryGetValue("baseDirectory", out baseDirectory))
             {
                 displayLocalPath = PathUtility.MakeRelativePath((string)baseDirectory, file.FullPath);
             }

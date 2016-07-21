@@ -255,7 +255,7 @@ namespace Microsoft.DocAsCode.SubCommands
             GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
             if (repoInfoFromBaseDirectory?.LocalWorkingDirectory != null)
             {
-                config.GlobalMetadata["baseRepositoryDirectory"] = repoInfoFromBaseDirectory.LocalWorkingDirectory;
+                config.GlobalMetadata["baseDirectory"] = config.BaseDirectory;
             }
 
             if (repoInfoFromBaseDirectory?.RelativePath != null)

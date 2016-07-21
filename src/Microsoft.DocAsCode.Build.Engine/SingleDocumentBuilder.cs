@@ -690,7 +690,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static string GetSourceBasePath(DocumentBuildParameters parameters)
         {
             object basePath;
-            if (parameters.Metadata.TryGetValue("baseRepositoryDirectory", out basePath))
+            if (parameters.Metadata.TryGetValue("baseDirectory", out basePath))
             {
                 var path = basePath as string;
                 return path?.ToNormalizedPath();
