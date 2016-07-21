@@ -1,9 +1,7 @@
-Version Notes (Current Version: v2.2.1)
+Version Notes (Current Version: v2.3)
 =======================================
-v2.2.1
+v2.3(Pre-Release)
 -----------
-1. Fix bug when metadata incremental check
-2. Move post process out of DocumentBuilder
 
 v2.2
 -----------

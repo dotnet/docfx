@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             var markdown = (string)content[ConceptualKey];
             var result = host.Markup(markdown, model.FileAndType);
 
-            var htmlInfo = SeperateHtml(result.Html);
+            var htmlInfo = SeparateHtml(result.Html);
             model.Properties.IsUserDefinedTitle = false;
             content[Constants.PropertyName.Title] = htmlInfo.Title;
             content["rawTitle"] = htmlInfo.RawTitle;
@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             return title.Substring(0, maxLength) + "...";
         }
 
-        private static HtmlInfo SeperateHtml(string contentHtml)
+        private static HtmlInfo SeparateHtml(string contentHtml)
         {
             var content = new HtmlInfo();
 
