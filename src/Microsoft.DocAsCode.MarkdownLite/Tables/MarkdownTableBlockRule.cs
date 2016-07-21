@@ -46,11 +46,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     t.Rule,
                     t.Context,
                     (from text in header
-                     select p.TokenizeInline(t.SourceInfo.Copy(text))).ToImmutableArray(),
+                     let si = t.SourceInfo.Copy(text)
+                     select new MarkdownTableItemBlockToken(t.Rule, t.Context, p.TokenizeInline(si), si)).ToImmutableArray(),
                     align.ToImmutableArray(),
                     (from row in cells
                      select (from col in row
-                             select p.TokenizeInline(t.SourceInfo.Copy(col))).ToImmutableArray()).ToImmutableArray(),
+                             let si = t.SourceInfo.Copy(col)
+                             select new MarkdownTableItemBlockToken(t.Rule, t.Context, p.TokenizeInline(si), si)).ToImmutableArray()).ToImmutableArray(),
                     t.SourceInfo));
         }
 

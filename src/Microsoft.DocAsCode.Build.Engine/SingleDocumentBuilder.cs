@@ -124,7 +124,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Files = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables),
                             Homepages = GetHomepages(context),
-                            XRefMap = ExportXRefMap(parameters, context)
+                            XRefMap = ExportXRefMap(parameters, context),
+                            SourceBasePath = GetSourceBasePath(parameters)
                         };
                     }
                 }
@@ -194,26 +195,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public static void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
-        {
-            if (manifestItems == null)
-            {
-                throw new ArgumentNullException(nameof(manifestItems));
-            }
-
-            var itemsToRemove = new List<string>();
-            foreach (var duplicates in from m in manifestItems
-                                       from output in m.OutputFiles.Values
-                                       group m.OriginalFile by output into g
-                                       where g.Count() > 1
-                                       select g)
-            {
-                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
-                itemsToRemove.AddRange(duplicates.Skip(1));
-            }
-            manifestItems.RemoveAll(m => itemsToRemove.Contains(m.OriginalFile));
-        }
-
         public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
         {
             var hostService = new HostService(
@@ -255,6 +236,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (m.LocalPathFromRepoRoot == null)
                     {
                         m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
+                    }
+                    if (m.LocalPathFromRoot == null)
+                    {
+                        m.LocalPathFromRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
                     }
                 }
                 var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
@@ -627,6 +612,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Key = model.Key,
                 // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
                 LocalPathFromRepoRoot = model.LocalPathFromRepoRoot,
+                LocalPathFromRoot = model.LocalPathFromRoot,
                 Model = model.ModelWithCache,
                 InputFolder = model.OriginalFileAndType.BaseDir,
                 Metadata = new Dictionary<string, object>((IDictionary<string, object>)model.ManifestProperties),
@@ -699,6 +685,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
                     TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
                 }).ToList();
+        }
+
+        private static string GetSourceBasePath(DocumentBuildParameters parameters)
+        {
+            object basePath;
+            if (parameters.Metadata.TryGetValue("_baseDirectory", out basePath))
+            {
+                var path = basePath as string;
+                return path?.ToNormalizedPath();
+            }
+            return null;
         }
 
         /// <summary>

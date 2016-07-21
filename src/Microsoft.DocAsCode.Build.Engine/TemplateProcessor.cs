@@ -205,6 +205,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Homepages = manifests.SelectMany(item => item.Homepages).Distinct().ToList(),
                 Files = manifests.SelectMany(item => item.Files).Distinct().ToList(),
                 XRefMap = xrefMapsObject,
+                SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath
             };
 
             return manifestObject;

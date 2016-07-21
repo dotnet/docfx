@@ -122,6 +122,7 @@
     <Compile Include="StringBuffer.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="InlineContent.cs" />
+    <Compile Include="Tables\MarkdownTableItemBlockToken.cs" />
     <Compile Include="TokenHelper.cs" />
     <Compile Include="Validators\IMarkdownTokenTreeValidator.cs" />
     <Compile Include="Validators\IMarkdownTokenValidator.cs" />
