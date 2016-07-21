@@ -245,26 +245,32 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
-            if (options.GlobalMetadataFilePath != null)
+            if (options.GlobalMetadataFilePaths != null && !options.GlobalMetadataFilePaths.Any())
             {
-                config.GlobalMetadataFilePath = options.GlobalMetadataFilePath;
-                Logger.LogWarning($"globalMetadata config file from command line overrides it from docfx config file.");
+                if (!config.GlobalMetadataFilePaths.Any())
+                {
+                    Logger.LogWarning($"globalMetadata config file from command line overrides it from docfx config file.");
+                }
+                config.GlobalMetadataFilePaths.AddRange(options.GlobalMetadataFilePaths);
             }
-            if (options.FileMetadataFilePath != null)
+            config.GlobalMetadataFilePaths =
+                new ListWithStringFallback(config.GlobalMetadataFilePaths.Select(
+                    path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
+
+            if (options.FileMetadataFilePaths != null && !options.FileMetadataFilePaths.Any())
             {
-                config.FileMetadataFilePath = options.FileMetadataFilePath;
-                Logger.LogWarning($"fileMetadata config file from command line overrides it from docfx config file.");
+                if (!config.FileMetadataFilePaths.Any())
+                {
+                    Logger.LogWarning($"fileMetadata config file from command line overrides it from docfx config file.");
+                }
+                config.FileMetadataFilePaths.AddRange(options.FileMetadataFilePaths);
             }
-            if (PathUtility.IsRelativePath(config.GlobalMetadataFilePath))
-            {
-                config.GlobalMetadataFilePath = Path.Combine(config.BaseDirectory, config.GlobalMetadataFilePath);
-            }
-            if (PathUtility.IsRelativePath(config.FileMetadataFilePath))
-            {
-                config.FileMetadataFilePath = Path.Combine(config.BaseDirectory, config.FileMetadataFilePath);
-            }
-            config.FileMetadata = GetFileMetadataFromOption(config.FileMetadataFilePath, config.FileMetadata);
-            config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, config.GlobalMetadataFilePath, config.GlobalMetadata);
+            config.FileMetadataFilePaths =
+                new ListWithStringFallback(config.FileMetadataFilePaths.Select(
+                    path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
+
+            config.FileMetadata = GetFileMetadataFromOption(config.FileMetadataFilePaths, config.FileMetadata);
+            config.GlobalMetadata = GetGlobalMetadataFromOption(options.GlobalMetadata, config.GlobalMetadataFilePaths, config.GlobalMetadata);
         }
 
         private static void MergeGitContributeToConfig(BuildJsonConfig config)
@@ -305,39 +311,45 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(string fileMetadataFilePath, Dictionary<string, FileMetadataPairs> fileMetadataFromConfig)
+        internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(ListWithStringFallback fileMetadataFilePaths, Dictionary<string, FileMetadataPairs> fileMetadataFromConfig)
         {
-            Dictionary<string, FileMetadataPairs> fileMetadata = null;
-            if (fileMetadataFilePath != null)
+            var fileMetadataFromFile = new Dictionary<string, FileMetadataPairs>();
+            if (fileMetadataFilePaths != null)
             {
-                try
+                foreach (var fileMetadataFilePath in fileMetadataFilePaths)
                 {
-                    fileMetadata = JsonUtility.Deserialize<BuildJsonConfig>(fileMetadataFilePath).FileMetadata;
-                    if (fileMetadata == null)
+                    Dictionary<string, FileMetadataPairs> metadata = null;
+                    try
+                    {
+                        metadata = JsonUtility.Deserialize<BuildJsonConfig>(fileMetadataFilePath).FileMetadata;
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Logger.LogWarning($"Invalid option \"{fileMetadataFilePath}\": file does not exist, ignored.");
+                    }
+                    catch (JsonException e)
+                    {
+                        Logger.LogWarning($"File from \"{fileMetadataFilePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
+                    }
+                    if (metadata == null)
                     {
                         Logger.LogWarning($"File from \"{fileMetadataFilePath}\" does not contain \"fileMetadata\" definition, ignored.");
                     }
                     else
                     {
-                        Logger.LogInfo($"File metadata from \"{fileMetadataFilePath}\" overrides the one defined in config file");
+                        fileMetadataFromFile = MergeDictionary(
+                            new DictionaryMergeContext<FileMetadataPairs>($"fileMetdata from {fileMetadataFilePaths}", metadata),
+                            new DictionaryMergeContext<FileMetadataPairs>("fileMetdata from previous fileMetadataFile", fileMetadataFromFile));
                     }
-                }
-                catch (FileNotFoundException)
-                {
-                    Logger.LogWarning($"Invalid option \"{fileMetadataFilePath}\": file does not exist, ignored.");
-                }
-                catch (JsonException e)
-                {
-                    Logger.LogWarning($"File from \"{fileMetadataFilePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
                 }
             }
 
             return MergeDictionary(
                 new DictionaryMergeContext<FileMetadataPairs>("fileMetadata from docfx config file", fileMetadataFromConfig),
-                new DictionaryMergeContext<FileMetadataPairs>("fileMetadata from fileMetadata config file", fileMetadata));
+                new DictionaryMergeContext<FileMetadataPairs>("fileMetadata from fileMetadata config file", fileMetadataFromFile));
         }
 
-        internal static Dictionary<string, object> GetGlobalMetadataFromOption(string globalMetadataContent, string globalMetadataFilePath, Dictionary<string, object> globalMetadataFromConfig)
+        internal static Dictionary<string, object> GetGlobalMetadataFromOption(string globalMetadataContent, ListWithStringFallback globalMetadataFilePaths, Dictionary<string, object> globalMetadataFromConfig)
         {
             Dictionary<string, object> globalMetadata = null;
             if (globalMetadataContent != null)
@@ -355,27 +367,32 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            if (globalMetadataFilePath != null)
+            if (globalMetadataFilePaths != null)
             {
-                try
+                foreach (var globalMetadataFilePath in globalMetadataFilePaths)
                 {
-                    var globalMetadataFromFile = JsonUtility.Deserialize<BuildJsonConfig>(globalMetadataFilePath).GlobalMetadata;
-                    if (globalMetadataFromFile == null)
+                    Dictionary<string, object> metadata = null;
+                    try
+                    {
+                        metadata = JsonUtility.Deserialize<BuildJsonConfig>(globalMetadataFilePath).GlobalMetadata;
+
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Logger.LogWarning($"Invalid option \"globalMetadata config file {globalMetadataFilePath}\": file does not exist, ignored.");
+                    }
+                    catch (JsonException e)
+                    {
+                        Logger.LogWarning($"File from \"globalMetadata config file {globalMetadataFilePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
+                    }
+                    if (metadata == null)
                     {
                         Logger.LogWarning($" File from \"globalMetadata config file {globalMetadataFilePath}\" does not contain \"globalMetadata\" definition.");
                     }
                     else
                     {
-                        globalMetadata = MergeDictionary(new DictionaryMergeContext<object>("globalMetadata config file", globalMetadataFromFile), new DictionaryMergeContext<object>("--globalMetadata", globalMetadata));
+                        globalMetadata = MergeDictionary(new DictionaryMergeContext<object>($"globalMetadata config file {globalMetadataFilePath}", metadata), new DictionaryMergeContext<object>("previous global metadata", globalMetadata));
                     }
-                }
-                catch (FileNotFoundException)
-                {
-                    Logger.LogWarning($"Invalid option \"globalMetadata config file {globalMetadataFilePath}\": file does not exist, ignored.");
-                }
-                catch (JsonException e)
-                {
-                    Logger.LogWarning($"File from \"globalMetadata config file {globalMetadataFilePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
                 }
             }
 

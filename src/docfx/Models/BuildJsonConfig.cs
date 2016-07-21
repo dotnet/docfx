@@ -41,8 +41,8 @@ namespace Microsoft.DocAsCode
         [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
         public Dictionary<string, object> GlobalMetadata { get; set; }
 
-        [JsonProperty("globalMetadataFile")]
-        public string GlobalMetadataFilePath { get; set; }
+        [JsonProperty("globalMetadataFiles")]
+        public ListWithStringFallback GlobalMetadataFilePaths { get; set; } = new ListWithStringFallback();
 
         /// <summary>
         /// Metadata that applies to some specific files.
@@ -54,8 +54,8 @@ namespace Microsoft.DocAsCode
         [JsonProperty("fileMetadata")]
         public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
 
-        [JsonProperty("fileMetadataFile")]
-        public string FileMetadataFilePath { get; set; }
+        [JsonProperty("fileMetadataFiles")]
+        public ListWithStringFallback FileMetadataFilePaths { get; set; } = new ListWithStringFallback();
 
         [JsonProperty("template")]
         public ListWithStringFallback Templates { get; set; } = new ListWithStringFallback();
