@@ -54,6 +54,15 @@ namespace Microsoft.DocAsCode
                 }
                 return 1;
             }
+            catch (InvalidOptionException e)
+            {
+                Logger.LogError(e.Message);
+                if (controller != null)
+                {
+                    Console.WriteLine(controller.GetHelpText());
+                }
+                return 1;
+            }
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
