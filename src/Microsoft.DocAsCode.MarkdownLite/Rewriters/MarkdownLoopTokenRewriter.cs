@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
 
-    internal sealed class MarkdownLoopTokenRewriter : IMarkdownTokenRewriter, IInitializableMarkdownTokenRewrtier
+    internal sealed class MarkdownLoopTokenRewriter : IMarkdownTokenRewriter, IInitializable
     {
         public MarkdownLoopTokenRewriter(IMarkdownTokenRewriter inner, int maxLoopCount)
         {
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public void Initialize(IMarkdownRewriteEngine rewriteEngine)
         {
-            (Inner as IInitializableMarkdownTokenRewrtier)?.Initialize(rewriteEngine);
+            (Inner as IInitializable)?.Initialize(rewriteEngine);
         }
 
         public IMarkdownToken Rewrite(IMarkdownRewriteEngine engine, IMarkdownToken token)

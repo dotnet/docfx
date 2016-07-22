@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         }
 
         private sealed class MarkdownLambdaTokenValidator<TToken>
-            : IMarkdownTokenValidator, IInitializableMarkdownTokenRewrtier
+            : IMarkdownTokenValidator, IInitializable
             where TToken : class, IMarkdownToken
         {
             public Action<TToken> Validator { get; }

@@ -52,7 +52,7 @@
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
     <Compile Include="IMarkdownRewritable.cs" />
-    <Compile Include="Rewriters\IInitializableMarkdownTokenRewrtier.cs" />
+    <Compile Include="Rewriters\IInitializable.cs" />
     <Compile Include="Rewriters\MarkdownInitializableLambdaTokenRewriter.cs" />
     <Compile Include="SourceInfo.cs" />
     <Compile Include="MarkdownEngine.cs" />

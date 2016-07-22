@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System;
 
     internal sealed class MarkdownInitializableLambdaTokenRewriter<TEngine, TToken>
-        : IMarkdownTokenRewriter, IInitializableMarkdownTokenRewrtier
+        : IMarkdownTokenRewriter, IInitializable
         where TEngine : class, IMarkdownRewriteEngine
         where TToken : class, IMarkdownToken
     {

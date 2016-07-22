@@ -136,7 +136,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public void Initialize()
         {
-            (_rewriter as IInitializableMarkdownTokenRewrtier)?.Initialize(this);
+            (_rewriter as IInitializable)?.Initialize(this);
         }
 
         #endregion

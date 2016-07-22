@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    public interface IInitializableMarkdownTokenRewrtier
+    public interface IInitializable
     {
         void Initialize(IMarkdownRewriteEngine rewriteEngine);
     }

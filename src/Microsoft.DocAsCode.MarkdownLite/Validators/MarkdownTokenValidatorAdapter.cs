@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    internal sealed class MarkdownTokenValidatorAdapter : IMarkdownTokenRewriter, IInitializableMarkdownTokenRewrtier
+    internal sealed class MarkdownTokenValidatorAdapter : IMarkdownTokenRewriter, IInitializable
     {
         public ImmutableArray<IMarkdownTokenValidator> Validators { get; }
 
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             foreach (var item in Validators)
             {
-                (item as IInitializableMarkdownTokenRewrtier)?.Initialize(rewriteEngine);
+                (item as IInitializable)?.Initialize(rewriteEngine);
             }
         }
     }
