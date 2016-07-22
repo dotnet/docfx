@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.2.1)
+Version Notes (Current Version: v2.2.2)
 =======================================
+v2.2.2
+-----------
+1. Fix bug in `.manifest` file.
+
 v2.2.1
 -----------
 1. Fix bug when metadata incremental check
