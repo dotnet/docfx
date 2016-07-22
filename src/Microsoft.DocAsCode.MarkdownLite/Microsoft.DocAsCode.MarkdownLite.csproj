@@ -44,6 +44,7 @@
     <Compile Include="Gfm\GfmUrlInlineRule.cs" />
     <Compile Include="IMarkdownContext.cs" />
     <Compile Include="IMarkdownEngine.cs" />
+    <Compile Include="IMarkdownExpression.cs" />
     <Compile Include="IMarkdownParser.cs" />
     <Compile Include="IMarkdownParsingContext.cs" />
     <Compile Include="IMarkdownRenderer.cs" />

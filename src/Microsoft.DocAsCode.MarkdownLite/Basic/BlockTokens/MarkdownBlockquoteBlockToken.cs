@@ -3,9 +3,10 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public class MarkdownBlockquoteBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownBlockquoteBlockToken>
+    public class MarkdownBlockquoteBlockToken : IMarkdownExpression, IMarkdownRewritable<MarkdownBlockquoteBlockToken>
     {
         public MarkdownBlockquoteBlockToken(IMarkdownRule rule, IMarkdownContext context, ImmutableArray<IMarkdownToken> tokens, SourceInfo sourceInfo)
         {
@@ -32,5 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return new MarkdownBlockquoteBlockToken(Rule, Context, tokens, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() => Tokens;
     }
 }
