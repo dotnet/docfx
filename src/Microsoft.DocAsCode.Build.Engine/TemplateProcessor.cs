@@ -229,7 +229,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 DocumentType = item.DocumentType,
                 OriginalFile = item.OriginalFile,
-                OutputFiles = item.OutputFiles.ToDictionary(k => k.Key, k => k.Value.RelativePath)
+                OutputFiles = item.OutputFiles.ToDictionary(k => k.Key, k => k.Value.RelativePath),
+                Metadata = item.Metadata,
             }).ToList();
         }
 
