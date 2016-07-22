@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Files = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
-                            SourceBasePath = GetSourceBasePath(parameters)
+                            SourceBasePath = EnvironmentContext.BaseDirectory?.ToNormalizedPath()
                         };
                     }
                 }
@@ -685,17 +685,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
                     TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
                 }).ToList();
-        }
-
-        private static string GetSourceBasePath(DocumentBuildParameters parameters)
-        {
-            object basePath;
-            if (parameters.Metadata.TryGetValue("_baseDirectory", out basePath))
-            {
-                var path = basePath as string;
-                return path?.ToNormalizedPath();
-            }
-            return null;
         }
 
         /// <summary>

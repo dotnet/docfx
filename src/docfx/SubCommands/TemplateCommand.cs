@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.SubCommands
             _options = options;
             if (options.Commands == null || options.Commands.Count == 0 || !Enum.TryParse(options.Commands[0], true, out _commandType))
             {
-                throw new InvalidOptionException("Neither 'list' nor 'export' is found");
+                throw new InvalidOptionException("Neither 'list' nor 'export' is found. You must specify a command type.");
             }
             switch (_commandType)
             {

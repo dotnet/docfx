@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode
                 Logger.LogError(fe.Message);
                 return 1;
             }
-            catch (OptionParserException e)
+            catch (Exception e) when (e is OptionParserException || e is InvalidOptionException)
             {
                 Logger.LogError(e.Message);
                 if (controller != null)

@@ -77,13 +77,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
                     swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
                     var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
-                    string displayLocalPath = null;
-
-                    object baseDirectory;
-                    if (metadata.TryGetValue("_baseDirectory", out baseDirectory))
-                    {
-                        displayLocalPath = PathUtility.MakeRelativePath((string)baseDirectory, file.FullPath);
-                    }
+                    var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
                     return new FileModel(file, vm, serializer: new BinaryFormatter())
                     {

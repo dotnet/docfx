@@ -3,11 +3,12 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmXrefInlineToken : IMarkdownToken, IMarkdownRewritable<DfmXrefInlineToken>
+    public class DfmXrefInlineToken : IMarkdownExpression, IMarkdownRewritable<DfmXrefInlineToken>
     {
         public IMarkdownRule Rule { get; }
         public IMarkdownContext Context { get; }
@@ -37,5 +38,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
             return new DfmXrefInlineToken(Rule, Context, Href, tokens, Title, ThrowIfNotResolved, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() => Content;
     }
 }
