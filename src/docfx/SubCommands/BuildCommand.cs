@@ -34,25 +34,25 @@ namespace Microsoft.DocAsCode.SubCommands
             _version = assembly.GetName().Version.ToString();
             Config = ParseOptions(options);
             SetDefaultConfigValue(Config);
+            EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Environment.CurrentDirectory : Config.BaseDirectory);
             _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
-            var config = Config;
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
-            var baseDirectory = Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Environment.CurrentDirectory : config.BaseDirectory);
+            var baseDirectory = EnvironmentContext.BaseDirectory;
             var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
-            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(config.OutputFolder) ? baseDirectory : config.OutputFolder, config.Destination ?? string.Empty));
+            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(Config.OutputFolder) ? baseDirectory : Config.OutputFolder, config.Destination ?? string.Empty));
 
             BuildDocument(baseDirectory, outputFolder);
 
             _templateManager.ProcessTheme(outputFolder, true);
             // TODO: SEARCH DATA
 
-            if (config?.Serve ?? false)
+            if (Config?.Serve ?? false)
             {
-                ServeCommand.Serve(outputFolder, config.Port);
+                ServeCommand.Serve(outputFolder, Config.Port);
             }
         }
 
@@ -253,7 +253,6 @@ namespace Microsoft.DocAsCode.SubCommands
         private static void MergeGitContributeToConfig(BuildJsonConfig config)
         {
             GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
-            EnvironmentContext.BaseDirectory = config.BaseDirectory;
 
             if (repoInfoFromBaseDirectory?.RelativePath != null)
             {
