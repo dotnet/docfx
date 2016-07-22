@@ -65,6 +65,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
                             (e, t) => t.Extract(parser)),
                     MaxExtractCount + 1));
+            internalRewriteEngine.Initialize();
             tokens = internalRewriteEngine.Rewrite(tokens);
             internalRewriteEngine.Complete();
 
@@ -73,10 +74,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 this,
                 MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
                     (e, t) => t.RewriteId(idTable)));
+            idRewriteEngine.Initialize();
             tokens = idRewriteEngine.Rewrite(tokens);
             idRewriteEngine.Complete();
 
             var rewriteEngine = RewriteEngine;
+            rewriteEngine.Initialize();
             tokens = rewriteEngine.Rewrite(tokens);
             rewriteEngine.Complete();
 

@@ -134,6 +134,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
         }
 
+        public void Initialize()
+        {
+            (_rewriter as IInitializableMarkdownTokenRewrtier)?.Initialize(this);
+        }
+
         #endregion
     }
 }
