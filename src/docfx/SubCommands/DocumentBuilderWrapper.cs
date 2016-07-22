@@ -53,6 +53,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public void BuildDocument()
         {
             var sponsor = new ClientSponsor();
+            EnvironmentContext.BaseDirectory = _baseDirectory;
             if (_listener != null)
             {
                 Logger.LogLevelThreshold = _logLevel;

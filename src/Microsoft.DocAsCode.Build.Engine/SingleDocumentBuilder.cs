@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Files = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
-                            SourceBasePath = EnvironmentContext.BaseDirectory
+                            SourceBasePath = EnvironmentContext.BaseDirectory?.ToNormalizedPath()
                         };
                     }
                 }
