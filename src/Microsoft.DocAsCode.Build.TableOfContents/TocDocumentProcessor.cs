@@ -43,14 +43,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             };
 
             var repoDetail = GitUtility.GetGitDetail(filePath);
-            string displayLocalPath = null;
-
-            object baseDirectory;
-            if (metadata.TryGetValue("_baseDirectory", out baseDirectory))
-            {
-                displayLocalPath = PathUtility.MakeRelativePath((string)baseDirectory, file.FullPath);
-            }
-
+            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             // todo : metadata.
             return new FileModel(file, toc)

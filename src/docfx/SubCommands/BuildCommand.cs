@@ -253,10 +253,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private static void MergeGitContributeToConfig(BuildJsonConfig config)
         {
             GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
-            if (repoInfoFromBaseDirectory?.LocalWorkingDirectory != null)
-            {
-                config.GlobalMetadata["_baseDirectory"] = config.BaseDirectory;
-            }
+            EnvironmentContext.BaseDirectory = config.BaseDirectory;
 
             if (repoInfoFromBaseDirectory?.RelativePath != null)
             {
