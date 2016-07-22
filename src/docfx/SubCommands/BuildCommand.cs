@@ -247,7 +247,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             if (options.GlobalMetadataFilePaths != null && !options.GlobalMetadataFilePaths.Any())
             {
-                if (!config.GlobalMetadataFilePaths.Any())
+                if (config.GlobalMetadataFilePaths.Any())
                 {
                     Logger.LogWarning($"globalMetadata config file from command line overrides it from docfx config file.");
                 }
@@ -259,7 +259,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             if (options.FileMetadataFilePaths != null && !options.FileMetadataFilePaths.Any())
             {
-                if (!config.FileMetadataFilePaths.Any())
+                if (config.FileMetadataFilePaths.Any())
                 {
                     Logger.LogWarning($"fileMetadata config file from command line overrides it from docfx config file.");
                 }
