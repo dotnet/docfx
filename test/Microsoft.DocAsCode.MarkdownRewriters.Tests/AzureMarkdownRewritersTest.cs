@@ -100,6 +100,44 @@ This is azure warning";
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteWithExtraWhiteSpaces()
+        {
+            var source = @"> [AZURE.NOTE]
+>       This is azure note text
+>       Not code text
+>       We should ignore the extra white spaces at the beginning";
+            var expected = @"> [!NOTE]
+> This is azure note text
+> Not code text
+> We should ignore the extra white spaces at the beginning
+> 
+> 
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteWithExtraWhiteSpacesNoLt()
+        {
+            var source = @"> [AZURE.NOTE]
+      This information applies to the Azure AD B2C consumer identity service preview.  For information on Azure AD for employees and organizations, 
+         please refer to the [Azure Active Directory Developer Guide](active-directory-developers-guide.md).";
+            var expected = @"> [!NOTE]
+> This information applies to the Azure AD B2C consumer identity service preview.  For information on Azure AD for employees and organizations, 
+> please refer to the [Azure Active Directory Developer Guide](active-directory-developers-guide.md).
+> 
+> 
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureNoteBlockquoteTextFollowed()
         {
             var source = @"> [AZURE.NOTE]
