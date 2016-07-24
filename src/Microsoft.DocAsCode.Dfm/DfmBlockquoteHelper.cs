@@ -21,6 +21,11 @@ namespace Microsoft.DocAsCode.Dfm
                     splitToken = new SplitToken(token);
                     splitTokens.Add(splitToken);
                 }
+                else if (token is DfmVideoBlockToken)
+                {
+                    splitToken = new SplitToken(token);
+                    splitTokens.Add(splitToken);
+                }
                 else
                 {
                     if (splitToken != null)
