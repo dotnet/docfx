@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Align.cs" />
+    <Compile Include="Extensions\MarkdownTokenExtensions.cs" />
     <Compile Include="Gfm\GfmEmojiInlineToken.cs" />
     <Compile Include="Gfm\GfmEmojiInlineRule.generated.cs">
       <DependentUpon>GfmEmojiInlineRule.cs</DependentUpon>
