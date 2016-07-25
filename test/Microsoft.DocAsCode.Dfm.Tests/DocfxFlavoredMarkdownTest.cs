@@ -270,7 +270,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestDfmVideo_ContinuesVideo()
+        public void TestDfmVideo_ConsecutiveVideos()
         {
             // 1. Prepare data
             var root = @"The following is two videos.
