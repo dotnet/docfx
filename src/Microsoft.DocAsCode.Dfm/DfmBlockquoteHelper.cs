@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Dfm
             SplitToken splitToken = null;
             foreach (var token in tokens)
             {
-                if (token is DfmSectionBlockToken || token is DfmNoteBlockToken)
+                if (token is IDfmBlockSpecialSplitToken)
                 {
                     splitToken = new SplitToken(token);
                     splitTokens.Add(splitToken);

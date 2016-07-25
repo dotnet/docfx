@@ -68,6 +68,7 @@
     <Compile Include="Rules\DfmBlockquoteBlockRule.cs" />
     <Compile Include="Rules\DfmEmailInlineRule.cs" />
     <Compile Include="Rules\DfmFencesBlockRule.cs" />
+    <Compile Include="Rules\DfmVideoBlockRule.cs" />
     <Compile Include="Rules\DfmIncludeBlockRule.cs" />
     <Compile Include="Rules\DfmIncludeInlineRule.cs" />
     <Compile Include="Rules\DfmNoteBlockRule.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Rules\DfmYamlHeaderBlockRule.cs" />
     <Compile Include="SplitToken.cs" />
     <Compile Include="Tokens\DfmFencesBlockToken.cs" />
+    <Compile Include="Tokens\DfmVideoBlockToken.cs" />
     <Compile Include="Tokens\DfmIncludeBlockToken.cs" />
     <Compile Include="Tokens\DfmIncludeInlineToken.cs" />
     <Compile Include="Tokens\DfmNoteBlockToken.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="DocfxFlavoredIncHelper.cs" />
     <Compile Include="DocfxFlavoredMarked.cs" />
     <Compile Include="FileCacheLite.cs" />
+    <Compile Include="Tokens\IDfmBlockSpecialSplitToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
