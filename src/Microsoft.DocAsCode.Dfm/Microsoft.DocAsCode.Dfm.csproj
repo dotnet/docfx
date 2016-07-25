@@ -98,6 +98,7 @@
     <Compile Include="DocfxFlavoredIncHelper.cs" />
     <Compile Include="DocfxFlavoredMarked.cs" />
     <Compile Include="FileCacheLite.cs" />
+    <Compile Include="Tokens\IDfmBlockSpecialSplitToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

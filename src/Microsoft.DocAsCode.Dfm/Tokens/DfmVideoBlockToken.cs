@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmVideoBlockToken : IMarkdownToken
+    public class DfmVideoBlockToken : IMarkdownToken, IDfmBlockSpecialSplitToken
     {
         public IMarkdownRule Rule { get; }
 
