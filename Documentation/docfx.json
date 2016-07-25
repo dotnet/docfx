@@ -38,7 +38,10 @@
     ],
     "postProcessors": ["ExtractSearchIndex"],
     "globalMetadata": {
-      "_appTitle": "DocFX website"
+      "_appTitle": "DocFX website",
+      "_gitContribute": {
+        "branch": "dev"
+      }
       // This option is deprecated
       //"_enableSearch": true
     },
