@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Action<TEngine> initializer)
         {
             RewriteFunc = rewriteFunc;
+            Initializer = initializer;
         }
 
         public Func<TEngine, TToken, IMarkdownToken> RewriteFunc { get; }
