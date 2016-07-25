@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <returns>Rewritten markdown tokens.</returns>
         ImmutableArray<IMarkdownToken> Rewrite(ImmutableArray<IMarkdownToken> tokens);
 
+        ImmutableArray<IMarkdownToken> GetParents();
+
         bool HasVariable(string name);
 
         object GetVariable(string name);

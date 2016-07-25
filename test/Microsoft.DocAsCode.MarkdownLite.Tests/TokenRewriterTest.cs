@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
     using System;
     using System.Collections.Immutable;
+    using System.Linq;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
@@ -75,6 +76,111 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
             Assert.Equal(expectedMessage, message);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmWithValidatorWithQuery()
+        {
+            const string source = @"abc (not match)
+
+- abc (match)
+- a*b*c (match)
+- xyz
+- x
+
+> a**b**c (not match)";
+            const string expected = @"<p>abc (not match)</p>
+<ul>
+<li>abc (match)</li>
+<li>a<em>b</em>c (match)</li>
+<li>xyz</li>
+<li>x</li>
+</ul>
+<blockquote>
+<p>a<strong>b</strong>c (not match)</p>
+</blockquote>
+";
+            int matchCount = 0;
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownTokenRewriterFactory.FromValidators(
+                    MarkdownTokenValidatorFactory.FromLambda(
+                        (MarkdownListItemBlockToken token) =>
+                        {
+                            var text = string.Concat(from t in token.Descendants<MarkdownTextToken>() select t.Content);
+                            if (text.Contains("abc"))
+                            {
+                                matchCount++;
+                            }
+                        }));
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(2, matchCount);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmWithValidatorWithParents()
+        {
+            const string source = @"# abc
+> *abc*
+
+- abc
+
+abc
+";
+            const string expected = @"<h1 id=""abc"">abc</h1>
+<blockquote>
+<p><em>abc</em></p>
+</blockquote>
+<ul>
+<li>abc</li>
+</ul>
+<p>abc</p>
+";
+            int headingTextCount = 0;
+            int blockquoteTextCount = 0;
+            int listTextCount = 0;
+            int paraTextCount = 0;
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownTokenRewriterFactory.FromValidators(
+                    MarkdownTokenValidatorFactory.FromLambda(
+                        (MarkdownTextToken token) =>
+                        {
+                            if (token.Content == "abc")
+                            {
+                                var re = MarkdownTokenValidatorContext.CurrentRewriteEngine;
+                                foreach (var parent in re.GetParents())
+                                {
+                                    if (parent is MarkdownHeadingBlockToken)
+                                    {
+                                        headingTextCount++;
+                                    }
+                                    else if (parent is MarkdownBlockquoteBlockToken)
+                                    {
+                                        blockquoteTextCount++;
+                                    }
+                                    else if (parent is MarkdownListItemBlockToken)
+                                    {
+                                        listTextCount++;
+                                    }
+                                    else if (parent is MarkdownParagraphBlockToken)
+                                    {
+                                        paraTextCount++;
+                                    }
+                                }
+                            }
+                        }));
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(1, headingTextCount);
+            Assert.Equal(1, blockquoteTextCount);
+            Assert.Equal(1, listTextCount);
+            Assert.Equal(2, paraTextCount);
         }
 
         [Fact]

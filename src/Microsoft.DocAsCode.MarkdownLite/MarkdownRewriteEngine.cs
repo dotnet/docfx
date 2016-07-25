@@ -6,10 +6,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
 
     public class MarkdownRewriteEngine : IMarkdownRewriteEngine
     {
         private readonly IMarkdownTokenRewriter _rewriter;
+        private Stack<IMarkdownToken> _parents = new Stack<IMarkdownToken>();
         private Dictionary<string, object> _variables = new Dictionary<string, object>();
         private Dictionary<string, Action<IMarkdownRewriteEngine>> _postProcesses = new Dictionary<string, Action<IMarkdownRewriteEngine>>();
 
@@ -43,15 +45,22 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 var rewritable = token as IMarkdownRewritable<IMarkdownToken>;
                 if (rewritable != null)
                 {
+                    _parents.Push(token);
                     rewrittenToken = rewritable.Rewrite(this);
                     if (rewrittenToken != null &&
                         !object.ReferenceEquals(rewrittenToken, token))
                     {
                         result = result.SetItem(i, rewrittenToken);
                     }
+                    _parents.Pop();
                 }
             }
             return result;
+        }
+
+        public virtual ImmutableArray<IMarkdownToken> GetParents()
+        {
+            return ImmutableArray.CreateRange(_parents.Reverse());
         }
 
         public virtual bool HasVariable(string name)
