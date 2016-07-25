@@ -37,6 +37,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         void RemovePostProcess(string name);
 
+        void Initialize();
+
         void Complete();
     }
 }

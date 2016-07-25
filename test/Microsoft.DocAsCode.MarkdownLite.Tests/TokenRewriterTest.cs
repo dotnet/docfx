@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
     public class TokenRewriterTest
     {
-
         [Fact]
         [Trait("Related", "Markdown")]
         public void TestGfmWithValidator()
@@ -31,6 +30,46 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                             {
                                 message = expectedMessage;
                             }
+                        }));
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(expectedMessage, message);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmWithValidatorWithContext()
+        {
+            const string source = @"# Title-1
+# Title-2";
+            const string expected = @"<h1 id=""title-1"">Title-1</h1>
+<h1 id=""title-2"">Title-2</h1>
+";
+            const string expectedMessage = "expected one title in one document.";
+            string message = null;
+            var builder = new GfmEngineBuilder(new Options());
+            builder.Rewriter =
+                MarkdownTokenRewriterFactory.FromValidators(
+                    MarkdownTokenValidatorFactory.FromLambda(
+                        (MarkdownHeadingBlockToken token) =>
+                        {
+                            var re = MarkdownTokenValidatorContext.CurrentRewriteEngine;
+                            if (token.Depth == 1)
+                            {
+                                re.SetVariable("count", (int)re.GetVariable("count") + 1);
+                            }
+                        },
+                        re =>
+                        {
+                            re.SetVariable("count", 0);
+                            re.SetPostProcess("h1 count", re1 =>
+                            {
+                                if ((int)re.GetVariable("count") != 1)
+                                {
+                                    message = expectedMessage;
+                                }
+                            });
                         }));
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
