@@ -43,10 +43,15 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 }
 
                 var rewriterToolArguments = ParseRewriterToolArgumentsFile(args[0], args[1], args[2]);
-                var azureVideoInfoMapping = ParseAzureVideoFile(args[3]);
-                if (rewriterToolArguments == null)
+
+                Dictionary<string, AzureVideoInfo> azureVideoInfoMapping = null;
+                if (args.Length == 4)
                 {
-                    return 1;
+                    azureVideoInfoMapping = ParseAzureVideoFile(args[3]);
+                    if (rewriterToolArguments == null)
+                    {
+                        return 1;
+                    }
                 }
 
                 var azureFileInfo = GenerateAzureFileInfo(args[0], rewriterToolArguments, args[2]);

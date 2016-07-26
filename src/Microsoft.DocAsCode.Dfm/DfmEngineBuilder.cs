@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
     using System.Linq;
@@ -56,11 +57,18 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 throw new ArgumentException("MarkdownNewLineBlockRule should exist!");
             }
-            blockRules.Insert(index + 1, new DfmIncludeBlockRule());
-            blockRules.Insert(index + 2, new DfmYamlHeaderBlockRule());
-            blockRules.Insert(index + 3, new DfmSectionBlockRule());
-            blockRules.Insert(index + 4, new DfmFencesBlockRule());
-            blockRules.Insert(index + 5, new DfmNoteBlockRule());
+
+            blockRules.InsertRange(
+                index + 1,
+                new IMarkdownRule []
+                {
+                    new DfmIncludeBlockRule(),
+                    new DfmVideoBlockRule(),
+                    new DfmYamlHeaderBlockRule(),
+                    new DfmSectionBlockRule(),
+                    new DfmFencesBlockRule(),
+                    new DfmNoteBlockRule()
+                });
 
             var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
             if (gfmIndex < 0)

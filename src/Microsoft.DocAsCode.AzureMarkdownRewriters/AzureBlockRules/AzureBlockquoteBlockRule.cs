@@ -3,11 +3,17 @@
 
 namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 {
+    using System.Text.RegularExpressions;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class AzureBlockquoteBlockRule : MarkdownBlockquoteBlockRule
     {
         public override string Name => "AzureBlockquote";
+
+        public static readonly Regex _azureLeadingBlankRegex = new Regex(@"^ *>? *", RegexOptions.Multiline | RegexOptions.Compiled);
+
+        public override Regex LeadingBlockquote => _azureLeadingBlankRegex;
 
         public override IMarkdownToken TryMatch(IMarkdownParser engine, IMarkdownParsingContext context)
         {

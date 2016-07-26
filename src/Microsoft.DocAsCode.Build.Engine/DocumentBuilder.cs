@@ -25,8 +25,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         [ImportMany]
         internal IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
 
-        public string IntermediateFolder { get; set; }
-
+        private readonly string _intermediateFolder;
         private readonly List<PostProcessor> _postProcessors = new List<PostProcessor>();
         private readonly CompositionHost _container;
         private readonly BuildInfo _currentBuildInfo =
@@ -35,14 +34,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 BuildStartTime = DateTime.UtcNow,
                 DocfxVersion = typeof(DocumentBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
             };
+        private BuildInfo _lastBuildInfo;
 
-        public DocumentBuilder(ImmutableArray<string> postProcessorNames, IEnumerable<Assembly> assemblies) :
-            this(assemblies)
-        {
-            _postProcessors = GetPostProcessor(postProcessorNames);
-        }
-
-        public DocumentBuilder(IEnumerable<Assembly> assemblies = null)
+        public DocumentBuilder(IEnumerable<Assembly> assemblies, ImmutableArray<string> postProcessorNames, string intermediateFolder = null)
         {
             Logger.LogVerbose("Loading plug-in...");
             var assemblyList = assemblies?.ToList();
@@ -54,23 +48,56 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
             }
+            _postProcessors = GetPostProcessor(postProcessorNames);
+            _intermediateFolder = intermediateFolder;
+            _lastBuildInfo = LoadLastBuildInfo();
         }
 
-        public Manifest Build(DocumentBuildParameters parameters)
+        public Manifest Build(DocumentBuildParameters parameter)
         {
             using (var builder = new SingleDocumentBuilder
             {
                 Container = _container,
-                IntermediateFolder = IntermediateFolder,
+                CurrentBuildInfo = _currentBuildInfo,
+                IntermediateFolder = _intermediateFolder,
                 MetadataValidators = MetadataValidators,
                 Processors = Processors
             })
             {
-                return builder.Build(parameters);
+                return builder.Build(parameter);
             }
         }
 
-        public void PrepareMetadata(DocumentBuildParameters parameters)
+        public void Build(IEnumerable<DocumentBuildParameters> parameters, string outputDirectory)
+        {
+            var manifests = new List<Manifest>();
+            foreach (var parameter in parameters)
+            {
+                if (parameter.Files.Count == 0)
+                {
+                    Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)
+                        ? "No files found, nothing is generated in default version."
+                        : $"No files found, nothing is generated in version \"{parameter.VersionName}\".");
+                    manifests.Add(new Manifest());
+                    continue;
+                }
+                PrepareMetadata(parameter);
+                if (!string.IsNullOrEmpty(parameter.VersionName))
+                {
+                    Logger.LogInfo($"Start building for version: {parameter.VersionName}");
+                }
+                manifests.Add(Build(parameter));
+            }
+            var generatedManifest = MergeManifest(manifests);
+
+            RemoveDuplicateOutputFiles(generatedManifest.Files);
+            PostProcess(generatedManifest, outputDirectory);
+
+            // Save to manifest.json & .manifest(deprecated)
+            SaveManifest(generatedManifest, outputDirectory);
+        }
+
+        private void PrepareMetadata(DocumentBuildParameters parameters)
         {
             foreach (var postProcessor in _postProcessors)
             {
@@ -85,7 +112,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void PostProcess(Manifest manifest, string outputDir)
+        private void PostProcess(Manifest manifest, string outputDir)
         {
             // post process
             foreach (var postProcessor in _postProcessors)
@@ -104,7 +131,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
+        private void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
         {
             if (manifestItems == null)
             {
@@ -124,10 +151,61 @@ namespace Microsoft.DocAsCode.Build.Engine
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
         }
 
-        private class PostProcessor
+        private static Manifest MergeManifest(List<Manifest> manifests)
         {
-            public string ContractName { get; set; }
-            public IPostProcessor Processor { get; set; }
+            var xrefMaps = (from manifest in manifests
+                            where manifest.XRefMap != null
+                            select manifest.XRefMap).ToList();
+            return new Manifest
+            {
+                Homepages = (from manifest in manifests
+                             from homepage in manifest.Homepages ?? Enumerable.Empty<HomepageInfo>()
+                             select homepage).Distinct().ToList(),
+                Files = (from manifest in manifests
+                         from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
+                         select file).Distinct().ToList(),
+                XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
+                SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath
+            };
+        }
+
+        private static void SaveManifest(Manifest manifest, string outputDirectory)
+        {
+            // TODO: Keep .manifest for backward-compatability, will remove next sprint
+            var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
+            var deprecatedManifest = Transform(manifest.Files);
+            JsonUtility.Serialize(manifestPath, deprecatedManifest);
+
+            var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
+            JsonUtility.Serialize(manifestJsonPath, manifest);
+            Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
+        }
+
+        private static List<DeprecatedManifestItem> Transform(List<ManifestItem> manifest)
+        {
+            return manifest.Select(item => new DeprecatedManifestItem
+            {
+                DocumentType = item.DocumentType,
+                OriginalFile = item.OriginalFile,
+                OutputFiles = item.OutputFiles.ToDictionary(k => k.Key, k => k.Value.RelativePath),
+                Metadata = item.Metadata,
+            }).ToList();
+        }
+
+        private BuildInfo LoadLastBuildInfo()
+        {
+            if (_intermediateFolder != null &&
+                File.Exists(Path.Combine(_intermediateFolder, BuildInfo.FileName)))
+            {
+                try
+                {
+                    return JsonUtility.Deserialize<BuildInfo>(Path.Combine(_intermediateFolder, BuildInfo.FileName));
+                }
+                catch (Exception)
+                {
+                }
+            }
+            return null;
         }
 
         private List<PostProcessor> GetPostProcessor(ImmutableArray<string> processors)
@@ -227,6 +305,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogVerbose($"Disposing processor {processor.ContractName} ...");
                 (processor.Processor as IDisposable)?.Dispose();
             }
+            if (_intermediateFolder != null)
+            {
+                JsonUtility.Serialize(
+                    Path.Combine(_intermediateFolder, BuildInfo.FileName),
+                    _currentBuildInfo);
+            }
+        }
+
+        private sealed class PostProcessor
+        {
+            public string ContractName { get; set; }
+            public IPostProcessor Processor { get; set; }
         }
     }
 }

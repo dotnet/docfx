@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Align.cs" />
+    <Compile Include="Extensions\MarkdownTokenExtensions.cs" />
     <Compile Include="Gfm\GfmEmojiInlineToken.cs" />
     <Compile Include="Gfm\GfmEmojiInlineRule.generated.cs">
       <DependentUpon>GfmEmojiInlineRule.cs</DependentUpon>
@@ -53,6 +54,8 @@
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
     <Compile Include="IMarkdownRewritable.cs" />
+    <Compile Include="Rewriters\IInitializable.cs" />
+    <Compile Include="Rewriters\MarkdownInitializableLambdaTokenRewriter.cs" />
     <Compile Include="SourceInfo.cs" />
     <Compile Include="MarkdownEngine.cs" />
     <Compile Include="MarkdownParsingContext.cs" />
@@ -130,6 +133,7 @@
     <Compile Include="Validators\IMarkdownTokenValidatorProvider.cs" />
     <Compile Include="Validators\MarkdownTokenValidatorAdapter.cs" />
     <Compile Include="Validators\MarkdownTokenTreeValidatorFactory.cs" />
+    <Compile Include="Validators\MarkdownTokenValidatorContext.cs" />
     <Compile Include="Validators\MarkdownTokenValidatorFactory.cs" />
   </ItemGroup>
   <ItemGroup>
