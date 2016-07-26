@@ -188,52 +188,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
-        public static Manifest MergeManifest(List<Manifest> manifests)
-        {
-            var xrefMaps = manifests.Select(item => item.XRefMap).ToList();
-            object xrefMapsObject;
-            if (xrefMaps.Count == 1)
-            {
-                xrefMapsObject = xrefMaps[0];
-            }
-            else
-            {
-                xrefMapsObject = xrefMaps;
-            }
-            var manifestObject = new Manifest
-            {
-                Homepages = manifests.SelectMany(item => item.Homepages).Distinct().ToList(),
-                Files = manifests.SelectMany(item => item.Files).Distinct().ToList(),
-                XRefMap = xrefMapsObject,
-                SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath
-            };
-
-            return manifestObject;
-        }
-
-        public static void SaveManifest(Manifest manifest, string outputDirectory)
-        {
-            // TODO: Keep .manifest for backward-compatability, will remove next sprint
-            var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
-            var deprecatedManifest = Transform(manifest.Files);
-            JsonUtility.Serialize(manifestPath, deprecatedManifest);
-
-            var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
-            JsonUtility.Serialize(manifestJsonPath, manifest);
-            Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
-        }
-
-        private static List<DeprecatedManifestItem> Transform(List<ManifestItem> manifest)
-        {
-            return manifest.Select(item => new DeprecatedManifestItem
-            {
-                DocumentType = item.DocumentType,
-                OriginalFile = item.OriginalFile,
-                OutputFiles = item.OutputFiles.ToDictionary(k => k.Key, k => k.Value.RelativePath),
-                Metadata = item.Metadata,
-            }).ToList();
-        }
-
         public void Dispose()
         {
             _resourceProvider?.Dispose();

@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _lastBuildInfo = LoadLastBuildInfo();
         }
 
-        public Manifest Build(DocumentBuildParameters parameters)
+        public Manifest Build(DocumentBuildParameters parameter)
         {
             using (var builder = new SingleDocumentBuilder
             {
@@ -64,11 +64,40 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Processors = Processors
             })
             {
-                return builder.Build(parameters);
+                return builder.Build(parameter);
             }
         }
 
-        public void PrepareMetadata(DocumentBuildParameters parameters)
+        public void Build(IEnumerable<DocumentBuildParameters> parameters, string outputDirectory)
+        {
+            var manifests = new List<Manifest>();
+            foreach (var parameter in parameters)
+            {
+                if (parameter.Files.Count == 0)
+                {
+                    Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)
+                        ? "No files found, nothing is generated in default version."
+                        : $"No files found, nothing is generated in version \"{parameter.VersionName}\".");
+                    manifests.Add(new Manifest());
+                    continue;
+                }
+                PrepareMetadata(parameter);
+                if (!string.IsNullOrEmpty(parameter.VersionName))
+                {
+                    Logger.LogInfo($"Start building for version: {parameter.VersionName}");
+                }
+                manifests.Add(Build(parameter));
+            }
+            var generatedManifest = MergeManifest(manifests);
+
+            RemoveDuplicateOutputFiles(generatedManifest.Files);
+            PostProcess(generatedManifest, outputDirectory);
+
+            // Save to manifest.json & .manifest(deprecated)
+            SaveManifest(generatedManifest, outputDirectory);
+        }
+
+        private void PrepareMetadata(DocumentBuildParameters parameters)
         {
             foreach (var postProcessor in _postProcessors)
             {
@@ -83,7 +112,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void PostProcess(Manifest manifest, string outputDir)
+        private void PostProcess(Manifest manifest, string outputDir)
         {
             // post process
             foreach (var postProcessor in _postProcessors)
@@ -102,7 +131,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
+        private void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
         {
             if (manifestItems == null)
             {
@@ -120,6 +149,47 @@ namespace Microsoft.DocAsCode.Build.Engine
                 itemsToRemove.UnionWith(duplicates.Skip(1));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
+        }
+
+        private static Manifest MergeManifest(List<Manifest> manifests)
+        {
+            var xrefMaps = (from manifest in manifests
+                            where manifest.XRefMap != null
+                            select manifest.XRefMap).ToList();
+            return new Manifest
+            {
+                Homepages = (from manifest in manifests
+                             from homepage in manifest.Homepages ?? Enumerable.Empty<HomepageInfo>()
+                             select homepage).Distinct().ToList(),
+                Files = (from manifest in manifests
+                         from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
+                         select file).Distinct().ToList(),
+                XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
+                SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath
+            };
+        }
+
+        private static void SaveManifest(Manifest manifest, string outputDirectory)
+        {
+            // TODO: Keep .manifest for backward-compatability, will remove next sprint
+            var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
+            var deprecatedManifest = Transform(manifest.Files);
+            JsonUtility.Serialize(manifestPath, deprecatedManifest);
+
+            var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
+            JsonUtility.Serialize(manifestJsonPath, manifest);
+            Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
+        }
+
+        private static List<DeprecatedManifestItem> Transform(List<ManifestItem> manifest)
+        {
+            return manifest.Select(item => new DeprecatedManifestItem
+            {
+                DocumentType = item.DocumentType,
+                OriginalFile = item.OriginalFile,
+                OutputFiles = item.OutputFiles.ToDictionary(k => k.Key, k => k.Value.RelativePath),
+                Metadata = item.Metadata,
+            }).ToList();
         }
 
         private BuildInfo LoadLastBuildInfo()

@@ -107,34 +107,9 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             using (var builder = new DocumentBuilder(assemblies, postProcessorNames, config.IntermediateFolder))
+            using (new PerformanceScope("building documents", LogLevel.Info))
             {
-                using (new PerformanceScope("building documents", LogLevel.Info))
-                {
-                    var manifests = new List<Manifest>();
-                    foreach (var parameters in ConfigToParameter(config, templateManager, baseDirectory, outputDirectory))
-                    {
-                        if (parameters.Files.Count == 0)
-                        {
-                            Logger.LogWarning(string.IsNullOrEmpty(parameters.VersionName)
-                                ? "No files found, nothing is generated in default version."
-                                : $"No files found, nothing is generated in version \"{parameters.VersionName}\".");
-                            return;
-                        }
-                        builder.PrepareMetadata(parameters);
-                        if (!string.IsNullOrEmpty(parameters.VersionName))
-                        {
-                            Logger.LogInfo($"Start building for version: {parameters.VersionName}");
-                        }
-                        manifests.Add(builder.Build(parameters));
-                    }
-                    var generatedManifest = TemplateProcessor.MergeManifest(manifests);
-
-                    builder.RemoveDuplicateOutputFiles(generatedManifest.Files);
-                    builder.PostProcess(generatedManifest, outputDirectory);
-
-                    // Save to manifest.json & .manifest(deprecated)
-                    TemplateProcessor.SaveManifest(generatedManifest, outputDirectory);
-                }
+                builder.Build(ConfigToParameter(config, templateManager, baseDirectory, outputDirectory), outputDirectory);
             }
         }
 
