@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
     using System.Composition.Hosting;
     using System.Collections.Immutable;
-    using System.Reflection;
     using System.Text;
 
     using Microsoft.DocAsCode.Common;
@@ -21,17 +20,13 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private const string PhaseName = "Build Document";
         private const string XRefMapFileName = "xrefmap.yml";
-        private readonly BuildInfo _currentBuildInfo =
-            new BuildInfo
-            {
-                BuildStartTime = DateTime.UtcNow,
-                DocfxVersion = typeof(SingleDocumentBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString(),
-            };
 
         public CompositionHost Container { get; set; }
         public IEnumerable<IDocumentProcessor> Processors { get; set; }
         public IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
-        public string IntermediateFolder { get; set; }
+
+        internal BuildInfo CurrentBuildInfo { get; set; }
+        internal string IntermediateFolder { get; set; }
 
         public Manifest Build(DocumentBuildParameters parameters)
         {
@@ -74,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.Files.DefaultBaseDir);
                 if (IntermediateFolder != null)
                 {
-                    _currentBuildInfo.Versions.Add(
+                    CurrentBuildInfo.Versions.Add(
                         new BuildVersionInfo
                         {
                             VersionName = parameters.VersionName,
@@ -166,8 +161,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void SaveDependency(DocumentBuildContext context, DocumentBuildParameters parameters)
         {
-            var vbi = _currentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
-            vbi.Dependency = Path.GetRandomFileName();
+            var vbi = CurrentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
+            do
+            {
+                vbi.Dependency = Path.GetRandomFileName();
+            } while (File.Exists(Path.Combine(IntermediateFolder, vbi.Dependency)));
             using (var writer = File.CreateText(
                 Path.Combine(IntermediateFolder, vbi.Dependency)))
             {
@@ -739,12 +737,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Dispose()
         {
-            if (IntermediateFolder != null)
-            {
-                JsonUtility.Serialize(
-                    Path.Combine(IntermediateFolder, BuildInfo.FileName),
-                    _currentBuildInfo);
-            }
             foreach (var processor in Processors)
             {
                 Logger.LogVerbose($"Disposing processor {processor.Name} ...");

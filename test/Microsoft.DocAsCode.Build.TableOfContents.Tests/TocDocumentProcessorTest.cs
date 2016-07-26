@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Reflection;
 
@@ -436,7 +437,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                 ApplyTemplateSettings = _applyTemplateSettings,
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies()))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty))
             {
                 builder.Build(parameters);
             }

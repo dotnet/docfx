@@ -106,9 +106,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            using (var builder = new DocumentBuilder(postProcessorNames, assemblies))
+            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, config.IntermediateFolder))
             {
-                builder.IntermediateFolder = config.IntermediateFolder;
                 using (new PerformanceScope("building documents", LogLevel.Info))
                 {
                     var manifests = new List<Manifest>();
