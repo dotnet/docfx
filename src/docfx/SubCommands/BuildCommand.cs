@@ -247,10 +247,6 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             if (options.GlobalMetadataFilePaths != null && !options.GlobalMetadataFilePaths.Any())
             {
-                if (config.GlobalMetadataFilePaths.Any())
-                {
-                    Logger.LogWarning($"globalMetadata config file from command line overrides it from docfx config file.");
-                }
                 config.GlobalMetadataFilePaths.AddRange(options.GlobalMetadataFilePaths);
             }
             config.GlobalMetadataFilePaths =
@@ -259,10 +255,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
             if (options.FileMetadataFilePaths != null && !options.FileMetadataFilePaths.Any())
             {
-                if (config.FileMetadataFilePaths.Any())
-                {
-                    Logger.LogWarning($"fileMetadata config file from command line overrides it from docfx config file.");
-                }
                 config.FileMetadataFilePaths.AddRange(options.FileMetadataFilePaths);
             }
             config.FileMetadataFilePaths =
@@ -338,7 +330,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     else
                     {
                         fileMetadataFromFile = MergeDictionary(
-                            new DictionaryMergeContext<FileMetadataPairs>($"fileMetdata from {fileMetadataFilePaths}", metadata),
+                            new DictionaryMergeContext<FileMetadataPairs>($"fileMetdata from {fileMetadataFilePath}", metadata),
                             new DictionaryMergeContext<FileMetadataPairs>("fileMetdata from previous fileMetadataFile", fileMetadataFromFile));
                     }
                 }
