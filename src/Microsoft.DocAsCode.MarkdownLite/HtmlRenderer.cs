@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
-    using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
     /// <summary>
@@ -22,6 +21,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeBlockToken token, MarkdownBlockContext context)
         {
+            var result = StringBuffer.Empty;
             bool escaped = false;
             string code = token.Code;
             if (renderer.Options.Highlight != null)
@@ -34,17 +34,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
             }
 
-            if (string.IsNullOrEmpty(token.Lang))
+            result = result + "<pre";
+            result = AppendSourceInfo(result, renderer, token);
+            result += "><code";
+            if (!string.IsNullOrEmpty(token.Lang))
             {
-                return (StringBuffer)"<pre><code>" + (escaped ? code : StringHelper.Escape(code, true)) + "\n</code></pre>";
+                result = result + " class=\"" + renderer.Options.LangPrefix + StringHelper.Escape(token.Lang, true) + "\"";
             }
-
-            return "<pre><code class=\""
-                + renderer.Options.LangPrefix
-                + StringHelper.Escape(token.Lang, true)
-                + "\">"
-                + (escaped ? code : StringHelper.Escape(code, true))
-                + "\n</code></pre>\n";
+            result += ">";
+            result += (escaped ? code : StringHelper.Escape(code, true));
+            result += "\n</code></pre>";
+            return result;
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHeadingBlockToken token, MarkdownBlockContext context)
@@ -54,8 +54,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 + level
                 + " id=\""
                 + renderer.Options.HeaderPrefix
-                + token.Id
-                + "\">";
+                + token.Id;
+            result = AppendSourceInfo(result, renderer, token);
+            result += "\">";
             foreach (var item in token.Content.Tokens)
             {
                 result += renderer.Render(item);
@@ -73,35 +74,40 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
         {
-            StringBuffer content = "<blockquote>\n";
+            StringBuffer result = "<blockquote";
+            result = AppendSourceInfo(result, renderer, token);
+            result += ">\n";
             foreach (var item in token.Tokens)
             {
-                content += renderer.Render(item);
+                result += renderer.Render(item);
             }
-            return content + "</blockquote>\n";
+            return result + "</blockquote>\n";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListBlockToken token, MarkdownBlockContext context)
         {
             var type = token.Ordered ? "ol" : "ul";
-            StringBuffer content = "<";
-            content += type;
-            content += ">\n";
+            StringBuffer result = "<";
+            result += type;
+            result = AppendSourceInfo(result, renderer, token);
+            result += ">\n";
             foreach (var t in token.Tokens)
             {
-                content += Render(renderer, (MarkdownListItemBlockToken)t);
+                result += Render(renderer, (MarkdownListItemBlockToken)t);
             }
-            return content + "</" + type + ">\n";
+            return result + "</" + type + ">\n";
         }
 
         protected virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListItemBlockToken token)
         {
-            StringBuffer content = "<li>";
+            StringBuffer result = "<li";
+            result = AppendSourceInfo(result, renderer, token);
+            result += ">";
             foreach (var item in token.Tokens)
             {
-                content += renderer.Render(item);
+                result += renderer.Render(item);
             }
-            return content + "</li>\n";
+            return result + "</li>\n";
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
@@ -116,7 +122,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
         {
-            StringBuffer result = "<p>";
+            StringBuffer result = "<p";
+            result = AppendSourceInfo(result, renderer, token);
+            result += ">";
             foreach (var item in token.InlineTokens.Tokens)
             {
                 result += renderer.Render(item);
@@ -127,7 +135,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownBlockContext context)
         {
-            StringBuffer result = "<p>";
+            StringBuffer result = "<p";
+            result = AppendSourceInfo(result, renderer, token);
+            result += ">";
             result += token.Content;
             result += "</p>\n";
             return result;
@@ -135,7 +145,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTableBlockToken token, MarkdownBlockContext context)
         {
-            StringBuffer result = "<table>\n<thead>\n";
+            StringBuffer result = "<table";
+            result = AppendSourceInfo(result, renderer, token);
+            result += ">\n<thead>\n";
             // header
             result += "<tr>\n";
             var cell = StringBuffer.Empty;
@@ -233,6 +245,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 result = result + " title=\"" + StringHelper.HtmlEncode(token.Title) + "\"";
             }
+            result = AppendSourceInfo(result, renderer, token);
             result += ">";
 
             foreach (var item in token.Content)
@@ -251,6 +264,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 result = result + " title=\"" + StringHelper.HtmlEncode(token.Title) + "\"";
             }
+            result = AppendSourceInfo(result, renderer, token);
 
             result += renderer.Options.XHtml ? "/>" : ">";
             return result;
@@ -340,6 +354,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownRawToken token, IMarkdownContext context)
         {
             return token.SourceInfo.Markdown;
+        }
+
+        #endregion
+
+        #region Protected Methods
+
+        protected static StringBuffer AppendSourceInfo(StringBuffer result, IMarkdownRenderer renderer, IMarkdownToken token)
+        {
+            if (renderer.Options.ShouldExportSourceInfo)
+            {
+                result = result + " sourceFile=\"" + StringHelper.HtmlEncode(token.SourceInfo.File) + "\" sourceLineNumber=\"" + token.SourceInfo.LineNumber.ToString() + "\"";
+            }
+            return result;
         }
 
         #endregion
