@@ -19,8 +19,8 @@
       <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="YamlDotNet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\net35\YamlDotNet.dll</HintPath>
+    <Reference Include="YamlDotNet, Version=3.9.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\YamlDotNet.Signed.3.9.0\lib\net35\YamlDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

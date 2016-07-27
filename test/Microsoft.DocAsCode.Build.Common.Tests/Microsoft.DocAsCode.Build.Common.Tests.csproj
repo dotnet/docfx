@@ -65,8 +65,8 @@
       <HintPath>..\..\packages\xunit.extensibility.core.2.1.0-beta2-build2981\lib\portable-net45+dnxcore50+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="YamlDotNet, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
+    <Reference Include="YamlDotNet, Version=3.9.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\YamlDotNet.Signed.3.9.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
