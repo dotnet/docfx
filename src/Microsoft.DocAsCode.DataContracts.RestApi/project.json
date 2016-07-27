@@ -8,8 +8,7 @@
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
     "Microsoft.DocAsCode.Utility": "1.0.0",
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
-    "Newtonsoft.Json": "7.0.1",
-    "YamlDotNet.Signed": "3.7.0"
+    "Newtonsoft.Json": "7.0.1"
   },
   "frameworks": {
     "dnx451": {

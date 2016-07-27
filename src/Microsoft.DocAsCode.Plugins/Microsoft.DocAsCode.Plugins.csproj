@@ -17,7 +17,7 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="YamlDotNet">
-      <HintPath>..\..\packages\YamlDotNet.Signed.3.7.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
+      <HintPath>..\..\packages\YamlDotNet.Signed.3.9.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

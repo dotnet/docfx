@@ -5,7 +5,6 @@
   "authors": ["Microsoft"],
   "owners": ["Microsoft"],
   "dependencies": {
-    "YamlDotNet.Signed": "3.7.0",
     "System.Collections.Immutable": "1.1.37",
     "HtmlAgilityPack": "1.4.9",
     "Microsoft.Composition": "1.0.27",
