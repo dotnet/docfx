@@ -47,6 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (item.Model == null || item.Model.Content == null) throw new ArgumentNullException("Content for item.Model should not be null!");
             var model = ConvertObjectToDictionary(item.Model.Content);
             model = AppendGlobalMetadata(model);
+            model = ResolveBreadCrumb(model);
             if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
             {
                 ExportModel(model, item.FileWithoutExtension, _settings.RawModelExportSettings);
@@ -174,6 +175,32 @@ namespace Microsoft.DocAsCode.Build.Engine
             var appended = new Dictionary<string, object>(model);
             appended[GlobalVariableKey] = _globalVariables;
             return appended;
+        }
+
+        private IDictionary<string, object> ResolveBreadCrumb(IDictionary<string, object> model)
+        {
+            var resolvedModel = new Dictionary<string, object>(model);
+            object breadcrumb, outputFilePath;
+            if (model.TryGetValue(Constants.BreadCrumbPath, out breadcrumb) && model.TryGetValue("_path", out outputFilePath))
+            {
+                var _breadcrumb = breadcrumb as string;
+                var _outputFilePath = outputFilePath as string;
+
+                if (!string.IsNullOrEmpty(_breadcrumb) && !string.IsNullOrEmpty(_outputFilePath) && PathUtility.IsRelativePath(_breadcrumb))
+                {
+                    var breadcrumbDestPath = _context.GetFilePath(_breadcrumb);
+                    if (breadcrumbDestPath == null)
+                    {
+                        Logger.LogWarning($"Can't find breadcrumb {_breadcrumb}");
+                    }
+                    else
+                    {
+                        resolvedModel[Constants.BreadCrumbPath] = ((RelativePath)breadcrumbDestPath - ((RelativePath)_outputFilePath).GetPathFromWorkingFolder()).ToString();
+                    }
+                }
+            }
+
+            return resolvedModel;
         }
 
         private static IDictionary<string, object> ConvertObjectToDictionary(object model)
