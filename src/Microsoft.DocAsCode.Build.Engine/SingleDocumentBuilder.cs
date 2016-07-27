@@ -659,16 +659,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning(sb.ToString());
             }
 
-            return from item in toHandleItems.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+            // todo : revert until PreProcessor ready
+            return from processor in processors
+                   join item in toHandleItems on processor equals item.Key into g
+                   from item in g.DefaultIfEmpty().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                    select new HostService(
                        parameters.Files.DefaultBaseDir,
-                       from file in item
-                       select Load(item.Key, parameters.Metadata, parameters.FileMetadata, file.file) into model
-                       where model != null
-                       select model)
+                       item == null
+                            ? new FileModel[0]
+                            : from file in item
+                              select Load(processor, parameters.Metadata, parameters.FileMetadata, file.file) into model
+                              where model != null
+                              select model)
                    {
                        MarkdownService = markdownService,
-                       Processor = item.Key,
+                       Processor = processor,
                        Template = templateProcessor,
                        Validators = MetadataValidators.ToImmutableList(),
                    };
@@ -757,3 +762,4 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
     }
 }
+
