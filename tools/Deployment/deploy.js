@@ -559,4 +559,3 @@ switch (branchValue.toLowerCase()) {
   default:
     logger.error("Please specify the *right* repo branch name to run this script");
 }
-

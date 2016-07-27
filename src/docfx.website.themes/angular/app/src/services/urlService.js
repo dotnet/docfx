@@ -71,7 +71,7 @@
       if (!currentPath) return null;
       currentPath = normalizeUrl(currentPath);
 
-      // seperate toc and content with !
+      // separate toc and content with !
       var index = currentPath.indexOf(docConstants.TocAndFileUrlSeperator);
       if (index < 0) {
         // If it ends with .md/.yml, render it without toc

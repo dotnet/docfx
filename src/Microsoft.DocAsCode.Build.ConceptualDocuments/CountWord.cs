@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
             HtmlDocument document = new HtmlDocument();
 
-            // Append a space before each end bracket so that InnerText inside different child nodes can seperate itself from each other.
+            // Append a space before each end bracket so that InnerText inside different child nodes can separate itself from each other.
             document.LoadHtml(html.Replace("</", " </"));
 
             long wordCount = 0;

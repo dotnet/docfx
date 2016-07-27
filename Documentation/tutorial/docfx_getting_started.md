@@ -126,7 +126,7 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 5. `docfx.json` under root folder. It is the configuration file that `docfx` depends upon.
 
 > Tip:
-  It is a good practice to seperate files with different type into different folders.
+  It is a good practice to separate files with different type into different folders.
 
 7. Q&A
 -------------------------

@@ -208,7 +208,7 @@ noLangKeyword            | Disable default lang keyword, it can be downloaded fr
 
 There are two ways to use custom templates and themes. 
 
-To use a custom template, one way is to specify template path with `--template` (or `-t`) command option, multiple templates must be seperated by `,` with no spaces. The other way is to set key-value mapping in `docfx.json`:
+To use a custom template, one way is to specify template path with `--template` (or `-t`) command option, multiple templates must be separated by `,` with no spaces. The other way is to set key-value mapping in `docfx.json`:
 
 ```json
 {
@@ -239,7 +239,7 @@ To use a custom template, one way is to specify template path with `--template` 
 
 >The template path could either be a zip file called `<template>.zip` or a folder called `<template>`.
 
-To custom theme, one way is to specify theme name with `--theme` command option, multiple themes must be seperated by `,` with no spaces. The other way is to set key-value mapping in `docfx.json` as similar to defining template. Also, both `.zip` file and folder are supported.
+To custom theme, one way is to specify theme name with `--theme` command option, multiple themes must be separated by `,` with no spaces. The other way is to set key-value mapping in `docfx.json` as similar to defining template. Also, both `.zip` file and folder are supported.
 
 Please refer to [How to Create Custom Templates](howto_create_custom_template.md) to create custom templates.
 

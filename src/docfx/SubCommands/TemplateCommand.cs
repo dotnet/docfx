@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private void ExecListTemplate()
         {
             // TODO: dynamically load...
-            $"{Environment.NewLine}Existing embeded templates are:".WriteLineToConsole(ConsoleColor.Gray);
+            $"{Environment.NewLine}Existing embedded templates are:".WriteLineToConsole(ConsoleColor.Gray);
             ExistingTemplates.Select(s => "\t" + s).ToArray().WriteLinesToConsole(ConsoleColor.White);
         }
 
@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 else
                 {
-                    Logger.LogWarning($"{template} is not an embeded template.");
+                    Logger.LogWarning($"{template} is not an embedded template.");
                 }
             }
         }
