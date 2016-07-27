@@ -35,6 +35,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool SmartLists { get; set; }
 
+        public bool ShouldExportSourceInfo { get; set; }
+
         #endregion
 
         #region Constructors
@@ -54,6 +56,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Gfm = true;
             Tables = true;
             SmartLists = false;
+            ShouldExportSourceInfo = false;
         }
 
         #endregion

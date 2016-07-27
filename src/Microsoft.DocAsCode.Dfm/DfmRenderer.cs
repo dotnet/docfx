@@ -26,8 +26,9 @@ namespace Microsoft.DocAsCode.Dfm
             result = AppendAttribute(result, "title", token.Title);
             result = AppendAttribute(result, "data-throw-if-not-resolved", token.ThrowIfNotResolved.ToString());
             result = AppendAttribute(result, "data-raw", token.SourceInfo.Markdown);
-
+            result = AppendSourceInfo(result, renderer, token);
             result += ">";
+
             foreach (var item in token.Content)
             {
                 result += renderer.Render(item);
@@ -88,6 +89,7 @@ namespace Microsoft.DocAsCode.Dfm
                     }
                     content += "<div";
                     content += ((DfmSectionBlockToken)splitToken.Token).Attributes;
+                    content = AppendSourceInfo(content, renderer, splitToken.Token);
                     content += ">";
                     foreach (var item in splitToken.InnerTokens)
                     {
@@ -104,6 +106,7 @@ namespace Microsoft.DocAsCode.Dfm
                     var noteToken = (DfmNoteBlockToken)splitToken.Token;
                     content += "<div class=\"";
                     content += noteToken.NoteType.ToUpper();
+                    content = AppendSourceInfo(content, renderer, splitToken.Token);
                     content += "\">";
                     string heading;
                     if (Tokens != null && Tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
@@ -122,15 +125,21 @@ namespace Microsoft.DocAsCode.Dfm
                     }
                     content += "</div>\n";
                 }
-                else if(splitToken.Token is DfmVideoBlockToken)
+                else if (splitToken.Token is DfmVideoBlockToken)
                 {
                     var videoToken = splitToken.Token as DfmVideoBlockToken;
-                    content += $"<iframe width=\"640\" height=\"320\" src=\"{videoToken.Link}\" frameborder=\"0\" allowfullscreen=\"true\"></iframe>\n";
+                    content += "<iframe width=\"640\" height=\"320\" src=\"";
+                    content += videoToken.Link;
+                    content += "\" frameborder=\"0\" allowfullscreen=\"true\"";
+                    content = AppendSourceInfo(content, renderer, splitToken.Token);
+                    content += "></iframe>\n";
                     continue;
                 }
                 else
                 {
-                    content += "<blockquote>";
+                    content += "<blockquote";
+                    content = AppendSourceInfo(content, renderer, splitToken.Token);
+                    content += ">";
                     foreach (var item in splitToken.InnerTokens)
                     {
                         content += renderer.Render(item);
