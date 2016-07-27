@@ -17,5 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public const string ManifestFileName = "manifest.json";
 
+        public const string BreadCrumbPath = "breadcrumb_path";
+
     }
 }

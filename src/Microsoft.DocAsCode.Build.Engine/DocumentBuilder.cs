@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
 
     public class DocumentBuilder : IDisposable
     {
@@ -99,6 +100,25 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PrepareMetadata(DocumentBuildParameters parameters)
         {
+            object breadcrumb;
+            if (parameters.Metadata.TryGetValue(Constants.BreadCrumbPath, out breadcrumb))
+            {
+                RelativePath breadcrumbPath = null;
+                var breadcrumbStr = breadcrumb as string;
+                if (!string.IsNullOrEmpty(breadcrumbStr) && PathUtility.IsRelativePath(breadcrumbStr))
+                {
+                    breadcrumbPath = (RelativePath) breadcrumbStr;
+                }
+                if (breadcrumbPath != null && !breadcrumbPath.IsFromWorkingFolder())
+                {
+                    Logger.LogWarning($"global metadata \"{Constants.BreadCrumbPath}\" should be started with \"~\"");
+
+                    var metadata = new Dictionary<string, object>(parameters.Metadata);
+                    metadata[Constants.BreadCrumbPath] = breadcrumbPath.GetPathFromWorkingFolder().ToString();
+                    parameters.Metadata = metadata.ToImmutableDictionary();
+                }
+            }
+
             foreach (var postProcessor in _postProcessors)
             {
                 using (new LoggerPhaseScope(postProcessor.ContractName))
