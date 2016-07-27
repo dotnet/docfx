@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
@@ -48,6 +49,33 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             var item = wrapper.Content;
+
+            // TocHref supports 2 forms: absolute path and local toc file.
+            // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
+            if (item.TocHref != null)
+            {
+                var tocHrefType = Utility.GetHrefType(item.TocHref);
+                if (!string.IsNullOrEmpty(item.Homepage))
+                {
+                    throw new DocumentException($"Href should be used to specify the homepage {item.Homepage} when TocHref is uesed");
+                }
+                switch (tocHrefType)
+                {
+                    case HrefType.AbsolutePath:
+                    case HrefType.MarkdownTocFile:
+                    case HrefType.YamlTocFile:
+                        item.Homepage = item.Href;
+                        item.Href = item.TocHref;
+                        item.TocHref = null;
+                        break;
+                    case HrefType.RelativeFile:
+                    case HrefType.RelativeFolder:
+                        throw new NotSupportedException($"TocHref {item.TocHref} only supports absolute path or local toc file.");
+                    default:
+                        break;
+                }
+            }
+
             var hrefType = Utility.GetHrefType(item.Href);
             switch (hrefType)
             {

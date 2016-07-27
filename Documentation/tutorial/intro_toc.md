@@ -64,6 +64,7 @@ Property Name | Type              | Description
 ------------- | ----------------- | ---------------------------
 *name*        | string            | Specifies the title of the *TOC Item*.
 *href*        | string            | Specifies the hyperlink of the *TOC Item*.
+*tocHref*     | string            | Specified another TOC file to be expanded in the currrent *TOC Item*.
 *homepage*    | string            | Specifies the homepage of the *TOC Item*. It is useful when *href* is linking to a folder.
 *uid*         | string            | Specifies the `uid` of the referenced file. If the value is set, it overwrites the value of *href*.
 *homepageUid* | string            | Specifies the `uid` of the homepage. If the value is set, it overwrites the value of *homepage*.
@@ -73,50 +74,11 @@ Relative path in detail
 ---------------
 If a *TOC Item* is linking to some relative path, there are three cases:
 
-1. Linking to another *TOC File*, for example, `href: examples/toc.md`.
+1. **Deprecated** ~~Linking to another *TOC File*, for example, `href: examples/toc.md`.~~
 2. Linking to a folder, which means, the value of the link ends with `/` explicitly, for example, `href: examples/`
 3. Linking to some local file.
 
 Each case is described in detail below.
-
-### Link to another *TOC File*
-If the *TOC Item* is linking to some other *TOC File*, it is considered as a placeholder of the referenced *TOC File*, and DocFX will extract content from that *TOC File* and insert into current *TOC Item* **recursively**.
-
-This technique is always used when you want to combine several *TOC File*s into one single *TOC File*.
-
-If `homepage` is set for this *TOC Item*, it will be considered as the `href` of the expanded *TOC Item*.
-
-For example, one `toc.yml` file is like below:
-
-```yml
-- name: How-to tutorials
-  href: howto/toc.yml
-  homepage: howto/overview.md
-```
-
-It references to the `toc.yml` file under folder `howto`, with the following content:
-
-```yaml
-- name: "How-to1"
-  href: howto1.md
-- name: "How-to2"
-  href: howto2.md
-```
-
-DocFX processes these `toc.yml` files and expands the uppder `toc.yml` file into:
-
-```yaml
-
-- name: How-to tutorials
-  href: howto/overview.md
-  items:
-    - name: "How-to1"
-      href: howto/howto1.md
-    - name: "How-to2"
-      href: howto/howto2.md
-```
-
-*NOTE* that the referenced `toc.yml` file under `howto` folder will not be transformed to the output folder even if it is included in `docfx.json`.
 
 ### Link to a folder
 If the *Toc Item* is linking to a folder, ending with `/` explicitly, the link value for the *Toc Item* is determined in the following steps:
@@ -134,6 +96,45 @@ If the *Toc Item* is linking to a folder, ending with `/` explicitly, the link v
 
 ### Link to local file
 If the *Toc Item* is linking to a local file, we call this local file *In-Toc File*. Make sure the file is included in `docfx.json`.
+
+Link to another *TOC File* using *tocHref*
+------------------
+*tocHref* can link to some other *TOC File*. It is considered as a placeholder of the referenced *TOC File*, and DocFX will extract content from that *TOC File* and insert into current *TOC Item* **recursively**.
+
+This technique is always used when you want to combine several *TOC File*s into one single *TOC File*.
+
+~~If `homepage` is set for this *TOC Item*, it will be considered as the `href` of the expanded *TOC Item*.~~ The `href` of this *TOC Item* will remains as the `href` of the expanded *TOC Item*.
+
+For example, one `toc.yml` file is like below:
+
+```yml
+- name: How-to tutorials
+  tocHref: howto/toc.yml
+  href: howto/overview.md
+```
+
+It references to the `toc.yml` file under folder `howto`, with the following content:
+
+```yaml
+- name: "How-to1"
+  href: howto1.md
+- name: "How-to2"
+  href: howto2.md
+```
+
+DocFX processes these `toc.yml` files and expands the uppder `toc.yml` file into:
+
+```yaml
+- name: How-to tutorials
+  href: howto/overview.md
+  items:
+    - name: "How-to1"
+      href: howto/howto1.md
+    - name: "How-to2"
+      href: howto/howto2.md
+```
+
+*NOTE* that the referenced `toc.yml` file under `howto` folder will not be transformed to the output folder even if it is included in `docfx.json`.
 
 Not-In-Toc Files
 ----------------

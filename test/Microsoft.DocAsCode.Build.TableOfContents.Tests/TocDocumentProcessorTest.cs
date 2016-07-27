@@ -377,6 +377,99 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             Assert.Equal($"Circular reference to {Path.GetFullPath(Path.Combine(_inputFolder, subToc)).ToDisplayPath()} is found in {Path.GetFullPath(Path.Combine(_inputFolder, referencedToc)).ToDisplayPath()}", e.Message, true);
         }
 
+        [Fact]
+        public void ProcessYamlTocWithTocHrefShouldSucceed()
+        {
+
+            var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, "sub1/sub2");
+            var referencedToc = _fileCreator.CreateFile($@"
+- name: Topic
+  href: {Path.GetFileName(file)}
+", FileType.YamlToc, "sub1/sub2");
+            var content = $@"
+- name: Topic1
+  tocHref: /Topic1/
+  href: /Topic1/index.html
+  items:
+    - name: Topic1.1
+      tocHref: /Topic1.1/
+      href: /Topic1.1/index.html
+    - name: Topic1.2
+      tocHref: /Topic1.2/
+      href: /Topic1.2/index.html
+- name: Topic2
+  tocHref: {referencedToc}
+";
+            var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
+            FileCollection files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { file, toc });
+            BuildDocument(files);
+            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension));
+
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+            var expectedModel = new TocItemViewModel
+            {
+                Homepage = file,
+                Items = new TocViewModel
+                {
+                    new TocItemViewModel
+                    {
+                        Name = "Topic1",
+                        Href = "/Topic1/",
+                        Homepage = "/Topic1/index.html",
+                        Items = new TocViewModel
+                        {
+                            new TocItemViewModel
+                            {
+                                Name = "Topic1.1",
+                                Href = "/Topic1.1/",
+                                Homepage = "/Topic1.1/index.html"
+                            },
+                            new TocItemViewModel
+                            {
+                                Name = "Topic1.2",
+                                Href = "/Topic1.2/",
+                                Homepage = "/Topic1.2/index.html"
+                            }
+                        }
+                    },
+                    new TocItemViewModel
+                    {
+                        Name = "Topic2",
+                        Href = null,
+                        Items = new TocViewModel
+                        {
+                            new TocItemViewModel
+                            {
+                                Name = "Topic",
+                                Href = file,
+                            }
+                        }
+                    }
+                }
+            };
+
+            AssertTocEqual(expectedModel, model);
+        }
+
+        [Fact]
+        public void ProcessYamlTocWithTocHrefAndHomepageShouldFail()
+        {
+
+            var content = $@"
+- name: Topic1
+  tocHref: /Topic1/
+  href: /Topic1/index.html
+  homepage: /Topic1/index.html
+";
+            var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
+            FileCollection files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc });
+            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
+            Assert.Equal("Href should be used to specify the homepage /Topic1/index.html when TocHref is uesed", e.Message);
+        }
+
         #region Helper methods
 
         private enum FileType
