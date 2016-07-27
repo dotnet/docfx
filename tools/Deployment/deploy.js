@@ -397,11 +397,7 @@ function updateReleasePromiseFn() {
     return new Promise(function(resolve, reject) {
       getLastestReleasePromiseFn()().then(function() {
         let promiseFn = globalOptions.tag_name === globalOptions.version ? deleteAssetsPromiseFn() : createReleasePromiseFn();
-        promiseFn().then(function() {
-          resolve();
-        }).catch(function(err) {
-          reject(err);
-        });
+        promiseFn().then(resolve).catch(reject);
       });
     });
   }
@@ -436,11 +432,12 @@ function updateChocoConfigPromiseFn() {
 
 function pushChocoPackage() {
   return function() {
-    return new Promise(function(reslove, reject) {
+    return new Promise(function(resolve, reject) {
       if (!globalOptions.pkgName) {
         reject(new Error('package name can not be null/empty/undefined while pushing choco package'));
       }
-      return execPromiseFn('choco', ['push', globalOptions.pkgName], config.choco.homeDir)();
+      let promiseFn = execPromiseFn('choco', ['push', globalOptions.pkgName], config.choco.homeDir);
+      promiseFn().then(resolve).catch(reject);
     });
   }
 }
@@ -562,4 +559,3 @@ switch (branchValue.toLowerCase()) {
   default:
     logger.error("Please specify the *right* repo branch name to run this script");
 }
-
