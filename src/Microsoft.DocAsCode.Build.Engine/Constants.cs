@@ -10,12 +10,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         public const string DefaultLanguage = "csharp";
 
-        /// <summary>
-        /// TODO: To be removed next sprint @4/18/2016
-        /// </summary>
-        public const string ObsoleteManifestFileName = ".manifest";
-
         public const string ManifestFileName = "manifest.json";
-
     }
 }

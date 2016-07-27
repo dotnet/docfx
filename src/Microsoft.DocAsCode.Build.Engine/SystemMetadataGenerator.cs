@@ -81,11 +81,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var tocRelativePath = parentTocPath.MakeRelativeTo(file);
                 attrs.RelativePathToToc = tocRelativePath;
                 attrs.TocKey = parentToc.Key;
-                Logger.LogVerbose($"TOC file {parentTocPath} is found for {item.LocalPathFromRepoRoot}.");
+                Logger.LogVerbose($"TOC file {parentTocPath} is found for {item.LocalPathFromRoot}.");
             }
             else
             {
-                Logger.LogVerbose($"TOC file for {item.LocalPathFromRepoRoot} is not found.");
+                Logger.LogVerbose($"TOC file for {item.LocalPathFromRoot} is not found.");
             }
 
             return attrs;
