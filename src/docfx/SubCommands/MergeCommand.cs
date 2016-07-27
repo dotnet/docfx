@@ -107,8 +107,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         SourceFolder = optionsBaseDirectory
                     });
             }
-            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(options.FileMetadataFilePath, config.FileMetadata);
-            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(options.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadata);
+            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(config.FileMetadataFilePaths, config.FileMetadata);
+            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(options.GlobalMetadata, config.GlobalMetadataFilePaths, config.GlobalMetadata);
         }
 
         private static Dictionary<string, object> GetGlobalMetadataFromOption(MergeCommandOptions options)
