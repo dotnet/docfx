@@ -635,14 +635,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             IMarkdownService markdownService)
         {
             var k = from fileItem in (
-                from file in parameters.Files.EnumerateFiles()
-                from p in (from processor in processors
-                           let priority = processor.GetProcessingPriority(file)
-                           where priority != ProcessingPriority.NotSupported
-                           group processor by priority into ps
-                           orderby ps.Key descending
-                           select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
-                select new { file, p })
+                    from file in parameters.Files.EnumerateFiles()
+                    from p in (from processor in processors
+                               let priority = processor.GetProcessingPriority(file)
+                               where priority != ProcessingPriority.NotSupported
+                               group processor by priority into ps
+                               orderby ps.Key descending
+                               select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
+                    select new { file, p })
                     group fileItem by fileItem.p;
 
             var toHandleItems = k.Where(s => s.Key != null);
