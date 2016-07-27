@@ -10,23 +10,32 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public static IMarkdownTokenValidator FromLambda<TToken>(
             Action<TToken> validator)
             where TToken : class, IMarkdownToken
+            => FromLambda(validator, null);
+
+        public static IMarkdownTokenValidator FromLambda<TToken>(
+            Action<TToken> validator,
+            Action<IMarkdownRewriteEngine> initializer)
+            where TToken : class, IMarkdownToken
         {
             if (validator == null)
             {
                 throw new ArgumentNullException(nameof(validator));
             }
-            return new MarkdownLambdaTokenValidator<TToken>(validator);
+            return new MarkdownLambdaTokenValidator<TToken>(validator, initializer);
         }
 
         private sealed class MarkdownLambdaTokenValidator<TToken>
-            : IMarkdownTokenValidator
+            : IMarkdownTokenValidator, IInitializable
             where TToken : class, IMarkdownToken
         {
             public Action<TToken> Validator { get; }
 
-            public MarkdownLambdaTokenValidator(Action<TToken> validator)
+            public Action<IMarkdownRewriteEngine> Initializer { get; }
+
+            public MarkdownLambdaTokenValidator(Action<TToken> validator, Action<IMarkdownRewriteEngine> initializer)
             {
                 Validator = validator;
+                Initializer = initializer;
             }
 
             public void Validate(IMarkdownToken token)
@@ -36,6 +45,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     Validator(t);
                 }
+            }
+
+            public void Initialize(IMarkdownRewriteEngine rewriteEngine)
+            {
+                Initializer?.Invoke(rewriteEngine);
             }
         }
     }

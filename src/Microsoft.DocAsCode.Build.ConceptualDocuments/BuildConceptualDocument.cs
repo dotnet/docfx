@@ -17,11 +17,12 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Utility;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildConceptualDocument : BaseDocumentBuildStep
+    public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuild
     {
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
         private const int TitleThumbnailMaxLength = 30;
+
         public override string Name => nameof(BuildConceptualDocument);
 
         public override int BuildOrder => 0;
@@ -83,6 +84,20 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
             host.ReportDependency(model, result.Dependency);
         }
+
+        #region ISupportIncrementalBuild Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType)
+        {
+            return true;
+        }
+
+        public string GetIncrementalContextHash()
+        {
+            return null;
+        }
+
+        #endregion
 
         private static string TitleThumbnail(string title, int maxLength)
         {

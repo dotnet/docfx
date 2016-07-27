@@ -59,6 +59,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new MarkdownBrInlineRule());
             builder.Add(new GfmDelInlineRule());
             builder.Add(new MarkdownEscapedTextInlineRule());
+            builder.Add(new GfmEmojiInlineRule());
             builder.Add(new GfmTextInlineRule());
             InlineRules = builder.ToImmutable();
         }

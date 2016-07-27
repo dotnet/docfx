@@ -3,7 +3,10 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    public class MarkdownNonParagraphBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownNonParagraphBlockToken>
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+
+    public class MarkdownNonParagraphBlockToken : IMarkdownExpression, IMarkdownRewritable<MarkdownNonParagraphBlockToken>
     {
         public MarkdownNonParagraphBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, SourceInfo sourceInfo)
         {
@@ -30,5 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return new MarkdownNonParagraphBlockToken(Rule, Context, content, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() => Content.Tokens;
     }
 }

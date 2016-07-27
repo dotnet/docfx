@@ -18,6 +18,10 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("homepages")]
         public List<HomepageInfo> Homepages { get; set; }
 
+        [YamlMember(Alias = "sourceBasePath")]
+        [JsonProperty("source_base_path")]
+        public string SourceBasePath { get; set; }
+
         [YamlMember(Alias = "xrefmap")]
         [JsonProperty("xrefmap")]
         public object XRefMap { get; set; }

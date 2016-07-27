@@ -188,57 +188,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
-        public static void SaveManifest(List<ManifestItem> manifest, List<HomepageInfo> homepages, List<string> xrefMaps, string outputDirectory)
-        {
-            var itemsToRemove = new List<string>();
-            foreach (var duplicates in from m in manifest
-                                       from output in m.OutputFiles.Values
-                                       group m.OriginalFile by output into g
-                                       where g.Count() > 1
-                                       select g)
-            {
-                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
-                itemsToRemove.AddRange(duplicates.Skip(1));
-            }
-            manifest.RemoveAll(m => itemsToRemove.Contains(m.OriginalFile));
-
-            // Save manifest from template
-            // TODO: Keep .manifest for backward-compatability, will remove next sprint
-            var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
-            var deprecatedManifest = Transform(manifest);
-            JsonUtility.Serialize(manifestPath, deprecatedManifest);
-            // Logger.LogInfo($"Manifest file saved to {manifestPath}. NOTE: This file is out-of-date and will be removed in version 1.8, if you rely on this file, please change to use {Constants.ManifestFileName} instead.");
-
-            var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
-            object xrefMapsObject;
-            if (xrefMaps.Count == 1)
-            {
-                xrefMapsObject = xrefMaps[0];
-            }
-            else
-            {
-                xrefMapsObject = xrefMaps;
-            }
-            var manifestObject = new Manifest
-            {
-                Homepages = homepages,
-                Files = manifest,
-                XRefMap = xrefMapsObject,
-            };
-            JsonUtility.Serialize(manifestJsonPath, manifestObject);
-            Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
-        }
-
-        private static List<DeprecatedManifestItem> Transform(List<ManifestItem> manifest)
-        {
-            return manifest.Select(item => new DeprecatedManifestItem
-            {
-                DocumentType = item.DocumentType,
-                OriginalFile = item.OriginalFile,
-                OutputFiles = item.OutputFiles.ToDictionary(k => k.Key, k => k.Value.RelativePath)
-            }).ToList();
-        }
-
         public void Dispose()
         {
             _resourceProvider?.Dispose();

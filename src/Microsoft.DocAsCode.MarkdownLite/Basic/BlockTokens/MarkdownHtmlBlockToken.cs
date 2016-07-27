@@ -3,7 +3,9 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    public class MarkdownHtmlBlockToken : IMarkdownToken, IMarkdownRewritable<MarkdownHtmlBlockToken>
+    using System.Collections.Generic;
+
+    public class MarkdownHtmlBlockToken : IMarkdownExpression, IMarkdownRewritable<MarkdownHtmlBlockToken>
     {
         public MarkdownHtmlBlockToken(IMarkdownRule rule, IMarkdownContext context, InlineContent content, SourceInfo sourceInfo)
         {
@@ -30,5 +32,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             return new MarkdownHtmlBlockToken(Rule, Context, c, SourceInfo);
         }
+
+        public IEnumerable<IMarkdownToken> GetChildren() => Content.Tokens;
     }
 }

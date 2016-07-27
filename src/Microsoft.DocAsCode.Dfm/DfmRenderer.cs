@@ -122,6 +122,12 @@ namespace Microsoft.DocAsCode.Dfm
                     }
                     content += "</div>\n";
                 }
+                else if(splitToken.Token is DfmVideoBlockToken)
+                {
+                    var videoToken = splitToken.Token as DfmVideoBlockToken;
+                    content += $"<iframe width=\"640\" height=\"320\" src=\"{videoToken.Link}\" frameborder=\"0\" allowfullscreen=\"true\"></iframe>\n";
+                    continue;
+                }
                 else
                 {
                     content += "<blockquote>";
@@ -165,6 +171,11 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmNoteBlockToken token, MarkdownBlockContext context)
         {
             return token.Content;
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmVideoBlockToken token, MarkdownBlockContext context)
+        {
+            return token.SourceInfo.Markdown;
         }
 
         private static StringBuffer AppendAttribute(StringBuffer buffer, string attributeName, string value)

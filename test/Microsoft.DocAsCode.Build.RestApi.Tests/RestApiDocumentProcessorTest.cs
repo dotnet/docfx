@@ -234,7 +234,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 }.ToImmutableDictionary()
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies()))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty))
             {
                 builder.Build(parameters);
             }

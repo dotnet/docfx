@@ -77,13 +77,15 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
                     swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
                     var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
-                    var displayLocalPath = repoInfo?.RelativePath ?? filePath.ToDisplayPath();
+                    var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+
                     return new FileModel(file, vm, serializer: new BinaryFormatter())
                     {
                         Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
                             .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
                             .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
-                        LocalPathFromRepoRoot = displayLocalPath,
+                        LocalPathFromRepoRoot = repoInfo?.RelativePath ?? filePath.ToDisplayPath(),
+                        LocalPathFromRoot = displayLocalPath
                     };
                 case DocumentType.Overwrite:
                     // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors

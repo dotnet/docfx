@@ -43,13 +43,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             };
 
             var repoDetail = GitUtility.GetGitDetail(filePath);
-            var displayLocalPath = repoDetail?.RelativePath ?? filePath;
+            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             // todo : metadata.
             return new FileModel(file, toc)
             {
                 Uids = new[] { new UidDefinition(file.File, displayLocalPath) }.ToImmutableArray(),
-                LocalPathFromRepoRoot = displayLocalPath,
+                LocalPathFromRepoRoot = repoDetail?.RelativePath ?? filePath,
+                LocalPathFromRoot = displayLocalPath
             };
         }
 

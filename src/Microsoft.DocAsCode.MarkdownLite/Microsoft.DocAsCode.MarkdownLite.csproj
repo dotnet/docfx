@@ -17,6 +17,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Align.cs" />
+    <Compile Include="Extensions\MarkdownTokenExtensions.cs" />
+    <Compile Include="Gfm\GfmEmojiInlineToken.cs" />
+    <Compile Include="Gfm\GfmEmojiInlineRule.generated.cs">
+      <DependentUpon>GfmEmojiInlineRule.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gfm\GfmHtmlCommentBlockRule.cs" />
     <Compile Include="Basic\BlockTokens\TwoPhaseBlockToken.cs" />
     <Compile Include="Basic\InlineRules\MarkdownCommentInlineRule.cs" />
@@ -36,9 +41,11 @@
     <Compile Include="Gfm\GfmHeadingBlockRule.cs" />
     <Compile Include="Gfm\GfmParagraphBlockRule.cs" />
     <Compile Include="Gfm\GfmTextInlineRule.cs" />
+    <Compile Include="Gfm\GfmEmojiInlineRule.cs" />
     <Compile Include="Gfm\GfmUrlInlineRule.cs" />
     <Compile Include="IMarkdownContext.cs" />
     <Compile Include="IMarkdownEngine.cs" />
+    <Compile Include="IMarkdownExpression.cs" />
     <Compile Include="IMarkdownParser.cs" />
     <Compile Include="IMarkdownParsingContext.cs" />
     <Compile Include="IMarkdownRenderer.cs" />
@@ -47,6 +54,8 @@
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
     <Compile Include="IMarkdownRewritable.cs" />
+    <Compile Include="Rewriters\IInitializable.cs" />
+    <Compile Include="Rewriters\MarkdownInitializableLambdaTokenRewriter.cs" />
     <Compile Include="SourceInfo.cs" />
     <Compile Include="MarkdownEngine.cs" />
     <Compile Include="MarkdownParsingContext.cs" />
@@ -117,12 +126,14 @@
     <Compile Include="StringBuffer.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="InlineContent.cs" />
+    <Compile Include="Tables\MarkdownTableItemBlockToken.cs" />
     <Compile Include="TokenHelper.cs" />
     <Compile Include="Validators\IMarkdownTokenTreeValidator.cs" />
     <Compile Include="Validators\IMarkdownTokenValidator.cs" />
     <Compile Include="Validators\IMarkdownTokenValidatorProvider.cs" />
     <Compile Include="Validators\MarkdownTokenValidatorAdapter.cs" />
     <Compile Include="Validators\MarkdownTokenTreeValidatorFactory.cs" />
+    <Compile Include="Validators\MarkdownTokenValidatorContext.cs" />
     <Compile Include="Validators\MarkdownTokenValidatorFactory.cs" />
   </ItemGroup>
   <ItemGroup>

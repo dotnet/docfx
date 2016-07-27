@@ -7,18 +7,17 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
-    using System.Linq;
-    using System.Reflection;
     using System.Runtime.Remoting.Lifetime;
+    using System.Reflection;
 
     using Microsoft.DocAsCode;
+    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ResourceFiles;
     using Microsoft.DocAsCode.Build.RestApi;
-    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.TableOfContents;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -54,6 +53,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public void BuildDocument()
         {
             var sponsor = new ClientSponsor();
+            EnvironmentContext.BaseDirectory = _baseDirectory;
             if (_listener != null)
             {
                 Logger.LogLevelThreshold = _logLevel;
@@ -91,28 +91,25 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory)
         {
-            using (var builder = new DocumentBuilder(LoadPluginAssemblies(pluginDirectory)))
+            var assemblies = LoadPluginAssemblies(pluginDirectory);
+            var postProcessorNames = config.PostProcessors.ToImmutableArray();
+            var metadata = config.GlobalMetadata?.ToImmutableDictionary();
+
+            // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
+            object value;
+            if (metadata != null && metadata.TryGetValue("_enableSearch", out value))
             {
-                builder.IntermediateFolder = config.IntermediateFolder;
-                using (new PerformanceScope("building documents", LogLevel.Info))
+                var isSearchable = value as bool?;
+                if (isSearchable.HasValue && isSearchable.Value && !postProcessorNames.Contains("ExtractSearchIndex"))
                 {
-                    foreach (var parameters in ConfigToParameter(config, templateManager, baseDirectory, outputDirectory))
-                    {
-                        if (parameters.Files.Count == 0)
-                        {
-                            Logger.LogWarning(string.IsNullOrEmpty(parameters.VersionName)
-                                ? "No files found, nothing is generated in default version."
-                                : $"No files found, nothing is generated in version \"{parameters.VersionName}\".");
-                            return;
-                        }
-                        if (!string.IsNullOrEmpty(parameters.VersionName))
-                        {
-                            Logger.LogInfo($"Start building for version: {parameters.VersionName}");
-                        }
-                        builder.Build(parameters);
-                    }
-                    builder.SaveManifest(outputDirectory);
+                    postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
                 }
+            }
+
+            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, config.IntermediateFolder))
+            using (new PerformanceScope("building documents", LogLevel.Info))
+            {
+                builder.Build(ConfigToParameter(config, templateManager, baseDirectory, outputDirectory), outputDirectory);
             }
         }
 

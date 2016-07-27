@@ -22,9 +22,9 @@ exports.transform = function (model)  {
   if (!model) return null;
 
   langs = model.langs;
-  handleItem(model, model.newFileRepository);
+  handleItem(model, model._gitContribute);
   if (model.children) {
-      model.children.forEach(function (item) { handleItem(item, model.newFileRepository); });
+      model.children.forEach(function (item) { handleItem(item, model._gitContribute); });
   }
 
   if (model.type) {
@@ -103,9 +103,9 @@ function handleNamespace(model) {
     }
 }
 
-function handleItem(vm, newFileRepository) {
+function handleItem(vm, gitContribute) {
   // get contribution information
-  vm.docurl = common.getImproveTheDocHref(vm, newFileRepository);
+  vm.docurl = common.getImproveTheDocHref(vm, gitContribute);
   vm.sourceurl = common.getViewSourceHref(vm);
 
   // set to null incase mustache looks up

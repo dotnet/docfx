@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmNoteBlockToken : IMarkdownToken
+    public class DfmNoteBlockToken : IMarkdownToken, IDfmBlockSpecialSplitToken
     {
         public DfmNoteBlockToken(IMarkdownRule rule, IMarkdownContext context, string noteType, string content, SourceInfo sourceInfo)
         {

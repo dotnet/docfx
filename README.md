@@ -19,9 +19,10 @@ We currently support C# and VB projects.
 
 ## How to build?
 ### Prerequisites
-1. [VS 2015 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx) or above
-2. [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)
-3. [Node.js](https://nodejs.org)
+1. [VS 2013 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx) or above
+2. [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)(No need if you install VS 2015 or above)
+3. [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)
+4. [Node.js](https://nodejs.org)
 
 ### Steps
 1. `dnvm install 1.0.0-rc1-final`

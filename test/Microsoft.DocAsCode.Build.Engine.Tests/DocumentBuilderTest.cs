@@ -436,7 +436,7 @@ exports.getOptions = function (){
 
         private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies()))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty))
             {
                 if (applyTemplateSettings == null)
                 {

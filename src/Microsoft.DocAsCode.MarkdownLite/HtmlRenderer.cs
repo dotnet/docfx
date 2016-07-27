@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     result += "<th>";
                 }
-                foreach (var item in token.Header[i].Tokens)
+                foreach (var item in token.Header[i].Content.Tokens)
                 {
                     result += renderer.Render(item);
                 }
@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     {
                         result += "<td>";
                     }
-                    foreach (var item in row[j].Tokens)
+                    foreach (var item in row[j].Content.Tokens)
                     {
                         result += renderer.Render(item);
                     }
@@ -310,6 +310,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBrInlineToken token, MarkdownInlineContext context)
         {
             return renderer.Options.XHtml ? "<br/>" : "<br>";
+        }
+
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, GfmEmojiInlineToken token, MarkdownInlineContext context)
+        {
+            var result = StringBuffer.Empty;
+            result += "<span class=\"emoji\" shortCode=\"";
+            result += token.ShortCode;
+            result += "\">";
+            result += token.Emoji;
+            result += "</span>";
+            return result;
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownInlineContext context)
