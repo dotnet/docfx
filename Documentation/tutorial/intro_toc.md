@@ -97,9 +97,9 @@ If the *Toc Item* is linking to a folder, ending with `/` explicitly, the link v
 ### Link to local file
 If the *Toc Item* is linking to a local file, we call this local file *In-Toc File*. Make sure the file is included in `docfx.json`.
 
-Link to another *TOC File* using *tocHref*
+Using *tocHref* to link to another *TOC File*
 ------------------
-*tocHref* can link to some other *TOC File*. It is considered as a placeholder of the referenced *TOC File*, and DocFX will extract content from that *TOC File* and insert into current *TOC Item* **recursively**.
+*tocHref* can link to some other *TOC File*, for example, `tocHref: examples/toc.md`. It is considered as a placeholder of the referenced *TOC File*, and DocFX will extract content from that *TOC File* and insert into current *TOC Item* **recursively**.
 
 This technique is always used when you want to combine several *TOC File*s into one single *TOC File*.
 
