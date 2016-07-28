@@ -108,9 +108,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
         {
-            if (item.Uid != null)
+            if (item.TopicUid != null)
             {
-                var xref = GetXrefFromUid(item.Uid, model, context);
+                var xref = GetXrefFromUid(item.TopicUid, model, context);
                 if (xref != null)
                 {
                     item.Href = xref.Href;
@@ -130,11 +130,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         item.NameForVB = nameForVB;
                     }
                 }
-            }
-
-            if (item.HomepageUid != null)
-            {
-                item.Homepage = GetXrefFromUid(item.HomepageUid, model, context)?.Href;
             }
         }
 

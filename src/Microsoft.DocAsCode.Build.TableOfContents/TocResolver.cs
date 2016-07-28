@@ -50,21 +50,42 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             var item = wrapper.Content;
 
+            // HomepageUid and Uid is deprecated, unified to TopicUid
+            if (string.IsNullOrEmpty(item.TopicUid))
+            {
+                if (!string.IsNullOrEmpty(item.Uid))
+                {
+                    item.TopicUid = item.Uid;
+                    item.Uid = null;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(item.HomepageUid))
+                    {
+                        item.TopicUid = item.HomepageUid;
+                        item.HomepageUid = null;
+                    }
+                }
+            }
+
             // TocHref supports 2 forms: absolute path and local toc file.
             // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
-            if (item.TocHref != null)
+            if (!string.IsNullOrEmpty(item.TocHref))
             {
-                var tocHrefType = Utility.GetHrefType(item.TocHref);
-                if (!string.IsNullOrEmpty(item.Homepage))
+                if (!string.IsNullOrEmpty(item.Homepage) || !string.IsNullOrEmpty(item.Href))
                 {
-                    throw new DocumentException($"Href should be used to specify the homepage {item.Homepage} when TocHref is uesed");
+                    throw new DocumentException($"\"topicHref\" should be used to specify the homepage for {item.TocHref} when tocHref is used.");
                 }
+                var tocHrefType = Utility.GetHrefType(item.TocHref);
                 switch (tocHrefType)
                 {
                     case HrefType.AbsolutePath:
+                        item.Homepage = item.TopicHref;
+                        item.Href = item.TocHref;
+                        break;
                     case HrefType.MarkdownTocFile:
                     case HrefType.YamlTocFile:
-                        item.Homepage = item.Href;
+                        item.Homepage = item.TopicHref;
                         item.Href = item.TocHref;
                         item.TocHref = null;
                         break;
@@ -87,13 +108,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         {
                             item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack).Content;
                         }
-                        if (string.IsNullOrEmpty(item.Homepage) && string.IsNullOrEmpty(item.HomepageUid))
+                        if (string.IsNullOrEmpty(item.Homepage) && string.IsNullOrEmpty(item.TopicUid))
                         {
                             var defaultItem = GetDefaultHomepageItem(item);
                             if (defaultItem != null)
                             {
                                 item.Homepage = defaultItem.Href;
-                                item.HomepageUid = defaultItem.Uid;
+                                item.TopicUid = defaultItem.TopicUid;
                             }
                         }
                     }
@@ -124,19 +145,18 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         item.TocHref = tocFilePath - (RelativePath)file.File;
 
                         // Get homepage from the referenced toc
-                        if (string.IsNullOrEmpty(item.Homepage) && string.IsNullOrEmpty(item.HomepageUid))
+                        if (string.IsNullOrEmpty(item.Homepage) && string.IsNullOrEmpty(item.TopicUid))
                         {
                             stack.Push(file);
                             var resolved = ResolveItem(tocFileModel, stack).Content;
                             stack.Pop();
                             item.Href = resolved.Homepage;
-                            item.Uid = resolved.HomepageUid;
+                            item.TopicUid = resolved.TopicUid;
                         }
                         else
                         {
                             // Set homepage to href
                             item.Href = item.Homepage;
-                            item.Uid = item.HomepageUid;
                         }
 
                         if (item.Items != null)
@@ -178,7 +198,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         // For referenced toc, content from referenced toc is expanded as the items of current toc item,
                         // Href is reset to the homepage of current toc item
                         item.Href = item.Homepage;
-                        item.Uid = item.HomepageUid;
                         item.Items = referencedToc.Items;
                     }
                     break;
@@ -234,7 +253,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// <returns></returns>
         private bool IsValidHomepageLink(TocItemViewModel tocItem)
         {
-            if (!string.IsNullOrEmpty(tocItem.Uid))
+            if (!string.IsNullOrEmpty(tocItem.Uid) && !string.IsNullOrEmpty(tocItem.TopicUid))
             {
                 return true;
             }

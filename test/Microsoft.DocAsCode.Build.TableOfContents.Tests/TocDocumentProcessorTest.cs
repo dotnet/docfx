@@ -380,7 +380,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
         [Fact]
         public void ProcessYamlTocWithTocHrefShouldSucceed()
         {
-
             var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, "sub1/sub2");
             var referencedToc = _fileCreator.CreateFile($@"
 - name: Topic
@@ -389,14 +388,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var content = $@"
 - name: Topic1
   tocHref: /Topic1/
-  href: /Topic1/index.html
+  topicHref: /Topic1/index.html
   items:
     - name: Topic1.1
       tocHref: /Topic1.1/
-      href: /Topic1.1/index.html
+      topicHref: /Topic1.1/index.html
     - name: Topic1.2
       tocHref: /Topic1.2/
-      href: /Topic1.2/index.html
+      topicHref: /Topic1.2/index.html
 - name: Topic2
   tocHref: {referencedToc}
 ";
@@ -417,33 +416,38 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     {
                         Name = "Topic1",
                         Href = "/Topic1/",
+                        TocHref = "/Topic1/",
                         Homepage = "/Topic1/index.html",
+                        TopicHref = "/Topic1/index.html",
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
                             {
                                 Name = "Topic1.1",
                                 Href = "/Topic1.1/",
-                                Homepage = "/Topic1.1/index.html"
+                                TocHref = "/Topic1.1/",
+                                Homepage = "/Topic1.1/index.html",
+                                TopicHref = "/Topic1.1/index.html",
                             },
                             new TocItemViewModel
                             {
                                 Name = "Topic1.2",
                                 Href = "/Topic1.2/",
-                                Homepage = "/Topic1.2/index.html"
+                                TocHref = "/Topic1.2/",
+                                Homepage = "/Topic1.2/index.html",
+                                TopicHref = "/Topic1.2/index.html",
                             }
                         }
                     },
                     new TocItemViewModel
                     {
                         Name = "Topic2",
-                        Href = null,
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
                             {
                                 Name = "Topic",
-                                Href = file,
+                                Href = file
                             }
                         }
                     }
@@ -467,7 +471,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             FileCollection files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { toc });
             var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
-            Assert.Equal("Href should be used to specify the homepage /Topic1/index.html when TocHref is uesed", e.Message);
+            Assert.Equal("\"topicHref\" should be used to specify the homepage for /Topic1/ when tocHref is used.", e.Message);
         }
 
         #region Helper methods

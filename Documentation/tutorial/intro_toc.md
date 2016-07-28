@@ -64,11 +64,18 @@ Property Name | Type              | Description
 ------------- | ----------------- | ---------------------------
 *name*        | string            | Specifies the title of the *TOC Item*.
 *href*        | string            | Specifies the hyperlink of the *TOC Item*.
-*tocHref*     | string            | Specified another TOC file to be expanded in the currrent *TOC Item*.
-*homepage*    | string            | Specifies the homepage of the *TOC Item*. It is useful when *href* is linking to a folder.
-*uid*         | string            | Specifies the `uid` of the referenced file. If the value is set, it overwrites the value of *href*.
-*homepageUid* | string            | Specifies the `uid` of the homepage. If the value is set, it overwrites the value of *homepage*.
-*items*       | *TOC Item Object* | Specifies the children *TOC Items*s of current *TOC Item*.
+*items*       | *TOC Item Object* | Specifies the children *TOC Item*s of current *TOC Item*.
+
+**Advanced**: These properties is useful when a TOC links to or reference to another TOC, or links to a uid.
+
+Property Name                     | Type              | Description
+--------------------------------- | ----------------- | ---------------------------
+*tocHref*                         | string            | Specifies another TOC file to be expanded in the currrent *TOC Item*.
+*topicHref*                       | string            | Specifies the homepage of the referenced *TOC Item*. It is useful when *tocHref* is used.
+*topicUid*                        | string            | Specifies the `uid` of the homepage or the referenced file. If the value is set, it overwrites the value of *topicHref*.
+*homepage*                        | string            | Specifies the homepage of the *TOC Item*. It is useful when *href* is linking to a folder.
+~~*uid*~~ **Deprecated**          | string            | ~~Specifies the `uid` of the referenced file. If the value is set, it overwrites the value of *href*.~~ Use *topicUid* instead.
+~~*homepageUid*~~ **Deprecated**  | string            | ~~Specifies the `uid` of the homepage. If the value is set, it overwrites the value of *homepage*.~~ Use *topicUid* instead.
 
 Relative path in detail
 ---------------
@@ -103,14 +110,14 @@ Using *tocHref* to link to another *TOC File*
 
 This technique is always used when you want to combine several *TOC File*s into one single *TOC File*.
 
-~~If `homepage` is set for this *TOC Item*, it will be considered as the `href` of the expanded *TOC Item*.~~ The `href` of this *TOC Item* will remains as the `href` of the expanded *TOC Item*.
+If ~~`homepage`~~ `topicHref` is set for this *TOC Item*, it will be considered as the `href` of the expanded *TOC Item*.
 
 For example, one `toc.yml` file is like below:
 
 ```yml
 - name: How-to tutorials
   tocHref: howto/toc.yml
-  href: howto/overview.md
+  topicHref: howto/overview.md
 ```
 
 It references to the `toc.yml` file under folder `howto`, with the following content:
@@ -127,6 +134,7 @@ DocFX processes these `toc.yml` files and expands the uppder `toc.yml` file into
 ```yaml
 - name: How-to tutorials
   href: howto/overview.md
+  topicHref: howto/overview.md
   items:
     - name: "How-to1"
       href: howto/howto1.md
