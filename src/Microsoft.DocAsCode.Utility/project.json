@@ -7,7 +7,7 @@
   "dependencies": {
     "GitSharp": "0.3.0",
     "Newtonsoft.Json": "7.0.1",
-    "YamlDotNet.Signed": "3.7.0",
+    "YamlDotNet.Signed": "3.9.0",
     "Microsoft.DocAsCode.Common": "1.0.0"
   },
   "frameworks": {

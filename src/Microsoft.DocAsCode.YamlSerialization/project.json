@@ -5,7 +5,7 @@
   "authors": ["Microsoft"],
   "owners": ["Microsoft"],
   "dependencies": {
-    "YamlDotNet.Signed": "3.7.0"
+    "YamlDotNet.Signed": "3.9.0"
   },
   "frameworks": {
     "net45": {

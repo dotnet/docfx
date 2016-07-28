@@ -93,7 +93,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             RemoveDuplicateOutputFiles(generatedManifest.Files);
             PostProcess(generatedManifest, outputDirectory);
 
-            // Save to manifest.json & .manifest(deprecated)
+            // Save to manifest.json
             SaveManifest(generatedManifest, outputDirectory);
         }
 
@@ -171,25 +171,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void SaveManifest(Manifest manifest, string outputDirectory)
         {
-            // TODO: Keep .manifest for backward-compatability, will remove next sprint
-            var manifestPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ObsoleteManifestFileName);
-            var deprecatedManifest = Transform(manifest.Files);
-            JsonUtility.Serialize(manifestPath, deprecatedManifest);
-
             var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
             JsonUtility.Serialize(manifestJsonPath, manifest);
             Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
-        }
-
-        private static List<DeprecatedManifestItem> Transform(List<ManifestItem> manifest)
-        {
-            return manifest.Select(item => new DeprecatedManifestItem
-            {
-                DocumentType = item.DocumentType,
-                OriginalFile = item.OriginalFile,
-                OutputFiles = item.OutputFiles.ToDictionary(k => k.Key, k => k.Value.RelativePath),
-                Metadata = item.Metadata,
-            }).ToList();
         }
 
         private BuildInfo LoadLastBuildInfo()

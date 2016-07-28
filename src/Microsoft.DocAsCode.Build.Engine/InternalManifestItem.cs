@@ -11,9 +11,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         public string DocumentType { get; set; }
 
-        // TODO: remove when .manifest removed
-        public string LocalPathFromRepoRoot { get; set; }
-
         /// <summary>
         /// relative path from docfx.json
         /// </summary>

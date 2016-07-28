@@ -96,10 +96,10 @@ namespace Microsoft.DocAsCode.YamlSerialization
             NodeDeserializers.Add(new NullNodeDeserializer());
             NodeDeserializers.Add(new ScalarNodeDeserializer());
             NodeDeserializers.Add(new EmitArrayNodeDeserializer());
-            NodeDeserializers.Add(new GenericDictionaryNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new NonGenericDictionaryNodeDeserializer(objectFactory));
+            NodeDeserializers.Add(new EmitGenericDictionaryNodeDeserializer(objectFactory));
+            NodeDeserializers.Add(new DictionaryNodeDeserializer(objectFactory));
             NodeDeserializers.Add(new EmitGenericCollectionNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new NonGenericListNodeDeserializer(objectFactory));
+            NodeDeserializers.Add(new CollectionNodeDeserializer(objectFactory));
             NodeDeserializers.Add(new EnumerableNodeDeserializer());
             NodeDeserializers.Add(new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched));
 
