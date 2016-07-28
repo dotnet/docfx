@@ -16,10 +16,6 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("type")]
         public string DocumentType { get; set; }
 
-        [YamlMember(Alias = "original")]
-        [JsonProperty("original")]
-        public string OriginalFile { get; set; }
-
         [YamlMember(Alias = "sourceRelativePath")]
         [JsonProperty("source_relative_path")]
         public string SourceRelativePath { get; set; }

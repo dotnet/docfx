@@ -55,7 +55,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             var manifestItem = new ManifestItem
             {
                 DocumentType = item.DocumentType,
-                OriginalFile = item.LocalPathFromRepoRoot,
                 SourceRelativePath = item.LocalPathFromRoot,
                 OutputFiles = new Dictionary<string, OutputFileInfo>(),
                 Metadata = item.Metadata,
@@ -106,7 +105,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // save raw model for further investigation:
                     var exportSettings = ApplyTemplateSettings.RawModelExportSettingsForDebug;
                     var rawModelPath = ExportModel(model, item.FileWithoutExtension, exportSettings);
-                    var message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRepoRoot}\" using \"{template.ScriptName}\": {e.Message}";
+                    var message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\": {e.Message}";
                     Logger.LogError(message);
                     throw new DocumentException(message, e);
                 }
@@ -121,7 +120,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // save view model for further investigation:
                     var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
                     var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
-                    var message = $"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRepoRoot}\": {e.Message}";
+                    var message = $"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRoot}\": {e.Message}";
                     Logger.LogError(message);
                     throw new DocumentException(message, e);
                 }
@@ -144,7 +143,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     else
                     {
                         TransformDocument(result, extension, _context, outputPath, outputFile, missingUids, manifestItem);
-                        Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.LocalPathFromRepoRoot}\" to \"{outputPath}\".");
+                        Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
                     }
                 }
             }

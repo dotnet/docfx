@@ -21,7 +21,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeprecatedManifestItem.cs" />
     <Compile Include="DocumentException.cs" />
     <Compile Include="DocumentExceptionExtensions.cs" />
     <Compile Include="DocumentType.cs" />

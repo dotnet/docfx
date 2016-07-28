@@ -608,8 +608,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 FileWithoutExtension = result.FileWithoutExtension,
                 ResourceFile = result.ResourceFile,
                 Key = model.Key,
-                // TODO: What is API doc's LocalPathToRepo? => defined in ManagedReferenceDocumentProcessor
-                LocalPathFromRepoRoot = model.LocalPathFromRepoRoot,
                 LocalPathFromRoot = model.LocalPathFromRoot,
                 Model = model.ModelWithCache,
                 InputFolder = model.OriginalFileAndType.BaseDir,
