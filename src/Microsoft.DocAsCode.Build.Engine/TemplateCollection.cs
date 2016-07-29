@@ -35,12 +35,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public TemplateCollection(ResourceCollection provider, int maxParallelism) : base(ReadTemplate(provider, maxParallelism), StringComparer.OrdinalIgnoreCase)
+        public TemplateCollection(ResourceCollection provider, DocumentBuildContext context, int maxParallelism) : base(ReadTemplate(provider, context, maxParallelism), StringComparer.OrdinalIgnoreCase)
         {
             base.TryGetValue("default", out _defaultTemplate);
         }
 
-        private static Dictionary<string, TemplateBundle> ReadTemplate(ResourceCollection resource, int maxParallelism)
+        private static Dictionary<string, TemplateBundle> ReadTemplate(ResourceCollection resource, DocumentBuildContext context, int maxParallelism)
         {
             // type <=> list of template with different extension
             var dict = new Dictionary<string, List<Template>>(StringComparer.OrdinalIgnoreCase);
@@ -117,7 +117,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         currentScript == null ?
                         null :
                         new TemplatePreprocessorResource(currentScript.name, currentScript.item);
-                    var template = new Template(name, templateResource, templatePrepocessorResource, resource, maxParallelism);
+                    var template = new Template(name, context, templateResource, templatePrepocessorResource, resource, maxParallelism);
                     List<Template> templateList;
                     if (dict.TryGetValue(template.Type, out templateList))
                     {

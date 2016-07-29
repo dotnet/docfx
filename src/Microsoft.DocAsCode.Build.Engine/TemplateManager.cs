@@ -30,9 +30,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             return TryExportResourceFiles(_templates, outputDirectory, true, regexFilter);
         }
 
-        public TemplateProcessor GetTemplateProcessor(int maxParallelism)
+        public TemplateProcessor GetTemplateProcessor(DocumentBuildContext context, int maxParallelism)
         {
-            return new TemplateProcessor(new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)), maxParallelism);
+            return new TemplateProcessor(new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)), context, maxParallelism);
         }
 
         public void ProcessTheme(string outputDirectory, bool overwrite)

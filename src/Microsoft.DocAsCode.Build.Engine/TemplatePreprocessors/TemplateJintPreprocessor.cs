@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// in preprocessor script
         /// </summary>
         private const string ConsoleVariableName = "console";
+        private const string UtilityVariableName = "templateUtility";
         private const string ExportsVariableName = "exports";
         private const string GetOptionsFuncVariableName = "getOptions";
         private const string TransformFuncVariableName = "transform";
@@ -68,25 +69,25 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public Func<object, object> GetOptionsFunc { get; private set; }
 
-        public TemplateJintPreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)
+        public TemplateJintPreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
             if (!string.IsNullOrWhiteSpace(scriptResource.Content))
             {
-                _engine = SetupEngine(resourceCollection, scriptResource);
+                _engine = SetupEngine(resourceCollection, scriptResource, context);
             }
             else
             {
                 _engine = null;
             }
-
         }
 
-        private Engine SetupEngine(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)
+        private Engine SetupEngine(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
             var rootPath = (RelativePath)scriptResource.ResourceName;
             var engineCache = new Dictionary<string, Engine>();
 
             var engine = CreateDefaultEngine();
+            engine.SetValue(UtilityVariableName, new TemplateUtility(context));
 
             var requireAction = new Func<string, object>(
                 s =>
