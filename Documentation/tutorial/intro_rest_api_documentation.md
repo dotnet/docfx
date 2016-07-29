@@ -12,7 +12,7 @@ One Swagger API file generates one HTML file. For example. a file `contacts.swag
 
 Basic structure
 --------------
-A single Swagger API file is considered as a unique REST **File** containing multiple **API**s. The **UID**(Unique IDentifier) for the **File** is defined as the combination of `host`, `basePath`, `info.title` and `info.version` with `/` as seperator. For example, the following Swagger API file has **UID** equals to `microsoft.com/docfx/Contacts/1.6`:
+A single Swagger API file is considered as a unique REST **File** containing multiple **API**s. The **UID**(Unique IDentifier) for the **File** is defined as the combination of `host`, `basePath`, `info.title` and `info.version` with `/` as separator. For example, the following Swagger API file has **UID** equals to `microsoft.com/docfx/Contacts/1.6`:
 
 ```json
 {
