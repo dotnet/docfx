@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
     using System.Linq;
@@ -16,11 +15,9 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
-        public const string DefaultValidatorName = "default";
-
         private readonly string _baseDir;
 
-        public DfmEngineBuilder(Options options, string baseDir = null) : base(options)
+        public DfmEngineBuilder(Options options, string baseDir = null, string templateDir = null) : base(options)
         {
             _baseDir = baseDir ?? string.Empty;
             var inlineRules = InlineRules.ToList();
@@ -60,7 +57,7 @@ namespace Microsoft.DocAsCode.Dfm
 
             blockRules.InsertRange(
                 index + 1,
-                new IMarkdownRule []
+                new IMarkdownRule[]
                 {
                     new DfmIncludeBlockRule(),
                     new DfmVideoBlockRule(),
@@ -87,7 +84,7 @@ namespace Microsoft.DocAsCode.Dfm
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
 
-            Rewriter = InitMarkdownStyle(GetContainer(), baseDir);
+            Rewriter = InitMarkdownStyle(GetContainer(), baseDir, templateDir);
         }
 
         private CompositionHost GetContainer()
@@ -101,15 +98,12 @@ namespace Microsoft.DocAsCode.Dfm
                 .CreateContainer();
         }
 
-        private static IMarkdownTokenRewriter InitMarkdownStyle(CompositionHost host, string baseDir)
+        private static IMarkdownTokenRewriter InitMarkdownStyle(CompositionHost host, string baseDir, string templateDir)
         {
             try
             {
                 var builder = new MarkdownValidatorBuilder(host);
-                if (!TryLoadValidatorConfig(baseDir, builder))
-                {
-                    builder.AddValidators(DefaultValidatorName);
-                }
+                LoadValidatorConfig(baseDir, templateDir, builder);
                 return builder.Create();
             }
             catch (Exception ex)
@@ -119,29 +113,43 @@ namespace Microsoft.DocAsCode.Dfm
             return null;
         }
 
-        private static bool TryLoadValidatorConfig(string baseDir, MarkdownValidatorBuilder builder)
+        private static void LoadValidatorConfig(string baseDir, string templateDir, MarkdownValidatorBuilder builder)
         {
             if (string.IsNullOrEmpty(baseDir))
             {
-                return false;
+                return;
+            }
+            if (templateDir != null)
+            {
+                var configFolder = Path.Combine(templateDir, MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName);
+                if (Directory.Exists(configFolder))
+                {
+                    LoadValidatorDefinition(configFolder, builder);
+                }
             }
             var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
-            if (!File.Exists(configFile))
+            if (File.Exists(configFile))
             {
-                return false;
+                var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
+                builder.AddValidators(config.Rules);
+                builder.AddTagValidators(config.TagRules);
             }
-            var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
-            if (config.Rules != null &&
-                !config.Rules.Any(r => r.RuleName == DefaultValidatorName))
+            builder.EnsureDefaultValidator();
+        }
+
+        private static void LoadValidatorDefinition(string mdStyleDefPath, MarkdownValidatorBuilder builder)
+        {
+            if (Directory.Exists(mdStyleDefPath))
             {
-                builder.AddValidators(DefaultValidatorName);
+                foreach (var configFile in Directory.GetFiles(mdStyleDefPath, "*" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix))
+                {
+                    var fileName = Path.GetFileName(configFile);
+                    var category = fileName.Remove(fileName.Length - MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
+                    var config = JsonUtility.Deserialize<MarkdownSytleDefinition>(configFile);
+                    builder.AddTagValidators(category, config.TagRules);
+                    builder.AddValidators(config.Rules);
+                }
             }
-            builder.AddValidators(
-                from r in config.Rules ?? new MarkdownValidationRule[0]
-                where !r.Disable
-                select r.RuleName);
-            builder.AddTagValidators(config.TagRules ?? new MarkdownTagValidationRule[0]);
-            return true;
         }
 
         public DfmEngine CreateDfmEngine(object renderer)

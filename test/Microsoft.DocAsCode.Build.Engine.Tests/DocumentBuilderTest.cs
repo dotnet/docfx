@@ -131,10 +131,246 @@ tagRules : [
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
                 {
-                    BuildDocument(files, new Dictionary<string, object>
-                    {
-                        ["meta"] = "Hello world!",
-                    });
+                    BuildDocument(
+                        files,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: _templateFolder);
+
+                }
+
+                {
+                    // check log for markdown stylecop.
+                    Assert.Equal(2, Listener.Items.Count);
+
+                    Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
+                    Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
+
+                    Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
+                    Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
+                }
+
+                {
+                    // check toc.
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
+                    Assert.NotNull(model);
+                    Assert.Equal("test1", model[0].Name);
+                    Assert.Equal("test.html", model[0].Href);
+                    Assert.NotNull(model[0].Items);
+                    Assert.Equal("test2", model[0].Items[0].Name);
+                    Assert.Equal("test/test.html", model[0].Items[0].Href);
+                    Assert.Equal("Api", model[1].Name);
+                    Assert.Null(model[1].Href);
+                    Assert.NotNull(model[1].Items);
+                    Assert.Equal("Console", model[1].Items[0].Name);
+                    Assert.Equal("../System.Console.csyml", model[1].Items[0].Href);
+                    Assert.Equal("ConsoleColor", model[1].Items[1].Name);
+                    Assert.Equal("../System.ConsoleColor.csyml", model[1].Items[1].Href);
+                }
+
+                {
+                    // check conceptual.
+                    var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
+                    Assert.True(File.Exists(conceptualOutputPath));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
+                    Assert.Equal(
+                        "<h1 id=\"hello-world\">Hello World</h1>",
+                        model["rawTitle"]);
+                    Assert.Equal(
+                        "\n<p>Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\"></xref>\n" +
+                        $"Test link: <a href=\"~/{_inputFolder}/test/test.md\">link text</a>\n" +
+                        "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a>\n" +
+                        "Test link style xref: <a href=\"xref:XRef2\" title=\"title\">link text 3</a>\n" +
+                        "Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" title=\"title\">link text 4</a>\n" +
+                        "Test encoded link style xref with anchor: <a href=\"xref:%58%52%65%66%32#anchor\" title=\"title\">link text 5</a>\n" +
+                        "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>\n" +
+                        "Test autolink style xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2&gt;\"></xref>\n" +
+                        "Test autolink style xref with anchor: <xref href=\"XRef2#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2#anchor&gt;\"></xref>\n" +
+                        "Test encoded autolink style xref with anchor: <xref href=\"%58%52%65%66%32#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:%58%52%65%66%32#anchor&gt;\"></xref>\n" +
+                        "Test invalid autolink style xref with anchor: <xref href=\"invalid#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:invalid#anchor&gt;\"></xref>\n" +
+                        "Test short xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef2\"></xref></p>\n" +
+                        "<p><p>\n" +
+                        "test</p>\n",
+                        model[Constants.PropertyName.Conceptual]);
+                    Assert.Equal(
+                        "\n<p>Test XRef: <a class=\"xref\" href=\"test.html#XRef1\">Hello World</a>\n" +
+                        "Test link: <a href=\"test/test.html\">link text</a>\n" +
+                        "Test link: <a href=\"../Microsoft.DocAsCode.Build.Engine.Tests.dll\">link text 2</a>\n" +
+                        "Test link style xref: <a class=\"xref\" href=\"test/test.html#XRef2\" title=\"title\">link text 3</a>\n" +
+                        "Test link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 4</a>\n" +
+                        "Test encoded link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 5</a>\n" +
+                        "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>\n" +
+                        "Test autolink style xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a>\n" +
+                        "Test autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>\n" +
+                        "Test encoded autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>\n" +
+                        "Test invalid autolink style xref with anchor: &lt;xref:invalid#anchor&gt;\n" +
+                        "Test short xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a></p>\n" +
+                        "<p><p>\n" +
+                        "test</p>\n",
+                        File.ReadAllText(conceptualOutputPath));
+                    Assert.Equal("Conceptual", model["type"]);
+                    Assert.Equal("Hello world!", model["meta"]);
+                    Assert.Equal("b", model["a"]);
+                }
+
+                {
+                    // check mref.
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.Console.csyml", RawModelFileExtension))));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.ConsoleColor.csyml", RawModelFileExtension))));
+                }
+
+                {
+                    // check resource.
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
+                    var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
+                    Assert.Equal(7, meta.Count);
+                    Assert.True(meta.ContainsKey("meta"));
+                    Assert.Equal("Hello world!", meta["meta"]);
+                    Assert.True(meta.ContainsKey("abc"));
+                    Assert.Equal("xyz", meta["abc"]);
+                    Assert.True(meta.ContainsKey(Constants.PropertyName.Uid));
+                    Assert.Equal("r1", meta[Constants.PropertyName.Uid]);
+                }
+            }
+            finally
+            {
+                CleanUp();
+                File.Delete(resourceMetaFile);
+            }
+        }
+
+        [Fact]
+        public void TestMarkdownStyleInPlugins()
+        {
+            #region Prepare test data
+            var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
+            var resourceMetaFile = resourceFile + ".meta";
+
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                    "## [test2](test/test.md)",
+                    "# Api",
+                    "## [Console](@System.Console)",
+                    "## [ConsoleColor](xref:System.ConsoleColor)",
+                },
+                _inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef1",
+                    "Test link: [link text](test/test.md)",
+                    "Test link: [link text 2](../" + resourceFile + ")",
+                    "Test link style xref: [link text 3](xref:XRef2 \"title\")",
+                    "Test link style xref with anchor: [link text 4](xref:XRef2#anchor \"title\")",
+                    "Test encoded link style xref with anchor: [link text 5](xref:%58%52%65%66%32#anchor \"title\")",
+                    "Test invalid link style xref with anchor: [link text 6](xref:invalid#anchor \"title\")",
+                    "Test autolink style xref: <xref:XRef2>",
+                    "Test autolink style xref with anchor: <xref:XRef2#anchor>",
+                    "Test encoded autolink style xref with anchor: <xref:%58%52%65%66%32#anchor>",
+                    "Test invalid autolink style xref with anchor: <xref:invalid#anchor>",
+                    "Test short xref: @XRef2",
+                    "<p>",
+                    "test",
+                },
+                _inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef2",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef2",
+                    "Test link: [link text](../test.md)",
+                    "<p>",
+                    "test",
+                },
+                _inputFolder);
+
+            File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
+            File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
+rules : [
+    { name: ""div"", disable: true},
+    { name: ""p:p-3"", disable: true}
+],
+}");
+            CreateFile(
+                MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName + "/p" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix,
+                @"{
+    tagRules : {
+        ""p-1"": {
+            tagNames: [""p""],
+            behavior: ""Warning"",
+            messageFormatter: ""Tag {0} is not valid."",
+            openingTagOnly: true
+        },
+        ""p-2"": {
+            tagNames: [""p""],
+            behavior: ""Warning"",
+            messageFormatter: ""Tag {0} is not valid."",
+            openingTagOnly: false,
+            disable: true
+        },
+        ""p-3"": {
+            tagNames: [""p""],
+            behavior: ""Warning"",
+            messageFormatter: ""Tag {0} is not valid."",
+            openingTagOnly: false,
+        }
+    }
+}
+", _templateFolder);
+            CreateFile(
+                MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName + "/div" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix,
+                @"{
+    tagRules : {
+        ""div-1"": {
+            tagNames: [""div""],
+            behavior: ""Warning"",
+            messageFormatter: ""Tag {0} is not valid."",
+            openingTagOnly: true
+        }
+    }
+}
+", _templateFolder);
+
+            FileCollection files = new FileCollection(Environment.CurrentDirectory);
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
+            files.Add(DocumentType.Resource, new[] { resourceFile });
+            #endregion
+
+            Init(MarkdownValidatorBuilder.MarkdownValidatePhaseName);
+            try
+            {
+                using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+                {
+                    BuildDocument(
+                        files,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: _templateFolder);
                 }
 
                 {
@@ -288,11 +524,14 @@ exports.getOptions = function (){
                 },
                 _inputFolder);
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
-            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2, tocFile, tocFile2});
-            BuildDocument(files, new Dictionary<string, object>
-            {
-                ["meta"] = "Hello world!",
-            });
+            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2, tocFile, tocFile2 });
+            BuildDocument(
+                files,
+                new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                },
+                templateFolder: _templateFolder);
 
             {
                 // check toc.
@@ -434,9 +673,9 @@ exports.getOptions = function (){
             Assert.True(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
         }
 
-        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null)
+        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null, string templateFolder = null)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, templateFolder))
             {
                 if (applyTemplateSettings == null)
                 {
@@ -449,7 +688,8 @@ exports.getOptions = function (){
                     OutputBaseDir = Path.Combine(Environment.CurrentDirectory, _outputFolder),
                     ApplyTemplateSettings = applyTemplateSettings,
                     Metadata = metadata?.ToImmutableDictionary(),
-                    TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null)
+                    TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
+                    TemplateDir = templateFolder,
                 };
                 builder.Build(parameters);
             }

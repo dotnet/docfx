@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
@@ -15,6 +16,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
     public class MarkdownValidatorBuilder
     {
+        public const string DefaultValidatorName = "default";
         public const string MarkdownValidatePhaseName = "Markdown style";
 
         private static readonly Regex OpeningTag = new Regex(@"^\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
@@ -22,51 +24,92 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
         public CompositionHost CompositionHost { get; }
 
-        public ImmutableList<MarkdownTagValidationRule> TagValidators { get; set; }
+        private readonly List<TagRuleWithId> _tagValidators = new List<TagRuleWithId>();
 
-        public ImmutableList<string> ValidatorContracts { get; set; }
+        private readonly Dictionary<string, MarkdownValidationRule> _validators =
+            new Dictionary<string, MarkdownValidationRule>();
 
         public MarkdownValidatorBuilder(CompositionHost host)
         {
+            if (host == null)
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
             CompositionHost = host;
-            TagValidators = ImmutableList<MarkdownTagValidationRule>.Empty;
-            ValidatorContracts = ImmutableList<string>.Empty;
         }
 
-        public void AddTagValidators(params MarkdownTagValidationRule[] validators)
+        public void AddTagValidators(string category, Dictionary<string, MarkdownTagValidationRule> validators)
         {
-            AddTagValidators((IEnumerable<MarkdownTagValidationRule>)validators);
+            if (validators == null)
+            {
+                return;
+            }
+            foreach (var pair in validators)
+            {
+                var fullId = category + ":" + pair.Key;
+                _tagValidators.Add(new TagRuleWithId
+                {
+                    Category = category,
+                    FullId = fullId,
+                    TagRule = pair.Value,
+                });
+            }
         }
 
-        public void AddTagValidators(IEnumerable<MarkdownTagValidationRule> validators)
+        public void AddTagValidators(MarkdownTagValidationRule[] validators)
         {
-            TagValidators = TagValidators.AddRange(
-                from v in validators
-                where v.TagNames?.Count > 0
-                select v);
+            if (validators == null)
+            {
+                return;
+            }
+            foreach (var item in validators)
+            {
+                _tagValidators.Add(new TagRuleWithId
+                {
+                    Category = null,
+                    FullId = null,
+                    TagRule = item,
+                });
+            }
         }
 
-        public void AddValidators(params string[] validatorContracts)
+        public void AddValidators(MarkdownValidationRule[] rules)
         {
-            AddValidators((IEnumerable<string>)validatorContracts);
+            if (rules == null)
+            {
+                return;
+            }
+            foreach (var rule in rules)
+            {
+                _validators[rule.RuleName] = rule;
+            }
         }
 
-        public void AddValidators(IEnumerable<string> validatorContracts)
+        public void EnsureDefaultValidator()
         {
-            ValidatorContracts = ValidatorContracts.AddRange(validatorContracts);
+            if (!_validators.ContainsKey(DefaultValidatorName))
+            {
+                _validators[DefaultValidatorName] = new MarkdownValidationRule
+                {
+                    RuleName = DefaultValidatorName,
+                };
+            }
         }
 
         public IMarkdownTokenRewriter Create()
         {
             var list = new List<IMarkdownTokenValidator>();
-            foreach (var contract in ValidatorContracts)
+            foreach (var contract in _validators)
             {
-                foreach (IMarkdownTokenValidatorProvider vp in CompositionHost.GetExports(typeof(IMarkdownTokenValidatorProvider), contract))
+                if (!contract.Value.Disable)
                 {
-                    list.AddRange(vp.GetValidators());
+                    foreach (IMarkdownTokenValidatorProvider vp in CompositionHost.GetExports(typeof(IMarkdownTokenValidatorProvider), contract.Value.RuleName))
+                    {
+                        list.AddRange(vp.GetValidators());
+                    }
                 }
             }
-            var context = new MarkdownRewriterContext(CompositionHost, TagValidators);
+            var context = new MarkdownRewriterContext(CompositionHost, GetEnabledTagRules().ToImmutableList());
             list.Add(MarkdownTokenValidatorFactory.FromLambda<MarkdownTagInlineToken>(context.Validate));
             return MarkdownTokenRewriterFactory.FromLambda(
                 (IMarkdownRewriteEngine engine, IMarkdownToken token) =>
@@ -80,6 +123,30 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     }
                     return null;
                 });
+        }
+
+        private IEnumerable<MarkdownTagValidationRule> GetEnabledTagRules()
+        {
+            foreach (var item in _tagValidators)
+            {
+                if (item.FullId != null)
+                {
+                    MarkdownValidationRule rule;
+                    if (_validators.TryGetValue(item.FullId, out rule) ||
+                        _validators.TryGetValue(item.Category, out rule))
+                    {
+                        if (!rule.Disable)
+                        {
+                            yield return item.TagRule;
+                        }
+                        continue;
+                    }
+                }
+                if (!item.TagRule.Disable)
+                {
+                    yield return item.TagRule;
+                }
+            }
         }
 
         private sealed class MarkdownRewriterContext
@@ -118,7 +185,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     if (isOpeningTag || !validator.OpeningTagOnly)
                     {
                         var hasTagName = validator.TagNames.Any(tagName => string.Equals(tagName, m.Groups[1].Value, System.StringComparison.OrdinalIgnoreCase));
-                        if (hasTagName ^ (validator.Access == TagAccess.Allowed))
+                        if (hasTagName ^ (validator.Verb == TagVerb.NotIn))
                         {
                             ValidateOne(token, m, validator);
                         }
@@ -163,16 +230,23 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 switch (validator.Behavior)
                 {
                     case TagValidationBehavior.Warning:
-                        Logger.LogWarning(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.SourceInfo.Markdown));
+                        Logger.LogWarning(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.SourceInfo.Markdown), line: token.SourceInfo.LineNumber.ToString());
                         return;
                     case TagValidationBehavior.Error:
-                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.SourceInfo.Markdown));
+                        Logger.LogError(string.Format(validator.MessageFormatter, m.Groups[1].Value, token.SourceInfo.Markdown), line: token.SourceInfo.LineNumber.ToString());
                         return;
                     case TagValidationBehavior.None:
                     default:
                         return;
                 }
             }
+        }
+
+        private sealed class TagRuleWithId
+        {
+            public MarkdownTagValidationRule TagRule { get; set; }
+            public string Category { get; set; }
+            public string FullId { get; set; }
         }
     }
 }

@@ -731,7 +731,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
                 new ContainerConfiguration()
                     .WithAssembly(typeof(DocfxFlavoredMarkdownTest).Assembly)
                     .CreateContainer());
-            mrb.AddTagValidators(
+            mrb.AddTagValidators(new[]
+            {
                 new MarkdownTagValidationRule
                 {
                     TagNames = new List<string> { "em", "div" },
@@ -744,8 +745,15 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
                     TagNames = new List<string> { "h1" },
                     MessageFormatter = "Warning tag({0})!",
                     Behavior = TagValidationBehavior.Warning,
-                });
-            mrb.AddValidators(HtmlMarkdownTokenValidatorProvider.ContractName);
+                },
+            });
+            mrb.AddValidators(new[]
+            {
+                new MarkdownValidationRule
+                {
+                    RuleName =  HtmlMarkdownTokenValidatorProvider.ContractName,
+                }
+            });
             builder.Rewriter = mrb.Create();
 
             var engine = builder.CreateDfmEngine(new DfmRenderer());

@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     using Newtonsoft.Json;
 
@@ -17,8 +18,8 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         /// <summary>
         /// The access for tags.
         /// </summary>
-        [JsonProperty("access")]
-        public TagAccess Access { get; set; }
+        [JsonProperty("verb")]
+        public TagVerb Verb { get; set; }
         /// <summary>
         /// Define tag's behavior.
         /// </summary>
@@ -39,5 +40,11 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         /// </summary>
         [JsonProperty("openingTagOnly")]
         public bool OpeningTagOnly { get; set; }
+        /// <summary>
+        /// Whether disable this rule by default.
+        /// </summary>
+        [DefaultValue(false)]
+        [JsonProperty("disable")]
+        public bool Disable { get; set; }
     }
 }

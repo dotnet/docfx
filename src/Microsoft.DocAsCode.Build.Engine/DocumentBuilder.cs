@@ -36,7 +36,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             };
         private BuildInfo _lastBuildInfo;
 
-        public DocumentBuilder(IEnumerable<Assembly> assemblies, ImmutableArray<string> postProcessorNames, string intermediateFolder = null)
+        public DocumentBuilder(
+            IEnumerable<Assembly> assemblies,
+            ImmutableArray<string> postProcessorNames,
+            string intermediateFolder = null)
         {
             Logger.LogVerbose("Loading plug-in...");
             var assemblyList = assemblies?.ToList();

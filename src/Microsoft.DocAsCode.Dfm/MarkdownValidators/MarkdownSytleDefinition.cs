@@ -1,0 +1,20 @@
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
+{
+    using System.Collections.Generic;
+
+    using Newtonsoft.Json;
+
+    public class MarkdownSytleDefinition
+    {
+        public const string MarkdownStyleDefinitionFilePostfix = ".md.style";
+        public const string MarkdownStyleDefinitionFolderName = "md.styles";
+
+        [JsonProperty("rules")]
+        public MarkdownValidationRule[] Rules { get; set; }
+        [JsonProperty("tagRules")]
+        public Dictionary<string, MarkdownTagValidationRule> TagRules { get; set; }
+    }
+}
