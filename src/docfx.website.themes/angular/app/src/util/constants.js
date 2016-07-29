@@ -17,7 +17,7 @@
         this.MdOrYamlRegexExp = /(\.yml$)|(\.md$)/;
         this.MdIndexFile = '.map';
         this.TocFile = 'toc' + this.YamlExtension; // docConstants.TocFile
-        this.TocAndFileUrlSeperator = '!'; // docConstants.TocAndFileUrlSeperator
+        this.TocAndFileUrlSeparator = '!'; // docConstants.TocAndFileUrlSeparator
     }
 
     angular.module('docascode.constants', [])
