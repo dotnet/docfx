@@ -910,6 +910,20 @@ ms.author: rogardle
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
+        [Trait("Bug 617364", "link with query condition")]
+        public void TestAzureMarkdownRewriters_AbsoluteLinkWithQueryCondition()
+        {
+            var source = @"[Microsoft Azure Active Directory Samples and Documentation](https://github.com/Azure-Samples?page=3&query=active-directory)";
+            var expected = @"[Microsoft Azure Active Directory Samples and Documentation](https://github.com/Azure-Samples?page=3&query=active-directory)
+
+";
+
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureUniqueNameMarkdownRelativeLinkInsideDocsetWithOnlyBookmark()
         {
             var azureMarkdownFileInfoMapping =
