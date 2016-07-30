@@ -69,11 +69,11 @@ Supported project file extensions include `.csproj`, `.vbproj`, `.sln`, and `pro
 
 > `project.json` (*DNX* project file) is only supported in *DNX* version of *DocFX*. Please refer to [Getting Started](docfx_getting_started.md#4-use-docfx-under-dnx) for how to use *DocFX* in *DNX*.
 
-Files can be combined using `,` as seperator, e.g. `docfx metadata a.csproj,b.sln`.
+Files can be combined using `,` as separator, e.g. `docfx metadata a.csproj,b.sln`.
 
 2. From a supported source code file or source code file list
 Supported source code file extensions include `.cs` and `.vb`.
-Files can be combined using `,` as seperator and *search pattern*.
+Files can be combined using `,` as separator and *search pattern*.
 
 3. From *docfx.json* file, as described in **Section3**.
 
@@ -313,7 +313,7 @@ src                | Specifies the source directory. If omitted, the directory o
 dest               | The folder name for the generated files.
 version            | Version name for the current file mapping. If not set, treat the current file-mapping item as in default version. Mappings with the same version name will be built together. Cross reference doesn't support cross different versions.
 caseSensitive      | **TOBEIMPLEMENTED**. Default value is `false`. If set to `true`, the glob pattern is case sensitive. e.g. `*.txt` will not match `1.TXT`. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.
-supportBackslash   | **TOBEIMPLEMENTED**. Default value is `true`. If set to `true`, `\` will be considered as file path seperator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path seperator.
+supportBackslash   | **TOBEIMPLEMENTED**. Default value is `true`. If set to `true`, `\` will be considered as file path separator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path separator.
 escape             | **TOBEIMPLEMENTED**. Default value is `false`. If set to `true`, `\` character is used as escape character, e.g. `\{\}.txt` will match `{}.txt`.
 
 ```json
@@ -337,7 +337,7 @@ escape             | **TOBEIMPLEMENTED**. Default value is `false`. If set to `t
 `DocFX` uses [Glob](https://github.com/vicancy/Glob) to support *glob* pattern in file path.
 It offers several options to determine how to parse the Glob pattern:
   * `caseSensitive`: Default value is `false`. If set to `true`, the glob pattern is case sensitive. e.g. `*.txt` will not match `1.TXT`. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.
-  * `supportBackslash`: Default value is `true`. If set to `true`, `\` will be considered as file path seperator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path seperator.
+  * `supportBackslash`: Default value is `true`. If set to `true`, `\` will be considered as file path separator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path separator.
   * `escape`: Default value is `false`. If set to `true`, `\` character is used as escape character, e.g. `\{\}.txt` will match `{}.txt`.
 
 In general, the *glob* pattern contains the following rules:
