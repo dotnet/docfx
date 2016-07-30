@@ -58,11 +58,11 @@ docfx metadata [<projects>] [-o:<output_path>]
 
 1. From a supported project file or project file list
 Supported project file extensions include `.csproj`, `.vbproj`, and `.sln`.
-Files can be combined using `,` as seperator, e.g. `docfx metadata a.csproj,b.sln`. Also, *search pattern* is supported, e.g. `docfx metadata *.csproj` will search all the `.csproj` files in current folder; `docfx metadata **/*.csproj` will search `.csproj` files in all the subfolders. 
+Files can be combined using `,` as separator, e.g. `docfx metadata a.csproj,b.sln`. Also, *search pattern* is supported, e.g. `docfx metadata *.csproj` will search all the `.csproj` files in current folder; `docfx metadata **/*.csproj` will search `.csproj` files in all the subfolders. 
 
 2. From a supported source code file or source code file list
 Supported source code file extensions include `.cs` and `.vb`.
-Files can be combined using `,` as seperator and *search pattern*.
+Files can be combined using `,` as separator and *search pattern*.
 
 3. From *xdoc.json* file, as described in **Section3**.
 
@@ -170,7 +170,7 @@ name               | **OPTIONAL**. The folder name for the generated files.
 exclude            | **OPTIONAL**. The files to be excluded, `glob` pattern is supported.
 cwd                | **OPTIONAL**. Specifies the working directory. If omitted, the directory of the config file will be used. Use this option when you want to refer to files in relative folders while want to keep folder structure. e.g. set `cwd` to `..`.
 caseSensitive      | **TOBEIMPLEMENTED** **OPTIONAL**. Default value is `false`. If set to `true`, the glob pattern is case sensitive. e.g. `*.txt` will not match `1.TXT`. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.
-supportBackslash   | **TOBEIMPLEMENTED** **OPTIONAL**. Default value is `true`. If set to `true`, `\` will be considered as file path seperator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path seperator.
+supportBackslash   | **TOBEIMPLEMENTED** **OPTIONAL**. Default value is `true`. If set to `true`, `\` will be considered as file path separator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path separator.
 escape             | **TOBEIMPLEMENTED** **OPTIONAL**. Default value is `false`. If set to `true`, `\` character is used as escape character, e.g. `\{\}.txt` will match `{}.txt`.
 
 ```json
@@ -191,7 +191,7 @@ projects: ["file1", "file2"]
 `xdoc` uses [Glob](https://github.com/vicancy/Glob) to support *glob* pattern in file path.
 It offers several options to determine how to parse the Glob pattern:
   * `caseSensitive`: Default value is `false`. If set to `true`, the glob pattern is case sensitive. e.g. `*.txt` will not match `1.TXT`. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.
-  * `supportBackslash`: Default value is `true`. If set to `true`, `\` will be considered as file path seperator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path seperator.
+  * `supportBackslash`: Default value is `true`. If set to `true`, `\` will be considered as file path separator. Otherwise, `\` will be considered as normal character if `escape` is set to `true` and as escape character if `escape` is set to `false`. If `escape` is set to `true`, `\\` should be used to represent file path separator.
   * `escape`: Default value is `false`. If set to `true`, `\` character is used as escape character, e.g. `\{\}.txt` will match `{}.txt`.
 
 In general, the *glob* pattern contains the following rules:
