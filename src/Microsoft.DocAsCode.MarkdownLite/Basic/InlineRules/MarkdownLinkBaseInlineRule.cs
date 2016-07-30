@@ -11,15 +11,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo)
         {
-            var escapedHref = StringHelper.Escape(Regexes.Helper.MarkdownEscape.Replace(href, m => m.Groups[1].Value));
-            var escapedTitle = !string.IsNullOrEmpty(title) ? StringHelper.Escape(title) : null;
+            var escapedHref = Regexes.Helper.MarkdownEscape.Replace(href, m => m.Groups[1].Value);
             if (isImage)
             {
-                return new MarkdownImageInlineToken(this, parser.Context, escapedHref, escapedTitle, text, sourceInfo);
+                return new MarkdownImageInlineToken(this, parser.Context, escapedHref, title, text, sourceInfo);
             }
             else
             {
-                return new MarkdownLinkInlineToken(this, parser.Context, escapedHref, escapedTitle, parser.Tokenize(sourceInfo.Copy(text)), sourceInfo);
+                return new MarkdownLinkInlineToken(this, parser.Context, escapedHref, title, parser.Tokenize(sourceInfo.Copy(text)), sourceInfo);
             }
         }
     }

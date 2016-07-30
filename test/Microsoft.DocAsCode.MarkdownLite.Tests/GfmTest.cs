@@ -598,7 +598,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
         {
             var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")";
 
-            var expected = @"<p><a href=""girl.png"" title=""title is &amp;quot;hello&amp;quot; world."">This is link text with quotation &#39; and double quotation &quot;hello&quot; world</a></p>
+            var expected = @"<p><a href=""girl.png"" title=""title is &quot;hello&quot; world."">This is link text with quotation &#39; and double quotation &quot;hello&quot; world</a></p>
 ";
             TestGfmInGeneral(source, expected);
         }

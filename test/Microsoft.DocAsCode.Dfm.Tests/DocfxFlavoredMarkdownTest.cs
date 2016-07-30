@@ -705,7 +705,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
         public void TestDfmLink_LinkWithSpecialCharactorsInTitle()
         {
             var source = @"[text's string](https://www.google.com.sg/?gfe_rd=cr&ei=Xk ""Google's homepage"")";
-            var expected = @"<p><a href=""https://www.google.com.sg/?gfe_rd=cr&amp;ei=Xk"" title=""Google&amp;#39;s homepage"">text&#39;s string</a></p>
+            var expected = @"<p><a href=""https://www.google.com.sg/?gfe_rd=cr&amp;ei=Xk"" title=""Google&#39;s homepage"">text&#39;s string</a></p>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
@@ -717,7 +717,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
         {
             var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")";
 
-            var expected = @"<p><a href=""girl.png"" title=""title is &amp;quot;hello&amp;quot; world."">This is link text with quotation &#39; and double quotation &quot;hello&quot; world</a></p>
+            var expected = @"<p><a href=""girl.png"" title=""title is &quot;hello&quot; world."">This is link text with quotation &#39; and double quotation &quot;hello&quot; world</a></p>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
