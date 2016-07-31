@@ -58,7 +58,7 @@ Using `ExtractSearchIndex` for example again, we traverse all HTML files, extrac
 * Global: the folder with name `Plugins` under DocFX.exe
 * Non-global: the folder with name `Plugins` under a template folder, then run `DocFX build` command with parameter `-t {template}`.
 
-    *Hint*: DocFX can merge templates, so we can specify multiple template folders as `DocFX build -t {templateForRender},{templateForPlugins}`. Each of teh template folders should have a subfolder named `Plugins` with exported assemblies.
+    *Hint*: DocFX can merge templates, so we can specify multiple template folders as `DocFX build -t {templateForRender},{templateForPlugins}`. Each of the template folders should have a subfolder named `Plugins` with exported assemblies.
 
 ## Step5: Add your post processor in `docfx.json`
 
