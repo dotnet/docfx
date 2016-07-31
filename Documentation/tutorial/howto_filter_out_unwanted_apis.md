@@ -1,12 +1,12 @@
 How-to: Filter Out Unwanted APIs 
 ================================
 
-A filter configuration file is in [YAML](http://www.yaml.org/spec/1.2/spec.html) format. You could filter out unwanted APIs by providing a filter configuration file and specifying its path.
+A filter configuration file is in [YAML](http://www.yaml.org/spec/1.2/spec.html) format. You may filter out unwanted APIs by providing a filter configuration file and specifying its path.
 
-Specifying filter configuration file path
+Specifying the filter configuration file path
 -----------------------------------------
 
-The path of the configuration file could be specified by the following two ways. Option 1 could overwrite option 2.
+The path of the configuration file is specified in the following two ways. Option 1 could overwrite option 2.
 
 1. docfx.exe metadata command argument.
 
@@ -40,19 +40,19 @@ The path of the configuration file could be specified by the following two ways.
 The format of the filter configuration file
 -------------------------------------------
 
-You could specify `apiRules` with a list of `exclude` or `include` rules.
+Specify `apiRules` with a list of `exclude` or `include` rules.
 
 > *Note*
 
 > The rules would be executed sequentially and the matching process would stop once one rule is matched. 
 > Namely, you need to put the most detailed rule in the top.
 
-> If no rule is matched, the API would be included by default.
+> If no rule is matched the API would be included by default.
 
 
 ### 1. `exclude` or `include` APIs by matching their uid with the Regex `uidRegex`.  
   
-The below sample would exclude all APIs whose uid start with 'Microsoft.DevDiv' except those that start with 'Microsoft.DevDiv.SpecialCase'.
+The below sample excludes all APIs whose uid start with 'Microsoft.DevDiv' except those that start with 'Microsoft.DevDiv.SpecialCase'.
  
 ```
   - include:
@@ -83,10 +83,10 @@ Supported `type`:
   
 > `Namespace` is flattened. Namely, excluding namespace 'A.B' has nothing to do with namespace 'A.B.C'.
   
-> If a namespace is excluded, all types/members defined in the namespace would be excluded, too.
-> If a type is excluded, all members defined in the type would be excluded, too.
+> If a namespace is excluded, all types/members defined in the namespace would also be excluded.
+> If a type is excluded, all members defined in the type would also be excluded.
   
-The below sample would exclude all APIs whose uid start with 'Microsoft.DevDiv' and type is `Type`, namely `Class`, `Struct`,
+The below sample would exclude all APIs whose uid starts with 'Microsoft.DevDiv' and type is `Type`, namely `Class`, `Struct`,
 `Enum`, `Interface`, or `Delegate`.
   
 ```
@@ -101,10 +101,10 @@ You can specify an attribute by its `uid`, `ctorArguments` and `ctorNamedArgumen
   
 > *Note*
 
-> `ctorArguments` requires a full match of the attribute's constructor arguments. While `ctorNamedArguments` support a partial match.
+> `ctorArguments` requires a full match of the attribute's constructor arguments, while `ctorNamedArguments` support a partial match.
 > Namely, `ctorArguments` should contain all the arguments while `ctorNamedArguments` could contain a subset of the named arguments. 
   
-The below sample would exclude all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.
+The below sample excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.
   
 ```
   - exclude:
@@ -114,7 +114,7 @@ The below sample would exclude all APIs which have EditorBrowsableAttribute and 
         - System.ComponentModel.EditorBrowsableState.Never
 ```
   
-A complete **Sample** of filter configuration file 
+A complete **Sample** of the filter configuration file follows:
 
 ```yaml
 apiRules:
