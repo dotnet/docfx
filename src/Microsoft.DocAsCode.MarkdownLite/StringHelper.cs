@@ -45,6 +45,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 var n = match.Groups[1].Value;
 
                 n = n.ToLower();
+                if (n == "amp") return "&";
                 if (n == "colon") return ":";
                 if (n[0] == '#')
                 {

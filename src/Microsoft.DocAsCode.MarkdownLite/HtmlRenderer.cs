@@ -227,7 +227,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
                 try
                 {
-                    prot = Regex.Replace(StringHelper.DecodeURIComponent(StringHelper.Unescape(token.Href)), @"[^\w:]", string.Empty).ToLower();
+                    prot = Regex.Replace(StringHelper.DecodeURIComponent(token.Href), @"[^\w:]", string.Empty).ToLower();
                 }
                 catch (Exception)
                 {
@@ -240,10 +240,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
             }
 
-            var result = (StringBuffer)"<a href=\"" + token.Href + "\"";
+            var result = (StringBuffer)"<a href=\"" + StringHelper.Escape(token.Href) + "\"";
             if (!string.IsNullOrEmpty(token.Title))
             {
-                result = result + " title=\"" + StringHelper.HtmlEncode(token.Title) + "\"";
+                result = result + " title=\"" + StringHelper.Escape(token.Title) + "\"";
             }
             result = AppendSourceInfo(result, renderer, token);
             result += ">";
@@ -259,10 +259,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownImageInlineToken token, MarkdownInlineContext context)
         {
-            var result = (StringBuffer)"<img src=\"" + token.Href + "\" alt=\"" + StringHelper.HtmlEncode(token.Text) + "\"";
+            var result = (StringBuffer)"<img src=\"" + StringHelper.Escape(token.Href) + "\" alt=\"" + StringHelper.Escape(token.Text) + "\"";
             if (!string.IsNullOrEmpty(token.Title))
             {
-                result = result + " title=\"" + StringHelper.HtmlEncode(token.Title) + "\"";
+                result = result + " title=\"" + StringHelper.Escape(token.Title) + "\"";
             }
             result = AppendSourceInfo(result, renderer, token);
 

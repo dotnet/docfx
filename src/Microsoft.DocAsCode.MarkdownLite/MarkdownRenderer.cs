@@ -21,11 +21,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             content += "![";
             content += token.Text;
             content += "](";
-            content += Regexes.Helper.MarkdownUnescape.Replace(StringHelper.Unescape(token.Href), m => "\\" + m.Value);
+            content += Regexes.Helper.MarkdownUnescape.Replace(token.Href, m => "\\" + m.Value);
             if (!string.IsNullOrEmpty(token.Title))
             {
                 content += " \"";
-                content += Regexes.Helper.MarkdownUnescape.Replace(StringHelper.Unescape(token.Title), m => "\\" + m.Value);
+                content += Regexes.Helper.MarkdownUnescape.Replace(token.Title, m => "\\" + m.Value);
                 content += "\"";
             }
             content += ")";
@@ -41,11 +41,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 content += render.Render(t);
             }
             content += "](";
-            content += Regexes.Helper.MarkdownUnescape.Replace(StringHelper.Unescape(token.Href), m => "\\" + m.Value);
+            content += Regexes.Helper.MarkdownUnescape.Replace(token.Href, m => "\\" + m.Value);
             if (!string.IsNullOrEmpty(token.Title))
             {
                 content += " \"";
-                content += Regexes.Helper.MarkdownUnescape.Replace(StringHelper.Unescape(token.Title), m => "\\" + m.Value);
+                content += Regexes.Helper.MarkdownUnescape.Replace(token.Title, m => "\\" + m.Value);
                 content += "\"";
             }
             content += ")";
