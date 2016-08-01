@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             else
             {
-                Logger.LogWarning($"Can't find output file for ${originPath}");
+                Logger.LogWarning($"Can't find output file for {originPath}");
                 return originPath;
             }
         }
