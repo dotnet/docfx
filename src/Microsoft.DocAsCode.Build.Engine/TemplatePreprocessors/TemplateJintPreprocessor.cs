@@ -86,8 +86,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             var rootPath = (RelativePath)scriptResource.ResourceName;
             var engineCache = new Dictionary<string, Engine>();
 
+            var utility = new TemplateUtility(context);
+            object utilityObject = new
+            {
+                resolveSourceRelativePath = new Func<string, string, string>((s1, s2) => utility.ResolveSourceRelativePath(s1, s2))
+            };
+
             var engine = CreateDefaultEngine();
-            engine.SetValue(UtilityVariableName, new TemplateUtility(context));
+            engine.SetValue(UtilityVariableName, utilityObject);
 
             var requireAction = new Func<string, object>(
                 s =>
