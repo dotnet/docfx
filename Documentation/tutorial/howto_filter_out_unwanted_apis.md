@@ -40,6 +40,7 @@ The path of the configuration file is specified in the following two ways. Optio
 The format of the filter configuration file
 -------------------------------------------
 
+You could specify `apiRules` with a list of `exclude` or `include` rules.
 
 > *Note*
 
