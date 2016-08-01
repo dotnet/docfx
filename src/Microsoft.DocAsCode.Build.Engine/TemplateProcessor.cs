@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly TemplateCollection _templateCollection;
 
-        public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceCollection(), 1);
+        public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceCollection(), null, 1);
 
         public IDictionary<string, string> Tokens { get; }
 
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         /// <param name="templateName"></param>
         /// <param name="resourceProvider"></param>
-        public TemplateProcessor(ResourceCollection resourceProvider, int maxParallelism = 0)
+        public TemplateProcessor(ResourceCollection resourceProvider, DocumentBuildContext context, int maxParallelism = 0)
         {
             if (maxParallelism <= 0)
             {
@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             _resourceProvider = resourceProvider;
-            _templateCollection = new TemplateCollection(resourceProvider, maxParallelism);
+            _templateCollection = new TemplateCollection(resourceProvider, context, maxParallelism);
             Tokens = LoadTokenJson(resourceProvider) ?? new Dictionary<string, string>();
         }
 

@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 List<HostService> hostServices = null;
                 try
                 {
-                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor(parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
+                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
                         var markdownService = CreateMarkdownService(parameters, processor.Tokens.ToImmutableDictionary());
                         hostServices = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();

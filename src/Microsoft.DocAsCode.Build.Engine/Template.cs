@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public readonly bool ContainsModelTransformation;
         public readonly bool ContainsTemplateRenderer;
 
-        public Template(string name, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, ResourceCollection resourceCollection, int maxParallelism)
+        public Template(string name, DocumentBuildContext context, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, ResourceCollection resourceCollection, int maxParallelism)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrWhiteSpace(_script))
             {
                 ScriptName = Name + ".js";
-                _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(resourceCollection, scriptResource), maxParallelism);
+                _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(resourceCollection, scriptResource, context), maxParallelism);
                 try
                 {
                     using (var preprocessor = _preprocessorPool.Rent())
@@ -207,9 +207,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static ITemplatePreprocessor CreatePreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)
+        private static ITemplatePreprocessor CreatePreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
-            return new TemplateJintPreprocessor(resourceCollection, scriptResource);
+            return new TemplateJintPreprocessor(resourceCollection, scriptResource, context);
         }
 
         private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, TemplateRendererResource templateResource)
