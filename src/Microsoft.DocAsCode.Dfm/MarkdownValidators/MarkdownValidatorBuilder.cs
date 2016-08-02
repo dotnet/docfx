@@ -204,7 +204,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     }
                 }
             }
-            return categoryDisable ?? idDisable;
+            return idDisable ?? categoryDisable;
         }
 
         private sealed class MarkdownRewriterContext
@@ -339,6 +339,5 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 }
             }
         }
-
     }
 }
