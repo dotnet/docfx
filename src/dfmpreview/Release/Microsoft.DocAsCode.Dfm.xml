@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.DocAsCode.Dfm</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.DocAsCode.Dfm.FlatNameCodeSnippetExtractor">
+            <summary>
+            Flat name extrator works for snippet name exists in both start and end line representations
+            E.g., comment representation needs snippet name exists in both start and end line comment
+            </summary>
+        </member>
+        <member name="T:Microsoft.DocAsCode.Dfm.RecursiveNameCodeSnippetExtractor">
+            <summary>
+            Recursive name extrator works for snippet name only exists in start line representation
+            E.g., C# region representation only has snippet name in start line representation
+            </summary>
+        </member>
+        <member name="P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownTagValidationRule.TagNames">
+            <summary>
+            The names of tag.
+            </summary>
+        </member>
+        <member name="P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownTagValidationRule.Behavior">
+            <summary>
+            Define tag's behavior.
+            </summary>
+        </member>
+        <member name="P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownTagValidationRule.MessageFormatter">
+            <summary>
+            The message formatter for warning and error. '{0}' is name of tag, '{1}' is the full tag.
+            </summary>
+        </member>
+        <member name="P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownTagValidationRule.CustomValidatorContractName">
+            <summary>
+            The contract name for custom validator <see cref="T:Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownTagValidationRule.OpeningTagOnly">
+            <summary>
+            Only validate opening tag.
+            </summary>
+        </member>
+        <member name="P:Microsoft.DocAsCode.Dfm.DfmTextInlineRule.Text">
+            <summary>
+            Override the one in MarkdownLite, difference is:
+            If there is a `@` following `.`, `,`, `;`, `:`, `!`, `?` or whitespace, exclude it as it is a xref
+            </summary>
+        </member>
+        <member name="T:Microsoft.DocAsCode.Dfm.DfmXrefAutoLinkInlineRule">
+            <summary>
+            Xref auto link syntax: 
+            1. `&lt;xref:uid>`
+            2. `&lt;xref:"uid with space">`
+            </summary>
+        </member>
+        <member name="T:Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule">
+            <summary>
+            XREF regex:
+                1. If content after `@` is wrapped by `'` or `"`,  it contains any character including white space
+                2. If content after `@` is not wrapped by `'` or `"`,
+                   It must start with word character `a-z` or `A-Z`
+                   It ends when
+                    a. line ends
+                    b. meets whitespaces
+                    c. line ends with `.`, `,`, `;`, `:`, `!`, `?` and `~`
+                    d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
+            </summary>
+        </member>
+    </members>
+</doc>
