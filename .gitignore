@@ -48,4 +48,4 @@ project.lock.json
 src/docfx/Template/*.zip
 src/docfx.website.themes/default/styles/docfx.vendor.css
 src/docfx.website.themes/default/styles/docfx.vendor.js
-src/docfx.website.themes/default/styles/fonts/
+src/docfx.website.themes/default/fonts/
