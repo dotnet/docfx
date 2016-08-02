@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             new List<RuleWithId<MarkdownValidationRule>>();
         private readonly List<MarkdownValidationSetting> _settings =
             new List<MarkdownValidationSetting>();
-        private readonly Dictionary<string, MarkdownValidationRule> _gobalValidators =
+        private readonly Dictionary<string, MarkdownValidationRule> _globalValidators =
             new Dictionary<string, MarkdownValidationRule>();
 
         public MarkdownValidatorBuilder(CompositionHost host)
@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
             foreach (var rule in rules)
             {
-                _gobalValidators[rule.RuleName] = rule;
+                _globalValidators[rule.RuleName] = rule;
             }
         }
 
@@ -116,9 +116,9 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
         public void EnsureDefaultValidator()
         {
-            if (!_gobalValidators.ContainsKey(DefaultValidatorName))
+            if (!_globalValidators.ContainsKey(DefaultValidatorName))
             {
-                _gobalValidators[DefaultValidatorName] = new MarkdownValidationRule
+                _globalValidators[DefaultValidatorName] = new MarkdownValidationRule
                 {
                     RuleName = DefaultValidatorName,
                 };
@@ -154,7 +154,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     enabledContractName.Add(item.Rule.RuleName);
                 }
             }
-            foreach (var pair in _gobalValidators)
+            foreach (var pair in _globalValidators)
             {
                 if (pair.Value.Disable)
                 {
