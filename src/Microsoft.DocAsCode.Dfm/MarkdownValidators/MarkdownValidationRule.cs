@@ -9,8 +9,14 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
     public class MarkdownValidationRule
     {
+        /// <summary>
+        /// The contract name of rule.
+        /// </summary>
         [JsonProperty("name", Required = Required.Always)]
         public string RuleName { get; set; }
+        /// <summary>
+        /// Whether to disable this rule by default.
+        /// </summary>
         [DefaultValue(false)]
         [JsonProperty("disable")]
         public bool Disable { get; set; }

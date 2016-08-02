@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         [JsonProperty("openingTagOnly")]
         public bool OpeningTagOnly { get; set; }
         /// <summary>
-        /// Whether disable this rule by default.
+        /// Whether to disable this rule by default.
         /// </summary>
         [DefaultValue(false)]
         [JsonProperty("disable")]
