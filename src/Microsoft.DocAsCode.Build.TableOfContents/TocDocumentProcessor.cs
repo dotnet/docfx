@@ -97,6 +97,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             toc.Homepage = ResolveHref(toc.Homepage, model, context);
             toc.Href = ResolveHref(toc.Href, model, context);
             toc.TocHref = ResolveHref(toc.TocHref, model, context);
+            toc.TopicHref = ResolveHref(toc.TopicHref, model, context);
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
