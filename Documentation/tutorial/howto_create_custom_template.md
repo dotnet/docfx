@@ -1,7 +1,7 @@
 How-to: Create A Custom Template
 ===============================
 
-Templates are organized as a zip package or a folder. The file path (without the `.zip` extension) of the zip package or the path of the folder is considered as the template name.
+Templates are organized as a zip package or a folder. The file path (without the `.zip` extension) of the zip package or the path of the folder is considered to be the template name.
 
 Quickstart
 ---------------
@@ -11,7 +11,7 @@ Let's create a template to transform Markdown files into a simple html file.
 Create a folder for the template, for example, `c:/docfx_howto/simple_template`.
 
 ### Step 2. Add *Renderer* file
-Create a file `conceptual.html.primary.tmpl` under the template folder, with the following content:
+Create a file `conceptual.html.primary.tmpl` under the template folder with the following content:
 
 ```mustache
 {{{conceptual}}}
@@ -23,7 +23,7 @@ You may notice that DocFX reports a warning message saying that: *Warning: [Buil
 
 To test the output of the template, create a simple documentation project following [Walkthrough Part I](walkthrough/walkthrough_create_a_docfx_project.md) or download the [zipped documentation project](walkthrough/artifacts/walkthrough1.zip) directly.
 
-In the documentation project, run `docfx build docfx.json -t c:/docfx_howto/simple_template --serve`. `-t` command option specifies the template name(s) used by current build.
+In the documentation project, run `docfx build docfx.json -t c:/docfx_howto/simple_template --serve`. The `-t` command option specifies the template name(s) used by the current build.
 
 Open http://localhost:8080 and you can see a simple web page as follows:
 
@@ -32,9 +32,9 @@ Open http://localhost:8080 and you can see a simple web page as follows:
 Add *Preprocessor* file
 -----------------------
 ### Step 3. Add *Preprocessor* file
-Sometimes the input data model is not exactly what *Renderer* wants, you may want to add some properties to the data model, or modify the data model a little bit before applying *Renderer* file. This can be done by creating a *Preprocessor* file.
+Sometimes the input data model is not exactly what *Renderer* wants, you may want to add some properties to the data model, or modify the data model a little bit before applying the *Renderer* file. This can be done by creating a *Preprocessor* file.
 
-Create a file `conceptual.html.primary.js` under the template folder, with the following content:
+Create a file `conceptual.html.primary.js` under the template folder with the following content:
 
 ```javascript
 exports.transform = function (model) {
@@ -43,7 +43,7 @@ exports.transform = function (model) {
 }
 ```
 
-And update `conceptual.html.primary.tmpl` with the following content:
+Update the file `conceptual.html.primary.tmpl` with the following content:
 
 ```mustache
 <h1>{{_extra_property}}</h1>
@@ -62,15 +62,15 @@ DocFX contains some embedded template resources that you can refer to directly. 
 
 Take `default` template as an example.
 
-Run `docfx template export default`. It exports what's inside `default` template into folder `_exported_templates`. You can see that there are set of *Preprocessor* and *Renderer* files to deal with different type of documents.
+Run `docfx template export default`. It exports what's inside `default` template into the folder `_exported_templates`. You can see that there are sets of *Preprocessor* and *Renderer* files to deal with different types of documents.
 
-DocFX supports specifying multiple templates for a documentation project, which means that you can leverage the `default` template to handle other types of documents, together with your custom template.
+DocFX supports specifying multiple templates for a documentation project. That allows you to leverage the `default` template for handling other types of documents, together with your custom template.
 
 When dealing with multiple templates, DocFX merges the files inside these templates.
 
-The principle for merging is: when file name collides, the file in latter template overwrites the one in former template.
+The principle for merging is: if a file name collides then the file in the latter template overwrites the one in the former template.
 
-For example, you can merge `default` template and your custom template by calling `docfx build docfx.json -t default,c:/docfx_howto/simple_template`. Multiple templates are splitted by comma `,` in command line. Or you can define it in `docfx.json` by:
+For example, you can merge `default` template and your custom template by calling `docfx build docfx.json -t default, c:/docfx_howto/simple_template`. Multiple templates are split by a comma `,` in the command line. Or you can define it in `docfx.json` by:
 ```
 "build": {
     "template": [
@@ -82,11 +82,11 @@ For example, you can merge `default` template and your custom template by callin
 
 In the documentation project, run `docfx build docfx.json -t default,c:/docfx_howto/simple_template --serve`.
 
-Now the warning message *There is no template processing document type(s): Toc* disappears because default template contains *Renderer* to handle TOC files.
+Now the warning message *There is no template processing document type(s): Toc* disappears because the default template contains *Renderer* to handle TOC files.
 
 Open http://localhost:8080/toc.html and you can see a toc web page.
 ![TOC Web Page](images/toc_web_page.png)
 
-> Tip: Run `docfx template export default` to view what's inside default template.
+> Tip: Run `docfx template export default` to view what's inside the default template.
 
-> NOTE: It is possible that DocFX updates its embedded templates when releasing new version. So please make sure to re-export the template if you overwrite or dependent on that template in your custom template.
+> NOTE: It is possible that DocFX updates its embedded templates when a new version is released. So please make sure to re-export the template if you overwrite or are dependent on it in your custom template.
