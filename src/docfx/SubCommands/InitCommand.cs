@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             },
             new MultiAnswerQuestion(
-                "What are the locations of your the markdown files overwriting triple slash comments?", (s, m, c) =>
+                "What are the locations of your markdown files overwriting triple slash comments?", (s, m, c) =>
                 {
                     if (s != null)
                     {
@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 new string[] { "apidoc/**.md" }) {
                 Descriptions = new string[]
                 {
-                    "You can specify markdown files with YAML header to override summary, remarks and description for parameters",
+                    "You can specify markdown files with a YAML header to override summary, remarks and description for parameters",
                     Hints.Glob,
                     Hints.Enter,
                 }
@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private static readonly IEnumerable<IQuestion> _overallQuestion = new IQuestion[]
         {
             new SingleAnswerQuestion(
-                "Where to save the generated documenation?", (s, m, c) => {
+                "Where to save the generated documentation?", (s, m, c) => {
                     m.Build.Destination = s;
                 },
                 "_site") {
@@ -97,7 +97,7 @@ namespace Microsoft.DocAsCode.SubCommands
             // TODO: Check if the input glob pattern matches any files
             // IF no matching: WARN [init]: There is no file matching this pattern.
             new MultiAnswerQuestion(
-                "What are the locations of your conceputal files?", (s, m, c) =>
+                "What are the locations of your conceptual files?", (s, m, c) =>
                 {
                     if (s != null)
                     {
@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 new string[] { "articles/**.md", "articles/**/toc.yml", "toc.yml", "*.md" }) {
                 Descriptions = new string[]
                 {
-                    "Supported conceptual files could be any text files, markdown format is also supported.",
+                    "Supported conceptual files could be any text files. Markdown format is also supported.",
                     Hints.Glob,
                     Hints.Enter,
                 }
@@ -161,11 +161,11 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             },
             new MultiAnswerQuestion(
-                "What documentation templates to use?", (s, m, c) => { if (s != null) m.Build.Templates.AddRange(s); },
+                "What documentation templates do you want to use?", (s, m, c) => { if (s != null) m.Build.Templates.AddRange(s); },
                 new string[] { "default" }) {
                 Descriptions = new string[]
                 {
-                    "You can define multiple templates in order, latter one will override former one if name collides",
+                    "You can define multiple templates in order. The latter one will override the former one if names collide",
                     "Predefined templates in docfx are now: default, statictoc",
                     Hints.Enter,
                 }
@@ -243,7 +243,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             catch (Exception e)
             {
-                throw new DocfxInitException($"Error init docfx project under \"{outputFolder}\" : {e.Message}", e);
+                throw new DocfxInitException($"Error with init docfx project under \"{outputFolder}\" : {e.Message}", e);
             }
         }
 
@@ -266,7 +266,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             if (Directory.Exists(outputFolder))
             {
-                if (!ProcessOverrideQuestion($"Output folder \"{outputFolder}\" already exists, do you still want to generate files into this folder? You can use -o command option to specify the folder name"))
+                if (!ProcessOverrideQuestion($"Output folder \"{outputFolder}\" already exists. Do you still want to generate files into this folder? You can use -o command option to specify the folder name"))
                 {
                     return;
                 }
@@ -308,7 +308,7 @@ namespace Microsoft.DocAsCode.SubCommands
 # This is the **HOMEPAGE**.
 Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
 ## Quick Start Notes:
-1. Add images to *images* folder if the file is referencing an image.
+1. Add images to the *images* folder if the file is referencing an image.
 ");
             var apiTocFile = Tuple.Create("api/toc.yml", @"
 - name: TO BE REPLACED
@@ -316,7 +316,7 @@ Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to wri
 ");
             var apiIndexFile = Tuple.Create("api/index.md", @"
 # PLACEHOLDER
-TODO: Add .NET projects to *src* folder and run `docfx` to generate a **REAL** *API Documentation*!
+TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
 ");
 
             var articleTocFile = Tuple.Create("articles/toc.yml", @"
