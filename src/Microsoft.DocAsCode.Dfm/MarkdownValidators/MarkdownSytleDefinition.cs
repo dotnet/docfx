@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         public const string MarkdownStyleDefinitionFolderName = "md.styles";
 
         [JsonProperty("rules")]
-        public MarkdownValidationRule[] Rules { get; set; }
+        public Dictionary<string, MarkdownValidationRule> Rules { get; set; }
         [JsonProperty("tagRules")]
         public Dictionary<string, MarkdownTagValidationRule> TagRules { get; set; }
     }

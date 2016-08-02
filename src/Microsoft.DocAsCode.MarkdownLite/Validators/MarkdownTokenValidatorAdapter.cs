@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 

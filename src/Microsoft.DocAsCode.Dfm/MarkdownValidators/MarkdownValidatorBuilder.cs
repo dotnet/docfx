@@ -19,14 +19,15 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         public const string DefaultValidatorName = "default";
         public const string MarkdownValidatePhaseName = "Markdown style";
 
-        private static readonly Regex OpeningTag = new Regex(@"^\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
-        private static readonly Regex ClosingTag = new Regex(@"^\</(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
-
         public CompositionHost CompositionHost { get; }
 
-        private readonly List<TagRuleWithId> _tagValidators = new List<TagRuleWithId>();
-
-        private readonly Dictionary<string, MarkdownValidationRule> _validators =
+        private readonly List<RuleWithId<MarkdownTagValidationRule>> _tagValidators =
+            new List<RuleWithId<MarkdownTagValidationRule>>();
+        private readonly List<RuleWithId<MarkdownValidationRule>> _validators =
+            new List<RuleWithId<MarkdownValidationRule>>();
+        private readonly List<MarkdownValidationSetting> _settings =
+            new List<MarkdownValidationSetting>();
+        private readonly Dictionary<string, MarkdownValidationRule> _gobalValidators =
             new Dictionary<string, MarkdownValidationRule>();
 
         public MarkdownValidatorBuilder(CompositionHost host)
@@ -46,12 +47,11 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
             foreach (var pair in validators)
             {
-                var fullId = category + ":" + pair.Key;
-                _tagValidators.Add(new TagRuleWithId
+                _tagValidators.Add(new RuleWithId<MarkdownTagValidationRule>
                 {
                     Category = category,
-                    FullId = fullId,
-                    TagRule = pair.Value,
+                    Id = pair.Key,
+                    Rule = pair.Value,
                 });
             }
         }
@@ -64,11 +64,28 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
             foreach (var item in validators)
             {
-                _tagValidators.Add(new TagRuleWithId
+                _tagValidators.Add(new RuleWithId<MarkdownTagValidationRule>
                 {
                     Category = null,
-                    FullId = null,
-                    TagRule = item,
+                    Id = null,
+                    Rule = item,
+                });
+            }
+        }
+
+        public void AddValidators(string category, Dictionary<string, MarkdownValidationRule> validators)
+        {
+            if (validators == null)
+            {
+                return;
+            }
+            foreach (var pair in validators)
+            {
+                _validators.Add(new RuleWithId<MarkdownValidationRule>
+                {
+                    Category = category,
+                    Id = pair.Key,
+                    Rule = pair.Value,
                 });
             }
         }
@@ -81,15 +98,27 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
             foreach (var rule in rules)
             {
-                _validators[rule.RuleName] = rule;
+                _gobalValidators[rule.RuleName] = rule;
+            }
+        }
+
+        public void AddSettings(MarkdownValidationSetting[] settings)
+        {
+            if (settings == null)
+            {
+                return;
+            }
+            foreach (var setting in settings)
+            {
+                _settings.Add(setting);
             }
         }
 
         public void EnsureDefaultValidator()
         {
-            if (!_validators.ContainsKey(DefaultValidatorName))
+            if (!_gobalValidators.ContainsKey(DefaultValidatorName))
             {
-                _validators[DefaultValidatorName] = new MarkdownValidationRule
+                _gobalValidators[DefaultValidatorName] = new MarkdownValidationRule
                 {
                     RuleName = DefaultValidatorName,
                 };
@@ -98,59 +127,91 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
         public IMarkdownTokenRewriter Create()
         {
+            var context = new MarkdownRewriterContext(CompositionHost, GetEnabledTagRules().ToImmutableList());
+            return new MarkdownTokenRewriteWithScope(
+                MarkdownTokenRewriterFactory.FromValidators(
+                    MarkdownValidatePhaseName,
+                    GetEnabledRules().Concat(
+                        new[]
+                        {
+                            MarkdownTokenValidatorFactory.FromLambda<MarkdownTagInlineToken>(context.Validate)
+                        })),
+                MarkdownValidatePhaseName);
+        }
+
+        private IEnumerable<IMarkdownTokenValidator> GetEnabledRules()
+        {
             var list = new List<IMarkdownTokenValidator>();
-            foreach (var contract in _validators)
+            HashSet<string> enabledContractName = new HashSet<string>();
+            foreach (var item in _validators)
             {
-                if (!contract.Value.Disable)
+                if (IsDisabledBySetting(item) ?? item.Rule.Disable)
                 {
-                    foreach (IMarkdownTokenValidatorProvider vp in CompositionHost.GetExports(typeof(IMarkdownTokenValidatorProvider), contract.Value.RuleName))
-                    {
-                        list.AddRange(vp.GetValidators());
-                    }
+                    enabledContractName.Remove(item.Rule.RuleName);
+                }
+                else
+                {
+                    enabledContractName.Add(item.Rule.RuleName);
                 }
             }
-            var context = new MarkdownRewriterContext(CompositionHost, GetEnabledTagRules().ToImmutableList());
-            list.Add(MarkdownTokenValidatorFactory.FromLambda<MarkdownTagInlineToken>(context.Validate));
-            return MarkdownTokenRewriterFactory.FromLambda(
-                (IMarkdownRewriteEngine engine, IMarkdownToken token) =>
+            foreach (var pair in _gobalValidators)
+            {
+                if (pair.Value.Disable)
                 {
-                    using (new LoggerPhaseScope(MarkdownValidatePhaseName))
-                    {
-                        foreach (var item in list)
-                        {
-                            item.Validate(token);
-                        }
-                    }
-                    return null;
-                });
+                    enabledContractName.Remove(pair.Value.RuleName);
+                }
+                else
+                {
+                    enabledContractName.Add(pair.Value.RuleName);
+                }
+            }
+            return from name in enabledContractName
+                   from IMarkdownTokenValidatorProvider vp in CompositionHost.GetExports(typeof(IMarkdownTokenValidatorProvider), name)
+                   from v in vp.GetValidators()
+                   select v;
         }
 
         private IEnumerable<MarkdownTagValidationRule> GetEnabledTagRules()
         {
             foreach (var item in _tagValidators)
             {
-                if (item.FullId != null)
+                if (IsDisabledBySetting(item) ?? item.Rule.Disable)
                 {
-                    MarkdownValidationRule rule;
-                    if (_validators.TryGetValue(item.FullId, out rule) ||
-                        _validators.TryGetValue(item.Category, out rule))
+                    continue;
+                }
+                yield return item.Rule;
+            }
+        }
+
+        private bool? IsDisabledBySetting<T>(RuleWithId<T> item)
+        {
+            bool? categoryDisable = null;
+            bool? idDisable = null;
+            if (item.Category != null)
+            {
+                foreach (var setting in _settings)
+                {
+                    if (setting.Category == item.Category)
                     {
-                        if (!rule.Disable)
+                        if (setting.Id == null)
                         {
-                            yield return item.TagRule;
+                            categoryDisable = setting.Disable;
                         }
-                        continue;
+                        else if (setting.Id == item.Id)
+                        {
+                            idDisable = setting.Disable;
+                        }
                     }
                 }
-                if (!item.TagRule.Disable)
-                {
-                    yield return item.TagRule;
-                }
             }
+            return categoryDisable ?? idDisable;
         }
 
         private sealed class MarkdownRewriterContext
         {
+            private static readonly Regex OpeningTag = new Regex(@"^\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
+            private static readonly Regex ClosingTag = new Regex(@"^\</(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
+
             public MarkdownRewriterContext(CompositionHost host, ImmutableList<MarkdownTagValidationRule> validators)
             {
                 CompositionHost = host;
@@ -242,11 +303,42 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
         }
 
-        private sealed class TagRuleWithId
+        private sealed class RuleWithId<T>
         {
-            public MarkdownTagValidationRule TagRule { get; set; }
+            public T Rule { get; set; }
             public string Category { get; set; }
-            public string FullId { get; set; }
+            public string Id { get; set; }
         }
+
+
+        private sealed class MarkdownTokenRewriteWithScope : IMarkdownTokenRewriter, IInitializable
+        {
+            public IMarkdownTokenRewriter Inner { get; }
+
+            public string Scope { get; }
+
+            public MarkdownTokenRewriteWithScope(IMarkdownTokenRewriter inner, string scope)
+            {
+                Inner = inner;
+                Scope = scope;
+            }
+
+            public void Initialize(IMarkdownRewriteEngine rewriteEngine)
+            {
+                using (string.IsNullOrEmpty(Scope) ? null : new LoggerPhaseScope(Scope))
+                {
+                    (Inner as IInitializable)?.Initialize(rewriteEngine);
+                }
+            }
+
+            public IMarkdownToken Rewrite(IMarkdownRewriteEngine engine, IMarkdownToken token)
+            {
+                using (string.IsNullOrEmpty(Scope) ? null : new LoggerPhaseScope(Scope))
+                {
+                    return Inner.Rewrite(engine, token);
+                }
+            }
+        }
+
     }
 }

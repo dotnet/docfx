@@ -62,6 +62,7 @@
     <Compile Include="CodeSnippetExtractor\ICodeSnippetExtractor.cs" />
     <Compile Include="MarkdownValidators\MarkdownSytleDefinition.cs" />
     <Compile Include="MarkdownValidators\MarkdownSytleConfig.cs" />
+    <Compile Include="MarkdownValidators\MarkdownValidationSetting.cs" />
     <Compile Include="MarkdownValidators\MarkdownValidationRule.cs" />
     <Compile Include="MarkdownValidators\MarkdownValidatorBuilder.cs" />
     <Compile Include="MarkdownValidators\MarkdownTagValidationRule.cs" />

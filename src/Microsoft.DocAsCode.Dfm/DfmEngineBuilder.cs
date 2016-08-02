@@ -133,6 +133,7 @@ namespace Microsoft.DocAsCode.Dfm
                 var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
                 builder.AddValidators(config.Rules);
                 builder.AddTagValidators(config.TagRules);
+                builder.AddSettings(config.Settings);
             }
             builder.EnsureDefaultValidator();
         }
@@ -147,7 +148,7 @@ namespace Microsoft.DocAsCode.Dfm
                     var category = fileName.Remove(fileName.Length - MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
                     var config = JsonUtility.Deserialize<MarkdownSytleDefinition>(configFile);
                     builder.AddTagValidators(category, config.TagRules);
-                    builder.AddValidators(config.Rules);
+                    builder.AddValidators(category, config.Rules);
                 }
             }
         }

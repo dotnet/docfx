@@ -13,5 +13,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         public MarkdownValidationRule[] Rules { get; set; }
         [JsonProperty("tagRules")]
         public MarkdownTagValidationRule[] TagRules { get; set; }
+        [JsonProperty("settings")]
+        public MarkdownValidationSetting[] Settings { get; set; }
     }
 }

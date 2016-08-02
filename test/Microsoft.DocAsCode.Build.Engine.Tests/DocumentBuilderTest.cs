@@ -301,16 +301,16 @@ tagRules : [
                     "# Hello World",
                     "Test XRef: @XRef2",
                     "Test link: [link text](../test.md)",
-                    "<p>",
+                    "<p><div>",
                     "test",
                 },
                 _inputFolder);
 
             File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
             File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
-rules : [
-    { name: ""div"", disable: true},
-    { name: ""p:p-3"", disable: true}
+settings : [
+    { category: ""div"", disable: true},
+    { category: ""p"", id: ""p-3"", disable: true}
 ],
 }");
             CreateFile(
@@ -382,91 +382,6 @@ rules : [
 
                     Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
                     Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
-                }
-
-                {
-                    // check toc.
-                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
-                    var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
-                    Assert.NotNull(model);
-                    Assert.Equal("test1", model[0].Name);
-                    Assert.Equal("test.html", model[0].Href);
-                    Assert.NotNull(model[0].Items);
-                    Assert.Equal("test2", model[0].Items[0].Name);
-                    Assert.Equal("test/test.html", model[0].Items[0].Href);
-                    Assert.Equal("Api", model[1].Name);
-                    Assert.Null(model[1].Href);
-                    Assert.NotNull(model[1].Items);
-                    Assert.Equal("Console", model[1].Items[0].Name);
-                    Assert.Equal("../System.Console.csyml", model[1].Items[0].Href);
-                    Assert.Equal("ConsoleColor", model[1].Items[1].Name);
-                    Assert.Equal("../System.ConsoleColor.csyml", model[1].Items[1].Href);
-                }
-
-                {
-                    // check conceptual.
-                    var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
-                    Assert.True(File.Exists(conceptualOutputPath));
-                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
-                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
-                    Assert.Equal(
-                        "<h1 id=\"hello-world\">Hello World</h1>",
-                        model["rawTitle"]);
-                    Assert.Equal(
-                        "\n<p>Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\"></xref>\n" +
-                        $"Test link: <a href=\"~/{_inputFolder}/test/test.md\">link text</a>\n" +
-                        "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a>\n" +
-                        "Test link style xref: <a href=\"xref:XRef2\" title=\"title\">link text 3</a>\n" +
-                        "Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" title=\"title\">link text 4</a>\n" +
-                        "Test encoded link style xref with anchor: <a href=\"xref:%58%52%65%66%32#anchor\" title=\"title\">link text 5</a>\n" +
-                        "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>\n" +
-                        "Test autolink style xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2&gt;\"></xref>\n" +
-                        "Test autolink style xref with anchor: <xref href=\"XRef2#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2#anchor&gt;\"></xref>\n" +
-                        "Test encoded autolink style xref with anchor: <xref href=\"%58%52%65%66%32#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:%58%52%65%66%32#anchor&gt;\"></xref>\n" +
-                        "Test invalid autolink style xref with anchor: <xref href=\"invalid#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:invalid#anchor&gt;\"></xref>\n" +
-                        "Test short xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef2\"></xref></p>\n" +
-                        "<p><p>\n" +
-                        "test</p>\n",
-                        model[Constants.PropertyName.Conceptual]);
-                    Assert.Equal(
-                        "\n<p>Test XRef: <a class=\"xref\" href=\"test.html#XRef1\">Hello World</a>\n" +
-                        "Test link: <a href=\"test/test.html\">link text</a>\n" +
-                        "Test link: <a href=\"../Microsoft.DocAsCode.Build.Engine.Tests.dll\">link text 2</a>\n" +
-                        "Test link style xref: <a class=\"xref\" href=\"test/test.html#XRef2\" title=\"title\">link text 3</a>\n" +
-                        "Test link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 4</a>\n" +
-                        "Test encoded link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 5</a>\n" +
-                        "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>\n" +
-                        "Test autolink style xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a>\n" +
-                        "Test autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>\n" +
-                        "Test encoded autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>\n" +
-                        "Test invalid autolink style xref with anchor: &lt;xref:invalid#anchor&gt;\n" +
-                        "Test short xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a></p>\n" +
-                        "<p><p>\n" +
-                        "test</p>\n",
-                        File.ReadAllText(conceptualOutputPath));
-                    Assert.Equal("Conceptual", model["type"]);
-                    Assert.Equal("Hello world!", model["meta"]);
-                    Assert.Equal("b", model["a"]);
-                }
-
-                {
-                    // check mref.
-                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.Console.csyml", RawModelFileExtension))));
-                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.ConsoleColor.csyml", RawModelFileExtension))));
-                }
-
-                {
-                    // check resource.
-                    Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
-                    Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
-                    var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
-                    Assert.Equal(7, meta.Count);
-                    Assert.True(meta.ContainsKey("meta"));
-                    Assert.Equal("Hello world!", meta["meta"]);
-                    Assert.True(meta.ContainsKey("abc"));
-                    Assert.Equal("xyz", meta["abc"]);
-                    Assert.True(meta.ContainsKey(Constants.PropertyName.Uid));
-                    Assert.Equal("r1", meta[Constants.PropertyName.Uid]);
                 }
             }
             finally
