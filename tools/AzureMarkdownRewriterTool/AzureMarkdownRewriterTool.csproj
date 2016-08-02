@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureTransformArguments.cs" />
+    <Compile Include="AzureVideoRawInformation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RewriterToolArguments.cs" />
   </ItemGroup>

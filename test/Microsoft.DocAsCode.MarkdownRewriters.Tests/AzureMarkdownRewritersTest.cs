@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.MarkdownAzureRewritersTest.Tests
 
     public class AzureMarkdownRewritersTest
     {
+        #region Azure marked
+
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_Simple()
@@ -1148,5 +1150,57 @@ This command must be run in the context of each domain user that has signed into
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
+
+        #endregion
+
+        #region Azure migration marked
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownMigrationRewriters")]
+        public void TestAzureMarkdownMigrationRewriters_AzureVideoLink()
+        {
+            var azureVideoInfoMapping =
+                new Dictionary<string, AzureVideoInfo>{
+                    {
+                        "azure-ad--introduction-to-dynamic-memberships-for-groups",
+                        new AzureVideoInfo
+                        {
+                            Id = "azure-ad--introduction-to-dynamic-memberships-for-groups",
+                            Link = "https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/"
+                        }
+                    }
+                };
+
+            var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+            var expected = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+
+            var result = AzureMigrationMarked.Markup(source, "sourceFile.md", null, azureVideoInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownMigrationRewriters")]
+        public void TestAzureMarkdownMigrationRewriters_AzureVideoLinkNoMapping()
+        {
+            var azureVideoInfoMapping =
+                new Dictionary<string, AzureVideoInfo>{
+                    {
+                        "fake-azure-ad--introduction-to-dynamic-memberships-for-groups",
+                        new AzureVideoInfo
+                        {
+                            Id = "fake-azure-ad--introduction-to-dynamic-memberships-for-groups",
+                            Link = "https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/"
+                        }
+                    }
+                };
+
+            var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+            var expected = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+
+            var result = AzureMigrationMarked.Markup(source, "sourceFile.md", null, azureVideoInfoMapping);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        #endregion
     }
 }
