@@ -25,6 +25,7 @@ IF NOT '%ERRORLEVEL%'=='0' (
 
 CD %DefaultTemplate%
 CALL npm install
+CALL bower install
 CALL gulp
 
 CD %TemplateHome%

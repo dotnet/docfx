@@ -46,3 +46,6 @@ project.lock.json
 #  template   #
 ###############
 src/docfx/Template/*.zip
+src/docfx.website.themes/default/styles/docfx.vendor.css
+src/docfx.website.themes/default/styles/docfx.vendor.js
+src/docfx.website.themes/default/styles/fonts/
