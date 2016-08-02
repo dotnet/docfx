@@ -4,8 +4,6 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
 
     public static class MarkdownTokenValidatorFactory
     {
