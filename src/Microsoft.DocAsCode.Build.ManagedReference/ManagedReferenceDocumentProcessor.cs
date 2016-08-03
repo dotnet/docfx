@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
                     var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
-                    return new FileModel(file, page, serializer: new BinaryFormatter())
+                    return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
                     {
                         Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
                         LocalPathFromRepoRoot = displayLocalPath,

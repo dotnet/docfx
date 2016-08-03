@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             return new FileModel(
                 file,
                 content,
-                serializer: new BinaryFormatter())
+                serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
             {
                 LocalPathFromRepoRoot = (content["source"] as SourceDetail)?.Remote?.RelativePath,
                 LocalPathFromRoot = displayLocalPath
