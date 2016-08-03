@@ -8,9 +8,10 @@ namespace Microsoft.DocAsCode.Common
 
     public static class YamlMime
     {
-        public const string ManagedReference = nameof(YamlMime) + ":" + nameof(ManagedReference);
-        public const string TableOfContent = nameof(YamlMime) + ":" + nameof(TableOfContent);
-        public const string XRefMap = nameof(YamlMime) + ":" + nameof(XRefMap);
+        public const string YamlMimePrefix = nameof(YamlMime) + ":";
+        public const string ManagedReference = YamlMimePrefix + nameof(ManagedReference);
+        public const string TableOfContent = YamlMimePrefix + ":" + nameof(TableOfContent);
+        public const string XRefMap = YamlMimePrefix + ":" + nameof(XRefMap);
 
         public static string ReadMime(TextReader reader)
         {
@@ -23,7 +24,12 @@ namespace Microsoft.DocAsCode.Common
             {
                 return null;
             }
-            return line.TrimStart('#').TrimStart(' ');
+            var content = line.TrimStart('#').TrimStart(' ');
+            if (!content.StartsWith(YamlMimePrefix))
+            {
+                return null;
+            }
+            return content;
         }
 
 #if !NetCore
