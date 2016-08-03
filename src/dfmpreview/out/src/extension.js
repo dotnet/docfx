@@ -15,11 +15,11 @@ function activate(context) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     //console.log('Congratulations, your extension "previewtest-ts" is now active!');
-    var dfm_process = new Mypreview(context);
+    var dfm_process = new PreviewCore(context);
     provider = new MDDocumentContentProvider(context); //the html holder
     var registration = vscode_1.workspace.registerTextDocumentContentProvider('markdown', provider);
     //event registe
-    var d1 = vscode_1.commands.registerCommand('DFM.showpreview', function (dfm_process) { return showPreview(dfm_process); });
+    var d1 = vscode_1.commands.registerCommand('DFM.showpreview', function (uri) { return showPreview(dfm_process); });
     var d2 = vscode_1.commands.registerCommand('DFM.showpreviewToside', function (uri) { return showPreview(dfm_process, uri, true); });
     var d3 = vscode_1.commands.registerCommand('DFM.showsource', showSource);
     context.subscriptions.push(d1, d2, d3, registration);
@@ -32,7 +32,6 @@ function activate(context) {
     vscode_1.workspace.onDidChangeTextDocument(function (event) {
         if (isMarkdownFile(event.document)) {
             document_uri = getMarkdownUri(event.document.uri);
-            //provider.update(uri);
             dfm_process.callDfm();
         }
     });
@@ -40,7 +39,6 @@ function activate(context) {
         vscode_1.workspace.textDocuments.forEach(function (document) {
             if (document.uri.scheme === 'markdown') {
                 // update all generated md documents
-                //provider.update(document.uri);
                 document_uri = document_uri;
                 dfm_process.callDfm();
             }
@@ -110,38 +108,27 @@ function showSource(mdUri) {
         return vscode_1.window.showTextDocument(doc);
     });
 }
-// this method is called when your extension is deactivated
-//export function deactivate() {
-//}
-var Mypreview = (function () {
-    //public _preview_result : string;
-    function Mypreview(context) {
+//this class is to call the dfmserver(child_process) by send information
+var PreviewCore = (function () {
+    function PreviewCore(context) {
         var extpath = context.asAbsolutePath('./DfmParse/Dfm_test.exe');
         this._spawn = child_process.spawn(extpath);
         this._waiting = false;
-        //this._is_firsttime = true;
-        //count = 0;
-        //this._preview_result = "";
         this._spawn.stdout.on('data', function (data) {
-            //console.log(data.toString());
             var tmp = data.toString();
             var endcharcode = tmp.charCodeAt(tmp.length - 1);
             if (Is_end && endcharcode == ENDCODE) {
-                //console.log('this have not been cut');
                 previewresult = tmp;
                 provider.update(document_uri);
             }
             else if (Is_end && endcharcode != ENDCODE) {
-                //console.log('the first one if the result benn cut');
                 previewresult = tmp;
                 Is_end = false;
             }
             else if (!Is_end && endcharcode != ENDCODE) {
-                //console.log('the result be cut and this is not the last one');
                 previewresult += tmp;
             }
             else {
-                //console.log('the result be cut and this is the last one');
                 previewresult += tmp;
                 Is_end = true;
                 provider.update(document_uri);
@@ -154,16 +141,14 @@ var Mypreview = (function () {
             console.log('child process exit with code ' + code);
         });
     }
-    Mypreview.prototype.sendtext = function () {
+    PreviewCore.prototype.sendtext = function () {
         var rtpath = vscode_1.workspace.rootPath;
-        //console.log(workspace.rootPath);
         var editor = vscode_1.window.activeTextEditor;
         if (!editor) {
             return;
         }
         var doc = editor.document;
         var docContent = doc.getText();
-        //console.log(doc.fileName);
         var filename = doc.fileName;
         var rtpath_length = rtpath.length;
         var filepath = filename.substr(rtpath_length + 1, filename.length - rtpath_length);
@@ -175,10 +160,10 @@ var Mypreview = (function () {
             this._spawn.stdin.write(docContent + '\n');
         }
     };
-    Mypreview.prototype.callDfm = function () {
+    PreviewCore.prototype.callDfm = function () {
         var _this = this;
         if (this._is_firsttime) {
-            //for the firt time , because the activeTextEditor wil be translate to the viewColumn.two.
+            //for the firt time , because the activeTextEditor will be translate to the viewColumn.two.
             this._is_firsttime = false;
             this.sendtext();
         }
@@ -190,7 +175,7 @@ var Mypreview = (function () {
             }, 300);
         }
     };
-    return Mypreview;
+    return PreviewCore;
 }());
 var MDDocumentContentProvider = (function () {
     function MDDocumentContentProvider(context) {
@@ -204,16 +189,10 @@ var MDDocumentContentProvider = (function () {
     MDDocumentContentProvider.prototype.provideTextDocumentContent = function (uri) {
         var _this = this;
         return vscode_1.workspace.openTextDocument(vscode_1.Uri.parse(uri.query)).then(function (document) {
-            var head = [].concat('<!DOCTYPE html>', '<html>', '<head>', '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">', 
-            //`<link rel="stylesheet" type="text/css" href="${this.getMediaPath('docfx.vendor.css')}" >`,
-            //`<link rel="stylesheet" type="text/css" href="${this.getMediaPath('docfx.css')}" >`,
-            "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('tomorrow.css') + "\" >", "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('markdown.css') + "\" >", "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('main.css') + "\" >", 
-            //this.computeCustomStyleSheetIncludes(uri),
-            "<base href=\"" + document.uri.toString(true) + "\">", '</head>', '<body>').join('\n');
+            var head = [].concat('<!DOCTYPE html>', '<html>', '<head>', '<meta http-equiv="Content-type" content="text/html;charset=UTF-8">', "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('tomorrow.css') + "\" >", "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('markdown.css') + "\" >", "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + _this.getMediaPath('main.css') + "\" >", "<base href=\"" + document.uri.toString(true) + "\">", '</head>', '<body>').join('\n');
             var body = previewresult;
             var tail = [
                 ("<script type=\"text/javascript\" src=\"" + _this.getMediaPath('docfx.vendor.js') + "\"></script>"),
-                //`<script type="text/javascript" src="${this.getMediaPath('docfx.js')}"></script>`,
                 ("<script type=\"text/javascript\" src=\"" + _this.getMediaPath('main.js') + "\"></script>"),
                 "<script>hljs.initHighlightingOnLoad();</script>",
                 '</body>',
