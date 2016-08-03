@@ -47,11 +47,11 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 Dictionary<string, AzureVideoInfo> azureVideoInfoMapping = null;
                 if (args.Length == 4)
                 {
-                    azureVideoInfoMapping = ParseAzureVideoFile(args[3]);
                     if (rewriterToolArguments == null)
                     {
                         return 1;
                     }
+                    azureVideoInfoMapping = ParseAzureVideoFile(args[3], rewriterToolArguments.IsMigration);
                 }
 
                 var azureFileInfo = GenerateAzureFileInfo(args[0], rewriterToolArguments, args[2]);
@@ -122,7 +122,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             }
         }
 
-        private static Dictionary<string, AzureVideoInfo> ParseAzureVideoFile(string argsFilePath)
+        private static Dictionary<string, AzureVideoInfo> ParseAzureVideoFile(string argsFilePath, bool isMigration)
         {
             if (!File.Exists(argsFilePath))
             {
@@ -130,22 +130,88 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 return null;
             }
 
-            var argsContent = File.ReadAllText(argsFilePath);
+            var videoInformationContent = File.ReadAllText(argsFilePath);
             try
             {
-                var azureVideoInfoList = JsonConvert.DeserializeObject<List<AzureVideoInfo>>(argsContent);
                 var azureVideoInfoMapping = new Dictionary<string, AzureVideoInfo>();
-                foreach(var azureVideoInfo in azureVideoInfoList)
+                if (isMigration)
                 {
-                    azureVideoInfoMapping[azureVideoInfo.Id] = azureVideoInfo;
+                    var azureVideoRawInfoMapping = new Dictionary<string, AzureVideoDataItem>();
+                    var azureVideoRawInformation = JsonConvert.DeserializeObject<AzureVideoRawInformation>(videoInformationContent);
+                    foreach(var videoItem in azureVideoRawInformation.Data)
+                    {
+                        AzureVideoInfo azureVideoInfo = new AzureVideoInfo();
+                        azureVideoInfo.Id = GenerateAzureVideoIdFromAcomUrl(videoItem.AcomUrl);
+                        azureVideoInfo.Link = NormalizeVideoLink(videoItem.Channel9PlayerUrl);
+
+                        // If there's already a video with same id we need to judge whether it is necessary to update the information
+                        if (azureVideoRawInfoMapping.ContainsKey(azureVideoInfo.Id))
+                        {
+                            // If submission status of them are same. Update the information based on publish date. Use the latest one. Otherwise, use approved one.
+                            if (IsVideoApproved(azureVideoRawInfoMapping[azureVideoInfo.Id].SubmissionStatus) ^ IsVideoApproved(videoItem.SubmissionStatus))
+                            {
+                                if (IsVideoApproved(azureVideoRawInfoMapping[azureVideoInfo.Id].SubmissionStatus))
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (videoItem.Published < azureVideoRawInfoMapping[azureVideoInfo.Id].Published)
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+
+                        azureVideoRawInfoMapping[azureVideoInfo.Id] = videoItem;
+                        azureVideoInfoMapping[azureVideoInfo.Id] = azureVideoInfo;
+                    }
+                }
+                else
+                {
+                    var azureVideoInfoList = JsonConvert.DeserializeObject<List<AzureVideoInfo>>(videoInformationContent);
+                    foreach (var azureVideoInfo in azureVideoInfoList)
+                    {
+                        azureVideoInfoMapping[azureVideoInfo.Id] = azureVideoInfo;
+                    }
                 }
                 return azureVideoInfoMapping;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Azure vedio json deserialize failed. Skip transform step for video. args: {argsContent}. Ex: {e}");
+                Console.WriteLine($"Azure vedio json deserialize failed. Skip transform step for video. args: {videoInformationContent}. Ex: {e}");
                 return null;
             }
+        }
+
+        private static bool IsVideoApproved(string submissionStatus)
+        {
+            return submissionStatus.Equals("Approved", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string GenerateAzureVideoIdFromAcomUrl(string acomUrl)
+        {
+            return acomUrl.Trim().Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Last();
+        }
+
+        private static string NormalizeVideoLink(string videoLink)
+        {
+            var linkParts = videoLink.Trim().Trim('/').Split('/');
+
+            // Should start with https, otherwise it won't be loaded on the page.
+            if (linkParts.First().Equals("http:", StringComparison.OrdinalIgnoreCase))
+            {
+                linkParts[0] = "https:";
+            }
+
+            // Should end with player for ch9.
+            if (!linkParts.Last().Equals("player", StringComparison.OrdinalIgnoreCase))
+            {
+                linkParts = linkParts.Concat(new[] { "player" }).ToArray();
+            }
+
+            return string.Join("/", linkParts); ;
         }
 
         private static Tuple<Dictionary<string, AzureFileInfo>, Dictionary<string, AzureFileInfo>> GenerateAzureFileInfo(string repositoryRoot, RewriterToolArguments rewriterToolArguments, string azureDocumentUriPrefix)

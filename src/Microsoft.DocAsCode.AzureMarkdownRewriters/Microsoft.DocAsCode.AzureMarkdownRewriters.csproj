@@ -36,9 +36,11 @@
     <Compile Include="AzureBlockRules\AzureMigrationHtmlMetadataBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureHtmlMetadataBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureMigrationIncludeBlockRule.cs" />
+    <Compile Include="AzureBlockRules\AzureMigrationParagraphBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureSelectorBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureNoteBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureParagraphBlockRule.cs" />
+    <Compile Include="AzureBlockRules\AzureMigrationVideoBlockRule.cs" />
     <Compile Include="AzureBlockRules\AzureVideoBlockRule.cs" />
     <Compile Include="AzureBlockTokens\AzureBlockquoteBlockToken.cs" />
     <Compile Include="AzureBlockTokens\AzureHtmlMetadataBlockToken.cs" />

@@ -43,5 +43,10 @@ namespace Microsoft.DocAsCode.Dfm
                     ? "[!div]\n"
                     : $"[!div {token.Attributes}]\n";
         }
+
+        public virtual StringBuffer Render(IMarkdownRenderer render, DfmVideoBlockToken token, MarkdownBlockContext context)
+        {
+            return $"[!VIDEO {token.Link}]\n\n";
+        }
     }
 }

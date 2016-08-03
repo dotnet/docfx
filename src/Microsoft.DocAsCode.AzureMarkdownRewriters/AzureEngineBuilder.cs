@@ -44,10 +44,15 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             {
                 throw new ArgumentException($"{nameof(MarkdownNewLineBlockRule)} should exist!");
             }
-            blockRules.Insert(index + 1, new DfmYamlHeaderBlockRule());
-            blockRules.Insert(index + 2, new AzureIncludeBlockRule());
-            blockRules.Insert(index + 3, new AzureNoteBlockRule());
-            blockRules.Insert(index + 4, new AzureSelectorBlockRule());
+            blockRules.InsertRange(
+                index + 1,
+                new IMarkdownRule[]
+                {
+                    new DfmYamlHeaderBlockRule(),
+                    new AzureIncludeBlockRule(),
+                    new AzureNoteBlockRule(),
+                    new AzureSelectorBlockRule()
+                });
 
             index = blockRules.FindLastIndex(s => s is MarkdownHtmlBlockRule);
             if (index < 1)

@@ -42,10 +42,16 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             {
                 throw new ArgumentException($"{nameof(MarkdownNewLineBlockRule)} should exist!");
             }
-            blockRules.Insert(index + 1, new DfmYamlHeaderBlockRule());
-            blockRules.Insert(index + 2, new AzureMigrationIncludeBlockRule());
-            blockRules.Insert(index + 3, new AzureNoteBlockRule());
-            blockRules.Insert(index + 4, new AzureSelectorBlockRule());
+            blockRules.InsertRange(
+                index + 1,
+                new IMarkdownRule []
+                {
+                    new DfmYamlHeaderBlockRule(),
+                    new AzureMigrationIncludeBlockRule(),
+                    new AzureMigrationVideoBlockRule(),
+                    new AzureNoteBlockRule(),
+                    new AzureSelectorBlockRule()
+                });
 
             index = blockRules.FindLastIndex(s => s is MarkdownHtmlBlockRule);
             if (index < 1)
@@ -55,11 +61,10 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             blockRules.Insert(index - 1, new AzureMigrationHtmlMetadataBlockRule());
 
             var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
-            blockRules[gfmIndex] = new AzureParagraphBlockRule();
+            blockRules[gfmIndex] = new AzureMigrationParagraphBlockRule();
 
             var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
             blockRules[markdownBlockQuoteIndex] = new AzureBlockquoteBlockRule();
-            blockRules.Insert(markdownBlockQuoteIndex, new AzureVideoBlockRule());
 
             BlockRules = blockRules.ToImmutableList();
         }
@@ -111,6 +116,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureMigrationIncludeInlineToken t) => new DfmIncludeInlineToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.SourceInfo.Markdown, t.SourceInfo)
+                        ),
+                        MarkdownTokenRewriterFactory.FromLambda(
+                            (IMarkdownRewriteEngine e, AzureVideoBlockToken t) => new DfmVideoBlockToken(t.Rule, t.Context, GenerateAzureVideoLink(t.Context, t.VideoId, t.SourceInfo.Markdown), t.SourceInfo)
                         )
                     );
         }
@@ -265,6 +273,32 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             azureHref = string.Format("{0}{1}", PathUtility.MakeRelativePath(Path.GetDirectoryName(currentFilePath), hrefFileInfo.FilePath), anchor);
 
             return azureHref;
+        }
+
+        private string GenerateAzureVideoLink(IMarkdownContext context, string azureVideoId, string rawMarkdown)
+        {
+            object path;
+            if (!context.Variables.TryGetValue("path", out path))
+            {
+                Logger.LogWarning("Can't get current file path. Skip video token rewriter.");
+                return azureVideoId;
+            }
+
+            if (!context.Variables.ContainsKey("azureVideoInfoMapping"))
+            {
+                Logger.LogWarning($"Can't fild the whole azure video info mapping. Current processing file: {path}, Raw: {rawMarkdown}");
+                return azureVideoId;
+            }
+
+            var azureVideoInfoMapping = (IReadOnlyDictionary<string, AzureVideoInfo>)context.Variables["azureVideoInfoMapping"];
+            if (azureVideoInfoMapping == null || !azureVideoInfoMapping.ContainsKey(azureVideoId))
+            {
+                Logger.LogWarning($"Can't fild azure video info mapping for file: {path}. Raw: {rawMarkdown}");
+                return azureVideoId;
+            }
+
+            var azureVideoInfo = azureVideoInfoMapping[azureVideoId];
+            return azureVideoInfo.Link;
         }
     }
 }
