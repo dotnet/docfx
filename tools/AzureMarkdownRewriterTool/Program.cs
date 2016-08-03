@@ -140,13 +140,6 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     var azureVideoRawInformation = JsonConvert.DeserializeObject<AzureVideoRawInformation>(videoInformationContent);
                     foreach(var videoItem in azureVideoRawInformation.Data)
                     {
-                        // The submission status that is not approved, but such as rejected should be filted.
-                        if (!videoItem.SubmissionStatus.Equals("Approved", StringComparison.OrdinalIgnoreCase))
-                        {
-                            Console.WriteLine($"Video with id: {videoItem.Id}, title: {videoItem.Title} is not approved. Skip it.");
-                            continue;
-                        }
-
                         AzureVideoInfo azureVideoInfo = new AzureVideoInfo();
                         azureVideoInfo.Id = GenerateAzureVideoIdFromAcomUrl(videoItem.AcomUrl);
                         azureVideoInfo.Link = NormalizeVideoLink(videoItem.Channel9PlayerUrl);
