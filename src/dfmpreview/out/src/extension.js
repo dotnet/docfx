@@ -16,9 +16,9 @@ function activate(context) {
     // This line of code will only be executed once when your extension is activated
     //console.log('Congratulations, your extension "previewtest-ts" is now active!');
     var dfm_process = new PreviewCore(context);
-    provider = new MDDocumentContentProvider(context); //the html holder
+    provider = new MDDocumentContentProvider(context);
     var registration = vscode_1.workspace.registerTextDocumentContentProvider('markdown', provider);
-    //event registe
+    //event register
     var d1 = vscode_1.commands.registerCommand('DFM.showpreview', function (uri) { return showPreview(dfm_process); });
     var d2 = vscode_1.commands.registerCommand('DFM.showpreviewToside', function (uri) { return showPreview(dfm_process, uri, true); });
     var d3 = vscode_1.commands.registerCommand('DFM.showsource', showSource);
@@ -108,10 +108,10 @@ function showSource(mdUri) {
         return vscode_1.window.showTextDocument(doc);
     });
 }
-//this class is to call the dfmserver(child_process) by send information
+//this class is to call the dfmserver(child_process) by Interprocess communication
 var PreviewCore = (function () {
     function PreviewCore(context) {
-        var extpath = context.asAbsolutePath('./DfmParse/Dfm_test.exe');
+        var extpath = context.asAbsolutePath('./DfmParse/PreviewCore.exe');
         this._spawn = child_process.spawn(extpath);
         this._waiting = false;
         this._spawn.stdout.on('data', function (data) {

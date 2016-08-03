@@ -24,11 +24,11 @@ export function activate(context: ExtensionContext) {
 
 
 	let dfm_process = new PreviewCore(context);
-	provider = new MDDocumentContentProvider(context);		//the html holder
+	provider = new MDDocumentContentProvider(context);	
 	let registration = workspace.registerTextDocumentContentProvider('markdown', provider);
 
 
-	//event registe
+	//event register
     let d1 = commands.registerCommand('DFM.showpreview', uri => showPreview(dfm_process));
 	let d2 = commands.registerCommand('DFM.showpreviewToside', uri => showPreview(dfm_process, uri, true));
 	let d3 = commands.registerCommand('DFM.showsource', showSource);
@@ -140,14 +140,14 @@ function showSource(mdUri: Uri) {
 	});
 }
 
-//this class is to call the dfmserver(child_process) by send information
+//this class is to call the dfmserver(child_process) by Interprocess communication
 class PreviewCore {
     private _spawn: child_process.ChildProcess;
 	private _waiting: boolean;
 	public _is_firsttime: boolean;
 
     constructor(context: ExtensionContext) {
-        let extpath = context.asAbsolutePath('./DfmParse/Dfm_test.exe');
+        let extpath = context.asAbsolutePath('./DfmParse/PreviewCore.exe');
         this._spawn = child_process.spawn(extpath);
 		this._waiting = false;
 
