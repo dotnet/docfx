@@ -1172,7 +1172,11 @@ This command must be run in the context of each domain user that has signed into
                 };
 
             var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
-            var expected = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+            var expected = @"> [!VIDEO https://channel9.msdn.com/Series/Azure-Active-Directory-Videos-Demos/Azure-AD--Introduction-to-Dynamic-Memberships-for-Groups/player/]
+> 
+> 
+
+";
 
             var result = AzureMigrationMarked.Markup(source, "sourceFile.md", null, azureVideoInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
@@ -1195,7 +1199,11 @@ This command must be run in the context of each domain user that has signed into
                 };
 
             var source = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
-            var expected = @"> [AZURE.VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]";
+            var expected = @"> [!VIDEO azure-ad--introduction-to-dynamic-memberships-for-groups]
+> 
+> 
+
+";
 
             var result = AzureMigrationMarked.Markup(source, "sourceFile.md", null, azureVideoInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);

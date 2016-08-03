@@ -47,11 +47,11 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 Dictionary<string, AzureVideoInfo> azureVideoInfoMapping = null;
                 if (args.Length == 4)
                 {
-                    azureVideoInfoMapping = ParseAzureVideoFile(args[3], rewriterToolArguments.IsMigration);
                     if (rewriterToolArguments == null)
                     {
                         return 1;
                     }
+                    azureVideoInfoMapping = ParseAzureVideoFile(args[3], rewriterToolArguments.IsMigration);
                 }
 
                 var azureFileInfo = GenerateAzureFileInfo(args[0], rewriterToolArguments, args[2]);
@@ -199,13 +199,13 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
         {
             var linkParts = videoLink.Trim().Trim('/').Split('/');
 
-            // Should be start with https, otherwise it won't be loaded on the page.
+            // Should start with https, otherwise it won't be loaded on the page.
             if (linkParts.First().Equals("http:", StringComparison.OrdinalIgnoreCase))
             {
                 linkParts[0] = "https:";
             }
 
-            // Should be end with player for ch9.
+            // Should end with player for ch9.
             if (!linkParts.Last().Equals("player", StringComparison.OrdinalIgnoreCase))
             {
                 linkParts = linkParts.Concat(new[] { "player" }).ToArray();
