@@ -10,11 +10,12 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DocfxFlavoredMarked
     {
-        public static DfmEngineBuilder CreateBuilder(string baseDir)
-        {
+        public static DfmEngineBuilder CreateBuilder(string baseDir) =>
+            CreateBuilder(baseDir, null);
+
+        public static DfmEngineBuilder CreateBuilder(string baseDir, string templateDir) =>
             // TODO: currently disable mangle as a quick workaround for OP Build Service compatibility
-            return new DfmEngineBuilder(new Options() { Mangle = false, XHtml = true }, baseDir);
-        }
+            new DfmEngineBuilder(new Options() { Mangle = false, XHtml = true }, baseDir, templateDir);
 
         public static string Markup(string src, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
         {

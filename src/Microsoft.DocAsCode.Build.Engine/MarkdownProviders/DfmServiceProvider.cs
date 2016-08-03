@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             return new DfmService(
                 parameters.BasePath,
+                parameters.TemplateDir,
                 parameters.Tokens,
                 MarkdownTokenTreeValidatorFactory.Combine(TokenTreeValidator));
         }
@@ -31,9 +32,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             private readonly ImmutableDictionary<string, string> _tokens;
 
-            public DfmService(string baseDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
+            public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
             {
-                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir);
+                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir);
                 _builder.TokenTreeValidator = tokenTreeValidator;
                 _tokens = tokens;
             }

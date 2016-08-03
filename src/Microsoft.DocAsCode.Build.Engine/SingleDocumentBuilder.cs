@@ -728,6 +728,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 new MarkdownServiceParameters
                 {
                     BasePath = parameters.Files.DefaultBaseDir,
+                    TemplateDir = parameters.TemplateDir,
                     Extensions = parameters.MarkdownEngineParameters,
                     Tokens = tokens,
                 });

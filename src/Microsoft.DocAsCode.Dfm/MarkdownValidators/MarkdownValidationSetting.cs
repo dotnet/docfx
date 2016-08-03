@@ -3,30 +3,22 @@
 
 namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 {
-    using System;
     using System.ComponentModel;
 
     using Newtonsoft.Json;
 
-    public class MarkdownValidationRule
+    public class MarkdownValidationSetting
     {
         /// <summary>
-        /// The contract name of rule.
+        /// The category of rule
         /// </summary>
-        [Obsolete("Please use ContractName.")]
-        [JsonProperty("name")]
-        public string RuleName
-        {
-            get { return ContractName; }
-            set { ContractName = value; }
-        }
-
+        [JsonProperty("category", Required = Required.Always)]
+        public string Category { get; set; }
         /// <summary>
-        /// The contract name of rule.
+        /// The id of rule.
         /// </summary>
-        [JsonProperty("contractName")]
-        public string ContractName { get; set; }
-
+        [JsonProperty("id")]
+        public string Id { get; set; }
         /// <summary>
         /// Whether to disable this rule by default.
         /// </summary>
@@ -34,9 +26,9 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         [JsonProperty("disable")]
         public bool Disable { get; set; }
 
-        public static explicit operator MarkdownValidationRule(string contractName)
+        public static explicit operator MarkdownValidationSetting(string category)
         {
-            return new MarkdownValidationRule { ContractName = contractName };
+            return new MarkdownValidationSetting { Category = category };
         }
     }
 }

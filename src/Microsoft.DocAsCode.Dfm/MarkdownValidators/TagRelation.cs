@@ -3,9 +3,9 @@
 
 namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 {
-    public enum TagAccess
+    public enum TagRelation
     {
-        Denied,
-        Allowed,
+        In,
+        NotIn,
     }
 }

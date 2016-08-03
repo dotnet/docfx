@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Plugins
     public class MarkdownServiceParameters
     {
         public string BasePath { get; set; }
+        public string TemplateDir { get; set; }
         public IReadOnlyDictionary<string, object> Extensions { get; set; }
         public ImmutableDictionary<string, string> Tokens { get; set; }
     }

@@ -29,12 +29,20 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly string _pluginDirectory;
         private readonly string _baseDirectory;
         private readonly string _outputDirectory;
+        private readonly string _templateDirectory;
         private readonly BuildJsonConfig _config;
         private readonly CrossAppDomainListener _listener;
         private readonly TemplateManager _manager;
         private readonly LogLevel _logLevel;
 
-        public DocumentBuilderWrapper(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string pluginDirectory, CrossAppDomainListener listener)
+        public DocumentBuilderWrapper(
+            BuildJsonConfig config,
+            TemplateManager manager,
+            string baseDirectory,
+            string outputDirectory,
+            string pluginDirectory,
+            CrossAppDomainListener listener,
+            string templateDirectory)
         {
             if (config == null)
             {
@@ -48,6 +56,7 @@ namespace Microsoft.DocAsCode.SubCommands
             _listener = listener;
             _manager = manager;
             _logLevel = Logger.LogLevelThreshold;
+            _templateDirectory = templateDirectory;
         }
 
         public void BuildDocument()
@@ -64,7 +73,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 try
                 {
-                    BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory);
+                    BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory, _templateDirectory);
                 }
                 catch (AggregateException agg) when (agg.InnerException is DocfxException || agg.InnerException is DocumentException)
                 {
@@ -89,7 +98,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory)
+        public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory, string templateDirectory)
         {
             var assemblies = LoadPluginAssemblies(pluginDirectory);
             var postProcessorNames = config.PostProcessors.ToImmutableArray();
@@ -109,7 +118,7 @@ namespace Microsoft.DocAsCode.SubCommands
             using (var builder = new DocumentBuilder(assemblies, postProcessorNames, config.IntermediateFolder))
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
-                builder.Build(ConfigToParameter(config, templateManager, baseDirectory, outputDirectory), outputDirectory);
+                builder.Build(ConfigToParameter(config, templateManager, baseDirectory, outputDirectory, templateDirectory), outputDirectory);
             }
         }
 
@@ -161,7 +170,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static IEnumerable<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory)
+        private static IEnumerable<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDir)
         {
             var parameters = new DocumentBuildParameters();
             parameters.OutputBaseDir = outputDirectory;
@@ -226,6 +235,8 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
             }
+
+            parameters.TemplateDir = templateDir;
 
             var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
 

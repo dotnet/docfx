@@ -21,5 +21,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string MarkdownEngineName { get; set; } = "dfm";
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
         public string VersionName { get; set; }
+        public string TemplateDir { get; set; }
     }
 }

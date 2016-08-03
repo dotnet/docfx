@@ -131,10 +131,14 @@ tagRules : [
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
                 {
-                    BuildDocument(files, new Dictionary<string, object>
-                    {
-                        ["meta"] = "Hello world!",
-                    });
+                    BuildDocument(
+                        files,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: _templateFolder);
+
                 }
 
                 {
@@ -241,6 +245,153 @@ tagRules : [
         }
 
         [Fact]
+        public void TestMarkdownStyleInPlugins()
+        {
+            #region Prepare test data
+            var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
+            var resourceMetaFile = resourceFile + ".meta";
+
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                    "## [test2](test/test.md)",
+                    "# Api",
+                    "## [Console](@System.Console)",
+                    "## [ConsoleColor](xref:System.ConsoleColor)",
+                },
+                _inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef1",
+                    "Test link: [link text](test/test.md)",
+                    "Test link: [link text 2](../" + resourceFile + ")",
+                    "Test link style xref: [link text 3](xref:XRef2 \"title\")",
+                    "Test link style xref with anchor: [link text 4](xref:XRef2#anchor \"title\")",
+                    "Test encoded link style xref with anchor: [link text 5](xref:%58%52%65%66%32#anchor \"title\")",
+                    "Test invalid link style xref with anchor: [link text 6](xref:invalid#anchor \"title\")",
+                    "Test autolink style xref: <xref:XRef2>",
+                    "Test autolink style xref with anchor: <xref:XRef2#anchor>",
+                    "Test encoded autolink style xref with anchor: <xref:%58%52%65%66%32#anchor>",
+                    "Test invalid autolink style xref with anchor: <xref:invalid#anchor>",
+                    "Test short xref: @XRef2",
+                    "<p>",
+                    "test",
+                },
+                _inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef2",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef2",
+                    "Test link: [link text](../test.md)",
+                    "<p><div>",
+                    "test",
+                },
+                _inputFolder);
+
+            File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
+            File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
+settings : [
+    { category: ""div"", disable: true},
+    { category: ""p"", id: ""p-3"", disable: true}
+],
+}");
+            CreateFile(
+                MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName + "/p" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix,
+                @"{
+    tagRules : {
+        ""p-1"": {
+            tagNames: [""p""],
+            behavior: ""Warning"",
+            messageFormatter: ""Tag {0} is not valid."",
+            openingTagOnly: true
+        },
+        ""p-2"": {
+            tagNames: [""p""],
+            behavior: ""Warning"",
+            messageFormatter: ""Tag {0} is not valid."",
+            openingTagOnly: false,
+            disable: true
+        },
+        ""p-3"": {
+            tagNames: [""p""],
+            behavior: ""Warning"",
+            messageFormatter: ""Tag {0} is not valid."",
+            openingTagOnly: false,
+        }
+    }
+}
+", _templateFolder);
+            CreateFile(
+                MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName + "/div" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix,
+                @"{
+    tagRules : {
+        ""div-1"": {
+            tagNames: [""div""],
+            behavior: ""Warning"",
+            messageFormatter: ""Tag {0} is not valid."",
+            openingTagOnly: true
+        }
+    }
+}
+", _templateFolder);
+
+            FileCollection files = new FileCollection(Environment.CurrentDirectory);
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
+            files.Add(DocumentType.Resource, new[] { resourceFile });
+            #endregion
+
+            Init(MarkdownValidatorBuilder.MarkdownValidatePhaseName);
+            try
+            {
+                using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+                {
+                    BuildDocument(
+                        files,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: _templateFolder);
+                }
+
+                {
+                    // check log for markdown stylecop.
+                    Assert.Equal(2, Listener.Items.Count);
+
+                    Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
+                    Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
+
+                    Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
+                    Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
+                }
+            }
+            finally
+            {
+                CleanUp();
+                File.Delete(resourceMetaFile);
+            }
+        }
+
+        [Fact]
         public void TestBuildConceptualWithTemplateShouldSucceed()
         {
             CreateFile("conceptual.html.js", @"
@@ -288,11 +439,14 @@ exports.getOptions = function (){
                 },
                 _inputFolder);
             FileCollection files = new FileCollection(Environment.CurrentDirectory);
-            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2, tocFile, tocFile2});
-            BuildDocument(files, new Dictionary<string, object>
-            {
-                ["meta"] = "Hello world!",
-            });
+            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2, tocFile, tocFile2 });
+            BuildDocument(
+                files,
+                new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                },
+                templateFolder: _templateFolder);
 
             {
                 // check toc.
@@ -434,9 +588,9 @@ exports.getOptions = function (){
             Assert.True(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
         }
 
-        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null)
+        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null, string templateFolder = null)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, templateFolder))
             {
                 if (applyTemplateSettings == null)
                 {
@@ -449,7 +603,8 @@ exports.getOptions = function (){
                     OutputBaseDir = Path.Combine(Environment.CurrentDirectory, _outputFolder),
                     ApplyTemplateSettings = applyTemplateSettings,
                     Metadata = metadata?.ToImmutableDictionary(),
-                    TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null)
+                    TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
+                    TemplateDir = templateFolder,
                 };
                 builder.Build(parameters);
             }
