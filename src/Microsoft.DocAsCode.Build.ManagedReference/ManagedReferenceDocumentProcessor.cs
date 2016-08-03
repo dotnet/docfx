@@ -31,9 +31,19 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             switch (file.Type)
             {
                 case DocumentType.Article:
-                    if (".yml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    if (".yml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
+                        ".yaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                     {
-                        return ProcessingPriority.Normal;
+                        var mime = YamlMime.ReadMime(Path.Combine(file.BaseDir, file.File));
+                        switch (mime)
+                        {
+                            case YamlMime.ManagedReference:
+                                return ProcessingPriority.Normal;
+                            case null:
+                                return ProcessingPriority.BelowNormal;
+                            default:
+                                return ProcessingPriority.NotSupported;
+                        }
                     }
 
                     if (".csyml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
@@ -41,6 +51,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     {
                         return ProcessingPriority.Normal;
                     }
+
                     break;
                 case DocumentType.Overwrite:
                     if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
