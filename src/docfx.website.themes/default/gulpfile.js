@@ -7,7 +7,9 @@ var concat = require('gulp-concat');
 var copy = require('gulp-copy');
 
 var vendor = {
-  css: ['bower_components/bootstrap/dist/css/bootstrap.css', 'bower_components/highlightjs/styles/solarized_dark.css'],
+  css: ['bower_components/bootstrap/dist/css/bootstrap.css',
+        'bower_components/highlightjs/styles/github-gist.css'
+       ],
   js: ['bower_components/jquery/dist/jquery.min.js',
        'bower_components/bootstrap/dist/js/bootstrap.min.js',
        'bower_components/highlightjs/highlight.pack.min.js',
