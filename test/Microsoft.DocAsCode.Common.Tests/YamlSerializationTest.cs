@@ -34,17 +34,35 @@ namespace Microsoft.DocAsCode.Common.Tests
         public void TestBasicClass()
         {
             var sw = new StringWriter();
-            YamlUtility.Serialize(sw, new BasicClass { B = 1, C = "Good!" }, "Test-Yaml-Mime");
+            YamlUtility.Serialize(sw, new BasicClass { B = 1, C = "Good!" }, YamlMime.YamlMimePrefix + "Test-Yaml-Mime");
             var yaml = sw.ToString();
-            Assert.Equal(@"### Test-Yaml-Mime
+            Assert.Equal(@"### YamlMime:Test-Yaml-Mime
 B: 1
 C: Good!
 ".Replace("\r\n", "\n"), yaml.Replace("\r\n", "\n"));
-            Assert.Equal("Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
             var value = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
+        }
+
+        [Fact]
+        public void TestYamlMime_Success()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, 1, YamlMime.YamlMimePrefix + "Test-Yaml-Mime");
+            var yaml = sw.ToString();
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
+        }
+
+        [Fact]
+        public void TestYamlMime_NoYamlMime()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, 1, "No-Yaml-Mime");
+            var yaml = sw.ToString();
+            Assert.Null(YamlMime.ReadMime(new StringReader(yaml)));
         }
 
         [Fact]
