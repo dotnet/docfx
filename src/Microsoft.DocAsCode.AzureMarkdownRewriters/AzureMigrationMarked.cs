@@ -16,8 +16,10 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             string src,
             string path = null,
             IReadOnlyDictionary<string, AzureFileInfo> azureMarkdownFileInfoMapping = null,
-            IReadOnlyDictionary<string, AzureVideoInfo> azureVideoInfoMapping = null,
-            IReadOnlyDictionary<string, AzureFileInfo> azureResourceFileInfoMapping = null)
+            IReadOnlyDictionary<string, AzureFileInfo> azureResourceFileInfoMapping = null,
+            IReadOnlyDictionary<string, AzureFileInfo> azureIncludeMarkdownFileInfoMapping = null,
+            IReadOnlyDictionary<string, AzureFileInfo> azureIncludeResourceFileInfoMapping = null,
+            IReadOnlyDictionary<string, AzureVideoInfo> azureVideoInfoMapping = null)
         {
             var engine = (MarkdownEngine)_builder.CreateEngine(_renderer);
             var context = engine.Context;
@@ -26,19 +28,29 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 context = engine.Context.CreateContext(engine.Context.Variables.SetItem("path", path));
             }
 
-            if (azureMarkdownFileInfoMapping != null)
+            if (azureMarkdownFileInfoMapping?.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureMarkdownFileInfoMapping", azureMarkdownFileInfoMapping));
             }
 
-            if (azureVideoInfoMapping != null)
+            if (azureVideoInfoMapping?.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureVideoInfoMapping", azureVideoInfoMapping));
             }
 
-            if (azureResourceFileInfoMapping != null)
+            if (azureResourceFileInfoMapping?.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureResourceFileInfoMapping", azureResourceFileInfoMapping));
+            }
+
+            if (azureIncludeMarkdownFileInfoMapping?.Count != 0)
+            {
+                context = context.CreateContext(context.Variables.SetItem("azureIncludeMarkdownFileInfoMapping", azureResourceFileInfoMapping));
+            }
+
+            if (azureIncludeResourceFileInfoMapping?.Count != 0)
+            {
+                context = context.CreateContext(context.Variables.SetItem("azureIncludeResourceFileInfoMapping", azureResourceFileInfoMapping));
             }
 
             return engine.Mark(SourceInfo.Create(MarkdownEngine.Normalize(src), path), context);

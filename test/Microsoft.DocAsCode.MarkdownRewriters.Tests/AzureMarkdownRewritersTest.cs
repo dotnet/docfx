@@ -1178,7 +1178,7 @@ This command must be run in the context of each domain user that has signed into
 
 ";
 
-            var result = AzureMigrationMarked.Markup(source, "sourceFile.md", null, azureVideoInfoMapping);
+            var result = AzureMigrationMarked.Markup(source, "sourceFile.md", azureVideoInfoMapping: azureVideoInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
@@ -1205,7 +1205,7 @@ This command must be run in the context of each domain user that has signed into
 
 ";
 
-            var result = AzureMigrationMarked.Markup(source, "sourceFile.md", null, azureVideoInfoMapping);
+            var result = AzureMigrationMarked.Markup(source, "sourceFile.md", azureVideoInfoMapping: azureVideoInfoMapping);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 

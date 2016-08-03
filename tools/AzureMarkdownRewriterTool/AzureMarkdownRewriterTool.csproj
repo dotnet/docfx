@@ -27,7 +27,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureFileInformationCollection.cs" />
     <Compile Include="AzureTransformArguments.cs" />
+    <Compile Include="AzureVideoHelper.cs" />
     <Compile Include="AzureVideoRawInformation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RewriterToolArguments.cs" />
