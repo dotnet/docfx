@@ -81,6 +81,10 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
             foreach (var pair in validators)
             {
+                if (string.IsNullOrEmpty(pair.Value.ContractName))
+                {
+                    continue;
+                }
                 _validators.Add(new RuleWithId<MarkdownValidationRule>
                 {
                     Category = category,
@@ -98,7 +102,11 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
             foreach (var rule in rules)
             {
-                _globalValidators[rule.RuleName] = rule;
+                if (string.IsNullOrEmpty(rule.ContractName))
+                {
+                    continue;
+                }
+                _globalValidators[rule.ContractName] = rule;
             }
         }
 
@@ -120,7 +128,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             {
                 _globalValidators[DefaultValidatorName] = new MarkdownValidationRule
                 {
-                    RuleName = DefaultValidatorName,
+                    ContractName = DefaultValidatorName,
                 };
             }
         }
@@ -147,22 +155,22 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             {
                 if (IsDisabledBySetting(item) ?? item.Rule.Disable)
                 {
-                    enabledContractName.Remove(item.Rule.RuleName);
+                    enabledContractName.Remove(item.Rule.ContractName);
                 }
                 else
                 {
-                    enabledContractName.Add(item.Rule.RuleName);
+                    enabledContractName.Add(item.Rule.ContractName);
                 }
             }
             foreach (var pair in _globalValidators)
             {
                 if (pair.Value.Disable)
                 {
-                    enabledContractName.Remove(pair.Value.RuleName);
+                    enabledContractName.Remove(pair.Value.ContractName);
                 }
                 else
                 {
-                    enabledContractName.Add(pair.Value.RuleName);
+                    enabledContractName.Add(pair.Value.ContractName);
                 }
             }
             return from name in enabledContractName

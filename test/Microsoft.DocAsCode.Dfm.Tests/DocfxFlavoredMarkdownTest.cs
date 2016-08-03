@@ -751,7 +751,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
             {
                 new MarkdownValidationRule
                 {
-                    RuleName =  HtmlMarkdownTokenValidatorProvider.ContractName,
+                    ContractName =  HtmlMarkdownTokenValidatorProvider.ContractName,
                 }
             });
             builder.Rewriter = mrb.Create();
