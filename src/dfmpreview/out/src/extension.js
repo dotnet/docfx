@@ -116,7 +116,7 @@ function showSource(mdUri) {
 var Mypreview = (function () {
     //public _preview_result : string;
     function Mypreview(context) {
-        var extpath = context.asAbsolutePath('./Release/Dfm_test.exe');
+        var extpath = context.asAbsolutePath('./DfmParse/Dfm_test.exe');
         this._spawn = child_process.spawn(extpath);
         this._waiting = false;
         //this._is_firsttime = true;

@@ -155,7 +155,7 @@ class Mypreview{
     //public _preview_result : string;
 
     constructor(context : ExtensionContext ){
-        let extpath  = context.asAbsolutePath('./Release/Dfm_test.exe');
+        let extpath  = context.asAbsolutePath('./DfmParse/Dfm_test.exe');
         this._spawn = child_process.spawn(extpath);
 		this._waiting = false;
 		//this._is_firsttime = true;
