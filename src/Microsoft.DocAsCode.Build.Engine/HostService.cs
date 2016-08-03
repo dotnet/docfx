@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         #region Fields
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
-        private readonly LruList<ModelWithCache> _lru = LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
+        private readonly LruList<ModelWithCache> _lru = Environment.Is64BitProcess ? null : LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
         #endregion
 
         #region Properties
@@ -383,7 +383,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
             EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
-            EventHandler contentAccessedHandler = ContentAccessedHandler;
+            EventHandler contentAccessedHandler = null;
+            if (!Environment.Is64BitProcess)
+            {
+                contentAccessedHandler = ContentAccessedHandler;
+            }
             if (Models != null)
             {
                 foreach (var m in Models)
