@@ -17,15 +17,14 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentException("Phase name cannot be null or white space.", nameof(phaseName));
             }
-            _originPhaseName = CallContext.LogicalGetData(nameof(LoggerPhaseScope)) as string;
-            if (_originPhaseName == null)
-            {
-                CallContext.LogicalSetData(nameof(LoggerPhaseScope), phaseName);
-            }
-            else
-            {
-                CallContext.LogicalSetData(nameof(LoggerPhaseScope), _originPhaseName + "." + phaseName);
-            }
+            _originPhaseName = GetPhaseName();
+            SetPhaseName(_originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName);
+        }
+
+        private LoggerPhaseScope(CapturedLoggerPhaseScope captured)
+        {
+            _originPhaseName = GetPhaseName();
+            SetPhaseName(captured.PhaseName);
         }
 
         public void Dispose()
@@ -36,6 +35,36 @@ namespace Microsoft.DocAsCode.Common
         internal static string GetPhaseName()
         {
             return CallContext.LogicalGetData(nameof(LoggerPhaseScope)) as string;
+        }
+
+        private void SetPhaseName(string phaseName)
+        {
+            CallContext.LogicalSetData(nameof(LoggerPhaseScope), phaseName);
+        }
+
+        public static object Capture()
+        {
+            return new CapturedLoggerPhaseScope { };
+        }
+
+        public static LoggerPhaseScope Restore(object captured)
+        {
+            var capturedScope = captured as CapturedLoggerPhaseScope;
+            if (capturedScope == null)
+            {
+                return null;
+            }
+            return new LoggerPhaseScope(capturedScope);
+        }
+
+        private sealed class CapturedLoggerPhaseScope
+        {
+            public CapturedLoggerPhaseScope()
+            {
+                PhaseName = GetPhaseName();
+            }
+
+            public string PhaseName { get; }
         }
     }
 }
