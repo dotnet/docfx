@@ -17,14 +17,14 @@ SET DefaultTemplate=%TemplateHome%default
 CALL npm install -g gulp
 CALL npm install -g bower
 
-:: Check if gulp install successfully
+:: Check if gulp exists globally
 WHERE gulp >NUL
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO ERROR: UpdateTemplate.cmd requires gulp installed globally.
     GOTO :Exit
 )
 
-:: Check if bower install successfully
+:: Check if bower exists globally
 WHERE bower >NUL
 IF NOT '%ERRORLEVEL%'=='0' (
     ECHO ERROR: UpdateTemplate.cmd requires bower installed globally.
