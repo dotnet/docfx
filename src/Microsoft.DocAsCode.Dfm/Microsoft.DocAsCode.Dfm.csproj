@@ -66,7 +66,7 @@
     <Compile Include="MarkdownValidators\MarkdownValidationRule.cs" />
     <Compile Include="MarkdownValidators\MarkdownValidatorBuilder.cs" />
     <Compile Include="MarkdownValidators\MarkdownTagValidationRule.cs" />
-    <Compile Include="MarkdownValidators\TagVerb.cs" />
+    <Compile Include="MarkdownValidators\TagRelation.cs" />
     <Compile Include="MarkdownValidators\TagValidationBehavior.cs" />
     <Compile Include="Rules\DfmBlockquoteBlockRule.cs" />
     <Compile Include="Rules\DfmEmailInlineRule.cs" />
