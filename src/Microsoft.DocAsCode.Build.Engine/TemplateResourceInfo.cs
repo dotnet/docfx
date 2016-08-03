@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string ResourceKey { get; }
         public string FilePath { get; }
         public bool IsRegexPattern { get; }
+
         public TemplateResourceInfo(string resourceKey, string filePath, bool isRegexPattern)
         {
             ResourceKey = resourceKey;

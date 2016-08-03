@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private readonly IDocumentBuildContext _context;
         private readonly IEnumerable<FileInfo> _toc;
+
         public SystemMetadataGenerator(IDocumentBuildContext context)
         {
             if (context == null)

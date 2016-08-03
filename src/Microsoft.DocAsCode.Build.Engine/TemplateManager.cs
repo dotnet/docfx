@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly List<string> _templates = new List<string>();
         private readonly List<string> _themes = new List<string>();
         private readonly ResourceFinder _finder;
+
         public TemplateManager(Assembly assembly, string rootNamespace, List<string> templates, List<string> themes, string baseDirectory)
         {
             _finder = new ResourceFinder(assembly, rootNamespace, baseDirectory);
@@ -103,5 +104,4 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
     }
-    
 }

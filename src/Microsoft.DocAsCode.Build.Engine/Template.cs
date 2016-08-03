@@ -31,9 +31,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         public TemplateType TemplateType { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
 
-        public readonly bool ContainsGetOptions;
-        public readonly bool ContainsModelTransformation;
-        public readonly bool ContainsTemplateRenderer;
+        public bool ContainsGetOptions { get; }
+        public bool ContainsModelTransformation { get; }
+        public bool ContainsTemplateRenderer { get; }
 
         public Template(string name, DocumentBuildContext context, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, ResourceCollection resourceCollection, int maxParallelism)
         {
@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (var lease = _preprocessorPool.Rent())
             {
                 var obj = lease.Resource.GetOptionsFunc(model);
-                
+
                 var config = JObject.FromObject(obj).ToObject<TransformModelOptions>();
                 return config;
             }
