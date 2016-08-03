@@ -16,10 +16,10 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         [JsonProperty("tagNames", Required = Required.Always)]
         public List<string> TagNames { get; set; }
         /// <summary>
-        /// The access for tags.
+        /// The relation for tags.
         /// </summary>
-        [JsonProperty("verb")]
-        public TagVerb Verb { get; set; }
+        [JsonProperty("relation")]
+        public TagRelation Relation { get; set; }
         /// <summary>
         /// Define tag's behavior.
         /// </summary>

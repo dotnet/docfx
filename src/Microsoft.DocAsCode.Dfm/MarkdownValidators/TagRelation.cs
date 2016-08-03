@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 {
-    public enum TagVerb
+    public enum TagRelation
     {
         In,
         NotIn,

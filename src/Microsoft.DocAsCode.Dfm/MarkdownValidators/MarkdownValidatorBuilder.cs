@@ -246,7 +246,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     if (isOpeningTag || !validator.OpeningTagOnly)
                     {
                         var hasTagName = validator.TagNames.Any(tagName => string.Equals(tagName, m.Groups[1].Value, System.StringComparison.OrdinalIgnoreCase));
-                        if (hasTagName ^ (validator.Verb == TagVerb.NotIn))
+                        if (hasTagName ^ (validator.Relation == TagRelation.NotIn))
                         {
                             ValidateOne(token, m, validator);
                         }
