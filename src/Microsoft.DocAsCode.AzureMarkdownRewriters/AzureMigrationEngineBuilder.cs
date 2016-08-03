@@ -42,10 +42,16 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             {
                 throw new ArgumentException($"{nameof(MarkdownNewLineBlockRule)} should exist!");
             }
-            blockRules.Insert(index + 1, new DfmYamlHeaderBlockRule());
-            blockRules.Insert(index + 2, new AzureMigrationIncludeBlockRule());
-            blockRules.Insert(index + 3, new AzureNoteBlockRule());
-            blockRules.Insert(index + 4, new AzureSelectorBlockRule());
+            blockRules.InsertRange(
+                index + 1,
+                new IMarkdownRule []
+                {
+                    new DfmYamlHeaderBlockRule(),
+                    new AzureMigrationIncludeBlockRule(),
+                    new AzureMigrationVideoBlockRule(),
+                    new AzureNoteBlockRule(),
+                    new AzureSelectorBlockRule()
+                });
 
             index = blockRules.FindLastIndex(s => s is MarkdownHtmlBlockRule);
             if (index < 1)
@@ -59,7 +65,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
             var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
             blockRules[markdownBlockQuoteIndex] = new AzureBlockquoteBlockRule();
-            blockRules.Insert(markdownBlockQuoteIndex, new AzureMigrationVideoBlockRule());
 
             BlockRules = blockRules.ToImmutableList();
         }

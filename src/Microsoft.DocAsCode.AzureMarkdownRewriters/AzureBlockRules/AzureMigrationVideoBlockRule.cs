@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     public class AzureMigrationVideoBlockRule : IMarkdownRule
     {
-        public virtual string Name => "AZURE.VIDEO.BLOCK";
+        public virtual string Name => "AZURE.MIGRATION.VIDEO.BLOCK";
 
         private static readonly Regex _azureMigrationVideoRegex = new Regex(@"^ *\[AZURE.VIDEO\s*([^\]]*?)\s*\](?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
