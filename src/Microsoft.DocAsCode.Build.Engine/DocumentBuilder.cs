@@ -121,6 +121,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var postProcessor in _postProcessors)
             {
                 using (new LoggerPhaseScope(postProcessor.ContractName))
+                using (new PerformanceScope($"Post processor {postProcessor.ContractName}: running..."))
                 {
                     manifest = postProcessor.Processor.Process(manifest, outputDir);
                     if (manifest == null)

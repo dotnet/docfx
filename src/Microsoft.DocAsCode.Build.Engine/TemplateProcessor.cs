@@ -66,6 +66,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         internal List<ManifestItem> Process(List<InternalManifestItem> manifest, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
         {
             using (new LoggerPhaseScope("Apply Templates"))
+            using (new PerformanceScope("Apply Templates"))
             {
                 if (globals == null)
                 {
