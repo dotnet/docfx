@@ -74,6 +74,7 @@
     <Compile Include="..\Shared\TestBase.cs">
       <Link>TestBase.cs</Link>
     </Compile>
+    <Compile Include="ScopeTest.cs" />
     <Compile Include="YamlSerializationTest.cs" />
     <Compile Include="TestLoggerListener.cs" />
   </ItemGroup>
