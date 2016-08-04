@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static object Capture()
         {
-            return new CapturedLoggerPhaseScope { };
+            return new CapturedLoggerPhaseScope();
         }
 
         public static LoggerPhaseScope Restore(object captured)
