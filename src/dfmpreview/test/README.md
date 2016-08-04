@@ -1,6 +1,6 @@
 ## The test folder struct
 ```   
-    r
+    test
     │   empty.md
     │   Program.cs
     │   root.md
