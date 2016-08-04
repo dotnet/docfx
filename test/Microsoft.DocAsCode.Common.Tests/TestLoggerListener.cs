@@ -35,5 +35,16 @@ namespace Microsoft.DocAsCode.Common.Tests
                 Items.Add(item);
             }
         }
+
+        public ILogItem TakeAndRemove()
+        {
+            if (Items.Count == 0)
+            {
+                return null;
+            }
+            var result = Items[0];
+            Items.RemoveAt(0);
+            return result;
+        }
     }
 }

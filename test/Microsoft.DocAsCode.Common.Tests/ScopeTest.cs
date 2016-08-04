@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         {
             var listener = new TestLoggerListener { LogLevelThreshold = LogLevel.Diagnostic };
             var logLevel = Logger.LogLevelThreshold;
+            ILogItem item;
             try
             {
                 Logger.LogLevelThreshold = LogLevel.Diagnostic;
@@ -25,17 +26,17 @@ namespace Microsoft.DocAsCode.Common.Tests
                 Action<bool> callback;
 
                 Logger.LogInfo("test no phase scope");
-                Assert.Null(listener.Items[0].Phase);
+                Assert.Null(listener.TakeAndRemove().Phase);
 
                 using (new LoggerPhaseScope("A"))
                 {
                     Logger.LogInfo("test in phase scope A");
-                    Assert.Equal("A", listener.Items[1].Phase);
+                    Assert.Equal("A", listener.TakeAndRemove().Phase);
 
                     using (new LoggerPhaseScope("B"))
                     {
                         Logger.LogInfo("test in phase scope B");
-                        Assert.Equal("A.B", listener.Items[2].Phase);
+                        Assert.Equal("A.B", listener.TakeAndRemove().Phase);
 
                         var captured = LoggerPhaseScope.Capture();
                         Assert.NotNull(captured);
@@ -51,33 +52,101 @@ namespace Microsoft.DocAsCode.Common.Tests
                     using (new LoggerPhaseScope("C", true))
                     {
                         Logger.LogInfo("test in phase scope C");
-                        Assert.Equal("A.C", listener.Items[3].Phase);
+                        Assert.Equal("A.C", listener.TakeAndRemove().Phase);
 
                         // run callback in scope C.
                         callback(false);
-                        Assert.Equal("A.B", listener.Items[4].Phase);
+                        Assert.Equal("A.B", listener.TakeAndRemove().Phase);
                     } // exit scope C.
 
-                    Assert.Equal("A.C", listener.Items[5].Phase);
-                    Assert.Equal(LogLevel.Diagnostic, listener.Items[5].LogLevel);
+                    item = listener.TakeAndRemove();
+                    Assert.Equal("A.C", item.Phase);
+                    Assert.Equal(LogLevel.Diagnostic, item.LogLevel);
                 } // exit scope A.
 
                 Logger.LogInfo("test no phase scope");
-                Assert.Null(listener.Items[6].Phase);
+                Assert.Null(listener.TakeAndRemove().Phase);
 
                 // run callback in no scope.
                 callback(true);
-                Assert.Equal("A.B", listener.Items[7].Phase);
-                Assert.Equal("A.B", listener.Items[8].Phase);
-                Assert.Equal(LogLevel.Diagnostic, listener.Items[8].LogLevel);
+                Assert.Equal("A.B", listener.TakeAndRemove().Phase);
+                item = listener.TakeAndRemove();
+                Assert.Equal("A.B", item.Phase);
+                Assert.Equal(LogLevel.Diagnostic, item.LogLevel);
 
                 Logger.LogInfo("test no phase scope again");
-                Assert.Null(listener.Items[9].Phase);
+                Assert.Null(listener.TakeAndRemove().Phase);
             }
             finally
             {
                 Logger.UnregisterListener(listener);
                 Logger.LogLevelThreshold = logLevel;
+            }
+        }
+
+        [Fact]
+        public void TestFileScope()
+        {
+            var listener = new TestLoggerListener();
+            try
+            {
+                Logger.RegisterListener(listener);
+                Action callback;
+
+                Logger.LogInfo("Not in file scope.");
+                Assert.Null(listener.TakeAndRemove().File);
+
+                using (new LoggerFileScope("A"))
+                {
+                    Logger.LogInfo("In file A");
+                    Assert.Equal("A", listener.TakeAndRemove().File);
+
+                    using (new LoggerFileScope("B"))
+                    {
+                        Logger.LogInfo("In file B");
+                        Assert.Equal("B", listener.TakeAndRemove().File);
+
+                        var captured = LoggerFileScope.Capture();
+                        callback = () =>
+                        {
+                            using (LoggerFileScope.Restore(captured))
+                            {
+                                Logger.LogInfo("In captured file B");
+                            }
+                        };
+                    }
+
+                    Logger.LogInfo("In file A");
+                    Assert.Equal("A", listener.TakeAndRemove().File);
+
+                    callback();
+                    Assert.Equal("B", listener.TakeAndRemove().File);
+
+                    Logger.LogInfo("In file A");
+                    Assert.Equal("A", listener.TakeAndRemove().File);
+
+                    using (new LoggerFileScope("C"))
+                    {
+                        Logger.LogInfo("In file C");
+                        Assert.Equal("C", listener.TakeAndRemove().File);
+
+                        callback();
+                        Assert.Equal("B", listener.TakeAndRemove().File);
+                    }
+                }
+
+                Logger.LogInfo("Not in file scope.");
+                Assert.Null(listener.TakeAndRemove().File);
+
+                callback();
+                Assert.Equal("B", listener.TakeAndRemove().File);
+
+                Logger.LogInfo("Not in file scope.");
+                Assert.Null(listener.TakeAndRemove().File);
+            }
+            finally
+            {
+                Logger.UnregisterListener(listener);
             }
         }
     }
