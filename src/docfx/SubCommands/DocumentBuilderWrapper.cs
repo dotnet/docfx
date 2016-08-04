@@ -100,7 +100,11 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory, string templateDirectory)
         {
-            var assemblies = LoadPluginAssemblies(pluginDirectory);
+            IEnumerable<Assembly> assemblies;
+            using (new PerformanceScope("LoadPluginAssemblies", LogLevel.Diagnostic))
+            {
+                assemblies = LoadPluginAssemblies(pluginDirectory);
+            }
             var postProcessorNames = config.PostProcessors.ToImmutableArray();
             var metadata = config.GlobalMetadata?.ToImmutableDictionary();
 

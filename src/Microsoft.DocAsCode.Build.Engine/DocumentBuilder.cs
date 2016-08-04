@@ -42,10 +42,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             string intermediateFolder = null)
         {
             Logger.LogVerbose("Loading plug-in...");
-            var assemblyList = assemblies?.ToList();
-            _container = GetContainer(assemblyList);
-            _container.SatisfyImports(this);
-            _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
+            using (new PerformanceScope("ImportPlugins", LogLevel.Diagnostic))
+            {
+                var assemblyList = assemblies?.ToList();
+                _container = GetContainer(assemblyList);
+                _container.SatisfyImports(this);
+                _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
+            }
             Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
             foreach (var processor in Processors)
             {
@@ -104,7 +107,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var postProcessor in _postProcessors)
             {
-                using (new LoggerPhaseScope(postProcessor.ContractName))
+                using (new LoggerPhaseScope(postProcessor.ContractName, true))
                 {
                     parameters.Metadata = postProcessor.Processor.PrepareMetadata(parameters.Metadata);
                     if (parameters.Metadata == null)
@@ -120,7 +123,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             // post process
             foreach (var postProcessor in _postProcessors)
             {
-                using (new LoggerPhaseScope(postProcessor.ContractName))
+                using (new LoggerPhaseScope(postProcessor.ContractName, true))
                 {
                     manifest = postProcessor.Processor.Process(manifest, outputDir);
                     if (manifest == null)
