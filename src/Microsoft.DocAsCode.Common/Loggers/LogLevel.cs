@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Common
 {
     public enum LogLevel
     {
+        Diagnostic = -1,
         Verbose,
         Info,
         Warning,
