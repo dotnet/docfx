@@ -159,7 +159,6 @@ tagRules : [
                     Assert.Equal("test2", model[0].Items[0].Name);
                     Assert.Equal("test/test.html", model[0].Items[0].Href);
                     Assert.Equal("Api", model[1].Name);
-                    Assert.Null(model[1].Href);
                     Assert.NotNull(model[1].Items);
                     Assert.Equal("Console", model[1].Items[0].Name);
                     Assert.Equal("../System.Console.csyml", model[1].Items[0].Href);
@@ -307,6 +306,7 @@ exports.getOptions = function (){
                     ["_tocRel"] = "toc",
                     ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                     ["homepage"] = "test.html",
+                    ["topicHref"] = "test.html",
                     ["items"] = new object[]
                     {
                         new {
@@ -327,6 +327,7 @@ exports.getOptions = function (){
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                                 ["homepage"] = "test.html",
+                                ["topicHref"] = "test.html",
                                 ["items"] = new object[]
                                 {
                                     new {
@@ -344,6 +345,7 @@ exports.getOptions = function (){
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/test/toc.md",
                                 ["homepage"] = "test.html",
+                                ["topicHref"] = "test.html",
                                 ["items"] = new object[]
                                 {
                                     new {
@@ -394,6 +396,7 @@ exports.getOptions = function (){
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                                 ["homepage"] = "test.html",
+                                ["topicHref"] = "test.html",
                                 ["items"] = new object[]
                                 {
                                     new {
@@ -411,6 +414,7 @@ exports.getOptions = function (){
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/test/toc.md",
                                 ["homepage"] = "test.html",
+                                ["topicHref"] = "test.html",
                                 ["items"] = new object[]
                                 {
                                     new {

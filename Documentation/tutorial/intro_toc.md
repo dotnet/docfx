@@ -38,16 +38,13 @@ Three kinds of links are supported:
 ### YAML format TOC `toc.yml`
 
 ```yml
-- name:
-  href:
-  topicHref:
-- name:
-  href:
-  topicHref:
+- name: Topic1
+  href: Topic1.md
+- name: Topic2
+  href: Topic2.md
   items:
-    - name:
-      href:
-      topicHref:
+    - name: Topic2_1
+      href: Topic2_1.md
 ```
 
 Comparing to `toc.md`, `toc.yml` represents a structured data model and conforms to the [YAML standard](http://www.yaml.org/spec/1.2/spec.html). It supports advanced functionalities.
@@ -66,11 +63,11 @@ Property Name | Type              | Description
 *href*        | string            | Specifies the hyperlink of the *TOC Item*.
 *items*       | *TOC Item Object* | Specifies the children *TOC Items* of current *TOC Item*.
 
-**Advanced**: These properties is useful when a TOC links another TOC, or links to a uid.
+**Advanced**: These properties are useful when a TOC links another TOC, or links to a uid.
 
 Property Name                     | Type              | Description
 --------------------------------- | ----------------- | ---------------------------
-*tocHref*                         | string            | Specifies another TOC file, whose items is considered as the child of the currrent *TOC Item*.
+*tocHref*                         | string            | Specifies another TOC file, whose items are considered as the child of the currrent *TOC Item*.
 *topicHref*                       | string            | Specifies the topic href of the *TOC Item*. It is useful when *href* is linking to a folder or *tocHref* is used.
 *topicUid*                        | string            | Specifies the `uid` of the *topicHref* file. If the value is set, it overwrites the value of *topicHref*.
 ~~*homepage*~~ **Deprecated**     | string            | ~~Specifies the homepage of the *TOC Item*. It is useful when *href* is linking to a folder.~~ Use *topicHref* instead.
@@ -145,4 +142,4 @@ If the *Toc Item* is linking to a local file, we call this local file *In-Toc Fi
 
 Not-In-Toc Files
 ----------------
-When a local file is not references by any *Toc Item*, we call this local file *Not-In-Toc File*. Its *TOC File* is the nearest *TOC File* in output folder from the same folder as the local file to the root output folder.
+When a local file is not referenced by any *Toc Item*, we call this local file *Not-In-Toc File*. Its *TOC File* is the nearest *TOC File* in output folder from the same folder as the local file to the root output folder.

@@ -56,15 +56,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 if (!string.IsNullOrEmpty(item.Uid))
                 {
                     item.TopicUid = item.Uid;
-                    item.Uid = null;
                 }
-                else
+                else if (!string.IsNullOrEmpty(item.HomepageUid))
                 {
-                    if (!string.IsNullOrEmpty(item.HomepageUid))
-                    {
-                        item.TopicUid = item.HomepageUid;
-                        item.HomepageUid = null;
-                    }
+                    item.TopicUid = item.HomepageUid;
+                    Logger.LogWarning($"HomepageUid is deprecated in TOC. Please use topicUid to specify uid {item.Homepage}");
+                    item.HomepageUid = null;
                 }
             }
             // Homepage is deprecated, unified to TopicHref
@@ -118,12 +115,24 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         }
                     }
                     // for backward compatibility
-                    item.Homepage = item.TopicHref;
-                    if (item.Href == null)
+                    if (item.Href == null && item.Homepage == null)
                     {
                         item.Href = item.TocHref;
                     }
-
+                    item.Homepage = item.TopicHref;
+                    // check whether toc exists
+                    if (!string.IsNullOrEmpty(item.TocHref) &&
+                        (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
+                    {
+                        var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
+                        var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
+                        if (!_collection.ContainsKey(tocFile))
+                        {
+                            var message =
+                                $"Unable to find {item.TocHref}. Make sure the file is included in config file docfx.json!";
+                            Logger.LogWarning(message);
+                        }
+                    }
                     break;
                 case HrefType.RelativeFolder:
                     {
@@ -131,23 +140,22 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         if (!string.IsNullOrEmpty(item.TocHref) && (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
                         {
                             Logger.LogWarning($"Href {item.Href} is overwritten by tocHref {item.TocHref}");
-                            var tocFilePath = (RelativePath) file.File + (RelativePath) item.TocHref;
+                            var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
 
                             var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
 
                             if (!_collection.TryGetValue(tocFile, out tocFileModel))
                             {
-                                var message = 
-                                    $"Unable to find either {item.TocHref}. Make sure the file is included in config file docfx.json!";
+                                var message =
+                                    $"Unable to find {item.TocHref}. Make sure the file is included in config file docfx.json!";
                                 Logger.LogWarning(message);
                                 break;
                             }
-                            
                         }
                         else
                         {
-                            var relativeFolder = (RelativePath) file.File + (RelativePath) item.Href;
-                            var tocFilePath = relativeFolder + (RelativePath) Constants.YamlTocFileName;
+                            var relativeFolder = (RelativePath)file.File + (RelativePath)item.Href;
+                            var tocFilePath = relativeFolder + (RelativePath)Constants.YamlTocFileName;
 
                             var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
 
@@ -155,7 +163,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             // Second, try finding toc.md under the relative folder
                             if (!_collection.TryGetValue(tocFile, out tocFileModel))
                             {
-                                tocFilePath = relativeFolder + (RelativePath) Constants.MarkdownTocFileName;
+                                tocFilePath = relativeFolder + (RelativePath)Constants.MarkdownTocFileName;
                                 tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
                                 if (!_collection.TryGetValue(tocFile, out tocFileModel))
                                 {
@@ -166,7 +174,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                                 }
                             }
 
-                            item.TocHref = tocFilePath - (RelativePath) file.File;
+                            item.TocHref = tocFilePath - (RelativePath)file.File;
                         }
 
                         // Get homepage from the referenced toc
@@ -175,7 +183,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             stack.Push(file);
                             var resolved = ResolveItem(tocFileModel, stack).Content;
                             stack.Pop();
-                            item.Href = resolved.TopicHref;
+                            item.Href = item.TopicHref = resolved.TopicHref;
                             item.TopicUid = resolved.TopicUid;
                         }
                         else

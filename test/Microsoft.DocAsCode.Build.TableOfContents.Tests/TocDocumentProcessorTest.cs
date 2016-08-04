@@ -229,6 +229,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     {
                         Name = "Topic2",
                         Href = file2,
+                        TopicHref = file2,
                         TocHref = "sub/toc.md",
                     }
                 }
