@@ -42,7 +42,6 @@ namespace DfmProcess
             {
                 Console.WriteLine(" error");
                 Console.WriteLine(e.ToString());
-                Console.ReadKey();
                 return;
             }
         }
