@@ -9,17 +9,20 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
 
-    [Trait("Owner", "zhyan")]
+    [Trait("Owner", "vwxyzh")]
+    [Collection("docfx STA")]
     public class ScopeTest
     {
         [Fact]
         public void TestPhaseScope()
         {
-            var listener = new TestLoggerListener();
+            var listener = new TestLoggerListener { LogLevelThreshold = LogLevel.Diagnostic };
+            var logLevel = Logger.LogLevelThreshold;
             try
             {
+                Logger.LogLevelThreshold = LogLevel.Diagnostic;
                 Logger.RegisterListener(listener);
-                Action callback;
+                Action<bool> callback;
 
                 Logger.LogInfo("test no phase scope");
                 Assert.Null(listener.Items[0].Phase);
@@ -36,39 +39,45 @@ namespace Microsoft.DocAsCode.Common.Tests
 
                         var captured = LoggerPhaseScope.Capture();
                         Assert.NotNull(captured);
-                        callback = () =>
+                        callback = shouldLogPerformance =>
                         {
-                            using (LoggerPhaseScope.Restore(captured))
+                            using (LoggerPhaseScope.Restore(captured, shouldLogPerformance))
                             {
                                 Logger.LogInfo("test in captured phase scope B");
                             }
                         };
                     } // exit scope B.
 
-                    using (new LoggerPhaseScope("C"))
+                    using (new LoggerPhaseScope("C", true))
                     {
                         Logger.LogInfo("test in phase scope C");
                         Assert.Equal("A.C", listener.Items[3].Phase);
 
                         // run callback in scope C.
-                        callback();
+                        callback(false);
                         Assert.Equal("A.B", listener.Items[4].Phase);
                     } // exit scope C.
+
+                    Assert.Equal("A.C", listener.Items[5].Phase);
+                    Assert.Equal(LogLevel.Diagnostic, listener.Items[5].LogLevel);
                 } // exit scope A.
 
                 Logger.LogInfo("test no phase scope");
-                Assert.Null(listener.Items[5].Phase);
+                Assert.Null(listener.Items[6].Phase);
 
                 // run callback in no scope.
-                callback();
-                Assert.Equal("A.B", listener.Items[6].Phase);
+                callback(true);
+                Assert.Equal("A.B", listener.Items[7].Phase);
+                Assert.Equal("A.B", listener.Items[8].Phase);
+                Assert.Equal(LogLevel.Diagnostic, listener.Items[8].LogLevel);
 
                 Logger.LogInfo("test no phase scope again");
-                Assert.Null(listener.Items[7].Phase);
+                Assert.Null(listener.Items[9].Phase);
             }
             finally
             {
                 Logger.UnregisterListener(listener);
+                Logger.LogLevelThreshold = logLevel;
             }
         }
     }
