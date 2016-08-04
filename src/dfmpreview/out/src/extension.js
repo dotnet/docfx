@@ -1,3 +1,4 @@
+// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 'use strict';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
@@ -12,9 +13,6 @@ var ENDCODE = 7;
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    //console.log('Congratulations, your extension "previewtest-ts" is now active!');
     var dfm_process = new PreviewCore(context);
     provider = new MDDocumentContentProvider(context);
     var registration = vscode_1.workspace.registerTextDocumentContentProvider('markdown', provider);

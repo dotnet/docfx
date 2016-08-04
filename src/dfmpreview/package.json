@@ -1,7 +1,7 @@
 {
     "name": "DfmPreview",
     "displayName": "DfmPreview",
-    "description": "preview the DocFX Flavored Markdown in the vscode",
+    "description": "preview the DocFX Flavored Markdown in vscode",
     "version": "0.0.7",
     "publisher": "928pjy",
     "engines": {
