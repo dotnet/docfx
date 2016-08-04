@@ -84,7 +84,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
                         var markdownService = CreateMarkdownService(parameters, processor.Tokens.ToImmutableDictionary());
-                        hostServices = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
+
+                        using (new PerformanceScope("Loading..."))
+                        {
+                            hostServices = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
+                        }
+
                         var manifest = new List<ManifestItemWithContext>();
                         foreach (var hostService in hostServices)
                         {
@@ -226,8 +231,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void BuildCore(HostService hostService, int maxParallelism)
         {
-            Logger.LogVerbose($"Processor {hostService.Processor.Name}: Loading document...");
             using (new LoggerPhaseScope(hostService.Processor.Name))
+            using (new PerformanceScope($"Processor {hostService.Processor.Name}: BuildCore"))
             {
                 foreach (var m in hostService.Models)
                 {
@@ -242,13 +247,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
                 Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Preprocessing...");
-                Prebuild(hostService);
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
+                using (new PerformanceScope($"Processor {hostService.Processor.Name}: Prebuilding..."))
+                {
+                    Prebuild(hostService);
+                }
                 Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
-                BuildArticle(hostService, maxParallelism);
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postprocessing...");
-                Postbuild(hostService);
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Generating manifest...");
+                using (new PerformanceScope($"Processor {hostService.Processor.Name}: Building..."))
+                {
+                    BuildArticle(hostService, maxParallelism);
+                }
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
+                using (new PerformanceScope($"Processor {hostService.Processor.Name}: Postbuilding..."))
+                {
+                    Postbuild(hostService);
+                }
             }
         }
 
@@ -423,8 +436,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 hostService.Processor.BuildSteps,
                 buildStep =>
                 {
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Preprocessing...");
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding...");
                     using (new LoggerPhaseScope(buildStep.Name))
+                    using (new PerformanceScope($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding..."))
                     {
                         var models = buildStep.Prebuild(hostService.Models, hostService);
                         if (!object.ReferenceEquals(models, hostService.Models))
@@ -465,8 +479,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 hostService.Processor.BuildSteps,
                 buildStep =>
                 {
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postprocessing...");
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding...");
                     using (new LoggerPhaseScope(buildStep.Name))
+                    using (new PerformanceScope($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding..."))
                     {
                         buildStep.Postbuild(hostService.Models, hostService);
                     }
@@ -476,38 +491,41 @@ namespace Microsoft.DocAsCode.Build.Engine
         private IEnumerable<ManifestItemWithContext> ExportManifest(HostService hostService, DocumentBuildContext context)
         {
             var manifestItems = new List<ManifestItemWithContext>();
-            hostService.Models.RunAll(m =>
+            using (new PerformanceScope($"Processor {hostService.Processor.Name}: Saving..."))
             {
-                if (m.Type != DocumentType.Overwrite)
+                hostService.Models.RunAll(m =>
                 {
-                    using (new LoggerFileScope(m.LocalPathFromRepoRoot))
+                    if (m.Type != DocumentType.Overwrite)
                     {
-                        Logger.LogVerbose($"Plug-in {hostService.Processor.Name}: Saving...");
-                        m.BaseDir = context.BuildOutputFolder;
-                        if (m.PathRewriter != null)
+                        using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                         {
-                            m.File = m.PathRewriter(m.File);
-                        }
-                        var result = hostService.Processor.Save(m);
-                        if (result != null)
-                        {
-                            string extension = string.Empty;
-                            if (hostService.Template != null)
+                            Logger.LogVerbose($"Processor {hostService.Processor.Name}: Saving...");
+                            m.BaseDir = context.BuildOutputFolder;
+                            if (m.PathRewriter != null)
                             {
-                                if (hostService.Template.TryGetFileExtension(result.DocumentType, out extension))
-                                {
-                                    m.File = result.FileWithoutExtension + extension;
-                                }
+                                m.File = m.PathRewriter(m.File);
                             }
+                            var result = hostService.Processor.Save(m);
+                            if (result != null)
+                            {
+                                string extension = string.Empty;
+                                if (hostService.Template != null)
+                                {
+                                    if (hostService.Template.TryGetFileExtension(result.DocumentType, out extension))
+                                    {
+                                        m.File = result.FileWithoutExtension + extension;
+                                    }
+                                }
 
-                            var item = HandleSaveResult(context, hostService, m, result);
-                            item.Extension = extension;
+                                var item = HandleSaveResult(context, hostService, m, result);
+                                item.Extension = extension;
 
-                            manifestItems.Add(new ManifestItemWithContext(item, m, hostService.Processor, hostService.Template?.GetTemplateBundle(result.DocumentType)));
+                                manifestItems.Add(new ManifestItemWithContext(item, m, hostService.Processor, hostService.Template?.GetTemplateBundle(result.DocumentType)));
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
             return manifestItems;
         }
 
