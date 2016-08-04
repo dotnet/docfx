@@ -2,6 +2,9 @@ Version Notes (Current Version: v2.3)
 =======================================
 v2.3(Pre-Release)
 -----------
+1.  Support emoji in markdown content.
+2.  Upgrade yamldotnet to 3.9.
+3.  Refine markdown validation:
 
 v2.2
 -----------
