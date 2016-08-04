@@ -245,17 +245,25 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
-            if (options.GlobalMetadataFilePaths != null && !options.GlobalMetadataFilePaths.Any())
+            if (options.GlobalMetadataFilePaths != null && options.GlobalMetadataFilePaths.Any())
             {
                 config.GlobalMetadataFilePaths.AddRange(options.GlobalMetadataFilePaths);
+            }
+            if (options.GlobalMetadataFilePath != null)
+            {
+                config.GlobalMetadataFilePaths.Add(options.GlobalMetadataFilePath);
             }
             config.GlobalMetadataFilePaths =
                 new ListWithStringFallback(config.GlobalMetadataFilePaths.Select(
                     path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
 
-            if (options.FileMetadataFilePaths != null && !options.FileMetadataFilePaths.Any())
+            if (options.FileMetadataFilePaths != null && options.FileMetadataFilePaths.Any())
             {
                 config.FileMetadataFilePaths.AddRange(options.FileMetadataFilePaths);
+            }
+            if (options.FileMetadataFilePath != null)
+            {
+                config.FileMetadataFilePaths.Add(options.FileMetadataFilePath);
             }
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
