@@ -26,17 +26,17 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 context = engine.Context.CreateContext(engine.Context.Variables.SetItem("path", path));
             }
 
-            if (azureMarkdownFileInfoMapping?.Count != 0)
+            if (azureMarkdownFileInfoMapping != null && azureMarkdownFileInfoMapping.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureMarkdownFileInfoMapping", azureMarkdownFileInfoMapping));
             }
 
-            if (azureVideoInfoMapping?.Count != 0)
+            if (azureVideoInfoMapping != null && azureVideoInfoMapping.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureVideoInfoMapping", azureVideoInfoMapping));
             }
 
-            if (azureResourceFileInfoMapping?.Count != 0)
+            if (azureResourceFileInfoMapping != null && azureResourceFileInfoMapping.Count != 0)
             {
                 context = context.CreateContext(context.Variables.SetItem("azureResourceFileInfoMapping", azureResourceFileInfoMapping));
             }

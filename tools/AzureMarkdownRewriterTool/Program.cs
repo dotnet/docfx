@@ -74,9 +74,6 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     {
                         exitCode = result;
                     }
-
-                    // Ignore this generate part currently
-                    // p.GenerateTocForEveryFolder(new DirectoryInfo(p._destDirectory));
                 }
                 return exitCode;
             }
@@ -230,7 +227,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                                             .Any(folder => folder.Equals("includes", StringComparison.OrdinalIgnoreCase));
                     var isMarkdownFile = Path.GetExtension(relativePath).Equals(MarkdownExtension, StringComparison.OrdinalIgnoreCase);
 
-                    AzureFileInfo conflictFile;
+                    AzureFileInfo conflictFile = null;
                     var isSucceed = true;
                     if (!isIncludeFile && isMarkdownFile)
                     {
@@ -239,8 +236,8 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     }
                     else if (!isIncludeFile && !isMarkdownFile)
                     {
-                        isSucceed = azureResourceFileInfoMapping.TryAdd(fileName, azureFileInfo);
-                        azureResourceFileInfoMapping.TryGetValue(fileName, out conflictFile);
+                        // For resource file, even if has conflicts, we regards that as succeed
+                        azureResourceFileInfoMapping.TryAdd(fileName, azureFileInfo);
                     }
                     else if (isIncludeFile && isMarkdownFile)
                     {
@@ -249,8 +246,8 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     }
                     else
                     {
-                        isSucceed = azureIncludeResourceFileInfoMapping.TryAdd(fileName, azureFileInfo);
-                        azureIncludeResourceFileInfoMapping.TryGetValue(fileName, out conflictFile);
+                        // For resource file, even if has conflicts, we regards that as succeed
+                        azureIncludeResourceFileInfoMapping.TryAdd(fileName, azureFileInfo);
                     }
 
                     if (!isSucceed)
@@ -273,10 +270,18 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 return true;
             }
 
-            // Markdown file under includes file should be ignore. The resource file should also be calculated
             if (!isMigration)
             {
+                // For non-migration case, markdown file under includes file should be ignore. The resource file should also be calculated
                 if (relativePath.StartsWith("includes") && Path.GetExtension(relativePath).Equals(MarkdownExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                // For migration case, files under templates should be ignored, otherwise there'll be some tokens/properties can't be resolved.
+                if (relativePath.StartsWith("markdown templates"))
                 {
                     return true;
                 }

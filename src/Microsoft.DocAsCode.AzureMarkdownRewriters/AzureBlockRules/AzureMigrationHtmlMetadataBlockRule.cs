@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                     }
                     else if (string.Equals(attribute.Name, "authors", StringComparison.OrdinalIgnoreCase))
                     {
-                        var authors = attribute.Value.Split(';', ',');
+                        var authors = attribute.Value.Split( new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (authors.Length >= 1)
                         {
                             attributes["author"] = authors[0].Trim();
