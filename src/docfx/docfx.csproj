@@ -128,6 +128,7 @@
     <Compile Include="SubCommands\MergeCommand.cs" />
     <Compile Include="SubCommands\MetadataMergeParameters.cs" />
     <Compile Include="SubCommands\MetadataMerger.cs" />
+    <Compile Include="SubCommands\OptionMerger.cs" />
     <Compile Include="SubCommands\TemplateCommand.cs" />
     <Compile Include="SubCommands\ServeCommand.cs" />
     <Compile Include="SubCommands\InitCommand.cs" />
