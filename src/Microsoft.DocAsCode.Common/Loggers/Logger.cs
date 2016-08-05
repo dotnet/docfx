@@ -90,6 +90,11 @@ namespace Microsoft.DocAsCode.Common
             });
         }
 
+        public static void LogDiagnostic(string message, string phase = null, string file = null, string line = null)
+        {
+            Log(LogLevel.Diagnostic, message, phase, file, line);
+        }
+
         public static void LogVerbose(string message, string phase = null, string file = null, string line = null)
         {
             Log(LogLevel.Verbose, message, phase, file, line);

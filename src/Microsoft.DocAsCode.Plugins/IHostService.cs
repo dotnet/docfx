@@ -31,6 +31,7 @@ namespace Microsoft.DocAsCode.Plugins
         void ValidateInputMetadata(string file, ImmutableDictionary<string, object> metadata);
 
         #region Log
+        void LogDiagnostic(string message, string file = null, string line = null);
         void LogVerbose(string message, string file = null, string line = null);
         void LogInfo(string message, string file = null, string line = null);
         void LogWarning(string message, string file = null, string line = null);
