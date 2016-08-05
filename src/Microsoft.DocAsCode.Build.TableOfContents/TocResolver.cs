@@ -56,6 +56,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 if (!string.IsNullOrEmpty(item.Uid))
                 {
                     item.TopicUid = item.Uid;
+                    Logger.LogWarning($"Uid is deprecated in TOC. Please use topicUid to specify uid {item.Uid}");
+                    item.Uid = null;
                 }
                 else if (!string.IsNullOrEmpty(item.HomepageUid))
                 {
@@ -109,8 +111,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             var defaultItem = GetDefaultHomepageItem(item);
                             if (defaultItem != null)
                             {
-                                item.TopicHref = defaultItem.Href;
-                                item.TopicUid = defaultItem.TopicUid;
+                                item.AggregatedHref = defaultItem.Href;
+                                item.AggregatedUid = defaultItem.TopicUid;
                             }
                         }
                     }
@@ -118,8 +120,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     if (item.Href == null && item.Homepage == null)
                     {
                         item.Href = item.TocHref;
+                        item.Homepage = item.TopicHref;
                     }
-                    item.Homepage = item.TopicHref;
                     // check whether toc exists
                     if (!string.IsNullOrEmpty(item.TocHref) &&
                         (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
@@ -183,8 +185,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             stack.Push(file);
                             var resolved = ResolveItem(tocFileModel, stack).Content;
                             stack.Pop();
-                            item.Href = item.TopicHref = resolved.TopicHref;
-                            item.TopicUid = resolved.TopicUid;
+                            item.Href = item.TopicHref = resolved.TopicHref ?? resolved.AggregatedHref;
+                            item.TopicUid = resolved.TopicUid ?? resolved.AggregatedUid;
                         }
                         else
                         {
@@ -242,6 +244,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             item.Href = NormalizeHref(item.Href, relativeToFile);
             item.TocHref = NormalizeHref(item.TocHref, relativeToFile);
             item.TopicHref = NormalizeHref(item.TopicHref, relativeToFile);
+            item.Homepage = NormalizeHref(item.Homepage, relativeToFile);
 
             wrapper.IsResolved = true;
             return wrapper;

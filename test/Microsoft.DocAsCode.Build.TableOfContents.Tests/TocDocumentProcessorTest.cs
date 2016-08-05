@@ -121,22 +121,16 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
             {
-                TopicHref = file1,
-                Homepage = file1,
                 Items = new TocViewModel
                 {
                     new TocItemViewModel
                     {
-                        TopicHref = file1,
-                        Homepage = file1,
                         Name = "Topic1",
                         Href = "/href1",
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
                             {
-                                TopicHref = file2,
-                                Homepage = file2,
                                 Name = "Topic1.1",
                                 Href = file1,
                                 Items = new TocViewModel
@@ -196,14 +190,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
             {
-                TopicHref = file1,
-                Homepage = file1,
                 Items = new TocViewModel
                 {
                     new TocItemViewModel
                     {
-                        TopicHref = file1,
-                        Homepage = file1,
                         Name = "Topic1",
                         Href = file1,
                         Items = new TocViewModel
@@ -277,14 +267,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
             {
-                TopicHref = file1,
-                Homepage = file1,
                 Items = new TocViewModel
                 {
                     new TocItemViewModel
                     {
-                        TopicHref= file2,
-                        Homepage = file2,
                         Name = "Topic1",
                         Href = file1,
                         Items = new TocViewModel
