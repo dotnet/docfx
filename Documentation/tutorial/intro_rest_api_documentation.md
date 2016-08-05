@@ -6,7 +6,7 @@ Introduction
 
 DocFX now supports generating documentation from REST APIs following [Swagger specification](http://swagger.io/specification/) version 2.0.
 
-The Swagger RESTful API files *MUST* end with `.swagger.json` or `.swagger2.json` or `_swagger.json` or `_swagger2.json` so that these files are recognized as REST API files in DocFX.
+The Swagger RESTful API files *MUST* end with `.json`.
 
 One Swagger API file generates one HTML file. For example. a file `contacts.swagger.json` generates file naming `contacts.html`.
 

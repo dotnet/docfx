@@ -103,7 +103,7 @@
     <None Include="TestData\contacts-operations.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\contacts_swagger2.json">
+    <None Include="TestData\contacts.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestData\swagger\loopref_swagger2.json">
