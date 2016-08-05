@@ -143,7 +143,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     else
                     {
                         TransformDocument(result, extension, _context, outputPath, outputFile, missingUids, manifestItem);
-                        Logger.Log(LogLevel.Verbose, $"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
+                        Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
                     }
                 }
             }
