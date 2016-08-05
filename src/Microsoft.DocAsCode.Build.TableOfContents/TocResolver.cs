@@ -56,7 +56,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 if (!string.IsNullOrEmpty(item.Uid))
                 {
                     item.TopicUid = item.Uid;
-                    Logger.LogWarning($"Uid is deprecated in TOC. Please use topicUid to specify uid {item.Uid}");
                     item.Uid = null;
                 }
                 else if (!string.IsNullOrEmpty(item.HomepageUid))
