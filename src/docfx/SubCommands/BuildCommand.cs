@@ -475,7 +475,7 @@ namespace Microsoft.DocAsCode.SubCommands
             bool created = false;
             try
             {
-                created = _templateManager.TryExportTemplateFiles(pluginFilePath, @"^plugins/.*");
+                created = _templateManager.TryExportTemplateFiles(pluginFilePath, @"^(?:plugins|md\.styles)/.*");
                 if (created)
                 {
                     BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, pluginBaseFolder, Path.Combine(pluginFilePath, "plugins"), pluginFilePath);
