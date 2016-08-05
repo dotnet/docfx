@@ -266,7 +266,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void FeedXRefMap(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
         {
-            Logger.LogVerbose($"Feeding xref map...");
+            Logger.LogVerbose("Feeding xref map...");
             manifest.RunAll(m =>
             {
                 if (m.TemplateBundle == null)
@@ -276,7 +276,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
                 {
-                    Logger.LogVerbose($"Feed xref map from template for {m.Item.DocumentType}...");
+                    Logger.LogDiagnostic($"Feed xref map from template for {m.Item.DocumentType}...");
                     var bookmarks = m.Options.Bookmarks;
                     // TODO: Add bookmarks to xref
                 }
@@ -285,7 +285,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void FeedOptions(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
         {
-            Logger.LogVerbose($"Feeding options from template...");
+            Logger.LogVerbose("Feeding options from template...");
             manifest.RunAll(m =>
             {
                 if (m.TemplateBundle == null)
@@ -295,7 +295,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
                 {
-                    Logger.LogVerbose($"Feed options from template for {m.Item.DocumentType}...");
+                    Logger.LogDiagnostic($"Feed options from template for {m.Item.DocumentType}...");
                     m.Options = m.TemplateBundle.GetOptions(m.Item, context);
                 }
             });
@@ -303,7 +303,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void ApplySystemMetadata(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
         {
-            Logger.LogVerbose($"Applying system metadata to manifest...");
+            Logger.LogVerbose("Applying system metadata to manifest...");
 
             // Add system attributes
             var systemMetadataGenerator = new SystemMetadataGenerator(context);
@@ -312,7 +312,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
                 {
-                    Logger.LogVerbose($"Generating system metadata...");
+                    Logger.LogDiagnostic("Generating system metadata...");
 
                     // TODO: use weak type for system attributes from the beginning
                     var systemAttrs = systemMetadataGenerator.Generate(m.Item);
@@ -342,7 +342,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private IDictionary<string, object> FeedGlobalVariables(IDictionary<string, string> initialGlobalVariables, List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
         {
-            Logger.LogVerbose($"Feeding global variables from template...");
+            Logger.LogVerbose("Feeding global variables from template...");
 
             // E.g. we can set TOC model to be globally shared by every data model
             // Make sure it is single thread
@@ -359,7 +359,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
                 {
-                    Logger.LogVerbose($"Load shared model from template for {m.Item.DocumentType}...");
+                    Logger.LogDiagnostic($"Load shared model from template for {m.Item.DocumentType}...");
                     if (m.Options.IsShared)
                     {
                         sharedObjects[m.Item.Key] = m.Item.Model.Content;
@@ -373,12 +373,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void UpdateHref(List<ManifestItemWithContext> manifest, IDocumentBuildContext context)
         {
-            Logger.LogVerbose($"Updating href...");
+            Logger.LogVerbose("Updating href...");
             manifest.RunAll(m =>
             {
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
                 {
-                    Logger.LogVerbose($"Plug-in {m.Processor.Name}: Updating href...");
+                    Logger.LogDiagnostic($"Plug-in {m.Processor.Name}: Updating href...");
                     m.Processor.UpdateHref(m.FileModel, context);
 
                     // reset model after updating href
@@ -395,7 +395,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new LoggerFileScope(file.File))
             {
-                Logger.LogVerbose($"Processor {processor.Name}: Loading...");
+                Logger.LogDiagnostic($"Processor {processor.Name}: Loading...");
 
                 var path = Path.Combine(file.BaseDir, file.File);
                 metadata = ApplyFileMetadata(path, metadata, fileMetadata);
@@ -455,12 +455,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                     {
-                        Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
+                        Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
                         RunBuildSteps(
                             hostService.Processor.BuildSteps,
                             buildStep =>
                             {
-                                Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
+                                Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
                                 using (new LoggerPhaseScope(buildStep.Name))
                                 {
                                     buildStep.Build(m, hostService);
@@ -496,7 +496,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         using (new LoggerFileScope(m.LocalPathFromRepoRoot))
                         {
-                            Logger.LogVerbose($"Processor {hostService.Processor.Name}: Saving...");
+                            Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Saving...");
                             m.BaseDir = context.BuildOutputFolder;
                             if (m.PathRewriter != null)
                             {

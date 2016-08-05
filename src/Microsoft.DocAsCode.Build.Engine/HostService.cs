@@ -334,6 +334,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        public void LogDiagnostic(string message, string file, string line)
+        {
+            Logger.LogDiagnostic(message, file: file, line: line);
+        }
+
         public void LogVerbose(string message, string file, string line)
         {
             Logger.LogVerbose(message, file: file, line: line);
