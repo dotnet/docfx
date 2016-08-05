@@ -399,7 +399,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 var path = Path.Combine(file.BaseDir, file.File);
                 metadata = ApplyFileMetadata(path, metadata, fileMetadata);
-                return processor.Load(file, metadata);
+                try
+                {
+                    return processor.Load(file, metadata);
+                }
+                catch (Exception)
+                {
+                    Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}.");
+                    throw;
+                }
             }
         }
 
