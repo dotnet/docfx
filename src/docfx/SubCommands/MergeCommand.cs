@@ -107,75 +107,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         SourceFolder = optionsBaseDirectory
                     });
             }
-            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(config.FileMetadataFilePaths, config.FileMetadata);
-            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(options.GlobalMetadata, config.GlobalMetadataFilePaths, config.GlobalMetadata);
-        }
-
-        private static Dictionary<string, object> GetGlobalMetadataFromOption(MergeCommandOptions options)
-        {
-            Dictionary<string, object> globalMetadata = null;
-            if (options.GlobalMetadata != null)
-            {
-                using (var sr = new StringReader(options.GlobalMetadata))
-                {
-                    try
-                    {
-                        globalMetadata = JsonUtility.Deserialize<Dictionary<string, object>>(sr, GetSerializer());
-                        if (globalMetadata != null && globalMetadata.Count > 0)
-                        {
-                            Logger.LogInfo($"Global metadata from \"--globalMetadata\" overrides the one defined in config file");
-                        }
-                    }
-                    catch (JsonException e)
-                    {
-                        Logger.LogWarning($"Metadata from \"--globalMetadata {options.GlobalMetadata}\" is not a valid JSON format global metadata, ignored: {e.Message}");
-                    }
-                }
-            }
-
-            if (options.GlobalMetadataFilePath != null)
-            {
-                try
-                {
-                    var globalMetadataFromFile = JsonUtility.Deserialize<MergeJsonConfig>(options.GlobalMetadataFilePath).GlobalMetadata;
-                    if (globalMetadataFromFile == null)
-                    {
-                        Logger.LogWarning($" File from \"--globalMetadataFile {options.GlobalMetadataFilePath}\" does not contain \"globalMetadata\" definition.");
-                    }
-                    else
-                    {
-                        if (globalMetadata == null) globalMetadata = globalMetadataFromFile;
-                        else
-                        {
-                            foreach (var pair in globalMetadataFromFile)
-                            {
-                                if (globalMetadata.ContainsKey(pair.Key))
-                                {
-                                    Logger.LogWarning($"Both --globalMetadata and --globalMetadataFile contain definition for \"{pair.Key}\", the one from \"--globalMetadata\" overrides the one from \"--globalMetadataFile {options.GlobalMetadataFilePath}\".");
-                                }
-                                else
-                                {
-                                    globalMetadata[pair.Key] = pair.Value;
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (FileNotFoundException)
-                {
-                    Logger.LogWarning($"Invalid option \"--globalMetadataFile {options.GlobalMetadataFilePath}\": file does not exist, ignored.");
-                }
-                catch (JsonException e)
-                {
-                    Logger.LogWarning($"File from \"--globalMetadataFile {options.GlobalMetadataFilePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
-                }
-            }
-
-            if (globalMetadata?.Count > 0)
-            {
-                return globalMetadata;
-            }
-            return null;
+            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(null, options.FileMetadataFilePath, config.FileMetadata);
+            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(options.GlobalMetadata, null, options.GlobalMetadataFilePath, config.GlobalMetadata);
         }
 
         private sealed class MergeConfig
