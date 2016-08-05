@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             _inputFolder = GetRandomFolder();
             _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Environment.CurrentDirectory);
-            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts_swagger2.json" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
+            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts.json" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
             _applyTemplateSettings.RawModelExportSettings.Export = true;
         }
@@ -96,21 +96,21 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("api-version", item2.Parameters[1].Metadata["name"]);
             Assert.Equal(true, item2.Parameters[1].Metadata["required"]);
 
-            // Override ""api-version" parameters by $ref for patch opearation
+            // Override ""api-version" parameters by $ref for patch operation
             var item3 = model.Children[2];
             Assert.Equal(3, item3.Parameters.Count);
             Assert.Equal("object_id", item3.Parameters[0].Metadata["name"]);
             Assert.Equal("api-version", item3.Parameters[1].Metadata["name"]);
             Assert.Equal(false, item3.Parameters[1].Metadata["required"]);
 
-            // Override ""api-version" parameters by self definition for delete opearation
+            // Override ""api-version" parameters by self definition for delete operation
             var item4 = model.Children[3];
             Assert.Equal(2, item4.Parameters.Count);
             Assert.Equal("object_id", item4.Parameters[0].Metadata["name"]);
             Assert.Equal("api-version", item4.Parameters[1].Metadata["name"]);
             Assert.Equal(false, item4.Parameters[1].Metadata["required"]);
 
-            // When operation parameters is not set, inherit from th parameters for post opearation
+            // When operation parameters is not set, inherit from th parameters for post operation
             var item5 = model.Children[4];
             Assert.Equal(1, item5.Parameters.Count);
             Assert.Equal("api-version", item5.Parameters[0].Metadata["name"]);
@@ -240,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             }
         }
 
-        private IEnumerable<System.Reflection.Assembly> LoadAssemblies()
+        private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
         {
             yield return typeof(RestApiDocumentProcessor).Assembly;
         }

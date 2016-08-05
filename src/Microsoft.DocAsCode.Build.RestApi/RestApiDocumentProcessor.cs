@@ -19,17 +19,23 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using Newtonsoft.Json;
+
     [Export(typeof(IDocumentProcessor))]
     public class RestApiDocumentProcessor : DisposableDocumentProcessor
     {
         private const string RestApiDocumentType = "RestApi";
         private const string DocumentTypeKey = "documentType";
-        private static readonly string[] SupportedFileEndings = new string[]
+
+        // To keep backward compatibility, still support and change previous file endings by first mapping sequence.
+        // Take 'a.b_swagger2.json' for an example, the json file name would be changed to 'a.b', then the html file name would be 'a.b.html'.
+        private static readonly string[] SupportedFileEndings =
         {
            "_swagger2.json",
            "_swagger.json",
            ".swagger.json",
            ".swagger2.json",
+           ".json",
         };
 
         [ImportMany(nameof(RestApiDocumentProcessor))]
@@ -42,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             switch (file.Type)
             {
                 case DocumentType.Article:
-                    if (IsSupportedFile(file.File))
+                    if (IsSupportedFile(file.FullPath))
                     {
                         return ProcessingPriority.Normal;
                     }
@@ -121,19 +127,46 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         #region Private methods
 
-        private bool IsSupportedFile(string file)
+        private static bool IsSupportedFile(string filePath)
         {
-            return SupportedFileEndings.Any(s => IsSupported(file, s));
+            return SupportedFileEndings.Any(s => IsSupportedFileEnding(filePath, s)) && IsSwaggerFile(filePath);
         }
 
-        private bool IsSupported(string file, string fileEnding)
+        private static bool IsSupportedFileEnding(string filePath, string fileEnding)
         {
-            return file.EndsWith(fileEnding, StringComparison.OrdinalIgnoreCase);
+            return filePath.EndsWith(fileEnding, StringComparison.OrdinalIgnoreCase);
         }
 
-        private string ChangeFileExtension(string file)
+        private static bool IsSwaggerFile(string filePath)
         {
-            return file.Substring(0, file.Length - SupportedFileEndings.First(s => IsSupported(file, s)).Length) + ".json";
+            try
+            {
+                var dictionary = JsonUtility.Deserialize<Dictionary<string, object>>(filePath);
+                object swaggerValue;
+                if (dictionary.TryGetValue("swagger", out swaggerValue))
+                {
+                    var swaggerString = swaggerValue as string;
+                    if (swaggerString != null && swaggerString.Equals("2.0"))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (FileNotFoundException ex)
+            {
+                Logger.LogVerbose($"In {nameof(RestApiDocumentProcessor)}, could not find {filePath}, exception details: {ex.Message}.");
+            }
+            catch (JsonException ex)
+            {
+                Logger.LogVerbose($"In {nameof(RestApiDocumentProcessor)}, could not deserialize {filePath} to Dictionary<string, object>, exception details: {ex.Message}.");
+            }
+
+            return false;
+        }
+
+        private static string ChangeFileExtension(string file)
+        {
+            return file.Substring(0, file.Length - SupportedFileEndings.First(s => IsSupportedFileEnding(file, s)).Length) + ".json";
         }
 
         private static Dictionary<string, object> MergeMetadata(IDictionary<string, object> item, IDictionary<string, object> overwriteItems)
