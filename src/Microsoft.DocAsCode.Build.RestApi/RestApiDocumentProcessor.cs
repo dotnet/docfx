@@ -19,13 +19,16 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using Newtonsoft.Json;
+
     [Export(typeof(IDocumentProcessor))]
     public class RestApiDocumentProcessor : DisposableDocumentProcessor
     {
         private const string RestApiDocumentType = "RestApi";
         private const string DocumentTypeKey = "documentType";
 
-        // To keep backward compatibility, still support and change previous file endings by first mapping sequence
+        // To keep backward compatibility, still support and change previous file endings by first mapping sequence.
+        // Take 'a.b_swagger2.json' for an example, the json file name would be changed to 'a.b', then the html file name would be 'a.b.html'.
         private static readonly string[] SupportedFileEndings =
         {
            "_swagger2.json",
@@ -149,10 +152,13 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     }
                 }
             }
-            catch (Exception ex)
+            catch (FileNotFoundException ex)
+            {
+                Logger.LogVerbose($"In {nameof(RestApiDocumentProcessor)}, could not find {filePath}, exception details: {ex.Message}.");
+            }
+            catch (JsonException ex)
             {
                 Logger.LogVerbose($"In {nameof(RestApiDocumentProcessor)}, could not deserialize {filePath} to Dictionary<string, object>, exception details: {ex.Message}.");
-                return false;
             }
 
             return false;
