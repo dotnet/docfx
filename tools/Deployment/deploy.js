@@ -193,7 +193,7 @@ function zipAssetsPromiseFn(fromDir, destDir) {
     let buffer = zip.generate({type:"nodebuffer", compression: "DEFLATE"});
     fs.unlinkSync(destDir);
     fs.writeFileSync(destDir, buffer);
-    globalOptions.sha1 = sha1(buffer);
+    globalOptions.sha1 = "$sha1       = '" + sha1(buffer) + "'";
     logger.info("Finish zipping assets");
     return Promise.resolve();
   }
