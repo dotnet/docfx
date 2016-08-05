@@ -317,6 +317,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     {
                         Logger.LogWarning($"Invalid option \"{filePath}\": file does not exist, ignored.");
                     }
+                    catch (JsonException e)
+                    {
+                        Logger.LogWarning($"File from \"{filePath}\" is not a valid JSON format file metadata, ignored: {e.Message}");
+                    }
                     if (metadata == null)
                     {
                         Logger.LogWarning($"File from \"{filePath}\" does not contain \"fileMetadataPairs\" definition, ignored.");
@@ -392,6 +396,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     catch (FileNotFoundException)
                     {
                         Logger.LogWarning($"Invalid option \"globalMetadata config file {filePath}\": file does not exist, ignored.");
+                    }
+                    catch (JsonException e)
+                    {
+                        Logger.LogWarning($"File from \"globalMetadata config file {filePath}\" is not a valid JSON format global metadata, ignored: {e.Message}");
                     }
                     if (metadata == null)
                     {
