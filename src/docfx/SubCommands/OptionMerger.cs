@@ -3,9 +3,8 @@
 
 namespace Microsoft.DocAsCode.SubCommands
 {
+    using System;
     using System.Collections.Generic;
-
-    using Microsoft.DocAsCode.Common;
 
     internal static class OptionMerger
     {
@@ -13,6 +12,11 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public static Dictionary<string, T> MergeDictionary<T>(DictionaryMergeContext<T> item, DictionaryMergeContext<T> overrideItem, Merger<T> merger)
         {
+            if (merger == null)
+            {
+                throw new ArgumentNullException("the Merger function should not be null");
+            }
+
             Dictionary<string, T> merged;
             if (overrideItem?.Item == null)
             {
@@ -33,7 +37,6 @@ namespace Microsoft.DocAsCode.SubCommands
                     T value;
                     if (merged.TryGetValue(pair.Key, out value))
                     {
-                        Logger.LogWarning($"Both {item.Name} and {overrideItem.Name} contain definition for \"{pair.Key}\", the one from \"{overrideItem.Name}\" overrides the one from \"{item.Name}\".");
                         merged[pair.Key] = merger(pair.Key, new MergeContext<T>(item.Name, pair.Value), new MergeContext<T>(overrideItem.Name, value));
                     }
                     else

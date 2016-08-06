@@ -378,7 +378,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
                 if (metadata == null)
                 {
-                    Logger.LogWarning($" File from \"{metadataType} config file {metadataFilePath}\" does not contain \"{metadataType}\" definition.");
+                    Logger.LogWarning($"File from \"{metadataType} config file {metadataFilePath}\" does not contain \"{metadataType}\" definition.");
                 }
             }
             catch (FileNotFoundException)
@@ -409,7 +409,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static FileMetadataPairs MergeFileMetadataPairs(string key, MergeContext<FileMetadataPairs> pairs, MergeContext<FileMetadataPairs> overridePairs)
         {
-            var mergedItems = pairs.Item.Items.ToList().Concat(overridePairs.Item.Items).ToList();
+            var mergedItems = pairs.Item.Items.Concat(overridePairs.Item.Items).ToList();
             return new FileMetadataPairs(mergedItems);
         }
 

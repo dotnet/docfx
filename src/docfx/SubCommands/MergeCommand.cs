@@ -107,8 +107,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         SourceFolder = optionsBaseDirectory
                     });
             }
-            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(null, options.FileMetadataFilePath, config.FileMetadata);
-            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(options.GlobalMetadata, null, options.GlobalMetadataFilePath, config.GlobalMetadata);
+            config.FileMetadata = BuildCommand.GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, null);
+            config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, null, options.GlobalMetadata);
         }
 
         private sealed class MergeConfig
