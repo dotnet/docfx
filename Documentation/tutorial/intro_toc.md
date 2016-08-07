@@ -89,7 +89,7 @@ If the *TOC Item* is linking to some other *TOC File*, it is considered as a pla
 
 This technique is always used when you want to combine several *TOC File*s into one single *TOC File*.
 
-If ~~`homepage`~~ `topicHref` is set for this *TOC Item*, it will be considered as the `href` of the expanded *TOC Item*.
+If `homepage` **or** `topicHref` is set for this *TOC Item*, it will be considered as the `href` of the expanded *TOC Item*.
 
 For example, one `toc.yml` file is like below:
 
@@ -117,8 +117,10 @@ DocFX processes these `toc.yml` files and expands the uppder `toc.yml` file into
   items:
     - name: "How-to1"
       href: howto/howto1.md
+      topichref: howto/howto1.md
     - name: "How-to2"
       href: howto/howto2.md
+      topichref: howto/howto2.md
 ```
 
 *NOTE* that the referenced `toc.yml` file under `howto` folder will not be transformed to the output folder even if it is included in `docfx.json`.

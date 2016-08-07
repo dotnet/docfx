@@ -77,10 +77,23 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     Logger.LogWarning($"Homepage is deprecated in TOC. Homepage {item.Homepage} is overwritten with topicHref {item.TopicHref}");
                 }
             }
-
             // TocHref supports 2 forms: absolute path and local toc file.
             // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
             var tocHrefType = Utility.GetHrefType(item.TocHref);
+
+            // check whether toc exists
+            TocItemInfo tocFileModel = null;
+            if (!string.IsNullOrEmpty(item.TocHref) && (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
+            {
+                var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
+                var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
+                if (!_collection.TryGetValue(tocFile, out tocFileModel))
+                {
+                    var message = $"Unable to find {item.TocHref}. Make sure the file is included in config file docfx.json!";
+                    Logger.LogWarning(message);
+                }
+            }
+
             if (!string.IsNullOrEmpty(item.TocHref))
             {
                 if (!string.IsNullOrEmpty(item.Homepage))
@@ -110,48 +123,31 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             var defaultItem = GetDefaultHomepageItem(item);
                             if (defaultItem != null)
                             {
-                                item.AggregatedHref = defaultItem.Href;
+                                item.AggregatedHref = defaultItem.TopicHref;
                                 item.AggregatedUid = defaultItem.TopicUid;
                             }
                         }
                     }
-                    // for backward compatibility
-                    if (item.Href == null && item.Homepage == null)
+                    if (string.IsNullOrEmpty(item.TopicHref))
                     {
-                        item.Href = item.TocHref;
-                        item.Homepage = item.TopicHref;
-                    }
-                    // check whether toc exists
-                    if (!string.IsNullOrEmpty(item.TocHref) &&
-                        (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
-                    {
-                        var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
-                        var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
-                        if (!_collection.ContainsKey(tocFile))
+                        // Get homepage from TocHref if href/topicHref is null or empty
+                        if (string.IsNullOrEmpty(item.Href) && string.IsNullOrEmpty(item.TopicUid) && tocFileModel != null)
                         {
-                            var message =
-                                $"Unable to find {item.TocHref}. Make sure the file is included in config file docfx.json!";
-                            Logger.LogWarning(message);
+                            stack.Push(file);
+                            var resolved = ResolveItem(tocFileModel, stack).Content;
+                            stack.Pop();
+                            item.Href = resolved.TopicHref ?? resolved.AggregatedHref;
+                            item.TopicUid = resolved.TopicUid ?? resolved.AggregatedUid;
                         }
+                        // Use TopicHref in output model
+                        item.TopicHref = item.Href;
                     }
                     break;
                 case HrefType.RelativeFolder:
                     {
-                        TocItemInfo tocFileModel;
-                        if (!string.IsNullOrEmpty(item.TocHref) && (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
+                        if (tocFileModel != null)
                         {
                             Logger.LogWarning($"Href {item.Href} is overwritten by tocHref {item.TocHref}");
-                            var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
-
-                            var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
-
-                            if (!_collection.TryGetValue(tocFile, out tocFileModel))
-                            {
-                                var message =
-                                    $"Unable to find {item.TocHref}. Make sure the file is included in config file docfx.json!";
-                                Logger.LogWarning(message);
-                                break;
-                            }
                         }
                         else
                         {
@@ -178,7 +174,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             item.TocHref = tocFilePath - (RelativePath)file.File;
                         }
 
-                        // Get homepage from the referenced toc
+                        // Get homepage from TocHref if TopicHref/TopicUid is not specified
                         if (string.IsNullOrEmpty(item.TopicHref) && string.IsNullOrEmpty(item.TopicUid))
                         {
                             stack.Push(file);
@@ -206,26 +202,26 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     {
                         var tocFilePath = (RelativePath)file.File + (RelativePath)item.Href;
                         var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
-                        TocItemInfo tocFileModel;
+                        TocItemInfo referencedTocFileModel;
                         TocItemViewModel referencedToc;
                         stack.Push(file);
-                        if (_collection.TryGetValue(tocFile, out tocFileModel) || _notInProjectTocCache.TryGetValue(tocFile, out tocFileModel))
+                        if (_collection.TryGetValue(tocFile, out referencedTocFileModel) || _notInProjectTocCache.TryGetValue(tocFile, out referencedTocFileModel))
                         {
-                            tocFileModel = ResolveItem(tocFileModel, stack);
-                            tocFileModel.IsReferenceToc = true;
-                            referencedToc = tocFileModel.Content;
+                            referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
+                            referencedTocFileModel.IsReferenceToc = true;
+                            referencedToc = referencedTocFileModel.Content;
                         }
                         else
                         {
                             // It is acceptable that the referenced toc file is not included in docfx.json, as long as it can be found locally
-                            tocFileModel = new TocItemInfo(tocFile, new TocItemViewModel
+                            referencedTocFileModel = new TocItemInfo(tocFile, new TocItemViewModel
                             {
                                 Items = Utility.LoadSingleToc(tocFile.FullPath)
                             });
 
-                            tocFileModel = ResolveItem(tocFileModel, stack);
-                            referencedToc = tocFileModel.Content;
-                            _notInProjectTocCache[tocFile] = tocFileModel;
+                            referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
+                            referencedToc = referencedTocFileModel.Content;
+                            _notInProjectTocCache[tocFile] = referencedTocFileModel;
                         }
                         stack.Pop();
                         // For referenced toc, content from referenced toc is expanded as the items of current toc item,
@@ -246,6 +242,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             item.Homepage = NormalizeHref(item.Homepage, relativeToFile);
 
             wrapper.IsResolved = true;
+
+            // for backward compatibility
+            if (item.Href == null && item.Homepage == null)
+            {
+                item.Href = item.TocHref;
+                item.Homepage = item.TopicHref;
+            }
+
             return wrapper;
         }
 

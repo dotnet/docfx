@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 var xref = GetXrefFromUid(item.TopicUid, model, context);
                 if (xref != null)
                 {
-                    item.Href = xref.Href;
+                    item.Href = item.TopicHref = xref.Href;
                     if (string.IsNullOrEmpty(item.Name))
                     {
                         item.Name = xref.Name;

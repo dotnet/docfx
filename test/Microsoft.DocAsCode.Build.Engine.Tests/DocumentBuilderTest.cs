@@ -310,7 +310,8 @@ exports.getOptions = function (){
                     {
                         new {
                             name = "Test",
-                            href = "test.html"
+                            href = "test.html",
+                            topicHref = "test.html"
                         }
                     },
                     ["__global"] = new
@@ -329,7 +330,8 @@ exports.getOptions = function (){
                                 {
                                     new {
                                         name = "Test",
-                                        href = "test.html"
+                                        href = "test.html",
+                                        topicHref = "test.html"
                                     }
                                 },
                             },
@@ -345,7 +347,8 @@ exports.getOptions = function (){
                                 {
                                     new {
                                         name = "Test",
-                                        href = "test.html"
+                                        href = "test.html",
+                                        topicHref = "test.html"
                                     }
                                 },
                             }
@@ -394,7 +397,8 @@ exports.getOptions = function (){
                                 {
                                     new {
                                         name = "Test",
-                                        href = "test.html"
+                                        href = "test.html",
+                                        topicHref = "test.html"
                                     }
                                 },
                             },
@@ -410,7 +414,8 @@ exports.getOptions = function (){
                                 {
                                     new {
                                         name = "Test",
-                                        href = "test.html"
+                                        href = "test.html",
+                                        topicHref = "test.html"
                                     }
                                 },
                             }

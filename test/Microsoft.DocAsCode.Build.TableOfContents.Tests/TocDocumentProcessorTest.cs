@@ -68,6 +68,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     {
                         Name = "Topic1",
                         Href = "/href1",
+                        TopicHref = "/href1",
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
@@ -78,21 +79,24 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                     new TocItemViewModel
                                     {
                                         Name = "Topic1.1.1",
-                                        Href = "/href1.1.1"
+                                        Href = "/href1.1.1",
+                                        TopicHref = "/href1.1.1"
                                     }
                                 }
                             },
                             new TocItemViewModel
                             {
                                 Name = "Topic1.2",
-                                Href = string.Empty
+                                Href = string.Empty,
+                                TopicHref = string.Empty
                             }
                         }
                     },
                     new TocItemViewModel
                     {
                         Name = "Topic2",
-                        Href = "http://href.com"
+                        Href = "http://href.com",
+                        TopicHref = "http://href.com"
                     }
                 }
             };
@@ -127,32 +131,37 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     {
                         Name = "Topic1",
                         Href = "/href1",
+                        TopicHref = "/href1",
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
                             {
                                 Name = "Topic1.1",
                                 Href = file1,
+                                TopicHref = file1,
                                 Items = new TocViewModel
                                 {
                                     new TocItemViewModel
                                     {
                                         Name = "Topic1.1.1",
-                                        Href = file2
+                                        Href = file2,
+                                        TopicHref = file2
                                     }
                                 }
                             },
                             new TocItemViewModel
                             {
                                 Name = "Topic1.2",
-                                Href = string.Empty
+                                Href = string.Empty,
+                                TopicHref = string.Empty
                             }
                         }
                     },
                     new TocItemViewModel
                     {
                         Name = "Topic2",
-                        Href = "http://href.com"
+                        Href = "http://href.com",
+                        TopicHref = "http://href.com"
                     }
                 }
             };
@@ -196,6 +205,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     {
                         Name = "Topic1",
                         Href = file1,
+                        TopicHref = file1,
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
@@ -273,18 +283,21 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     {
                         Name = "Topic1",
                         Href = file1,
+                        TopicHref = file1,
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
                             {
                                 Name = "Topic1.1",
                                 Href = null, // For referenced toc, the content from the referenced toc is expanded as the items of current toc, and href is cleared
+                                TopicHref = null,
                                 Items = new TocViewModel
                                 {
                                     new TocItemViewModel
                                     {
                                         Name = "Topic",
                                         Href = file2,
+                                        TopicHref = file2,
                                     },
                                     new TocItemViewModel
                                     {
@@ -295,6 +308,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                             {
                                                 Name = "Topic",
                                                 Href = file3,
+                                                TopicHref = file3,
                                             }
                                         }
                                     }
@@ -312,6 +326,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                     {
                                         Name = "Topic",
                                         Href = file2,
+                                        TopicHref = file2,
                                     },
                                     new TocItemViewModel
                                     {
@@ -322,6 +337,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                             {
                                                 Name = "Topic",
                                                 Href = file3,
+                                                TopicHref = file3,
                                             }
                                         }
                                     }
@@ -339,6 +355,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                             {
                                 Name = "Topic",
                                 Href = file3,
+                                TopicHref = file3,
                             }
                         }
                     }
