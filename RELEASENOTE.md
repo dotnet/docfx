@@ -7,6 +7,7 @@ v2.3(Pre-Release)
 3.  Refine markdown validation.
 4.  Support separated meta json file.
 5.  Change `hightlight.js` theme to `github-gist`
+6.  Support '.json' as supported swagger file extension.
 
 v2.2
 -----------
