@@ -147,11 +147,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             var itemsToRemove = new HashSet<string>();
             foreach (var duplicates in from m in manifestItems
                                        from output in m.OutputFiles.Values
-                                       group m.SourceRelativePath by output into g
+                                       let relativePath = output?.RelativePath
+                                       group m.SourceRelativePath by relativePath into g
                                        where g.Count() > 1
                                        select g)
             {
-                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
+                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output relative file \"{duplicates.Key}\"");
                 itemsToRemove.UnionWith(duplicates.Skip(1));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
