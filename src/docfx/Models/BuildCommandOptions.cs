@@ -63,13 +63,13 @@ namespace Microsoft.DocAsCode
         [Option("globalMetadataFile", HelpText = "Specify a JSON file path containing globalMetadata settings, as similar to {\"globalMetadata\":{\"key\":\"value\"}}. It overrides the globalMetadata settings from the config file.")]
         public string GlobalMetadataFilePath { get; set; }
 
-        [OptionList("globalMetadataFiles", Separator = ',', HelpText = "Specify a list of JSON file path containing globalMetadata settings, as similar to {\"globalMetadata\":{\"key\":\"value\"}}. It overrides the globalMetadata settings from the config file.")]
+        [OptionList("globalMetadataFiles", Separator = ',', HelpText = "Specify a list of JSON file path containing globalMetadata settings, as similar to {\"key\":\"value\"}. It overrides the globalMetadata settings from the config file.")]
         public List<string> GlobalMetadataFilePaths { get; set; }
 
         [Option("fileMetadataFile", HelpText = "Specify a JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
         public string FileMetadataFilePath { get; set; }
 
-        [OptionList("fileMetadataFiles", Separator = ',', HelpText = "Specify a list of JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
+        [OptionList("fileMetadataFiles", Separator = ',', HelpText = "Specify a list of JSON file path containing fileMetadata settings, as similar to {\"key\":\"value\"}. It overrides the fileMetadata settings from the config file.")]
         public List<string> FileMetadataFilePaths { get; set; }
 
         [Option("exportRawModel", HelpText = "If set to true, data model to run template script will be extracted in .raw.model.json extension")]
