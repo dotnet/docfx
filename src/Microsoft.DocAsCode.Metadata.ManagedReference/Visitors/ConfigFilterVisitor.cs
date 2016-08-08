@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return false;
             }
 
-            return CanVisitCore(_configRule.ApiRules, outer.CanVisitApi, symbol, wantProtectedMember, outer);
+            return CanVisitCore(_configRule.ApiRules, symbol);
         }
 
         protected override bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
@@ -44,34 +44,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 throw new ArgumentNullException("symbol");
             }
 
-            if (symbol.Kind == SymbolKind.Method && symbol.ContainingType != null)
-            {
-                symbol = symbol.ContainingType;
-            }
-
             if (!Inner.CanVisitAttribute(symbol, wantProtectedMember, outer))
             {
                 return false;
             }
 
-            return CanVisitCore(_configRule.AttributeRules, outer.CanVisitAttribute, symbol, wantProtectedMember, outer);
+            return CanVisitCore(_configRule.AttributeRules, symbol);
         }
 
-        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, ISymbol symbol)
         {
-            var current = symbol;
-            var parent = symbol.ContainingSymbol;
-            while (!(current is INamespaceSymbol) && parent != null)
-            {
-                if (!visitFunc(parent, wantProtectedMember, outer))
-                {
-                    return false;
-                }
-
-                current = parent;
-                parent = parent.ContainingSymbol;
-            }
-
             foreach (var ruleUnion in ruleItems)
             {
                 ConfigFilterRuleItem rule = ruleUnion.Rule;
