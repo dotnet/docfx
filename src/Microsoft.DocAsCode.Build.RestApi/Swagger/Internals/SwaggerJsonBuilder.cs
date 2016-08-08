@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
                     // For swagger, other properties are still allowed besides $ref, e.g.
                     // "schema": {
-                    //   "$ref": "#/defintions/foo"
+                    //   "$ref": "#/definitions/foo"
                     //   "example": { }
                     // }
                     // Use Token property to keep other properties
