@@ -4,7 +4,9 @@ v2.3(Pre-Release)
 -----------
 1.  Support emoji in markdown content.
 2.  Upgrade yamldotnet to 3.9.
-3.  Refine markdown validation:
+3.  Refine markdown validation.
+4.  Support separated meta json file.
+5.  Change `hightlight.js` theme to `github-gist`
 
 v2.2
 -----------
