@@ -97,6 +97,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             toc.Homepage = ResolveHref(toc.Homepage, model, context);
             toc.Href = ResolveHref(toc.Href, model, context);
             toc.TocHref = ResolveHref(toc.TocHref, model, context);
+            toc.TopicHref = ResolveHref(toc.TopicHref, model, context);
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
@@ -108,12 +109,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
         {
-            if (item.Uid != null)
+            if (item.TopicUid != null)
             {
-                var xref = GetXrefFromUid(item.Uid, model, context);
+                var xref = GetXrefFromUid(item.TopicUid, model, context);
                 if (xref != null)
                 {
-                    item.Href = xref.Href;
+                    item.Href = item.TopicHref = xref.Href;
                     if (string.IsNullOrEmpty(item.Name))
                     {
                         item.Name = xref.Name;
@@ -130,11 +131,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         item.NameForVB = nameForVB;
                     }
                 }
-            }
-
-            if (item.HomepageUid != null)
-            {
-                item.Homepage = GetXrefFromUid(item.HomepageUid, model, context)?.Href;
             }
         }
 

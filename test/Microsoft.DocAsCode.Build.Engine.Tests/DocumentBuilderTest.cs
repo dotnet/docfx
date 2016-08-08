@@ -460,12 +460,12 @@ exports.getOptions = function (){
                     ["_path"] = $"{_inputFolder}/toc",
                     ["_tocRel"] = "toc",
                     ["_tocKey"] = $"~/{_inputFolder}/toc.md",
-                    ["homepage"] = "test.html",
                     ["items"] = new object[]
                     {
                         new {
                             name = "Test",
-                            href = "test.html"
+                            href = "test.html",
+                            topicHref = "test.html"
                         }
                     },
                     ["__global"] = new
@@ -480,12 +480,12 @@ exports.getOptions = function (){
                                 ["_path"] = $"{_inputFolder}/toc",
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/toc.md",
-                                ["homepage"] = "test.html",
                                 ["items"] = new object[]
                                 {
                                     new {
                                         name = "Test",
-                                        href = "test.html"
+                                        href = "test.html",
+                                        topicHref = "test.html"
                                     }
                                 },
                             },
@@ -497,12 +497,12 @@ exports.getOptions = function (){
                                 ["_path"] = $"{_inputFolder}/test/toc",
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/test/toc.md",
-                                ["homepage"] = "test.html",
                                 ["items"] = new object[]
                                 {
                                     new {
                                         name = "Test",
-                                        href = "test.html"
+                                        href = "test.html",
+                                        topicHref = "test.html"
                                     }
                                 },
                             }
@@ -547,12 +547,12 @@ exports.getOptions = function (){
                                 ["_path"] = $"{_inputFolder}/toc",
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/toc.md",
-                                ["homepage"] = "test.html",
                                 ["items"] = new object[]
                                 {
                                     new {
                                         name = "Test",
-                                        href = "test.html"
+                                        href = "test.html",
+                                        topicHref = "test.html"
                                     }
                                 },
                             },
@@ -564,12 +564,12 @@ exports.getOptions = function (){
                                 ["_path"] = $"{_inputFolder}/test/toc",
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/test/toc.md",
-                                ["homepage"] = "test.html",
                                 ["items"] = new object[]
                                 {
                                     new {
                                         name = "Test",
-                                        href = "test.html"
+                                        href = "test.html",
+                                        topicHref = "test.html"
                                     }
                                 },
                             }

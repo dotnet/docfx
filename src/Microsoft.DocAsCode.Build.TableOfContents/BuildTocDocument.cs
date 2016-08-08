@@ -83,14 +83,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 linkToFiles.Add(item.Homepage.Split('#')[0]);
             }
 
-            if (!string.IsNullOrEmpty(item.Uid))
+            if (!string.IsNullOrEmpty(item.TopicUid))
             {
-                linkToUids.Add(item.Uid);
-            }
-
-            if (!string.IsNullOrEmpty(item.HomepageUid))
-            {
-                linkToUids.Add(item.HomepageUid);
+                linkToUids.Add(item.TopicUid);
             }
 
             model.LinkToUids = model.LinkToUids.Union(linkToUids);

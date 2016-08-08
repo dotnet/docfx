@@ -68,6 +68,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     {
                         Name = "Topic1",
                         Href = "/href1",
+                        TopicHref = "/href1",
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
@@ -78,21 +79,24 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                     new TocItemViewModel
                                     {
                                         Name = "Topic1.1.1",
-                                        Href = "/href1.1.1"
+                                        Href = "/href1.1.1",
+                                        TopicHref = "/href1.1.1"
                                     }
                                 }
                             },
                             new TocItemViewModel
                             {
                                 Name = "Topic1.2",
-                                Href = string.Empty
+                                Href = string.Empty,
+                                TopicHref = string.Empty
                             }
                         }
                     },
                     new TocItemViewModel
                     {
                         Name = "Topic2",
-                        Href = "http://href.com"
+                        Href = "http://href.com",
+                        TopicHref = "http://href.com"
                     }
                 }
             };
@@ -121,41 +125,43 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
             {
-                Homepage = file1,
                 Items = new TocViewModel
                 {
                     new TocItemViewModel
                     {
-                        Homepage = file1,
                         Name = "Topic1",
                         Href = "/href1",
+                        TopicHref = "/href1",
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
                             {
-                                Homepage = file2,
                                 Name = "Topic1.1",
                                 Href = file1,
+                                TopicHref = file1,
                                 Items = new TocViewModel
                                 {
                                     new TocItemViewModel
                                     {
                                         Name = "Topic1.1.1",
-                                        Href = file2
+                                        Href = file2,
+                                        TopicHref = file2
                                     }
                                 }
                             },
                             new TocItemViewModel
                             {
                                 Name = "Topic1.2",
-                                Href = string.Empty
+                                Href = string.Empty,
+                                TopicHref = string.Empty
                             }
                         }
                     },
                     new TocItemViewModel
                     {
                         Name = "Topic2",
-                        Href = "http://href.com"
+                        Href = "http://href.com",
+                        TopicHref = "http://href.com"
                     }
                 }
             };
@@ -193,14 +199,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
             {
-                Homepage = file1,
                 Items = new TocViewModel
                 {
                     new TocItemViewModel
                     {
-                        Homepage = file1,
                         Name = "Topic1",
                         Href = file1,
+                        TopicHref = file1,
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
@@ -208,12 +213,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                 Name = "Topic1.1",
                                 Href = file1, // For relative file, href keeps unchanged
                                 Homepage = file2, // Homepage always keeps unchanged
+                                TopicHref = file2,
                             },
                             new TocItemViewModel
                             {
                                 Name = "Topic1.2",
                                 Href = file1, // For relative folder, href should be overwritten by homepage
                                 Homepage = file1,
+                                TopicHref = file1,
                                 TocHref = "sub/toc.md",
                             }
                         }
@@ -222,6 +229,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     {
                         Name = "Topic2",
                         Href = file2,
+                        TopicHref = file2,
                         TocHref = "sub/toc.md",
                     }
                 }
@@ -269,26 +277,27 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
             {
-                Homepage = file1,
                 Items = new TocViewModel
                 {
                     new TocItemViewModel
                     {
-                        Homepage = file2,
                         Name = "Topic1",
                         Href = file1,
+                        TopicHref = file1,
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
                             {
                                 Name = "Topic1.1",
                                 Href = null, // For referenced toc, the content from the referenced toc is expanded as the items of current toc, and href is cleared
+                                TopicHref = null,
                                 Items = new TocViewModel
                                 {
                                     new TocItemViewModel
                                     {
                                         Name = "Topic",
                                         Href = file2,
+                                        TopicHref = file2,
                                     },
                                     new TocItemViewModel
                                     {
@@ -299,6 +308,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                             {
                                                 Name = "Topic",
                                                 Href = file3,
+                                                TopicHref = file3,
                                             }
                                         }
                                     }
@@ -308,6 +318,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                             {
                                 Name = "Topic1.2",
                                 Href = file1, // For referenced toc, href should be overwritten by homepage
+                                TopicHref = file1,
                                 Homepage = file1,
                                 Items = new TocViewModel
                                 {
@@ -315,6 +326,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                     {
                                         Name = "Topic",
                                         Href = file2,
+                                        TopicHref = file2,
                                     },
                                     new TocItemViewModel
                                     {
@@ -325,6 +337,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                             {
                                                 Name = "Topic",
                                                 Href = file3,
+                                                TopicHref = file3,
                                             }
                                         }
                                     }
@@ -342,6 +355,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                             {
                                 Name = "Topic",
                                 Href = file3,
+                                TopicHref = file3,
                             }
                         }
                     }
@@ -375,6 +389,100 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             files.Add(DocumentType.Article, new[] { toc, subToc });
             var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
             Assert.Equal($"Circular reference to {Path.GetFullPath(Path.Combine(_inputFolder, subToc)).ToDisplayPath()} is found in {Path.GetFullPath(Path.Combine(_inputFolder, referencedToc)).ToDisplayPath()}", e.Message, true);
+        }
+
+        [Fact]
+        public void ProcessYamlTocWithTocHrefShouldSucceed()
+        {
+            var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
+            var file2 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, "sub1/sub2");
+            var referencedToc = _fileCreator.CreateFile($@"
+- name: Topic
+  href: {Path.GetFileName(file2)}
+", FileType.YamlToc, "sub1/sub2");
+            var content = $@"
+- name: Topic1
+  tocHref: /Topic1/
+  topicHref: /Topic1/index.html
+  items:
+    - name: Topic1.1
+      tocHref: /Topic1.1/
+      topicHref: /Topic1.1/index.html
+    - name: Topic1.2
+      tocHref: /Topic1.2/
+      topicHref: /Topic1.2/index.html
+- name: Topic2
+  tocHref: {referencedToc}
+  topicHref: {file2}
+";
+            var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
+            FileCollection files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { file1, file2, toc, referencedToc });
+            BuildDocument(files);
+            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension));
+
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+            var expectedModel = new TocItemViewModel
+            {
+                Items = new TocViewModel
+                {
+                    new TocItemViewModel
+                    {
+                        Name = "Topic1",
+                        Href = "/Topic1/",
+                        TocHref = "/Topic1/",
+                        Homepage = "/Topic1/index.html",
+                        TopicHref = "/Topic1/index.html",
+                        Items = new TocViewModel
+                        {
+                            new TocItemViewModel
+                            {
+                                Name = "Topic1.1",
+                                Href = "/Topic1.1/",
+                                TocHref = "/Topic1.1/",
+                                Homepage = "/Topic1.1/index.html",
+                                TopicHref = "/Topic1.1/index.html",
+                            },
+                            new TocItemViewModel
+                            {
+                                Name = "Topic1.2",
+                                Href = "/Topic1.2/",
+                                TocHref = "/Topic1.2/",
+                                Homepage = "/Topic1.2/index.html",
+                                TopicHref = "/Topic1.2/index.html",
+                            }
+                        }
+                    },
+                    new TocItemViewModel
+                    {
+                        Name = "Topic2",
+                        TocHref = referencedToc,
+                        Href = referencedToc,
+                        TopicHref = file2,
+                        Homepage = file2,
+                    }
+                }
+            };
+
+            AssertTocEqual(expectedModel, model);
+        }
+
+        [Fact]
+        public void ProcessYamlTocWithTocHrefAndHomepageShouldFail()
+        {
+
+            var content = $@"
+- name: Topic1
+  tocHref: /Topic1/
+  href: /Topic1/index.html
+  homepage: /Topic1/index.html
+";
+            var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
+            FileCollection files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc });
+            var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
+            Assert.Equal("TopicHref should be used to specify the homepage for /Topic1/ when tocHref is used.", e.Message);
         }
 
         #region Helper methods
