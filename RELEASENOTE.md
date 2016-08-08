@@ -1,16 +1,25 @@
 Version Notes (Current Version: v2.3)
 =======================================
-v2.3(Pre-Release)
+v2.3
 -----------
 1.  Support emoji in markdown content.
 2.  Upgrade yamldotnet to 3.9.
 3.  Refine markdown validation.
 4.  Support separated meta json file.
-5.  Change `hightlight.js` theme to `github-gist`
+5.  Change `hightlight.js` theme to `github-gist`.
 6.  Support '.json' as supported swagger file extension.
 7.  Support `topicHref` and `tocHref` to specify homepage toc.
 8.  Support customized contribute repository and branch for "Improve this Doc" button. (https://github.com/dotnet/docfx/issues/482)
 9.  Improve message for `docfx.exe template` command.
+
+v2.2.2
+-----------
+1. Fix bug in `.manifest` file.
+
+v2.2.1
+-----------
+1. Fix bug when metadata incremental check.
+2. Move post process out of DocumentBuilder.
 
 v2.2
 -----------
