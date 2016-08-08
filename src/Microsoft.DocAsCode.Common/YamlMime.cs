@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(reader));
             }
             var line = reader.ReadLine();
-            if (!line.StartsWith("#"))
+            if (line == null || !line.StartsWith("#"))
             {
                 return null;
             }
