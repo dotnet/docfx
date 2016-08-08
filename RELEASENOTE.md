@@ -1,5 +1,8 @@
-Version Notes (Current Version: v2.3)
+Version Notes (Current Version: v2.4)
 =======================================
+v2.4(Pre-Release)
+-----------
+
 v2.3
 -----------
 1.  Support emoji in markdown content.
