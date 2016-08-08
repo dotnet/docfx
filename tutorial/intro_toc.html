@@ -8,7 +8,7 @@
     <title>Table-Of-Content (TOC) Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Table-Of-Content (TOC) Files | DocFX website ">
-    <meta name="generator" content="docfx 2.2.2.0">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="intro_toc">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/intro_toc.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/intro_toc.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="table-of-content-toc-files">Table-Of-Content (TOC) Files</h1>
               
 <h2 id="introduction">Introduction</h2>
@@ -88,8 +88,7 @@
 ### [Header2.1.1](href)
 ## [Header2.2](href)
 # @UidForAnArticle
-</code></pre>
-<p>For a <em>TOC Item</em>, it can be either plain text, or a <a href="http://daringfireball.net/projects/markdown/syntax#link">Markdown inline link</a>, or <code>@uid</code> as the shortcut for <a href="../spec/docfx_flavored_markdown.html#cross-reference">cross-referenced</a></p>
+</code></pre><p>For a <em>TOC Item</em>, it can be either plain text, or a <a href="http://daringfireball.net/projects/markdown/syntax#link">Markdown inline link</a>, or <code>@uid</code> as the shortcut for <a href="../spec/docfx_flavored_markdown.html#cross-reference">cross-referenced</a></p>
 <p>Three kinds of links are supported:</p>
 <ol>
 <li>Absolute path, for example, <code>http://example.net</code>.</li>
@@ -97,18 +96,14 @@
 <li>URI with <code>xref</code> scheme, for example, <code>xref:System.String</code>, the value is the <code>uid</code> of the file to be <a href="../spec/docfx_flavored_markdown.html#cross-reference">cross-referenced</a>.</li>
 </ol>
 <h3 id="yaml-format-toc-toc-yml">YAML format TOC <code>toc.yml</code></h3>
-<pre><code class="lang-yml">- name:
-  href:
-  homepage:
-- name:
-  href:
-  homepage:
+<pre><code class="lang-yml">- name: Topic1
+  href: Topic1.md
+- name: Topic2
+  href: Topic2.md
   items:
-    - name:
-      href:
-      homepage:
-</code></pre>
-<p>Comparing to <code>toc.md</code>, <code>toc.yml</code> represents a structured data model and conforms to the <a href="http://www.yaml.org/spec/1.2/spec.html">YAML standard</a>. It supports advanced functionalities.</p>
+    - name: Topic2_1
+      href: Topic2_1.md
+</code></pre><p>Comparing to <code>toc.md</code>, <code>toc.yml</code> represents a structured data model and conforms to the <a href="http://www.yaml.org/spec/1.2/spec.html">YAML standard</a>. It supports advanced functionalities.</p>
 <h4 id="data-model-for-toc-yml">Data model for <code>toc.yml</code></h4>
 <p>The data model for <code>toc.yml</code> is an <strong>array</strong> of <em>TOC Item Object</em>s.</p>
 <h5 id="toc-item-object"><em>TOC Item Object</em></h5>
@@ -134,28 +129,55 @@
 <td>Specifies the hyperlink of the <em>TOC Item</em>.</td>
 </tr>
 <tr>
-<td><em>homepage</em></td>
-<td>string</td>
-<td>Specifies the homepage of the <em>TOC Item</em>. It is useful when <em>href</em> is linking to a folder.</td>
-</tr>
-<tr>
-<td><em>uid</em></td>
-<td>string</td>
-<td>Specifies the <code>uid</code> of the referenced file. If the value is set, it overwrites the value of <em>href</em>.</td>
-</tr>
-<tr>
-<td><em>homepageUid</em></td>
-<td>string</td>
-<td>Specifies the <code>uid</code> of the homepage. If the value is set, it overwrites the value of <em>homepage</em>.</td>
-</tr>
-<tr>
 <td><em>items</em></td>
 <td><em>TOC Item Object</em></td>
-<td>Specifies the children <em>TOC Items</em>s of current <em>TOC Item</em>.</td>
+<td>Specifies the children <em>TOC Items</em> of current <em>TOC Item</em>.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="relative-path-in-detail">Relative path in detail</h2>
+<p><strong>Advanced</strong>: These properties are useful when a TOC links another TOC, or links to a uid.</p>
+<table>
+<thead>
+<tr>
+<th>Property Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>tocHref</em></td>
+<td>string</td>
+<td>Specifies another TOC file, whose items are considered as the child of the currrent <em>TOC Item</em>.</td>
+</tr>
+<tr>
+<td><em>topicHref</em></td>
+<td>string</td>
+<td>Specifies the topic href of the <em>TOC Item</em>. It is useful when <em>href</em> is linking to a folder or <em>tocHref</em> is used.</td>
+</tr>
+<tr>
+<td><em>topicUid</em></td>
+<td>string</td>
+<td>Specifies the <code>uid</code> of the <em>topicHref</em> file. If the value is set, it overwrites the value of <em>topicHref</em>.</td>
+</tr>
+<tr>
+<td><del><em>homepage</em></del> <strong>Deprecated</strong></td>
+<td>string</td>
+<td><del>Specifies the homepage of the <em>TOC Item</em>. It is useful when <em>href</em> is linking to a folder.</del> Use <em>topicHref</em> instead.</td>
+</tr>
+<tr>
+<td><del><em>uid</em></del> <strong>Deprecated</strong></td>
+<td>string</td>
+<td><del>Specifies the <code>uid</code> of the referenced file. If the value is set, it overwrites the value of <em>href</em>.</del> Use <em>topicUid</em> instead.</td>
+</tr>
+<tr>
+<td><del><em>homepageUid</em></del> <strong>Deprecated</strong></td>
+<td>string</td>
+<td><del>Specifies the <code>uid</code> of the homepage. If the value is set, it overwrites the value of <em>homepage</em>.</del> Use <em>topicUid</em> instead.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="href-in-detail">Href in detail</h2>
 <p>If a <em>TOC Item</em> is linking to some relative path, there are three cases:</p>
 <ol>
 <li>Linking to another <em>TOC File</em>, for example, <code>href: examples/toc.md</code>.</li>
@@ -166,38 +188,36 @@
 <h3 id="link-to-another-toc-file">Link to another <em>TOC File</em></h3>
 <p>If the <em>TOC Item</em> is linking to some other <em>TOC File</em>, it is considered as a placeholder of the referenced <em>TOC File</em>, and DocFX will extract content from that <em>TOC File</em> and insert into current <em>TOC Item</em> <strong>recursively</strong>.</p>
 <p>This technique is always used when you want to combine several <em>TOC File</em>s into one single <em>TOC File</em>.</p>
-<p>If <code>homepage</code> is set for this <em>TOC Item</em>, it will be considered as the <code>href</code> of the expanded <em>TOC Item</em>.</p>
+<p>If <code>homepage</code> <strong>or</strong> <code>topicHref</code> is set for this <em>TOC Item</em>, it will be considered as the <code>href</code> of the expanded <em>TOC Item</em>.</p>
 <p>For example, one <code>toc.yml</code> file is like below:</p>
 <pre><code class="lang-yml">- name: How-to tutorials
-  href: howto/toc.yml
-  homepage: howto/overview.md
-</code></pre>
-<p>It references to the <code>toc.yml</code> file under folder <code>howto</code>, with the following content:</p>
+  tocHref: howto/toc.yml
+  topicHref: howto/overview.md
+</code></pre><p>It references to the <code>toc.yml</code> file under folder <code>howto</code>, with the following content:</p>
 <pre><code class="lang-yaml">- name: &quot;How-to1&quot;
   href: howto1.md
 - name: &quot;How-to2&quot;
   href: howto2.md
-</code></pre>
-<p>DocFX processes these <code>toc.yml</code> files and expands the uppder <code>toc.yml</code> file into:</p>
-<pre><code class="lang-yaml">
-- name: How-to tutorials
+</code></pre><p>DocFX processes these <code>toc.yml</code> files and expands the uppder <code>toc.yml</code> file into:</p>
+<pre><code class="lang-yaml">- name: How-to tutorials
   href: howto/overview.md
+  topicHref: howto/overview.md
   items:
     - name: &quot;How-to1&quot;
       href: howto/howto1.md
+      topichref: howto/howto1.md
     - name: &quot;How-to2&quot;
       href: howto/howto2.md
-</code></pre>
-<p><em>NOTE</em> that the referenced <code>toc.yml</code> file under <code>howto</code> folder will not be transformed to the output folder even if it is included in <code>docfx.json</code>.</p>
+      topichref: howto/howto2.md
+</code></pre><p><em>NOTE</em> that the referenced <code>toc.yml</code> file under <code>howto</code> folder will not be transformed to the output folder even if it is included in <code>docfx.json</code>.</p>
 <h3 id="link-to-a-folder">Link to a folder</h3>
 <p>If the <em>Toc Item</em> is linking to a folder, ending with <code>/</code> explicitly, the link value for the <em>Toc Item</em> is determined in the following steps:</p>
 <ol>
-<li>If <code>homepage</code> or <code>homepageUid</code> is set, the link value is resolved to the relative path to <code>homepage</code></li>
-<li><p>If <code>homepage</code> or <code>homepageUid</code> is not set, DocFX searches for <em>Toc File</em> under the folder, and get the first <a href="#link-to-local-file">relative link to local file</a> as the link value for current <em>Toc Item</em>. For example, if the <em>Toc Item</em> is <code>href: article/</code>, and the content of <code>article/toc.yml</code> is as follows:</p>
+<li>If ~~<code>homepage</code>~~ <code>topicHref</code> or ~~<code>homepageUid</code>~~ <code>topicUid</code> is set, the link value is resolved to the relative path to ~~<code>homepage</code>~~ <code>topicHref</code></li>
+<li><p>If ~~<code>homepage</code>~~ <code>topicHref</code> or ~~<code>homepageUid</code>~~ <code>topicUid</code> is not set, DocFX searches for <em>Toc File</em> under the folder, and get the first <a href="#link-to-local-file">relative link to local file</a> as the link value for current <em>Toc Item</em>. For example, if the <em>Toc Item</em> is <code>href: article/</code>, and the content of <code>article/toc.yml</code> is as follows:</p>
 <pre><code class="lang-yaml"> - name: Topic1
    href: topic1.md
-</code></pre>
-<p> The link value for the <em>Toc Item</em> is resolved to <code>article/topic1.md</code>.</p>
+</code></pre><p> The link value for the <em>Toc Item</em> is resolved to <code>article/topic1.md</code>.</p>
 </li>
 <li><p>If there is no <em>Toc File</em> under the folder, the link value keeps unchanged.</p>
 </li>
@@ -205,7 +225,7 @@
 <h3 id="link-to-local-file">Link to local file</h3>
 <p>If the <em>Toc Item</em> is linking to a local file, we call this local file <em>In-Toc File</em>. Make sure the file is included in <code>docfx.json</code>.</p>
 <h2 id="not-in-toc-files">Not-In-Toc Files</h2>
-<p>When a local file is not references by any <em>Toc Item</em>, we call this local file <em>Not-In-Toc File</em>. Its <em>TOC File</em> is the nearest <em>TOC File</em> in output folder from the same folder as the local file to the root output folder.</p>
+<p>When a local file is not referenced by any <em>Toc Item</em>, we call this local file <em>Not-In-Toc File</em>. Its <em>TOC File</em> is the nearest <em>TOC File</em> in output folder from the same folder as the local file to the root output folder.</p>
 
             </article>
           </div>

@@ -8,7 +8,7 @@
     <title>Introduction to REST API Documentation | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to REST API Documentation | DocFX website ">
-    <meta name="generator" content="docfx 2.2.2.0">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,15 +72,15 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/intro_rest_api_documentation.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/intro_rest_api_documentation.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="introduction-to-rest-api-documentation">Introduction to REST API Documentation</h1>
               
 <h2 id="introduction">Introduction</h2>
 <p>DocFX now supports generating documentation from REST APIs following <a href="http://swagger.io/specification/">Swagger specification</a> version 2.0.</p>
-<p>The Swagger RESTful API files <em>MUST</em> end with <code>.swagger.json</code> or <code>.swagger2.json</code> or <code>_swagger.json</code> or <code>_swagger2.json</code> so that these files are recognized as REST API files in DocFX.</p>
+<p>The Swagger RESTful API files <em>MUST</em> end with <code>.json</code>.</p>
 <p>One Swagger API file generates one HTML file. For example. a file <code>contacts.swagger.json</code> generates file naming <code>contacts.html</code>.</p>
 <h2 id="basic-structure">Basic structure</h2>
-<p>A single Swagger API file is considered as a unique REST <strong>File</strong> containing multiple <strong>API</strong>s. The <strong>UID</strong>(Unique IDentifier) for the <strong>File</strong> is defined as the combination of <code>host</code>, <code>basePath</code>, <code>info.title</code> and <code>info.version</code> with <code>/</code> as seperator. For example, the following Swagger API file has <strong>UID</strong> equals to <code>microsoft.com/docfx/Contacts/1.6</code>:</p>
+<p>A single Swagger API file is considered as a unique REST <strong>File</strong> containing multiple <strong>API</strong>s. The <strong>UID</strong>(Unique IDentifier) for the <strong>File</strong> is defined as the combination of <code>host</code>, <code>basePath</code>, <code>info.title</code> and <code>info.version</code> with <code>/</code> as separator. For example, the following Swagger API file has <strong>UID</strong> equals to <code>microsoft.com/docfx/Contacts/1.6</code>:</p>
 <pre><code class="lang-json">{
   &quot;swagger&quot;: &quot;2.0&quot;,
   &quot;info&quot;: {
@@ -93,8 +93,7 @@
     &quot;https&quot;
   ]
 }
-</code></pre>
-<p>A REST API <strong>File</strong> contains multiple <strong>API</strong>s as its children. An <strong>API</strong> is an <a href="http://swagger.io/specification/#operationObject">Operation Object</a> defined in <a href="http://swagger.io/specification/#pathItemObject">Path Item Object</a>. The <strong>UID</strong>(Unique IDentifier) for this <strong>API</strong> is defined as the combination of the <strong>UID</strong> of the <strong>File</strong> and the <code>operationId</code> of the <a href="http://swagger.io/specification/#operationObject">Operation Object</a>. For example, the following <code>get_contacts</code> operation has <strong>UID</strong> equal to <code>microsoft.com/docfx/Contacts/1.6/get_contacts</code>:</p>
+</code></pre><p>A REST API <strong>File</strong> contains multiple <strong>API</strong>s as its children. An <strong>API</strong> is an <a href="http://swagger.io/specification/#operationObject">Operation Object</a> defined in <a href="http://swagger.io/specification/#pathItemObject">Path Item Object</a>. The <strong>UID</strong>(Unique IDentifier) for this <strong>API</strong> is defined as the combination of the <strong>UID</strong> of the <strong>File</strong> and the <code>operationId</code> of the <a href="http://swagger.io/specification/#operationObject">Operation Object</a>. For example, the following <code>get_contacts</code> operation has <strong>UID</strong> equal to <code>microsoft.com/docfx/Contacts/1.6/get_contacts</code>:</p>
 <pre><code class="lang-json">{
   &quot;swagger&quot;: &quot;2.0&quot;,
   &quot;info&quot;: {
@@ -118,8 +117,7 @@
     }
   }
 }
-</code></pre>
-<blockquote><p>It is recommended that user provides a well-formed <code>operationId</code> name. We suggest that the <code>operationId</code> is one word in camelCase or snake_case.</p>
+</code></pre><blockquote><p>It is recommended that user provides a well-formed <code>operationId</code> name. We suggest that the <code>operationId</code> is one word in camelCase or snake_case.</p>
 </blockquote>
 <p>A REST API <strong>File</strong> could also contain multiple tags. The tag is a <a href="http://swagger.io/specification/#tagObject">Tag Object</a>, which is optional and used by <a href="http://swagger.io/specification/#operationObject">Operation Object</a>. The <strong>UID</strong>(Unique IDentifier) for this tag is defined as the combination of <strong>UID</strong> of the <strong>File</strong>, <code>tag</code>, and <code>name</code> of the <a href="http://swagger.io/specification/#tagObject">Tag Object</a>. For example, the following tag <code>Basic</code> has <strong>UID</strong> <code>microsoft.com/docfx/Contacts/1.6/tag/Basic</code>:</p>
 <pre><code class="lang-json">{
@@ -144,8 +142,7 @@
     }
   ]
 }
-</code></pre>
-<h2 id="html-layout">HTML layout</h2>
+</code></pre><h2 id="html-layout">HTML layout</h2>
 <p>The generated HTML file lists all the <strong>API</strong>s inside the <strong>File</strong> in the order defined in the Swagger REST file.</p>
 <p>You can use <em>Overwrite File</em>s to add more information to the <strong>File</strong> and <strong>API</strong>, and use tags to organize the sections of the <strong>API</strong>s.</p>
 <h3 id="overwrite-file-s"><em>Overwrite File</em>s</h3>
@@ -154,8 +151,7 @@
 uid: microsoft.com/docfx/Contacts/1.6
 ---
 Further description for `microsoft.com/docfx/Contacts/1.6`
-</code></pre>
-<p>The <code>uid</code> value <em>MUST</em> match the <code>uid</code> of the <strong>File</strong> or <strong>API</strong> that you want to overwrite. The content following YAML header is the additional Markdown description for the <strong>File</strong> or <strong>API</strong>. By default, it is transformed to HTML and appended below the description of the <strong>File</strong> or <strong>API</strong>.</p>
+</code></pre><p>The <code>uid</code> value <em>MUST</em> match the <code>uid</code> of the <strong>File</strong> or <strong>API</strong> that you want to overwrite. The content following YAML header is the additional Markdown description for the <strong>File</strong> or <strong>API</strong>. By default, it is transformed to HTML and appended below the description of the <strong>File</strong> or <strong>API</strong>.</p>
 <h3 id="add-footer">Add footer</h3>
 <p>You can also define the <code>footer</code> of an <strong>File</strong> or <strong>API</strong> using the following syntax:</p>
 <pre><code class="lang-md">---
@@ -163,8 +159,7 @@ uid: microsoft.com/docfx/Contacts/1.6
 footer: *content
 ---
 Footer for `microsoft.com/docfx/Contacts/1.6`
-</code></pre>
-<p><code>*content</code> is the keyword representing the Markdown content following YAML header. The value for <code>*content</code> is always transformed from Markdown content to HTML. In the above example, the value for <code>*content</code> is <code>&lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts/1.6&lt;/code&gt;&lt;/p&gt;</code>. In this way, the value of <code>footer</code> for <strong>API</strong> <code>microsoft.com/docfx/Contacts/1.6</code> is set to <code>&lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts/1.6&lt;/code&gt;&lt;/p&gt;</code>. We leverage <a href="http://www.yaml.org/spec/1.2/spec.html#id2765878">Anchors</a> syntax in YAML specification for <code>*content</code>.</p>
+</code></pre><p><code>*content</code> is the keyword representing the Markdown content following YAML header. The value for <code>*content</code> is always transformed from Markdown content to HTML. In the above example, the value for <code>*content</code> is <code>&lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts/1.6&lt;/code&gt;&lt;/p&gt;</code>. In this way, the value of <code>footer</code> for <strong>API</strong> <code>microsoft.com/docfx/Contacts/1.6</code> is set to <code>&lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts/1.6&lt;/code&gt;&lt;/p&gt;</code>. We leverage <a href="http://www.yaml.org/spec/1.2/spec.html#id2765878">Anchors</a> syntax in YAML specification for <code>*content</code>.</p>
 <p>If <code>footer</code> is set, the content from <code>footer</code> will be appended to the last section of the <strong>File</strong> or <strong>API</strong>. It is usually used to define <strong>See Also</strong> or <strong>Additional Resources</strong> for the documentation.</p>
 <h3 id="tags-to-organize-the-sections-of-apis">Tags to organize the sections of APIs</h3>
 <p>You can organize the sections of APIs by using tags in Swagger file, following definitions in <a href="http://swagger.io/specification/#tagObject">Tag Object</a>. </p>
@@ -233,8 +228,7 @@ Footer for `microsoft.com/docfx/Contacts/1.6`
     }
   }
 }
-</code></pre>
-<p>For the example above, the simple html layout will be:</p>
+</code></pre><p>For the example above, the simple html layout will be:</p>
 <pre><code class="lang-html">&lt;h2 id=&quot;BasicBookmark&quot;&gt;Basic&lt;/h2&gt;
   &lt;h3 data-uid=&quot;microsoft.com/docfx/Contacts/1.6/get_contacts&quot;&gt;get_contacts&lt;/h3&gt;
 &lt;h2 id=&quot;Advanced&quot;&gt;Advanced&lt;/h2&gt;
@@ -242,8 +236,7 @@ Footer for `microsoft.com/docfx/Contacts/1.6`
   &lt;h3 data-uid=&quot;microsoft.com/docfx/Contacts/1.6/set_contacts&quot;&gt;set_contacts&lt;/h3&gt;
 &lt;h2 id=&quot;other-apis&quot;&gt;Other APIs&lt;/h2&gt;
   &lt;h3 data-uid=&quot;microsoft.com/docfx/Contacts/1.6/delete_contacts&quot;&gt;delete_contacts&lt;/h3&gt;
-</code></pre>
-<h4 id="overwrite-the-tags">Overwrite the tags</h4>
+</code></pre><h4 id="overwrite-the-tags">Overwrite the tags</h4>
 <ol>
 <li><p>More information could be added to the tag as following:</p>
 <pre><code class="lang-md">---
@@ -251,8 +244,7 @@ uid: microsoft.com/docfx/Contacts/1.6/tag/Basic
 ---
 
 Additional comments for `microsoft.com/docfx/Contacts/1.6/tag/Basic`
-</code></pre>
-</li>
+</code></pre></li>
 <li><p>The <code>description</code> of the tag could be overwritten as following:</p>
 <pre><code class="lang-md">---
 uid: microsoft.com/docfx/Contacts/1.6/tag/Basic
@@ -260,8 +252,7 @@ description: *content
 ---
 
 Overwrite description for `microsoft.com/docfx/Contacts/1.6/tag/Basic`
-</code></pre>
-</li>
+</code></pre></li>
 </ol>
 <h3 id="add-other-metadata">Add other metadata</h3>
 <p>You can define your own metadata with YAML header. This functionality is quite useful when your own template is used.</p>

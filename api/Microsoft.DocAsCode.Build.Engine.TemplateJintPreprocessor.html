@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class TemplateJintPreprocessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.2.1.0">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -76,7 +76,7 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L17" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor">Class TemplateJintPreprocessor
               </h1>
@@ -121,17 +121,17 @@
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.%23ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection%2CMicrosoft.DocAsCode.Build.Engine.TemplatePreprocessorResource)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource_Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.%23ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection%2CMicrosoft.DocAsCode.Build.Engine.TemplatePreprocessorResource%2CMicrosoft.DocAsCode.Build.Engine.DocumentBuildContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L71">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L72">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.#ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection,Microsoft.DocAsCode.Build.Engine.TemplatePreprocessorResource)">TemplateJintPreprocessor(ResourceCollection, TemplatePreprocessorResource)</h4>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_Microsoft_DocAsCode_Build_Engine_TemplatePreprocessorResource_Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.#ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection,Microsoft.DocAsCode.Build.Engine.TemplatePreprocessorResource,Microsoft.DocAsCode.Build.Engine.DocumentBuildContext)">TemplateJintPreprocessor(ResourceCollection, TemplatePreprocessorResource, DocumentBuildContext)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public TemplateJintPreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource)</code></pre>
+                <pre><code class="lang-csharp hljs">public TemplateJintPreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -153,16 +153,21 @@
                     <td><em>scriptResource</em></td>
                     <td></td>
                   </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildContext">DocumentBuildContext</a></td>
+                    <td><em>context</em></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
               <h3 id="properties">Properties
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_GetOptionsFunc.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.GetOptionsFunc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_GetOptionsFunc.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.GetOptionsFunc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L69">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L70">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_GetOptionsFunc" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.GetOptionsFunc">GetOptionsFunc</h4>
               <div class="markdown level1 summary"></div>
@@ -190,10 +195,10 @@
                   <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.ITemplatePreprocessor.html#Microsoft_DocAsCode_Build_Engine_ITemplatePreprocessor_GetOptionsFunc">ITemplatePreprocessor.GetOptionsFunc</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/master/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_TransformModelFunc.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.TransformModelFunc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_TransformModelFunc.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.TransformModelFunc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L67">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplatePreprocessors/TemplateJintPreprocessor.cs/#L68">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateJintPreprocessor_TransformModelFunc" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateJintPreprocessor.TransformModelFunc">TransformModelFunc</h4>
               <div class="markdown level1 summary"></div>

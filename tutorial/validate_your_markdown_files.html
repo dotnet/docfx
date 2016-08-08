@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Validate your markdown files | DocFX website </title>
+    <title>Validate Your Markdown Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Validate your markdown files | DocFX website ">
-    <meta name="generator" content="docfx 2.2.2.0">
+    <meta name="title" content="Validate Your Markdown Files | DocFX website ">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,123 +72,132 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/validate_your_markdown_files.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <h1 id="validate-your-markdown-files">Validate your markdown files</h1>
+              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/validate_your_markdown_files.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <h1 id="validate-your-markdown-files">Validate Your Markdown Files</h1>
               
-<p>In GFM, we can write any document with right syntax. For example, we can write html tag <code>&lt;h1&gt;title&lt;/h1&gt;</code> instead of markdown syntax <code>#title</code>. But for some purpose, some behaviors are unwanted, so we add markdown validators for each markdown document.</p>
+<p>In Markdown, we can write any document with valid syntax. For example, Markdown supports to directly write HTML tag, we can write HTML tag <code>&lt;h1&gt;title&lt;/h1&gt;</code> instead of Markdown syntax <code>#title</code>.
+But for some purpose, some behaviors are unwanted, for example, you may not want to allow <code>&lt;script&gt;</code> tag in Markdown that can insert any javascript.</p>
 <p>In this document, you&#39;ll learn how to define markdown validation rules, which will help you to validate markdown documents in an efficient way.</p>
-<p><em>This is part of DFM, if you switch markdown engine to other engine, validation might not work.</em></p>
-<h2 id="how-to-config-markdown-validation-rules">How to config markdown validation rules</h2>
-<p>Create a <em>JSON</em> file with name <code>md.style</code> in the same folder of <code>docfx.json</code>, and with following content:</p>
-<pre><code class="lang-json">{
-   &quot;rules&quot;: [],
-   &quot;tagRules&quot;: []
-}
-</code></pre>
-<h2 id="build-in-html-tag-validation-rules">Build-in html tag validation rules</h2>
+<blockquote><p>Markdown validation is part of DFM, if you switch Markdown engine to other engine, validation might not work.</p>
+</blockquote>
+<p>There&#39;re three kinds of validation rules provided by DocFX:</p>
+<ol>
+<li>HTML tag rule, which is used to validate HTML tags in Markdown. There is a common need to restrict usage of HTML tags in Markdown to only allow &quot;safe&quot; HTML tags, so we created this built-in rule for you.</li>
+<li>Markdown token rule. This can be used to validate different kinds of Markdown syntax elements, like headings, links, images, etc.</li>
+<li>Metadata rule. This can be used to validate metadata of documents. Metadata can be defined in YAML header, <code>docfx.json</code>, or a single JSON file. Metadata rule gives you a central place to validate metadata against certain principle.</li>
+</ol>
+<h2 id="html-tag-validation-rules">HTML tag validation rules</h2>
 <p>For most cases, you may want to prohibit using certain html tags in markdown, so we built a built-in html tag rule for you.</p>
-<p>For example, create <code>md.style</code> with following content:</p>
+<p>To define a HTML tag rule, simply create a <code>md.style</code> with following content:</p>
 <pre><code class="lang-json">{
    &quot;tagRules&quot;: [
       {
          &quot;tagNames&quot;: [ &quot;H1&quot;, &quot;H2&quot; ],
          &quot;behavior&quot;: &quot;Warning&quot;,
-         &quot;messageFormatter&quot;: &quot;Some message.&quot;,
+         &quot;messageFormatter&quot;: &quot;Please do not use &lt;H1&gt; and &lt;H2&gt;, use &#39;#&#39; and &#39;##&#39; instead.&quot;,
          &quot;customValidatorContractName&quot;: null,
          &quot;openingTagOnly&quot;: false
       }
    ]
 }
-</code></pre>
-<p>Then when any one write <code>&lt;H1&gt;</code> or <code>&lt;H2&gt;</code> in markdown file, it will give a warning with message <code>Some message.</code>.</p>
+</code></pre><p>Then when anyone write <code>&lt;H1&gt;</code> or <code>&lt;H2&gt;</code> in Markdown file, it will give a warning.</p>
+<p>You can use the following proprties to configure the HTML tag rule:</p>
 <ol>
-<li><code>tagNames</code> is filter html tag names, <em>required</em>, <em>case-insensitive</em>.</li>
-<li><p><code>behavior</code> is an enum value, <em>required</em>.</p>
-<p>it can be following:</p>
-<ul>
+<li><code>tagNames</code> is the list of HTML tag names to validate, <em>required</em>, <em>case-insensitive</em>.</li>
+<li><code>behavior</code> defines the behavior when the HTML tag is met, <em>required</em>. Its value can be following:<ul>
 <li>None: Do nothing.</li>
 <li>Warning: Log a warning.</li>
 <li>Error: Log an error, it will break current build.</li>
 </ul>
 </li>
-<li><code>messageFormatter</code> is the log message when hit, <em>required</em>.
-It can contain following variables:<ul>
+<li><p><code>messageFormatter</code> is the log message when the HTML tag is hit, <em>required</em>.
+It can contain following variables:</p>
+<ul>
 <li><code>{0}</code> the name of tag.</li>
-<li><code>{1}</code> the whole tag.
-For example, the <code>messageFormatter</code> is <code>{0} is the tag name of {1}.</code>, and the tag is <code>&lt;H1 class=&quot;heading&quot;&gt;</code> match the rule, then it will output following message: <code>H1 is the tag name of &lt;H1 class=&quot;heading&quot;&gt;.</code></li>
+<li><code>{1}</code> the whole tag.</li>
 </ul>
+<p>For example, the <code>messageFormatter</code> is <code>{0} is the tag name of {1}.</code>, and the tag is <code>&lt;H1 class=&quot;heading&quot;&gt;</code> match the rule, then it will output following message: <code>H1 is the tag name of &lt;H1 class=&quot;heading&quot;&gt;.</code></p>
 </li>
-<li><p><code>customValidatorContractName</code> is an extension tag rule contract name for complex validation rule, <em>option</em>.</p>
+<li><p><code>customValidatorContractName</code> is an extension tag rule contract name for complex validation rule, <em>optional</em>.</p>
 <p>see <a href="#how-to-create-a-custom-html-tag-validator">How to create a custom html tag validator</a>.</p>
 </li>
 <li><p><code>openingTagOnly</code> is a boolean, <em>option</em>, default is <code>false</code></p>
 <p>if <code>true</code>, it will only apply to opening tag, e.g. <code>&lt;H1&gt;</code>, otherwise, it will also apply to closing tag, e.g. <code>&lt;/H1&gt;</code>.</p>
 </li>
 </ol>
-<h3 id="how-to-create-a-custom-html-tag-validator">How to create a custom html tag validator</h3>
+<h3 id="test-your-rule">Test your rule</h3>
+<p>To enable your rule, put <code>md.style</code> in the same folder of <code>docfx.json</code>, then run <code>docfx</code>, warning will be shown if it encounters <code>&lt;H1&gt;</code> or <code>&lt;H2&gt;</code> during build.</p>
+<h3 id="create-a-custom-html-tag-rule">Create a custom HTML tag rule</h3>
+<p>By default HTML tag rule only validates whether an HTML tag exists in Markdown. Sometimes you may want to have additional validation against the content of the tag.
+For example, you may not want a tag to contain <code>onclick</code> attribute as it can inject javascript to the page.
+You can create a custom HTML tag rule to achieve this. </p>
 <ol>
 <li>Create a project in your code editor (e.g. visual studio).</li>
 <li>Add nuget package <code>Microsoft.DocAsCode.Plugins</code> and <code>Microsoft.Composition</code>.</li>
-<li>Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.html#Microsoft_DocAsCode_Plugins_ICustomMarkdownTagValidator">ICustomMarkdownTagValidator</a>.</li>
+<li>Create a class and implement <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.html#Microsoft_DocAsCode_Plugins_ICustomMarkdownTagValidator">ICustomMarkdownTagValidator</a>.</li>
 <li>Add ExportAttribute with contract name.</li>
 </ol>
-<p>For example, we require tags should contain text <code>class</code>:</p>
-<pre><code class="lang-csharp">[Export(&quot;Require text class&quot;, typeof(ICustomMarkdownTagValidator))]
+<p>For example, we require HTML link (<code>&lt;a&gt;</code>) should not contain <code>onclick</code> attribute:</p>
+<pre><code class="lang-csharp">[Export(&quot;should_not_contain_onclick&quot;, typeof(ICustomMarkdownTagValidator))]
 public class MyMarkdownTagValidator : ICustomMarkdownTagValidator
 {
     public bool Validate(string tag)
     {
-        return tag.Contains(&quot;class&quot;);
+        // use Contains for demo purpose, a complete implementation should parse the HTML tag.
+        return tag.Contains(&quot;onclick&quot;);
     }
 }
-</code></pre>
-<p>And update your <code>md.style</code> with following content:</p>
+</code></pre><p>And update your <code>md.style</code> with following content:</p>
 <pre><code class="lang-json">{
    &quot;tagRules&quot;: [
       {
-         &quot;tagNames&quot;: [ &quot;H1&quot;, &quot;H2&quot; ],
+         &quot;tagNames&quot;: [ &quot;a&quot; ],
          &quot;behavior&quot;: &quot;Warning&quot;,
-         &quot;messageFormatter&quot;: &quot;Some message.&quot;,
-         &quot;customValidatorContractName&quot;: &quot;Require text class&quot;,
+         &quot;messageFormatter&quot;: &quot;Please do not use &#39;onclick&#39; in HTML link.&quot;,
+         &quot;customValidatorContractName&quot;: &quot;should_not_contain_onclick&quot;,
          &quot;openingTagOnly&quot;: true
       }
    ]
 }
-</code></pre>
-<h2 id="customize-token-validation-rules">Customize token validation rules</h2>
-<p>In <code>rules</code> property, we can add any <a href="#how-to-create-a-plug-in-for-markdown-token-validation">validation plug-in</a> by following style:</p>
+</code></pre><h3 id="how-to-enable-custom-html-tag-rules">How to enable custom HTML tag rules</h3>
+<ol>
+<li>Same as default HTML tag rule, config the rule in <code>md.style</code>.</li>
+<li><p>Create a folder (<code>rules</code> for example) in your DocFX project folder, put all your custom rule assemblies to a <code>plugins</code> folder under <code>rules</code> folder.
+Now your DocFX project should look like this:</p>
+<pre><code>/
+|- docfx.json
+|- md.style
+\- rules
+   \- plugins
+      \- &lt;your_rule&gt;.dll
+</code></pre></li>
+<li><p>Update your <code>docfx.json</code> with following content:</p>
 <pre><code class="lang-json">{
-   &quot;rules&quot;: [ { &quot;name&quot;: &quot;rule name&quot;, &quot;disable&quot;: false } ]
+  ...
+  &quot;dest&quot;: &quot;_site&quot;,
+  &quot;template&quot;: [
+   &quot;default&quot;, &quot;rules&quot;
+  ]
 }
-</code></pre>
-<p>or simplify it to:</p>
-<pre><code class="lang-json">{
-    &quot;rules&quot;: [ &quot;rule name&quot; ]
-}
-</code></pre>
-<h3 id="with-contract-name-default">With contract name <code>default</code></h3>
-<p>Any rules with contract name <code>default</code> will be enabled by default. This means when no <code>md.style</code> file, it is same as a <code>md.style</code> file with following content:</p>
-<pre><code class="lang-json">{
-   &quot;rules&quot;: [ { &quot;name&quot;: &quot;default&quot;, &quot;disable&quot;: false } ]
-}
-</code></pre>
-<p>And you can disable default rules by following config:</p>
-<pre><code class="lang-json">{
-   &quot;rules&quot;: [ { &quot;name&quot;: &quot;default&quot;, &quot;disable&quot;: true } ]
-}
-</code></pre>
-<h3 id="how-to-create-a-plug-in-for-markdown-token-validation">How to create a plug-in for markdown token validation</h3>
+</code></pre></li>
+<li>Run <code>docfx</code> you&#39;ll see your rule being executed.</li>
+</ol>
+<blockquote><p>The folder <code>rules</code> is actually a template folder. In DocFX, template is a place for you to customize build, render, validation behavior.
+For more information about template, please refer to our <a href="howto_build_your_own_type_of_documentation_with_custom_plug-in.html">template</a> and <a href="howto_build_your_own_type_of_documentation_with_custom_plug-in.html">plugin</a> documentation.</p>
+</blockquote>
+<h2 id="markdown-token-validation-rules">Markdown token validation rules</h2>
+<p>Besides HTML tags, you may also want to validate Markdown syntax like heading or links. For example, in Markdown, you may want to limit code snippet to only support a set of languages.</p>
+<p>To create such rule, follow the following steps:</p>
 <ol>
 <li>Create a project in your code editor (e.g. visual studio).</li>
 <li>Add nuget package <code>Microsoft.DocAsCode.MarkdownLite</code> and <code>Microsoft.Composition</code>.</li>
-<li><p>Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidatorProvider">IMarkdownTokenValidatorProvider</a></p>
-<div class="TIP"><h5>Tip</h5><p><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTokenValidatorFactory">MarkdownTokenValidatorFactory</a> contains some help methods to create a validator.</p>
-</div>
+<li>Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidatorProvider">IMarkdownTokenValidatorProvider</a><blockquote><p><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTokenValidatorFactory">MarkdownTokenValidatorFactory</a> contains some helper methods to create a validator.</p>
+</blockquote>
 </li>
-<li>Add ExportAttribute with contract name, and if contract name is <code>default</code> it will apply automatically.</li>
+<li>Add ExportAttribute with rule name.</li>
 </ol>
-<p>For example, we require all code block with language <code>csharp</code>:</p>
-<pre><code class="lang-csharp">[Export(&quot;default&quot;, typeof(IMarkdownTokenValidatorProvider))]
+<p>For example, the following rule require all code block to be <code>csharp</code>:</p>
+<pre><code class="lang-csharp">[Export(&quot;code_snippet_should_be_csharp&quot;, typeof(IMarkdownTokenValidatorProvider))]
 public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 {
     public ImmutableArray&lt;IMarkdownTokenValidator&gt; GetValidators()
@@ -203,24 +212,38 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
             }));
     }
 }
-</code></pre>
-<div class="TIP"><h5>Tip</h5><p>If want to log error or warning, please add nuget <code>Microsoft.DocAsCode.Common</code>, then use <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger">Logger</a> to log message.</p>
-</div>
-<h2 id="how-to-enable-custom-validators">How to enable custom validators</h2>
-<ol>
-<li>Config markdown validation rules in <code>md.style</code>.</li>
-<li>Copy your extension assemblies to <code>plugin</code> folder in your <code>DocFX.exe</code> or template.</li>
-</ol>
+</code></pre><p>To enable this rule, update your <code>md.style</code> to the following:</p>
+<pre><code class="lang-json">{
+    &quot;rules&quot;: [ &quot;code_snippet_should_be_csharp&quot; ]
+}
+</code></pre><p>Then follow the same steps in <a href="#how-to-enable-custom-html-tag-rules">How to enable custom HTML tag rules</a>, run <code>docfx</code> you&#39;ll see your rule executed.</p>
+<h3 id="logging-in-your-rules">Logging in your rules</h3>
+<p>As you can see in the above example, you can throw <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.DocumentException.html#Microsoft_DocAsCode_Plugins_DocumentException">DocumentException</a> to raise an error, this will stop the build immediately.</p>
+<p>You can also use <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogWarning_System_String_System_String_System_String_System_String_">LogWarning(String, String, String, String)</a> and <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogError_System_String_System_String_System_String_System_String_">LogError(String, String, String, String)</a> to report a warning and an error respectively.</p>
+<blockquote><p>To use these methods, you need to install nuget package <code>Microsoft.DocAsCode.Common</code> first.</p>
+</blockquote>
+<p>The different between <code>ReportError</code> and throw <code>DocumentException</code> is throw exception will stop the build immediately but <code>ReportError</code> won&#39;t stop build but will eventually fail the build after rules are run.</p>
+<h2 id="advanced-usage-of-md-style">Advanced usage of <code>md.style</code></h2>
+<h3 id="default-rules">Default rules</h3>
+<p>If a rule has the contract name of <code>default</code>, it will be enabled by default. You don&#39;t need to enable it in <code>md.style</code>.</p>
+<h3 id="enable-disable-rules-in-md-style">Enable/disable rules in <code>md.style</code></h3>
+<p>You can add use <code>disable</code> to specify whether disable a rule:</p>
+<pre><code class="lang-json">{
+   &quot;rules&quot;: [ { &quot;name&quot;: &quot;&lt;rule_name&gt;&quot;, &quot;disable&quot;: true } ]
+}
+</code></pre><p>This gives you an opportunity to disable the rules enabled by default.</p>
 <h2 id="validate-metadata-in-markdown-files">Validate metadata in markdown files</h2>
-<p>In markdown file, we can write some metadata in <a href="../spec/docfx_flavored_markdown.html#yaml-header">conceptual</a> or <a href="intro_overwrite_files.html">overwrite document</a>
-And we allow add some plug-ins to validate metadata writen in markdown files.</p>
-<h3 id="scope-of-validation">Scope of validation</h3>
-<p>Following metadata will be validated:</p>
+<p>In markdown file, we can write some metadata in <a href="../spec/docfx_flavored_markdown.html#yaml-header">conceptual</a> or <a href="intro_overwrite_files.html">overwrite document</a>.
+And we allow add some plug-ins to validate metadata written in markdown files.</p>
+<h3 id="scope-of-metadata-validation">Scope of metadata validation</h3>
+<p>Metadata is coming multiple sources, the following metadata will be validated during build: </p>
 <ol>
-<li>yaml header in markdown.</li>
-<li>global metadata.</li>
-<li>file metadata.</li>
+<li>YAML header in markdown.</li>
+<li>Global metadata and file metaata in <code>docfx.json</code>.</li>
+<li>Global metadata and file metadata defined in separate <code>.json</code> files.</li>
 </ol>
+<blockquote><p>For more information about global metadata and global metadata, see <a href="docfx.exe_user_manual.html#3-docfx-json-format">docfx.json format</a>.</p>
+</blockquote>
 <h3 id="create-validation-plug-ins">Create validation plug-ins</h3>
 <ol>
 <li>Create a project in your code editor (e.g. visual studio).</li>
@@ -233,13 +256,13 @@ public class MyInputMetadataValidator : IInputMetadataValidator
 {
     public void Validate(string sourceFile, ImmutableDictionary&lt;string, object&gt; metadata)
     {
-        if (metadata.ContainKey(&quot;hello&quot;))
+        if (metadata.ContainsKey(&quot;hello&quot;))
         {
             throw new DocumentException($&quot;Metadata &#39;hello&#39; is not allowed, file: {sourceFile}&quot;);
         }
     }
 }
-</code></pre>
+</code></pre><p>Enable metadata rule is same as other rules, just copy the assemblies to the <code>plugins</code> of your template folder and run <code>docfx</code>.</p>
 
             </article>
           </div>

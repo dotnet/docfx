@@ -8,7 +8,7 @@
     <title>How-to: Filter Out Unwanted APIs  | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Filter Out Unwanted APIs  | DocFX website ">
-    <meta name="generator" content="docfx 2.2.2.0">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,12 +72,12 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/howto_filter_out_unwanted_apis.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/howto_filter_out_unwanted_apis.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="how-to-filter-out-unwanted-apis">How-to: Filter Out Unwanted APIs </h1>
               
-<p>A filter configuration file is in <a href="http://www.yaml.org/spec/1.2/spec.html">YAML</a> format. You could filter out unwanted APIs by providing a filter configuration file and specifying its path.</p>
-<h2 id="specifying-filter-configuration-file-path">Specifying filter configuration file path</h2>
-<p>The path of the configuration file could be specified by the following two ways. Option 1 could overwrite option 2.</p>
+<p>A filter configuration file is in <a href="http://www.yaml.org/spec/1.2/spec.html">YAML</a> format. You may filter out unwanted APIs by providing a filter configuration file and specifying its path.</p>
+<h2 id="specifying-the-filter-configuration-file-path">Specifying the filter configuration file path</h2>
+<p>The path of the configuration file is specified in the following two ways. Option 1 could overwrite option 2.</p>
 <ol>
 <li><p>docfx.exe metadata command argument.</p>
 <p><code>docfx.exe metadata -filter &lt;path relative to baseDir or absolutepath&gt;</code></p>
@@ -110,10 +110,10 @@
 <blockquote><p><em>Note</em></p>
 <p>The rules would be executed sequentially and the matching process would stop once one rule is matched. 
 Namely, you need to put the most detailed rule in the top.</p>
-<p>If no rule is matched, the API would be included by default.</p>
+<p>If no rule is matched the API would be included by default.</p>
 </blockquote>
 <h3 id="1-exclude-or-include-apis-by-matching-their-uid-with-the-regex-uidregex">1. <code>exclude</code> or <code>include</code> APIs by matching their uid with the Regex <code>uidRegex</code>.</h3>
-<p>The below sample would exclude all APIs whose uid start with &#39;Microsoft.DevDiv&#39; except those that start with &#39;Microsoft.DevDiv.SpecialCase&#39;.</p>
+<p>The below sample excludes all APIs whose uid start with &#39;Microsoft.DevDiv&#39; except those that start with &#39;Microsoft.DevDiv.SpecialCase&#39;.</p>
 <pre><code>  - include:
       uidRegex: ^Microsoft\.DevDiv\.SpecialCase
   - exclude:
@@ -137,10 +137,10 @@ Namely, you need to put the most detailed rule in the top.</p>
 <blockquote><p><em>Note</em></p>
 <p><code>Type</code> could be <code>Class</code>, <code>Struct</code>, <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>. <code>Member</code> could be <code>Event</code>, <code>Field</code>, <code>Method</code>, or <code>Property</code>.</p>
 <p><code>Namespace</code> is flattened. Namely, excluding namespace &#39;A.B&#39; has nothing to do with namespace &#39;A.B.C&#39;.</p>
-<p>If a namespace is excluded, all types/members defined in the namespace would be excluded, too.
-If a type is excluded, all members defined in the type would be excluded, too.</p>
+<p>If a namespace is excluded, all types/members defined in the namespace would also be excluded.
+If a type is excluded, all members defined in the type would also be excluded.</p>
 </blockquote>
-<p>The below sample would exclude all APIs whose uid start with &#39;Microsoft.DevDiv&#39; and type is <code>Type</code>, namely <code>Class</code>, <code>Struct</code>,
+<p>The below sample would exclude all APIs whose uid starts with &#39;Microsoft.DevDiv&#39; and type is <code>Type</code>, namely <code>Class</code>, <code>Struct</code>,
 <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>.</p>
 <pre><code>  - exclude:
       uidRegex: ^Microsoft\.DevDiv
@@ -148,16 +148,16 @@ If a type is excluded, all members defined in the type would be excluded, too.</
 </code></pre><h3 id="3-exclude-or-include-apis-by-containing-matched-attributes">3. <code>exclude</code> or <code>include</code> APIs by containing matched attributes.</h3>
 <p>You can specify an attribute by its <code>uid</code>, <code>ctorArguments</code> and <code>ctorNamedArguments</code>.</p>
 <blockquote><p><em>Note</em></p>
-<p><code>ctorArguments</code> requires a full match of the attribute&#39;s constructor arguments. While <code>ctorNamedArguments</code> support a partial match.
+<p><code>ctorArguments</code> requires a full match of the attribute&#39;s constructor arguments, while <code>ctorNamedArguments</code> support a partial match.
 Namely, <code>ctorArguments</code> should contain all the arguments while <code>ctorNamedArguments</code> could contain a subset of the named arguments. </p>
 </blockquote>
-<p>The below sample would exclude all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.</p>
+<p>The below sample excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.</p>
 <pre><code>  - exclude:
       hasAttribute:
         uid: System.ComponentModel.EditorBrowsableAttribute
         ctorArguments:
         - System.ComponentModel.EditorBrowsableState.Never
-</code></pre><p>A complete <strong>Sample</strong> of filter configuration file </p>
+</code></pre><p>A complete <strong>Sample</strong> of the filter configuration file follows:</p>
 <pre><code class="lang-yaml">apiRules:
 - exclude:
     uidRegex: ^Microsoft\.TeamFoundation\.WorkItemTracking\.Proxy\.IRowSetsNative$
@@ -175,7 +175,6 @@ Namely, <code>ctorArguments</code> should contain all the arguments while <code>
       ctorArguments:
       - System.ComponentModel.EditorBrowsableState.Never
 </code></pre>
-
             </article>
           </div>
           

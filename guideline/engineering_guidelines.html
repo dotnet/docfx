@@ -8,7 +8,7 @@
     <title>Engineering Guidelines | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Engineering Guidelines | DocFX website ">
-    <meta name="generator" content="docfx 2.2.2.0">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="engineering_guideline">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/guideline/engineering_guidelines.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/guideline/engineering_guidelines.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="engineering-guidelines">Engineering Guidelines</h1>
               
 <h2 id="basics">Basics</h2>
@@ -81,17 +81,13 @@
 <blockquote><p>extension: <strong>.cs</strong></p>
 <pre><code class="lang-csharp">// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-</code></pre>
-<p>extension: <strong>.js</strong></p>
+</code></pre><p>extension: <strong>.js</strong></p>
 <pre><code class="lang-js">// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-</code></pre>
-<p>extension: <strong>.css</strong></p>
+</code></pre><p>extension: <strong>.css</strong></p>
 <pre><code class="lang-css">/* Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
-</code></pre>
-<p>extension: <strong>.tmpl</strong>, <strong>.tmpl.partial</strong></p>
+</code></pre><p>extension: <strong>.tmpl</strong>, <strong>.tmpl.partial</strong></p>
 <pre><code class="lang-mustache">{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
-</code></pre>
-</blockquote>
+</code></pre></blockquote>
 <h3 id="external-dependencies">External dependencies</h3>
 <p>This refers to dependencies on projects (that is, NuGet packages) outside of the <code>docfx</code> repo, and especially outside of Microsoft. Adding new dependencies requires additional approval.</p>
 <p>Current approved dependencies are:</p>
@@ -105,7 +101,7 @@
 <h3 id="code-reviews-and-checkins">Code reviews and checkins</h3>
 <p>To help ensure that only the highest quality code makes its way into the project, please submit all your code changes to GitHub as PRs. This includes runtime code changes, unit test updates, and deployment scripts. For example, sending a PR for just an update to a unit test might seem like a waste of time but the unit tests are just as important as the product code. As such, reviewing changes to unit tests is just as important.</p>
 <p>The advantages are numerous: Improving code quality; increasing visibility on changes and their potential impact; avoiding duplication of effort; and creating general awareness of progress being made in various areas.</p>
-<p>In general a PR should be signed off(using the :+1: emoticon) by the owner of that code.</p>
+<p>In general a PR should be signed off(using the <span class="emoji" shortcode="+1">👍</span> emoticon) by the owner of that code.</p>
 <p>To commit the PR to the repo, <strong>do not use the Big Green Button</strong>. Instead, do a typical push that you would use with Git (for example, local pull, rebase, merge or push).</p>
 <h2 id="source-code-management">Source Code Management</h2>
 <h3 id="branch-strategy">Branch strategy</h3>

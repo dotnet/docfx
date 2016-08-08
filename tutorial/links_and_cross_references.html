@@ -8,7 +8,7 @@
     <title>Links and Cross References | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Links and Cross References | DocFX website ">
-    <meta name="generator" content="docfx 2.2.2.0">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,17 +72,15 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/links_and_cross_references.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/links_and_cross_references.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="links-and-cross-references">Links and Cross References</h1>
               
 <p>Markdown provides a <a href="https://daringfireball.net/projects/markdown/syntax#link">syntax</a> to create hyperlinks.
 For example, the following syntax:</p>
 <pre><code class="lang-markdown">[bing](http://www.bing.com)
-</code></pre>
-<p>Will render to:</p>
+</code></pre><p>Will render to:</p>
 <pre><code class="lang-html">&lt;a href=&quot;http://www.bing.com&quot;&gt;bing&lt;/a&gt;
-</code></pre>
-<p>Here the url in the link could be either absolute url pointing to another website (<code>www.bing.com</code> in the above example),
+</code></pre><p>Here the url in the link could be either absolute url pointing to another website (<code>www.bing.com</code> in the above example),
 or a relative url pointing to a local resource on the same server (for example, <code>about.html</code>).</p>
 <p>When working with large documentation project that contains multiple files, it is often needed to link to another Markdown file using the relative path in the source directory.
 Markdown spec doesn&#39;t have a clear definition of how this should be supported.
@@ -98,11 +96,9 @@ This is especially common in API reference docs, for example, you may want to us
 \- file1.md
 </code></pre><p>You can use relative path to reference <code>file2.md</code> in <code>file1.md</code>:</p>
 <pre><code class="lang-markdown">[file2](subfolder/file2.md)
-</code></pre>
-<p>DocFX converts it to a relative path in output folder structure:</p>
+</code></pre><p>DocFX converts it to a relative path in output folder structure:</p>
 <pre><code class="lang-html">&lt;a href=&quot;subfolder/file2.html&quot;&gt;file2&lt;/a&gt;
-</code></pre>
-<p>You can see the source file name (<code>.md</code>) is replaced with output file name (<code>.html</code>).</p>
+</code></pre><p>You can see the source file name (<code>.md</code>) is replaced with output file name (<code>.html</code>).</p>
 <blockquote><p>DocFX does not simply replace the file extension here (<code>.md</code> to <code>.html</code>), it also tracks the mapping between input and output files to make sure source file path will resolve to correct output path. For example, if in the above case, <code>subfolder</code> is renamed to <code>subfolder2</code> using <a href="docfx.exe_user_manual.html#4-supported-name-files-file-mapping-format">file mapping</a> in <code>docfx.json</code>, in output html, the link url will also resolve to <code>subfolder2/file2.html</code>.</p>
 </blockquote>
 <h3 id="relative-path-vs-absolute-path">Relative path vs. absolute path</h3>
@@ -112,22 +108,19 @@ This is especially common in API reference docs, for example, you may want to us
 <p>You can also use absolute path (path starts with <code>/</code>) to link to another file, but DocFX won&#39;t check its correctness for you and will keep it as-is in the output HTML.
 That means you should use the output file path as absolute path. For example, in the above case, you can also write the link as follows:</p>
 <pre><code class="lang-markdown">[file2](/subfolder/file2.html)
-</code></pre>
-<p>Sometimes you may find it&#39;s complicated to calculate relative path between two files.
+</code></pre><p>Sometimes you may find it&#39;s complicated to calculate relative path between two files.
 DocFX also supports path starts with <code>~</code> to represent path relative to the root directory of your project (i.e. where <code>docfx.json</code> is located).
 This kind of path will also be validated and resolved during build. For example, in the above case, you can write the following links in <code>file2.md</code>:</p>
 <pre><code class="lang-markdown">[file1](~/file1.md)
 
 [file1](../file1.md)
-</code></pre>
-<p>Both will resolve to <code>../file1.html</code> in output html.</p>
+</code></pre><p>Both will resolve to <code>../file1.html</code> in output html.</p>
 <blockquote><p><a href="https://daringfireball.net/projects/markdown/syntax#autolink">Automatic link</a> doesn&#39;t support relative path. If you write something like <code>&lt;file.md&gt;</code>, it will be treated as an HTML tag rather than a link.</p>
 </blockquote>
 <h3 id="links-in-file-includes">Links in file includes</h3>
 <p>If you use <a href="../spec/docfx_flavored_markdown.html#file-inclusion">file include</a> to include another file, the links in included file is relative to the included file. For example, if <code>file1.md</code> includes <code>file2.md</code>:</p>
 <pre><code class="lang-markdown">[!include[file2](subfolder/file2.md)]
-</code></pre>
-<p>All links in <code>file2.md</code> are relative to the <code>file2.md</code> itself, even when it&#39;s included by <code>file1.md</code>.</p>
+</code></pre><p>All links in <code>file2.md</code> are relative to the <code>file2.md</code> itself, even when it&#39;s included by <code>file1.md</code>.</p>
 <p>Please note that the file path in include syntax is handled differently than Markdown link. You can only use relative path to specify location of the included file. And DocFX doesn&#39;t require included file to be included in <code>docfx.json</code>.</p>
 <blockquote><p>Each file in <code>docfx.json</code> will build into an output file. But included files usually don&#39;t need to build into individual topics. So it&#39;s not recommended to include them in <code>docfx.json</code>.</p>
 </blockquote>
@@ -142,11 +135,9 @@ This kind of path will also be validated and resolved during build. For example,
 </ol>
 <p>The basic syntax for cross referencing a file is:</p>
 <pre><code class="lang-markdown">&lt;xref:id_of_another_file&gt;
-</code></pre>
-<p>This is similar to <a href="https://daringfireball.net/projects/markdown/syntax#autolink">automatic link</a> syntax in Markdown but with a <code>xref</code> scheme. This link will build into:</p>
+</code></pre><p>This is similar to <a href="https://daringfireball.net/projects/markdown/syntax#autolink">automatic link</a> syntax in Markdown but with a <code>xref</code> scheme. This link will build into:</p>
 <pre><code class="lang-html">&lt;a href=&quot;path_of_another_file&quot;&gt;title_of_another_file&lt;/a&gt;
-</code></pre>
-<p>As you can see, one benefit of using cross reference is that you don&#39;t need to specify the link text and DocFX will automatically resolve it for you.</p>
+</code></pre><p>As you can see, one benefit of using cross reference is that you don&#39;t need to specify the link text and DocFX will automatically resolve it for you.</p>
 <blockquote><p>Title is extracted from the first heading of the Markdown file. Or you can also specify title using title metadata.</p>
 </blockquote>
 <h3 id="define-uid">Define UID</h3>
@@ -157,8 +148,7 @@ uid: fileA
 
 # This is fileA
 ...
-</code></pre>
-<blockquote><p>UID is supposed to be unique inside a project. If you define duplicate UID for two files, the resolve result is undetermined.</p>
+</code></pre><blockquote><p>UID is supposed to be unique inside a project. If you define duplicate UID for two files, the resolve result is undetermined.</p>
 </blockquote>
 <p>For API reference files, UID is auto generated by mangling API&#39;s signature. For example, System.String class&#39;s UID is <code>System.String</code>. You can open the generated YAML files to lookup the value of UID.</p>
 <blockquote><p>Conceptual Markdown file doesn&#39;t have UID generated by default. So it cannot be cross referenced unless you give it a UID.</p>
@@ -168,11 +158,9 @@ uid: fileA
 <h4 id="markdown-link">Markdown link</h4>
 <p>In Markdown link, you can also use <code>xref</code> in link url:</p>
 <pre><code class="lang-markdown">[link_text](xref:uid_of_another_file)
-</code></pre>
-<p>This will resolve to:</p>
+</code></pre><p>This will resolve to:</p>
 <pre><code class="lang-html">&lt;a href=&quot;path_of_another_file&quot;&gt;link_text&lt;/a&gt;
-</code></pre>
-<p>In this case, we won&#39;t resolve the link text for you because you already specified it, unless the <code>link_text</code> is empty.</p>
+</code></pre><p>In this case, we won&#39;t resolve the link text for you because you already specified it, unless the <code>link_text</code> is empty.</p>
 <h4 id="shorthand-form">Shorthand form</h4>
 <p>You can also use <code>@uid_to_another_file</code> to quickly reference another file. There are some rules for DocFX to determine whether a string following <code>@</code> are UID:</p>
 <ol>
@@ -193,8 +181,7 @@ uid: fileA
 <pre><code class="lang-markdown">&lt;xref:uid_to_file#anchor_name&gt;
 
 [link_text](xref:uid_to_file#anchor_name]
-</code></pre>
-<p>Both urls will resolve to <code>url_to_file#anchor_name</code> in output HTML.</p>
+</code></pre><p>Both urls will resolve to <code>url_to_file#anchor_name</code> in output HTML.</p>
 <p>The link text still resolves to the title of the whole file. If it&#39;s not what you need, you can specify your own link text.</p>
 <blockquote><p>Hashtag in <code>xref</code> is always treated as separator between file name and anchor name. That means if you have <code>#</code> in UID, it has to be <a href="https://en.wikipedia.org/wiki/Percent-encoding">encoded</a> to <code>%23</code>.</p>
 </blockquote>
@@ -205,11 +192,9 @@ uid: fileA
 <pre><code class="lang-markdown">[compare strings](xref:System.String#compare-strings)
 
 [compare strings](system.string.yml#compare-strings)
-</code></pre>
-<p>Both will render to:</p>
+</code></pre><p>Both will render to:</p>
 <pre><code class="lang-html">&lt;a href=&quot;system.string.html#compare-strings&quot;&gt;compare strings&lt;/a&gt;
-</code></pre>
-<h2 id="cross-reference-between-projects">Cross reference between projects</h2>
+</code></pre><h2 id="cross-reference-between-projects">Cross reference between projects</h2>
 <p>Another common need is to reference topics from an external project. For example, when you&#39;re writing the documentation for your own .NET library, you&#39;ll want to add some links that point to types in .NET base class library. DocFX gives you this functionality by exporting all UIDs in a project into a map file and you can import it in another project to use them.</p>
 <h3 id="cross-reference-map-file">Cross reference map file</h3>
 <p>When building a DocFX project, there will be an <code>xrefmap.yml</code> generated under output folder. This file contains information for all topics that have UID defined and their corresponding urls. The format of <code>xrefmap.yml</code> looks like this:</p>
@@ -219,8 +204,7 @@ uid: fileA
   href: url_of_topic.html
   fullName: full_title_of_topic
 - ...
-</code></pre>
-<p>It&#39;s a YAML object that contains following properties:</p>
+</code></pre><p>It&#39;s a YAML object that contains following properties:</p>
 <ol>
 <li><code>references</code>: a list of topic information, each item contains following properties:<ul>
 <li><code>uid</code>: UID to a conceptual topic or API reference</li>
@@ -243,8 +227,7 @@ uid: fileA
     ...
   }
 }
-</code></pre>
-<p>The value of <code>xrefMaps</code> could be a string or a list of strings that contain the path/url to cross reference maps.</p>
+</code></pre><p>The value of <code>xrefMaps</code> could be a string or a list of strings that contain the path/url to cross reference maps.</p>
 <blockquote><p>DocFX supports reading cross reference map from a local file or a web location. It&#39;s recommended to deploy <code>xrefmap.yml</code> to the website together with topic files so that others can directly use its url in <code>docfx.json</code> instead of downloading it to local.</p>
 </blockquote>
 <p>Then you can use any cross reference syntax in your Markdown file, DocFX will be able to resolve it to the right target url.</p>

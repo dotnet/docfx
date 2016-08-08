@@ -8,7 +8,7 @@
     <title>Doc-as-Code: Metadata Format Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Doc-as-Code: Metadata Format Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.2.2.0">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/spec/metadata_format_spec.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/spec/metadata_format_spec.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="doc-as-code-metadata-format-specification">Doc-as-Code: Metadata Format Specification</h1>
               
 <h2 id="0-introduction">0. Introduction</h2>
@@ -108,8 +108,7 @@
 <h3 id="1-3-alias">1.3 Alias</h3>
 <p><em>Identifier</em> could be very long, which makes it difficult to write by hand in Markdown. For example, it&#39;s easy to create a long <em>ID</em> in C# like this:</p>
 <pre><code class="lang-markdown">Format(System.IFormatProvider,System.String,System.Object,System.Object)
-</code></pre>
-<p>We can create short <em>alias</em> for <em>items</em> so that they can be referenced easily.</p>
+</code></pre><p>We can create short <em>alias</em> for <em>items</em> so that they can be referenced easily.</p>
 <p><em>Alias</em> is same as <em>ID</em>, except:</p>
 <ol>
 <li>It doesn&#39;t have to be unique.</li>
@@ -182,8 +181,7 @@
   parent: System.Object
 references:
 ...
-</code></pre>
-<blockquote><p><em>Items</em> <strong>SHOULD</strong> be organized based upon how they will display in documentation. For example, if you want all members of a class be displayed in a single page, put all members in a single metadata file.</p>
+</code></pre><blockquote><p><em>Items</em> <strong>SHOULD</strong> be organized based upon how they will display in documentation. For example, if you want all members of a class be displayed in a single page, put all members in a single metadata file.</p>
 </blockquote>
 <h3 id="2-3-item-object">2.3 Item Object</h3>
 <p>In additional to the <em>properties</em> listed in last section, <em>item object</em> also has some <strong>OPTIONAL</strong> <em>properties</em>:</p>
@@ -242,8 +240,7 @@ references:
     path: src/system/collections/generic/dictionary.cs
     startLine: 1
     endLine: 100
-</code></pre>
-<h3 id="2-4-custom-properties">2.4 Custom Properties</h3>
+</code></pre><h3 id="2-4-custom-properties">2.4 Custom Properties</h3>
 <p>Besides the predefined <em>properties</em>, <em>item</em> can have its own <em>properties</em>. One restriction is <em>property</em> name <strong>MUST NOT</strong> contains dots, as dot in <em>property</em> name will have special meaning (described in later section).</p>
 <h3 id="2-5-reference-section">2.5 Reference Section</h3>
 <p>Reference section also contains a list of <em>items</em>. These <em>items</em> serve as the references by <em>items</em> in <em>item section</em> and won&#39;t show up in documentation. Also, reference <em>item</em> doesn&#39;t need to have full <em>properties</em>, it just contains necessary information needed by its referrer (for example, name or URL).</p>
@@ -264,16 +261,14 @@ references:
 - uid: System.Int32
   name: int
   url: system.int32.yml
-</code></pre>
-<h3 id="2-6-multiple-language-support">2.6 Multiple Language Support</h3>
+</code></pre><h3 id="2-6-multiple-language-support">2.6 Multiple Language Support</h3>
 <p>An <em>item</em> may need to support multiple languages. For example, in .NET, a class can be used in C#, VB, managed C++ and F#. Different languages may have differences in <em>properties</em>. For example, a list of string is displayed as <code>List&lt;string&gt;</code> in C#, while <code>List(Of string)</code> in VB.</p>
 <p>To support this scenario, we introduce a concept of language context to allow defining different <em>property</em> values in different languages.</p>
 <p>If a <em>property</em> name is in the form of <code>property_name.language_name</code>, it defines the value of <code>property_name</code> under <code>language_name</code>. For example:</p>
 <pre><code class="lang-yaml">- uid: System.Collections.Generic.Dictionary`2
   name.csharp: Dictionary&lt;TKey, TValue&gt;
   name.vb: Dictionary(Of TKey, TValue)
-</code></pre>
-<p>This means the name of dictionary is <code>Dictionary&lt;TKey, TValue&gt;</code> in C# and <code>Dictionary(Of TKey, TValue)</code> in VB.</p>
+</code></pre><p>This means the name of dictionary is <code>Dictionary&lt;TKey, TValue&gt;</code> in C# and <code>Dictionary(Of TKey, TValue)</code> in VB.</p>
 <p>The following <em>properties</em> <strong>SHALL NOT</strong> be overridden in language context: uid, id, alias, children, and parent.</p>
 <h2 id="3-work-with-metadata-in-markdown">3. Work with Metadata in Markdown </h2>
 <h3 id="3-1-yaml-metadata-section">3.1 YAML Metadata Section</h3>
@@ -285,8 +280,7 @@ summary: String class
 ---
 
 This is a **string** class.
-</code></pre>
-<p>You can have multiple YAML sections inside a single Markdown file, but in a single YAML section, there <strong>MUST</strong> be only one <em>item</em>.</p>
+</code></pre><p>You can have multiple YAML sections inside a single Markdown file, but in a single YAML section, there <strong>MUST</strong> be only one <em>item</em>.</p>
 <p>The YAML metadata section does not have to contain all <em>properties</em>. The only <em>property</em> that <strong>MUST</strong> appear is &quot;uid&quot;, which is used to match the same <em>item</em> in metadata file.</p>
 <p>The most common scenario for using YAML section is to specify which <em>item</em> the markdown doc belongs to. But you can also overwrite <em>item</em> <em>property</em> by defining one with the same name in YAML section. In the above example, the <em>property</em> &quot;summary&quot; will overwrite the same one in metadata.</p>
 <p>As with language context, the following <em>properties</em> <strong>SHALL NOT</strong> be overridden: uid, id, alias, children, and parent.</p>
@@ -297,19 +291,16 @@ For example, to cross reference <code>System.String</code>:</p>
 <pre><code class="lang-markdown">[System.String](xref:System.String)
 
 &lt;xref:System.String&gt;
-</code></pre>
-<blockquote><p>Since <em>item</em> reference is a URI, special characters (like <code>#</code>, <code>?</code>) <strong>MUST</strong> be <a href="https://tools.ietf.org/html/rfc3986#section-2.1">encoded</a>.</p>
+</code></pre><blockquote><p>Since <em>item</em> reference is a URI, special characters (like <code>#</code>, <code>?</code>) <strong>MUST</strong> be <a href="https://tools.ietf.org/html/rfc3986#section-2.1">encoded</a>.</p>
 </blockquote>
 <p>We also introduce a shorthand markdown syntax to cross reference easily:</p>
 <p>If a string starts with <code>@</code>, and followed by a string enclosed by quotes <code>&#39;</code> or double quotes <code>&quot;</code>, it will be treated as an <em>item</em> reference. The string inside <code>&quot;&quot;</code> or <code>&#39;&#39;</code> is the <em>UID</em> of the <em>item</em>. Here is one example:</p>
 <pre><code class="lang-markdown">@&quot;System.String&quot;
-</code></pre>
-<blockquote><p>Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@&quot;int&quot;</code>, we may also want to allow <code>@int</code>.</p>
+</code></pre><blockquote><p>Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@&quot;int&quot;</code>, we may also want to allow <code>@int</code>.</p>
 </blockquote>
 <p>When rendering references in Markdown, they will expand into a link with the <em>item</em>&#39;s name as link title. You can also customize the link title using the standard syntax of Markdown:</p>
 <pre><code class="lang-markdown">[Dictionary](xref:System.Collections.Generic.Dictionary`2)&lt;[String](xref:System.String), [String](xref:System.String)&gt;
-</code></pre>
-<p>Will be rendered to:
+</code></pre><p>Will be rendered to:
 <a class="xref" href="https://msdn.microsoft.com/en-us/library/xfhwa508(v=vs.110).aspx">Dictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</p>
 <p>Besides <em>UID</em>, we also allow referencing items using <em>ID</em> and <em>alias</em>, in the Markdown processor, the below algorithm <strong>SHOULD</strong> be implemented to resolve references.</p>
 <p>Check whether the reference matches:</p>

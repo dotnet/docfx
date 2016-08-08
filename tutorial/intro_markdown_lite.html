@@ -8,7 +8,7 @@
     <title>Markdown Lite | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Markdown Lite | DocFX website ">
-    <meta name="generator" content="docfx 2.2.2.0">
+    <meta name="generator" content="docfx 2.3.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/master/Documentation/tutorial/intro_markdown_lite.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
+              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/intro_markdown_lite.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="markdown-lite">Markdown Lite</h1>
               
 <h2 id="introduction">Introduction</h2>
@@ -109,8 +109,7 @@ we can change it to another, or just validate.</p>
 <p>For example, we can create a rewriter to change all heading token with depth + 1:</p>
 <pre><code class="lang-csharp">MarkdownTokenRewriterFactory.FromLambda&lt;IMarkdownRewriteEngine, MarkdownHeadingBlockToken&gt;(
     (engine, token) =&gt; new MarkdownHeadingBlockToken(token.Rule, token.Context, token.Content, token.Id, token.Depth + 1, token.SourceInfo);
-</code></pre>
-<h3 id="step-3-render">Step 3: Render</h3>
+</code></pre><h3 id="step-3-render">Step 3: Render</h3>
 <p>In this step, it renders models to text content (html format by default).
 To simplify extension, we created an <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter.html#Microsoft_DocAsCode_MarkdownLite_MarkdownRendererAdapter">adapter</a>,
 the adapter invoke methods by following rules:</p>
@@ -137,11 +136,9 @@ It can create instances when needed.</p>
 <h3 id="define-markdown-syntax">Define markdown syntax</h3>
 <p>Define markdown:</p>
 <pre><code class="lang-md">: My label
-</code></pre>
-<p>should be rendered as following html:</p>
+</code></pre><p>should be rendered as following html:</p>
 <pre><code class="lang-html">&lt;div id=&quot;My label&quot;&gt;&lt;/div&gt;
-</code></pre>
-<h3 id="select-token-kind">Select token kind</h3>
+</code></pre><h3 id="select-token-kind">Select token kind</h3>
 <p>First of all, we should select the context for this rule.
 And in this goal, the new line is required.
 So it should be a <a href="https://daringfireball.net/projects/markdown/syntax#block">block token</a>, all of the names for class should contain <code>Block</code>.</p>
@@ -165,8 +162,7 @@ So it should be a <a href="https://daringfireball.net/projects/markdown/syntax#b
 
     public SourceInfo SourceInfo { get; }
 }
-</code></pre>
-<h3 id="define-rule">Define rule</h3>
+</code></pre><h3 id="define-rule">Define rule</h3>
 <p>Create a rule class as following:</p>
 <pre><code class="lang-csharp">public class MarkdownMyLabelBlockRule : IMarkdownRule
 {
@@ -185,8 +181,7 @@ So it should be a <a href="https://daringfireball.net/projects/markdown/syntax#b
         return new MarkdownMyLabelBlockToken(this, parser.Context, match.Group[1].Value, sourceInfo);
     }
 }
-</code></pre>
-<h3 id="define-renderer">Define renderer</h3>
+</code></pre><h3 id="define-renderer">Define renderer</h3>
 <p>Create a renderer class as following:</p>
 <pre><code class="lang-csharp">public class MyRenderer : HtmlRenderer
 {
@@ -195,8 +190,7 @@ So it should be a <a href="https://daringfireball.net/projects/markdown/syntax#b
         return StringBuffer.Empty + &quot;&lt;div id=\&quot;&quot; + token.Label + &quot;\&quot;&gt;&lt;/div&gt;&quot;;
     }
 }
-</code></pre>
-<h3 id="define-engine-builder">Define engine builder</h3>
+</code></pre><h3 id="define-engine-builder">Define engine builder</h3>
 <p>Create an engine builder class as following:</p>
 <pre><code class="lang-csharp">public class MyEngineBuilder : GfmEngineBuilder
 {
@@ -205,8 +199,7 @@ So it should be a <a href="https://daringfireball.net/projects/markdown/syntax#b
          BlockRules = BlockRules.Insert(0, new MarkdownMyLabelBlockRule());
     }
 }
-</code></pre>
-<h3 id="markup-it">Markup it!</h3>
+</code></pre><h3 id="markup-it">Markup it!</h3>
 <p>Then use your custom markdown in your code:</p>
 <pre><code class="lang-csharp">public string MarkupMyMarkdown(string markdown)
 {
@@ -215,7 +208,6 @@ So it should be a <a href="https://daringfireball.net/projects/markdown/syntax#b
     return engine.Markup(markdown);
 }
 </code></pre>
-
             </article>
           </div>
           
