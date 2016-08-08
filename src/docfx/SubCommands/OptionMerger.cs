@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             if (merger == null)
             {
-                throw new ArgumentNullException("the Merger function should not be null");
+                throw new ArgumentNullException(nameof(merger));
             }
 
             Dictionary<string, T> merged;
