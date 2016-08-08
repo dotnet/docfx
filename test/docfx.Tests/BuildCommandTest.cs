@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Tests
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     using Xunit;
 
@@ -191,8 +192,16 @@ namespace Microsoft.DocAsCode.Tests
             {
                 ConfigFile = configFile,
             }).Config;
-            Assert.Equal(config0.GlobalMetadata["key"], "value");
-            Assert.Equal(config0.FileMetadata["key"].Items.Count, 5);
+            Assert.Equal("value", config0.GlobalMetadata["key"]);
+            var actual = config0.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
+            Assert.Equal(new List<string> 
+            {
+                "filepattern1: string",
+                "filePattern2: 2",
+                "filePattern3: True",
+                "filePattern4: System.Object[]",
+                "filePattern5: System.Collections.Generic.Dictionary`2[System.String,System.Object]"
+            }, actual);
 
             var config1 = new BuildCommand(new BuildCommandOptions
             {
@@ -200,9 +209,18 @@ namespace Microsoft.DocAsCode.Tests
                 GlobalMetadataFilePath = Path.GetFullPath(deprecatedGlobalMetdataFile),
                 FileMetadataFilePath = Path.GetFullPath(deprecatedFileMetadataFile)
             }).Config;
-            Assert.Equal(config1.GlobalMetadata["key"], "global.deprecated.json");
-            Assert.Equal(config1.GlobalMetadata["global.deprecated"], "deprecated");
-            Assert.Equal(config1.FileMetadata["key"].Items.Count, 6);
+            Assert.Equal("global.deprecated.json", config1.GlobalMetadata["key"]);
+            Assert.Equal("deprecated", config1.GlobalMetadata["global.deprecated"]);
+            actual = config1.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
+            Assert.Equal(new List<string> 
+            {
+                "filepattern1: string",
+                "filePattern2: 2",
+                "filePattern3: True",
+                "filePattern4: System.Object[]",
+                "filePattern5: System.Collections.Generic.Dictionary`2[System.String,System.Object]",
+                "filepattern1: file.deprecated.json"
+            }, actual);
 
             var config2 = new BuildCommand(new BuildCommandOptions
             {
@@ -220,11 +238,22 @@ namespace Microsoft.DocAsCode.Tests
                     Path.GetFullPath(fileMetadataFile2)
                 }
             }).Config;
-            Assert.Equal(config2.GlobalMetadata["key"], "global2.json");
-            Assert.Equal(config2.GlobalMetadata["global1"], "1");
-            Assert.Equal(config2.GlobalMetadata["global2"], "2");
-            Assert.Equal(config2.GlobalMetadata["global.deprecated"], "deprecated");
-            Assert.Equal(config2.FileMetadata["key"].Items.Count, 8);
+            Assert.Equal("global2.json", config2.GlobalMetadata["key"]);
+            Assert.Equal("1", config2.GlobalMetadata["global1"]);
+            Assert.Equal("2", config2.GlobalMetadata["global2"]);
+            Assert.Equal("deprecated", config2.GlobalMetadata["global.deprecated"]);
+            actual = config2.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
+            Assert.Equal(new List<string> 
+            {
+                "filepattern1: string",
+                "filePattern2: 2",
+                "filePattern3: True",
+                "filePattern4: System.Object[]",
+                "filePattern5: System.Collections.Generic.Dictionary`2[System.String,System.Object]",
+                "filepattern1: file.deprecated.json",
+                "filepattern1: file1.json",
+                "filepattern1: file2.json"
+            }, actual);
 
             var config3 = new BuildCommand(new BuildCommandOptions
             {
@@ -237,10 +266,10 @@ namespace Microsoft.DocAsCode.Tests
                 },
                 GlobalMetadataFilePath = Path.GetFullPath(deprecatedGlobalMetdataFile)
             }).Config;
-            Assert.Equal(config3.GlobalMetadata["key"], "--globalMetadata");
-            Assert.Equal(config3.GlobalMetadata["global1"], "1");
-            Assert.Equal(config3.GlobalMetadata["global2"], "2");
-            Assert.Equal(config3.GlobalMetadata["global.deprecated"], "deprecated");
+            Assert.Equal("--globalMetadata", config3.GlobalMetadata["key"]);
+            Assert.Equal("1", config3.GlobalMetadata["global1"]);
+            Assert.Equal("2", config3.GlobalMetadata["global2"]);
+            Assert.Equal("deprecated", config3.GlobalMetadata["global.deprecated"]);
         }
     }
 }
