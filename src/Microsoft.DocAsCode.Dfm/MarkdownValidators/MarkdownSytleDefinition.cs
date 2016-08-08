@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         public const string MarkdownStyleDefinitionFilePostfix = ".md.style";
         public const string MarkdownStyleDefinitionFolderName = "md.styles";
 
+        [JsonProperty("metadata")]
+        public Dictionary<string, MarkdownMetadataValidationRule> MetadataRules { get; set; }
         [JsonProperty("rules")]
         public Dictionary<string, MarkdownValidationRule> Rules { get; set; }
         [JsonProperty("tagRules")]

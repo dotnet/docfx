@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Collections.Immutable;
     using System.Composition.Hosting;
     using System.Linq;
-    using System.IO;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
@@ -102,55 +101,13 @@ namespace Microsoft.DocAsCode.Dfm
         {
             try
             {
-                var builder = new MarkdownValidatorBuilder(host);
-                LoadValidatorConfig(baseDir, templateDir, builder);
-                return builder.Create();
+                return MarkdownValidatorBuilder.Create(host, baseDir, templateDir).CreateRewriter();
             }
             catch (Exception ex)
             {
                 Logger.LogWarning($"Fail to init markdown style, details:{Environment.NewLine}{ex.ToString()}");
             }
             return null;
-        }
-
-        private static void LoadValidatorConfig(string baseDir, string templateDir, MarkdownValidatorBuilder builder)
-        {
-            if (string.IsNullOrEmpty(baseDir))
-            {
-                return;
-            }
-            if (templateDir != null)
-            {
-                var configFolder = Path.Combine(templateDir, MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName);
-                if (Directory.Exists(configFolder))
-                {
-                    LoadValidatorDefinition(configFolder, builder);
-                }
-            }
-            var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
-            if (File.Exists(configFile))
-            {
-                var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
-                builder.AddValidators(config.Rules);
-                builder.AddTagValidators(config.TagRules);
-                builder.AddSettings(config.Settings);
-            }
-            builder.EnsureDefaultValidator();
-        }
-
-        private static void LoadValidatorDefinition(string mdStyleDefPath, MarkdownValidatorBuilder builder)
-        {
-            if (Directory.Exists(mdStyleDefPath))
-            {
-                foreach (var configFile in Directory.GetFiles(mdStyleDefPath, "*" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix))
-                {
-                    var fileName = Path.GetFileName(configFile);
-                    var category = fileName.Remove(fileName.Length - MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
-                    var config = JsonUtility.Deserialize<MarkdownSytleDefinition>(configFile);
-                    builder.AddTagValidators(category, config.TagRules);
-                    builder.AddValidators(category, config.Rules);
-                }
-            }
         }
 
         public DfmEngine CreateDfmEngine(object renderer)

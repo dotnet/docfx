@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Security.Cryptography;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
@@ -59,19 +60,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             _lastBuildInfo = LoadLastBuildInfo();
         }
 
-        public Manifest Build(DocumentBuildParameters parameter)
+        public void Build(DocumentBuildParameters parameter)
         {
-            using (var builder = new SingleDocumentBuilder
-            {
-                Container = _container,
-                CurrentBuildInfo = _currentBuildInfo,
-                IntermediateFolder = _intermediateFolder,
-                MetadataValidators = MetadataValidators,
-                Processors = Processors
-            })
-            {
-                return builder.Build(parameter);
-            }
+            Build(new DocumentBuildParameters[] { parameter }, parameter.OutputBaseDir);
         }
 
         public void Build(IEnumerable<DocumentBuildParameters> parameters, string outputDirectory)
@@ -92,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.LogInfo($"Start building for version: {parameter.VersionName}");
                 }
-                manifests.Add(Build(parameter));
+                manifests.Add(BuildCore(parameter));
             }
             var generatedManifest = MergeManifest(manifests);
 
@@ -101,6 +92,34 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             // Save to manifest.json
             SaveManifest(generatedManifest, outputDirectory);
+        }
+
+        internal Manifest BuildCore(DocumentBuildParameters parameter)
+        {
+            using (var builder = new SingleDocumentBuilder
+            {
+                Container = _container,
+                CurrentBuildInfo = _currentBuildInfo,
+                IntermediateFolder = _intermediateFolder,
+                MetadataValidators = MetadataValidators.Concat(GetMetadataRules(parameter)).ToList(),
+                Processors = Processors
+            })
+            {
+                return builder.Build(parameter);
+            }
+        }
+
+        private IEnumerable<IInputMetadataValidator> GetMetadataRules(DocumentBuildParameters parameter)
+        {
+            try
+            {
+                var mvb = MarkdownValidatorBuilder.Create(_container, parameter.Files.DefaultBaseDir, parameter.TemplateDir);
+                return mvb.GetEnabledMetadataRules();
+            }
+            catch (Exception)
+            {
+                return Enumerable.Empty<IInputMetadataValidator>();
+            }
         }
 
         private void PrepareMetadata(DocumentBuildParameters parameters)
