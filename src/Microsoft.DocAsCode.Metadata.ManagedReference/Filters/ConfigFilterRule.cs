@@ -13,5 +13,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         [YamlMember(Alias = "apiRules")]
         public List<ConfigFilterRuleItemUnion> ApiRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
+
+        [YamlMember(Alias = "attributeRules")]
+        public List<ConfigFilterRuleItemUnion> AttributeRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
     }
 }

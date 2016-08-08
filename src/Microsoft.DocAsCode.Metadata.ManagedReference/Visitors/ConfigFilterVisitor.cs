@@ -29,21 +29,41 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 throw new ArgumentNullException("symbol");
             }
 
-            if (!Inner.CanVisitApi(symbol, wantProtectedMember,outer))
+            if (!Inner.CanVisitApi(symbol, wantProtectedMember, outer))
             {
                 return false;
             }
 
-            return CanVisitCore(_configRule.ApiRules, symbol, wantProtectedMember, outer);
+            return CanVisitCore(_configRule.ApiRules, outer.CanVisitApi, symbol, wantProtectedMember, outer);
         }
 
-        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        protected override bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        {
+            if (symbol == null)
+            {
+                throw new ArgumentNullException("symbol");
+            }
+
+            if (symbol.Kind == SymbolKind.Method && symbol.ContainingType != null)
+            {
+                symbol = symbol.ContainingType;
+            }
+
+            if (!Inner.CanVisitAttribute(symbol, wantProtectedMember, outer))
+            {
+                return false;
+            }
+
+            return CanVisitCore(_configRule.AttributeRules, outer.CanVisitAttribute, symbol, wantProtectedMember, outer);
+        }
+
+        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
             var current = symbol;
             var parent = symbol.ContainingSymbol;
             while (!(current is INamespaceSymbol) && parent != null)
             {
-                if (!outer.CanVisitApi(parent, wantProtectedMember, outer))
+                if (!visitFunc(parent, wantProtectedMember, outer))
                 {
                     return false;
                 }

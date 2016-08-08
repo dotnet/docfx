@@ -103,6 +103,9 @@
     <None Include="TestData\filterconfig.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="TestData\filterconfig_attribute.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\System.Console.csyml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

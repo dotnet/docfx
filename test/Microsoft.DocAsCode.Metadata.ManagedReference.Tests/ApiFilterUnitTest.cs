@@ -149,6 +149,33 @@ namespace Test1
             }
         }
 
+        [Fact]
+        public void TestAttributeFilter()
+        {
+            string code = @"
+using System;
+using System.Runtime.InteropServices;
+
+namespace Test1
+{
+    [Serializable]
+    [ComVisibleAttribute(true)]
+    public class Class1
+    {
+        public void Func1(int i)
+        {
+            return;
+        }
+    }
+}";
+            string configFile = "TestData/filterconfig_attribute.yml";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), filterConfigFile: configFile);
+            var @namespace = output.Items[0];
+            var class1 = @namespace.Items[0];
+            Assert.Equal(1, class1.Attributes.Count);
+            Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
+        }
+
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromCSharpCode(code, "test.dll", references);
