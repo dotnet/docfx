@@ -152,7 +152,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                        where g.Count() > 1
                                        select g)
             {
-                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output relative file \"{duplicates.Key}\"");
+                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates)}\" writing to the same output file \"{duplicates.Key}\"");
                 itemsToRemove.UnionWith(duplicates.Skip(1));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
