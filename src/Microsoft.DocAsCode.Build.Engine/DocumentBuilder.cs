@@ -147,7 +147,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             var itemsToRemove = new HashSet<string>();
             foreach (var duplicates in from m in manifestItems
                                        from output in m.OutputFiles.Values
-                                       group m.SourceRelativePath by output into g
+                                       let relativePath = output?.RelativePath
+                                       group m.SourceRelativePath by relativePath into g
                                        where g.Count() > 1
                                        select g)
             {
