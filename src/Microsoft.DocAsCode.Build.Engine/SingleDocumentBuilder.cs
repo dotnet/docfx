@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Text;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;

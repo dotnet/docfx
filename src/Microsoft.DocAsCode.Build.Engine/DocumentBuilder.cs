@@ -114,10 +114,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             try
             {
                 var mvb = MarkdownValidatorBuilder.Create(_container, parameter.Files.DefaultBaseDir, parameter.TemplateDir);
-                return mvb.GetEnabledMetadataRules();
+                return mvb.GetEnabledMetadataRules().ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.LogWarning($"Fail to init markdown style, details:{Environment.NewLine}{ex.ToString()}");
                 return Enumerable.Empty<IInputMetadataValidator>();
             }
         }
