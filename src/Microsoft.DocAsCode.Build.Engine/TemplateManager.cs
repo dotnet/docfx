@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ProcessTheme(string outputDirectory, bool overwrite)
         {
-            using (new LoggerPhaseScope("Apply Theme"))
+            using (new LoggerPhaseScope("Apply Theme", true))
             {
                 if (_themes != null && _themes.Count > 0)
                 {
