@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 new string[] { "apidoc/**.md" }) {
                 Descriptions = new string[]
                 {
-                    "You can specify markdown files with a YAML header to override summary, remarks and description for parameters",
+                    "You can specify markdown files with a YAML header to overwrite summary, remarks and description for parameters",
                     Hints.Glob,
                     Hints.Enter,
                 }
@@ -165,7 +165,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 new string[] { "default" }) {
                 Descriptions = new string[]
                 {
-                    "You can define multiple templates in order. The latter one will override the former one if names collide",
+                    "You can define multiple templates in order. The latter one will overwrite the former one if names collide",
                     "Predefined templates in docfx are now: default, statictoc",
                     Hints.Enter,
                 }
@@ -206,7 +206,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 var config = new DefaultConfigModel();
                 var questionContext = new QuestionContext
                 {
-                    Quite = _options.Quiet
+                    Quiet = _options.Quiet
                 };
                 foreach (var question in _selectorQuestions)
                 {
@@ -252,7 +252,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var path = Path.Combine(outputFolder ?? string.Empty, ConfigName).ToDisplayPath();
             if (File.Exists(path))
             {
-                if (!ProcessOverrideQuestion($"Config file \"{path}\" already exists, do you want to overwrite this file?"))
+                if (!ProcessOverwriteQuestion($"Config file \"{path}\" already exists, do you want to overwrite this file?"))
                 {
                     return;
                 }
@@ -266,7 +266,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             if (Directory.Exists(outputFolder))
             {
-                if (!ProcessOverrideQuestion($"Output folder \"{outputFolder}\" already exists. Do you still want to generate files into this folder? You can use -o command option to specify the folder name"))
+                if (!ProcessOverwriteQuestion($"Output folder \"{outputFolder}\" already exists. Do you still want to generate files into this folder? You can use -o command option to specify the folder name"))
                 {
                     return;
                 }
@@ -283,7 +283,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var articleFolder = Path.Combine(outputFolder, "articles");
             var imageFolder = Path.Combine(outputFolder, "images");
             var folders = new string[] { srcFolder, apiFolder, apidocFolder, articleFolder, imageFolder };
-            foreach(var folder in folders)
+            foreach (var folder in folders)
             {
                 Directory.CreateDirectory(folder);
                 $"Created folder {folder.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Gray);
@@ -297,37 +297,30 @@ namespace Microsoft.DocAsCode.SubCommands
             // e. .gitignore
             // f. api/.gitignore
             // TODO: move api/index.md out to some other folder
-            var tocYaml = Tuple.Create("toc.yml", @"
-- name: Articles
+            var tocYaml = Tuple.Create("toc.yml", @"- name: Articles
   href: articles/
 - name: Api Documentation
   href: api/
   homepage: api/index.md
 ");
-            var indexMarkdownFile = Tuple.Create("index.md", @"
-# This is the **HOMEPAGE**.
+            var indexMarkdownFile = Tuple.Create("index.md", @"# This is the **HOMEPAGE**.
 Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
 ## Quick Start Notes:
 1. Add images to the *images* folder if the file is referencing an image.
 ");
-            var apiTocFile = Tuple.Create("api/toc.yml", @"
-- name: TO BE REPLACED
+            var apiTocFile = Tuple.Create("api/toc.yml", @"- name: TO BE REPLACED
 - href: index.md
 ");
-            var apiIndexFile = Tuple.Create("api/index.md", @"
-# PLACEHOLDER
+            var apiIndexFile = Tuple.Create("api/index.md", @"# PLACEHOLDER
 TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
 ");
 
-            var articleTocFile = Tuple.Create("articles/toc.yml", @"
-- name: Introduction
+            var articleTocFile = Tuple.Create("articles/toc.yml", @"- name: Introduction
   href: intro.md
 ");
-            var articleMarkdownFile = Tuple.Create("articles/intro.md", @"
-# Add your introductions here!
+            var articleMarkdownFile = Tuple.Create("articles/intro.md", @"# Add your introductions here!
 ");
-            var gitignore = Tuple.Create(".gitignore", $@"
-###############
+            var gitignore = Tuple.Create(".gitignore", $@"###############
 #    folder   #
 ###############
 /**/DROP/
@@ -337,14 +330,13 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 /**/obj/
 {config.Build.Destination}
 ");
-            var apiGitignore = Tuple.Create("api/.gitignore", $@"
-###############
+            var apiGitignore = Tuple.Create("api/.gitignore", $@"###############
 #  temp file  #
 ###############
 *.yml
 ");
             var files = new Tuple<string, string>[] { tocYaml, indexMarkdownFile, apiTocFile, apiIndexFile, articleTocFile, articleMarkdownFile, gitignore, apiGitignore };
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 var filePath = Path.Combine(outputFolder, file.Item1);
                 var content = file.Item2;
@@ -372,37 +364,62 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
             JsonUtility.Serialize(path, config, Formatting.Indented);
         }
 
-        private static bool ProcessOverrideQuestion(string message)
+        private static bool ProcessOverwriteQuestion(string message)
         {
-            bool overrides = true;
-            var overrideQuestion = new YesOrNoQuestion(
+            bool overwrited = true;
+            var overwriteQuestion = new NoOrYesQuestion(
                 message,
                 (s, m, c) =>
                 {
                     if (!s)
                     {
-                        overrides = false;
+                        overwrited = false;
                     }
                 });
-            overrideQuestion.Process(null, new QuestionContext());
 
-            return overrides;
+            overwriteQuestion.Process(null, new QuestionContext { NeedWarning = overwrited });
+
+            return overwrited;
         }
 
         #region Question classes
 
+        private static class YesOrNoOption
+        {
+            public const string YesAnswer = "Yes";
+            public const string NoAnswer = "No";
+        }
+
+        /// <summary>
+        /// the default option is Yes
+        /// </summary>
         private sealed class YesOrNoQuestion : SingleChoiceQuestion<bool>
         {
-            private const string YesAnswer = "Yes";
-            private const string NoAnswer = "No";
-            private static readonly string[] YesOrNoAnswer = new string[] { YesAnswer, NoAnswer };
+            private static readonly string[] YesOrNoAnswer = { YesOrNoOption.YesAnswer, YesOrNoOption.NoAnswer };
             public YesOrNoQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, YesOrNoAnswer)
             {
             }
 
             private static bool Converter(string input)
             {
-                return input == YesAnswer;
+                return input == YesOrNoOption.YesAnswer;
+            }
+        }
+
+        /// <summary>
+        /// the default option is No
+        /// </summary>
+        private sealed class NoOrYesQuestion : SingleChoiceQuestion<bool>
+        {
+            private static readonly string[] NoOrYesAnswer = { YesOrNoOption.NoAnswer, YesOrNoOption.YesAnswer };
+
+            public NoOrYesQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, NoOrYesAnswer)
+            {
+            }
+
+            private static bool Converter(string input)
+            {
+                return input == YesOrNoOption.YesAnswer;
             }
         }
 
@@ -540,13 +557,13 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
             public void Process(DefaultConfigModel model, QuestionContext context)
             {
-                if (context.Quite)
+                if (context.Quiet)
                 {
                     _setter(DefaultValue, model, context);
                 }
                 else
                 {
-                    WriteQuestion();
+                    WriteQuestion(context);
                     var value = GetAnswer();
                     _setter(value, model, context);
                 }
@@ -554,9 +571,9 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
             protected abstract T GetAnswer();
 
-            protected void WriteQuestion()
+            private void WriteQuestion(QuestionContext context)
             {
-                Content.WriteToConsole(ConsoleColor.White);
+                Content.WriteToConsole(context.NeedWarning ? ConsoleColor.Yellow : ConsoleColor.White);
                 WriteDefaultAnswer();
                 Descriptions.WriteLinesToConsole(ConsoleColor.Gray);
             }
@@ -582,8 +599,9 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
         private sealed class QuestionContext
         {
-            public bool Quite { get; set; }
+            public bool Quiet { get; set; }
             public bool ContainsMetadata { get; set; }
+            public bool NeedWarning { get; set; }
         }
 
         #endregion
