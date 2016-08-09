@@ -375,7 +375,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
         private static bool ProcessOverrideQuestion(string message)
         {
             bool overrides = true;
-            var overrideQuestion = new YesOrNoQuestion(
+            var overrideQuestion = new NoOrYesQuestion(
                 message,
                 (s, m, c) =>
                 {
@@ -384,19 +384,49 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
                         overrides = false;
                     }
                 });
-            overrideQuestion.Process(null, new QuestionContext());
+
+            if (overrides)
+            {
+                overrideQuestion.Process(null, new QuestionContext {NeedWarning = true});
+            }
+            else
+            {
+                overrideQuestion.Process(null, new QuestionContext());
+            }
 
             return overrides;
         }
 
         #region Question classes
 
+        /// <summary>
+        /// the default option is Yes
+        /// </summary>
         private sealed class YesOrNoQuestion : SingleChoiceQuestion<bool>
         {
             private const string YesAnswer = "Yes";
             private const string NoAnswer = "No";
-            private static readonly string[] YesOrNoAnswer = new string[] { YesAnswer, NoAnswer };
+            private static readonly string[] YesOrNoAnswer = { YesAnswer, NoAnswer };
             public YesOrNoQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, YesOrNoAnswer)
+            {
+            }
+
+            private static bool Converter(string input)
+            {
+                return input == YesAnswer;
+            }
+        }
+
+        /// <summary>
+        /// the default option is No
+        /// </summary>
+        private sealed class NoOrYesQuestion : SingleChoiceQuestion<bool>
+        {
+            private const string NoAnswer = "No";
+            private const string YesAnswer = "Yes";
+            private static readonly string[] YesOrNoAnswer = { NoAnswer, YesAnswer };
+
+            public NoOrYesQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, YesOrNoAnswer)
             {
             }
 
@@ -546,7 +576,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
                 }
                 else
                 {
-                    WriteQuestion();
+                    WriteQuestion(context);
                     var value = GetAnswer();
                     _setter(value, model, context);
                 }
@@ -554,9 +584,9 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
             protected abstract T GetAnswer();
 
-            protected void WriteQuestion()
+            private void WriteQuestion(QuestionContext context)
             {
-                Content.WriteToConsole(ConsoleColor.White);
+                Content.WriteToConsole(context.NeedWarning ? ConsoleColor.Yellow : ConsoleColor.White);
                 WriteDefaultAnswer();
                 Descriptions.WriteLinesToConsole(ConsoleColor.Gray);
             }
@@ -584,6 +614,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
         {
             public bool Quite { get; set; }
             public bool ContainsMetadata { get; set; }
+            public bool NeedWarning { get; set; }
         }
 
         #endregion
