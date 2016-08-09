@@ -6,15 +6,6 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.DocAsCode.Dfm">
-      <HintPath>..\..\target\Debug\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DocAsCode.MarkdownLite">
-      <HintPath>..\..\target\Debug\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DocAsCode.Plugins">
-      <HintPath>..\..\target\Debug\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Collections.Immutable.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
@@ -48,13 +39,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DfmProcess.cs" />
-    <Compile Include="DfmServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config">
+    <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj">
+      <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b51}</Project>
+      <Name>Microsoft.DocAsCode.Build.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj">
+      <Project>{c212545a-62f4-40a3-a814-2ee4c7df7d41}</Project>
+      <Name>Microsoft.DocAsCode.Dfm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
+      <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
+      <Name>Microsoft.DocAsCode.MarkdownLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
+      <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
+      <Name>Microsoft.DocAsCode.Plugins</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

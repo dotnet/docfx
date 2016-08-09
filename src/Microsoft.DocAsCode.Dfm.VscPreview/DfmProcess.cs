@@ -1,16 +1,18 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace DfmProcess
+namespace Microsoft.DocAsCode.Dfm.VscPreview
 {
     using System;
     using System.IO;
     using System.Text;
 
     using Microsoft.DocAsCode.Dfm;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
-    class Program
+
+    internal class Program
     {
         static void Main(string[] args)
         {
@@ -18,31 +20,34 @@ namespace DfmProcess
             {
                 while (true)
                 {
-                    string num_str = Console.ReadLine();
-                    int num_of_row = Convert.ToInt32(num_str);          //a simple protocal
-                    StringBuilder str = new StringBuilder();
+                    // get the path;
+                    string path = Console.ReadLine();                   // path -> basedir
+                    if (path == "exit")
+                        break;
+                    string filename = Console.ReadLine();               // filename -> the relative path of the current file 
 
-                    //get the path;
-                    string path = Console.ReadLine();                   //path -> basedir
-                    string filename = Console.ReadLine();               //filename -> the relative path of the current file 
-                    for (int i = 0; i < num_of_row; i++)
+                    string numStr = Console.ReadLine();
+                    int numOfRow = Convert.ToInt32(numStr);          // a simple protocal
+                    StringBuilder markdownContent = new StringBuilder();
+                    for (int i = 0; i < numOfRow; i++)
                     {
-                        str.AppendLine(Console.ReadLine());
+                        markdownContent.AppendLine(Console.ReadLine());
                     }
-                    DfmServiceProvider myserviceprovider = new DfmServiceProvider();
-                    MarkdownServiceParameters para = new MarkdownServiceParameters();
-                    para.BasePath = path;
-                    IMarkdownService myservice = myserviceprovider.CreateMarkdownService(para);
-                    var result = myservice.Markup(str.ToString(), filename).Html;
+                    DfmServiceProvider dfmServiceProvider = new DfmServiceProvider();
+                    MarkdownServiceParameters markdownServiceParameters = new MarkdownServiceParameters();
+                    markdownServiceParameters.BasePath = path;
+                    IMarkdownService iMarkdownService = dfmServiceProvider.CreateMarkdownService(markdownServiceParameters);
+                    var result = iMarkdownService.Markup(markdownContent.ToString(), filename).Html;
 
-                    Console.Write(result + '\a');
+                    // append with customized endCode
+                    Console.Write(result);
+                    Console.Write('\a');
                 }
+                return;
             }
-            catch (IOException e)
+            catch (Exception e)
             {
-                Console.WriteLine(" error");
-                Console.WriteLine(e.ToString());
-                Console.ReadKey();
+                Console.WriteLine($"error:{e.Message}");
                 return;
             }
         }
