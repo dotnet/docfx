@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new ArgumentNullException(nameof(baseDir));
             }
-            if (File.Exists(tsvFile))
+            if (!File.Exists(tsvFile))
             {
                 throw new FileNotFoundException("File not found.", tsvFile);
             }
