@@ -35,11 +35,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                     {
                         markdownContent.AppendLine(Console.ReadLine());
                     }
-                    DfmServiceProvider dfmServiceProvider = new DfmServiceProvider();
-                    MarkdownServiceParameters markdownServiceParameters = new MarkdownServiceParameters();
-                    markdownServiceParameters.BasePath = path;
-                    IMarkdownService iMarkdownService = dfmServiceProvider.CreateMarkdownService(markdownServiceParameters);
-                    var result = iMarkdownService.Markup(markdownContent.ToString(), filename).Html;
+                    var result = Dfmprocess(path, filename, markdownContent.ToString());
 
                     // append with customized endCode
                     Console.Write(result);
@@ -52,6 +48,15 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 Console.WriteLine($"error:{e.Message}");
                 return;
             }
+        }
+
+        public static string Dfmprocess(string path, string filename, string markdownContent)
+        {
+            DfmServiceProvider dfmServiceProvider = new DfmServiceProvider();
+            MarkdownServiceParameters markdownServiceParameters = new MarkdownServiceParameters();
+            markdownServiceParameters.BasePath = path;
+            IMarkdownService dfmService = dfmServiceProvider.CreateMarkdownService(markdownServiceParameters);
+            return dfmService.Markup(markdownContent, filename).Html;
         }
     }
 }
