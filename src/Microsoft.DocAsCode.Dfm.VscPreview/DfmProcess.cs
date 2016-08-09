@@ -20,14 +20,16 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             {
                 while (true)
                 {
-                    // get the path;
-                    string path = Console.ReadLine();                   // path -> basedir
+                    // path -> basedir
+                    string path = Console.ReadLine();
                     if (path == "exit")
                         break;
-                    string filename = Console.ReadLine();               // filename -> the relative path of the current file 
+                    // filename -> the relative path of the current file
+                    string filename = Console.ReadLine();
 
+                    // a simple protocol(get String According to the numOfRow and connect them)
                     string numStr = Console.ReadLine();
-                    int numOfRow = Convert.ToInt32(numStr);          // a simple protocal
+                    int numOfRow = Convert.ToInt32(numStr);
                     StringBuilder markdownContent = new StringBuilder();
                     for (int i = 0; i < numOfRow; i++)
                     {
