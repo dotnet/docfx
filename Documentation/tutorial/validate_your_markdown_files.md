@@ -24,6 +24,7 @@ To define a HTML tag rule, simply create a `md.style` with following content:
    "tagRules": [
       {
          "tagNames": [ "H1", "H2" ],
+         "relation": "In",
          "behavior": "Warning",
          "messageFormatter": "Please do not use <H1> and <H2>, use '#' and '##' instead.",
          "customValidatorContractName": null,
@@ -38,20 +39,23 @@ Then when anyone write `<H1>` or `<H2>` in Markdown file, it will give a warning
 You can use the following proprties to configure the HTML tag rule:
 
 1.  `tagNames` is the list of HTML tag names to validate, *required*, *case-insensitive*.
-2.  `behavior` defines the behavior when the HTML tag is met, *required*. Its value can be following:
+2.  `relation` is a choice for `tagNames`:
+    * `In` means when html tag is in `tagNames`, this is default value.
+    * `NotIn` means when html tag is not in `tagNames`.
+3.  `behavior` defines the behavior when the HTML tag is met, *required*. Its value can be following:
     * None: Do nothing.
     * Warning: Log a warning.
     * Error: Log an error, it will break current build.
-3.  `messageFormatter` is the log message when the HTML tag is hit, *required*.
+4.  `messageFormatter` is the log message when the HTML tag is hit, *required*.
     It can contain following variables:
     * `{0}` the name of tag.
     * `{1}` the whole tag.
 
     For example, the `messageFormatter` is `{0} is the tag name of {1}.`, and the tag is `<H1 class="heading">` match the rule, then it will output following message: `H1 is the tag name of <H1 class="heading">.`
-4.  `customValidatorContractName` is an extension tag rule contract name for complex validation rule, *optional*.
+5.  `customValidatorContractName` is an extension tag rule contract name for complex validation rule, *optional*.
 
     see [How to create a custom html tag validator](#how-to-create-a-custom-html-tag-validator).
-5.  `openingTagOnly` is a boolean, *option*, default is `false`
+6.  `openingTagOnly` is a boolean, *option*, default is `false`
 
     if `true`, it will only apply to opening tag, e.g. `<H1>`, otherwise, it will also apply to closing tag, e.g. `</H1>`.
 
@@ -192,7 +196,7 @@ If a rule has the contract name of `default`, it will be enabled by default. You
 You can add use `disable` to specify whether disable a rule:
 ```json
 {
-   "rules": [ { "name": "<rule_name>", "disable": true } ]
+   "rules": [ { "contractName": "<contract_name>", "disable": true } ]
 }
 ```
 
@@ -235,3 +239,102 @@ public class MyInputMetadataValidator : IInputMetadataValidator
 ```
 
 Enable metadata rule is same as other rules, just copy the assemblies to the `plugins` of your template folder and run `docfx`.
+
+### Create configurable metadata validation plug-ins
+
+There are two steps to create a metadata validation:
+
+1.  We need to modify export attribute for metadata validator plug-in:
+
+    ```csharp
+    [Export("hello_is_not_valid", typeof(IInputMetadataValidator))]
+    ```
+
+2.  Modify `md.style` with following content:
+
+    ```json
+    {
+      "metadataRules": [
+        { "contractName": "hello_is_not_valid", "disable": false }
+      ]
+    }
+    ```
+
+## Advance: Share your rules
+
+Some users have a lot of document projects, and want to share validations for all of them, and don't want to write `md.style` file repeatly.
+
+### Create template
+For this propose, we can create a template with following structure:
+
+```
+/  (root folder for plug-in)
+\- md.styles
+   |- <category-1>.md.style
+   \- <category-2>.md.style
+\- plugins
+   \- <your_rule>.dll 
+```
+
+In `md.styles` folder, there is a set of definition files, with file extension `.md.style`, each file is a category.
+
+In one category, there is a set of rule definition.
+
+For example, create a file with name `test.md.style`, then write following content:
+
+```json
+{
+   "tagRules": {
+      "heading": {
+         "tagNames": [ "H1", "H2" ],
+         "behavior": "Warning",
+         "messageFormatter": "Please do not use <H1> and <H2>, use '#' and '##' instead.",
+         "openingTagOnly": true
+      }
+   },
+   "rules": {
+      "code": "code_snippet_should_be_csharp"
+   },
+   "metadataRules": {
+     "hello": { "contractName": "hello_is_not_valid", "disable": true }
+   }
+}
+```
+
+Then `test` is the category name (from file name) for three rules, and apply different `id` for each rule, they are `heading`, `rules` and `hello`.
+
+When you build document with this template, all rules will be active when `disable` property is `false`.
+
+### Config rules
+
+Some rules need to be enable/disable in some special document project.
+
+For example, `hello` rule is not required for most project, but for a special project, we want to enable it.
+
+We need to modify `md.style` file in this document project with following content:
+
+```json
+{
+   "settings": [
+      { "category": "test", "id": "hello", "disable": false }
+   ]
+}
+```
+
+And for some project we need to disable all rules in test category:
+
+```json
+{
+   "settings": [
+      { "category": "test", "disable": true }
+   ]
+}
+```
+
+> [!Note]
+> `disable` property is applied by following order:
+> 1.  `tagRules`, `rules` and `metadataRules` in `md.style`.
+> 2.  auto enabled `rules` with contract name `default`.
+> 3.  `settings` with `category` and `id` in `md.style`.
+> 4.  `settings` with `category` in `md.style`.
+> 5.  `disable` property in definition file.
