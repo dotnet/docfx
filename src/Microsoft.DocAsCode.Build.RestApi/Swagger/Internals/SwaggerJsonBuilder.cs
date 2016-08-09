@@ -157,7 +157,12 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             // Clone to avoid change the reference object in _documentObjectCache
                             refStack.Push(referencedObjectBase.Location);
                             var resolved = ResolveReferences(referencedObjectBase.Clone(), refStack);
-                            swagger.Reference = ResolveSwaggerObject(resolved, swagger.ReferenceName);
+                            var swaggerObject = ResolveSwaggerObject(resolved);
+                            if (!swaggerObject.Dictionary.ContainsKey(InternalRefNameKey))
+                            {
+                                swaggerObject.Dictionary.Add(InternalRefNameKey, new SwaggerValue { Token = swagger.ReferenceName });
+                            }
+                            swagger.Reference = swaggerObject;
                             refStack.Pop();
 
                             if (refStack.Count == 0)
@@ -193,15 +198,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             }
         }
 
-        private static SwaggerObject ResolveSwaggerObject(SwaggerObjectBase swaggerObjectBase, string referenceName)
+        private static SwaggerObject ResolveSwaggerObject(SwaggerObjectBase swaggerObjectBase)
         {
             var swaggerObject = swaggerObjectBase as SwaggerObject;
             if (swaggerObject != null)
             {
-                if (!swaggerObject.Dictionary.ContainsKey(InternalRefNameKey))
-                {
-                    swaggerObject.Dictionary.Add(InternalRefNameKey, new SwaggerValue { Token = referenceName });
-                }
                 return swaggerObject;
             }
 
