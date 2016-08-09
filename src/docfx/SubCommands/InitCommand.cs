@@ -283,7 +283,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var articleFolder = Path.Combine(outputFolder, "articles");
             var imageFolder = Path.Combine(outputFolder, "images");
             var folders = new string[] { srcFolder, apiFolder, apidocFolder, articleFolder, imageFolder };
-            foreach(var folder in folders)
+            foreach (var folder in folders)
             {
                 Directory.CreateDirectory(folder);
                 $"Created folder {folder.ToDisplayPath()}".WriteLineToConsole(ConsoleColor.Gray);
@@ -344,7 +344,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 *.yml
 ");
             var files = new Tuple<string, string>[] { tocYaml, indexMarkdownFile, apiTocFile, apiIndexFile, articleTocFile, articleMarkdownFile, gitignore, apiGitignore };
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 var filePath = Path.Combine(outputFolder, file.Item1);
                 var content = file.Item2;
@@ -385,7 +385,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
                     }
                 });
 
-            overrideQuestion.Process(null, new QuestionContext {NeedWarning = overrides});
+            overrideQuestion.Process(null, new QuestionContext { NeedWarning = overrides });
 
             return overrides;
         }
@@ -403,16 +403,14 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
         /// </summary>
         private sealed class YesOrNoQuestion : SingleChoiceQuestion<bool>
         {
-            private const string YesAnswer = YesOrNoOption.YesAnswer;
-            private const string NoAnswer = YesOrNoOption.NoAnswer;
-            private static readonly string[] YesOrNoAnswer = { YesAnswer, NoAnswer };
+            private static readonly string[] YesOrNoAnswer = { YesOrNoOption.YesAnswer, YesOrNoOption.NoAnswer };
             public YesOrNoQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, YesOrNoAnswer)
             {
             }
 
             private static bool Converter(string input)
             {
-                return input == YesAnswer;
+                return input == YesOrNoOption.YesAnswer;
             }
         }
 
@@ -421,9 +419,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
         /// </summary>
         private sealed class NoOrYesQuestion : SingleChoiceQuestion<bool>
         {
-            private const string NoAnswer = YesOrNoOption.NoAnswer;
-            private const string YesAnswer = YesOrNoOption.YesAnswer;
-            private static readonly string[] NoOrYesAnswer = { NoAnswer, YesAnswer };
+            private static readonly string[] NoOrYesAnswer = { YesOrNoOption.NoAnswer, YesOrNoOption.YesAnswer };
 
             public NoOrYesQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, NoOrYesAnswer)
             {
@@ -431,7 +427,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
             private static bool Converter(string input)
             {
-                return input == YesAnswer;
+                return input == YesOrNoOption.YesAnswer;
             }
         }
 
