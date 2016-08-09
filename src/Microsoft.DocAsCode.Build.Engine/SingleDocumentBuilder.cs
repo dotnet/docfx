@@ -470,7 +470,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             buildStep =>
                             {
                                 Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
-                                using (new LoggerPhaseScope(buildStep.Name))
+                                using (new LoggerPhaseScope(buildStep.Name, true))
                                 {
                                     buildStep.Build(m, hostService);
                                 }
