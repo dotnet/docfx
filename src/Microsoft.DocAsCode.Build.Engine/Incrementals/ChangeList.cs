@@ -50,17 +50,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             AddCore(filePath, kind);
         }
 
-        public IEnumerable<string> GetNewCreated() =>
+        public IEnumerable<string> GetCreatedFiles() =>
             from item in _list
             where item.Kind == ChangeKind.Created
             select item.FilePath;
 
-        public IEnumerable<string> GetUpdated() =>
+        public IEnumerable<string> GetUpdatedFiles() =>
             from item in _list
             where item.Kind == ChangeKind.Updated
             select item.FilePath;
 
-        public IEnumerable<string> GetDeleted() =>
+        public IEnumerable<string> GetDeletedFiles() =>
             from item in _list
             where item.Kind == ChangeKind.Deleted
             select item.FilePath;
