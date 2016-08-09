@@ -257,22 +257,13 @@
             "type": "string",
             "default": "1.6"
           },
-
           {
             "in": "body",
             "description": "The request body contains a single property that specifies the URL of the user or contact to add as manager.",
             "name": "bodyparam",
             "required": true,
             "schema": {
-              "required": [ "url" ],
-              "properties": {
-                "url": {
-                  "type": "string"
-                }
-              },
-              "example": {
-                "url": "https://graph.windows.net/myorganization/directoryObjects/35110b16-360c-4c4a-93b2-03f065fabd93"
-              }
+              "$ref": "#/definitions/containerUrl"
             }
           }
         ],
@@ -595,6 +586,14 @@
         "summary": "You can get a collection of contacts from your tenant.",
         "operationId": "get contacts"
       }
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "containerUrl": {
+      "$ref": "#/definitions/url",
+      "description": "fake description."
     },
     "contact/def~": {
       "properties": {

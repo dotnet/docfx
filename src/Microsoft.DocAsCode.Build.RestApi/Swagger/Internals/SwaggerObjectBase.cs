@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         public bool ReferencesResolved { get; set; }
 
+        public string Location { get; set; }
+
         public abstract SwaggerObjectBase Clone();
     }
 }
