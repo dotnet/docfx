@@ -206,7 +206,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 var config = new DefaultConfigModel();
                 var questionContext = new QuestionContext
                 {
-                    Quite = _options.Quiet
+                    Quiet = _options.Quiet
                 };
                 foreach (var question in _selectorQuestions)
                 {
@@ -385,27 +385,26 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
                     }
                 });
 
-            if (overrides)
-            {
-                overrideQuestion.Process(null, new QuestionContext {NeedWarning = true});
-            }
-            else
-            {
-                overrideQuestion.Process(null, new QuestionContext());
-            }
+            overrideQuestion.Process(null, new QuestionContext {NeedWarning = overrides});
 
             return overrides;
         }
 
         #region Question classes
 
+        private static class YesOrNoOption
+        {
+            public const string YesAnswer = "Yes";
+            public const string NoAnswer = "No";
+        }
+
         /// <summary>
         /// the default option is Yes
         /// </summary>
         private sealed class YesOrNoQuestion : SingleChoiceQuestion<bool>
         {
-            private const string YesAnswer = "Yes";
-            private const string NoAnswer = "No";
+            private const string YesAnswer = YesOrNoOption.YesAnswer;
+            private const string NoAnswer = YesOrNoOption.NoAnswer;
             private static readonly string[] YesOrNoAnswer = { YesAnswer, NoAnswer };
             public YesOrNoQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, YesOrNoAnswer)
             {
@@ -422,11 +421,11 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
         /// </summary>
         private sealed class NoOrYesQuestion : SingleChoiceQuestion<bool>
         {
-            private const string NoAnswer = "No";
-            private const string YesAnswer = "Yes";
-            private static readonly string[] YesOrNoAnswer = { NoAnswer, YesAnswer };
+            private const string NoAnswer = YesOrNoOption.NoAnswer;
+            private const string YesAnswer = YesOrNoOption.YesAnswer;
+            private static readonly string[] NoOrYesAnswer = { NoAnswer, YesAnswer };
 
-            public NoOrYesQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, YesOrNoAnswer)
+            public NoOrYesQuestion(string content, Action<bool, DefaultConfigModel, QuestionContext> setter) : base(content, setter, Converter, NoOrYesAnswer)
             {
             }
 
@@ -570,7 +569,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
             public void Process(DefaultConfigModel model, QuestionContext context)
             {
-                if (context.Quite)
+                if (context.Quiet)
                 {
                     _setter(DefaultValue, model, context);
                 }
@@ -612,7 +611,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
         private sealed class QuestionContext
         {
-            public bool Quite { get; set; }
+            public bool Quiet { get; set; }
             public bool ContainsMetadata { get; set; }
             public bool NeedWarning { get; set; }
         }
