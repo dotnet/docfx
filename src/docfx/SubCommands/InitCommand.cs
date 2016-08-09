@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 new string[] { "apidoc/**.md" }) {
                 Descriptions = new string[]
                 {
-                    "You can specify markdown files with a YAML header to override summary, remarks and description for parameters",
+                    "You can specify markdown files with a YAML header to overwrite summary, remarks and description for parameters",
                     Hints.Glob,
                     Hints.Enter,
                 }
@@ -165,7 +165,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 new string[] { "default" }) {
                 Descriptions = new string[]
                 {
-                    "You can define multiple templates in order. The latter one will override the former one if names collide",
+                    "You can define multiple templates in order. The latter one will overwrite the former one if names collide",
                     "Predefined templates in docfx are now: default, statictoc",
                     Hints.Enter,
                 }
@@ -252,7 +252,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var path = Path.Combine(outputFolder ?? string.Empty, ConfigName).ToDisplayPath();
             if (File.Exists(path))
             {
-                if (!ProcessOverrideQuestion($"Config file \"{path}\" already exists, do you want to overwrite this file?"))
+                if (!ProcessOverwriteQuestion($"Config file \"{path}\" already exists, do you want to overwrite this file?"))
                 {
                     return;
                 }
@@ -266,7 +266,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             if (Directory.Exists(outputFolder))
             {
-                if (!ProcessOverrideQuestion($"Output folder \"{outputFolder}\" already exists. Do you still want to generate files into this folder? You can use -o command option to specify the folder name"))
+                if (!ProcessOverwriteQuestion($"Output folder \"{outputFolder}\" already exists. Do you still want to generate files into this folder? You can use -o command option to specify the folder name"))
                 {
                     return;
                 }
@@ -297,37 +297,30 @@ namespace Microsoft.DocAsCode.SubCommands
             // e. .gitignore
             // f. api/.gitignore
             // TODO: move api/index.md out to some other folder
-            var tocYaml = Tuple.Create("toc.yml", @"
-- name: Articles
+            var tocYaml = Tuple.Create("toc.yml", @"- name: Articles
   href: articles/
 - name: Api Documentation
   href: api/
   homepage: api/index.md
 ");
-            var indexMarkdownFile = Tuple.Create("index.md", @"
-# This is the **HOMEPAGE**.
+            var indexMarkdownFile = Tuple.Create("index.md", @"# This is the **HOMEPAGE**.
 Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
 ## Quick Start Notes:
 1. Add images to the *images* folder if the file is referencing an image.
 ");
-            var apiTocFile = Tuple.Create("api/toc.yml", @"
-- name: TO BE REPLACED
+            var apiTocFile = Tuple.Create("api/toc.yml", @"- name: TO BE REPLACED
 - href: index.md
 ");
-            var apiIndexFile = Tuple.Create("api/index.md", @"
-# PLACEHOLDER
+            var apiIndexFile = Tuple.Create("api/index.md", @"# PLACEHOLDER
 TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
 ");
 
-            var articleTocFile = Tuple.Create("articles/toc.yml", @"
-- name: Introduction
+            var articleTocFile = Tuple.Create("articles/toc.yml", @"- name: Introduction
   href: intro.md
 ");
-            var articleMarkdownFile = Tuple.Create("articles/intro.md", @"
-# Add your introductions here!
+            var articleMarkdownFile = Tuple.Create("articles/intro.md", @"# Add your introductions here!
 ");
-            var gitignore = Tuple.Create(".gitignore", $@"
-###############
+            var gitignore = Tuple.Create(".gitignore", $@"###############
 #    folder   #
 ###############
 /**/DROP/
@@ -337,8 +330,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 /**/obj/
 {config.Build.Destination}
 ");
-            var apiGitignore = Tuple.Create("api/.gitignore", $@"
-###############
+            var apiGitignore = Tuple.Create("api/.gitignore", $@"###############
 #  temp file  #
 ###############
 *.yml
@@ -372,22 +364,22 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
             JsonUtility.Serialize(path, config, Formatting.Indented);
         }
 
-        private static bool ProcessOverrideQuestion(string message)
+        private static bool ProcessOverwriteQuestion(string message)
         {
-            bool overrides = true;
-            var overrideQuestion = new NoOrYesQuestion(
+            bool overwrited = true;
+            var overwriteQuestion = new NoOrYesQuestion(
                 message,
                 (s, m, c) =>
                 {
                     if (!s)
                     {
-                        overrides = false;
+                        overwrited = false;
                     }
                 });
 
-            overrideQuestion.Process(null, new QuestionContext { NeedWarning = overrides });
+            overwriteQuestion.Process(null, new QuestionContext { NeedWarning = overwrited });
 
-            return overrides;
+            return overwrited;
         }
 
         #region Question classes
