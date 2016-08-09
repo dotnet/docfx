@@ -75,6 +75,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             VersionName = parameters.VersionName,
                         });
                 }
+
                 Logger.LogVerbose("Start building document...");
 
                 // Start building document...

@@ -9,6 +9,8 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
     {
         public const string MarkdownStyleFileName = "md.style";
 
+        [JsonProperty("metadataRules")]
+        public MarkdownMetadataValidationRule[] MetadataRules { get; set; }
         [JsonProperty("rules")]
         public MarkdownValidationRule[] Rules { get; set; }
         [JsonProperty("tagRules")]

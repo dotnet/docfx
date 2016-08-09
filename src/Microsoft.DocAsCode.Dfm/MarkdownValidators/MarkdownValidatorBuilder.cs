@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
+    using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -16,19 +17,27 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
     public class MarkdownValidatorBuilder
     {
+        #region Consts
         public const string DefaultValidatorName = "default";
         public const string MarkdownValidatePhaseName = "Markdown style";
+        #endregion
 
-        public CompositionHost CompositionHost { get; }
-
+        #region Fields
+        private readonly List<RuleWithId<MarkdownMetadataValidationRule>> _metadataValidators =
+            new List<RuleWithId<MarkdownMetadataValidationRule>>();
         private readonly List<RuleWithId<MarkdownTagValidationRule>> _tagValidators =
             new List<RuleWithId<MarkdownTagValidationRule>>();
         private readonly List<RuleWithId<MarkdownValidationRule>> _validators =
             new List<RuleWithId<MarkdownValidationRule>>();
         private readonly List<MarkdownValidationSetting> _settings =
             new List<MarkdownValidationSetting>();
+        private readonly Dictionary<string, MarkdownMetadataValidationRule> _globalMetadataValidators =
+            new Dictionary<string, MarkdownMetadataValidationRule>();
         private readonly Dictionary<string, MarkdownValidationRule> _globalValidators =
             new Dictionary<string, MarkdownValidationRule>();
+        #endregion
+
+        #region Ctors
 
         public MarkdownValidatorBuilder(CompositionHost host)
         {
@@ -37,6 +46,58 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 throw new ArgumentNullException(nameof(host));
             }
             CompositionHost = host;
+        }
+
+        #endregion
+
+        #region Properties
+        public CompositionHost CompositionHost { get; }
+        #endregion
+
+        #region Public Methods
+
+        public static MarkdownValidatorBuilder Create(CompositionHost host, string baseDir, string templateDir)
+        {
+            var builder = new MarkdownValidatorBuilder(host);
+            LoadValidatorConfig(baseDir, templateDir, builder);
+            return builder;
+        }
+
+        public void AddMetadataValidators(string category, Dictionary<string, MarkdownMetadataValidationRule> validators)
+        {
+            if (validators == null)
+            {
+                return;
+            }
+            foreach (var pair in validators)
+            {
+                if (string.IsNullOrEmpty(pair.Value.ContractName))
+                {
+                    continue;
+                }
+                _metadataValidators.Add(new RuleWithId<MarkdownMetadataValidationRule>
+                {
+                    Category = category,
+                    Id = pair.Key,
+                    Rule = pair.Value,
+                });
+            }
+        }
+
+        public void AddMetadataValidators(MarkdownMetadataValidationRule[] rules)
+        {
+            if (rules == null)
+            {
+                return;
+            }
+            foreach (var rule in rules)
+            {
+                if (string.IsNullOrEmpty(rule.ContractName))
+                {
+                    continue;
+                }
+                _globalMetadataValidators[rule.ContractName] = rule;
+            }
         }
 
         public void AddTagValidators(string category, Dictionary<string, MarkdownTagValidationRule> validators)
@@ -133,7 +194,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
         }
 
-        public IMarkdownTokenRewriter Create()
+        public IMarkdownTokenRewriter CreateRewriter()
         {
             var context = new MarkdownRewriterContext(CompositionHost, GetEnabledTagRules().ToImmutableList());
             return new MarkdownTokenRewriteWithScope(
@@ -147,9 +208,84 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 MarkdownValidatePhaseName);
         }
 
+        public IEnumerable<IInputMetadataValidator> GetEnabledMetadataRules()
+        {
+            HashSet<string> enabledContractName = new HashSet<string>();
+            foreach (var item in _metadataValidators)
+            {
+                if (IsDisabledBySetting(item) ?? item.Rule.Disable)
+                {
+                    enabledContractName.Remove(item.Rule.ContractName);
+                }
+                else
+                {
+                    enabledContractName.Add(item.Rule.ContractName);
+                }
+            }
+            foreach (var pair in _globalMetadataValidators)
+            {
+                if (pair.Value.Disable)
+                {
+                    enabledContractName.Remove(pair.Value.ContractName);
+                }
+                else
+                {
+                    enabledContractName.Add(pair.Value.ContractName);
+                }
+            }
+            return from name in enabledContractName
+                   from IInputMetadataValidator mv in CompositionHost.GetExports(typeof(IInputMetadataValidator), name)
+                   select mv;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static void LoadValidatorConfig(string baseDir, string templateDir, MarkdownValidatorBuilder builder)
+        {
+            if (string.IsNullOrEmpty(baseDir))
+            {
+                return;
+            }
+            if (templateDir != null)
+            {
+                var configFolder = Path.Combine(templateDir, MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName);
+                if (Directory.Exists(configFolder))
+                {
+                    LoadValidatorDefinition(configFolder, builder);
+                }
+            }
+            var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
+            if (File.Exists(configFile))
+            {
+                var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
+                builder.AddMetadataValidators(config.MetadataRules);
+                builder.AddValidators(config.Rules);
+                builder.AddTagValidators(config.TagRules);
+                builder.AddSettings(config.Settings);
+            }
+            builder.EnsureDefaultValidator();
+        }
+
+        private static void LoadValidatorDefinition(string mdStyleDefPath, MarkdownValidatorBuilder builder)
+        {
+            if (Directory.Exists(mdStyleDefPath))
+            {
+                foreach (var configFile in Directory.GetFiles(mdStyleDefPath, "*" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix))
+                {
+                    var fileName = Path.GetFileName(configFile);
+                    var category = fileName.Remove(fileName.Length - MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
+                    var config = JsonUtility.Deserialize<MarkdownSytleDefinition>(configFile);
+                    builder.AddMetadataValidators(category, config.MetadataRules);
+                    builder.AddTagValidators(category, config.TagRules);
+                    builder.AddValidators(category, config.Rules);
+                }
+            }
+        }
+
         private IEnumerable<IMarkdownTokenValidator> GetEnabledRules()
         {
-            var list = new List<IMarkdownTokenValidator>();
             HashSet<string> enabledContractName = new HashSet<string>();
             foreach (var item in _validators)
             {
@@ -214,6 +350,10 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             }
             return idDisable ?? categoryDisable;
         }
+
+        #endregion
+
+        #region Nested Classes
 
         private sealed class MarkdownRewriterContext
         {
@@ -318,7 +458,6 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             public string Id { get; set; }
         }
 
-
         private sealed class MarkdownTokenRewriteWithScope : IMarkdownTokenRewriter, IInitializable
         {
             public IMarkdownTokenRewriter Inner { get; }
@@ -347,5 +486,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 }
             }
         }
+
+        #endregion
     }
 }
