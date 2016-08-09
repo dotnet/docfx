@@ -250,6 +250,10 @@ There are two steps to create a metadata validation:
     [Export("hello_is_not_valid", typeof(IInputMetadataValidator))]
     ```
 
+    > [!Note]
+    > If the rule doesn't have a contract name, it will be always enabled,
+    > i.e., there is no way to disable it unless delete the assembly file.
+
 2.  Modify `md.style` with following content:
 
     ```json
@@ -260,9 +264,9 @@ There are two steps to create a metadata validation:
     }
     ```
 
-## Advance: Share your rules
+## Advanced: Share your rules
 
-Some users have a lot of document projects, and want to share validations for all of them, and don't want to write `md.style` file repeatly.
+Some users have a lot of document projects, and want to share validations for all of them, and don't want to write `md.style` file repeatedly.
 
 ### Create template
 For this propose, we can create a template with following structure:
