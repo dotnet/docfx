@@ -69,7 +69,7 @@ By default HTML tag rule only validates whether an HTML tag exists in Markdown. 
 For example, you may not want a tag to contain `onclick` attribute as it can inject javascript to the page.
 You can create a custom HTML tag rule to achieve this. 
 
-1.  Create a project in your code editor (e.g. visual studio).
+1.  Create a project in your code editor (e.g. Visual Studio).
 2.  Add nuget package `Microsoft.DocAsCode.Plugins` and `Microsoft.Composition`.
 3.  Create a class and implement @Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.
 4.  Add ExportAttribute with contract name.
@@ -140,7 +140,7 @@ Besides HTML tags, you may also want to validate Markdown syntax like heading or
 
 To create such rule, follow the following steps:
 
-1.  Create a project in your code editor (e.g. visual studio).
+1.  Create a project in your code editor (e.g. Visual Studio).
 2.  Add nuget package `Microsoft.DocAsCode.MarkdownLite` and `Microsoft.Composition`.
 3.  Create a class and implements @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider
     > @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory contains some helper methods to create a validator.
@@ -183,7 +183,7 @@ You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,Sys
 
 > To use these methods, you need to install nuget package `Microsoft.DocAsCode.Common` first.
 
-The different between `ReportError` and throw `DocumentException` is throw exception will stop the build immediately but `ReportError` won't stop build but will eventually fail the build after rules are run.
+The different between `ReportError` and throw `DocumentException` is throwing exception will stop the build immediately but `ReportError` won't stop build but will eventually fail the build after rules are run.
 
 ## Advanced usage of `md.style`
 
@@ -205,11 +205,11 @@ This gives you an opportunity to disable the rules enabled by default.
 ## Validate metadata in markdown files
 
 In markdown file, we can write some metadata in [conceptual](../spec/docfx_flavored_markdown.md#yaml-header) or [overwrite document](intro_overwrite_files.md).
-And we allow add some plug-ins to validate metadata written in markdown files.
+And we allow to add some plug-ins to validate metadata written in markdown files.
 
 ### Scope of metadata validation
 
-Metadata is coming multiple sources, the following metadata will be validated during build: 
+Metadata is coming from multiple sources, the following metadata will be validated during build: 
 1.  YAML header in markdown.
 2.  Global metadata and file metaata in `docfx.json`.
 3.  Global metadata and file metadata defined in separate `.json` files.
@@ -218,7 +218,7 @@ Metadata is coming multiple sources, the following metadata will be validated du
 
 ### Create validation plug-ins
 
-1.  Create a project in your code editor (e.g. visual studio).
+1.  Create a project in your code editor (e.g. Visual Studio).
 2.  Add nuget package `Microsoft.DocAsCode.Plugins` and `Microsoft.Composition`.
 3.  Create a class and implement @Microsoft.DocAsCode.Plugins.IInputMetadataValidator
 
@@ -242,7 +242,7 @@ Enable metadata rule is same as other rules, just copy the assemblies to the `pl
 
 ### Create configurable metadata validation plug-ins
 
-There are two steps to create a metadata validation:
+There are two steps to create a metadata validator:
 
 1.  We need to modify export attribute for metadata validator plug-in:
 
@@ -300,12 +300,12 @@ For example, create a file with name `test.md.style`, then write following conte
       "code": "code_snippet_should_be_csharp"
    },
    "metadataRules": {
-     "hello": { "contractName": "hello_is_not_valid", "disable": true }
+      "hello": { "contractName": "hello_is_not_valid", "disable": true }
    }
 }
 ```
 
-Then `test` is the category name (from file name) for three rules, and apply different `id` for each rule, they are `heading`, `rules` and `hello`.
+Then `test` is the category name (from file name) for three rules, and apply different `id` for each rule, they are `heading`, `code` and `hello`.
 
 When you build document with this template, all rules will be active when `disable` property is `false`.
 
