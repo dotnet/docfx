@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common
 
     public sealed class ConsoleLogListener : ILoggerListener
     {
-        public LogLevel LogLevelThreshold { get; set; }
+        public LogLevel LogLevelThreshold => LogLevel.Verbose;
 
         public void WriteLine(ILogItem item)
         {

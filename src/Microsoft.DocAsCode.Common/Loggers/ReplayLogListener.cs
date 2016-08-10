@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-        public LogLevel LogLevelThreshold { get; set; }
+        public LogLevel LogLevelThreshold { get; }
 
         public void Dispose()
         {
@@ -120,7 +120,10 @@ namespace Microsoft.DocAsCode.Common
         {
             foreach (var listener in _listeners)
             {
-                listener.WriteLine(item);
+                if (item.LogLevel >= listener.LogLevelThreshold)
+                {
+                    listener.WriteLine(item);
+                }
             }
         }
 
