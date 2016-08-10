@@ -46,7 +46,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 null, 
                 ImmutableArray.Create<IMarkdownToken>(
                     new MarkdownRawToken(this, parser.Context, sourceInfo.Copy(text))),
-                sourceInfo);
+                sourceInfo,
+                MarkdownLinkType.AutoLink,
+                match.Groups[1].Value);
         }
 
         private StringBuffer Mangle(bool enableMangle, string text)

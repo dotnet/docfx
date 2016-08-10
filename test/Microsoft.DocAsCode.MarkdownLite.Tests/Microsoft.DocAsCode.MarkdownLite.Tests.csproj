@@ -34,6 +34,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GfmMarkdownRewriterTest.cs" />
     <Compile Include="GfmTest.cs" />
     <Compile Include="PerfTest.cs" />
     <Compile Include="SourceInfoTest.cs" />

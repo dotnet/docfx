@@ -38,7 +38,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 null,
                 ImmutableArray.Create<IMarkdownToken>(
                     new MarkdownRawToken(this, parser.Context, sourceInfo.Copy(match.Groups[1].Value))),
-                sourceInfo);
+                sourceInfo,
+                MarkdownLinkType.UrlLink,
+                match.Groups[1].Value);
         }
     }
 }
