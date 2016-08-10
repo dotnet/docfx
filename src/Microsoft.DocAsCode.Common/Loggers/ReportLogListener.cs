@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Common
     {
         private readonly StreamWriter _writer;
 
-        public LogLevel LogLevelThreshold => LogLevel.Diagnostic;
+        private const LogLevel LogLevelThreshold = LogLevel.Diagnostic;
 
 #if !NetCore
         public ReportLogListener(string reportPath)
