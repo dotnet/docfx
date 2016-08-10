@@ -3,9 +3,10 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using Incrementals;
     using System;
     using System.Collections.Immutable;
+
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
 
     public sealed class DocumentBuildParameters : MarshalByRefObject
     {

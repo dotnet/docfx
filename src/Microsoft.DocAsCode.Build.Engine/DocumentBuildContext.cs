@@ -12,11 +12,12 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Net.Http;
     using System.Threading.Tasks;
 
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
-    using Incrementals;
+
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
         private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);

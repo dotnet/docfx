@@ -9,6 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         Created = ChangeKind.Created,
         Updated = ChangeKind.Updated,
         Deleted = ChangeKind.Deleted,
-        DependecnyUpdated = 1024,
+        DependencyUpdated = 1024,
     }
 }
