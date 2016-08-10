@@ -311,7 +311,7 @@ When you build document with this template, all rules will be active when `disab
 
 ### Config rules
 
-Some rules need to be enable/disable in some special document project.
+Some rules need to be enabled/disabled in some special document project.
 
 For example, `hello` rule is not required for most project, but for a special project, we want to enable it.
 
