@@ -12,8 +12,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         public Dictionary<string, SwaggerObjectBase> Dictionary { get; set; } = new Dictionary<string, SwaggerObjectBase>();
 
-        public string Location { get; set; }
-
         public override SwaggerObjectBase Clone()
         {
             var clone = (SwaggerObject)MemberwiseClone();

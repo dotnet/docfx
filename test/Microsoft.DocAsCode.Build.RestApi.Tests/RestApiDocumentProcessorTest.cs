@@ -57,64 +57,70 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("Hello world!", model.Metadata["meta"]);
 
             // Verify $ref in path
-            var item1 = model.Children[0];
-            Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/get contacts", item1.Uid);
-            Assert.Equal("<p>You can get a collection of contacts from your tenant.</p>\n", item1.Summary);
-            Assert.Equal(1, item1.Parameters.Count);
-            Assert.Equal("1.6", item1.Parameters[0].Metadata["default"]);
-            Assert.Equal(1, item1.Responses.Count);
-            Assert.Equal("200", item1.Responses[0].HttpStatusCode);
+            var item0 = model.Children[0];
+            Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/get contacts", item0.Uid);
+            Assert.Equal("<p>You can get a collection of contacts from your tenant.</p>\n", item0.Summary);
+            Assert.Equal(1, item0.Parameters.Count);
+            Assert.Equal("1.6", item0.Parameters[0].Metadata["default"]);
+            Assert.Equal(1, item0.Responses.Count);
+            Assert.Equal("200", item0.Responses[0].HttpStatusCode);
 
             // Verify tags of child
-            var item1Tag = (JArray)(item1.Metadata["tags"]);
-            Assert.NotNull(item1Tag);
-            Assert.Equal("contacts", item1Tag[0]);
-            var item2 = model.Children[1];
-            var item2Tag = (JArray)(item2.Metadata["tags"]);
+            var item0Tag = (JArray)(item0.Metadata["tags"]);
+            Assert.NotNull(item0Tag);
+            Assert.Equal("contacts", item0Tag[0]);
+            var item1 = model.Children[1];
+            var item2Tag = (JArray)(item1.Metadata["tags"]);
             Assert.NotNull(item2Tag);
             Assert.Equal("contacts", item2Tag[0]);
             Assert.Equal("pet store", item2Tag[1]);
 
             // Verify tags of root
             Assert.Equal(3, model.Tags.Count);
-            var tag1 = model.Tags[0];
-            Assert.Equal("contact", tag1.Name);
-            Assert.Equal("<p>Everything about the <strong>contacts</strong></p>\n", tag1.Description);
-            Assert.Equal("contact-bookmark", tag1.HtmlId);
-            Assert.Equal(1, tag1.Metadata.Count);
-            var externalDocs = (JObject)tag1.Metadata["externalDocs"];
+            var tag0 = model.Tags[0];
+            Assert.Equal("contact", tag0.Name);
+            Assert.Equal("<p>Everything about the <strong>contacts</strong></p>\n", tag0.Description);
+            Assert.Equal("contact-bookmark", tag0.HtmlId);
+            Assert.Equal(1, tag0.Metadata.Count);
+            var externalDocs = (JObject)tag0.Metadata["externalDocs"];
             Assert.NotNull(externalDocs);
             Assert.Equal("Find out more", externalDocs["description"]);
             Assert.Equal("http://swagger.io", externalDocs["url"]);
-            var tag2 = model.Tags[1];
-            Assert.Equal("pet_store", tag2.HtmlId);
+            var tag1 = model.Tags[1];
+            Assert.Equal("pet_store", tag1.HtmlId);
 
             // Verify path parameters
             // Path parameter applicable for get operation
-            Assert.Equal(2, item2.Parameters.Count);
-            Assert.Equal("object_id", item2.Parameters[0].Metadata["name"]);
-            Assert.Equal("api-version", item2.Parameters[1].Metadata["name"]);
-            Assert.Equal(true, item2.Parameters[1].Metadata["required"]);
+            Assert.Equal(2, item1.Parameters.Count);
+            Assert.Equal("object_id", item1.Parameters[0].Metadata["name"]);
+            Assert.Equal("api-version", item1.Parameters[1].Metadata["name"]);
+            Assert.Equal(true, item1.Parameters[1].Metadata["required"]);
 
             // Override ""api-version" parameters by $ref for patch operation
-            var item3 = model.Children[2];
-            Assert.Equal(3, item3.Parameters.Count);
+            var item2 = model.Children[2];
+            Assert.Equal(3, item2.Parameters.Count);
+            Assert.Equal("object_id", item2.Parameters[0].Metadata["name"]);
+            Assert.Equal("api-version", item2.Parameters[1].Metadata["name"]);
+            Assert.Equal(false, item2.Parameters[1].Metadata["required"]);
+
+            // Override ""api-version" parameters by self definition for delete operation
+            var item3 = model.Children[3];
+            Assert.Equal(2, item3.Parameters.Count);
             Assert.Equal("object_id", item3.Parameters[0].Metadata["name"]);
             Assert.Equal("api-version", item3.Parameters[1].Metadata["name"]);
             Assert.Equal(false, item3.Parameters[1].Metadata["required"]);
 
-            // Override ""api-version" parameters by self definition for delete operation
-            var item4 = model.Children[3];
-            Assert.Equal(2, item4.Parameters.Count);
-            Assert.Equal("object_id", item4.Parameters[0].Metadata["name"]);
-            Assert.Equal("api-version", item4.Parameters[1].Metadata["name"]);
-            Assert.Equal(false, item4.Parameters[1].Metadata["required"]);
-
             // When operation parameters is not set, inherit from th parameters for post operation
-            var item5 = model.Children[4];
-            Assert.Equal(1, item5.Parameters.Count);
-            Assert.Equal("api-version", item5.Parameters[0].Metadata["name"]);
-            Assert.Equal(true, item5.Parameters[0].Metadata["required"]);
+            var item4 = model.Children[4];
+            Assert.Equal(1, item4.Parameters.Count);
+            Assert.Equal("api-version", item4.Parameters[0].Metadata["name"]);
+            Assert.Equal(true, item4.Parameters[0].Metadata["required"]);
+
+            // When 'definitions' has direct child with $ref defined, should resolve it
+            var item5 = model.Children[6];
+            var parameter2 = (JObject)item5.Parameters[2].Metadata["schema"];
+            Assert.Equal("string", parameter2["type"]);
+            Assert.Equal("uri", parameter2["format"]);
         }
 
         [Fact]
