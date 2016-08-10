@@ -36,7 +36,7 @@ b:
 ---", "<yamlheader start=\"1\" end=\"5\">a: b\nb:\n  c: e</yamlheader>")]
         [InlineData(@"# Hello @CrossLink1 @'CrossLink2'dummy 
 @World",
-            "<h1 id=\"hello-crosslink1-crosslink2-dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw=\"@&#39;CrossLink2&#39;\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw=\"@World\"></xref></p>\n")]
+            "<h1 id=\"hello-crosslink1-crosslink2dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw=\"@&#39;CrossLink2&#39;\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw=\"@World\"></xref></p>\n")]
         [InlineData("a\n```\nc\n```",
             "<p>a</p>\n<pre><code>c\n</code></pre>")]
         [InlineData(@"* Unordered list item 1
@@ -55,10 +55,6 @@ b:
         [InlineData(
             @"[*a*](xref:uid)",
             "<p><a href=\"xref:uid\"><em>a</em></a></p>\n")]
-        [InlineData("# sān　空格　 sān\n", "<h1 id=\"sān-空格-sān\">sān　空格　 sān</h1>\n")]
-        [InlineData("# Hello World\n# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n<h1 id=\"hello-world-0\">Hello World</h1>\n")]
-        [InlineData("# a-0\n# a\n# a", "<h1 id=\"a-0\">a-0</h1>\n<h1 id=\"a\">a</h1>\n<h1 id=\"a-0-0\">a</h1>\n")]
-        [InlineData("# 测试。用例\n# 测试。用例", "<h1 id=\"测试-用例\">测试。用例</h1>\n<h1 id=\"测试-用例-0\">测试。用例</h1>\n")]
         public void TestDfmInGeneral(string source, string expected)
         {
             Assert.Equal(expected.Replace("\r\n", "\n"), DocfxFlavoredMarked.Markup(source));

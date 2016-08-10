@@ -82,7 +82,7 @@ by a blank line.</p>
             var expectedList = new List<string> { first };
             for (var i = 1; i < 1000; i++)
             {
-                var content = string.Concat("-", i - 1);
+                var content = string.Concat("-", i);
                 expectedList.Add(string.Format(template, content));
             }
             var expected1000 = string.Concat(expectedList);

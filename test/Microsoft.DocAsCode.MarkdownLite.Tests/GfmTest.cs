@@ -462,6 +462,50 @@ aaa",
             @"aabbcc:not_emoji:ddee",
             @"<p>aabbcc:not_emoji:ddee</p>
 ")]
+        [InlineData(
+            @"# Ice cube",
+            @"<h1 id=""ice-cube"">Ice cube</h1>
+")]
+        [InlineData(
+            @"# Eazy-E",
+            @"<h1 id=""eazy-e"">Eazy-E</h1>
+")]
+        [InlineData(
+            @"# Straight Outta Compton
+# Dopeman
+# Express Yourself
+# Dopeman",
+            @"<h1 id=""straight-outta-compton"">Straight Outta Compton</h1>
+<h1 id=""dopeman"">Dopeman</h1>
+<h1 id=""express-yourself"">Express Yourself</h1>
+<h1 id=""dopeman-1"">Dopeman</h1>
+")]
+        [InlineData(
+            @"# ""Funky President"" by James Brown",
+            @"<h1 id=""funky-president-by-james-brown"">&quot;Funky President&quot; by James Brown</h1>
+")]
+        [InlineData(
+            @"# 中文",
+            @"<h1 id=""中文"">中文</h1>
+")]
+        [InlineData(
+            @"# sān　空格　 sān",
+            @"<h1 id=""sān空格-sān"">sān　空格　 sān</h1>
+")]
+        [InlineData(
+            @"# a-1
+# a
+# a",
+            @"<h1 id=""a-1"">a-1</h1>
+<h1 id=""a"">a</h1>
+<h1 id=""a-1-1"">a</h1>
+")]
+        [InlineData(
+            @"# 测试。用例
+# 测试。用例",
+            @"<h1 id=""测试用例"">测试。用例</h1>
+<h1 id=""测试用例-1"">测试。用例</h1>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
