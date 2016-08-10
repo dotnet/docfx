@@ -16,46 +16,45 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     {
         static void Main(string[] args)
         {
-            try
+            while (true)
             {
-                while (true)
+                try
                 {
-                    // path -> basedir
-                    string path = Console.ReadLine();
-                    if (path == "exit")
-                        break;
-                    // filename -> the relative path of the current file
-                    string filename = Console.ReadLine();
-
-                    // a simple protocol(get String According to the numOfRow and connect them)
-                    string numStr = Console.ReadLine();
-                    int numOfRow = Convert.ToInt32(numStr);
-                    StringBuilder markdownContent = new StringBuilder();
-                    for (int i = 0; i < numOfRow; i++)
+                    string command = Console.ReadLine();
+                    if (command == "exit")
+                        return;
+                    else if (command == "dfmMarkup")
                     {
-                        markdownContent.AppendLine(Console.ReadLine());
-                    }
-                    var result = Dfmprocess(path, filename, markdownContent.ToString());
+                        string basedir = Console.ReadLine();
+                        // filename -> the relative path of the current file
+                        string filename = Console.ReadLine();
 
-                    // append with customized endCode
-                    Console.Write(result);
-                    Console.Write('\a');
+                        // a simple protocol(get String According to the numOfRow and connect them)
+                        string numStr = Console.ReadLine();
+                        int numOfRow = Convert.ToInt32(numStr);
+                        StringBuilder markdownContent = new StringBuilder();
+                        for (int i = 0; i < numOfRow; i++)
+                        {
+                            markdownContent.AppendLine(Console.ReadLine());
+                        }
+                        var result = DfmMarkup(basedir, filename, markdownContent.ToString());
+
+                        // append with customized endCode
+                        Console.Write(result);
+                        Console.Write('\a');
+                    }
                 }
-                return;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"error:{e.Message}");
-                return;
+                catch (Exception e)
+                {
+                    Console.WriteLine($"error:{e.Message}");
+                }
             }
         }
 
-        public static string Dfmprocess(string path, string filename, string markdownContent)
+        public static string DfmMarkup(string basedir, string filename, string markdownContent)
         {
             DfmServiceProvider dfmServiceProvider = new DfmServiceProvider();
-            MarkdownServiceParameters markdownServiceParameters = new MarkdownServiceParameters();
-            markdownServiceParameters.BasePath = path;
-            IMarkdownService dfmService = dfmServiceProvider.CreateMarkdownService(markdownServiceParameters);
+            IMarkdownService dfmService = dfmServiceProvider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = basedir});
             return dfmService.Markup(markdownContent, filename).Html;
         }
     }
