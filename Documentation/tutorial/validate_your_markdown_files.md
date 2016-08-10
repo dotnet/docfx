@@ -39,7 +39,7 @@ Then when anyone write `<H1>` or `<H2>` in Markdown file, it will give a warning
 You can use the following proprties to configure the HTML tag rule:
 
 1.  `tagNames` is the list of HTML tag names to validate, *required*, *case-insensitive*.
-2.  `relation` is a choice for `tagNames`:
+2.  `relation` is optional for `tagNames`:
     * `In` means when html tag is in `tagNames`, this is default value.
     * `NotIn` means when html tag is not in `tagNames`.
 3.  `behavior` defines the behavior when the HTML tag is met, *required*. Its value can be following:
