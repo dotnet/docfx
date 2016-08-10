@@ -11,6 +11,8 @@
     <Compile Include="HashStreamHelper.cs" />
     <Compile Include="Incrementals\BuildVersionInfo.cs" />
     <Compile Include="Incrementals\BuildInfo.cs" />
+    <Compile Include="Incrementals\ChangeItem.cs" />
+    <Compile Include="Incrementals\ChangeKindWithDependency.cs" />
     <Compile Include="Incrementals\ChangeKind.cs" />
     <Compile Include="Incrementals\ChangeList.cs" />
     <Compile Include="Incrementals\DependencyGraph.cs" />

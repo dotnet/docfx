@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Immutable;
 
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
+
     public sealed class DocumentBuildParameters : MarshalByRefObject
     {
         public FileCollection Files { get; set; }
@@ -22,5 +24,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
         public string VersionName { get; set; }
         public string TemplateDir { get; set; }
+        public ChangeList ChangeList { get; set; } = new ChangeList();
     }
 }

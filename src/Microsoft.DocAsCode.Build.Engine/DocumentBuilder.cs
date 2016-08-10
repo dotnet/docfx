@@ -100,9 +100,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Container = _container,
                 CurrentBuildInfo = _currentBuildInfo,
+                LastBuildInfo = _lastBuildInfo,
                 IntermediateFolder = _intermediateFolder,
                 MetadataValidators = MetadataValidators.Concat(GetMetadataRules(parameter)).ToList(),
-                Processors = Processors
+                Processors = Processors,
             })
             {
                 return builder.Build(parameter);

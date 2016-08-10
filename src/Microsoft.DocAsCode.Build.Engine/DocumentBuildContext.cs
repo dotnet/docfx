@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Net.Http;
     using System.Threading.Tasks;
 
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -64,6 +65,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public HashSet<string> XRef { get; } = new HashSet<string>();
 
         public DependencyGraph DependencyGraph { get; } = new DependencyGraph();
+
+        internal Dictionary<string, ChangeKindWithDependency> ChangeDict { get; } = new Dictionary<string, ChangeKindWithDependency>();
 
         private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
