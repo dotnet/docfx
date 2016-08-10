@@ -52,22 +52,22 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public IEnumerable<string> GetCreatedFiles() =>
             from item in _list
-            where item.Kind == ChangeKind.Created
+            where item.Kind == ChangeKindWithDependency.Created
             select item.FilePath;
 
         public IEnumerable<string> GetUpdatedFiles() =>
             from item in _list
-            where item.Kind == ChangeKind.Updated
+            where item.Kind == ChangeKindWithDependency.Updated
             select item.FilePath;
 
         public IEnumerable<string> GetDeletedFiles() =>
             from item in _list
-            where item.Kind == ChangeKind.Deleted
+            where item.Kind == ChangeKindWithDependency.Deleted
             select item.FilePath;
 
         private void AddCore(string filePath, ChangeKind kind)
         {
-            _list.Add(new ChangeItem { FilePath = filePath, Kind = kind });
+            _list.Add(new ChangeItem { FilePath = filePath, Kind = (ChangeKindWithDependency)kind });
         }
 
         private static ChangeList ParseCore(string tsvFile, string baseDir)
@@ -119,12 +119,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 throw new DocfxException($"Some error ocurred while parsing changelist file: {tsvFile}.");
             }
             return result;
-        }
-
-        private sealed class ChangeItem
-        {
-            public string FilePath { get; set; }
-            public ChangeKind Kind { get; set; }
         }
     }
 }

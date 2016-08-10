@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Immutable;
     using System.Text;
 
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -26,7 +27,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         public IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
 
         internal BuildInfo CurrentBuildInfo { get; set; }
+        internal BuildInfo LastBuildInfo { get; set; }
         internal string IntermediateFolder { get; set; }
+
+        private bool _canIncremental;
 
         public Manifest Build(DocumentBuildParameters parameters)
         {
@@ -58,6 +62,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new LoggerPhaseScope(PhaseName, true))
             {
+                _canIncremental = false;
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 var context = new DocumentBuildContext(
@@ -74,6 +79,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             VersionName = parameters.VersionName,
                         });
+                    _canIncremental = GetCanIncremental(parameters.VersionName);
+                    if (_canIncremental)
+                    {
+                        ExpendDependency(parameters.ChangeList, LastBuildInfo, context.ChangeDict);
+                    }
                 }
 
                 Logger.LogVerbose("Start building document...");
@@ -142,6 +152,28 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
+        }
+
+        private bool GetCanIncremental(string versionName)
+        {
+            if (LastBuildInfo == null)
+            {
+                return false;
+            }
+            if (CurrentBuildInfo.DocfxVersion != LastBuildInfo.DocfxVersion ||
+                CurrentBuildInfo.PluginHash != LastBuildInfo.PluginHash ||
+                CurrentBuildInfo.TemplateHash != LastBuildInfo.TemplateHash ||
+                CurrentBuildInfo.ConfigHash != LastBuildInfo.ConfigHash)
+            {
+                return false;
+            }
+
+            return LastBuildInfo.Versions.Any(v => v.VersionName == versionName);
+        }
+
+        private void ExpendDependency(ChangeList changeList, BuildInfo lastBuildInfo, Dictionary<string, ChangeKindWithDependency> changeItems)
+        {
+            // todo ExpendDependency;
         }
 
         private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)

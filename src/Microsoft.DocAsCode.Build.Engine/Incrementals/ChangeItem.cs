@@ -3,11 +3,9 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
-    public enum ChangeKind
+    internal sealed class ChangeItem
     {
-        None,
-        Created,
-        Updated,
-        Deleted,
+        public string FilePath { get; set; }
+        public ChangeKindWithDependency Kind { get; set; }
     }
 }

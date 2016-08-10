@@ -3,11 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
-    public enum ChangeKind
+    internal enum ChangeKindWithDependency
     {
-        None,
-        Created,
-        Updated,
-        Deleted,
+        None = ChangeKind.None,
+        Created = ChangeKind.Created,
+        Updated = ChangeKind.Updated,
+        Deleted = ChangeKind.Deleted,
+        DependecnyUpdated = 1024,
     }
 }

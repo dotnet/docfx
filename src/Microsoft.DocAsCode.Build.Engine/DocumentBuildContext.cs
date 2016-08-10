@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
-
+    using Incrementals;
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
         private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
@@ -64,6 +64,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public HashSet<string> XRef { get; } = new HashSet<string>();
 
         public DependencyGraph DependencyGraph { get; } = new DependencyGraph();
+
+        internal Dictionary<string, ChangeKindWithDependency> ChangeDict { get; } = new Dictionary<string, ChangeKindWithDependency>();
 
         private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
 

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using Incrementals;
     using System;
     using System.Collections.Immutable;
 
@@ -22,5 +23,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
         public string VersionName { get; set; }
         public string TemplateDir { get; set; }
+        public ChangeList ChangeList { get; set; } = new ChangeList();
     }
 }
