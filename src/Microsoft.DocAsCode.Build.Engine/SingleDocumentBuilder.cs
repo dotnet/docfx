@@ -94,7 +94,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
-                        var markdownService = CreateMarkdownService(parameters, processor.Tokens.ToImmutableDictionary());
+                        IMarkdownService markdownService;
+                        using (new LoggerPhaseScope("CreateMarkdownService", true))
+                        {
+                            markdownService = CreateMarkdownService(parameters, processor.Tokens.ToImmutableDictionary());
+                        }
 
                         using (new LoggerPhaseScope("Load", true))
                         {
@@ -109,26 +113,48 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         if (IntermediateFolder != null)
                         {
-                            UpdateUidDependency(context, hostServices);
-                            SaveDependency(context, parameters);
+                            using (new LoggerPhaseScope("SaveDependency", true))
+                            {
+                                UpdateUidDependency(context, hostServices);
+                                SaveDependency(context, parameters);
+                            }
                         }
 
                         // Use manifest from now on
-                        UpdateContext(context);
+                        using (new LoggerPhaseScope("UpdateContext", true))
+                        {
+                            UpdateContext(context);
+                        }
 
                         // Run getOptions from Template
-                        FeedOptions(manifest, context);
+                        using (new LoggerPhaseScope("FeedOptions", true))
+                        {
+                            FeedOptions(manifest, context);
+                        }
 
                         // Template can feed back xref map, actually, the anchor # location can only be determined in template
-                        FeedXRefMap(manifest, context);
+                        using (new LoggerPhaseScope("FeedXRefMap", true))
+                        {
+                            FeedXRefMap(manifest, context);
+                        }
 
-                        UpdateHref(manifest, context);
+                        using (new LoggerPhaseScope("UpdateHref", true))
+                        {
+                            UpdateHref(manifest, context);
+                        }
 
                         // Afterwards, m.Item.Model.Content is always IDictionary
-                        ApplySystemMetadata(manifest, context);
+                        using (new LoggerPhaseScope("ApplySystemMetadata", true))
+                        {
+                            ApplySystemMetadata(manifest, context);
+                        }
 
                         // Register global variables after href are all updated
-                        IDictionary<string, object> globalVariables = FeedGlobalVariables(processor.Tokens, manifest, context);
+                        IDictionary<string, object> globalVariables;
+                        using (new LoggerPhaseScope("FeedGlobalVariables", true))
+                        {
+                            globalVariables = FeedGlobalVariables(processor.Tokens, manifest, context);
+                        }
 
                         // processor to add global variable to the model
                         return new Manifest

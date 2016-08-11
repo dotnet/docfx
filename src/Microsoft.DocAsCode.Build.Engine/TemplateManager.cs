@@ -54,6 +54,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (string.IsNullOrEmpty(outputDirectory)) throw new ArgumentNullException(nameof(outputDirectory));
             if (!resourceNames.Any()) return false;
             bool isEmpty = true;
+
+            using (new LoggerPhaseScope("ExportResourceFiles", true))
             using (var templateResource = new CompositeResourceCollectionWithOverridden(resourceNames.Select(s => _finder.Find(s)).Where(s => s != null)))
             {
                 if (templateResource.IsEmpty)
