@@ -142,14 +142,17 @@ namespace Microsoft.DocAsCode.Build.RestApi
         {
             try
             {
-                var jObject = JObject.Parse(File.ReadAllText(filePath));
-                JToken swaggerValue;
-                if (jObject.TryGetValue("swagger", out swaggerValue))
+                using (JsonReader reader = new JsonTextReader(new StringReader(File.ReadAllText(filePath))))
                 {
-                    var swaggerString = (string)swaggerValue;
-                    if (swaggerString != null && swaggerString.Equals("2.0"))
+                    var jObject = JObject.Load(reader);
+                    JToken swaggerValue;
+                    if (jObject.TryGetValue("swagger", out swaggerValue))
                     {
-                        return true;
+                        var swaggerString = (string)swaggerValue;
+                        if (swaggerString != null && swaggerString.Equals("2.0"))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
