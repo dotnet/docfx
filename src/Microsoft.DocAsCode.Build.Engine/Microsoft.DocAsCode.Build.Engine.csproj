@@ -9,6 +9,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DocumentBuilder.cs" />
     <Compile Include="HashStreamHelper.cs" />
+    <Compile Include="Incrementals\ProcessorStepInfo.cs" />
+    <Compile Include="Incrementals\ProcessorInfo.cs" />
     <Compile Include="Incrementals\BuildVersionInfo.cs" />
     <Compile Include="Incrementals\BuildInfo.cs" />
     <Compile Include="Incrementals\ChangeItem.cs" />

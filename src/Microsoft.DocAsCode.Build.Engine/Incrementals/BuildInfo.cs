@@ -34,6 +34,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// The file info for each version.
         /// </summary>
-        public List<BuildVersionInfo> Versions { get; set; } = new List<BuildVersionInfo>();
+        public List<BuildVersionInfo> Versions { get; } = new List<BuildVersionInfo>();
     }
 }

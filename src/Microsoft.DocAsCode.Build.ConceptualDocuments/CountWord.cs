@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class CountWord : BaseDocumentBuildStep
+    public class CountWord : BaseDocumentBuildStep, ISupportIncrementalBuild
     {
         public override string Name => nameof(CountWord);
 
@@ -32,6 +32,16 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                     content["wordCount"] = WordCounter.CountWord((string)content[Constants.PropertyName.Conceptual]);
                 }
             }
+        }
+
+        public string GetIncrementalContextHash()
+        {
+            return null;
+        }
+
+        public bool CanIncrementalBuild(FileAndType fileAndType)
+        {
+            return true;
         }
     }
 
