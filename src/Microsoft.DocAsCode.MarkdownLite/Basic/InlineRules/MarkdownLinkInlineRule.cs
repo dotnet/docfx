@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             var sourceInfo = context.Consume(match.Length);
-            return GenerateToken(parser, match.Groups[2].Value, match.Groups[4].Value, match.Groups[1].Value, match.Value[0] == '!', sourceInfo);
+            return GenerateToken(parser, match.Groups[2].Value, match.Groups[4].Value, match.Groups[1].Value, match.Value[0] == '!', sourceInfo, MarkdownLinkType.NormalLink, null);
         }
 
         private bool IsEscape(string text)

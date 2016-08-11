@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             else
             {
                 var sourceInfo = context.Consume(match.Length);
-                return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', sourceInfo);
+                return GenerateToken(parser, link.Href, link.Title, match.Groups[1].Value, match.Value[0] == '!', sourceInfo, MarkdownLinkType.RefLink, linkStr);
             }
         }
     }

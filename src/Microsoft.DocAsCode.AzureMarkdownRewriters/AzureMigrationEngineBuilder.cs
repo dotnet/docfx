@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                             (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.SourceInfo.Markdown), t.Title, t.Content, t.SourceInfo)
+                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.SourceInfo.Markdown), t.Title, t.Content, t.SourceInfo, t.LinkType, t.RefId)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.SourceInfo)

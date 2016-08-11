@@ -347,7 +347,6 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                             Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
                             if (string.Equals(fileInfo.Extension, MarkdownExtension, StringComparison.OrdinalIgnoreCase))
                             {
-                                Console.WriteLine("Convert article {0}", fileInfo.FullName);
                                 var source = File.ReadAllText(fileInfo.FullName);
                                 string result;
                                 if (_isMigration)
