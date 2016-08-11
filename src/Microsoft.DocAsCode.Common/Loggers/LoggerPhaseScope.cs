@@ -24,7 +24,8 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentException("Phase name cannot be null or white space.", nameof(phaseName));
             }
             _originPhaseName = GetPhaseName();
-            SetPhaseName(_originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName);
+            phaseName = _originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName;
+            SetPhaseName(phaseName);
             if (enablePerformanceScope)
             {
                 _performanceScope = new PerformanceScope("Scope:" + phaseName, LogLevel.Diagnostic);

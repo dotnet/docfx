@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             string intermediateFolder = null)
         {
             Logger.LogVerbose("Loading plug-in...");
-            using (new PerformanceScope("ImportPlugins", LogLevel.Diagnostic))
+            using (new LoggerPhaseScope("ImportPlugins", true))
             {
                 var assemblyList = assemblies?.ToList();
                 _container = GetContainer(assemblyList);
