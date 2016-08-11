@@ -299,7 +299,15 @@ _gitContribute        | object  | Customize the `Improve this Doc` URL button fo
 
 #### 3.2.3 Separated metadata files for global metadata and file metadata
 
-Take global metadata for example, you can set `globalMetadataFiles` in `docfx.json` or `--globalMetadataFiles` in build command line. The usage of `fileMetadataFiles` is the same as `globalMetadataFiles`.
+There're three ways to set metadata for a file in DocFX:
+
+1. using global metadata, it will set metadata for every file.
+2. using file metadata, it will set metadata for files that match pattern.
+3. using YAML header, it will set metadata for current file.
+
+In above ways, the later way will always overwrite the former way if the same key of metadata is set.
+
+Here we will show you how to set global metadata and file metadata using separated metadata files. Take global metadata for example, you can set `globalMetadataFiles` in `docfx.json` or `--globalMetadataFiles` in build command line. The usage of `fileMetadataFiles` is the same as `globalMetadataFiles`.
 
 There're some metadata file examples:
 
@@ -351,20 +359,18 @@ There're some examples about how to use separated metadata files.
     docfx build --fileMetadataFiles file1.json,file2.json
     ```
 
-Note that, the metadata set in command line will merge with the metadata set in `docfx.json`. 
+Note that, metadata set in command line will merge with metadata set in `docfx.json`. 
 
-+ If the same key for global metadata was set, the order to be overriden would be: 
++ If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): 
     1. global metadata from docfx config file
     2. global metadata from global metadata files
     3. global metadata from command line
-    4. metadata from YAML header in current file
 
-+ If the same file pattern for file metadata was set, the order to be overriden would be: 
++ If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): 
     1. file metadata from docfx config file
     2. file metadata from file metadata files
-    3. metadata from YAML header in current file
 
-Given mulitple metadata files, the metadata in next file will override current metadata when the same key is set. In above example, the value set in `global2.json` will override the value set in `global1.json` if the same key exists.
+Given multiple metadata files, the behavior would be **undetermined**, if same key is set in these files.
 
 4. Supported File Mapping Format
 ---------------------------------------------
