@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         internal BuildInfo LastBuildInfo { get; set; }
         internal string IntermediateFolder { get; set; }
 
-        private bool ShouldLogIncrementalInfo => IntermediateFolder != null;
+        private bool ShouldTraceIncrementalInfo => IntermediateFolder != null;
         private bool _canIncremental;
 
         public Manifest Build(DocumentBuildParameters parameters)
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.XRefMaps,
                     parameters.MaxParallelism,
                     parameters.Files.DefaultBaseDir);
-                if (ShouldLogIncrementalInfo)
+                if (ShouldTraceIncrementalInfo)
                 {
                     CurrentBuildInfo.Versions.Add(
                         new BuildVersionInfo
@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     _canIncremental = GetCanIncremental(parameters.VersionName);
                     if (_canIncremental)
                     {
-                        ExpendDependency(parameters.ChangeList, LastBuildInfo, context.ChangeDict);
+                        ExpandDependency(parameters.ChangeList, LastBuildInfo, context.ChangeDict);
                     }
                 }
 
@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         using (new LoggerPhaseScope("Load", true))
                         {
-                            hostServices = GetInnerContexts(parameters, Processors, processor, markdownService).ToList();
+                            hostServices = GetInnerContexts(parameters, Processors, processor, markdownService, context).ToList();
                         }
 
                         var manifest = new List<ManifestItemWithContext>();
@@ -112,7 +112,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             manifest.AddRange(BuildCore(hostService, context));
                         }
 
-                        if (ShouldLogIncrementalInfo)
+                        if (ShouldTraceIncrementalInfo)
                         {
                             using (new LoggerPhaseScope("SaveDependency", true))
                             {
@@ -198,9 +198,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             return LastBuildInfo.Versions.Any(v => v.VersionName == versionName);
         }
 
-        private void ExpendDependency(ChangeList changeList, BuildInfo lastBuildInfo, Dictionary<string, ChangeKindWithDependency> changeItems)
+        private void ExpandDependency(ChangeList changeList, BuildInfo lastBuildInfo, Dictionary<string, ChangeKindWithDependency> changeItems)
         {
-            // todo ExpendDependency;
+            // todo ExpandDependency;
         }
 
         private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)
@@ -263,7 +263,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var hostService = new HostService(
                  parameters.Files.DefaultBaseDir,
                  from file in parameters.Files.EnumerateFiles()
-                 select Load(processor, parameters.Metadata, parameters.FileMetadata, file, false)
+                 select Load(processor, parameters.Metadata, parameters.FileMetadata, file, false, null)
                  into model
                  where model != null
                  select model)
@@ -452,24 +452,30 @@ namespace Microsoft.DocAsCode.Build.Engine
             ImmutableDictionary<string, object> metadata,
             FileMetadata fileMetadata,
             FileAndType file,
-            bool incremental = false)
+            bool canProcessorIncremental,
+            DocumentBuildContext context)
         {
             using (new LoggerFileScope(file.File))
             {
                 Logger.LogDiagnostic($"Processor {processor.Name}: Loading...");
 
-                if (incremental)
+                if (canProcessorIncremental)
                 {
-                    Logger.LogDiagnostic($"Processor {processor.Name}: Check incremental...");
-                    if (((ISupportIncrementalBuild)processor).CanIncrementalBuild(file) &&
-                        processor.BuildSteps.Cast<ISupportIncrementalBuild>().All(step => step.CanIncrementalBuild(file)))
+                    ChangeKindWithDependency ck;
+                    if (context.ChangeDict.TryGetValue(file.File, out ck) &&
+                        ck == ChangeKindWithDependency.None)
                     {
-                        Logger.LogDiagnostic($"Processor {processor.Name}: Skip build by incremental.");
+                        Logger.LogDiagnostic($"Processor {processor.Name}: Check incremental...");
+                        if (((ISupportIncrementalBuild)processor).CanIncrementalBuild(file) &&
+                            processor.BuildSteps.Cast<ISupportIncrementalBuild>().All(step => step.CanIncrementalBuild(file)))
+                        {
+                            Logger.LogDiagnostic($"Processor {processor.Name}: Skip build by incremental.");
 
-                        // todo : incremental.
-                        return null;
+                            // todo : incremental.
+                            return null;
+                        }
+                        Logger.LogDiagnostic($"Processor {processor.Name}: Incremental not available.");
                     }
-                    Logger.LogDiagnostic($"Processor {processor.Name}: Incremental not available.");
                 }
 
                 var path = Path.Combine(file.BaseDir, file.File);
@@ -728,7 +734,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             DocumentBuildParameters parameters,
             IEnumerable<IDocumentProcessor> processors,
             TemplateProcessor templateProcessor,
-            IMarkdownService markdownService)
+            IMarkdownService markdownService,
+            DocumentBuildContext context)
         {
             var k = from fileItem in (
                     from file in parameters.Files.EnumerateFiles()
@@ -763,7 +770,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             processor,
                             item,
-                            canIncremental = CanIncremental(processor, parameters.VersionName),
+                            canProcessorIncremental = CanProcessorIncremental(processor, parameters.VersionName),
                         };
 
             return from pair in pairs.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
@@ -772,7 +779,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                        pair.item == null
                             ? new FileModel[0]
                             : from file in pair.item
-                              select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, pair.canIncremental) into model
+                              select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, pair.canProcessorIncremental, context) into model
                               where model != null
                               select model)
                    {
@@ -783,9 +790,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                    };
         }
 
-        private bool CanIncremental(IDocumentProcessor processor, string versionName)
+        private bool CanProcessorIncremental(IDocumentProcessor processor, string versionName)
         {
-            if (!ShouldLogIncrementalInfo)
+            if (!ShouldTraceIncrementalInfo)
             {
                 return false;
             }
