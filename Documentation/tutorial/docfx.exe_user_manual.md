@@ -299,7 +299,7 @@ _gitContribute        | object  | Customize the `Improve this Doc` URL button fo
 
 #### 3.2.3 Separated metadata files for global metadata and file metadata
 
-Take global metadata for example, you can set `globaMetadataFiles` in `docfx.json` or `--globalMetadataFiles` in build command line. The usage of `fileMetadataFiles` is the same as `globalMetadataFiles`.
+Take global metadata for example, you can set `globalMetadataFiles` in `docfx.json` or `--globalMetadataFiles` in build command line. The usage of `fileMetadataFiles` is the same as `globalMetadataFiles`.
 
 There're some metadata file examples:
 
