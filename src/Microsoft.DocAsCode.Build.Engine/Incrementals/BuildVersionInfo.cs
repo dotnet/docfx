@@ -3,12 +3,18 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System.Collections.Generic;
+
     public class BuildVersionInfo
     {
         /// <summary>
         /// The version name of documents.
         /// </summary>
         public string VersionName { get; set; }
+        /// <summary>
+        /// The information for processors.
+        /// </summary>
+        public List<ProcessorInfo> Processors { get; } = new List<ProcessorInfo>();
         /// <summary>
         /// The file link for dependency.
         /// </summary>
