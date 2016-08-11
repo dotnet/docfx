@@ -316,11 +316,11 @@ There're some metadata file examples:
     {
         "priority": {
             "**.md": 2.5,
-            "spec/**.md": 3,
+            "spec/**.md": 3
         },
         "keywords": {
             "obj/docfx/**": ["API", "Reference"],
-            "spec/**.md": ["Spec", "Conceptual"],
+            "spec/**.md": ["Spec", "Conceptual"]
         }
     }
     ```
