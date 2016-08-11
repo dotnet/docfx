@@ -351,12 +351,12 @@ There're some examples about how to use separated metadata files.
     docfx build --fileMetadataFiles file1.json,file2.json
     ```
 
-One more thing need note is that, the metadata set in command line will merge with the metadata set in `docfx.json`. 
+Note that, the metadata set in command line will merge with the metadata set in `docfx.json`. 
 
 + If the same key for global metadata was set, the order to be overriden would be: 
-    1. global metadata from docfx config file`
-    2. global metadata from global metadata files` 
-    3. global metadata from command line`
+    1. global metadata from docfx config file
+    2. global metadata from global metadata files
+    3. global metadata from command line
     4. metadata from YAML header in current file
 
 + If the same file pattern for file metadata was set, the order to be overriden would be: 
