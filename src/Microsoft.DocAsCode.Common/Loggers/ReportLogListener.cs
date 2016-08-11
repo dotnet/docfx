@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Common
     {
         private readonly StreamWriter _writer;
 
-        public LogLevel LogLevelThreshold { get; set; }
+        private const LogLevel LogLevelThreshold = LogLevel.Diagnostic;
 
 #if !NetCore
         public ReportLogListener(string reportPath)
@@ -70,6 +70,8 @@ namespace Microsoft.DocAsCode.Common
         {
             switch (level)
             {
+                case LogLevel.Diagnostic:
+                    return MessageSeverity.Diagnostic;
                 case LogLevel.Verbose:
                     return MessageSeverity.Verbose;
                 case LogLevel.Info:
@@ -109,7 +111,8 @@ namespace Microsoft.DocAsCode.Common
             Error,
             Warning,
             Info,
-            Verbose
+            Verbose,
+            Diagnostic
         }
     }
 }

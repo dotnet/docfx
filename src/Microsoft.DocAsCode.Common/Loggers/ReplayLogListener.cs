@@ -34,8 +34,6 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-        public LogLevel LogLevelThreshold { get; set; }
-
         public void Dispose()
         {
             foreach (var listener in _listeners)
