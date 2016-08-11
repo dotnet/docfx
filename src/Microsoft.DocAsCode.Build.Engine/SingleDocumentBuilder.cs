@@ -771,8 +771,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var cpi = GetProcessorInfo(processor, versionName);
             var lpi = LastBuildInfo
-                .Versions
-                .Find(v => v.VersionName == versionName)
+                ?.Versions
+                ?.Find(v => v.VersionName == versionName)
                 ?.Processors
                 ?.Find(p => p.Name == processor.Name);
             if (lpi == null)
