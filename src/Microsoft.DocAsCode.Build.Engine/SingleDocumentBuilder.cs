@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     _canIncremental = GetCanIncremental(parameters.VersionName);
                     if (_canIncremental)
                     {
-                        ExpendDependency(parameters.ChangeList, LastBuildInfo, context.ChangeDict);
+                        ExpandDependency(parameters.ChangeList, LastBuildInfo, context.ChangeDict);
                     }
                 }
 
@@ -198,9 +198,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             return LastBuildInfo.Versions.Any(v => v.VersionName == versionName);
         }
 
-        private void ExpendDependency(ChangeList changeList, BuildInfo lastBuildInfo, Dictionary<string, ChangeKindWithDependency> changeItems)
+        private void ExpandDependency(ChangeList changeList, BuildInfo lastBuildInfo, Dictionary<string, ChangeKindWithDependency> changeItems)
         {
-            // todo ExpendDependency;
+            // todo ExpandDependency;
         }
 
         private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)
@@ -462,7 +462,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (canProcessorIncremental)
                 {
                     ChangeKindWithDependency ck;
-                    if (!context.ChangeDict.TryGetValue(file.File, out ck) &&
+                    if (context.ChangeDict.TryGetValue(file.File, out ck) &&
                         ck == ChangeKindWithDependency.None)
                     {
                         Logger.LogDiagnostic($"Processor {processor.Name}: Check incremental...");
