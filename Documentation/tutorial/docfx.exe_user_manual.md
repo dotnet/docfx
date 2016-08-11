@@ -299,9 +299,33 @@ _gitContribute        | object  | Customize the `Improve this Doc` URL button fo
 
 #### 3.2.3 Separated metadata files for global metadata and file metadata
 
-Take global metadata for example, you can set `globaMetadataFiles` in `docfx.json` or `--globalMetdataFiles` in build command line. The usage of `fileMetadataFiles` is the same as `globalMetadataFiles`.
+Take global metadata for example, you can set `globaMetadataFiles` in `docfx.json` or `--globalMetadataFiles` in build command line. The usage of `fileMetadataFiles` is the same as `globalMetadataFiles`.
 
-There're some examples:
+There're some metadata file examples:
+
++ globalMetadata file example 
+    ```json
+    {
+        "_appTitle": "DocFX website",
+        "_enableSearch": "true"
+    }
+    ```
+
++ fileMetadata file example
+    ```json
+    {
+        "priority": {
+            "**.md": 2.5,
+            "spec/**.md": 3,
+        },
+        "keywords": {
+            "obj/docfx/**": ["API", "Reference"],
+            "spec/**.md": ["Spec", "Conceptual"],
+        }
+    }
+    ```
+
+There're some examples about how to use separated metadata files.
 
 + use `globalMetadataFiles` in `docfx.json`
     ```json
@@ -327,7 +351,20 @@ There're some examples:
     docfx build --fileMetadataFiles file1.json,file2.json
     ```
 
-One more thing need note is that, the metadata set in command line will merge with the metadata set in `docfx.json`. And If the same key for global metadata was set, the order to be overriden would be: `global metadata from docfx config file` < `global metadata from global metadata files` < `global metadata from command line`. If the same file pattern for file metadata was set, the order to be override would be: `file metadata from docfx config file` < `file metadata from file metadata files`. In above example, the value set in `global2.json` will override the value set in `global1.json` if the same key exists.
+One more thing need note is that, the metadata set in command line will merge with the metadata set in `docfx.json`. 
+
++ If the same key for global metadata was set, the order to be overriden would be: 
+    1. global metadata from docfx config file`
+    2. global metadata from global metadata files` 
+    3. global metadata from command line`
+    4. metadata from YAML header in current file
+
++ If the same file pattern for file metadata was set, the order to be overriden would be: 
+    1. file metadata from docfx config file
+    2. file metadata from file metadata files
+    3. metadata from YAML header in current file
+
+Given mulitple metadata files, the metadata in next file will override current metadata when the same key is set. In above example, the value set in `global2.json` will override the value set in `global1.json` if the same key exists.
 
 4. Supported File Mapping Format
 ---------------------------------------------
