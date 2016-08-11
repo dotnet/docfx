@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     new MarkdownRawToken(this, parser.Context, sourceInfo.Copy(match.Groups[1].Value))),
                 sourceInfo,
                 MarkdownLinkType.UrlLink,
-                match.Groups[1].Value);
+                null);
         }
     }
 }

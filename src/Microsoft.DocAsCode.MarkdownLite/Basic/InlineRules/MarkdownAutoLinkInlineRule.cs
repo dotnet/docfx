@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             else
             {
                 text = StringHelper.Escape(match.Groups[1].Value);
-                href = text;
+                href = match.Groups[1].Value;
             }
 
             return new MarkdownLinkInlineToken(
@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     new MarkdownRawToken(this, parser.Context, sourceInfo.Copy(text))),
                 sourceInfo,
                 MarkdownLinkType.AutoLink,
-                match.Groups[1].Value);
+                null);
         }
 
         private StringBuffer Mangle(bool enableMangle, string text)

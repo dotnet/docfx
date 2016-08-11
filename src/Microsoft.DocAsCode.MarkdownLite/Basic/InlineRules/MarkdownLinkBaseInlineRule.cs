@@ -9,16 +9,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
-        protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo, MarkdownLinkType linkType, string linkContent)
+        protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo, MarkdownLinkType linkType, string refId)
         {
             var escapedHref = Regexes.Helper.MarkdownEscape.Replace(href, m => m.Groups[1].Value);
             if (isImage)
             {
-                return new MarkdownImageInlineToken(this, parser.Context, escapedHref, title, text, sourceInfo, linkType, linkContent);
+                return new MarkdownImageInlineToken(this, parser.Context, escapedHref, title, text, sourceInfo, linkType, refId);
             }
             else
             {
-                return new MarkdownLinkInlineToken(this, parser.Context, escapedHref, title, parser.Tokenize(sourceInfo.Copy(text)), sourceInfo, linkType, linkContent);
+                return new MarkdownLinkInlineToken(this, parser.Context, escapedHref, title, parser.Tokenize(sourceInfo.Copy(text)), sourceInfo, linkType, refId);
             }
         }
     }

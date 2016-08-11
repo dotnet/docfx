@@ -52,8 +52,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         private StringBuffer RenderImageNormalLink(IMarkdownRenderer render, MarkdownImageInlineToken token, MarkdownInlineContext context)
         {
             StringBuffer content = StringBuffer.Empty;
-            content += "!";
-            content += "[";
+            content += "![";
             content += token.Text;
             content += "](";
             content += Regexes.Helper.MarkdownUnescape.Replace(token.Href, m => "\\" + m.Value);
@@ -124,7 +123,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 content += "![";
                 content += realToken.Text;
                 content += "][";
-                content += realToken.LinkContent;
+                content += realToken.RefId;
                 content += "]";
             }
             else if (token is MarkdownLinkInlineToken)
@@ -136,7 +135,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     content += render.Render(t);
                 }
                 content += "][";
-                content += realToken.LinkContent;
+                content += realToken.RefId;
                 content += "]";
             }
             else
@@ -151,14 +150,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             StringBuffer content = StringBuffer.Empty;
             content += "<";
-            content += token.LinkContent;
+            content += token.Href;
             content += ">";
             return content;
         }
 
         private StringBuffer RenderUrlLink(IMarkdownRenderer render, MarkdownLinkInlineToken token, MarkdownInlineContext context)
         {
-            return token.LinkContent;
+            return token.Href;
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer render, GfmDelInlineToken token, MarkdownInlineContext context)

@@ -23,10 +23,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             var sourceInfo = context.Consume(match.Length);
-
-            // TODO: Get the link content by combine the link and title part. Should refine this with get from regex group. Hard to modify the regex...
-            var linkContent = string.IsNullOrEmpty(match.Groups[4].Value) ? match.Groups[2].Value : $@"{match.Groups[2].Value} ""{match.Groups[4].Value}""";
-            return GenerateToken(parser, match.Groups[2].Value, match.Groups[4].Value, match.Groups[1].Value, match.Value[0] == '!', sourceInfo, MarkdownLinkType.NormalLink, linkContent);
+            return GenerateToken(parser, match.Groups[2].Value, match.Groups[4].Value, match.Groups[1].Value, match.Value[0] == '!', sourceInfo, MarkdownLinkType.NormalLink, null);
         }
 
         private bool IsEscape(string text)

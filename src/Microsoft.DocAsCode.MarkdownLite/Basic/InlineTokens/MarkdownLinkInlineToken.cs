@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownLinkInlineToken : IMarkdownExpression, IMarkdownRewritable<MarkdownLinkInlineToken>
     {
-        public MarkdownLinkInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, ImmutableArray<IMarkdownToken> content, SourceInfo sourceInfo, MarkdownLinkType linkType, string linkContent)
+        public MarkdownLinkInlineToken(IMarkdownRule rule, IMarkdownContext context, string href, string title, ImmutableArray<IMarkdownToken> content, SourceInfo sourceInfo, MarkdownLinkType linkType, string refId)
         {
             Rule = rule;
             Context = context;
@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Content = content;
             SourceInfo = sourceInfo;
             LinkType = linkType;
-            LinkContent = linkContent;
+            RefId = refId;
         }
 
         public IMarkdownRule Rule { get; }
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public MarkdownLinkType LinkType { get; }
 
-        public string LinkContent { get; }
+        public string RefId { get; }
 
         public MarkdownLinkInlineToken Rewrite(IMarkdownRewriteEngine rewriterEngine)
         {
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return this;
             }
-            return new MarkdownLinkInlineToken(Rule, Context, Href, Title, tokens, SourceInfo, LinkType, LinkContent);
+            return new MarkdownLinkInlineToken(Rule, Context, Href, Title, tokens, SourceInfo, LinkType, RefId);
         }
 
         public IEnumerable<IMarkdownToken> GetChildren() => Content;
