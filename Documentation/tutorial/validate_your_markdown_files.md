@@ -189,7 +189,7 @@ The different between `ReportError` and throw `DocumentException` is throwing ex
 
 For some cases, we need to validate some tokens with file context.
 
-For example, we want each topic has one title (i.e. h1 write by markdown syntax, e.g. `# <title>`).
+For example, we want each topic has one title (i.e. h1 written by markdown syntax, e.g. `# <title>`).
 But you cannot count them in @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator, it is shared by all files, and it will be never hit when there is no heading.
 
 For this propose, we need to create validator like following:
