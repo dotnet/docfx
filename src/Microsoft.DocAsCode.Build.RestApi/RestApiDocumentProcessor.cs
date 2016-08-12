@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using Microsoft.DocAsCode.Utility;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     [Export(typeof(IDocumentProcessor))]
     public class RestApiDocumentProcessor : DisposableDocumentProcessor
@@ -141,14 +142,18 @@ namespace Microsoft.DocAsCode.Build.RestApi
         {
             try
             {
-                var dictionary = JsonUtility.Deserialize<Dictionary<string, object>>(filePath);
-                object swaggerValue;
-                if (dictionary.TryGetValue("swagger", out swaggerValue))
+                using (var streamReader = File.OpenText(filePath))
+                using (JsonReader reader = new JsonTextReader(streamReader))
                 {
-                    var swaggerString = swaggerValue as string;
-                    if (swaggerString != null && swaggerString.Equals("2.0"))
+                    var jObject = JObject.Load(reader);
+                    JToken swaggerValue;
+                    if (jObject.TryGetValue("swagger", out swaggerValue))
                     {
-                        return true;
+                        var swaggerString = (string)swaggerValue;
+                        if (swaggerString != null && swaggerString.Equals("2.0"))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -158,7 +163,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
             catch (JsonException ex)
             {
-                Logger.LogVerbose($"In {nameof(RestApiDocumentProcessor)}, could not deserialize {filePath} to Dictionary<string, object>, exception details: {ex.Message}.");
+                Logger.LogVerbose($"In {nameof(RestApiDocumentProcessor)}, could not deserialize {filePath} to JObject, exception details: {ex.Message}.");
             }
 
             return false;
