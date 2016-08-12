@@ -185,6 +185,40 @@ You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,Sys
 
 The different between `ReportError` and throw `DocumentException` is throwing exception will stop the build immediately but `ReportError` won't stop build but will eventually fail the build after rules are run.
 
+### Advanced: validating tokens with file context
+
+For some cases, we need to validate some token with file context.
+
+For example, we want each topic has one title (i.e. h1 write by markdown syntax, e.g. `# <title>`).
+But you cannot count them in @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator, it is shared by all files, and it will be never hit when there is no heading.
+
+For this propose, we need to create validator like following:
+
+```csharp
+MarkdownTokenValidatorFactory.FromLambda<MarkdownHeadingBlockToken>(
+    t =>
+    {
+        if (t.Depth == 1)
+        {
+            var re = MarkdownTokenValidatorContext.CurrentRewriteEngine;
+            var h1Count = (int)re.GetVariable("h1Count");
+            re.SetVariable("h1Count", h1Count + 1);
+        }
+    },
+    re =>
+    {
+        re.SetVariable("h1Count", 0);
+        re.SetPostProcess("checkH1Count", re1 =>
+        {
+            var h1Count = (int)re.GetVariable("h1Count");
+            if (h1Count != 1)
+            {
+                 Logger.LogError($"Unexpected title count: {h1Count}.");
+            }
+        })
+    });
+```
+
 ## Advanced usage of `md.style`
 
 ### Default rules
