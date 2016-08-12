@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         public List<ProcessorInfo> Processors { get; } = new List<ProcessorInfo>();
         /// <summary>
-        /// The file link for dependency.
+        /// The file link for dependency (type is <see cref="DependencyGraph.Load(System.IO.TextReader)"/>).
         /// </summary>
         public string Dependency { get; set; }
         /// <summary>
@@ -24,5 +24,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// e.g. last modified time, md5.
         /// </summary>
         public string Attributes { get; set; }
+        /// <summary>
+        /// The build outputs (type is <see cref="BuildOutputs"/>).
+        /// </summary>
+        public string Output { get; set; }
+
     }
 }
