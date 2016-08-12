@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         public string Attributes { get; set; }
         /// <summary>
-        /// The build outputs (type is <see cref="BuildOutputs"/>).
+        /// The file link for build outputs (type is <see cref="BuildOutputs"/>).
         /// </summary>
         public string Output { get; set; }
 

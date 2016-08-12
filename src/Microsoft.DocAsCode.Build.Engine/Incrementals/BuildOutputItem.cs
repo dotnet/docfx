@@ -8,11 +8,15 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class BuildOutputItem
     {
         /// <summary>
-        /// The source file, always form working folder, i.e. start with "~/"
+        /// The source file, always from working folder, i.e. start with "~/"
         /// </summary>
         public string SourceFile { get; set; }
         /// <summary>
-        /// The output files, key is extension name (e.g. ".html"), the value is file path.
+        /// The destination file without extension
+        /// </summary>
+        public string DestinationFile { get; set; }
+        /// <summary>
+        /// The output files, key is extension name (e.g. ".html"), the value is file path (can be random name).
         /// </summary>
         public Dictionary<string, string> Files { get; set; }
         /// <summary>
