@@ -219,6 +219,12 @@ MarkdownTokenValidatorFactory.FromLambda<MarkdownHeadingBlockToken>(
     });
 ```
 
+The `FromLambda` method takes two callbacks:
+* The first will be invoked on @Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken matched in all files.
+  And the static property @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine will provide current context object.
+* The second will be invoked on starting a new file.
+  And you can initialize some variables for each file, and register some callbacks when the file completed.
+
 ## Advanced usage of `md.style`
 
 ### Default rules
