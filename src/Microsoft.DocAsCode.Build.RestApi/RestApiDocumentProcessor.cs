@@ -142,7 +142,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
         {
             try
             {
-                using (JsonReader reader = new JsonTextReader(new StringReader(File.ReadAllText(filePath))))
+                using (var streamReader = File.OpenText(filePath))
+                using (JsonReader reader = new JsonTextReader(streamReader))
                 {
                     var jObject = JObject.Load(reader);
                     JToken swaggerValue;
