@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25407.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx", "src\docfx\docfx.csproj", "{AB97BEDF-D207-42E9-A56F-C9DD395BFCDD}"
 EndProject
@@ -267,13 +267,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.DataCon
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RestApi", "RestApi", "{83E8687C-4F38-4EB2-9AA1-CA314DA564F7}"
 EndProject
-<<<<<<< HEAD
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GEmojiCodeGenerators", "GEmojiCodeGenerators", "{8E89892D-32B8-4745-8F41-7AB73F90E0EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GEmojiCodeGenerators", "tools\GEmojiCodeGenerators\GEmojiCodeGenerators.csproj", "{3465B6B7-26E4-2465-78D2-2432B0435522}"
-=======
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Dfm.VscPreview", "src\Microsoft.DocAsCode.Dfm.VscPreview\Microsoft.DocAsCode.Dfm.VscPreview.csproj", "{6E31517C-B140-413F-B854-F72E25F4DAB2}"
->>>>>>> 2d3364bc09ddc32ade66634d595bea8e5a17bd3d
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -779,7 +777,6 @@ Global
 		{C3F43329-9344-4E6A-8698-6C50861AE150}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C3F43329-9344-4E6A-8698-6C50861AE150}.Release|x86.ActiveCfg = Release|Any CPU
 		{C3F43329-9344-4E6A-8698-6C50861AE150}.Release|x86.Build.0 = Release|Any CPU
-<<<<<<< HEAD
 		{3465B6B7-26E4-2465-78D2-2432B0435522}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3465B6B7-26E4-2465-78D2-2432B0435522}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3465B6B7-26E4-2465-78D2-2432B0435522}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -788,7 +785,6 @@ Global
 		{3465B6B7-26E4-2465-78D2-2432B0435522}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3465B6B7-26E4-2465-78D2-2432B0435522}.Release|x86.ActiveCfg = Release|Any CPU
 		{3465B6B7-26E4-2465-78D2-2432B0435522}.Release|x86.Build.0 = Release|Any CPU
-=======
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -797,7 +793,6 @@ Global
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Release|x86.ActiveCfg = Release|Any CPU
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Release|x86.Build.0 = Release|Any CPU
->>>>>>> 2d3364bc09ddc32ade66634d595bea8e5a17bd3d
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -912,11 +907,8 @@ Global
 		{C6844E9D-9C68-4947-84DA-A0EAA5191664} = {A2201525-25AC-4036-AED2-57945876BABE}
 		{C3F43329-9344-4E6A-8698-6C50861AE150} = {83E8687C-4F38-4EB2-9AA1-CA314DA564F7}
 		{83E8687C-4F38-4EB2-9AA1-CA314DA564F7} = {9C3C5F8F-337F-4B7E-9B04-15888135F93B}
-<<<<<<< HEAD
 		{8E89892D-32B8-4745-8F41-7AB73F90E0EB} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{3465B6B7-26E4-2465-78D2-2432B0435522} = {8E89892D-32B8-4745-8F41-7AB73F90E0EB}
-=======
 		{6E31517C-B140-413F-B854-F72E25F4DAB2} = {2DAAC304-36F6-4E4A-A0EA-5821B4B9842A}
->>>>>>> 2d3364bc09ddc32ade66634d595bea8e5a17bd3d
 	EndGlobalSection
 EndGlobal
