@@ -22,6 +22,7 @@
     <Compile Include="HostService.cs" />
     <Compile Include="MarkdownProviders\GfmServiceProvider.cs" />
     <Compile Include="MarkdownProviders\DfmServiceProvider.cs" />
+    <Compile Include="MarkdownProviders\JsonServiceProvider.cs" />
     <Compile Include="TransformModelOptions.cs" />
     <Compile Include="TemplateRenderers\TemplateRendererResource.cs" />
     <Compile Include="TemplateRenderers\TemplateRendererType.cs" />

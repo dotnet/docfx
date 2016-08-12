@@ -1,18 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine.MarkdownProviders
+namespace Microsoft.DocAsCode.Build.Engine
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Text;
 
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export("json", typeof(IMarkdownServiceProvider))]
-    public class JsonServiceProviders
+    [Export("jsonServiceProvider", typeof(IMarkdownServiceProvider))]
+    public class JsonServiceProvider: IMarkdownServiceProvider
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
@@ -41,11 +42,17 @@ namespace Microsoft.DocAsCode.Build.Engine.MarkdownProviders
             public MarkupResult Markup(string src, string path)
             {
                 var dependency = new HashSet<string>();
-                var json = _builder.CreateDfmEngine(new JsonRenderer() { Tokens = _tokens }).Markup(src, path, dependency);
+                var json = new StringBuilder(_builder.CreateDfmEngine(new JsonRenderer() { Tokens = _tokens }).Markup(src, path, dependency));
+                if (json.Length != 0)
+                {
+                    json.Insert(0, "{\n\"name\":\"markdown\",\n\"contents\":[");
+                    json.Remove(json.Length - 1, 1);
+                    json.Append("]\n}");
+                }
                 var result = new MarkupResult
                 {
                     // I think it should be rename 
-                    Html = json,
+                    Html = json.ToString(),
                 };
                 if (dependency.Count > 0)
                 {
