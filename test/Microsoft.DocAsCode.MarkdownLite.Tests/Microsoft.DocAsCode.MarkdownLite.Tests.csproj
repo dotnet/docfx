@@ -28,14 +28,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj">
+      <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b51}</Project>
+      <Name>Microsoft.DocAsCode.Build.Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj">
       <Project>{81ad853e-6176-44ca-a43e-a699ea05cc3e}</Project>
       <Name>Microsoft.DocAsCode.MarkdownLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj">
+      <Project>{42f7a3b4-464b-403c-8352-5fbf40c696ff}</Project>
+      <Name>Microsoft.DocAsCode.Plugins</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GfmMarkdownRewriterTest.cs" />
     <Compile Include="GfmTest.cs" />
+    <Compile Include="JsonRendererTest.cs" />
     <Compile Include="PerfTest.cs" />
     <Compile Include="SourceInfoTest.cs" />
     <Compile Include="StringBufferTest.cs" />
