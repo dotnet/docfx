@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Common
             _writer = new StreamWriter(reportPath, true);
             _writer.WriteLine("<html>");
             _writer.WriteLine(@"<body lang=""en-us"">");
-            _writer.WriteLine(@"<h1 id=""azure_migration_report"">Azure Content Pre Migration Report</h1>");
+            _writer.WriteLine(@"<h1 id=""Report"">Report</h1>");
             _writer.WriteLine(@"<table border=""1"">");
             _writer.WriteLine(@"<tr><td>Severity</td><td>Message</td><td>File</td><td>Line</td><td>Time</td></tr>");
         }
