@@ -54,6 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string RequireFuncVariableName = "require";
         private const string RequireRelativePathPrefix = "./";
 
+        private object _utilityObject;
         private static readonly object ConsoleObject = new
         {
             log = new Action<object>(s => Logger.Log(s)),
@@ -87,13 +88,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             var engineCache = new Dictionary<string, Engine>();
 
             var utility = new TemplateUtility(context);
-            object utilityObject = new
+            _utilityObject = new
             {
-                resolveSourceRelativePath = new Func<string, string, string>((s1, s2) => utility.ResolveSourceRelativePath(s1, s2))
+                resolveSourceRelativePath = new Func<string, string, string>(utility.ResolveSourceRelativePath)
             };
 
             var engine = CreateDefaultEngine();
-            engine.SetValue(UtilityVariableName, utilityObject);
 
             var requireAction = new Func<string, object>(
                 s =>
@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return engine;
         }
 
-        private static Engine CreateEngine(Engine engine, params string[] sharedVariables)
+        private Engine CreateEngine(Engine engine, params string[] sharedVariables)
         {
             var newEngine = CreateDefaultEngine();
             if (sharedVariables != null)
@@ -155,12 +155,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             return newEngine;
         }
 
-        private static Engine CreateDefaultEngine()
+        private Engine CreateDefaultEngine()
         {
             var engine = new Engine();
 
             engine.SetValue(ExportsVariableName, engine.Object.Construct(Jint.Runtime.Arguments.Empty));
             engine.SetValue(ConsoleVariableName, ConsoleObject);
+            engine.SetValue(UtilityVariableName, _utilityObject);
+
             return engine;
         }
 
