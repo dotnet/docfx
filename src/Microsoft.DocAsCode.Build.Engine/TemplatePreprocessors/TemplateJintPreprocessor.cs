@@ -54,6 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string RequireFuncVariableName = "require";
         private const string RequireRelativePathPrefix = "./";
 
+        private static object _utilityObject;
         private static readonly object ConsoleObject = new
         {
             log = new Action<object>(s => Logger.Log(s)),
@@ -86,14 +87,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             var rootPath = (RelativePath)scriptResource.ResourceName;
             var engineCache = new Dictionary<string, Engine>();
 
-            var utility = new TemplateUtility(context);
-            object utilityObject = new
+            if (_utilityObject == null)
             {
-                resolveSourceRelativePath = new Func<string, string, string>((s1, s2) => utility.ResolveSourceRelativePath(s1, s2))
-            };
+                var utility = new TemplateUtility(context);
+                _utilityObject = new
+                {
+                    resolveSourceRelativePath = new Func<string, string, string>((s1, s2) => utility.ResolveSourceRelativePath(s1, s2))
+                };
+            }
 
             var engine = CreateDefaultEngine();
-            engine.SetValue(UtilityVariableName, utilityObject);
 
             var requireAction = new Func<string, object>(
                 s =>
@@ -161,6 +164,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             engine.SetValue(ExportsVariableName, engine.Object.Construct(Jint.Runtime.Arguments.Empty));
             engine.SetValue(ConsoleVariableName, ConsoleObject);
+            engine.SetValue(UtilityVariableName, _utilityObject);
+
             return engine;
         }
 
