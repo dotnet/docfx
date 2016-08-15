@@ -1,0 +1,56 @@
+{
+  "name": "DfmPreview",
+  "displayName": "DfmPreview",
+  "description": "Preview the DocFX Flavored Markdown in vscode",
+  "version": "0.0.9",
+  "publisher": "928pjy",
+  "engines": {
+    "vscode": "^1.3.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:DFM.showPreview",
+    "onCommand:DFM.showPreviewToside",
+    "oncommand:DFM.showSource"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "DFM.showPreview",
+        "title": "Toggle Dfm Preview"
+      },
+      {
+        "command": "DFM.showPreviewToside",
+        "title": "Open Dfm preview to the side"
+      },
+      {
+        "command": "DFM.showSource",
+        "title": "Show Dfm Source"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "DFM.showPreview",
+        "key": "ctrl+shift+q",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "DFM.showPreviewToside",
+        "key": "ctrl+k q",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "typescript": "^1.8.5",
+    "vscode": "^0.11.14"
+  }
+}
