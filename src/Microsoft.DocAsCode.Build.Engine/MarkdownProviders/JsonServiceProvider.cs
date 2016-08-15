@@ -45,9 +45,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var json = new StringBuilder(_builder.CreateDfmEngine(new JsonRenderer() { Tokens = _tokens }).Markup(src, path, dependency));
                 if (json.Length != 0)
                 {
-                    json.Insert(0, "{\n\"name\":\"markdown\",\n\"contents\":[");
+                    json.Insert(0, "{\"name\":\"markdown\",\"children\":[");
                     json.Remove(json.Length - 1, 1);
-                    json.Append("]\n}");
+                    json.Append("]}");
                 }
                 var result = new MarkupResult
                 {

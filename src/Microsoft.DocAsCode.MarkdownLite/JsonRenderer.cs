@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class JsonRenderer
     {
-        public enum Type
+        private enum Type
         {
             Size,
             Child
@@ -15,44 +15,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public ImmutableDictionary<string, string> Tokens { get; set; }
 
-        private StringBuffer Insert(string name, string tokenContent, Type tokentype)
-        {
-            var result = (StringBuffer)$"{{\n\"name\":\"{name}\"";
-            switch (tokentype)
-            {
-                case Type.Child:
-                    {
-                        // If tokenContent is not empty ,should remove the last character(',')
-                        if (tokenContent.Length > 0)
-                        {
-                            tokenContent = tokenContent.Remove(tokenContent.Length - 1);
-                        }
-                        result += $",\n\"contents\":[\n{tokenContent}]\n}},";
-                        break;
-                    }
-                case Type.Size:
-                    {
-                        // size will be needed later
-                        // result += "\"size\":" + tokenContent + "\n},";
-                        result += "\n},";
-                        break;
-                    }
-                default:
-                    return StringBuffer.Empty;
-            }
-            return result;
-        }
-
-        private string GetSize()
-        {
-            return "1";
-        }
-
         #region Block
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNewLineBlockToken token, MarkdownBlockContext context)
         {
-            // do nothing.
             return this.Insert("NewLine", this.GetSize(), Type.Size);
         }
 
@@ -266,7 +232,72 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownRawToken token, IMarkdownContext context)
         {
-            return this.Insert("Raw", this.GetSize(), Type.Size);
+            switch (token.Rule.Name)
+            {
+                case ("Html"):
+                {
+                    return this.Insert("Raw(FromHtml)", this.GetSize(), Type.Size);
+                }
+                case ("Inline.AutoLink"):
+                {
+                    return this.Insert("Raw(FromInLineAutoLink)", this.GetSize(), Type.Size);
+                }
+                case ("Inline.CodeElement"):
+                {
+                    return this.Insert("Raw(FromInLineCodeElement)", this.GetSize(), Type.Size);
+                }
+                case ("Inline.Comment"):
+                {
+                    return this.Insert("Raw(FromInLineComment)", this.GetSize(), Type.Size);
+                }
+                case ("GfmHtmlComment"):
+                {
+                    return this.Insert("Raw(FromGfmHtmlComment)", this.GetSize(), Type.Size);
+                }
+                case ("Inline.Gfm.Url"):
+                {
+                    return this.Insert("Raw(FromGfmUrl)", this.GetSize(), Type.Size);
+                }
+                default:
+                    return this.Insert("Raw", this.GetSize(), Type.Size);
+            }
+        }
+
+        #endregion
+
+        #region Private
+
+        private StringBuffer Insert(string name, string tokenContent, Type tokenType)
+        {
+            var result = (StringBuffer) $"{{\"name\":\"{name}\"";
+            switch (tokenType)
+            {
+                case Type.Child:
+                {
+                    // If tokenContent is not empty ,should remove the last character(',')
+                    if (tokenContent.Length > 0)
+                    {
+                        tokenContent = tokenContent.Remove(tokenContent.Length - 1);
+                    }
+                    result += $",\"children\":[{tokenContent}]}},";
+                    break;
+                }
+                case Type.Size:
+                {
+                    // size will be needed later
+                    // result += "\"size\":" + tokenContent + "\n},";
+                    result += "},";
+                    break;
+                }
+                default:
+                    return StringBuffer.Empty;
+            }
+            return result;
+        }
+
+        private string GetSize()
+        {
+            return "1";
         }
 
         #endregion
