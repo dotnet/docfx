@@ -40,12 +40,25 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     return 1;
                 }
 
+                // Parse the basic arguments
                 var rewriterToolArguments = ParseRewriterToolArgumentsFile(args[0], args[1], args[2]);
                 if (rewriterToolArguments == null)
                 {
                     return 1;
                 }
 
+                // Register logger
+                var consoleLogListener = new ConsoleLogListener();
+                var htmlLogFile = Path.Combine(rewriterToolArguments.AzureTransformArgumentsList.First().SourceDir, "log", "log.html");
+                if (File.Exists(htmlLogFile))
+                {
+                    File.Delete(htmlLogFile);
+                }
+                var htmlLogListener = new HtmlLogListener(htmlLogFile);
+                Logger.RegisterListener(consoleLogListener);
+                Logger.RegisterListener(htmlLogListener);
+
+                // Parse advanced migration parameters
                 AzureFileInformationCollection azureFileInformationCollection = new AzureFileInformationCollection();
                 if (args.Length == 4)
                 {
@@ -81,6 +94,11 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             {
                 Console.Error.WriteLine(ex);
                 return 1;
+            }
+            finally
+            {
+                Logger.Flush();
+                Logger.UnregisterAllListeners();
             }
         }
 
@@ -124,7 +142,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             }
         }
 
-        private static void GenerateAzureFileInfo(
+        private static bool GenerateAzureFileInfo(
             string repositoryRoot,
             RewriterToolArguments rewriterToolArguments,
             string azureDocumentUriPrefix,
@@ -152,7 +170,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     // However, if we find that the file is under one of the folder that need to be transformed. Then the prefix uri should be docs but not auzre
                     var needTransformToAzureExternalLink = true;
                     var uriPrefix = azureDocumentUriPrefix;
-                    if(azureTransformArguments != null)
+                    if (azureTransformArguments != null)
                     {
                         needTransformToAzureExternalLink = false;
                         uriPrefix = azureTransformArguments.DocsHostUriPrefix;
@@ -188,9 +206,10 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
 
             azureFileInformationCollection.AzureMarkdownFileInfoMapping = azureMarkdownFileInfoMapping.ToDictionary(m => m.Key, m => m.Value);
             azureFileInformationCollection.AzureResourceFileInfoMapping = azureResourceFileInfoMapping.ToDictionary(m => m.Key, m => m.Value);
+            return true;
         }
 
-        private static void GenerateAzureFileInfoForMigration(
+        private static bool GenerateAzureFileInfoForMigration(
             string repositoryRoot,
             RewriterToolArguments rewriterToolArguments,
             string azureDocumentUriPrefix,
@@ -201,6 +220,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             var azureIncludeMarkdownFileInfoMapping = new ConcurrentDictionary<string, AzureFileInfo>();
             var azureIncludeResourceFileInfoMapping = new ConcurrentDictionary<string, AzureFileInfo>();
 
+            bool hasDupliateMdFileName = false;
             var files = Directory.GetFiles(repositoryRoot, "*", SearchOption.AllDirectories);
             Parallel.ForEach(
                 files,
@@ -252,7 +272,8 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
 
                     if (!isSucceed)
                     {
-                        Console.WriteLine($"GenerateAzureFileInfo warning: can't insert file: {file}, confilicts with: {conflictFile?.FilePath}");
+                        hasDupliateMdFileName = true;
+                        Logger.LogError($"Error: GenerateAzureFileInfo failed. File: {file} name confilicts with: {conflictFile?.FilePath}");
                     }
                 });
 
@@ -260,6 +281,8 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             azureFileInformationCollection.AzureResourceFileInfoMapping = azureResourceFileInfoMapping.ToDictionary(m => m.Key, m => m.Value);
             azureFileInformationCollection.AzureIncludeMarkdownFileInfoMapping = azureIncludeMarkdownFileInfoMapping.ToDictionary(m => m.Key, m => m.Value);
             azureFileInformationCollection.AzureIncludeResourceFileInfoMapping = azureIncludeResourceFileInfoMapping.ToDictionary(m => m.Key, m => m.Value);
+
+            return !hasDupliateMdFileName;
         }
 
         private static bool IsIgnoreFile(string relativePath, bool isMigration)
@@ -322,74 +345,63 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
         private int Rewrite()
         {
             var exitCode = 0;
-            try
-            {
-                var consoleLogListener = new ConsoleLogListener();
-                Logger.RegisterListener(consoleLogListener);
+            var sourceDirInfo = new DirectoryInfo(_srcDirectory);
+            var fileInfos = sourceDirInfo.GetFiles("*.md", SearchOption.AllDirectories);
 
-                var sourceDirInfo = new DirectoryInfo(_srcDirectory);
-                var fileInfos = sourceDirInfo.GetFiles("*.md", SearchOption.AllDirectories);
-
-                Console.WriteLine("Start transform dir '{0}' to dest dir '{1}' at {2}", _srcDirectory, _destDirectory, DateTime.UtcNow);
-                Parallel.ForEach(
-                    fileInfos,
-                    new ParallelOptions() { MaxDegreeOfParallelism = 8 },
-                    fileInfo =>
+            Console.WriteLine("Start transform dir '{0}' to dest dir '{1}' at {2}", _srcDirectory, _destDirectory, DateTime.UtcNow);
+            Parallel.ForEach(
+                fileInfos,
+                new ParallelOptions() { MaxDegreeOfParallelism = 8 },
+                fileInfo =>
+                {
+                    var relativePathToSourceFolder = fileInfo.FullName.Substring(_srcDirectory.Length + 1);
+                    try
                     {
-                        var relativePathToSourceFolder = fileInfo.FullName.Substring(_srcDirectory.Length + 1);
-                        try
+                        if (IsIgnoreFile(relativePathToSourceFolder, _isMigration))
                         {
-                            if (IsIgnoreFile(relativePathToSourceFolder, _isMigration))
+                            return;
+                        }
+                        var outputPath = Path.Combine(_destDirectory, relativePathToSourceFolder);
+                        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+                        if (string.Equals(fileInfo.Extension, MarkdownExtension, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var source = File.ReadAllText(fileInfo.FullName);
+                            string result;
+                            if (_isMigration)
                             {
-                                return;
-                            }
-                            var outputPath = Path.Combine(_destDirectory, relativePathToSourceFolder);
-                            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-                            if (string.Equals(fileInfo.Extension, MarkdownExtension, StringComparison.OrdinalIgnoreCase))
-                            {
-                                var source = File.ReadAllText(fileInfo.FullName);
-                                string result;
-                                if (_isMigration)
-                                {
-                                    result = AzureMigrationMarked.Markup(
-                                        source,
-                                        fileInfo.FullName,
-                                        _azureFileInformationCollection.AzureMarkdownFileInfoMapping,
-                                        _azureFileInformationCollection.AzureResourceFileInfoMapping,
-                                        _azureFileInformationCollection.AzureIncludeMarkdownFileInfoMapping,
-                                        _azureFileInformationCollection.AzureIncludeResourceFileInfoMapping,
-                                        _azureFileInformationCollection.AzureVideoInfoMapping);
-                                }
-                                else
-                                {
-                                    result = AzureMarked.Markup(
-                                        source,
-                                        fileInfo.FullName,
-                                        _azureFileInformationCollection.AzureMarkdownFileInfoMapping,
-                                        _azureFileInformationCollection.AzureVideoInfoMapping,
-                                        _azureFileInformationCollection.AzureResourceFileInfoMapping);
-                                }
-                                File.WriteAllText(outputPath, result);
+                                result = AzureMigrationMarked.Markup(
+                                    source,
+                                    fileInfo.FullName,
+                                    _azureFileInformationCollection.AzureMarkdownFileInfoMapping,
+                                    _azureFileInformationCollection.AzureResourceFileInfoMapping,
+                                    _azureFileInformationCollection.AzureIncludeMarkdownFileInfoMapping,
+                                    _azureFileInformationCollection.AzureIncludeResourceFileInfoMapping,
+                                    _azureFileInformationCollection.AzureVideoInfoMapping);
                             }
                             else
                             {
-                                //Console.WriteLine("Copy file {0} to output path {1}", fileInfo.FullName, outputPath);
-                                //File.Copy(fileInfo.FullName, outputPath, true);
+                                result = AzureMarked.Markup(
+                                    source,
+                                    fileInfo.FullName,
+                                    _azureFileInformationCollection.AzureMarkdownFileInfoMapping,
+                                    _azureFileInformationCollection.AzureVideoInfoMapping,
+                                    _azureFileInformationCollection.AzureResourceFileInfoMapping);
                             }
+                            File.WriteAllText(outputPath, result);
                         }
-                        catch (Exception e)
+                        else
                         {
-                            exitCode = 1;
-                            Console.WriteLine($"Transform article: {relativePathToSourceFolder} failed. Exception: {e}");
+                            //Console.WriteLine("Copy file {0} to output path {1}", fileInfo.FullName, outputPath);
+                            //File.Copy(fileInfo.FullName, outputPath, true);
                         }
-                    });
-                Console.WriteLine("End transform dir '{0}' to dest dir '{1}' at {2}", _srcDirectory, _destDirectory, DateTime.UtcNow);
-            }
-            finally
-            {
-                Logger.Flush();
-                Logger.UnregisterAllListeners();
-            }
+                    }
+                    catch (Exception e)
+                    {
+                        exitCode = 1;
+                        Console.Write($"System Error: Processing File: { relativePathToSourceFolder }. Error: Migration failed. Exception: {e}.");
+                    }
+                });
+            Console.WriteLine("End transform dir '{0}' to dest dir '{1}' at {2}", _srcDirectory, _destDirectory, DateTime.UtcNow);
             return exitCode;
         }
     }
