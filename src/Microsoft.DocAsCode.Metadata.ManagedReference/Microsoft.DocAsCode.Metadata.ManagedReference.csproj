@@ -107,6 +107,9 @@
     <Compile Include="Models\MetadataModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Filters\defaultfilterconfig.yml">
+      <LogicalName>$(AssemblyName).Filters.defaultfilterconfig.yml</LogicalName>
+    </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

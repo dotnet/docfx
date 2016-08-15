@@ -176,6 +176,40 @@ namespace Test1
             Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
         }
 
+        [Fact]
+        public void TestDefaultFilter()
+        {
+            string code = @"
+using System;
+using System.ComponentModel;
+using System.CodeDom.Compiler;
+
+namespace Test1
+{
+    [Serializable]
+    [GeneratedCode(""xsd"", ""1.0.0.0"")]
+    public class Class1
+    {
+        public void Func1(int i)
+        {
+            return;
+        }
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public interface Interface1
+    {
+        void Bar();
+    }
+}";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var @namespace = output.Items[0];
+            Assert.Equal(1, @namespace.Items.Count);
+            var class1 = @namespace.Items[0];
+            Assert.Equal(1, class1.Attributes.Count);
+            Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
+        }
+
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromCSharpCode(code, "test.dll", references);

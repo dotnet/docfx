@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Immutable;
     using System.Diagnostics;
     using System.Linq;
+    using System.IO;
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
@@ -39,7 +40,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _currentCompilation = compilation;
             _currentCompilationRef = compilation.ToMetadataReference();
             _preserveRawInlineComments = preserveRawInlineComments;
-            FilterVisitor = string.IsNullOrEmpty(filterConfigFile) ? new DefaultFilterVisitor() : new DefaultFilterVisitor().WithConfig(filterConfigFile).WithCache();
+            var configFilterRule = LoadConfigFilterRule(filterConfigFile);
+            FilterVisitor = new DefaultFilterVisitor().WithConfig(configFilterRule).WithCache();
             _extensionMethods = extensionMethods != null ? extensionMethods.ToDictionary(p => p.Key, p => p.Value.Where(e => FilterVisitor.CanVisitApi(e))) : new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
         }
 
@@ -890,6 +892,39 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 // only record the id now, the value would be fed at later phase after merge
                 item.References[id] = null;
+            };
+        }
+
+        private ConfigFilterRule LoadConfigFilterRule(string filterConfigFile)
+        {
+            ConfigFilterRule defaultRule, userRule;
+
+            var assembly = this.GetType().Assembly;
+            var defaultConfigPath = $"{assembly.GetName().Name}.Filters.defaultfilterconfig.yml";
+            using (var stream = assembly.GetManifestResourceStream(defaultConfigPath))
+            using (var reader = new StreamReader(stream))
+            {
+                defaultRule = YamlUtility.Deserialize<ConfigFilterRule>(reader);
+            }
+
+            if (string.IsNullOrEmpty(filterConfigFile))
+            {
+                return defaultRule;
+            }
+            else
+            {
+                userRule = YamlUtility.Deserialize<ConfigFilterRule>(filterConfigFile);
+                return MergeConfigRule(defaultRule, userRule);
+            }
+        }
+
+        private static ConfigFilterRule MergeConfigRule(ConfigFilterRule defaultRule, ConfigFilterRule userRule)
+        {
+            return new ConfigFilterRule
+            {
+                // user rule always overwrite default rule
+                ApiRules = userRule.ApiRules.Concat(defaultRule.ApiRules).ToList(),
+                AttributeRules = userRule.AttributeRules.Concat(defaultRule.AttributeRules).ToList(),
             };
         }
 
