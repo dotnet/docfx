@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -12,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Utility;
 
-    public sealed class ChangeList
+    public sealed class ChangeList : IEnumerable<ChangeItem>
     {
         private readonly List<ChangeItem> _list = new List<ChangeItem>();
 
@@ -119,6 +120,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 throw new DocfxException($"Some error ocurred while parsing changelist file: {tsvFile}.");
             }
             return result;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return ((IEnumerable)_list).GetEnumerator();
+        }
+
+        IEnumerator<ChangeItem> IEnumerable<ChangeItem>.GetEnumerator()
+        {
+            return ((IEnumerable<ChangeItem>)_list).GetEnumerator();
         }
     }
 }
