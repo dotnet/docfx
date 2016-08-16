@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Shared\base.props" />
+  <PropertyGroup>
+    <ProjectGuid>{8B931D5B-9BC8-41C6-B91F-BBF650720D27}</ProjectGuid>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="BuildInfo.cs" />
+    <Compile Include="BuildOutputItem.cs" />
+    <Compile Include="BuildOutputs.cs" />
+    <Compile Include="BuildVersionInfo.cs" />
+    <Compile Include="ChangeItem.cs" />
+    <Compile Include="ChangeKind.cs" />
+    <Compile Include="ChangeKindWithDependency.cs" />
+    <Compile Include="ChangeList.cs" />
+    <Compile Include="DependencyGraph.cs" />
+    <Compile Include="ProcessorInfo.cs" />
+    <Compile Include="ProcessorStepInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
+      <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
+      <Name>Microsoft.DocAsCode.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.DocAsCode.Utility\Microsoft.DocAsCode.Utility.csproj">
+      <Project>{619ec13d-8939-4f23-b7dc-7a98964bb9a4}</Project>
+      <Name>Microsoft.DocAsCode.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

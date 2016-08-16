@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Reflection;
     using System.Security.Cryptography;
 
+    using Microsoft.DocAsCode.Build.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;

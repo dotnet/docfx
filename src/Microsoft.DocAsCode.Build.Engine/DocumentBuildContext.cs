@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Build.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
