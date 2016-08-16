@@ -103,7 +103,10 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                             (IMarkdownRewriteEngine e, AzureBlockquoteBlockToken t) => new MarkdownBlockquoteBlockToken(t.Rule, t.Context, t.Tokens, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.SourceInfo.Markdown), t.Title, t.Content, t.SourceInfo, t.LinkType, t.RefId)
+                            (IMarkdownRewriteEngine e, MarkdownLinkInlineToken t) => new MarkdownLinkInlineToken(t.Rule, t.Context, NormalizeAzureLink(t.Href, MarkdownExtension, t.Context, t.SourceInfo.Markdown, t.SourceInfo.LineNumber.ToString()), t.Title, t.Content, t.SourceInfo, t.LinkType, t.RefId)
+                        ),
+                        MarkdownTokenRewriterFactory.FromLambda(
+                            (IMarkdownRewriteEngine e, MarkdownImageInlineToken t) => new MarkdownImageInlineToken(t.Rule, t.Context, CheckNonMdRelativeFileHref(t.Href, t.Context, t.SourceInfo.Markdown, t.SourceInfo.LineNumber.ToString()), t.Title, t.Text, t.SourceInfo, t.LinkType, t.RefId)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureSelectorBlockToken t) => new DfmSectionBlockToken(t.Rule, t.Context, GenerateAzureSelectorAttributes(t.SelectorType, t.SelectorConditions), t.SourceInfo)
@@ -118,18 +121,18 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                             (IMarkdownRewriteEngine e, AzureMigrationIncludeInlineToken t) => new DfmIncludeInlineToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.SourceInfo.Markdown, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureVideoBlockToken t) => new DfmVideoBlockToken(t.Rule, t.Context, GenerateAzureVideoLink(t.Context, t.VideoId, t.SourceInfo.Markdown), t.SourceInfo)
+                            (IMarkdownRewriteEngine e, AzureVideoBlockToken t) => new DfmVideoBlockToken(t.Rule, t.Context, GenerateAzureVideoLink(t.Context, t.VideoId, t.SourceInfo.Markdown, t.SourceInfo.LineNumber.ToString()), t.SourceInfo)
                         )
                     );
         }
 
-        private string NormalizeAzureLink(string href, string defaultExtension, IMarkdownContext context, string rawMarkdown)
+        private string NormalizeAzureLink(string href, string defaultExtension, IMarkdownContext context, string rawMarkdown, string line)
         {
             bool isHrefRelativeNonMdFile;
             var link = AppendDefaultExtension(href, defaultExtension, out isHrefRelativeNonMdFile);
             if (!isHrefRelativeNonMdFile)
             {
-                link = GenerateAzureLinkHref(context, link, rawMarkdown);
+                link = GenerateAzureLinkHref(context, link, rawMarkdown, line);
             }
             return link;
         }
@@ -225,7 +228,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             return MarkdownEngine.Normalize(propertiesSw.ToString() + "\n" + tagsSw.ToString());
         }
 
-        private string GenerateAzureLinkHref(IMarkdownContext context, string href, string rawMarkdown)
+        private string GenerateAzureLinkHref(IMarkdownContext context, string href, string rawMarkdown, string line)
         {
             StringBuffer content = StringBuffer.Empty;
 
@@ -264,7 +267,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             var azureMarkdownFileInfoMapping = (IReadOnlyDictionary<string, AzureFileInfo>)context.Variables["azureMarkdownFileInfoMapping"];
             if (azureMarkdownFileInfoMapping == null || !azureMarkdownFileInfoMapping.ContainsKey(hrefFileName))
             {
-                Logger.LogWarning($"Can't fild reference file: {href} in azure file system for file {currentFilePath}. Raw: {rawMarkdown}");
+                Logger.LogWarning($"Can't find markdown reference: {href}. Raw: {rawMarkdown}.", null, currentFilePath, line);
                 return href;
             }
 
@@ -275,7 +278,27 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             return azureHref;
         }
 
-        private string GenerateAzureVideoLink(IMarkdownContext context, string azureVideoId, string rawMarkdown)
+        private string CheckNonMdRelativeFileHref(string nonMdHref, IMarkdownContext context, string rawMarkdown, string line)
+        {
+            // If the context doesn't have necessary info or nonMdHref is not a relative path, return the original href
+            if (!context.Variables.ContainsKey("path") || !PathUtility.IsRelativePath(nonMdHref))
+            {
+                return nonMdHref;
+            }
+
+            var currentFilePath = (string)context.Variables["path"];
+            var currentFolderPath = Path.GetDirectoryName(currentFilePath);
+
+            var nonMdExpectedPath = Path.Combine(currentFolderPath, nonMdHref);
+            if (!File.Exists(nonMdExpectedPath))
+            {
+                Logger.LogWarning($"Can't find resource reference: {nonMdHref}. Raw: {rawMarkdown}.", null, currentFilePath, line);
+            }
+            return nonMdHref;
+        }
+
+
+        private string GenerateAzureVideoLink(IMarkdownContext context, string azureVideoId, string rawMarkdown, string line)
         {
             object path;
             if (!context.Variables.TryGetValue("path", out path))
@@ -286,14 +309,14 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
             if (!context.Variables.ContainsKey("azureVideoInfoMapping"))
             {
-                Logger.LogWarning($"Can't fild the whole azure video info mapping. Current processing file: {path}, Raw: {rawMarkdown}");
+                Logger.LogWarning($"Can't find the whole azure video info mapping. Raw: {rawMarkdown}", null, path.ToString(), line);
                 return azureVideoId;
             }
 
             var azureVideoInfoMapping = (IReadOnlyDictionary<string, AzureVideoInfo>)context.Variables["azureVideoInfoMapping"];
             if (azureVideoInfoMapping == null || !azureVideoInfoMapping.ContainsKey(azureVideoId))
             {
-                Logger.LogWarning($"Can't fild azure video info mapping for file: {path}. Raw: {rawMarkdown}");
+                Logger.LogWarning($"Can't find video reference: {azureVideoId}. Raw: {rawMarkdown}", null, path.ToString(), line);
                 return azureVideoId;
             }
 
