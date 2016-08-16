@@ -110,7 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="DotLiquid">
