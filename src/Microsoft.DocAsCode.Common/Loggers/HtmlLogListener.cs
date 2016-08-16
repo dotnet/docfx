@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Common
             _writer.WriteLine(@"<body lang=""en-us"">");
             _writer.WriteLine(@"<h1 id=""Report"">Report</h1>");
             _writer.WriteLine(@"<table border=""1"">");
-            _writer.WriteLine(@"<tr><td>Severity</td><td>Message</td><td>File</td><td>Line</td><td>Time</td></tr>");
+            _writer.WriteLine(@"<tr><th>Severity</th><th>Message</th><th>File</th><th>Line</th><th>Time</th></tr>");
         }
 
         public void WriteLine(ILogItem item)
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.Common
                 DateTime = DateTime.UtcNow
             };
 
-            _writer.WriteLine($@"<tr><td>{reportItem.Severity}</td><td>{Escape(reportItem.Message)}</td><td>{reportItem.File}</td><td>{reportItem.Line}</td><td>{reportItem.DateTime}</td></tr>");
+            _writer.WriteLine($@"<tr><td>{reportItem.Severity}</td><td>{Escape(reportItem.Message)}</td><td>{Escape(reportItem.File)}</td><td>{reportItem.Line}</td><td>{reportItem.DateTime}</td></tr>");
         }
 
         public void Dispose()
