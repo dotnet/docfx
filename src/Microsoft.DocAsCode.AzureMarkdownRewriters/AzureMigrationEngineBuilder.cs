@@ -289,20 +289,12 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             var currentFilePath = (string)context.Variables["path"];
             var currentFolderPath = Path.GetDirectoryName(currentFilePath);
 
-            try
+            var nonMdExpectedPath = Path.Combine(currentFolderPath, nonMdHref);
+            if (!File.Exists(nonMdExpectedPath))
             {
-                var nonMdExpectedPath = Path.Combine(currentFolderPath, nonMdHref);
-                if (!File.Exists(nonMdExpectedPath))
-                {
-                    Logger.LogWarning($"Can't find resorece reference: {nonMdHref}. Raw: {rawMarkdown}.", null, currentFilePath, line);
-                }
-                return nonMdHref;
+                Logger.LogWarning($"Can't find resource reference: {nonMdHref}. Raw: {rawMarkdown}.", null, currentFilePath, line);
             }
-            catch (NotSupportedException nse)
-            {
-                Logger.LogError($"FixNonMdRelativeFileHref can't be apply on reference: {nonMdHref}. Raw: {rawMarkdown}. Exception: {nse.Message}", null, currentFilePath, line);
-                return nonMdHref;
-            }
+            return nonMdHref;
         }
 
 
