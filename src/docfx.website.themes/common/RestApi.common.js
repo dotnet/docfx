@@ -159,7 +159,7 @@ exports.transform = function (model) {
                 if (obj.hasOwnProperty(key)) {
                     if (key === "schema") {
                         // transform schema.properties from obj to key value pair
-                        obj[key] = transformProperties(obj[key]);
+                        transformProperties(obj[key]);
                     } else {
                         transformReference(obj[key]);
                     }
@@ -187,23 +187,30 @@ exports.transform = function (model) {
                     // set description to null incase mustache looks up
                     value.description = value.description || null;
 
-                    value = transformPropertiesValue(value);
+                    transformPropertiesValue(value);
                     array.push({ key: key, value: value });
                 }
             }
             obj.properties = array;
         }
-        return obj;
     }
 
     function transformPropertiesValue(obj) {
         if (obj.type === "array" && obj.items) {
+            // expand array to transformProperties
             obj.items.properties = obj.items.properties || null;
             obj.items['x-internal-ref-name'] = obj.items['x-internal-ref-name'] || null;
             obj.items['x-internal-loop-ref-name'] = obj.items['x-internal-loop-ref-name'] || null;
-            obj.items = transformProperties(obj.items);
+            transformProperties(obj.items);
+        } else if (obj.properties && !obj.items) {
+            // fill obj.properties into obj.items.properties, to be rendered in the same way with array
+            obj.items = {};
+            obj.items.properties = obj.properties || null;
+            delete obj.properties;
+            obj.items['x-internal-ref-name'] = obj['x-internal-ref-name'] || null;
+            obj.items['x-internal-loop-ref-name'] = obj['x-internal-loop-ref-name'] || null;
+            transformProperties(obj.items);
         }
-        return obj;
     }
 
     function appendQueryParamsToPath(path, parameters) {
