@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="GfmMarkdownRewriterTest.cs" />
     <Compile Include="GfmTest.cs" />
-    <Compile Include="JsonRendererTest.cs" />
+    <Compile Include="JsonTokenTreeRendererTest.cs" />
     <Compile Include="PerfTest.cs" />
     <Compile Include="SourceInfoTest.cs" />
     <Compile Include="StringBufferTest.cs" />

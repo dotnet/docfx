@@ -42,17 +42,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             public MarkupResult Markup(string src, string path)
             {
                 var dependency = new HashSet<string>();
-                var json = new StringBuilder(_builder.CreateDfmEngine(new JsonRenderer() { Tokens = _tokens }).Markup(src, path, dependency));
-                if (json.Length != 0)
+                var json = _builder.CreateDfmEngine(new JsonTokenTreeRenderer() { Tokens = _tokens }).Markup(src, path, dependency);
+                if (json.Length != 0 && json.EndsWith(","))
                 {
-                    json.Insert(0, "{\"name\":\"markdown\",\"children\":[");
-                    json.Remove(json.Length - 1, 1);
-                    json.Append("]}");
+                    json = json.Remove(json.Length - 1);
                 }
                 var result = new MarkupResult
                 {
                     // TODO: rename
-                    Html = json.ToString(),
+                    Html = $"{{\"name\":\"markdown\",\"children\":[{json}]}}",
                 };
                 if (dependency.Count > 0)
                 {

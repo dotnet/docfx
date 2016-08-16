@@ -8,15 +8,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
     using Xunit;
 
-    public class JsonRendererTest
+    public class JsonTokenTreeRendererTest
     {
-        public string JsonRenderer(string content)
-        {
-            JsonTokenTreeServiceProvider jsonServiceProvider = new JsonTokenTreeServiceProvider();
-            IMarkdownService jsonService = jsonServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
-            return jsonService.Markup(content, null).Html;
-        }
-
         [Fact]
         [Trait("Related", "Markdown")]
         public void TestTable_WithEmptyCell()
@@ -126,8 +119,15 @@ Numbered list
 <address@example.com>
 ";
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText(Heading)\"}]},{\"name\":\"Heading2\",\"children\":[{\"name\":\"InLineText(Sub-heading)\"}]},{\"name\":\"Heading3\",\"children\":[{\"name\":\"InLineText(Another deeper heading)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Paragraphs are separated\\nby a blank line.)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Leave 2 spaces at the end of a line to do a)\"},{\"name\":\"Br\"},{\"name\":\"InLineText(line break)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Text attributes )\"},{\"name\":\"Em\",\"children\":[{\"name\":\"InLineText(italic)\"}]},{\"name\":\"InLineText(, )\"},{\"name\":\"Strong\",\"children\":[{\"name\":\"InLineText(bold)\"}]},{\"name\":\"InLineText(, \\n)\"},{\"name\":\"InLineCode\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Del\",\"children\":[{\"name\":\"InLineText(strikethrough)\"}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(A )\"},{\"name\":\"Link\",\"children\":[{\"name\":\"InLineText(link)\"}]},{\"name\":\"InLineText(.)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Shopping list)\"}]},{\"name\":\"ul\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(apples)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(oranges)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(pears)\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Numbered list)\"}]},{\"name\":\"ol\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(apples)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(oranges)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(pears)\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Link\",\"children\":[{\"name\":\"Raw(FromInLineAutoLink)\"}]}]}]}";
+                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText(Heading)\"}]},{\"name\":\"Heading2\",\"children\":[{\"name\":\"InLineText(Sub-heading)\"}]},{\"name\":\"Heading3\",\"children\":[{\"name\":\"InLineText(Another deeper heading)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Paragraphs are separated\\nby a blank line.)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Leave 2 spaces at the end of a line to do a)\"},{\"name\":\"Br\"},{\"name\":\"InLineText(line break)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Text attributes )\"},{\"name\":\"Em\",\"children\":[{\"name\":\"InLineText(italic)\"}]},{\"name\":\"InLineText(, )\"},{\"name\":\"Strong\",\"children\":[{\"name\":\"InLineText(bold)\"}]},{\"name\":\"InLineText(, \\n)\"},{\"name\":\"InLineCode\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Del\",\"children\":[{\"name\":\"InLineText(strikethrough)\"}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(A )\"},{\"name\":\"Link\",\"children\":[{\"name\":\"InLineText(link)\"}]},{\"name\":\"InLineText(.)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Shopping list)\"}]},{\"name\":\"ul\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(apples)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(oranges)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(pears)\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Numbered list)\"}]},{\"name\":\"ol\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(apples)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(oranges)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(pears)\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Link\",\"children\":[{\"name\":\"Raw(FromInline.AutoLink)\"}]}]}]}";
             Assert.Equal(expected.Replace("\r\n", "\n"), JsonRenderer(source));
+        }
+
+        private string JsonRenderer(string content)
+        {
+            JsonTokenTreeServiceProvider jsonServiceProvider = new JsonTokenTreeServiceProvider();
+            IMarkdownService jsonService = jsonServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
+            return jsonService.Markup(content, null).Html;
         }
     }
 }
