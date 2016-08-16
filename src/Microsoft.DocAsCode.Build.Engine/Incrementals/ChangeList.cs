@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Utility;
 
-    public sealed class ChangeList : IEnumerable
+    public sealed class ChangeList : IEnumerable<ChangeItem>
     {
         private readonly List<ChangeItem> _list = new List<ChangeItem>();
 
@@ -125,6 +125,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public IEnumerator GetEnumerator()
         {
             return ((IEnumerable)_list).GetEnumerator();
+        }
+
+        IEnumerator<ChangeItem> IEnumerable<ChangeItem>.GetEnumerator()
+        {
+            return ((IEnumerable<ChangeItem>)_list).GetEnumerator();
         }
     }
 }
