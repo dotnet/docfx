@@ -23,7 +23,7 @@
     <Compile Include="InvalidPreprocessorException.cs" />
     <Compile Include="CrossReferenceNotResolvedException.cs" />
     <Compile Include="DocumentBuildContext.cs" />
-    <Compile Include="MarkdownProviders\JsonServiceProvider.cs" />
+    <Compile Include="MarkdownProviders\JsonTokenTreeServiceProvider.cs" />
     <Compile Include="SingleDocumentBuilder.cs" />
     <Compile Include="DocumentBuildParameters.cs" />
     <Compile Include="FileCollection.cs" />

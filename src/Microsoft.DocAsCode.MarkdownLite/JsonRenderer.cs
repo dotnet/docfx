@@ -7,12 +7,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class JsonRenderer
     {
-        private enum Type
-        {
-            Size,
-            Child
-        }
-
         public ImmutableDictionary<string, string> Tokens { get; set; }
 
         #region Block
@@ -234,27 +228,27 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             switch (token.Rule.Name)
             {
-                case ("Html"):
+                case "Html":
                 {
                     return this.Insert("Raw(FromHtml)", this.GetSize(), Type.Size);
                 }
-                case ("Inline.AutoLink"):
+                case "Inline.AutoLink":
                 {
                     return this.Insert("Raw(FromInLineAutoLink)", this.GetSize(), Type.Size);
                 }
-                case ("Inline.CodeElement"):
+                case "Inline.CodeElement":
                 {
                     return this.Insert("Raw(FromInLineCodeElement)", this.GetSize(), Type.Size);
                 }
-                case ("Inline.Comment"):
+                case "Inline.Comment":
                 {
                     return this.Insert("Raw(FromInLineComment)", this.GetSize(), Type.Size);
                 }
-                case ("GfmHtmlComment"):
+                case "GfmHtmlComment":
                 {
                     return this.Insert("Raw(FromGfmHtmlComment)", this.GetSize(), Type.Size);
                 }
-                case ("Inline.Gfm.Url"):
+                case "Inline.Gfm.Url":
                 {
                     return this.Insert("Raw(FromGfmUrl)", this.GetSize(), Type.Size);
                 }
@@ -267,9 +261,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         #region Private
 
-        private StringBuffer Insert(string name, string tokenContent, Type tokenType)
+        private enum Type
         {
-            var result = (StringBuffer) $"{{\"name\":\"{name}\"";
+            Size,
+            Child
+        }
+
+        private StringBuffer Insert(StringBuffer name, string tokenContent, Type tokenType)
+        {
+            StringBuffer result = "{\"name\":\"";
+            result += name;
+            result += "\"";
             switch (tokenType)
             {
                 case Type.Child:
@@ -279,13 +281,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     {
                         tokenContent = tokenContent.Remove(tokenContent.Length - 1);
                     }
-                    result += $",\"children\":[{tokenContent}]}},";
+                    result += ",\"children\":[";
+                    result += tokenContent;
+                    result += "]},";
                     break;
                 }
                 case Type.Size:
                 {
                     // size will be needed later
-                    // result += "\"size\":" + tokenContent + "\n},";
+                    // TODO: result += "\"size\":" + tokenContent + "\n},";
                     result += "},";
                     break;
                 }
@@ -297,6 +301,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private string GetSize()
         {
+            // TODO: get the node size
             return "1";
         }
 

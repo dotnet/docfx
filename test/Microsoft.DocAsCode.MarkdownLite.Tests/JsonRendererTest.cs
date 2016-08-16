@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
     {
         public string JsonRenderer(string content)
         {
-            JsonServiceProvider jsonServiceProvider = new JsonServiceProvider();
+            JsonTokenTreeServiceProvider jsonServiceProvider = new JsonTokenTreeServiceProvider();
             IMarkdownService jsonService = jsonServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
             return jsonService.Markup(content, null).Html;
         }

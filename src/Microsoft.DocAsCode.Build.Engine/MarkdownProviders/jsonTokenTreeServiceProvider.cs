@@ -13,11 +13,11 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
 
     [Export("jsonTokenTree", typeof(IMarkdownServiceProvider))]
-    public class JsonServiceProvider: IMarkdownServiceProvider
+    public class JsonTokenTreeServiceProvider : IMarkdownServiceProvider
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
-            return new JsonRenderService(
+            return new JsonTokenTreeService(
                 parameters.BasePath,
                 parameters.Tokens,
                 MarkdownTokenTreeValidatorFactory.Combine(TokenTreeValidator));
@@ -26,13 +26,13 @@ namespace Microsoft.DocAsCode.Build.Engine
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
 
-        private sealed class JsonRenderService : IMarkdownService
+        private sealed class JsonTokenTreeService : IMarkdownService
         {
             private readonly DfmEngineBuilder _builder;
 
             private readonly ImmutableDictionary<string, string> _tokens;
 
-            public JsonRenderService(string baseDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
+            public JsonTokenTreeService(string baseDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
             {
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir);
                 _builder.TokenTreeValidator = tokenTreeValidator;
@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 var result = new MarkupResult
                 {
-                    // I think it should be rename 
+                    // TODO: rename
                     Html = json.ToString(),
                 };
                 if (dependency.Count > 0)
