@@ -22,6 +22,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _configRule = LoadRules(configFile);
         }
 
+        public ConfigFilterVisitor(IFilterVisitor inner, ConfigFilterRule rule)
+            : base(inner)
+        {
+            _configRule = rule;
+        }
+
         protected override bool CanVisitApiCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
             if (symbol == null)
@@ -65,7 +71,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return true;
         }
 
-        private static ConfigFilterRule LoadRules(string configFile)
+        public static ConfigFilterRule LoadRules(string configFile)
         {
             if (string.IsNullOrEmpty(configFile))
             {

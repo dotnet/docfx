@@ -10,6 +10,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return new ConfigFilterVisitor(fv, configFile);
         }
 
+        public static IFilterVisitor WithConfig(this IFilterVisitor fv, ConfigFilterRule rule)
+        {
+            return new ConfigFilterVisitor(fv, rule);
+        }
+
         public static IFilterVisitor WithCache(this IFilterVisitor fv)
         {
             return new CachedFilterVisitor(fv);
