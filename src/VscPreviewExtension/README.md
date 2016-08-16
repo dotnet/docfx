@@ -10,11 +10,11 @@ DocFX Flavored Markdown Preview
 This is a DFM preview vscode extension which you can get from the [DocFX Flavored Markdown](http://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html)
 
 ## Features
-- Live preview   
+- Live preview
   The shortcuts are
     - `ctrl+shift+q`    Preview
     - `ctrl+k q`        Preview to Side
- 
+
 ## How to install from Marketplace
 This extension is hosted at [Visual Studio Marketplace](http://marketplace.visualstudio.com/items?itemName=928pjy.DfmPreview)
 > **Notice** Upgrade to Visual Studio Code 1.3.0 or above.
@@ -28,10 +28,8 @@ This extension is hosted at [Visual Studio Marketplace](http://marketplace.visua
 * Bug fix: open other preview window
 * Bug fix: some css and javasript files to show the html
 
-
 ### 0.0.7
 * Initial Release!
 
-## Feedback 
+## Feedback
 Please provide feedback through the [Github Issue](https://github.com/928PJY/Dfm_preview/issues) system , or fork the repository and submit PR
-
