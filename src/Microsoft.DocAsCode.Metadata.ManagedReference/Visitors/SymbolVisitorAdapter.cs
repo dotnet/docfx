@@ -913,7 +913,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else
             {
-                userRule = YamlUtility.Deserialize<ConfigFilterRule>(filterConfigFile);
+                userRule = ConfigFilterVisitor.LoadRules(filterConfigFile);
                 return MergeConfigRule(defaultRule, userRule);
             }
         }

@@ -31,5 +31,5 @@
       }
     }
   },
-  "resource": "Transform/**"
+  "resource": [ "Transform/**", "Filters/defaultfilterconfig.yml" ]
 }

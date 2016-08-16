@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return true;
         }
 
-        private static ConfigFilterRule LoadRules(string configFile)
+        public static ConfigFilterRule LoadRules(string configFile)
         {
             if (string.IsNullOrEmpty(configFile))
             {
