@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     _canIncremental = GetCanIncremental(parameters.VersionName);
                     if (_canIncremental)
                     {
-                        ExpandDependency(parameters.ChangeList, LastBuildInfo, context.ChangeDict);
+                        ExpandDependency(parameters, LastBuildInfo, context.ChangeDict);
                     }
                 }
 
@@ -198,9 +198,40 @@ namespace Microsoft.DocAsCode.Build.Engine
             return LastBuildInfo.Versions.Any(v => v.VersionName == versionName);
         }
 
-        private void ExpandDependency(ChangeList changeList, BuildInfo lastBuildInfo, Dictionary<string, ChangeKindWithDependency> changeItems)
+        private void ExpandDependency(DocumentBuildParameters parameter, BuildInfo lastBuildInfo, Dictionary<string, ChangeKindWithDependency> changeItems)
         {
-            // todo ExpandDependency;
+            string versionName = parameter.VersionName;
+            string dependencyFile = lastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName)?.Dependency;
+
+            if (changeItems == null)
+            {
+                changeItems = new Dictionary<string, ChangeKindWithDependency>();
+            }
+            foreach (ChangeItem item in parameter.ChangeList)
+            {
+                changeItems[item.FilePath] = item.Kind;
+            }
+            if (!string.IsNullOrEmpty(dependencyFile))
+            {
+                using (var reader = new StreamReader(Path.Combine(IntermediateFolder, dependencyFile)))
+                {
+                    var dependencyGraph = DependencyGraph.Load(reader);
+                    foreach (var key in dependencyGraph.Keys)
+                    {
+                        if (dependencyGraph.GetAllDependency(key).Any(d => changeItems.ContainsKey(d) && changeItems[d] != ChangeKindWithDependency.None))
+                        {
+                            if (!changeItems.ContainsKey(key))
+                            {
+                                changeItems[key] = ChangeKindWithDependency.DependencyUpdated;
+                            }
+                            else
+                            {
+                                changeItems[key] |= ChangeKindWithDependency.DependencyUpdated;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)
