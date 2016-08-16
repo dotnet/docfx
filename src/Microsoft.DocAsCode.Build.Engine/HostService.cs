@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using HtmlAgilityPack;
 
+    using Microsoft.DocAsCode.Build.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
