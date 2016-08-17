@@ -570,13 +570,13 @@ body .toc{
   font-size: 12px;
   max-height: 100%;
   overflow: hidden;
+  margin-top: 50px; /* Add margin-top for '.affix' instead of '.affix h5' */
   top: 100px;
   bottom: 10px;
 }
 .affix h5 {
   font-weight: bold;
   text-transform: uppercase;
-  margin-top: 50px;
   padding-left: 10px;
   font-size: 12px;
 }
@@ -586,6 +586,15 @@ body .toc{
   padding-bottom: 10px;
   height: calc(100% - 100px);
   margin-right: -20px;
+}
+/* overwrite height and margin-right of '.affix > ul.level1' */
+.affix > ul.level1.btn {
+  height: auto;
+  margin-right:auto;
+}
+/* add padding for multiple buttons */
+.affix > ul.level1.btn > li {
+  padding-bottom: 10px;
 }
 .affix ul > li > a:before {
   color: #cccccc;
@@ -632,6 +641,18 @@ body .toc{
 .affix ul > li > a:hover:before {
   display: block;
   white-space: nowrap;
+}
+/* overwrite the button color of '.affix ul > li > a' */
+.affix ul > li > a.btn {
+  color: #fff;
+}
+/* overwrite the button display of '.affix ul > li > a:hover:before' */
+.affix ul > li > a.btn:hover:before {
+  display: none;
+}
+/* overwrite the button background of '.affix ul > li > a:hover' */
+.affix ul > li > a.btn:hover {
+  background: #337ab7;
 }
 .codewrapper {
   position: relative;
