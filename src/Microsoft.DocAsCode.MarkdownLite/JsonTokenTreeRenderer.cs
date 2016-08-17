@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class JsonTokenTreeRenderer
     {
-        public ImmutableDictionary<string, string> Tokens { get; set; }
-
         #region Block
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNewLineBlockToken token, MarkdownBlockContext context)
@@ -147,7 +145,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEscapeInlineToken token, MarkdownInlineContext context)
         {
-            return this.Insert("Escape" + token.Content, this.GetSize(), Type.Leaf);
+            return this.Insert("Escape", this.GetSize(), Type.Leaf);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownLinkInlineToken token, MarkdownInlineContext context)
@@ -212,7 +210,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownInlineContext context)
         {
-            return this.Insert("InLineText(" + token.Content.Replace("\n", "\\n") + ")", this.GetSize(), Type.Leaf);
+            return this.Insert("InLineText", this.GetSize(), Type.Leaf);
         }
 
         #endregion
@@ -252,8 +250,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     if (tokenContent.GetLength() > 0 && tokenContent.EndsWith(','))
                     {
                         // TODO: add a method 'remove' of StringBuffer
-                        string contenttemp = tokenContent;
-                        tokenContent = contenttemp.Remove(contenttemp.Length - 1);
+                        string contentTemp = tokenContent;
+                        tokenContent = contentTemp.Remove(contentTemp.Length - 1);
                     }
                     result += ",\"children\":[";
                     result += tokenContent;

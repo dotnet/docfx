@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export("jsonTokenTree", typeof(IMarkdownServiceProvider))]
+    [Export("JsonTokenTree", typeof(IMarkdownServiceProvider))]
     public class JsonTokenTreeServiceProvider : IMarkdownServiceProvider
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             public MarkupResult Markup(string src, string path)
             {
                 var dependency = new HashSet<string>();
-                var json = _builder.CreateDfmEngine(new JsonTokenTreeRenderer() { Tokens = _tokens }).Markup(src, path, dependency);
+                var json = _builder.CreateDfmEngine(new JsonTokenTreeRenderer()).Markup(src, path, dependency);
                 if (json.Length != 0 && json.EndsWith(","))
                 {
                     json = json.Remove(json.Length - 1);

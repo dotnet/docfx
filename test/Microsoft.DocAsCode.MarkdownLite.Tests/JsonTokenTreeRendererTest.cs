@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 | value | Edm.String |  |  |  |
 ";
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText(hello)\"}]},{\"name\":\"Table\",\"children\":[{\"name\":\"Header\",\"children\":[{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText(Name)\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText(Type)\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText(Notes)\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText(Read/Write)\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText(Description)\"}]}]},{\"name\":\"Body\",\"children\":[{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText(value)\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText(Edm.String)\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]}]},{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText(endDate)\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText(Edm.DateTime)\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText(The date and time at which the password expires.)\"}]}]},{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText(value)\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText(Edm.String)\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]}]}]}]}]}";
+                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Table\",\"children\":[{\"name\":\"Header\",\"children\":[{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"Body\",\"children\":[{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]}]},{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]}]}]}]}]}";
 
             Assert.Equal(expected, JsonRenderer(source));
         }
@@ -36,7 +36,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 -->";
             var expected =
                 "{\"name\":\"markdown\",\"children\":[{\"name\":\"Html\",\"children\":[{\"name\":\"Raw(FromGfmHtmlComment)\"}]}]}";
-            Assert.Equal(expected.Replace("\r\n", "\n"), JsonRenderer(source));
+            Assert.Equal(expected, JsonRenderer(source));
         }
 
         [Fact]
@@ -49,7 +49,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 ";
             var expected =
                 "{\"name\":\"markdown\",\"children\":[{\"name\":\"Html\",\"children\":[{\"name\":\"Raw(FromHtml)\"}]}]}";
-            Assert.Equal(expected.Replace("\r\n", "\n"), JsonRenderer(source));
+            Assert.Equal(expected, JsonRenderer(source));
         }
 
         [Fact]
@@ -64,8 +64,8 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 [User]: ./entity-and-complex-type-reference.md#UserEntity";
 
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText(Test table)\"}]},{\"name\":\"Table\",\"children\":[{\"name\":\"Header\",\"children\":[{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText(header-1)\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText(header-2)\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText(header-3)\"}]}]},{\"name\":\"Body\",\"children\":[{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"Em\",\"children\":[{\"name\":\"InLineText(1-1)\"}]}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"Link\",\"children\":[{\"name\":\"InLineText(User)\"}]}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText(test)\"}]}]}]}]},{\"name\":\"Ignore\"}]}";
-            Assert.Equal(expected.Replace("\r\n", "\n"), JsonRenderer(source));
+                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Table\",\"children\":[{\"name\":\"Header\",\"children\":[{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"Body\",\"children\":[{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"Em\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"Link\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]}]}]}]},{\"name\":\"Ignore\"}]}";
+            Assert.Equal(expected, JsonRenderer(source));
         }
 
         [Fact]
@@ -76,7 +76,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 
             var expected =
                 "{\"name\":\"markdown\",\"children\":[{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Image\"}]}]}";
-            Assert.Equal(expected.Replace("\r\n", "\n"), JsonRenderer(source));
+            Assert.Equal(expected, JsonRenderer(source));
         }
 
         [Fact]
@@ -119,8 +119,8 @@ Numbered list
 <address@example.com>
 ";
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText(Heading)\"}]},{\"name\":\"Heading2\",\"children\":[{\"name\":\"InLineText(Sub-heading)\"}]},{\"name\":\"Heading3\",\"children\":[{\"name\":\"InLineText(Another deeper heading)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Paragraphs are separated\\nby a blank line.)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Leave 2 spaces at the end of a line to do a)\"},{\"name\":\"Br\"},{\"name\":\"InLineText(line break)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Text attributes )\"},{\"name\":\"Em\",\"children\":[{\"name\":\"InLineText(italic)\"}]},{\"name\":\"InLineText(, )\"},{\"name\":\"Strong\",\"children\":[{\"name\":\"InLineText(bold)\"}]},{\"name\":\"InLineText(, \\n)\"},{\"name\":\"InLineCode\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Del\",\"children\":[{\"name\":\"InLineText(strikethrough)\"}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(A )\"},{\"name\":\"Link\",\"children\":[{\"name\":\"InLineText(link)\"}]},{\"name\":\"InLineText(.)\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Shopping list)\"}]},{\"name\":\"ul\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(apples)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(oranges)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(pears)\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText(Numbered list)\"}]},{\"name\":\"ol\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(apples)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(oranges)\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText(pears)\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Link\",\"children\":[{\"name\":\"Raw(FromInline.AutoLink)\"}]}]}]}";
-            Assert.Equal(expected.Replace("\r\n", "\n"), JsonRenderer(source));
+                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Heading2\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Heading3\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"},{\"name\":\"Br\"},{\"name\":\"InLineText\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"},{\"name\":\"Em\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"InLineText\"},{\"name\":\"Strong\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"InLineText\"},{\"name\":\"InLineCode\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Del\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"},{\"name\":\"Link\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"InLineText\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"ul\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"ol\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Link\",\"children\":[{\"name\":\"Raw(FromInline.AutoLink)\"}]}]}]}";
+            Assert.Equal(expected, JsonRenderer(source));
         }
 
         private string JsonRenderer(string content)
