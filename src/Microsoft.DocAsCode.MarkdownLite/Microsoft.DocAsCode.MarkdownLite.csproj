@@ -54,6 +54,7 @@
     <Compile Include="IMarkdownToken.cs" />
     <Compile Include="Contexts\MarkdownBlockContext.cs" />
     <Compile Include="IMarkdownRewritable.cs" />
+    <Compile Include="JsonTokenTreeRenderer.cs" />
     <Compile Include="MarkdownLinkType.cs" />
     <Compile Include="Rewriters\IInitializable.cs" />
     <Compile Include="Rewriters\MarkdownInitializableLambdaTokenRewriter.cs" />
