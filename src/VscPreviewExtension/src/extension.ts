@@ -2,29 +2,27 @@
 
 'use strict';
 
-import { workspace, window, ExtensionContext, commands, TextEditor, TextDocumentContentProvider, EventEmitter, Event, Uri, TextDocumentChangeEvent, ViewColumn,
-    TextEditorSelectionChangeEvent, TextDocument, Disposable } from "vscode";
-import * as fs from "fs";
+import {workspace, window, ExtensionContext, commands, TextDocumentContentProvider, EventEmitter, Event, Uri, ViewColumn, TextDocument }from "vscode";
 import * as path from "path";
 import * as child_process from 'child_process';
 
 let previewResult = "";
 let provider;
 let documentUri;
-let isEnd = true;
-const ENDCODE = 7;
+let multipleRead = false;
+const ENDCODE = 7;// '\a'
 
 export function activate(context: ExtensionContext) {
     let dfmProcess = new PreviewCore(context);
     provider = new MDDocumentContentProvider(context);
-    let registration = workspace.registerTextDocumentContentProvider('markdown', provider);
+    let providerRegistration = workspace.registerTextDocumentContentProvider('markdown', provider);
 
     // Event register
-    let d1 = commands.registerCommand('DFM.showPreview', uri => showPreview(dfmProcess));
-    let d2 = commands.registerCommand('DFM.showPreviewToSide', uri => showPreview(dfmProcess, uri, true));
-    let d3 = commands.registerCommand('DFM.showSource', showSource);
+    let showPreviewRegistration = commands.registerCommand('DFM.showPreview', uri => showPreview(dfmProcess));
+    let showPreviewToSideRegistration = commands.registerCommand('DFM.showPreviewToSide', uri => showPreview(dfmProcess, uri, true));
+    let showSourceRegistration = commands.registerCommand('DFM.showSource', showSource);
 
-    context.subscriptions.push(d1, d2, d3, registration);
+    context.subscriptions.push(showPreviewRegistration, showPreviewToSideRegistration, showSourceRegistration, providerRegistration);
 
     workspace.onDidSaveTextDocument(document => {
         if (isMarkdownFile(document)) {
@@ -50,10 +48,10 @@ export function activate(context: ExtensionContext) {
     });
 }
 
-// check the file type
+// Check the file type
 function isMarkdownFile(document: TextDocument) {
     // Prevent processing of own documents
-    return document.languageId === 'markdown' && document.uri.scheme !== 'markdown'; 
+    return document.languageId === 'markdown' && document.uri.scheme !== 'markdown';
 }
 
 function getMarkdownUri(uri: Uri) {
@@ -144,24 +142,28 @@ class PreviewCore {
         this._spawn.stdout.on('data', function (data) {
             let tmp = data.toString();
             let endCharCode = tmp.charCodeAt(tmp.length - 1);
-            if (isEnd && endCharCode == ENDCODE) {
-                previewResult = tmp;
-                provider.update(documentUri);
+            if (!multipleRead) {
+                if (endCharCode == ENDCODE) {
+                    previewResult = tmp;
+                    provider.update(documentUri);
+                }
+                else {
+                    // The first one and the result is truncated
+                    previewResult = tmp;
+                    multipleRead = true;
+                }
             }
-            // The first one if the result been cut
-            else if (isEnd && endCharCode != ENDCODE) {
-                previewResult = tmp;
-                isEnd = false;
-            }
-            // The result be cut and this is not the last one
-            else if (!isEnd && endCharCode != ENDCODE) {
-                previewResult += tmp;
-            }
-            // The result be cut and this is the last one
             else {
-                previewResult += tmp;
-                isEnd = true;
-                provider.update(documentUri);
+                if (endCharCode != ENDCODE) {
+                    // The result is truncated and this is not the last one
+                    previewResult += tmp;
+                }
+                else {
+                    // The result is truncated and this is the last one
+                    previewResult += tmp;
+                    multipleRead = false;
+                    provider.update(documentUri);
+                }
             }
         });
 
@@ -181,17 +183,17 @@ class PreviewCore {
         }
         let doc = editor.document;
         let docContent = doc.getText();
-        let filename = doc.fileName;
+        let fileName = doc.fileName;
         let rtPath = workspace.rootPath;
         let filePath;
         if (!rtPath) {
-            let indexOfFilename = filename.lastIndexOf('\\');
-            rtPath = filename.substr(indexOfFilename - 1);
-            filePath = filename.substring(0, indexOfFilename);
+            let indexOfFilename = fileName.lastIndexOf('\\');
+            rtPath = fileName.substr(indexOfFilename - 1);
+            filePath = fileName.substring(0, indexOfFilename);
         }
         else {
             let rtpath_length = rtPath.length;
-            filePath = filename.substr(rtpath_length + 1, filename.length - rtpath_length);
+            filePath = fileName.substr(rtpath_length + 1, fileName.length - rtpath_length);
         }
         if (doc.languageId === "markdown") {
             let numOfRow = doc.lineCount;
@@ -234,7 +236,7 @@ class MDDocumentContentProvider implements TextDocumentContentProvider {
 
     public provideTextDocumentContent(uri: Uri): Thenable<string> {
         return workspace.openTextDocument(Uri.parse(uri.query)).then(document => {
-            const head = [].concat(
+            const head = [
                 '<!DOCTYPE html>',
                 '<html>',
                 '<head>',
@@ -243,8 +245,7 @@ class MDDocumentContentProvider implements TextDocumentContentProvider {
                 `<link rel="stylesheet" type="text/css" href="${this.getMediaPath('markdown.css')}" >`,
                 `<base href="${document.uri.toString(true)}">`,
                 '</head>',
-                '<body>'
-            ).join('\n');
+                '<body>'].join('\n');
 
             const body = previewResult;
 
