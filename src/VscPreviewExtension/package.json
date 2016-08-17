@@ -24,7 +24,7 @@
       },
       {
         "command": "DFM.showPreviewToside",
-        "title": "Open Dfm preview to the side"
+        "title": "Open Dfm Preview to the side"
       },
       {
         "command": "DFM.showSource",

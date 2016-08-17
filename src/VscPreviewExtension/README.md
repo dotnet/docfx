@@ -4,7 +4,7 @@ DocFX Flavored Markdown Preview
 [![Current Version](http://vsmarketplacebadge.apphb.com/version/928pjy.DfmPreview.svg)](http://marketplace.visualstudio.com/items?itemName=928pjy.DfmPreview)
 [![Install Count](http://vsmarketplacebadge.apphb.com/installs/928pjy.DfmPreview.svg)](https://marketplace.visualstudio.com/items?itemName=928pjy.DfmPreview)
 [![Open Issues](http://vsmarketplacebadge.apphb.com/rating/928pjy.DfmPreview.svg) ](https://marketplace.visualstudio.com/items?itemName=928pjy.DfmPreview)
-> **Notice:** Homepage for the DfmPreview extension at [DfmPreview](https://github.com/928PJY/Dfm_preview)
+> **Notice:** Homepage for the DfmPreview extension at [DfmPreview](https://github.com/dotnet/docfx)
 
 ## Introduction
 This is a DFM preview vscode extension which you can get from the [DocFX Flavored Markdown](http://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html)
@@ -32,4 +32,4 @@ This extension is hosted at [Visual Studio Marketplace](http://marketplace.visua
 * Initial Release!
 
 ## Feedback
-Please provide feedback through the [Github Issue](https://github.com/928PJY/Dfm_preview/issues) system , or fork the repository and submit PR
+Please provide feedback through the [Github Issue](https://github.com/dotnet/docfx/issues) system, or fork the repository and submit PR
