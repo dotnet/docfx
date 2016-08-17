@@ -9,7 +9,7 @@ $(function () {
 
   // Line highlight for code snippet
   (function () {
-    $('pre code[highlight-lines]').each(function(i, block) {
+    $('pre code[highlight-lines]').each(function (i, block) {
       if (block.innerHTML === "") return;
       var lines = block.innerHTML.split('\n');
 
@@ -252,7 +252,7 @@ $(function () {
                 itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
                 return itemNode;
               })
-              );
+            );
             query.split(/\s+/).forEach(function (word) {
               if (word !== '') {
                 highlight($('#search-results>.sr-items *'), word, "<strong>");
@@ -491,16 +491,15 @@ $(function () {
       }
       $('#affix').on('activate.bs.scrollspy', function (e) {
         if (e.target) {
-            if ($(e.target).find('li.active').length > 0)
-            {
-              return;
-            }
-            var top = $(e.target).position().top;
-            $(e.target).parents('li').each(function (i, e) {
-              top += $(e).position().top;
-            });
-            var container = $('#affix > ul');
-            container.scrollTop(container.scrollTop() + top - 100);
+          if ($(e.target).find('li.active').length > 0) {
+            return;
+          }
+          var top = $(e.target).position().top;
+          $(e.target).parents('li').each(function (i, e) {
+            top += $(e).position().top;
+          });
+          var container = $('#affix > ul');
+          container.scrollTop(container.scrollTop() + top - 100);
         }
       })
     }
@@ -611,30 +610,26 @@ $(function () {
   }
 
   // Show footer
-  (function() {
+  (function () {
     initFooter();
     $(window).on("scroll", showFooter);
 
     function initFooter() {
       if (needFooter()) {
-        $(".sidetoc").css("bottom", "70px");
-        $(".affix").css("bottom", "40px");
+        shiftUpBottomCss();
         $("footer").show();
       } else {
-        $(".sidetoc").css("bottom", "0");
-        $(".affix").css("bottom", "10px");
+        resetBottomCss();
         $("footer").hide();
       }
     }
 
     function showFooter() {
       if (needFooter()) {
-        $(".sidetoc").css("bottom", "70px");
-        $(".affix").css("bottom", "40px");
+        shiftUpBottomCss();
         $("footer").fadeIn();
       } else {
-        $(".sidetoc").css("bottom", "0");
-        $(".affix").css("bottom", "10px");
+        resetBottomCss();
         $("footer").fadeOut();
       }
     }
@@ -643,6 +638,16 @@ $(function () {
       var scrollHeight = $(document).height();
       var scrollPosition = $(window).height() + $(window).scrollTop();
       return (scrollHeight - scrollPosition) < 1;
+    }
+
+    function resetBottomCss() {
+      $(".sidetoc").css("bottom", "0");
+      $(".affix").css("bottom", "10px");
+    }
+
+    function shiftUpBottomCss() {
+      $(".sidetoc").css("bottom", "70px");
+      $(".affix").css("bottom", "40px");
     }
   })();
 
