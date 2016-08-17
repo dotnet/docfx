@@ -196,6 +196,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         .Distinct());
             }
 
+            //to-do: get changelist from options
+
             if (options.Serve)
             {
                 config.Serve = options.Serve;

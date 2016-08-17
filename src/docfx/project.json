@@ -11,6 +11,7 @@
     "Microsoft.DocAsCode.Build.Common": "1.0.0",
     "Microsoft.DocAsCode.Build.ConceptualDocuments": "1.0.0",
     "Microsoft.DocAsCode.Build.Engine": "1.0.0",
+    "Microsoft.DocAsCode.Build.Incrementals": "1.0.0",
     "Microsoft.DocAsCode.Build.ManagedReference": "1.0.0",
     "Microsoft.DocAsCode.Build.ResourceFiles": "1.0.0",
     "Microsoft.DocAsCode.Build.RestApi": "1.0.0",

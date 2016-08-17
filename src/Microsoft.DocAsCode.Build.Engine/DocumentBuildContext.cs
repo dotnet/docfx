@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public Dictionary<string, string> FileMap { get; } = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-        public Dictionary<string, XRefSpec> XRefSpecMap { get; } = new Dictionary<string, XRefSpec>();
+        public ConcurrentDictionary<string, XRefSpec> XRefSpecMap { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
         public Dictionary<string, HashSet<string>> TocMap { get; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
@@ -67,6 +67,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public DependencyGraph DependencyGraph { get; } = new DependencyGraph();
 
         internal Dictionary<string, ChangeKindWithDependency> ChangeDict { get; } = new Dictionary<string, ChangeKindWithDependency>();
+
+        internal ConcurrentBag<ManifestItem> ManifestItems = new ConcurrentBag<ManifestItem>();
 
         private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
 

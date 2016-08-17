@@ -28,6 +28,13 @@ namespace Microsoft.DocAsCode.Build.Incrementals
         /// The file link for build outputs (type is <see cref="BuildOutputs"/>).
         /// </summary>
         public string Output { get; set; }
-
+        /// <summary>
+        /// The file link for the manifest file(type is <see cref="Microsoft.DocAsCode.Plugins.Manifest"/>).
+        /// </summary>
+        public string Manifest { get; set; }
+        /// <summary>
+        /// The file link for the XRefMap file(type is <see cref="Microsoft.DocAsCode.Build.Engine.XRefMap"/>).
+        /// </summary>
+        public string XRefSpecMap { get; set; }
     }
 }
