@@ -239,9 +239,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private StringBuffer Insert(StringBuffer name, StringBuffer tokenContent, Type tokenType)
         {
-            StringBuffer result = "{\"name\":\"";
-            result += name;
-            result += "\"";
+            StringBuffer result = $"{{\"name\":\"{name}\"";
             switch (tokenType)
             {
                 case Type.NonLeaf:
@@ -253,9 +251,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         string contentTemp = tokenContent;
                         tokenContent = contentTemp.Remove(contentTemp.Length - 1);
                     }
-                    result += ",\"children\":[";
-                    result += tokenContent;
-                    result += "]},";
+                    result += $",\"children\":[{tokenContent}]}},";
                     break;
                 }
                 case Type.Leaf:
