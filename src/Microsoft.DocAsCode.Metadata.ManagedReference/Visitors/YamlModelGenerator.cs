@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.Collections.Generic;
+    using System.IO;
 
     using Microsoft.CodeAnalysis;
 
@@ -82,6 +83,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var rawId = VisitorHelper.GetId(symbol);
             var id = SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingNamespace.MetadataName}.");
+            }
             ReferenceItem reference = new ReferenceItem();
             reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
             GenerateReferenceInternal(symbol, reference, adapter);
