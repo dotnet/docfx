@@ -365,6 +365,9 @@ $(function () {
             });
             // 50 is the size of the filter box
             $('.sidetoc').scrollTop(top - 50);
+            if ($('footer').is(':visible')) {
+              $(".sidetoc").css("bottom", "70px");
+            }
           } else {
             $(e).parent().removeClass(active);
             $(e).parents('li').children('a').removeClass(active);
@@ -483,6 +486,9 @@ $(function () {
       var html = '<h5 class="title">In This Article</h5>'
       html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix").append(html);
+      if ($('footer').is(':visible')) {
+        $(".affix").css("bottom", "40px");
+      }
       $('#affix').on('activate.bs.scrollspy', function (e) {
         if (e.target) {
             if ($(e.target).find('li.active').length > 0)
@@ -603,6 +609,42 @@ $(function () {
       return html;
     }
   }
+
+  // Show footer
+  (function() {
+    initFooter();
+    $(window).on("scroll", showFooter);
+
+    function initFooter() {
+      if (needFooter()) {
+        $(".sidetoc").css("bottom", "70px");
+        $(".affix").css("bottom", "40px");
+        $("footer").show();
+      } else {
+        $(".sidetoc").css("bottom", "0");
+        $(".affix").css("bottom", "10px");
+        $("footer").hide();
+      }
+    }
+
+    function showFooter() {
+      if (needFooter()) {
+        $(".sidetoc").css("bottom", "70px");
+        $(".affix").css("bottom", "40px");
+        $("footer").fadeIn();
+      } else {
+        $(".sidetoc").css("bottom", "0");
+        $(".affix").css("bottom", "10px");
+        $("footer").fadeOut();
+      }
+    }
+
+    function needFooter() {
+      var scrollHeight = $(document).height();
+      var scrollPosition = $(window).height() + $(window).scrollTop();
+      return (scrollHeight - scrollPosition) < 1;
+    }
+  })();
 
   // For LOGO SVG
   // Replace SVG with inline SVG
