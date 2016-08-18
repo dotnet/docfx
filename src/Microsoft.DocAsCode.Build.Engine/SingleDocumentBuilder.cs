@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
     using System.Composition.Hosting;
     using System.Collections.Immutable;
+    using System.Security.Cryptography;
     using System.Text;
 
     using Microsoft.DocAsCode.Build.Incrementals;
@@ -75,12 +76,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.Files.DefaultBaseDir);
                 if (ShouldTraceIncrementalInfo)
                 {
+                    string configHash = ComputeConfigHash(parameters);
+                    string templateHash = parameters.TemplateManager.GetTemplatesHash();
                     CurrentBuildInfo.Versions.Add(
                         new BuildVersionInfo
                         {
                             VersionName = parameters.VersionName,
+                            ConfigHash = configHash,
+                            TemplateHash = templateHash,
                         });
-                    _canIncremental = GetCanIncremental(parameters.VersionName);
+                    _canIncremental = GetCanIncremental(configHash, templateHash, parameters.VersionName);
                     if (_canIncremental)
                     {
                         ExpandDependency(parameters, LastBuildInfo, context);
@@ -196,21 +201,20 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private bool GetCanIncremental(string versionName)
+        private bool GetCanIncremental(string configHash, string templateHash, string versionName)
         {
             if (LastBuildInfo == null)
             {
                 return false;
             }
-            if (CurrentBuildInfo.DocfxVersion != LastBuildInfo.DocfxVersion ||
-                CurrentBuildInfo.PluginHash != LastBuildInfo.PluginHash ||
-                CurrentBuildInfo.TemplateHash != LastBuildInfo.TemplateHash ||
-                CurrentBuildInfo.ConfigHash != LastBuildInfo.ConfigHash)
+            var version = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
+            if (version == null || configHash != version.ConfigHash || templateHash != version.TemplateHash)
             {
                 return false;
             }
 
-            return LastBuildInfo.Versions.Any(v => v.VersionName == versionName);
+            return CurrentBuildInfo.DocfxVersion == LastBuildInfo.DocfxVersion &&
+                CurrentBuildInfo.PluginHash == LastBuildInfo.PluginHash;
         }
 
         private void ExpandDependency(DocumentBuildParameters parameter, BuildInfo lastBuildInfo, DocumentBuildContext context)
@@ -1027,6 +1031,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Extensions = parameters.MarkdownEngineParameters,
                     Tokens = tokens,
                 });
+        }
+
+        private static string ComputeConfigHash(DocumentBuildParameters parameter)
+        {
+            using (var ms = new MemoryStream())
+            using (var writer = new StreamWriter(ms))
+            {
+                writer.Write(JsonUtility.Serialize(parameter));
+                return Convert.ToBase64String(MD5.Create().ComputeHash(ms.ToArray()));
+            }
         }
 
         public void Dispose()
