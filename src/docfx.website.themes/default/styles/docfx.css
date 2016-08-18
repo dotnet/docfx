@@ -98,10 +98,6 @@ svg:hover path {
 .btn + .btn {
   margin-left: 10px;
 }
-.btn.pull-right {
-  margin-left: 10px;
-  margin-top: 5px;
-}
 .table {
   margin-bottom: 10px;
 }
