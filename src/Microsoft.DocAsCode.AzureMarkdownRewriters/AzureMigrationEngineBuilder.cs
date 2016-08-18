@@ -129,7 +129,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         private string NormalizeAzureLink(string href, string defaultExtension, IMarkdownContext context, string rawMarkdown, string line)
         {
             bool isHrefRelativeNonMdFile;
-            var link = AppendDefaultExtension(href, defaultExtension, out isHrefRelativeNonMdFile);
+            var link = AppendDefaultExtension(href, defaultExtension, context, line, out isHrefRelativeNonMdFile);
             if (!isHrefRelativeNonMdFile)
             {
                 link = GenerateAzureLinkHref(context, link, rawMarkdown, line);
@@ -144,11 +144,26 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         /// <param name="defaultExtension">default extension to append</param>
         /// <param name="isHrefRelativeNonMdFile">true if it is a relative path and not a markdown file. Otherwise false</param>
         /// <returns>Href with default extension appended</returns>
-        private string AppendDefaultExtension(string href, string defaultExtension, out bool isHrefRelativeNonMdFile)
+        private string AppendDefaultExtension(string href, string defaultExtension, IMarkdownContext context, string line, out bool isHrefRelativeNonMdFile)
         {
             isHrefRelativeNonMdFile = false;
-            if (!PathUtility.IsRelativePath(href))
+            // If the context doesn't have necessary info, return the original href
+            if (!context.Variables.ContainsKey("path"))
             {
+                return href;
+            }
+            var currentFilePath = (string)context.Variables["path"];
+
+            try
+            {
+                if (!PathUtility.IsRelativePath(href))
+                {
+                    return href;
+                }
+            }
+            catch (ArgumentException)
+            {
+                Logger.LogWarning($"Invalid reference {href} in file: {currentFilePath}", null, currentFilePath, line);
                 return href;
             }
 
@@ -230,6 +245,11 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         private string GenerateAzureLinkHref(IMarkdownContext context, string href, string rawMarkdown, string line)
         {
+            if (string.IsNullOrEmpty(href))
+            {
+                return string.Empty;
+            }
+
             StringBuffer content = StringBuffer.Empty;
 
             // If the context doesn't have necessary info, return the original href
