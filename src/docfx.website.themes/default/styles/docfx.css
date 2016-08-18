@@ -644,15 +644,19 @@ body .toc{
 }
 /* overwrite the button color of '.affix ul > li > a' */
 .affix ul > li > a.btn {
-  color: #fff;
+  color: #8BFEB4;
 }
 /* overwrite the button display of '.affix ul > li > a:hover:before' */
 .affix ul > li > a.btn:hover:before {
   display: none;
 }
-/* overwrite the button background of '.affix ul > li > a:hover' */
+/* overwrite the button background color of '.affix ul > li > a:hover' */
 .affix ul > li > a.btn:hover {
-  background: #337ab7;
+  background-color: #23527c;
+}
+/* overwrite the button shadow of '.btn.active' */
+.affix ul.btn:active {
+  box-shadow: none;
 }
 .codewrapper {
   position: relative;
