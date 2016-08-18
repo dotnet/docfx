@@ -253,13 +253,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         continue;
                     }
-                    if (m.LinkToUids.Count == 0)
+                    if (m.LinkToUids.Count != 0)
                     {
-                        continue;
+                        context.DependencyGraph.ReportDependency(
+                            ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(),
+                            GetFilesFromUids(context, m.LinkToUids));
                     }
-                    context.DependencyGraph.ReportDependency(
-                        m.OriginalFileAndType.File,
-                        GetFilesFromUids(context, m.LinkToUids));
                 }
             }
         }
@@ -524,7 +523,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (canProcessorIncremental)
                 {
                     ChangeKindWithDependency ck;
-                    if (context.ChangeDict.TryGetValue(file.File, out ck))
+                    string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
+                    if (context.ChangeDict.TryGetValue(fileKey, out ck))
                     {
                         if (ck == ChangeKindWithDependency.Deleted)
                         {
@@ -538,8 +538,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Skip build by incremental.");
 
+                                // restore filemap
+                                context.FileMap[fileKey] = ((RelativePath)file.File).GetPathFromWorkingFolder();
+
                                 // restore xrefspec
-                                var specs = xrefSpecMap?.Values?.Where(spec => spec.Href == (file.File.StartsWith("~/") ? file.File : "~/" + file.File));
+                                var specs = xrefSpecMap?.Values?.Where(spec => spec.Href == fileKey);
                                 if (specs != null)
                                 {
                                     foreach (var spec in specs)
@@ -556,11 +559,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 }
 
                                 // restore dependency graph
-                                if (dg.HasDependency(file.File))
+                                if (dg.HasDependency(fileKey))
                                 {
-                                    context.DependencyGraph.ReportDependency(file.File, dg.GetDirectDependency(file.File));
+                                    context.DependencyGraph.ReportDependency(fileKey, dg.GetDirectDependency(fileKey));
                                 }
-
                                 return null;
                             }
                             Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Incremental not available.");
