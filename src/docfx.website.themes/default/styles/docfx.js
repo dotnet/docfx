@@ -9,7 +9,7 @@ $(function () {
 
   // Line highlight for code snippet
   (function () {
-    $('pre code[highlight-lines]').each(function(i, block) {
+    $('pre code[highlight-lines]').each(function (i, block) {
       if (block.innerHTML === "") return;
       var lines = block.innerHTML.split('\n');
 
@@ -252,7 +252,7 @@ $(function () {
                 itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
                 return itemNode;
               })
-              );
+            );
             query.split(/\s+/).forEach(function (word) {
               if (word !== '') {
                 highlight($('#search-results>.sr-items *'), word, "<strong>");
@@ -365,6 +365,9 @@ $(function () {
             });
             // 50 is the size of the filter box
             $('.sidetoc').scrollTop(top - 50);
+            if ($('footer').is(':visible')) {
+              $(".sidetoc").css("bottom", "70px");
+            }
           } else {
             $(e).parent().removeClass(active);
             $(e).parents('li').children('a').removeClass(active);
@@ -483,18 +486,20 @@ $(function () {
       var html = '<h5 class="title">In This Article</h5>'
       html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix").append(html);
+      if ($('footer').is(':visible')) {
+        $(".affix").css("bottom", "40px");
+      }
       $('#affix').on('activate.bs.scrollspy', function (e) {
         if (e.target) {
-            if ($(e.target).find('li.active').length > 0)
-            {
-              return;
-            }
-            var top = $(e.target).position().top;
-            $(e.target).parents('li').each(function (i, e) {
-              top += $(e).position().top;
-            });
-            var container = $('#affix > ul');
-            container.scrollTop(container.scrollTop() + top - 100);
+          if ($(e.target).find('li.active').length > 0) {
+            return;
+          }
+          var top = $(e.target).position().top;
+          $(e.target).parents('li').each(function (i, e) {
+            top += $(e).position().top;
+          });
+          var container = $('#affix > ul');
+          container.scrollTop(container.scrollTop() + top - 100);
         }
       })
     }
@@ -603,6 +608,48 @@ $(function () {
       return html;
     }
   }
+
+  // Show footer
+  (function () {
+    initFooter();
+    $(window).on("scroll", showFooter);
+
+    function initFooter() {
+      if (needFooter()) {
+        shiftUpBottomCss();
+        $("footer").show();
+      } else {
+        resetBottomCss();
+        $("footer").hide();
+      }
+    }
+
+    function showFooter() {
+      if (needFooter()) {
+        shiftUpBottomCss();
+        $("footer").fadeIn();
+      } else {
+        resetBottomCss();
+        $("footer").fadeOut();
+      }
+    }
+
+    function needFooter() {
+      var scrollHeight = $(document).height();
+      var scrollPosition = $(window).height() + $(window).scrollTop();
+      return (scrollHeight - scrollPosition) < 1;
+    }
+
+    function resetBottomCss() {
+      $(".sidetoc").css("bottom", "0");
+      $(".affix").css("bottom", "10px");
+    }
+
+    function shiftUpBottomCss() {
+      $(".sidetoc").css("bottom", "70px");
+      $(".affix").css("bottom", "40px");
+    }
+  })();
 
   // For LOGO SVG
   // Replace SVG with inline SVG
