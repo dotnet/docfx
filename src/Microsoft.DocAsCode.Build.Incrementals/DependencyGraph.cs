@@ -59,6 +59,13 @@ namespace Microsoft.DocAsCode.Build.Incrementals
             get { return _dictionary.Keys; }
         }
 
+        public SortedSet<string> GetDirectDependency(string key)
+        {
+            SortedSet<string> set;
+            _dictionary.TryGetValue(key, out set);
+            return set;
+        }
+
         public SortedSet<string> GetAllDependency(string key)
         {
             var result = new SortedSet<string>();
@@ -68,12 +75,12 @@ namespace Microsoft.DocAsCode.Build.Incrementals
             while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
-                if (result.Add(current))
+                SortedSet<string> set;
+                if (_dictionary.TryGetValue(current, out set))
                 {
-                    SortedSet<string> set;
-                    if (_dictionary.TryGetValue(current, out set))
+                    foreach (var item in set)
                     {
-                        foreach (var item in set)
+                        if (result.Add(item))
                         {
                             queue.Enqueue(item);
                         }

@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     _canIncremental = GetCanIncremental(parameters.VersionName);
                     if (_canIncremental)
                     {
-                        ExpandDependency(parameters, LastBuildInfo, context.ChangeDict);
+                        ExpandDependency(parameters, LastBuildInfo, context);
                     }
                 }
 
@@ -118,6 +118,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 UpdateUidDependency(context, hostServices);
                                 SaveDependency(context, parameters);
+                            }
+                            using (new LoggerPhaseScope("SaveXRefSpecMap", true))
+                            {
+                                SaveXRefSpecMap(context, parameters);
                             }
                         }
 
@@ -158,9 +162,20 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
 
                         // processor to add global variable to the model
+                        foreach (var m in processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables))
+                        {
+                            context.ManifestItems.Add(m);
+                        }
+                        if (ShouldTraceIncrementalInfo)
+                        {
+                            using (new LoggerPhaseScope("SaveManifest", true))
+                            {
+                                SaveManifest(context, parameters);
+                            }
+                        }
                         return new Manifest
                         {
-                            Files = processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables),
+                            Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
                             SourceBasePath = EnvironmentContext.BaseDirectory?.ToNormalizedPath()
@@ -198,36 +213,30 @@ namespace Microsoft.DocAsCode.Build.Engine
             return LastBuildInfo.Versions.Any(v => v.VersionName == versionName);
         }
 
-        private void ExpandDependency(DocumentBuildParameters parameter, BuildInfo lastBuildInfo, Dictionary<string, ChangeKindWithDependency> changeItems)
+        private void ExpandDependency(DocumentBuildParameters parameter, BuildInfo lastBuildInfo, DocumentBuildContext context)
         {
             string versionName = parameter.VersionName;
-            string dependencyFile = lastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName)?.Dependency;
+            string dependencyFile = lastBuildInfo?.Versions.SingleOrDefault(v => v.VersionName == versionName)?.Dependency;
+            var changeItems = context.ChangeDict;
 
-            if (changeItems == null)
-            {
-                changeItems = new Dictionary<string, ChangeKindWithDependency>();
-            }
             foreach (ChangeItem item in parameter.ChangeList)
             {
                 changeItems[item.FilePath] = item.Kind;
             }
             if (!string.IsNullOrEmpty(dependencyFile))
             {
-                using (var reader = new StreamReader(Path.Combine(IntermediateFolder, dependencyFile)))
+                var dependencyGraph = LoadDependencyGraph(dependencyFile);
+                foreach (var key in dependencyGraph.Keys)
                 {
-                    var dependencyGraph = DependencyGraph.Load(reader);
-                    foreach (var key in dependencyGraph.Keys)
+                    if (dependencyGraph.GetAllDependency(key).Any(d => changeItems.ContainsKey(d) && changeItems[d] != ChangeKindWithDependency.None))
                     {
-                        if (dependencyGraph.GetAllDependency(key).Any(d => changeItems.ContainsKey(d) && changeItems[d] != ChangeKindWithDependency.None))
+                        if (!changeItems.ContainsKey(key))
                         {
-                            if (!changeItems.ContainsKey(key))
-                            {
-                                changeItems[key] = ChangeKindWithDependency.DependencyUpdated;
-                            }
-                            else
-                            {
-                                changeItems[key] |= ChangeKindWithDependency.DependencyUpdated;
-                            }
+                            changeItems[key] = ChangeKindWithDependency.DependencyUpdated;
+                        }
+                        else
+                        {
+                            changeItems[key] |= ChangeKindWithDependency.DependencyUpdated;
                         }
                     }
                 }
@@ -244,13 +253,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         continue;
                     }
-                    if (m.LinkToUids.Count == 0)
+                    if (m.LinkToUids.Count != 0)
                     {
-                        continue;
+                        context.DependencyGraph.ReportDependency(
+                            ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(),
+                            GetFilesFromUids(context, m.LinkToUids));
                     }
-                    context.DependencyGraph.ReportDependency(
-                        m.OriginalFileAndType.File,
-                        GetFilesFromUids(context, m.LinkToUids));
                 }
             }
         }
@@ -258,15 +266,34 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void SaveDependency(DocumentBuildContext context, DocumentBuildParameters parameters)
         {
             var vbi = CurrentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
+            vbi.Dependency = SaveCore(writer => context.DependencyGraph.Save(writer));
+        }
+
+        private void SaveXRefSpecMap(DocumentBuildContext context, DocumentBuildParameters parameters)
+        {
+            var vbi = CurrentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
+            vbi.XRefSpecMap = SaveCore(writer => JsonUtility.Serialize(writer, context.XRefSpecMap));
+        }
+
+        private void SaveManifest(DocumentBuildContext context, DocumentBuildParameters parameters)
+        {
+            var vbi = CurrentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
+            vbi.Manifest = SaveCore(writer => JsonUtility.Serialize(writer, context.ManifestItems));
+        }
+
+        private string SaveCore(Action<TextWriter> saveAction)
+        {
+            string fileName;
             do
             {
-                vbi.Dependency = Path.GetRandomFileName();
-            } while (File.Exists(Path.Combine(IntermediateFolder, vbi.Dependency)));
+                fileName = Path.GetRandomFileName();
+            } while (File.Exists(Path.Combine(IntermediateFolder, fileName)));
             using (var writer = File.CreateText(
-                Path.Combine(IntermediateFolder, vbi.Dependency)))
+                Path.Combine(IntermediateFolder, fileName)))
             {
-                context.DependencyGraph.Save(writer);
+                saveAction(writer);
             }
+            return fileName;
         }
 
         private static IEnumerable<string> GetFilesFromUids(DocumentBuildContext context, IEnumerable<string> uids)
@@ -294,7 +321,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var hostService = new HostService(
                  parameters.Files.DefaultBaseDir,
                  from file in parameters.Files.EnumerateFiles()
-                 select Load(processor, parameters.Metadata, parameters.FileMetadata, file, false, null)
+                 select Load(processor, parameters.Metadata, parameters.FileMetadata, file, false, null, null, null, null)
                  into model
                  where model != null
                  select model)
@@ -484,28 +511,62 @@ namespace Microsoft.DocAsCode.Build.Engine
             FileMetadata fileMetadata,
             FileAndType file,
             bool canProcessorIncremental,
+            ImmutableDictionary<string, XRefSpec> xrefSpecMap,
+            ImmutableList<ManifestItem> manifestItems,
+            DependencyGraph dg,
             DocumentBuildContext context)
         {
             using (new LoggerFileScope(file.File))
             {
-                Logger.LogDiagnostic($"Processor {processor.Name}: Loading...");
+                Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Loading...");
 
                 if (canProcessorIncremental)
                 {
                     ChangeKindWithDependency ck;
-                    if (context.ChangeDict.TryGetValue(file.File, out ck) &&
-                        ck == ChangeKindWithDependency.None)
+                    string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
+                    if (context.ChangeDict.TryGetValue(fileKey, out ck))
                     {
-                        Logger.LogDiagnostic($"Processor {processor.Name}: Check incremental...");
-                        if (((ISupportIncrementalBuild)processor).CanIncrementalBuild(file) &&
-                            processor.BuildSteps.Cast<ISupportIncrementalBuild>().All(step => step.CanIncrementalBuild(file)))
+                        if (ck == ChangeKindWithDependency.Deleted)
                         {
-                            Logger.LogDiagnostic($"Processor {processor.Name}: Skip build by incremental.");
-
-                            // todo : incremental.
                             return null;
                         }
-                        Logger.LogDiagnostic($"Processor {processor.Name}: Incremental not available.");
+                        if (ck == ChangeKindWithDependency.None)
+                        {
+                            Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Check incremental...");
+                            if (((ISupportIncrementalBuild)processor).CanIncrementalBuild(file) &&
+                                processor.BuildSteps.Cast<ISupportIncrementalBuild>().All(step => step.CanIncrementalBuild(file)))
+                            {
+                                Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Skip build by incremental.");
+
+                                // restore filemap
+                                context.FileMap[fileKey] = ((RelativePath)file.File).GetPathFromWorkingFolder();
+
+                                // restore xrefspec
+                                var specs = xrefSpecMap?.Values?.Where(spec => spec.Href == fileKey);
+                                if (specs != null)
+                                {
+                                    foreach (var spec in specs)
+                                    {
+                                        context.XRefSpecMap[spec.Uid] = spec;
+                                    }
+                                }
+
+                                // restore manifestitem
+                                ManifestItem item = manifestItems?.SingleOrDefault(i => i.SourceRelativePath == file.File);
+                                if (item != null)
+                                {
+                                    context.ManifestItems.Add(item);
+                                }
+
+                                // restore dependency graph
+                                if (dg.HasDependency(fileKey))
+                                {
+                                    context.DependencyGraph.ReportDependency(fileKey, dg.GetDirectDependency(fileKey));
+                                }
+                                return null;
+                            }
+                            Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Incremental not available.");
+                        }
                     }
                 }
 
@@ -804,13 +865,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                             canProcessorIncremental = CanProcessorIncremental(processor, parameters.VersionName),
                         };
 
+            // load last xrefspecmap and manifestitems
+            BuildVersionInfo lastBuildVersionInfo = LastBuildInfo?.Versions.SingleOrDefault(v => v.VersionName == parameters.VersionName);
+            var lastXRefSpecMap = LoadIntermediateFile<ImmutableDictionary<string, XRefSpec>>(lastBuildVersionInfo?.XRefSpecMap);
+            var lastManifest = LoadIntermediateFile<ImmutableList<ManifestItem>>(lastBuildVersionInfo?.Manifest);
+            var lastDependencyGraph = LoadDependencyGraph(lastBuildVersionInfo?.Dependency);
+
             return from pair in pairs.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                    select new HostService(
                        parameters.Files.DefaultBaseDir,
                        pair.item == null
                             ? new FileModel[0]
                             : from file in pair.item
-                              select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, pair.canProcessorIncremental, context) into model
+                              select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, pair.canProcessorIncremental, lastXRefSpecMap, lastManifest, lastDependencyGraph, context) into model
                               where model != null
                               select model)
                    {
@@ -819,6 +886,30 @@ namespace Microsoft.DocAsCode.Build.Engine
                        Template = templateProcessor,
                        Validators = MetadataValidators.ToImmutableList(),
                    };
+        }
+
+        private T LoadIntermediateFile<T>(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return default(T);
+            }
+            using (var reader = new StreamReader(Path.Combine(IntermediateFolder, fileName)))
+            {
+                return JsonUtility.Deserialize<T>(reader);
+            }
+        }
+
+        private DependencyGraph LoadDependencyGraph(string dependencyFile)
+        {
+            if (string.IsNullOrEmpty(dependencyFile))
+            {
+                return null;
+            }
+            using (var reader = new StreamReader(Path.Combine(IntermediateFolder, dependencyFile)))
+            {
+                return DependencyGraph.Load(reader);
+            }
         }
 
         private bool CanProcessorIncremental(IDocumentProcessor processor, string versionName)

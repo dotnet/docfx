@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
+    using Microsoft.DocAsCode.Build.Incrementals;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ResourceFiles;
     using Microsoft.DocAsCode.Build.RestApi;
@@ -252,6 +253,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                 parameters.VersionName = pair.Key;
+
+                // to-do: get changelist from config/compare file modify date
+                parameters.ChangeList = new ChangeList();
+
                 yield return parameters;
             }
         }
