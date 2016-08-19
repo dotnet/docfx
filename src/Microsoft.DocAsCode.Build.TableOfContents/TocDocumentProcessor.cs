@@ -179,7 +179,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var index = pathToFile.IndexOf('#');
             if (index == 0)
             {
-                throw new DocumentException($"Invalid toc link: {pathToFile}.");
+                throw new DocumentException($"Invalid toc link: {originalPathToFile}.");
             }
             string href = index == -1
                 ? context.GetFilePath(pathToFile)
@@ -188,7 +188,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             if (href == null)
             {
-                Logger.LogWarning($"Unable to find file \"{pathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                Logger.LogWarning($"Unable to find file \"{originalPathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
                 return originalPathToFile;
             }
 
