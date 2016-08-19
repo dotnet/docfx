@@ -87,9 +87,10 @@ namespace Microsoft.DocAsCode.Utility
         {
             using (var ms = new MemoryStream())
             using (var writer = new StreamWriter(ms))
+            using (var md5 = MD5.Create())
             {
                 writer.Write(content);
-                return Convert.ToBase64String(MD5.Create().ComputeHash(ms.ToArray()));
+                return Convert.ToBase64String(md5.ComputeHash(ms.ToArray()));
             }
         }
     }
