@@ -115,6 +115,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
 ###[Topic1.1.1]({file2})
 ##[Topic1.2]()
 #[Topic2](http://href.com)
+#[Topic3](invalid.md)
 ";
             var toc = _fileCreator.CreateFile(content, FileType.MarkdownToc);
             FileCollection files = new FileCollection(_inputFolder);
@@ -162,6 +163,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                         Name = "Topic2",
                         Href = "http://href.com",
                         TopicHref = "http://href.com"
+                    },
+                    new TocItemViewModel
+                    {
+                        Name = "Topic3",
+                        Href = "invalid.md",
+                        TopicHref = "invalid.md"
                     }
                 }
             };
