@@ -120,7 +120,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, config.IntermediateFolder))
+            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder))
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
                 builder.Build(ConfigToParameter(config, templateManager, baseDirectory, outputDirectory, templateDirectory), outputDirectory);

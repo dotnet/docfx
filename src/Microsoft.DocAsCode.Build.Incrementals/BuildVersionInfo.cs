@@ -16,6 +16,11 @@ namespace Microsoft.DocAsCode.Build.Incrementals
         /// </summary>
         public List<ProcessorInfo> Processors { get; } = new List<ProcessorInfo>();
         /// <summary>
+        /// The hash info for configs.
+        /// Include global metadata, file metadata.
+        /// </summary>
+        public string ConfigHash { get; set; }
+        /// <summary>
         /// The file link for dependency (type is <see cref="DependencyGraph.Load(System.IO.TextReader)"/>).
         /// </summary>
         public string Dependency { get; set; }
@@ -29,11 +34,11 @@ namespace Microsoft.DocAsCode.Build.Incrementals
         /// </summary>
         public string Output { get; set; }
         /// <summary>
-        /// The file link for the manifest file(type is <see cref="Microsoft.DocAsCode.Plugins.Manifest"/>).
+        /// The file link for the manifest file(type is <see cref="T:Microsoft.DocAsCode.Plugins.Manifest"/>).
         /// </summary>
         public string Manifest { get; set; }
         /// <summary>
-        /// The file link for the XRefMap file(type is <see cref="Microsoft.DocAsCode.Build.Engine.XRefMap"/>).
+        /// The file link for the XRefMap file(type is <see cref="T:Microsoft.DocAsCode.Build.Engine.XRefMap"/>).
         /// </summary>
         public string XRefSpecMap { get; set; }
     }

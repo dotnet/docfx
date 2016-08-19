@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
@@ -34,6 +35,20 @@ namespace Microsoft.DocAsCode.Build.Engine
         public TemplateProcessor GetTemplateProcessor(DocumentBuildContext context, int maxParallelism)
         {
             return new TemplateProcessor(new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)), context, maxParallelism);
+        }
+
+        public string GetTemplatesHash()
+        {
+            var resources = _templates.Select(s => _finder.Find(s)).Where(s => s != null);
+            var builder = new StringBuilder();
+            foreach (var r in resources)
+            {
+                var filesHash = string.Concat(from n in r.Names
+                                              orderby n
+                                              select n + ":" + r.GetResource(n).GetMd5String());
+                builder.AppendLine(r.Name + ":" + filesHash);
+            }
+            return builder.ToString().GetMd5String();
         }
 
         public void ProcessTheme(string outputDirectory, bool overwrite)

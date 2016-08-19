@@ -75,12 +75,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.Files.DefaultBaseDir);
                 if (ShouldTraceIncrementalInfo)
                 {
+                    string configHash = ComputeConfigHash(parameters);
                     CurrentBuildInfo.Versions.Add(
                         new BuildVersionInfo
                         {
                             VersionName = parameters.VersionName,
+                            ConfigHash = configHash,
                         });
-                    _canIncremental = GetCanIncremental(parameters.VersionName);
+                    _canIncremental = GetCanIncremental(configHash, parameters.VersionName);
                     if (_canIncremental)
                     {
                         ExpandDependency(parameters, LastBuildInfo, context);
@@ -196,21 +198,21 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private bool GetCanIncremental(string versionName)
+        private bool GetCanIncremental(string configHash, string versionName)
         {
             if (LastBuildInfo == null)
             {
                 return false;
             }
-            if (CurrentBuildInfo.DocfxVersion != LastBuildInfo.DocfxVersion ||
-                CurrentBuildInfo.PluginHash != LastBuildInfo.PluginHash ||
-                CurrentBuildInfo.TemplateHash != LastBuildInfo.TemplateHash ||
-                CurrentBuildInfo.ConfigHash != LastBuildInfo.ConfigHash)
+            var version = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
+            if (version == null || configHash != version.ConfigHash)
             {
                 return false;
             }
 
-            return LastBuildInfo.Versions.Any(v => v.VersionName == versionName);
+            return CurrentBuildInfo.DocfxVersion == LastBuildInfo.DocfxVersion &&
+                CurrentBuildInfo.PluginHash == LastBuildInfo.PluginHash &&
+                CurrentBuildInfo.TemplateHash == LastBuildInfo.TemplateHash;
         }
 
         private void ExpandDependency(DocumentBuildParameters parameter, BuildInfo lastBuildInfo, DocumentBuildContext context)
@@ -1027,6 +1029,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Extensions = parameters.MarkdownEngineParameters,
                     Tokens = tokens,
                 });
+        }
+
+        private static string ComputeConfigHash(DocumentBuildParameters parameter)
+        {
+            return JsonUtility.Serialize(parameter).GetMd5String();
         }
 
         public void Dispose()
