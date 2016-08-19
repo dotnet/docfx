@@ -5550,6 +5550,11 @@ references:
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Href
   commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Href
   fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Href
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IsHrefUpdated
+  name: IsHrefUpdated
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_IsHrefUpdated
+  commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IsHrefUpdated
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.IsHrefUpdated
 - uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Items
   name: Items
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Items
@@ -5575,6 +5580,26 @@ references:
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_NameInDevLangs
   commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.NameInDevLangs
   fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.NameInDevLangs
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalHomepage
+  name: OriginalHomepage
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_OriginalHomepage
+  commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalHomepage
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalHomepage
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalHref
+  name: OriginalHref
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_OriginalHref
+  commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalHref
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalHref
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalTocHref
+  name: OriginalTocHref
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_OriginalTocHref
+  commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalTocHref
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalTocHref
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalTopicHref
+  name: OriginalTopicHref
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_OriginalTopicHref
+  commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalTopicHref
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.OriginalTopicHref
 - uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.TocHref
   name: TocHref
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_TocHref

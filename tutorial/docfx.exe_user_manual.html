@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.3.0.0">
+    <meta name="generator" content="docfx 2.3.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -249,7 +249,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </tr>
 <tr>
 <td>globalMetadataFiles</td>
-<td>Specify a list of JSON file path containing globalMetadata settings, as similar to <code>{&quot;key&quot;:&quot;value&quot;}</code>. Please read <strong>Section3.2.3</strong> for detail.</td>
+<td>Specify a list of JSON file path containing globalMetadata settings, as similar to <code>{&quot;key&quot;:&quot;value&quot;}</code>. It will merge with the <code>globalMetadataFiles</code> from the config file and <code>globalMetadataFiles</code> from command line. If the same key for global metadata was set, the order to be overriden would be: <code>global metadata from docfx config file</code> &lt; <code>global metadata from global metadata files</code> &lt; <code>global metadata from command line</code> </td>
 </tr>
 <tr>
 <td><del>fileMetadataFile</del></td>
@@ -257,7 +257,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </tr>
 <tr>
 <td>fileMetadataFiles</td>
-<td>Specify a list of JSON file path containing fileMetadata settings, as similar to <code>{&quot;key&quot;:&quot;value&quot;}</code>. Please read <strong>Section3.2.3</strong> for detail.</td>
+<td>Specify a list of JSON file path containing fileMetadata settings, as similar to <code>{&quot;key&quot;:&quot;value&quot;}</code>. It will merge with the <code>fileMetadataFiles</code> from the config file and <code>fileMetadataFiles</code> from command line. If the same key for global metadata was set, the order to be override would be: <code>file metadata from docfx config file</code> &lt; <code>file metadata from file metadata files</code></td>
 </tr>
 <tr>
 <td>template</td>
@@ -434,72 +434,6 @@ Reserved metadatas:</p>
 </tr>
 </tbody>
 </table>
-<h4 id="3-2-3-separated-metadata-files-for-global-metadata-and-file-metadata">3.2.3 Separated metadata files for global metadata and file metadata</h4>
-<p>There&#39;re three ways to set metadata for a file in DocFX:</p>
-<ol>
-<li>using global metadata, it will set metadata for every file.</li>
-<li>using file metadata, it will set metadata for files that match pattern.</li>
-<li>using YAML header, it will set metadata for current file.</li>
-</ol>
-<p>In above ways, the later way will always overwrite the former way if the same key of metadata is set.</p>
-<p>Here we will show you how to set global metadata and file metadata using separated metadata files. Take global metadata for example, you can set <code>globalMetadataFiles</code> in <code>docfx.json</code> or <code>--globalMetadataFiles</code> in build command line. The usage of <code>fileMetadataFiles</code> is the same as <code>globalMetadataFiles</code>.</p>
-<p>There&#39;re some metadata file examples:</p>
-<ul>
-<li><p>globalMetadata file example </p>
-<pre><code class="lang-json">  {
-      &quot;_appTitle&quot;: &quot;DocFX website&quot;,
-      &quot;_enableSearch&quot;: &quot;true&quot;
-  }
-</code></pre></li>
-<li><p>fileMetadata file example</p>
-<pre><code class="lang-json">  {
-      &quot;priority&quot;: {
-          &quot;**.md&quot;: 2.5,
-          &quot;spec/**.md&quot;: 3
-      },
-      &quot;keywords&quot;: {
-          &quot;obj/docfx/**&quot;: [&quot;API&quot;, &quot;Reference&quot;],
-          &quot;spec/**.md&quot;: [&quot;Spec&quot;, &quot;Conceptual&quot;]
-      }
-  }
-</code></pre></li>
-</ul>
-<p>There&#39;re some examples about how to use separated metadata files.</p>
-<ul>
-<li><p>use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
-<pre><code class="lang-json">  ...
-  &quot;globalMetadataFiles&quot;: [&quot;global1.json&quot;, &quot;global2.json&quot;],
-  ...
-</code></pre></li>
-<li><p>use <code>--globalMetadataFiles</code> in build command line</p>
-<pre><code>  docfx build --globalMetadataFiles global1.json,global2.json
-</code></pre></li>
-<li><p>use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
-<pre><code class="lang-json">  ...
-  &quot;fileMetadataFiles&quot;: [&quot;file1.json&quot;, &quot;file2.json&quot;],
-  ...
-</code></pre></li>
-<li><p>use <code>--fileMetadataFiles</code> in build command line</p>
-<pre><code>  docfx build --fileMetadataFiles file1.json,file2.json
-</code></pre></li>
-</ul>
-<p>Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
-<ul>
-<li><p>If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
-<ol>
-<li>global metadata from docfx config file</li>
-<li>global metadata from global metadata files</li>
-<li>global metadata from command line</li>
-</ol>
-</li>
-<li><p>If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
-<ol>
-<li>file metadata from docfx config file</li>
-<li>file metadata from file metadata files</li>
-</ol>
-</li>
-</ul>
-<p>Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
 <h2 id="4-supported-file-mapping-format">4. Supported File Mapping Format</h2>
 <p>There are several ways to define file mapping.</p>
 <h3 id="4-1-array-format">4.1 Array Format</h3>
