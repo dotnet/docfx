@@ -91,6 +91,7 @@ IF NOT [!ERRORLEVEL!]==[0] (
 IF /I [%OnlyNonDnx%]==[true] (
     ECHO Only build NonDnx.sln
     SET BuildProj=%~dp0NonDNX.sln
+    CALL :RestoreNormalPackage
     GOTO SetBuildLog
 )
 
