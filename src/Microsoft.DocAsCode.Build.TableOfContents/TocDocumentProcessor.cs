@@ -89,15 +89,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
         {
+            if (toc.IsHrefUpdated) return;
+
             ResolveUid(toc, model, context);
 
             // Have to register TocMap after uid is resolved
             RegisterTocMap(toc, model.Key, context);
 
-            toc.Homepage = ResolveHref(toc.Homepage, model, context);
-            toc.Href = ResolveHref(toc.Href, model, context);
-            toc.TocHref = ResolveHref(toc.TocHref, model, context);
-            toc.TopicHref = ResolveHref(toc.TopicHref, model, context);
+            toc.Homepage = ResolveHref(toc.Homepage, toc.OriginalHomepage, model, context);
+            toc.Href = ResolveHref(toc.Href, toc.OriginalHref, model, context);
+            toc.TocHref = ResolveHref(toc.TocHref, toc.OriginalTocHref, model, context);
+            toc.TopicHref = ResolveHref(toc.TopicHref, toc.OriginalTopicHref, model, context);
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
@@ -105,6 +107,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     UpdateTocItemHref(item, model, context);
                 }
             }
+
+            toc.IsHrefUpdated = true;
         }
 
         private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
@@ -165,26 +169,26 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private string ResolveHref(string originalPathToFile, FileModel model, IDocumentBuildContext context)
+        private string ResolveHref(string pathToFile, string originalPathToFile, FileModel model, IDocumentBuildContext context)
         {
-            if (!Utility.IsSupportedRelativeHref(originalPathToFile))
+            if (!Utility.IsSupportedRelativeHref(pathToFile))
             {
-                return originalPathToFile;
+                return pathToFile;
             }
 
-            var index = originalPathToFile.IndexOf('#');
+            var index = pathToFile.IndexOf('#');
             if (index == 0)
             {
-                throw new DocumentException($"Invalid toc link: {originalPathToFile}.");
+                throw new DocumentException($"Invalid toc link: {pathToFile}.");
             }
             string href = index == -1
-                ? context.GetFilePath(originalPathToFile)
-                : context.GetFilePath(originalPathToFile.Remove(index));
+                ? context.GetFilePath(pathToFile)
+                : context.GetFilePath(pathToFile.Remove(index));
 
 
             if (href == null)
             {
-                Logger.LogWarning($"Unable to find file \"{originalPathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                Logger.LogWarning($"Unable to find file \"{pathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
                 return originalPathToFile;
             }
 
@@ -192,7 +196,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var path = ((RelativePath)relativePath).UrlEncode().ToString();
             if (index >= 0)
             {
-                path += originalPathToFile.Substring(index);
+                path += pathToFile.Substring(index);
             }
             return path;
         }

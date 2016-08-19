@@ -236,6 +236,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             var relativeToFile = (RelativePath)file.File;
 
+            item.OriginalHref = item.Href;
+            item.OriginalTocHref = item.TocHref;
+            item.OriginalTopicHref = item.TopicHref;
+            item.OriginalHomepage = item.Homepage;
             item.Href = NormalizeHref(item.Href, relativeToFile);
             item.TocHref = NormalizeHref(item.TocHref, relativeToFile);
             item.TopicHref = NormalizeHref(item.TopicHref, relativeToFile);

@@ -57,13 +57,25 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
+        [YamlIgnore]
+        [JsonIgnore]
+        public string OriginalHref { get; set; }
+
         [YamlMember(Alias = "tocHref")]
         [JsonProperty("tocHref")]
         public string TocHref { get; set; }
 
+        [YamlIgnore]
+        [JsonIgnore]
+        public string OriginalTocHref { get; set; }
+
         [YamlMember(Alias = "topicHref")]
         [JsonProperty("topicHref")]
         public string TopicHref { get; set; }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string OriginalTopicHref { get; set; }
 
         [YamlIgnore]
         [JsonIgnore]
@@ -72,6 +84,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [YamlMember(Alias = "homepage")]
         [JsonProperty("homepage")]
         public string Homepage { get; set; }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string OriginalHomepage { get; set; }
 
         [YamlMember(Alias = "homepageUid")]
         [JsonProperty("homepageUid")]
@@ -88,6 +104,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [YamlMember(Alias = "items")]
         [JsonProperty("items")]
         public TocViewModel Items { get; set; }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public bool IsHrefUpdated { get; set; }
 
         [ExtensibleMember]
         [JsonIgnore]
