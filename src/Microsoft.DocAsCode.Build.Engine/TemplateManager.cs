@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
@@ -39,11 +40,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string GetTemplatesHash()
         {
             var resources = _templates.Select(s => _finder.Find(s)).Where(s => s != null);
-            string content = string.Concat(from r in resources
-                                           from n in r.Names
-                                           orderby r, n
-                                           select r.GetResource(n));
-            return content.GetMd5String();
+            var builder = new StringBuilder();
+            foreach (var r in resources)
+            {
+                var filesHash = string.Concat(from n in r.Names
+                                              orderby n
+                                              select n + ":" + r.GetResource(n).GetMd5String());
+                builder.AppendLine(r.Name + ":" + filesHash);
+            }
+            return builder.ToString().GetMd5String();
         }
 
         public void ProcessTheme(string outputDirectory, bool overwrite)
