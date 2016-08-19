@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.3)
+Version Notes (Current Version: v2.3.1)
 =======================================
+v2.3.1
+-----------
+1. Remain TOC's href in it's original relative path form if unable to resolve.
+
 v2.3
 -----------
 1.  Support emoji in markdown content.
