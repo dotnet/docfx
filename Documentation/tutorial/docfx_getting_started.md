@@ -99,6 +99,13 @@ Please refer to [*DocFX* User Manual](docfx.exe_user_manual.md) for detailed des
 
 5. Build from source code
 ----------------
+#### Build without DNX
+There're two options:
+
+1. Run `build nondnx` under *DocFX* code repo
+2. Open `NonDNX.sln` under *DocFX* code repo in Visual Studio and build it.
+
+#### Build with DNX
 As a prerequisite, you need:
 - [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
 - [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)

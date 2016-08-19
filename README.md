@@ -18,13 +18,20 @@ There are currently two versions of the tool:
 We currently support C# and VB projects.
 
 ## How to build?
-### Prerequisites
+### Build without DNX
+There're two options:
+
+1. Run `build nondnx` under *DocFX* code repo
+2. Open `NonDNX.sln` under *DocFX* code repo in Visual Studio and build it
+
+### Build with DNX
+#### Prerequisites
 1. [VS 2013 community](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx) or above
 2. [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)(No need if you install VS 2015 or above)
 3. [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)
 4. [Node.js](https://nodejs.org)
 
-### Steps
+#### Steps
 1. `dnvm install 1.0.0-rc1-final`
 2. Run `build.cmd` under *DocFX* code repo
 

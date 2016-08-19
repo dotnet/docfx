@@ -30,6 +30,10 @@ if /I [%1]==[template] (
     SET UpdateTemplate=%1
     GOTO Next
 )
+if /I [%1]==[nondnx] (
+    SET OnlyNonDnx=true
+    GOTO Next
+)
 
 :Next
 SHIFT /1
@@ -71,17 +75,23 @@ IF /I [%UpdateTemplate%]==[template] (
 )
 IF /I [%SkipTemplate%]==[true] (
     ECHO Skip updating template
-    GOTO CheckDnu
+    GOTO CheckIfOnlyBuildNonDnx
 )
 
 :: Update template before build
 :UpdateTemplate
 ECHO Updating template
 CALL UpdateTemplate.cmd
-
 IF NOT [!ERRORLEVEL!]==[0] (
     ECHO ERROR: Error occurs when updating template
     GOTO Exit
+)
+
+:CheckIfOnlyBuildNonDnx
+IF /I [%OnlyNonDnx%]==[true] (
+    ECHO Only build NonDnx.sln
+    SET BuildProj=%~dp0NonDNX.sln
+    GOTO SetBuildLog
 )
 
 :: Check if DNU exists globally
@@ -100,6 +110,7 @@ IF NOT [!ERRORLEVEL!]==[0] (
 CALL :RestorePackage
 
 :: Log build command line
+:SetBuildLog
 SET BuildLog=%~dp0msbuild.log
 SET BuildPrefix=echo
 SET BuildPostfix=^> "%BuildLog%"
