@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             using (new LoggerPhaseScope("SaveDependency", true))
                             {
-                                UpdateUidDependency(context, hostServices);
+                                UpdateUidFileDependency(context, hostServices);
                                 SaveDependency(context, parameters);
                             }
                             using (new LoggerPhaseScope("SaveXRefSpecMap", true))
@@ -243,7 +243,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)
+        private void UpdateUidFileDependency(DocumentBuildContext context, List<HostService> hostServices)
         {
             foreach (var hostService in hostServices)
             {
@@ -258,6 +258,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                         context.DependencyGraph.ReportDependency(
                             ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(),
                             GetFilesFromUids(context, m.LinkToUids));
+                    }
+                    if (m.LinkToFiles.Count != 0)
+                    {
+                        context.DependencyGraph.ReportDependency(
+                            ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(),
+                            m.LinkToFiles);
                     }
                 }
             }
