@@ -545,7 +545,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                 ApplyTemplateSettings = _applyTemplateSettings,
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
             {
                 builder.Build(parameters);
             }

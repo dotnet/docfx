@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Utility
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Security.Cryptography;
 
     public static class StringExtension
     {
@@ -80,6 +81,16 @@ namespace Microsoft.DocAsCode.Utility
         {
             if (string.IsNullOrEmpty(path)) return null;
             return path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        }
+
+        public static string GetMd5String(this string content)
+        {
+            using (var ms = new MemoryStream())
+            using (var writer = new StreamWriter(ms))
+            {
+                writer.Write(content);
+                return Convert.ToBase64String(MD5.Create().ComputeHash(ms.ToArray()));
+            }
         }
     }
 }

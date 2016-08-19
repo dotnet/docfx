@@ -21,10 +21,6 @@ namespace Microsoft.DocAsCode.Build.Incrementals
         /// </summary>
         public string ConfigHash { get; set; }
         /// <summary>
-        /// The hash info for templates.
-        /// </summary>
-        public string TemplateHash { get; set; }
-        /// <summary>
         /// The file link for dependency (type is <see cref="DependencyGraph.Load(System.IO.TextReader)"/>).
         /// </summary>
         public string Dependency { get; set; }

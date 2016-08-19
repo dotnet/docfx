@@ -240,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 }.ToImmutableDictionary()
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
             {
                 builder.Build(parameters);
             }

@@ -11,13 +11,14 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Security.Cryptography;
+    using System.Text;
 
     using Microsoft.DocAsCode.Build.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
 
     public class DocumentBuilder : IDisposable
     {
@@ -41,6 +42,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public DocumentBuilder(
             IEnumerable<Assembly> assemblies,
             ImmutableArray<string> postProcessorNames,
+            string templateHash,
             string intermediateFolder = null)
         {
             Logger.LogVerbose("Loading plug-in...");
@@ -50,6 +52,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _container = GetContainer(assemblyList);
                 _container.SatisfyImports(this);
                 _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
+                _currentBuildInfo.TemplateHash = templateHash;
             }
             Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
             foreach (var processor in Processors)
@@ -291,22 +294,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (assemblyList?.Count > 0)
             {
-                using (var ms = new MemoryStream())
-                using (var writer = new StreamWriter(ms))
+                var builder = new StringBuilder();
+                foreach (var item in
+                    from assembly in assemblyList
+                    select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString()
+                    into item
+                    orderby item
+                    select item)
                 {
-                    foreach (var item in
-                        from assembly in assemblyList
-                        select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString()
-                        into item
-                        orderby item
-                        select item)
-                    {
-                        writer.WriteLine(item);
-                    }
-                    writer.Flush();
-                    ms.Seek(0, SeekOrigin.Begin);
-                    return Convert.ToBase64String(MD5.Create().ComputeHash(ms));
+                    builder.AppendLine(item);
                 }
+                return builder.ToString().GetMd5String();
             }
             return string.Empty;
         }

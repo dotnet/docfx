@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Security.Cryptography;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
@@ -39,16 +38,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string GetTemplatesHash()
         {
-            using (var ms = new MemoryStream())
-            using (var writer = new StreamWriter(ms))
-            {
-                var resources = _templates.Select(s => _finder.Find(s)).Where(s => s != null);
-                string content = string.Concat(from r in resources
-                                               from n in r.Names
-                                               select r.GetResource(n));
-                writer.Write(content);
-                return Convert.ToBase64String(MD5.Create().ComputeHash(ms.ToArray()));
-            }
+            var resources = _templates.Select(s => _finder.Find(s)).Where(s => s != null);
+            string content = string.Concat(from r in resources
+                                           from n in r.Names
+                                           orderby r, n
+                                           select r.GetResource(n));
+            return content.GetMd5String();
         }
 
         public void ProcessTheme(string outputDirectory, bool overwrite)

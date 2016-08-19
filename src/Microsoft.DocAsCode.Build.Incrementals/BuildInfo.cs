@@ -23,6 +23,10 @@ namespace Microsoft.DocAsCode.Build.Incrementals
         /// </summary>
         public string PluginHash { get; set; }
         /// <summary>
+        /// The hash info for templates.
+        /// </summary>
+        public string TemplateHash { get; set; }
+        /// <summary>
         /// The file info for each version.
         /// </summary>
         public List<BuildVersionInfo> Versions { get; } = new List<BuildVersionInfo>();
