@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             string link = href;
 
             // link change to the href result after append default extension.
-            var result = AppendDefaultExtension(href, defaultExtension, context, line);
+            var result = AppendDefaultExtension(href, defaultExtension, context, rawMarkdown, line);
             link = result.Href;
 
             // link change if the azure link need to be resolved.
@@ -148,7 +148,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         /// <param name="href">original href string</param>
         /// <param name="defaultExtension">default extension to append</param>
         /// <returns>Href with default extension appended</returns>
-        private AppendDefaultExtensionResult AppendDefaultExtension(string href, string defaultExtension, IMarkdownContext context, string line)
+        private AppendDefaultExtensionResult AppendDefaultExtension(string href, string defaultExtension, IMarkdownContext context, string rawMarkdown, string line)
         {
             // If the context doesn't have necessary info, return the original href
             if (!context.Variables.ContainsKey("path"))
@@ -166,7 +166,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
             catch (ArgumentException)
             {
-                Logger.LogWarning($"Invalid reference {href} in file: {currentFilePath}", null, currentFilePath, line);
+                Logger.LogWarning($"Invalid reference {href} in file: {currentFilePath}. Raw: {rawMarkdown}", null, currentFilePath, line);
                 return new AppendDefaultExtensionResult(false, href, null);
             }
 
@@ -265,7 +265,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
             catch (ArgumentException)
             {
-                Logger.LogWarning($"Invalid reference {href} in file: {(string)context.Variables["path"]}", null, (string)context.Variables["path"], line);
+                Logger.LogWarning($"Invalid reference {href} in file: {(string)context.Variables["path"]}. Raw: {rawMarkdown}", null, (string)context.Variables["path"], line);
                 return href;
             }
 
