@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Build.Incrementals
         /// </summary>
         public string Dependency { get; set; }
         /// <summary>
-        /// The file link for file attributes.
+        /// The file link for file attributes.(type is <see cref="FileAttributes"/>).
         /// e.g. last modified time, md5.
         /// </summary>
         public string Attributes { get; set; }

@@ -247,6 +247,10 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
+            if (options.ChangesFile != null)
+            {
+                config.ChangesFile = options.ChangesFile;
+            }
             if (options.GlobalMetadataFilePaths != null && options.GlobalMetadataFilePaths.Any())
             {
                 config.GlobalMetadataFilePaths.AddRange(options.GlobalMetadataFilePaths);

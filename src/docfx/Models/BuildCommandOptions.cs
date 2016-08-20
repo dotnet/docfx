@@ -102,6 +102,9 @@ namespace Microsoft.DocAsCode
         [Option("intermediateFolder", HelpText = "Set folder for intermediate build results.")]
         public string IntermediateFolder { get; set; }
 
+        [Option("changesFile", HelpText = "Set changes file.")]
+        public string ChangesFile { get; set; }
+
         [OptionList("postProcessors", Separator = ',', HelpText = "Set the order of post processors in plugins")]
         public List<string> PostProcessors { get; set; }
     }

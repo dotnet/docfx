@@ -17,6 +17,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using Newtonsoft.Json;
+
     public class SingleDocumentBuilder : IDisposable
     {
         private const string PhaseName = "Build Document";
@@ -76,16 +78,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (ShouldTraceIncrementalInfo)
                 {
                     string configHash = ComputeConfigHash(parameters);
+                    var fileAttributes = ComputeFileAttributes(parameters);
                     CurrentBuildInfo.Versions.Add(
                         new BuildVersionInfo
                         {
                             VersionName = parameters.VersionName,
                             ConfigHash = configHash,
+                            Attributes = SaveCore(writer => JsonUtility.Serialize(writer, fileAttributes)),
                         });
                     _canIncremental = GetCanIncremental(configHash, parameters.VersionName);
                     if (_canIncremental)
                     {
-                        ExpandDependency(parameters, LastBuildInfo, context);
+                        LoadChanges(parameters, context, fileAttributes);
+                        ExpandDependency(parameters, context);
                     }
                 }
 
@@ -215,16 +220,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 CurrentBuildInfo.TemplateHash == LastBuildInfo.TemplateHash;
         }
 
-        private void ExpandDependency(DocumentBuildParameters parameter, BuildInfo lastBuildInfo, DocumentBuildContext context)
+        private void ExpandDependency(DocumentBuildParameters parameter, DocumentBuildContext context)
         {
             string versionName = parameter.VersionName;
-            string dependencyFile = lastBuildInfo?.Versions.SingleOrDefault(v => v.VersionName == versionName)?.Dependency;
+            string dependencyFile = LastBuildInfo?.Versions.SingleOrDefault(v => v.VersionName == versionName)?.Dependency;
             var changeItems = context.ChangeDict;
 
-            foreach (ChangeItem item in parameter.ChangeList)
-            {
-                changeItems[item.FilePath] = item.Kind;
-            }
             if (!string.IsNullOrEmpty(dependencyFile))
             {
                 var dependencyGraph = LoadDependencyGraph(dependencyFile);
@@ -241,6 +242,60 @@ namespace Microsoft.DocAsCode.Build.Engine
                             changeItems[key] |= ChangeKindWithDependency.DependencyUpdated;
                         }
                     }
+                }
+            }
+        }
+
+        private Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters)
+        {
+            return (from f in parameters.Files.EnumerateFiles()
+                    let fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
+                    select new FileAttributeItem
+                    {
+                        File = fileKey,
+                        LastModifiedTime = File.GetLastWriteTimeUtc(f.FullPath),
+                        MD5 = File.ReadAllText(f.FullPath).GetMd5String(),
+                    }).ToDictionary(a => a.File);
+        }
+
+        private void LoadChanges(DocumentBuildParameters parameter, DocumentBuildContext context, IReadOnlyDictionary<string, FileAttributeItem> fileAttributes)
+        {
+            var changeItems = context.ChangeDict;
+            if (parameter.Changes != null)
+            {
+                // use user-provided changelist
+                foreach (var pair in parameter.Changes)
+                {
+                    changeItems[pair.Key] = pair.Value;
+                }
+            }
+            else
+            {
+                // get changelist from lastBuildInfo if user doesn't provide changelist
+                string lastAttributesFile = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == parameter.VersionName).Attributes;
+                var lastFileAttributes = LoadIntermediateFile<Incrementals.FileAttributes>(lastAttributesFile);
+                DateTime checkTime = LastBuildInfo.BuildStartTime;
+                foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys))
+                {
+                    var last = lastFileAttributes[file];
+                    var current = fileAttributes[file];
+                    if (current.LastModifiedTime > checkTime || current.MD5 != last.MD5)
+                    {
+                        changeItems[file] = ChangeKindWithDependency.Updated;
+                    }
+                    else
+                    {
+                        changeItems[file] = ChangeKindWithDependency.None;
+                    }
+                }
+
+                foreach (var file in lastFileAttributes.Keys.Except(fileAttributes.Keys))
+                {
+                    changeItems[file] = ChangeKindWithDependency.Deleted;
+                }
+                foreach (var file in fileAttributes.Keys.Except(lastFileAttributes.Keys))
+                {
+                    changeItems[file] = ChangeKindWithDependency.Created;
                 }
             }
         }
@@ -1033,7 +1088,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string ComputeConfigHash(DocumentBuildParameters parameter)
         {
-            return JsonUtility.Serialize(parameter).GetMd5String();
+            return JsonConvert.SerializeObject(
+                parameter,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new IncrementalCheckPropertiesResolver()
+                }).GetMd5String();
         }
 
         public void Dispose()
