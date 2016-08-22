@@ -507,7 +507,10 @@ $(function () {
 
           // calculate height of #affix
           var parentHeight = $("#affix").parent().height();
-          $("#affix").css("height", parentHeight - contributionHeight - 50); // minus the height of margin top
+          var affixHeight = parentHeight - contributionHeight - $("#sideaffix").css('margin-top').replace("px", ""); // minus the height of margin top
+          if (affixHeight > 0) {
+            $("#affix").css("height", affixHeight);
+          }
         }
       })
     }

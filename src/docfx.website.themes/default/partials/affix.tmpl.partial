@@ -1,7 +1,7 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
 <div class="hidden-sm col-md-2" role="complementary">
-  <div class="sideaffix">
+  <div class="sideaffix" id="sideaffix">
     {{^_disableContribution}}
     <div class="contribution" id="contribution">
       <ul class="nav">
