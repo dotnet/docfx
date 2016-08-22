@@ -2,9 +2,11 @@
 
 "use strict";
 
-import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, TextDocument }from "vscode";
+import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, TextDocument } from "vscode";
 import * as path from "path";
 import { PreviewCore } from "./PreviewCore";
+
+const MARKDOWNSCHEME = "markdown";
 
 export function activate(context: ExtensionContext) {
     let dfmProcess = new PreviewCore(context);
@@ -33,7 +35,7 @@ export function activate(context: ExtensionContext) {
 
     workspace.onDidChangeConfiguration(() => {
         workspace.textDocuments.forEach(document => {
-            if (document.uri.scheme === "markdown") {
+            if (document.uri.scheme === MARKDOWNSCHEME) {
                 dfmProcess.callDfm(document.uri);
             }
         });
@@ -43,11 +45,11 @@ export function activate(context: ExtensionContext) {
 // Check the file type
 function isMarkdownFile(document: TextDocument) {
     // Prevent processing of own documents
-    return document.languageId === "markdown" && document.uri.scheme !== "markdown";
+    return document.languageId === "markdown" && document.uri.scheme === "file";
 }
 
 function getMarkdownUri(uri: Uri) {
-    return uri.with({ scheme: "markdown", path: uri.path + ".rendered", query: uri.toString() });
+    return uri.with({ scheme: MARKDOWNSCHEME, path: uri.path + ".renderedDfm", query: uri.toString() });
 }
 
 function showPreview(dfmPreview: PreviewCore, uri?: Uri, sideBySide: boolean = false) {

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { workspace, window, ExtensionContext, Uri }from "vscode";
-import * as child_process from "child_process";
+import { workspace, window, ExtensionContext, Uri } from "vscode";
+import * as childProcess from "child_process";
 import { MDDocumentContentProvider } from "./MDDocumentContentProvider";
 
 // Create a child process(DfmRender) by "_spawn" to render a html
@@ -9,7 +9,7 @@ export class PreviewCore {
     public _isFirstTime: boolean;
     public _provider: MDDocumentContentProvider;
 
-    private _spawn: child_process.ChildProcess;
+    private _spawn: childProcess.ChildProcess;
     private _waiting: boolean;
     private _previewContent: string;
     private _isMultipleRead = false;
@@ -18,7 +18,7 @@ export class PreviewCore {
 
     constructor(context: ExtensionContext) {
         let extpath = context.asAbsolutePath("./DfmParse/PreviewCore.exe");
-        this._spawn = child_process.spawn(extpath);
+        this._spawn = childProcess.spawn(extpath);
         if (!this._spawn.pid) {
             window.showErrorMessage("Error:DfmProcess lost!");
             return;
@@ -32,21 +32,14 @@ export class PreviewCore {
             let dfmResult = data.toString();
             if (dfmResult.length !== 0) {
                 let endCharCode = dfmResult.charCodeAt(dfmResult.length - 1);
-                if (!that._isMultipleRead) {
-                    that._previewContent = dfmResult;
-                    if (endCharCode === that.ENDCODE) {
-                        that._provider.update(that._documentUri, that._previewContent);
-                    } else {
-                        // The first one and the result is truncated
-                        that._isMultipleRead = true;
-                    }
-                } else {
+                if (that._isMultipleRead) {
                     that._previewContent += dfmResult;
-                    if (endCharCode === that.ENDCODE) {
-                        // The result is truncated and this is the last one
-                        that._isMultipleRead = false;
-                        that._provider.update(that._documentUri, that._previewContent);
-                    }
+                } else {
+                    that._previewContent = dfmResult;
+                }
+                that._isMultipleRead = !(endCharCode === that.ENDCODE);
+                if (!that._isMultipleRead) {
+                    that._provider.update(that._documentUri, that._previewContent);
                 }
             }
         });
@@ -76,19 +69,20 @@ export class PreviewCore {
             rootPath = fileName.substr(indexOfFilename - 1);
             filePath = fileName.substring(0, indexOfFilename);
         } else {
-            let rtpath_length = rootPath.length;
-            filePath = fileName.substr(rtpath_length + 1, fileName.length - rtpath_length);
+            let rootPathLength = rootPath.length;
+            filePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
         }
         if (doc.languageId === "markdown") {
             let numOfRow = doc.lineCount;
-            // I am not sure which will be better?
-            this._spawn.stdin.write([rootPath, filePath, numOfRow, docContent].join("\n"));
-            this._spawn.stdin.write("\n");
-            /*this._spawn.stdin.write(rootPath + "\n");
-            this._spawn.stdin.write(filePath + "\n");
-            this._spawn.stdin.write(numOfRow + "\n");
-            this._spawn.stdin.write(docContent + "\n");*/
+            this._spawn.stdin.write(this.appendWrap(rootPath));
+            this._spawn.stdin.write(this.appendWrap(filePath));
+            this._spawn.stdin.write(this.appendWrap(numOfRow));
+            this._spawn.stdin.write(this.appendWrap(docContent));
         }
+    }
+
+    private appendWrap(content) {
+        return content + "\n";
     }
 
     public callDfm(uri: Uri) {

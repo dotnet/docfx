@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter, Event, Uri }from "vscode";
+import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter, Event, Uri } from "vscode";
 import * as path from "path";
 
 export class MDDocumentContentProvider implements TextDocumentContentProvider {
@@ -31,8 +31,7 @@ export class MDDocumentContentProvider implements TextDocumentContentProvider {
                 "</head>",
                 "<body>"].join("\n");
 
-            // For that before the result of dfm come out, it won"t be undefined
-            const body = this._htmlContent ? this._htmlContent : "";
+            const body = this._htmlContent || "";
 
             const tail = [
                 `<script type="text/javascript" src="${this.getMediaPath("docfx.vendor.js")}"></script>`,
