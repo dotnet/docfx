@@ -487,7 +487,11 @@ $(function () {
       html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix").append(html);
       if ($('footer').is(':visible')) {
-        $(".affix").css("bottom", "40px");
+        $(".sideaffix").css("bottom", "40px");
+      }
+      var contributionHeight = 0;
+      if($('#contribution').length) {
+        contributionHeight = $('#contribution').height();
       }
       $('#affix').on('activate.bs.scrollspy', function (e) {
         if (e.target) {
@@ -500,6 +504,10 @@ $(function () {
           });
           var container = $('#affix > ul');
           container.scrollTop(container.scrollTop() + top - 100);
+
+          // calculate height of #affix
+          var parentHeight = $("#affix").parent().height();
+          $("#affix").css("height", parentHeight - contributionHeight - 50); // minus the height of margin top
         }
       })
     }
@@ -642,12 +650,12 @@ $(function () {
 
     function resetBottomCss() {
       $(".sidetoc").css("bottom", "0");
-      $(".affix").css("bottom", "10px");
+      $(".sideaffix").css("bottom", "10px");
     }
 
     function shiftUpBottomCss() {
       $(".sidetoc").css("bottom", "70px");
-      $(".affix").css("bottom", "40px");
+      $(".sideaffix").css("bottom", "40px");
     }
   })();
 

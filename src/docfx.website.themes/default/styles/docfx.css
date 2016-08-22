@@ -566,25 +566,34 @@ body .toc{
 .article img {
   max-width: 100%;
 }
-.affix {
+.sideaffix {
+  margin-top: 50px; 
   font-size: 12px;
   max-height: 100%;
   overflow: hidden;
   top: 100px;
   bottom: 10px;
+  position: fixed;
+}
+.sideaffix > div.contribution > ul > li > a.contribution-link {
+  padding: 7px 10px;
+  font-weight: bold;
+  font-size: 14px;
+}
+.sideaffix > div.contribution > ul > li > a:hover {
+  background-color: #ffffff;
 }
 .affix h5 {
   font-weight: bold;
   text-transform: uppercase;
-  margin-top: 50px;
   padding-left: 10px;
   font-size: 12px;
 }
 .affix > ul.level1 {
   overflow-x: hidden;
-  overflow-y: -20px;
+  overflow-y: hidden;
   padding-bottom: 10px;
-  height: calc(100% - 100px);
+  height: calc(100% - 20px); /* minus the height of 'in this article'. */
   margin-right: -20px;
 }
 .affix ul > li > a:before {
