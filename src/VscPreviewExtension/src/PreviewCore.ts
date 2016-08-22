@@ -44,7 +44,6 @@ export class PreviewCore {
                     that._previewContent += dfmResult;
                     if (endCharCode === that.ENDCODE) {
                         // The result is truncated and this is the last one
-                        that._previewContent += dfmResult;
                         that._isMultipleRead = false;
                         that._provider.update(that._documentUri, that._previewContent);
                     }
@@ -95,7 +94,7 @@ export class PreviewCore {
     public callDfm(uri: Uri) {
         this._documentUri = uri;
         if (this._isFirstTime) {
-            // In the firt time, if wait for the timeout, activeTextEditor will be translate to the preview window.
+            // In the first time, if wait for the timeout, activeTextEditor will be the preview window.
             this._isFirstTime = false;
             this.sendtext();
         } else if (!this._waiting) {

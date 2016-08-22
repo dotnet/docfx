@@ -4,7 +4,7 @@
 
 import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, TextDocument }from "vscode";
 import * as path from "path";
-import { PreviewCore } from "./DfmCore";
+import { PreviewCore } from "./PreviewCore";
 
 export function activate(context: ExtensionContext) {
     let dfmProcess = new PreviewCore(context);
