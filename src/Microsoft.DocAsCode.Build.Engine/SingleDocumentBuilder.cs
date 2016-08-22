@@ -272,7 +272,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             else
             {
                 // get changelist from lastBuildInfo if user doesn't provide changelist
-                string lastAttributesFile = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == parameter.VersionName).Attributes;
+                string lastAttributesFile = LastBuildInfo.Versions.Single(v => v.VersionName == parameter.VersionName).Attributes;
                 var lastFileAttributes = LoadIntermediateFile<Incrementals.FileAttributes>(lastAttributesFile);
                 DateTime checkTime = LastBuildInfo.BuildStartTime;
                 foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys))

@@ -10,44 +10,43 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public sealed class DocumentBuildParameters : MarshalByRefObject
     {
-        [IncrementalCheckAttribute]
         public FileCollection Files { get; set; }
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public string OutputBaseDir { get; set; }
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public ImmutableArray<string> XRefMaps { get; set; } = ImmutableArray<string>.Empty;
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public FileMetadata FileMetadata { get; set; }
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public TemplateManager TemplateManager { get; set; }
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
         public int MaxParallelism { get; set; }
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public string MarkdownEngineName { get; set; } = "dfm";
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
 
         public string VersionName { get; set; }
 
-        [IncrementalCheckAttribute]
+        [IncrementalCheck]
         public string TemplateDir { get; set; }
 
         public ImmutableDictionary<string, ChangeKindWithDependency> Changes { get; set; } = ImmutableDictionary<string, ChangeKindWithDependency>.Empty;

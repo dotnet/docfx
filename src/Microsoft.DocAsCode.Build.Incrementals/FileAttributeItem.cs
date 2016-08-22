@@ -1,4 +1,7 @@
-﻿namespace Microsoft.DocAsCode.Build.Incrementals
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.Build.Incrementals
 {
     using System;
 
@@ -9,7 +12,7 @@
         /// </summary>
         public string File { get; set; }
         /// <summary>
-        /// Last modify time
+        /// Last modified time
         /// </summary>
         public DateTime LastModifiedTime { get; set; }
         /// <summary>
