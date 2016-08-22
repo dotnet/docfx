@@ -243,6 +243,12 @@ namespace Microsoft.DocAsCode.SubCommands
 
             parameters.TemplateDir = templateDir;
 
+            ChangeList changeList = null;
+            if (config.ChangesFile != null)
+            {
+                changeList = ChangeList.Parse(config.ChangesFile, config.BaseDirectory);
+            }
+
             var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
 
             foreach (var pair in fileMappingParametersDictionary)
@@ -253,10 +259,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                 parameters.VersionName = pair.Key;
-
-                // to-do: get changelist from config/compare file modify date
-                parameters.ChangeList = new ChangeList();
-
+                parameters.Changes = GetIntersectChanges(parameters.Files, changeList);
                 yield return parameters;
             }
         }
@@ -367,6 +370,31 @@ namespace Microsoft.DocAsCode.SubCommands
                         s => RewritePath(baseDirectory, s, item));
                 }
             }
+        }
+
+        private static ImmutableDictionary<string, ChangeKindWithDependency> GetIntersectChanges(FileCollection files, ChangeList changeList)
+        {
+            if (changeList == null)
+            {
+                return null;
+            }
+
+            var dict = new Dictionary<string, ChangeKindWithDependency>();
+            foreach (var file in files.EnumerateFiles())
+            {
+                string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
+                dict[fileKey] = ChangeKindWithDependency.None;
+            }
+
+            foreach (ChangeItem change in changeList)
+            {
+                string fileKey = ((RelativePath)change.FilePath).GetPathFromWorkingFolder().ToString();
+                if (dict.ContainsKey(fileKey))
+                {
+                    dict[fileKey] = change.Kind;
+                }
+            }
+            return dict.ToImmutableDictionary();
         }
 
         private static string RewritePath(string baseDirectory, string sourcePath, FileMappingItem item)

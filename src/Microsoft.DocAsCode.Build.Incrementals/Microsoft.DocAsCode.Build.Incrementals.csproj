@@ -7,6 +7,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BuildInfo.cs" />
+    <Compile Include="FileAttributeItem.cs" />
+    <Compile Include="FileAttributes.cs" />
     <Compile Include="BuildOutputItem.cs" />
     <Compile Include="BuildOutputs.cs" />
     <Compile Include="BuildVersionInfo.cs" />
@@ -15,6 +17,8 @@
     <Compile Include="ChangeKindWithDependency.cs" />
     <Compile Include="ChangeList.cs" />
     <Compile Include="DependencyGraph.cs" />
+    <Compile Include="IncrementalCheckAttribute.cs" />
+    <Compile Include="IncrementalCheckPropertiesResolver.cs" />
     <Compile Include="ProcessorInfo.cs" />
     <Compile Include="ProcessorStepInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -11,19 +11,44 @@ namespace Microsoft.DocAsCode.Build.Engine
     public sealed class DocumentBuildParameters : MarshalByRefObject
     {
         public FileCollection Files { get; set; }
+
+        [IncrementalCheck]
         public string OutputBaseDir { get; set; }
+
+        [IncrementalCheck]
         public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
+
+        [IncrementalCheck]
         public ImmutableArray<string> XRefMaps { get; set; } = ImmutableArray<string>.Empty;
+
+        [IncrementalCheck]
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
+
+        [IncrementalCheck]
         public FileMetadata FileMetadata { get; set; }
+
+        [IncrementalCheck]
         public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
+
+        [IncrementalCheck]
         public TemplateManager TemplateManager { get; set; }
+
+        [IncrementalCheck]
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
+
         public int MaxParallelism { get; set; }
+
+        [IncrementalCheck]
         public string MarkdownEngineName { get; set; } = "dfm";
+
+        [IncrementalCheck]
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
+
         public string VersionName { get; set; }
+
+        [IncrementalCheck]
         public string TemplateDir { get; set; }
-        public ChangeList ChangeList { get; set; } = new ChangeList();
+
+        public ImmutableDictionary<string, ChangeKindWithDependency> Changes { get; set; } = ImmutableDictionary<string, ChangeKindWithDependency>.Empty;
     }
 }
