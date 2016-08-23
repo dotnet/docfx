@@ -6,8 +6,8 @@ import { MarkdownDocumentContentProvider } from "./markdownDocumentContentProvid
 
 // Create a child process(DfmRender) by "_spawn" to render a html
 export class PreviewCore {
-    public _isFirstTime: boolean;
-    public _provider: MarkdownDocumentContentProvider;
+    public isFirstTime: boolean;
+    public provider: MarkdownDocumentContentProvider;
 
     private _spawn: childProcess.ChildProcess;
     private _waiting: boolean;
@@ -17,6 +17,7 @@ export class PreviewCore {
     private ENDCODE = 7; // '\a'
 
     constructor(context: ExtensionContext) {
+        // TODO: make path configurable
         let extpath = context.asAbsolutePath("./DfmParse/PreviewCore.exe");
         this._spawn = childProcess.spawn(extpath);
         if (!this._spawn.pid) {
@@ -24,7 +25,7 @@ export class PreviewCore {
             return;
         }
         this._waiting = false;
-        this._provider = new MarkdownDocumentContentProvider(context);
+        this.provider = new MarkdownDocumentContentProvider(context);
         let that = this;
 
         this._spawn.stdout.on("data", function (data) {
@@ -39,7 +40,7 @@ export class PreviewCore {
                 }
                 that._isMultipleRead = !(endCharCode === that.ENDCODE);
                 if (!that._isMultipleRead) {
-                    that._provider.update(that._documentUri, that._previewContent);
+                    that.provider.update(that._documentUri, that._previewContent);
                 }
             }
         });
@@ -87,9 +88,9 @@ export class PreviewCore {
 
     public callDfm(uri: Uri) {
         this._documentUri = uri;
-        if (this._isFirstTime) {
+        if (this.isFirstTime) {
             // In the first time, if wait for the timeout, activeTextEditor will be the preview window.
-            this._isFirstTime = false;
+            this.isFirstTime = false;
             this.sendtext();
         } else if (!this._waiting) {
             this._waiting = true;

@@ -10,7 +10,7 @@ const markdownScheme = "markdown";
 
 export function activate(context: ExtensionContext) {
     let dfmProcess = new PreviewCore(context);
-    let providerRegistration = workspace.registerTextDocumentContentProvider("markdown", dfmProcess._provider);
+    let providerRegistration = workspace.registerTextDocumentContentProvider("markdown", dfmProcess.provider);
 
     // Event register
     let showPreviewRegistration = commands.registerCommand("DFM.showPreview", uri => showPreview(dfmProcess));
@@ -53,13 +53,12 @@ function getMarkdownUri(uri: Uri) {
 }
 
 function showPreview(dfmPreview: PreviewCore, uri?: Uri, sideBySide: boolean = false) {
-    dfmPreview._isFirstTime = true;
+    dfmPreview.isFirstTime = true;
     let resource = uri;
     if (!(resource instanceof Uri)) {
         if (window.activeTextEditor) {
             resource = window.activeTextEditor.document.uri;
-        }
-        else{
+        } else {
             // This is most likely toggling the preview
             return commands.executeCommand("DFM.showSource");
         }
