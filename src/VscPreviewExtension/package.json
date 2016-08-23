@@ -12,7 +12,7 @@
   ],
   "activationEvents": [
     "onCommand:DFM.showPreview",
-    "onCommand:DFM.showPreviewToside",
+    "onCommand:DFM.showPreviewToSide",
     "oncommand:DFM.showSource"
   ],
   "main": "./out/src/extension",
@@ -23,7 +23,7 @@
         "title": "Toggle Dfm Preview"
       },
       {
-        "command": "DFM.showPreviewToside",
+        "command": "DFM.showPreviewToSide",
         "title": "Open Dfm Preview to the side"
       },
       {
@@ -38,7 +38,7 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "DFM.showPreviewToside",
+        "command": "DFM.showPreviewToSide",
         "key": "ctrl+k q",
         "when": "editorTextFocus"
       }
