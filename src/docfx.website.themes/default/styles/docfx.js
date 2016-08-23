@@ -487,7 +487,7 @@ $(function () {
       html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix").append(html);
       if ($('footer').is(':visible')) {
-        $(".sideaffix").css("bottom", "40px");
+        $(".sideaffix").css("bottom", "70px");
       }
       $('#affix').on('activate.bs.scrollspy', function (e) {
         if (e.target) {
@@ -648,7 +648,7 @@ $(function () {
 
     function shiftUpBottomCss() {
       $(".sidetoc").css("bottom", "70px");
-      $(".sideaffix").css("bottom", "40px");
+      $(".sideaffix").css("bottom", "70px");
     }
   })();
 
