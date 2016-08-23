@@ -499,7 +499,8 @@ $(function () {
             top += $(e).position().top;
           });
           var container = $('#affix > ul');
-          container.scrollTop(container.scrollTop() + top - 100);
+          var height = container.height();
+          container.scrollTop(container.scrollTop() + top - height/2);
         }
       })
     }
