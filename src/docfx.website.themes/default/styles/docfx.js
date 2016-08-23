@@ -489,10 +489,6 @@ $(function () {
       if ($('footer').is(':visible')) {
         $(".sideaffix").css("bottom", "40px");
       }
-      var contributionHeight = 0;
-      if($('#contribution').length) {
-        contributionHeight = $('#contribution').height();
-      }
       $('#affix').on('activate.bs.scrollspy', function (e) {
         if (e.target) {
           if ($(e.target).find('li.active').length > 0) {
@@ -504,13 +500,6 @@ $(function () {
           });
           var container = $('#affix > ul');
           container.scrollTop(container.scrollTop() + top - 100);
-
-          // calculate height of #affix
-          var parentHeight = $("#affix").parent().height();
-          var affixHeight = parentHeight - contributionHeight - $("#sideaffix").css('margin-top').replace("px", ""); // minus the height of margin top
-          if (affixHeight > 0) {
-            $("#affix").css("height", affixHeight);
-          }
         }
       })
     }
