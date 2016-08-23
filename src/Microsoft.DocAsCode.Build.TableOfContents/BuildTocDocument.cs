@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.Utility;
 
     [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildTocDocument : BaseDocumentBuildStep
+    public class BuildTocDocument : BaseDocumentBuildStep, ISupportIncrementalBuild
     {
         public override string Name => nameof(BuildTocDocument);
 
@@ -99,5 +99,19 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 }
             }
         }
+
+        #region ISupportIncrementalBuild Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType)
+        {
+            return true;
+        }
+
+        public string GetIncrementalContextHash()
+        {
+            return null;
+        }
+
+        #endregion
     }
 }
