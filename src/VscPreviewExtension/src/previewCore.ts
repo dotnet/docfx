@@ -2,12 +2,12 @@
 
 import { workspace, window, ExtensionContext, Uri } from "vscode";
 import * as childProcess from "child_process";
-import { MDDocumentContentProvider } from "./MDDocumentContentProvider";
+import { MarkdownDocumentContentProvider } from "./markdownDocumentContentProvider";
 
 // Create a child process(DfmRender) by "_spawn" to render a html
 export class PreviewCore {
     public _isFirstTime: boolean;
-    public _provider: MDDocumentContentProvider;
+    public _provider: MarkdownDocumentContentProvider;
 
     private _spawn: childProcess.ChildProcess;
     private _waiting: boolean;
@@ -24,7 +24,7 @@ export class PreviewCore {
             return;
         }
         this._waiting = false;
-        this._provider = new MDDocumentContentProvider(context);
+        this._provider = new MarkdownDocumentContentProvider(context);
         let that = this;
 
         this._spawn.stdout.on("data", function (data) {

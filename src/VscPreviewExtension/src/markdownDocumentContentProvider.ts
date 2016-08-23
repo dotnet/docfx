@@ -3,7 +3,7 @@
 import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter, Event, Uri } from "vscode";
 import * as path from "path";
 
-export class MDDocumentContentProvider implements TextDocumentContentProvider {
+export class MarkdownDocumentContentProvider implements TextDocumentContentProvider {
     private _context: ExtensionContext;
     private _onDidChange = new EventEmitter<Uri>();
     private _waiting: boolean;

@@ -4,9 +4,9 @@
 
 import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, TextDocument } from "vscode";
 import * as path from "path";
-import { PreviewCore } from "./PreviewCore";
+import { PreviewCore } from "./previewCore";
 
-const MARKDOWNSCHEME = "markdown";
+const markdownScheme = "markdown";
 
 export function activate(context: ExtensionContext) {
     let dfmProcess = new PreviewCore(context);
@@ -35,7 +35,7 @@ export function activate(context: ExtensionContext) {
 
     workspace.onDidChangeConfiguration(() => {
         workspace.textDocuments.forEach(document => {
-            if (document.uri.scheme === MARKDOWNSCHEME) {
+            if (document.uri.scheme === markdownScheme) {
                 dfmProcess.callDfm(document.uri);
             }
         });
@@ -49,29 +49,20 @@ function isMarkdownFile(document: TextDocument) {
 }
 
 function getMarkdownUri(uri: Uri) {
-    return uri.with({ scheme: MARKDOWNSCHEME, path: uri.path + ".renderedDfm", query: uri.toString() });
+    return uri.with({ scheme: markdownScheme, path: uri.path + ".renderedDfm", query: uri.toString() });
 }
 
 function showPreview(dfmPreview: PreviewCore, uri?: Uri, sideBySide: boolean = false) {
-    if (window.activeTextEditor.document.languageId !== "markdown") {
-        window.showErrorMessage("This is not a markdown file!");
-        return;
-    }
     dfmPreview._isFirstTime = true;
     let resource = uri;
     if (!(resource instanceof Uri)) {
         if (window.activeTextEditor) {
             resource = window.activeTextEditor.document.uri;
         }
-    }
-
-    if (!(resource instanceof Uri)) {
-        if (!window.activeTextEditor) {
+        else{
             // This is most likely toggling the preview
-            return commands.executeCommand("markdown.showSource");
+            return commands.executeCommand("DFM.showSource");
         }
-        // Nothing found that could be shown or toggled
-        return;
     }
 
     let thenable = commands.executeCommand("vscode.previewHtml",
@@ -103,20 +94,6 @@ function getViewColumn(sideBySide): ViewColumn {
     return active.viewColumn;
 }
 
-function showSource(mdUri: Uri) {
-    if (!mdUri) {
-        return commands.executeCommand("workbench.action.navigateBack");
-    }
-
-    const docUri = Uri.parse(mdUri.query);
-
-    for (let editor of window.visibleTextEditors) {
-        if (editor.document.uri.toString() === docUri.toString()) {
-            return window.showTextDocument(editor.document, editor.viewColumn);
-        }
-    }
-
-    return workspace.openTextDocument(docUri).then(doc => {
-        return window.showTextDocument(doc);
-    });
+function showSource() {
+    return commands.executeCommand("workbench.action.navigateBack");
 }
