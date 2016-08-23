@@ -599,8 +599,7 @@ body .toc{
 .affix > ul.level1 {
   overflow: hidden;
   padding-bottom: 10px;
-  height: calc(100% - 100px); /* minus the height and margin of 'in this article'. */
-  margin-right: -20px;
+  height: calc(100% - 100px);
 }
 .affix ul > li > a:before {
   color: #cccccc;
