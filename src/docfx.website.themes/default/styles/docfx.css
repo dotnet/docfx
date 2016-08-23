@@ -587,7 +587,7 @@ body .toc{
   font-weight: bold;
   font-size: 14px;
 }
-.sideaffix > div.contribution > ul > li > a:hover {
+.sideaffix > div.contribution > ul > li > a.contribution-link:hover {
   background-color: #ffffff;
 }
 .affix h5 {
