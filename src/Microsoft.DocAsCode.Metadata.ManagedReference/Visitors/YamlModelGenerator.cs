@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var id = SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
             if (string.IsNullOrEmpty(id))
             {
-                throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingNamespace?.MetadataName}.");
+                throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingSymbol?.MetadataName}.");
             }
             ReferenceItem reference = new ReferenceItem();
             reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
@@ -137,11 +137,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         {
                             parentSymbol = parentSymbol.ContainingSymbol;
                         } while (parentSymbol.Kind == symbol.Kind); // the parent of nested type is namespace.
+                        if (IsGlobalNamespace(parentSymbol))
+                        {
+                            return null;
+                        }
                         return AddSpecReference(parentSymbol, typeGenericParameters, methodGenericParameters, references, adapter); ;
                     }
                 default:
                     return null;
             }
+        }
+
+        private static bool IsGlobalNamespace(ISymbol symbol)
+        {
+            return (symbol as INamespaceSymbol)?.IsGlobalNamespace == true;
         }
 
         internal abstract void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter);
