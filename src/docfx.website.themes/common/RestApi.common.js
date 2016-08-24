@@ -207,6 +207,10 @@ exports.transform = function (model) {
             obj.items = {};
             obj.items.properties = obj.properties || null;
             delete obj.properties;
+            if (obj.required) {
+                obj.items.required = obj.required;
+                delete obj.required;
+            }
             obj.items['x-internal-ref-name'] = obj['x-internal-ref-name'] || null;
             obj.items['x-internal-loop-ref-name'] = obj['x-internal-loop-ref-name'] || null;
             transformProperties(obj.items);
