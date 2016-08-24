@@ -3,24 +3,26 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Linq;
+
     public class JsonTokenTreeRenderer
     {
         #region Block
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNewLineBlockToken token, MarkdownBlockContext context)
         {
-            return this.Insert($"NewLine_{token.SourceInfo.LineNumber}", this.GetSize(), Type.Leaf);
+            return Insert(token, "Newline");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeBlockToken token, MarkdownBlockContext context)
         {
             if (token.Lang != null)
             {
-                return this.Insert($"Code({token.Lang})_{token.SourceInfo.LineNumber}_{this.escape(token.Code)}", this.GetSize(), Type.Leaf);
+                return Insert(token, $"Code({token.Lang}>{escape(token.Code)}");
             }
             else
             {
-                return this.Insert($"Code_{token.SourceInfo.LineNumber}_{this.escape(token.Code)}", this.GetSize(), Type.Leaf);
+                return Insert(token, $"Code>{escape(token.Code)}");
             }
         }
 
@@ -32,12 +34,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"Heading{level}_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, $"Heading{level}", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHrBlockToken token, MarkdownBlockContext context)
         {
-            return this.Insert($"Hr_{token.SourceInfo.LineNumber}", this.GetSize(), Type.Leaf);
+            return Insert(token, "Hr");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
@@ -47,7 +49,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"Blockquote_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, $"Blockquote", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListBlockToken token, MarkdownBlockContext context)
@@ -58,7 +60,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += Render(renderer, (MarkdownListItemBlockToken) item);
             }
-            return this.Insert(type + "_" + token.SourceInfo.LineNumber.ToString(), childContent, Type.NonLeaf);
+            return Insert(token, type, childContent);
         }
 
         protected virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListItemBlockToken token)
@@ -68,7 +70,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"li_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, "li", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
@@ -78,7 +80,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"Html_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, "Html", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
@@ -88,12 +90,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"Paragraph_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, "Paragraph", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownBlockContext context)
         {
-            return this.Insert($"Text_{token.SourceInfo.LineNumber}_{this.escape(token.Content)}", this.GetSize(), Type.Leaf);
+            return Insert(token, $"Text{escape(token.Content)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTableBlockToken token, MarkdownBlockContext context)
@@ -109,9 +111,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     childContent += renderer.Render(item);
                 }
-                headerContent += this.Insert($"headerItem_{token.Header[i].SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+                headerContent += Insert(token.Header[i], "headerItem", childContent);
             }
-            content += this.Insert($"Header_{token.SourceInfo.LineNumber}", headerContent, Type.NonLeaf);
+            content += Insert(token.SourceInfo.LineNumber, token.SourceInfo.LineNumber, "Header", headerContent);
 
             // Body
             var bodyContent = StringBuffer.Empty;
@@ -126,12 +128,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     {
                         childContent += renderer.Render(item);
                     }
-                    rowContent += this.Insert($"RowItem_{row[j].SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+                    rowContent += Insert(row[j], "RowItem", childContent);
                 }
-                bodyContent += this.Insert($"Row_{row[0].SourceInfo.LineNumber}", rowContent, Type.NonLeaf);
+                bodyContent += Insert(row[0], "Row", rowContent);
             }
-            content += this.Insert($"Body_{token.SourceInfo.LineNumber + 1}", bodyContent, Type.NonLeaf);
-            return this.Insert($"Table_{token.SourceInfo.LineNumber}", content, Type.NonLeaf);
+            content += Insert(token.Cells[0][0].SourceInfo.LineNumber, token.Cells[token.Cells.Length - 1][0].SourceInfo.LineNumber, "Body", bodyContent);
+            return Insert(token, "Table", content);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNonParagraphBlockToken token, MarkdownBlockContext context)
@@ -141,7 +143,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"NonParagraph_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, "NonParagraph", childContent);
         }
 
         #endregion
@@ -150,7 +152,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEscapeInlineToken token, MarkdownInlineContext context)
         {
-            return this.Insert($"Escape_{token.SourceInfo.LineNumber}_{this.escape(token.Content)}", this.GetSize(), Type.Leaf);
+            return Insert(token, $"Escape>{escape(token.Content)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownLinkInlineToken token, MarkdownInlineContext context)
@@ -160,12 +162,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"Link_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, "Link", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownImageInlineToken token, MarkdownInlineContext context)
         {
-            return this.Insert($"Image_{token.SourceInfo.LineNumber}_{this.escape(token.Href)}", this.GetSize(), Type.Leaf);
+            return Insert(token, $"Image>{escape(token.Href)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownStrongInlineToken token, MarkdownInlineContext context)
@@ -175,7 +177,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"Strong_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, "Strong", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEmInlineToken token, MarkdownInlineContext context)
@@ -185,12 +187,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"Em_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, "Em", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeInlineToken token, MarkdownInlineContext context)
         {
-            return this.Insert($"InLineCode_{token.SourceInfo.LineNumber}_{this.escape(token.Content)}", this.GetSize(), Type.Leaf);
+            return Insert(token, $"InLineCode>{escape(token.Content)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, GfmDelInlineToken token, MarkdownInlineContext context)
@@ -200,22 +202,22 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return this.Insert($"Del_{token.SourceInfo.LineNumber}", childContent, Type.NonLeaf);
+            return Insert(token, "Del", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTagInlineToken token, MarkdownInlineContext context)
         {
-            return this.Insert($"Tag_{token.SourceInfo.LineNumber}", this.GetSize(), Type.Leaf);
+            return Insert(token, "Tag");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBrInlineToken token, MarkdownInlineContext context)
         {
-            return this.Insert($"Br_{token.SourceInfo.LineNumber}", this.GetSize(), Type.Leaf);
+            return Insert(token, "Br");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownInlineContext context)
         {
-            return this.Insert($"InLineText_{token.SourceInfo.LineNumber}_{this.escape(token.Content)}", this.GetSize(), Type.Leaf);
+            return Insert(token, $"InLineText>{escape(token.Content)}");
         }
 
         #endregion
@@ -224,62 +226,65 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownIgnoreToken token, IMarkdownContext context)
         {
-            return this.Insert($"Ignore_{token.SourceInfo.LineNumber}_{this.escape(token.SourceInfo.Markdown)}", this.GetSize(), Type.Leaf);
+            return Insert(token, $"Ignore>{escape(token.SourceInfo.Markdown)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownRawToken token, IMarkdownContext context)
         {
-            return this.Insert($"Raw(From{token.Rule.Name})_{token.SourceInfo.LineNumber}_{this.escape(token.SourceInfo.Markdown)}", GetSize(), Type.Leaf);
+            return Insert(token, $"Raw(From{token.Rule.Name})>{escape(token.SourceInfo.Markdown)}");
         }
 
         #endregion
 
         #region Private
 
-        private enum Type
+        protected StringBuffer Insert(IMarkdownToken token, StringBuffer name, StringBuffer tokenContent = null)
         {
-            Leaf,
-            NonLeaf
-        }
-
-        private StringBuffer Insert(StringBuffer name, StringBuffer tokenContent, Type tokenType)
-        {
-            StringBuffer result = $"{{\"name\":\"{name}\"";
-            switch (tokenType)
+            int startLineNumber = token.SourceInfo.LineNumber;
+            var content = token.SourceInfo.Markdown;
+            int indexOfLastChar = content.Length - 1;
+            while (indexOfLastChar >= 0 && content[indexOfLastChar] == '\n')
+                indexOfLastChar--;
+            int endLineNumber = startLineNumber + content.Substring(0, indexOfLastChar + 1).Count(ch => ch == '\n');
+            StringBuffer result = $"{{\"name\":\"{startLineNumber}>{endLineNumber}>{name}\"";
+            if (tokenContent != null)
             {
-                case Type.NonLeaf:
+                // If tokenContent is not empty ,should remove the last character(',')
+                if (tokenContent.GetLength() > 0 && tokenContent.EndsWith(','))
                 {
-                    // If tokenContent is not empty ,should remove the last character(',')
-                    if (tokenContent.GetLength() > 0 && tokenContent.EndsWith(','))
-                    {
-                        // TODO: add a method 'remove' of StringBuffer
-                        string contentTemp = tokenContent;
-                        tokenContent = contentTemp.Remove(contentTemp.Length - 1);
-                    }
-                    result += $",\"children\":[{tokenContent}]}},";
-                    break;
+                    // TODO: add a method 'remove' of StringBuffer
+                    string contentTemp = tokenContent;
+                    tokenContent = contentTemp.Remove(contentTemp.Length - 1);
                 }
-                case Type.Leaf:
-                {
-                    // Leaf will be needed later
-                    // TODO: result += "\"size\":" + tokenContent + "\n},";
-                    result += "},";
-                    break;
-                }
-                default:
-                    return StringBuffer.Empty;
+                result += $",\"children\":[{tokenContent}]";
             }
+            result += "},";
+
             return result;
         }
 
-        private string GetSize()
+        protected StringBuffer Insert(int startLineNumber, int endLineNumber, StringBuffer name, StringBuffer tokenContent = null)
         {
-            // TODO: get the node size
-            return "1";
+            StringBuffer result = $"{{\"name\":\"{startLineNumber}>{endLineNumber}>{name}\"";
+            if (tokenContent != null)
+            {
+                // If tokenContent is not empty ,should remove the last character(',')
+                if (tokenContent.GetLength() > 0 && tokenContent.EndsWith(','))
+                {
+                    // TODO: add a method 'remove' of StringBuffer
+                    string contentTemp = tokenContent;
+                    tokenContent = contentTemp.Remove(contentTemp.Length - 1);
+                }
+                result += $",\"children\":[{tokenContent}]";
+            }
+            result += "},";
+
+            return result;
         }
 
-        private string escape(string content)
+        protected string escape(string content)
         {
+            // TODO: reuse the StringHelper.HtmlEncode
             return content.Replace("\n", "\\n")
                 .Replace("\"", "&quot;")
                 .Replace("<", "&lt;")
