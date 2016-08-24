@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Incrementals
+namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System.Collections.Generic;
 
@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.Incrementals
         /// </summary>
         public string Manifest { get; set; }
         /// <summary>
-        /// The file link for the XRefMap file(type is <see cref="T:Microsoft.DocAsCode.Build.Engine.XRefMap"/>).
+        /// The file link for the XRefMap file(type is <see cref="XRefMap"/>).
         /// </summary>
         public string XRefSpecMap { get; set; }
     }

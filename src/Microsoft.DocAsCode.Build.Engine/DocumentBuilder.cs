@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Reflection;
     using System.Text;
 
-    using Microsoft.DocAsCode.Build.Incrementals;
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;

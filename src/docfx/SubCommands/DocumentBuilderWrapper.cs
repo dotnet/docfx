@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
-    using Microsoft.DocAsCode.Build.Incrementals;
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ResourceFiles;
     using Microsoft.DocAsCode.Build.RestApi;

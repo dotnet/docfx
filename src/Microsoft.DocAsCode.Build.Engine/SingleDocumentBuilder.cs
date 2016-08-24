@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Immutable;
     using System.Text;
 
-    using Microsoft.DocAsCode.Build.Incrementals;
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
