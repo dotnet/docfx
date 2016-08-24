@@ -79,13 +79,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     string configHash = ComputeConfigHash(parameters);
                     var fileAttributes = ComputeFileAttributes(parameters);
-                    CurrentBuildInfo.Versions.Add(
-                        new BuildVersionInfo
-                        {
-                            VersionName = parameters.VersionName,
-                            ConfigHash = configHash,
-                            Attributes = SaveCore(writer => JsonUtility.Serialize(writer, fileAttributes)),
-                        });
+                    CurrentBuildInfo.Versions.Add(new BuildVersionInfo
+                    {
+                        VersionName = parameters.VersionName,
+                        ConfigHash = configHash,
+                        AttributesFile = Path.Combine(IntermediateFolder, "attributes"),
+                        DependencyFile = Path.Combine(IntermediateFolder, "dependency"),
+                        ManifestFile = Path.Combine(IntermediateFolder, "manifest"),
+                        XRefSpecMapFile = Path.Combine(IntermediateFolder, "xrefspecmap"),
+                        Attributes = fileAttributes,
+                        Dependency = context.DependencyGraph,
+                        Manifest = context.ManifestItems,
+                        XRefSpecMap = context.XRefSpecMap,
+                    });
                     _canIncremental = GetCanIncremental(configHash, parameters.VersionName);
                     if (_canIncremental)
                     {
@@ -117,19 +123,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         foreach (var hostService in hostServices)
                         {
                             manifest.AddRange(BuildCore(hostService, context));
-                        }
-
-                        if (ShouldTraceIncrementalInfo)
-                        {
-                            using (new LoggerPhaseScope("SaveDependency", true))
-                            {
-                                UpdateUidFileDependency(context, hostServices);
-                                SaveDependency(context, parameters);
-                            }
-                            using (new LoggerPhaseScope("SaveXRefSpecMap", true))
-                            {
-                                SaveXRefSpecMap(context, parameters);
-                            }
                         }
 
                         // Use manifest from now on
@@ -172,13 +165,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         foreach (var m in processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables))
                         {
                             context.ManifestItems.Add(m);
-                        }
-                        if (ShouldTraceIncrementalInfo)
-                        {
-                            using (new LoggerPhaseScope("SaveManifest", true))
-                            {
-                                SaveManifest(context, parameters);
-                            }
                         }
                         return new Manifest
                         {
@@ -223,12 +209,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void ExpandDependency(DocumentBuildParameters parameter, DocumentBuildContext context)
         {
             string versionName = parameter.VersionName;
-            string dependencyFile = LastBuildInfo?.Versions.SingleOrDefault(v => v.VersionName == versionName)?.Dependency;
+            var dependencyGraph = LastBuildInfo.Versions.Single(v => v.VersionName == versionName).Dependency;
             var changeItems = context.ChangeDict;
 
-            if (!string.IsNullOrEmpty(dependencyFile))
+            if (dependencyGraph != null)
             {
-                var dependencyGraph = LoadDependencyGraph(dependencyFile);
                 foreach (var key in dependencyGraph.Keys)
                 {
                     if (dependencyGraph.GetAllDependency(key).Any(d => changeItems.ContainsKey(d) && changeItems[d] != ChangeKindWithDependency.None))
@@ -272,8 +257,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             else
             {
                 // get changelist from lastBuildInfo if user doesn't provide changelist
-                string lastAttributesFile = LastBuildInfo.Versions.Single(v => v.VersionName == parameter.VersionName).Attributes;
-                var lastFileAttributes = LoadIntermediateFile<Incrementals.FileAttributes>(lastAttributesFile);
+                var lastFileAttributes = LastBuildInfo.Versions.Single(v => v.VersionName == parameter.VersionName).Attributes;
                 DateTime checkTime = LastBuildInfo.BuildStartTime;
                 foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys))
                 {
@@ -324,39 +308,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
-        }
-
-        private void SaveDependency(DocumentBuildContext context, DocumentBuildParameters parameters)
-        {
-            var vbi = CurrentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
-            vbi.Dependency = SaveCore(writer => context.DependencyGraph.Save(writer));
-        }
-
-        private void SaveXRefSpecMap(DocumentBuildContext context, DocumentBuildParameters parameters)
-        {
-            var vbi = CurrentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
-            vbi.XRefSpecMap = SaveCore(writer => JsonUtility.Serialize(writer, context.XRefSpecMap));
-        }
-
-        private void SaveManifest(DocumentBuildContext context, DocumentBuildParameters parameters)
-        {
-            var vbi = CurrentBuildInfo.Versions.Find(v => v.VersionName == parameters.VersionName);
-            vbi.Manifest = SaveCore(writer => JsonUtility.Serialize(writer, context.ManifestItems));
-        }
-
-        private string SaveCore(Action<TextWriter> saveAction)
-        {
-            string fileName;
-            do
-            {
-                fileName = Path.GetRandomFileName();
-            } while (File.Exists(Path.Combine(IntermediateFolder, fileName)));
-            using (var writer = File.CreateText(
-                Path.Combine(IntermediateFolder, fileName)))
-            {
-                saveAction(writer);
-            }
-            return fileName;
         }
 
         private static IEnumerable<string> GetFilesFromUids(DocumentBuildContext context, IEnumerable<string> uids)
@@ -574,8 +525,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             FileMetadata fileMetadata,
             FileAndType file,
             bool canProcessorIncremental,
-            ImmutableDictionary<string, XRefSpec> xrefSpecMap,
-            ImmutableList<ManifestItem> manifestItems,
+            IDictionary<string, XRefSpec> xrefSpecMap,
+            IEnumerable<ManifestItem> manifestItems,
             DependencyGraph dg,
             DocumentBuildContext context)
         {
@@ -929,10 +880,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         };
 
             // load last xrefspecmap and manifestitems
-            BuildVersionInfo lastBuildVersionInfo = LastBuildInfo?.Versions.SingleOrDefault(v => v.VersionName == parameters.VersionName);
-            var lastXRefSpecMap = LoadIntermediateFile<ImmutableDictionary<string, XRefSpec>>(lastBuildVersionInfo?.XRefSpecMap);
-            var lastManifest = LoadIntermediateFile<ImmutableList<ManifestItem>>(lastBuildVersionInfo?.Manifest);
-            var lastDependencyGraph = LoadDependencyGraph(lastBuildVersionInfo?.Dependency);
+            BuildVersionInfo lbvi = LastBuildInfo?.Versions.SingleOrDefault(v => v.VersionName == parameters.VersionName);
+            var lastXRefSpecMap = lbvi?.XRefSpecMap;
+            var lastManifest = lbvi?.Manifest;
+            var lastDependencyGraph = lbvi?.Dependency;
 
             return from pair in pairs.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                    select new HostService(
@@ -949,30 +900,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                        Template = templateProcessor,
                        Validators = MetadataValidators.ToImmutableList(),
                    };
-        }
-
-        private T LoadIntermediateFile<T>(string fileName)
-        {
-            if (string.IsNullOrEmpty(fileName))
-            {
-                return default(T);
-            }
-            using (var reader = new StreamReader(Path.Combine(IntermediateFolder, fileName)))
-            {
-                return JsonUtility.Deserialize<T>(reader);
-            }
-        }
-
-        private DependencyGraph LoadDependencyGraph(string dependencyFile)
-        {
-            if (string.IsNullOrEmpty(dependencyFile))
-            {
-                return null;
-            }
-            using (var reader = new StreamReader(Path.Combine(IntermediateFolder, dependencyFile)))
-            {
-                return DependencyGraph.Load(reader);
-            }
         }
 
         private bool CanProcessorIncremental(IDocumentProcessor processor, string versionName)

@@ -22,6 +22,7 @@
     <Compile Include="Incrementals\FileAttributes.cs" />
     <Compile Include="Incrementals\IncrementalCheckAttribute.cs" />
     <Compile Include="Incrementals\IncrementalCheckPropertiesResolver.cs" />
+    <Compile Include="Incrementals\IncrementalUtility.cs" />
     <Compile Include="Incrementals\ProcessorInfo.cs" />
     <Compile Include="Incrementals\ProcessorStepInfo.cs" />
     <Compile Include="InvalidPreprocessorException.cs" />
