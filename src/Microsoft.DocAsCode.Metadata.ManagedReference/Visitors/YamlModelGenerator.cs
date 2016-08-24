@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var id = SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
             if (string.IsNullOrEmpty(id))
             {
-                throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingNamespace.MetadataName}.");
+                throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingNamespace?.MetadataName}.");
             }
             ReferenceItem reference = new ReferenceItem();
             reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
