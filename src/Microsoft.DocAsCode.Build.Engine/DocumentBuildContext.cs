@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    using Microsoft.DocAsCode.Build.Incrementals;
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         internal Dictionary<string, ChangeKindWithDependency> ChangeDict { get; } = new Dictionary<string, ChangeKindWithDependency>();
 
-        internal ConcurrentBag<ManifestItem> ManifestItems = new ConcurrentBag<ManifestItem>();
+        internal ConcurrentBag<ManifestItem> ManifestItems { get; } = new ConcurrentBag<ManifestItem>();
 
         private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
 

@@ -193,10 +193,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GEmojiCodeGenerators", "too
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Dfm.VscPreview", "src\Microsoft.DocAsCode.Dfm.VscPreview\Microsoft.DocAsCode.Dfm.VscPreview.csproj", "{6E31517C-B140-413F-B854-F72E25F4DAB2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Incrementals", "Incrementals", "{218CF0E4-6DF2-4932-8F1B-7AD345467CF8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.Incrementals", "src\Microsoft.DocAsCode.Build.Incrementals\Microsoft.DocAsCode.Build.Incrementals.csproj", "{8B931D5B-9BC8-41C6-B91F-BBF650720D27}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -533,14 +529,6 @@ Global
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Release|x86.ActiveCfg = Release|Any CPU
 		{6E31517C-B140-413F-B854-F72E25F4DAB2}.Release|x86.Build.0 = Release|Any CPU
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27}.Debug|x86.Build.0 = Debug|Any CPU
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27}.Release|x86.ActiveCfg = Release|Any CPU
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -618,7 +606,5 @@ Global
 		{8E89892D-32B8-4745-8F41-7AB73F90E0EB} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{3465B6B7-26E4-2465-78D2-2432B0435522} = {8E89892D-32B8-4745-8F41-7AB73F90E0EB}
 		{6E31517C-B140-413F-B854-F72E25F4DAB2} = {2DAAC304-36F6-4E4A-A0EA-5821B4B9842A}
-		{218CF0E4-6DF2-4932-8F1B-7AD345467CF8} = {E1F4CAA2-7745-46A5-BE03-872F349A1AE8}
-		{8B931D5B-9BC8-41C6-B91F-BBF650720D27} = {218CF0E4-6DF2-4932-8F1B-7AD345467CF8}
 	EndGlobalSection
 EndGlobal

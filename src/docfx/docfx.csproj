@@ -214,10 +214,6 @@
       <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b51}</Project>
       <Name>Microsoft.DocAsCode.Build.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Build.Incrementals\Microsoft.DocAsCode.Build.Incrementals.csproj">
-      <Project>{8b931d5b-9bc8-41c6-b91f-bbf650720d27}</Project>
-      <Name>Microsoft.DocAsCode.Build.Incrementals</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj">
       <Project>{60f21edb-35f9-420d-b1b6-2ec482f76b50}</Project>
       <Name>Microsoft.DocAsCode.Build.ManagedReference</Name>

@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Immutable;
 
-    using Microsoft.DocAsCode.Build.Incrementals;
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
 
     public sealed class DocumentBuildParameters : MarshalByRefObject
     {

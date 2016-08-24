@@ -9,6 +9,22 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DocumentBuilder.cs" />
     <Compile Include="HashStreamHelper.cs" />
+    <Compile Include="Incrementals\BuildInfo.cs" />
+    <Compile Include="Incrementals\BuildOutputItem.cs" />
+    <Compile Include="Incrementals\BuildOutputs.cs" />
+    <Compile Include="Incrementals\BuildVersionInfo.cs" />
+    <Compile Include="Incrementals\ChangeItem.cs" />
+    <Compile Include="Incrementals\ChangeKind.cs" />
+    <Compile Include="Incrementals\ChangeKindWithDependency.cs" />
+    <Compile Include="Incrementals\ChangeList.cs" />
+    <Compile Include="Incrementals\DependencyGraph.cs" />
+    <Compile Include="Incrementals\FileAttributeItem.cs" />
+    <Compile Include="Incrementals\FileAttributes.cs" />
+    <Compile Include="Incrementals\IncrementalCheckAttribute.cs" />
+    <Compile Include="Incrementals\IncrementalCheckPropertiesResolver.cs" />
+    <Compile Include="Incrementals\IncrementalUtility.cs" />
+    <Compile Include="Incrementals\ProcessorInfo.cs" />
+    <Compile Include="Incrementals\ProcessorStepInfo.cs" />
     <Compile Include="InvalidPreprocessorException.cs" />
     <Compile Include="CrossReferenceNotResolvedException.cs" />
     <Compile Include="DocumentBuildContext.cs" />
@@ -71,10 +87,6 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj">
       <Project>{60f21edb-35f9-420d-b1b6-3ed482f76b50}</Project>
       <Name>Microsoft.DocAsCode.Build.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.DocAsCode.Build.Incrementals\Microsoft.DocAsCode.Build.Incrementals.csproj">
-      <Project>{8b931d5b-9bc8-41c6-b91f-bbf650720d27}</Project>
-      <Name>Microsoft.DocAsCode.Build.Incrementals</Name>
     </ProjectReference>
     <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj">
       <Project>{72225351-32fd-103f-1818-25e3c7df74a2}</Project>
