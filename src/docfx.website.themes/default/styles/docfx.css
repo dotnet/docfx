@@ -567,7 +567,7 @@ body .toc{
   max-width: 100%;
 }
 .sideaffix {
-  margin-top: 50px; 
+  margin-top: 50px;
   font-size: 12px;
   max-height: 100%;
   overflow: hidden;
@@ -589,6 +589,9 @@ body .toc{
 }
 .sideaffix > div.contribution > ul > li > a.contribution-link:hover {
   background-color: #ffffff;
+}
+.sideaffix ul.nav > li > a:focus {
+  background: none;
 }
 .affix h5 {
   font-weight: bold;
