@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 | value | Edm.String |  |  |  |
 ";
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Table\",\"children\":[{\"name\":\"Header\",\"children\":[{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"Body\",\"children\":[{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]}]},{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]},{\"name\":\"RowItem\",\"children\":[]}]}]}]}]}";
+                "{\"name\":\"markdown_0\",\"children\":[{\"name\":\"Heading1_1\",\"children\":[{\"name\":\"InLineText_1_hello\"}]},{\"name\":\"Table_2\",\"children\":[{\"name\":\"Header_2\",\"children\":[{\"name\":\"headerItem_2\",\"children\":[{\"name\":\"InLineText_2_Name\"}]},{\"name\":\"headerItem_2\",\"children\":[{\"name\":\"InLineText_2_Type\"}]},{\"name\":\"headerItem_2\",\"children\":[{\"name\":\"InLineText_2_Notes\"}]},{\"name\":\"headerItem_2\",\"children\":[{\"name\":\"InLineText_2_Read/Write\"}]},{\"name\":\"headerItem_2\",\"children\":[{\"name\":\"InLineText_2_Description\"}]}]},{\"name\":\"Body_3\",\"children\":[{\"name\":\"Row_2\",\"children\":[{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"InLineText_2_value\"}]},{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"InLineText_2_Edm.String\"}]},{\"name\":\"RowItem_2\",\"children\":[]},{\"name\":\"RowItem_2\",\"children\":[]},{\"name\":\"RowItem_2\",\"children\":[]}]},{\"name\":\"Row_2\",\"children\":[{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"InLineText_2_endDate\"}]},{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"InLineText_2_Edm.DateTime\"}]},{\"name\":\"RowItem_2\",\"children\":[]},{\"name\":\"RowItem_2\",\"children\":[]},{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"InLineText_2_The date and time at which the password expires.\"}]}]},{\"name\":\"Row_2\",\"children\":[{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"InLineText_2_value\"}]},{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"InLineText_2_Edm.String\"}]},{\"name\":\"RowItem_2\",\"children\":[]},{\"name\":\"RowItem_2\",\"children\":[]},{\"name\":\"RowItem_2\",\"children\":[]}]}]}]}]}";
 
             Assert.Equal(expected, JsonRenderer(source));
         }
@@ -33,9 +33,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         {
             var source = @"<!--
 https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
--->";
+-->
+";
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Html\",\"children\":[{\"name\":\"Raw(FromGfmHtmlComment)\"}]}]}";
+                "{\"name\":\"markdown_0\",\"children\":[{\"name\":\"Html_1\",\"children\":[{\"name\":\"Raw(FromGfmHtmlComment)_1_&lt;!--\\nhttps://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers\\n--&gt;\\n\"}]}]}";
             Assert.Equal(expected, JsonRenderer(source));
         }
 
@@ -48,7 +49,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
         //*************************************************</code></pre>
 ";
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Html\",\"children\":[{\"name\":\"Raw(FromHtml)\"}]}]}";
+                "{\"name\":\"markdown_0\",\"children\":[{\"name\":\"Html_1\",\"children\":[{\"name\":\"Raw(FromHtml)_1_&lt;pre&gt;&lt;code&gt;//*************************************************\\n        // Test!\\n        //*************************************************&lt;/code&gt;&lt;/pre&gt;\\n\"}]}]}";
             Assert.Equal(expected, JsonRenderer(source));
         }
 
@@ -61,10 +62,11 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 |:-------- |:--------:| --------:|
 | *1-1* | [User] | test |
 
-[User]: ./entity-and-complex-type-reference.md#UserEntity";
+[User]: ./entity-and-complex-type-reference.md#UserEntity
+";
 
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Table\",\"children\":[{\"name\":\"Header\",\"children\":[{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"headerItem\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"Body\",\"children\":[{\"name\":\"Row\",\"children\":[{\"name\":\"RowItem\",\"children\":[{\"name\":\"Em\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"Link\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"RowItem\",\"children\":[{\"name\":\"InLineText\"}]}]}]}]},{\"name\":\"Ignore\"}]}";
+                "{\"name\":\"markdown_0\",\"children\":[{\"name\":\"Heading1_1\",\"children\":[{\"name\":\"InLineText_1_Test table\"}]},{\"name\":\"Table_2\",\"children\":[{\"name\":\"Header_2\",\"children\":[{\"name\":\"headerItem_2\",\"children\":[{\"name\":\"InLineText_2_header-1\"}]},{\"name\":\"headerItem_2\",\"children\":[{\"name\":\"InLineText_2_header-2\"}]},{\"name\":\"headerItem_2\",\"children\":[{\"name\":\"InLineText_2_header-3\"}]}]},{\"name\":\"Body_3\",\"children\":[{\"name\":\"Row_2\",\"children\":[{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"Em_2\",\"children\":[{\"name\":\"InLineText_2_1-1\"}]}]},{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"Link_2\",\"children\":[{\"name\":\"InLineText_2_User\"}]}]},{\"name\":\"RowItem_2\",\"children\":[{\"name\":\"InLineText_2_test\"}]}]}]}]},{\"name\":\"Ignore_6_[User]: ./entity-and-complex-type-reference.md#UserEntity\\n\"}]}";
             Assert.Equal(expected, JsonRenderer(source));
         }
 
@@ -75,7 +77,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
             var source = @"![This is image alt text with quotation ' and double quotation ""hello"" world](girl.png)";
 
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Image\"}]}]}";
+                "{\"name\":\"markdown_0\",\"children\":[{\"name\":\"Paragraph_1\",\"children\":[{\"name\":\"Image_1_girl.png\"}]}]}";
             Assert.Equal(expected, JsonRenderer(source));
         }
 
@@ -119,7 +121,7 @@ Numbered list
 <address@example.com>
 ";
             var expected =
-                "{\"name\":\"markdown\",\"children\":[{\"name\":\"Heading1\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Heading2\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Heading3\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"},{\"name\":\"Br\"},{\"name\":\"InLineText\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"},{\"name\":\"Em\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"InLineText\"},{\"name\":\"Strong\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"InLineText\"},{\"name\":\"InLineCode\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Del\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"},{\"name\":\"Link\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"InLineText\"}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"ul\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"InLineText\"}]},{\"name\":\"ol\",\"children\":[{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]},{\"name\":\"li\",\"children\":[{\"name\":\"NonParagraph\",\"children\":[{\"name\":\"InLineText\"}]}]}]},{\"name\":\"Paragraph\",\"children\":[{\"name\":\"Link\",\"children\":[{\"name\":\"Raw(FromInline.AutoLink)\"}]}]}]}";
+                "{\"name\":\"markdown_0\",\"children\":[{\"name\":\"Heading1_1\",\"children\":[{\"name\":\"InLineText_1_Heading\"}]},{\"name\":\"Heading2_4\",\"children\":[{\"name\":\"InLineText_4_Sub-heading\"}]},{\"name\":\"Heading3_7\",\"children\":[{\"name\":\"InLineText_7_Another deeper heading\"}]},{\"name\":\"Paragraph_9\",\"children\":[{\"name\":\"InLineText_9_Paragraphs are separated\\nby a blank line.\"}]},{\"name\":\"Paragraph_12\",\"children\":[{\"name\":\"InLineText_12_Leave 2 spaces at the end of a line to do a\"},{\"name\":\"Br_12\"},{\"name\":\"InLineText_13_line break\"}]},{\"name\":\"Paragraph_15\",\"children\":[{\"name\":\"InLineText_15_Text attributes \"},{\"name\":\"Em_15\",\"children\":[{\"name\":\"InLineText_15_italic\"}]},{\"name\":\"InLineText_15_, \"},{\"name\":\"Strong_15\",\"children\":[{\"name\":\"InLineText_15_bold\"}]},{\"name\":\"InLineText_15_, \\n\"},{\"name\":\"InLineCode_16_monospace\"}]},{\"name\":\"Paragraph_18\",\"children\":[{\"name\":\"Del_18\",\"children\":[{\"name\":\"InLineText_18_strikethrough\"}]}]},{\"name\":\"Paragraph_20\",\"children\":[{\"name\":\"InLineText_20_A \"},{\"name\":\"Link_20\",\"children\":[{\"name\":\"InLineText_20_link\"}]},{\"name\":\"InLineText_20_.\"}]},{\"name\":\"Paragraph_22\",\"children\":[{\"name\":\"InLineText_22_Shopping list\"}]},{\"name\":\"ul_24\",\"children\":[{\"name\":\"li_24\",\"children\":[{\"name\":\"NonParagraph_24\",\"children\":[{\"name\":\"InLineText_24_apples\"}]}]},{\"name\":\"li_25\",\"children\":[{\"name\":\"NonParagraph_25\",\"children\":[{\"name\":\"InLineText_25_oranges\"}]}]},{\"name\":\"li_26\",\"children\":[{\"name\":\"NonParagraph_26\",\"children\":[{\"name\":\"InLineText_26_pears\"}]}]}]},{\"name\":\"Paragraph_28\",\"children\":[{\"name\":\"InLineText_28_Numbered list\"}]},{\"name\":\"ol_30\",\"children\":[{\"name\":\"li_30\",\"children\":[{\"name\":\"NonParagraph_30\",\"children\":[{\"name\":\"InLineText_30_apples\"}]}]},{\"name\":\"li_31\",\"children\":[{\"name\":\"NonParagraph_31\",\"children\":[{\"name\":\"InLineText_31_oranges\"}]}]},{\"name\":\"li_32\",\"children\":[{\"name\":\"NonParagraph_32\",\"children\":[{\"name\":\"InLineText_32_pears\"}]}]}]},{\"name\":\"Paragraph_34\",\"children\":[{\"name\":\"Link_34\",\"children\":[{\"name\":\"Raw(FromInline.AutoLink)_34_address@example.com\"}]}]}]}";
             Assert.Equal(expected, JsonRenderer(source));
         }
 
