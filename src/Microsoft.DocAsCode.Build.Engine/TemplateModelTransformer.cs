@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 OutputFiles = new Dictionary<string, OutputFileInfo>(),
                 Metadata = item.Metadata,
             };
-            var outputDirectory = _settings.OutputFolder ?? Environment.CurrentDirectory;
+            var outputDirectory = _settings.OutputFolder ?? Directory.GetCurrentDirectory();
 
             // 1. process resource
             if (item.ResourceFile != null)

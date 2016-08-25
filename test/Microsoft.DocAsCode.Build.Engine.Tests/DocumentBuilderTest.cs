@@ -120,7 +120,7 @@ tagRules : [
 ]
 }");
 
-            FileCollection files = new FileCollection(Environment.CurrentDirectory);
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
             files.Add(DocumentType.Resource, new[] { resourceFile });
@@ -353,7 +353,7 @@ settings : [
 }
 ", _templateFolder);
 
-            FileCollection files = new FileCollection(Environment.CurrentDirectory);
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
             files.Add(DocumentType.Resource, new[] { resourceFile });
@@ -438,7 +438,7 @@ exports.getOptions = function (){
                     "#[Test](test.md)"
                 },
                 _inputFolder);
-            FileCollection files = new FileCollection(Environment.CurrentDirectory);
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2, tocFile, tocFile2 });
             BuildDocument(
                 files,
@@ -600,7 +600,7 @@ exports.getOptions = function (){
                 var parameters = new DocumentBuildParameters
                 {
                     Files = files,
-                    OutputBaseDir = Path.Combine(Environment.CurrentDirectory, _outputFolder),
+                    OutputBaseDir = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
                     ApplyTemplateSettings = applyTemplateSettings,
                     Metadata = metadata?.ToImmutableDictionary(),
                     TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),

@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.SubCommands
             _version = assembly.GetName().Version.ToString();
             Config = ParseOptions(options);
             SetDefaultConfigValue(Config);
-            EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Environment.CurrentDirectory : Config.BaseDirectory);
+            EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory);
             _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
         }
 
@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.SubCommands
             // base directory for content from command line is current directory
             // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
             // for `--content "*.cs*`, base directory should be `C:\folder1`
-            string optionsBaseDirectory = Environment.CurrentDirectory;
+            string optionsBaseDirectory = Directory.GetCurrentDirectory();
 
             config.OutputFolder = options.OutputFolder;
 
@@ -275,7 +275,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static void MergeGitContributeToConfig(BuildJsonConfig config)
         {
-            GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Environment.CurrentDirectory, config.BaseDirectory));
+            GitDetail repoInfoFromBaseDirectory = GitUtility.GetGitDetail(Path.Combine(Directory.GetCurrentDirectory(), config.BaseDirectory));
 
             if (repoInfoFromBaseDirectory?.RelativePath != null)
             {

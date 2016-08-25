@@ -21,11 +21,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             _semaphore = new SemaphoreSlim(maxParallelism);
             if (baseFolder == null)
             {
-                _baseFolder = Environment.CurrentDirectory;
+                _baseFolder = Directory.GetCurrentDirectory();
             }
             else
             {
-                _baseFolder = Path.Combine(Environment.CurrentDirectory, baseFolder);
+                _baseFolder = Path.Combine(Directory.GetCurrentDirectory(), baseFolder);
             }
         }
 

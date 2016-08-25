@@ -371,7 +371,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
 
             AssertTocEqual(expectedModel, model);
 
-            // Referenced TOC File should not exist 
+            // Referenced TOC File should not exist
             var referencedTocPath = Path.Combine(_outputFolder, Path.ChangeExtension(subToc, RawModelFileExtension));
             Assert.False(File.Exists(referencedTocPath));
         }
@@ -508,7 +508,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             private readonly string _rootDir;
             public FileCreator(string rootDir)
             {
-                _rootDir = rootDir ?? Environment.CurrentDirectory;
+                _rootDir = rootDir ?? Directory.GetCurrentDirectory();
             }
 
             public string CreateFile(string content, FileType type, string folder = null)

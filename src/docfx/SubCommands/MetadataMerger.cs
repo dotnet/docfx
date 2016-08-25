@@ -43,8 +43,8 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 Logger.LogInfo("Start merge metadata...");
-                MergePageViewModel(parameters, Environment.CurrentDirectory);
-                MergeToc(parameters, Environment.CurrentDirectory);
+                MergePageViewModel(parameters, Directory.GetCurrentDirectory());
+                MergeToc(parameters, Directory.GetCurrentDirectory());
                 Logger.LogInfo("Merge metadata completed.");
             }
         }
