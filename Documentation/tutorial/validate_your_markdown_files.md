@@ -185,6 +185,46 @@ You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,Sys
 
 The different between `ReportError` and throw `DocumentException` is throwing exception will stop the build immediately but `ReportError` won't stop build but will eventually fail the build after rules are run.
 
+### Advanced: validating tokens with file context
+
+For some cases, we need to validate some tokens with file context.
+
+For example, we want each topic has one title (i.e. h1 written by markdown syntax, e.g. `# <title>`).
+But you cannot count them in @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator, it is shared by all files, and it will never be hit when there is no heading.
+
+For this purpose, we need to create validator like following:
+
+```csharp
+MarkdownTokenValidatorFactory.FromLambda<MarkdownHeadingBlockToken>(
+    t =>
+    {
+        if (t.Depth == 1)
+        {
+            var re = MarkdownTokenValidatorContext.CurrentRewriteEngine;
+            var h1Count = (int)re.GetVariable("h1Count");
+            re.SetVariable("h1Count", h1Count + 1);
+        }
+    },
+    re =>
+    {
+        re.SetVariable("h1Count", 0);
+        re.SetPostProcess("checkH1Count", re1 =>
+        {
+            var h1Count = (int)re.GetVariable("h1Count");
+            if (h1Count != 1)
+            {
+                 Logger.LogError($"Unexpected title count: {h1Count}.");
+            }
+        })
+    });
+```
+
+The [FromLambda](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.FromLambda``1(System.Action{``0},System.Action{Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine})) method takes two callbacks:
+* The first will be invoked on @Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken matched in all files.
+  And the static property @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine will provide current context object.
+* The second will be invoked on starting a new file.
+  And you can initialize some variables for each file, and register some callbacks when the file completed.
+
 ## Advanced usage of `md.style`
 
 ### Default rules
