@@ -83,6 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         VersionName = parameters.VersionName,
                         ConfigHash = configHash,
+                        Status = BuildStatus.Failed,
                         AttributesFile = Path.Combine(IntermediateFolder, "attributes"),
                         DependencyFile = Path.Combine(IntermediateFolder, "dependency"),
                         ManifestFile = Path.Combine(IntermediateFolder, "manifest"),
@@ -123,6 +124,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         foreach (var hostService in hostServices)
                         {
                             manifest.AddRange(BuildCore(hostService, context));
+                        }
+
+                        if (ShouldTraceIncrementalInfo)
+                        {
+                            UpdateUidFileDependency(context, hostServices);
                         }
 
                         // Use manifest from now on
@@ -166,13 +172,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             context.ManifestItems.Add(m);
                         }
-                        return new Manifest
+                        var result = new Manifest
                         {
                             Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
                             SourceBasePath = EnvironmentContext.BaseDirectory?.ToNormalizedPath()
                         };
+                        if (ShouldTraceIncrementalInfo)
+                        {
+                            // to-do: check warning from warning file.
+                            CurrentBuildInfo.Versions.Single(v => v.VersionName == parameters.VersionName).Status = BuildStatus.Succeeded;
+                        }
+                        return result;
                     }
                 }
                 finally

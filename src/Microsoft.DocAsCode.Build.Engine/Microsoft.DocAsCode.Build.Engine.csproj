@@ -12,6 +12,7 @@
     <Compile Include="Incrementals\BuildInfo.cs" />
     <Compile Include="Incrementals\BuildOutputItem.cs" />
     <Compile Include="Incrementals\BuildOutputs.cs" />
+    <Compile Include="Incrementals\BuildStatus.cs" />
     <Compile Include="Incrementals\BuildVersionInfo.cs" />
     <Compile Include="Incrementals\ChangeItem.cs" />
     <Compile Include="Incrementals\ChangeKind.cs" />

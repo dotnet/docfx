@@ -26,6 +26,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public string ConfigHash { get; set; }
         /// <summary>
+        /// Build status
+        /// </summary>
+        public BuildStatus Status { get; set; }
+        /// <summary>
         /// The file link for dependency (type is <see cref="DependencyGraph.Load(System.IO.TextReader)"/>).
         /// </summary>
         public string DependencyFile { get; set; }
