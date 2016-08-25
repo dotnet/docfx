@@ -190,9 +190,9 @@ The different between `ReportError` and throw `DocumentException` is throwing ex
 For some cases, we need to validate some tokens with file context.
 
 For example, we want each topic has one title (i.e. h1 written by markdown syntax, e.g. `# <title>`).
-But you cannot count them in @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator, it is shared by all files, and it will be never hit when there is no heading.
+But you cannot count them in @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator, it is shared by all files, and it will never be hit when there is no heading.
 
-For this propose, we need to create validator like following:
+For this purpose, we need to create validator like following:
 
 ```csharp
 MarkdownTokenValidatorFactory.FromLambda<MarkdownHeadingBlockToken>(
@@ -219,7 +219,7 @@ MarkdownTokenValidatorFactory.FromLambda<MarkdownHeadingBlockToken>(
     });
 ```
 
-The `FromLambda` method takes two callbacks:
+The [FromLambda](xref:Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.FromLambda``1(System.Action{``0},System.Action{Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine})) method takes two callbacks:
 * The first will be invoked on @Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken matched in all files.
   And the static property @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine will provide current context object.
 * The second will be invoked on starting a new file.
