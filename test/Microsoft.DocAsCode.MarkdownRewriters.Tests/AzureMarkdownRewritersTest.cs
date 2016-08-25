@@ -102,6 +102,24 @@ This is azure warning";
 
         [Fact]
         [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_AzureNoteShouldParseFollowedText()
+        {
+            var source = @"> [AZURE.NOTE]
+> This is a link [hello text]      (hello.md)
+> This is a style text _yes_";
+            var expected = @"> [!NOTE]
+> This is a link [hello text](hello.md)
+> This is a style text *yes*
+> 
+> 
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_AzureNoteWithExtraWhiteSpaces()
         {
             var source = @"> [AZURE.NOTE]
