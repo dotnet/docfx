@@ -7,12 +7,12 @@
       <ul class="nav">
         {{#docurl}}
         <li>
-          <a href="{{docurl}}" class="contribution-link mobile-hide">{{__global.improveThisDoc}}</a>
+          <a href="{{docurl}}" class="contribution-link">{{__global.improveThisDoc}}</a>
         </li>
         {{/docurl}}
         {{#sourceurl}}
         <li>
-          <a href="{{sourceurl}}" class="contribution-link mobile-hide">{{__global.viewSource}}</a>
+          <a href="{{sourceurl}}" class="contribution-link">{{__global.viewSource}}</a>
         </li>
         {{/sourceurl}}
       </ul>
