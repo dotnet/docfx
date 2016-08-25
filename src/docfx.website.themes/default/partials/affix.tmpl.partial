@@ -2,6 +2,20 @@
 
 <div class="hidden-sm col-md-2" role="complementary">
   <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+    {{^_disableContribution}}
+    <ul class="level1 btn nav bs-docs-sidenav">
+      {{#docurl}}
+      <li>
+        <a href="{{docurl}}" class="btn btn-primary mobile-hide">{{__global.improveThisDoc}}</a>
+      </li>
+      {{/docurl}}
+      {{#sourceurl}}
+      <li>
+        <a href="{{sourceurl}}" class="btn btn-primary mobile-hide">{{__global.viewSource}}</a>
+      </li>
+      {{/sourceurl}}
+    </ul>
+    {{/_disableContribution}}
   <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
   </nav>
 </div>

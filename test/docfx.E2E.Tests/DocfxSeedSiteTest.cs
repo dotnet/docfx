@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
     {
         private IWebDriver _driver;
         private string _urlHomepage;
+        private const string SideBarNavXPathString = "//nav[@id='affix']/ul/li/a[not(@class)]"; // Button is with class while topic navigation is without class.
 
         public DocfxSeedSiteTest(DocfxSeedSiteFixture fixture)
         {
@@ -35,7 +36,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
             IList<IWebElement> resultsHeading = _driver.FindElements(By.TagName("h2"));
             if (resultsHeading.Count > 0)
             {
-                IList<IWebElement> resultsSidebar = _driver.FindElements(By.XPath("//nav[@id='affix']/ul/li/a"));
+                IList<IWebElement> resultsSidebar = _driver.FindElements(By.XPath(SideBarNavXPathString));
                 Assert.Equal(resultsHeading.Count, resultsSidebar.Count);
                 for (int i = 0; i < resultsSidebar.Count; i++)
                 {
@@ -131,7 +132,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
             IList<IWebElement> resultsHeading = _driver.FindElements(By.TagName("h3"));
             if (resultsHeading.Count > 0)
             {
-                results = _driver.FindElements(By.XPath("//nav[@id='affix']/ul/li/a"));
+                results = _driver.FindElements(By.XPath(SideBarNavXPathString));
                 Assert.Equal(resultsHeading.Count, results.Count);
                 for (int i = 0; i < results.Count; i++)
                 {
