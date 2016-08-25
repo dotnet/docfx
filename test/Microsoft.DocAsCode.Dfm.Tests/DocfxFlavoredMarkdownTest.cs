@@ -328,7 +328,7 @@ hello world";
         {
             var source = @"# Note not in one line
 > [!NOTE]hello
-> world [this is a link](link.md).
+> world
 > [!WARNING]     Hello world
 this is also warning";
             var expected = @"<h1 id=""note-not-in-one-line"">Note not in one line</h1>
