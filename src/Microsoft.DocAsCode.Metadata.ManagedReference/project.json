@@ -1,35 +1,50 @@
 {
   "version": "1.0.0",
-  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
-  "projectUrl": "https://github.com/dotnet/docfx",
-  "authors": ["Microsoft"],
-  "owners": ["Microsoft"],
+  "packOptions": {
+    "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+    "projectUrl": "https://github.com/dotnet/docfx",
+    "authors": [
+      "Microsoft"
+    ],
+    "owners": [
+      "Microsoft"
+    ]
+  },
   "dependencies": {
     "Microsoft.DocAsCode.Common": "1.0.0",
     "Microsoft.DocAsCode.Utility": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.ManagedReference": "1.0.0",
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
-    "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.0.0",
-    "Microsoft.CodeAnalysis.Common": "1.1.1",
-    "Microsoft.CodeAnalysis.VisualBasic": "1.1.1",
-    "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.1.1",
-    "Microsoft.CodeAnalysis.CSharp": "1.1.1",
-    "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.1.1",
-    "Microsoft.CodeAnalysis.Workspaces.Common": "1.1.1",
-    "Newtonsoft.Json": "7.0.1",
+    "Microsoft.CodeAnalysis.Common": "1.3.2",
+    "Microsoft.CodeAnalysis.VisualBasic": "1.3.2",
+    "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.3.2",
+    "Microsoft.CodeAnalysis.CSharp": "1.3.2",
+    "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.3.2",
+    "Microsoft.CodeAnalysis.Workspaces.Common": "1.3.2",
+    "Microsoft.DotNet.ProjectModel.Workspaces": "1.0.0-preview2-003121",
+    "Newtonsoft.Json": "9.0.1",
     "Microsoft.Composition": "1.0.27",
-    "System.Collections.Immutable": "1.1.37"
+    "System.Collections.Immutable": "1.2.0"
   },
   "frameworks": {
-    "dnx451": {
+    "net452": {
       "frameworkAssemblies": {
-        "System.Xml.Linq": "",
-        "System.Collections": "",
+        "System.Xml": "",
         "System.Threading.Tasks": "",
-        "System.Globalization": ""
+        "System.Xml.Linq": ""
       }
     }
   },
-  "resource": [ "Transform/**", "Filters/defaultfilterconfig.yml" ]
+  "buildOptions": {
+    "define": [
+      "NETCore"
+    ],
+    "embed": {
+      "include": [
+        "Transform/**",
+        "Filters/defaultfilterconfig.yml"
+      ]
+    }
+  }
 }

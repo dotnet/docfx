@@ -1,49 +1,32 @@
 {
   "version": "1.0.0",
-  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
-  "projectUrl": "https://github.com/dotnet/docfx",
-  "authors": ["Microsoft"],
-  "owners": ["Microsoft"],
+  "packOptions": {
+    "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+    "projectUrl": "https://github.com/dotnet/docfx",
+    "authors": [
+      "Microsoft"
+    ],
+    "owners": [
+      "Microsoft"
+    ]
+  },
   "dependencies": {
     "YamlDotNet.Signed": "3.9.0"
   },
-  "frameworks": {
-    "net45": {
-      "frameworkAssemblies": {
-        "System.Core": ""
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
       }
     },
-    "netcore45": {
-      "frameworkAssemblies": {
-        "System": "",
-        "System.Core": "",
-        "System.Collections": "",
-        "System.Collections.Concurrent": "",
-        "System.Dynamic.Runtime": "",
-        "System.Globalization": "",
-        "System.IO": "",
-        "System.Linq": "",
-        "System.Net": "",
-        "System.Reflection": "",
-        "System.Reflection.Extensions": "",
-        "System.Reflection.Primitives": "",
-        "System.Runtime": "",
-        "System.Runtime.Extensions": "",
-        "System.Runtime.Serialization.Primitives": "",
-        "System.Threading": "",
-        "System.Text.RegularExpressions": ""
-      },
-      "dependencies": {
-        "System.Reflection.Emit.Lightweight": "4.0.0"
-      },
-      "compilationOptions": {
-        "define": ["NetCore"]
-      }
-    },
-    "dnx451": {
-      "frameworkAssemblies": {
-        "System.Core": ""
+    "Release": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ],
+        "optimize": true
       }
     }
+  },
+  "frameworks": {
+    "net452": {}
   }
 }

@@ -30,8 +30,13 @@ if /I [%1]==[template] (
     SET UpdateTemplate=%1
     GOTO Next
 )
+if /I [%1]==[nonnetcore] (
+    SET OnlyNonNetCore=true
+    GOTO Next
+)
+REM TODO: remove it in next sprint
 if /I [%1]==[nondnx] (
-    SET OnlyNonDnx=true
+    SET OnlyNonNetCore=true
     GOTO Next
 )
 
@@ -88,21 +93,19 @@ IF NOT [!ERRORLEVEL!]==[0] (
 )
 
 :CheckIfOnlyBuildNonDnx
-IF /I [%OnlyNonDnx%]==[true] (
-    ECHO Only build NonDnx.sln
-    SET BuildProj=%~dp0NonDNX.sln
+IF /I [%OnlyNonNetCore%]==[true] (
+    ECHO Only build NonNETCore.sln
+    SET BuildProj=%~dp0NonNETCore.sln
     CALL :RestoreNormalPackage
     GOTO SetBuildLog
 )
 
-:: Check if DNU exists globally
-:: DNU is OPTIONAL
-:CheckDnu
-WHERE dnu >NUL
+:: Check if dotnet cli exists globally
+:CheckDotnetCli
+WHERE dotnet >NUL
 IF NOT [!ERRORLEVEL!]==[0] (
-    ECHO ERROR: DNU is not successfully configured.
-    ECHO ERROR: Please follow http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm to install dnvm.
-    ECHO ERROR: If dnvm is installed, use `dnvm list` to show available dnx runtime, and use `dnvm use` to select the default dnx runtime
+    ECHO ERROR: dotnet CLI is not successfully configured.
+    ECHO ERROR: Please follow https://www.microsoft.com/net/core to install .NET Core.
     GOTO Exit
 )
 
@@ -130,6 +133,7 @@ IF NOT [!ERRORLEVEL!]==[0] (
 POPD
 
 :AfterBuild
+CALL :GenerateArtifacts
 
 :: Pull the build summary from the log file
 ECHO.
@@ -149,16 +153,16 @@ GOTO Exit
 :Build
 %BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=d;LogFile="%BuildLog%"; %BuildPostfix%
 SET BuildErrorLevel=%ERRORLEVEL%
+dotnet build src\docfx -c %Configuration% -o target\%Configuration%\docfx.cli -f net452
 EXIT /B %ERRORLEVEL%
 
-:RestorePackage
-
-:RestoreDnuPackage
-FOR /D %%x IN ("src","test","tools") DO (
-    PUSHD %%x
-    CMD /C dnu restore --parallel
-    POPD
+:GenerateArtifacts
+ECHO pack nuget package
+FOR /f %%g IN ('DIR /b "src"') DO (
+    CMD /C dotnet pack src\%%g -c Release -o artifacts\Release
 )
+
+:RestorePackage
 
 :RestoreNormalPackage
 :: Currently version 3.3 is not compatible with our build, force to use v2.8.6
@@ -177,7 +181,13 @@ IF NOT [!ERRORLEVEL!]==[0] (
 %CachedNuget% restore "%BuildProj%"
 IF NOT [!ERRORLEVEL!]==[0] (
     ECHO ERROR: Error when restoring packages for %BuildProj%
-    GOTO Exit
+)
+
+:RestoreDnuPackage
+FOR /D %%x IN ("src") DO (
+    PUSHD %%x
+    CMD /C dotnet restore
+    POPD
 )
 
 :Exit

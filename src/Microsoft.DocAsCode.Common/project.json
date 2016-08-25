@@ -1,49 +1,38 @@
 {
   "version": "1.0.0",
-  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
-  "projectUrl": "https://github.com/dotnet/docfx",
-  "authors": ["Microsoft"],
-  "owners": ["Microsoft"],
+  "packOptions": {
+    "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+    "projectUrl": "https://github.com/dotnet/docfx",
+    "authors": [
+      "Microsoft"
+    ],
+    "owners": [
+      "Microsoft"
+    ]
+  },
   "dependencies": {
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
     "YamlDotNet.Signed": "3.9.0",
-    "System.Collections.Immutable": "1.1.37"
+    "Newtonsoft.Json": "9.0.1",
+    "System.Collections.Immutable": "1.2.0"
   },
-  "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {
-        "System.Collections": "",
-        "System.Threading.Tasks": "",
-        "System.Globalization": "",
-        "System.Runtime": "",
-        "System.Xml": ""
-      },
-      "dependencies": {
-        "Newtonsoft.Json": "7.0.1"
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
       }
     },
-    "net45": {
+    "Release": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ],
+        "optimize": true
+      }
+    }
+  },
+  "frameworks": {
+    "net452": {
       "frameworkAssemblies": {
-        "System.Runtime": {
-          "type": "build",
-          "version": ""
-        },
-        "System.Collections": {
-          "type": "build",
-          "version": ""
-        },
-        "System.Globalization": {
-          "type": "build",
-          "version": ""
-        },
-        "System.Threading.Tasks": {
-          "type": "build",
-          "version": ""
-        },
         "System.Xml": ""
-      },
-      "dependencies": {
-        "Newtonsoft.Json": "7.0.1"
       }
     }
   }
