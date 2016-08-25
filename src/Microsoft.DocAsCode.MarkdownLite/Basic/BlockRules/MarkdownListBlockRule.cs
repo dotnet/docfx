@@ -79,8 +79,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         sourceInfo.Copy(item, lineOffset),
                         (p, t) =>
                         {
-                            p.SwitchContext(MarkdownBlockContext.IsTop, false);
+                            var c = p.SwitchContext(MarkdownBlockContext.IsTop, false);
+                            if (!loose)
+                            {
+                                var bc = (MarkdownBlockContext)p.Context;
+                                c = p.SwitchContext(
+                                    bc.SetRules(
+                                        ImmutableList.Create<IMarkdownRule>(
+                                            this,
+                                            new MarkdownNewLineBlockRule(),
+                                            new MarkdownTextBlockRule())));
+                            }
                             var blockTokens = p.Tokenize(t.SourceInfo.Copy(item));
+                            p.SwitchContext(c);
                             blockTokens = TokenHelper.ParseInlineToken(p, this, blockTokens, loose, t.SourceInfo);
                             return new MarkdownListItemBlockToken(t.Rule, t.Context, blockTokens, loose, t.SourceInfo);
                         }));
