@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Common
 
         public string Escape(string html, bool encode = false)
         {
-            return ReplaceRegex(html, encode ? EscapeWithEncode : EscapeWithoutEncode, "&amp;")
+            return html == null ? null : ReplaceRegex(html, encode ? EscapeWithEncode : EscapeWithoutEncode, "&amp;")
                 .Replace("<", "&lt;")
                 .Replace(">", "&gt;")
                 .Replace("\"", "&quot;")
