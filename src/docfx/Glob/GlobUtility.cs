@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode
                 var files = FileGlob.GetFiles(src, item.Files, item.Exclude, options).ToArray();
                 if (files.Length == 0)
                 {
-                    var currentSrcFullPath = string.IsNullOrEmpty(src) ? Environment.CurrentDirectory : Path.GetFullPath(src);
+                    var currentSrcFullPath = string.IsNullOrEmpty(src) ? Directory.GetCurrentDirectory() : Path.GetFullPath(src);
                     Logger.LogInfo($"No files are found with glob pattern {item.Files.ToDelimitedString() ?? "<none>"}, excluding {item.Exclude.ToDelimitedString() ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
                     CheckPatterns(item.Files);
                 }

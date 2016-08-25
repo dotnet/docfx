@@ -159,7 +159,7 @@ namespace Microsoft.DocAsCode.Tests
             new BuildCommand(new BuildCommandOptions
             {
                 Content = new List<string> { conceptualFile1, conceptualFile2 },
-                OutputFolder = Path.Combine(Environment.CurrentDirectory, _outputFolder),
+                OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
                 Templates = new List<string> { Path.Combine(_templateFolder, "default") }
             }).Exec(null);
 

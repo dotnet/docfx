@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public void Exec(SubCommandRunningContext context)
         {
             var config = Config;
-            var baseDirectory = config.BaseDirectory ?? Environment.CurrentDirectory;
+            var baseDirectory = config.BaseDirectory ?? Directory.GetCurrentDirectory();
             var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
 
             MergeDocument(baseDirectory, intermediateOutputFolder);
@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.SubCommands
             // base directory for content from command line is current directory
             // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
             // for `--content "*.cs*`, base directory should be `C:\folder1`
-            string optionsBaseDirectory = Environment.CurrentDirectory;
+            string optionsBaseDirectory = Directory.GetCurrentDirectory();
 
             config.OutputFolder = options.OutputFolder;
 
@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             return from file in mapping.Items
                    from item in file.Files
-                   select Path.Combine(file.SourceFolder ?? Environment.CurrentDirectory, item);
+                   select Path.Combine(file.SourceFolder ?? Directory.GetCurrentDirectory(), item);
         }
 
         private static FileCollection GetFileCollectionFromFileMapping(string baseDirectory, DocumentType type, FileMapping files)

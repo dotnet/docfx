@@ -21,11 +21,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (string.IsNullOrEmpty(defaultBaseDir))
             {
-                DefaultBaseDir = Environment.CurrentDirectory;
+                DefaultBaseDir = Directory.GetCurrentDirectory();
             }
             else
             {
-                DefaultBaseDir = Path.Combine(Environment.CurrentDirectory, defaultBaseDir);
+                DefaultBaseDir = Path.Combine(Directory.GetCurrentDirectory(), defaultBaseDir);
             }
         }
 
@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Add(DocumentType type, string baseDir, IEnumerable<string> files, Func<string, string> pathRewriter = null)
         {
-            var rootedBaseDir = Path.Combine(Environment.CurrentDirectory, baseDir ?? string.Empty);
+            var rootedBaseDir = Path.Combine(Directory.GetCurrentDirectory(), baseDir ?? string.Empty);
             _files.AddRange(from f in files
                             select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type, pathRewriter));
         }

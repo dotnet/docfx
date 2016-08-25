@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public FileResourceCollection(string directory, int maxSearchLevel = MaxSearchLevel)
         {
-            if (string.IsNullOrEmpty(directory)) _directory = Environment.CurrentDirectory;
+            if (string.IsNullOrEmpty(directory)) _directory = Directory.GetCurrentDirectory();
             else _directory = directory;
             Name = _directory;
             _maxDepth = maxSearchLevel;

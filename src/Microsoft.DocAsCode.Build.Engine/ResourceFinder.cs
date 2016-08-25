@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ResourceFinder(Assembly assembly, string rootNamespace, string baseDirectory = null)
         {
-            _baseDirectory = baseDirectory ?? Environment.CurrentDirectory;
+            _baseDirectory = baseDirectory ?? Directory.GetCurrentDirectory();
             _assembly = assembly;
             if (assembly != null)
             {

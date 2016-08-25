@@ -339,7 +339,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     foreach (var item in file.Files)
                     {
-                        yield return Path.Combine(file.SourceFolder ?? Environment.CurrentDirectory, item);
+                        yield return Path.Combine(file.SourceFolder ?? Directory.GetCurrentDirectory(), item);
                     }
                 }
             }

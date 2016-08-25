@@ -493,7 +493,7 @@ test2
                         if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                         File.Create(item.ResourceFile).Dispose();
                     }
-                    if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Environment.CurrentDirectory;
+                    if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Directory.GetCurrentDirectory();
                     item.Model = new DocAsCode.Plugins.ModelWithCache(model);
                 }
                 var settings = new ApplyTemplateSettings(inputFolder, outputFolder);

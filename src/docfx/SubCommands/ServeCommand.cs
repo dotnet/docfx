@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public static void Serve(string folder, string port)
         {
-            if (string.IsNullOrEmpty(folder)) folder = Environment.CurrentDirectory;
+            if (string.IsNullOrEmpty(folder)) folder = Directory.GetCurrentDirectory();
             folder = Path.GetFullPath(folder);
             port = string.IsNullOrWhiteSpace(port) ? "8080" : port;
             var url = $"http://localhost:{port}";

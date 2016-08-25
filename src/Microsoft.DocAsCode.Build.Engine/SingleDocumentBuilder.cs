@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 var context = new DocumentBuildContext(
-                    Path.Combine(Environment.CurrentDirectory, parameters.OutputBaseDir),
+                    Path.Combine(Directory.GetCurrentDirectory(), parameters.OutputBaseDir),
                     parameters.Files.EnumerateFiles(),
                     parameters.ExternalReferencePackages,
                     parameters.XRefMaps,
@@ -605,7 +605,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (fileMetadata == null || fileMetadata.Count == 0) return metadata;
             var result = new Dictionary<string, object>(metadata);
-            var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Environment.CurrentDirectory : fileMetadata.BaseDir;
+            var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Directory.GetCurrentDirectory() : fileMetadata.BaseDir;
             var relativePath = PathUtility.MakeRelativePath(baseDir, file);
             foreach (var item in fileMetadata)
             {

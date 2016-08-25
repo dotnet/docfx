@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
 
-        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Environment.CurrentDirectory) { }
+        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory()) { }
 
         public DocumentBuildContext(
             string buildOutputFolder,
