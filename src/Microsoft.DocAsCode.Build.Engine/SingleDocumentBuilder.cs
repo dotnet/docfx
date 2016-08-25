@@ -125,6 +125,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                             manifest.AddRange(BuildCore(hostService, context));
                         }
 
+                        if (ShouldTraceIncrementalInfo)
+                        {
+                            UpdateUidFileDependency(context, hostServices);
+                        }
+
                         // Use manifest from now on
                         using (new LoggerPhaseScope("UpdateContext", true))
                         {
@@ -216,7 +221,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var key in dependencyGraph.Keys)
                 {
-                    if (dependencyGraph.GetAllDependency(key).Any(d => changeItems.ContainsKey(d) && changeItems[d] != ChangeKindWithDependency.None))
+                    if (dependencyGraph.GetAllFileDependency(key).Any(d => changeItems.ContainsKey(d) && changeItems[d] != ChangeKindWithDependency.None))
                     {
                         if (!changeItems.ContainsKey(key))
                         {
@@ -294,16 +299,20 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         continue;
                     }
+                    string key = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
                     if (m.LinkToUids.Count != 0)
                     {
-                        context.DependencyGraph.ReportDependency(
-                            ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(),
+                        context.DependencyGraph.ReportUidDependency(
+                            key,
+                            m.LinkToUids);
+                        context.DependencyGraph.ReportFileDependency(
+                            key,
                             GetFilesFromUids(context, m.LinkToUids));
                     }
                     if (m.LinkToFiles.Count != 0)
                     {
-                        context.DependencyGraph.ReportDependency(
-                            ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(),
+                        context.DependencyGraph.ReportFileDependency(
+                            key,
                             m.LinkToFiles);
                     }
                 }
@@ -575,7 +584,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 // restore dependency graph
                                 if (dg.HasDependency(fileKey))
                                 {
-                                    context.DependencyGraph.ReportDependency(fileKey, dg.GetDirectDependency(fileKey));
+                                    context.DependencyGraph.ReportFileDependency(fileKey, dg.GetDirectFileDependency(fileKey));
                                 }
                                 return null;
                             }

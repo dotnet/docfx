@@ -318,7 +318,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             lock (DependencyGraph)
             {
-                DependencyGraph.ReportDependency(((RelativePath)currentFileModel.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(), dependency);
+                DependencyGraph.ReportFileDependency(((RelativePath)currentFileModel.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(), dependency);
             }
         }
 
