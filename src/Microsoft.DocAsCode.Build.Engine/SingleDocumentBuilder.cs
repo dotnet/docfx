@@ -88,10 +88,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                         DependencyFile = Path.Combine(IntermediateFolder, "dependency"),
                         ManifestFile = Path.Combine(IntermediateFolder, "manifest"),
                         XRefSpecMapFile = Path.Combine(IntermediateFolder, "xrefspecmap"),
+                        WarningLogsFile = Path.Combine(IntermediateFolder, "warninglog"),
                         Attributes = fileAttributes,
                         Dependency = context.DependencyGraph,
                         Manifest = context.ManifestItems,
                         XRefSpecMap = context.XRefSpecMap,
+                        WarningLogs = context.WarningLogs,
                     });
                     _canIncremental = GetCanIncremental(configHash, parameters.VersionName);
                     if (_canIncremental)
@@ -105,6 +107,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 // Start building document...
                 List<HostService> hostServices = null;
+                Logger.RegisterListener(new WarningLogListener(context.WarningLogs));
                 try
                 {
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
@@ -128,7 +131,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         if (ShouldTraceIncrementalInfo)
                         {
-                            UpdateUidFileDependency(context, hostServices);
+                            using (new LoggerPhaseScope("UpdateUidFileDependency", true))
+                            {
+                                UpdateUidFileDependency(context, hostServices);
+                            }
                         }
 
                         // Use manifest from now on
@@ -181,7 +187,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         };
                         if (ShouldTraceIncrementalInfo)
                         {
-                            // to-do: check warning from warning file.
                             CurrentBuildInfo.Versions.Single(v => v.VersionName == parameters.VersionName).Status = BuildStatus.Succeeded;
                         }
                         return result;
@@ -195,6 +200,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Cleanup(item);
                             item.Dispose();
+                        }
+                    }
+                    var lastWarningLogs = LastBuildInfo?.Versions?.SingleOrDefault(v => v.VersionName == parameters.VersionName)?.WarningLogs;
+                    if (lastWarningLogs != null)
+                    {
+                        foreach (var log in lastWarningLogs)
+                        {
+                            Logger.LogWarning(log.Message, log.Phase, log.File, log.Line);
+                        }
+                    }
+                    if (ShouldTraceIncrementalInfo)
+                    {
+                        var current = CurrentBuildInfo.Versions.Single(v => v.VersionName == parameters.VersionName);
+                        if (current.Status == BuildStatus.Succeeded && context.WarningLogs.Count > 0)
+                        {
+                            current.Status = BuildStatus.SucceededWithWarning;
                         }
                     }
                 }
