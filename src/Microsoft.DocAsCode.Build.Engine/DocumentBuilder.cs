@@ -318,10 +318,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (_intermediateFolder != null)
             {
-                if (_currentBuildInfo.Versions.Any(v => v.Status == BuildStatus.Failed))
-                {
-                    return;
-                }
                 JsonUtility.Serialize(
                     Path.Combine(_intermediateFolder, BuildInfo.FileName),
                     _currentBuildInfo);

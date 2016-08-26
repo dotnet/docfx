@@ -229,7 +229,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return false;
             }
             var version = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
-            if (version == null || configHash != version.ConfigHash)
+            if (version == null || configHash != version.ConfigHash || version.Status == BuildStatus.Failed)
             {
                 return false;
             }
