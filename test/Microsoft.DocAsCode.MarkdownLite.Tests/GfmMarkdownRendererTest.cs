@@ -10,121 +10,121 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
     public class GfmMarkdownRendererTest
     {
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_LinkWithSpecialCharactorsInTitle()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_LinkWithSpecialCharactorsInTitle()
         {
             var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.md ""title is ""hello"" world."")";
             var expected = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.md ""title is ""hello"" world."")
 
 ";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_RefLink()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_RefLink()
         {
             var source = @"This is Ref Link: [Simple text][A]
 [A]: https://www.google.com";
             var expected = @"This is Ref Link: [Simple text][A]
 
 [A]: https://www.google.com";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_RefLinkWithSimpleStyle()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_RefLinkWithSimpleStyle()
         {
             var source = @"This is Ref Link: [A][]
 [A]: https://www.google.com";
             var expected = @"This is Ref Link: [A][A]
 
 [A]: https://www.google.com";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_NumberLink()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_NumberLink()
         {
             var source = @"This is Ref Link: [NumberLink]
 [NumberLink]: https://www.google.com";
             var expected = @"This is Ref Link: [NumberLink]
 
 [NumberLink]: https://www.google.com";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
+        [Trait("Related", "MarkdownRenderer")]
         [Trait("Disable", "Because in GFM the mail will be encrypt. Disable this case as it will fail.")]
-        public void TestGfmRewriter_AutoLink()
+        public void TestGfmRenderer_AutoLink()
         {
             var source = @"This is Auto Link: <https://www.google.com>";
             var expected = @"This is Auto Link: <https://www.google.com>
 
 ";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_AutoLinkWithMail()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_AutoLinkWithMail()
         {
             var source = @"This is Auto Link: <user@microsoft.com>";
             var expected = @"This is Auto Link: <user@microsoft.com>
 
 ";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_UrlLink()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_UrlLink()
         {
             var source = @"This is Url Link: https://www.google.com";
             var expected = @"This is Url Link: https://www.google.com
 
 ";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_ImageLinkWithSpecialCharactorsInTitle()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_ImageLinkWithSpecialCharactorsInTitle()
         {
             var source = @"![This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")";
             var expected = @"![This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")
 
 ";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_RefImageLink()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_RefImageLink()
         {
             var source = @"This is Ref Image Link: ![Simple image text][A]
 [A]: girl.png";
             var expected = @"This is Ref Image Link: ![Simple image text][A]
 
 [A]: girl.png";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRewriter")]
-        public void TestGfmRewriter_NumberImageLink()
+        [Trait("Related", "MarkdownRenderer")]
+        public void TestGfmRenderer_NumberImageLink()
         {
             var source = @"This is Ref Image Link: ![NumberImageLink]
 [NumberImageLink]: girl.png";
             var expected = @"This is Ref Image Link: ![NumberImageLink]
 
 [NumberImageLink]: girl.png";
-            TestGfmRewriterInGeneral(source, expected);
+            TestGfmRendererInGeneral(source, expected);
         }
 
-        public void TestGfmRewriterInGeneral(string source, string expected)
+        public void TestGfmRendererInGeneral(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
             var engine = builder.CreateEngine(new MarkdownRenderer());

@@ -42,7 +42,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GfmMarkdownRewriterTest.cs" />
+    <Compile Include="GfmMarkdownRendererTest.cs" />
     <Compile Include="GfmTest.cs" />
     <Compile Include="JsonTokenTreeRendererTest.cs" />
     <Compile Include="PerfTest.cs" />
