@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common
 
     public class XHtmlWriter : XmlWriter
     {
-        private readonly HashSet<string> _voidElements;
+        private static HashSet<string> _voidElements;
         private string _currentElement;
         private readonly XmlWriter _writer;
 
