@@ -34,7 +34,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
             {
-                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir);
+                var options = DocfxFlavoredMarked.CreateDefaultOptions();
+                options.ShouldExportSourceInfo = true;
+                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options);
                 _builder.TokenTreeValidator = tokenTreeValidator;
                 _tokens = tokens;
             }

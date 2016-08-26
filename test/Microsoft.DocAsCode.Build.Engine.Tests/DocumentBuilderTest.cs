@@ -178,39 +178,47 @@ tagRules : [
                     Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
                     var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
                     Assert.Equal(
-                        "<h1 id=\"hello-world\">Hello World</h1>",
+                        $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"7\">Hello World</h1>",
                         model["rawTitle"]);
                     Assert.Equal(
-                        "\n<p>Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\"></xref>\n" +
-                        $"Test link: <a href=\"~/{_inputFolder}/test/test.md\">link text</a>\n" +
-                        "Test link: <a href=\"~/" + resourceFile + "\">link text 2</a>\n" +
-                        "Test link style xref: <a href=\"xref:XRef2\" title=\"title\">link text 3</a>\n" +
-                        "Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" title=\"title\">link text 4</a>\n" +
-                        "Test encoded link style xref with anchor: <a href=\"xref:%58%52%65%66%32#anchor\" title=\"title\">link text 5</a>\n" +
-                        "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>\n" +
-                        "Test autolink style xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2&gt;\"></xref>\n" +
-                        "Test autolink style xref with anchor: <xref href=\"XRef2#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2#anchor&gt;\"></xref>\n" +
-                        "Test encoded autolink style xref with anchor: <xref href=\"%58%52%65%66%32#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:%58%52%65%66%32#anchor&gt;\"></xref>\n" +
-                        "Test invalid autolink style xref with anchor: <xref href=\"invalid#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:invalid#anchor&gt;\"></xref>\n" +
-                        "Test short xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef2\"></xref></p>\n" +
-                        "<p><p>\n" +
-                        "test</p>\n",
+                        string.Join(
+                            "\n",
+                            "",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"8\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"8\"></xref>",
+                            $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"9\">link text</a>",
+                            $"Test link: <a href=\"~/{resourceFile}\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"10\">link text 2</a>",
+                            $"Test link style xref: <a href=\"xref:XRef2\" title=\"title\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"11\">link text 3</a>",
+                            $"Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" title=\"title\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"12\">link text 4</a>",
+                            $"Test encoded link style xref with anchor: <a href=\"xref:%58%52%65%66%32#anchor\" title=\"title\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"13\">link text 5</a>",
+                            $"Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"14\">link text 6</a>",
+                            $"Test autolink style xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"15\"></xref>",
+                            $"Test autolink style xref with anchor: <xref href=\"XRef2#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:XRef2#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"16\"></xref>",
+                            $"Test encoded autolink style xref with anchor: <xref href=\"%58%52%65%66%32#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:%58%52%65%66%32#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"17\"></xref>",
+                            $"Test invalid autolink style xref with anchor: <xref href=\"invalid#anchor\" data-throw-if-not-resolved=\"True\" data-raw=\"&lt;xref:invalid#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"18\"></xref>",
+                            $"Test short xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef2\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"19\"></xref></p>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"20\"><p>",
+                            "test</p>",
+                            ""),
                         model[Constants.PropertyName.Conceptual]);
                     Assert.Equal(
-                        "\n<p>Test XRef: <a class=\"xref\" href=\"test.html#XRef1\">Hello World</a>\n" +
-                        "Test link: <a href=\"test/test.html\">link text</a>\n" +
-                        "Test link: <a href=\"../Microsoft.DocAsCode.Build.Engine.Tests.dll\">link text 2</a>\n" +
-                        "Test link style xref: <a class=\"xref\" href=\"test/test.html#XRef2\" title=\"title\">link text 3</a>\n" +
-                        "Test link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 4</a>\n" +
-                        "Test encoded link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 5</a>\n" +
-                        "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>\n" +
-                        "Test autolink style xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a>\n" +
-                        "Test autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>\n" +
-                        "Test encoded autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>\n" +
-                        "Test invalid autolink style xref with anchor: &lt;xref:invalid#anchor&gt;\n" +
-                        "Test short xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a></p>\n" +
-                        "<p><p>\n" +
-                        "test</p>\n",
+                        string.Join(
+                            "\n",
+                            "",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"8\">Test XRef: <a class=\"xref\" href=\"test.html#XRef1\">Hello World</a>",
+                            $"Test link: <a href=\"test/test.html\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"9\">link text</a>",
+                            $"Test link: <a href=\"../Microsoft.DocAsCode.Build.Engine.Tests.dll\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"10\">link text 2</a>",
+                            "Test link style xref: <a class=\"xref\" href=\"test/test.html#XRef2\" title=\"title\">link text 3</a>",
+                            "Test link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 4</a>",
+                            "Test encoded link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 5</a>",
+                            $"Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"14\">link text 6</a>",
+                            "Test autolink style xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a>",
+                            "Test autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>",
+                            "Test encoded autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>",
+                            "Test invalid autolink style xref with anchor: &lt;xref:invalid#anchor&gt;",
+                            "Test short xref: <a class=\"xref\" href=\"test/test.html#XRef2\">Hello World</a></p>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"20\"><p>",
+                            "test</p>",
+                            ""),
                         File.ReadAllText(conceptualOutputPath));
                     Assert.Equal("Conceptual", model["type"]);
                     Assert.Equal("Hello world!", model["meta"]);
@@ -526,13 +534,13 @@ exports.getOptions = function (){
                     ["_path"] = $"{_inputFolder}/test.html",
                     ["_tocRel"] = "toc",
                     ["_tocKey"] = $"~/{_inputFolder}/toc.md",
-                    ["conceptual"] = $"\n<p>Test link: <a href=\"~/{_inputFolder}/test/test.md\">link text</a>\ntest</p>\n",
+                    ["conceptual"] = $"\n<p sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"5\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"5\">link text</a>\ntest</p>\n",
                     ["type"] = "Conceptual",
                     ["source"] = model["source"], // reuse model's source, not testing this
                     ["path"] = $"{_inputFolder}/test.md",
                     ["meta"] = "Hello world!",
                     ["title"] = "Hello World",
-                    ["rawTitle"] = "<h1 id=\"hello-world\">Hello World</h1>",
+                    ["rawTitle"] = $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcelinenumber=\"4\">Hello World</h1>",
                     ["uid"] = "XRef1",
                     ["wordCount"] = 5,
                     ["__global"] = new
