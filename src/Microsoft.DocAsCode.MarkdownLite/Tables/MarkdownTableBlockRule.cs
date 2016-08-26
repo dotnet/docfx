@@ -49,10 +49,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
                      let si = t.SourceInfo.Copy(text)
                      select new MarkdownTableItemBlockToken(t.Rule, t.Context, p.TokenizeInline(si), si)).ToImmutableArray(),
                     align.ToImmutableArray(),
-                    (from row in cells
-                     select (from col in row
-                             let si = t.SourceInfo.Copy(col)
-                             select new MarkdownTableItemBlockToken(t.Rule, t.Context, p.TokenizeInline(si), si)).ToImmutableArray()).ToImmutableArray(),
+                    cells.Select(
+                        (row, index) =>
+                            (from col in row
+                             let si = t.SourceInfo.Copy(col, index + 2)
+                             select new MarkdownTableItemBlockToken(t.Rule, t.Context, p.TokenizeInline(si), si)).ToImmutableArray()
+                    ).ToImmutableArray(),
                     t.SourceInfo));
         }
 
