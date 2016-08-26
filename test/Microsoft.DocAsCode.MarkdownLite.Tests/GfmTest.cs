@@ -205,11 +205,13 @@ c
 <pre><code>c
 </code></pre>")]
         [InlineData(@"* First
+
   |  | Header1 | Header2 |
   ------- | ------- | --------
   | Row1 | Cell11 | Cell12 |
 * Second", @"<ul>
-<li>First<table>
+<li><p>First</p>
+<table>
 <thead>
 <tr>
 <th></th>
@@ -347,12 +349,23 @@ break list!
 </ol>
 ")]
         [InlineData(@"1. some text
+
+  ```
+  --
+  ```",
+            @"<ol>
+<li><p>some text</p>
+<pre><code>--
+</code></pre></li>
+</ol>
+")]
+        [InlineData(@"1. some text
  ```
  --
  ```",
             @"<ol>
-<li>some text<pre><code>--
-</code></pre></li>
+<li>some text
+<code>--</code></li>
 </ol>
 ")]
         [InlineData(
