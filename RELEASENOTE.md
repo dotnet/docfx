@@ -2,6 +2,8 @@ Version Notes (Current Version: v2.4)
 =======================================
 v2.4(Pre-Release)
 -----------
+1. Update default template theme.
+2. Fix resolving properties for swagger.
 
 v2.3
 -----------
