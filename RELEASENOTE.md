@@ -2,8 +2,13 @@ Version Notes (Current Version: v2.4)
 =======================================
 v2.4(Pre-Release)
 -----------
-1. Update default template theme.
-2. Fix resolving properties for swagger.
+1.  Update default template theme.
+2.  Fix resolving properties for swagger.
+3.  Fix bugs in markdown.
+    1.  Fix id in title (following GitHub rule).
+    2.  Fix strikeout not work in dfm.
+    3.  Fix tight list item behavior.
+    4.  Fix line number in table.
 
 v2.3
 -----------
