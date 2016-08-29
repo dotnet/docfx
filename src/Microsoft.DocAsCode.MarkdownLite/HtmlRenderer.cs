@@ -54,9 +54,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 + level
                 + " id=\""
                 + renderer.Options.HeaderPrefix
-                + token.Id;
+                + token.Id
+                + "\"";
             result = AppendSourceInfo(result, renderer, token);
-            result += "\">";
+            result += ">";
             foreach (var item in token.Content.Tokens)
             {
                 result += renderer.Render(item);
