@@ -218,7 +218,6 @@ Yeah!".Replace("\r\n", "\n"), File));
             Assert.Equal(4, table.Cells[0][1].SourceInfo.LineNumber);
             Assert.Equal(5, table.Cells[1][0].SourceInfo.LineNumber);
             Assert.Equal(5, table.Cells[1][1].SourceInfo.LineNumber);
-
         }
     }
 }
