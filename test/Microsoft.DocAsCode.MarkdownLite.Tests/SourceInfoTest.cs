@@ -181,5 +181,43 @@ Yeah!".Replace("\r\n", "\n"), File));
                 Assert.Equal(File, para.SourceInfo.File);
             }
         }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestSourceInfo_Table()
+        {
+            const string File = "test.md";
+            var gfm = new GfmEngineBuilder(new Options()).CreateEngine(new HtmlRenderer());
+            var tokens = gfm.Parser.Tokenize(
+                SourceInfo.Create(@"
+| H1 | H2 |
+|----|----|
+|R1C1|R1C2|
+|R2C1|R2C2|
+".Replace("\r\n", "\n"), File));
+            var rewriter =
+                new MarkdownRewriteEngine(
+                    gfm,
+                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
+                        (e, t) => t.Extract(gfm.Parser)));
+            tokens = rewriter.Rewrite(tokens);
+
+            Assert.Equal(2, tokens.Length);
+            Assert.IsType<MarkdownTableBlockToken>(tokens[1]);
+            var table = (MarkdownTableBlockToken)tokens[1];
+            Assert.Equal(2, table.Header.Length);
+            Assert.Equal(2, table.Cells.Length);
+
+            Assert.Equal(2, table.SourceInfo.LineNumber);
+            Assert.Equal(File, table.SourceInfo.File);
+
+            Assert.Equal(2, table.Header[0].SourceInfo.LineNumber);
+            Assert.Equal(2, table.Header[1].SourceInfo.LineNumber);
+
+            Assert.Equal(4, table.Cells[0][0].SourceInfo.LineNumber);
+            Assert.Equal(4, table.Cells[0][1].SourceInfo.LineNumber);
+            Assert.Equal(5, table.Cells[1][0].SourceInfo.LineNumber);
+            Assert.Equal(5, table.Cells[1][1].SourceInfo.LineNumber);
+        }
     }
 }
