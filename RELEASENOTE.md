@@ -1,5 +1,8 @@
-Version Notes (Current Version: v2.4)
+Version Notes (Current Version: v2.5)
 =======================================
+v2.5(Pre-Release)
+-----------
+
 v2.4
 -----------
 1.  Update default template theme.
