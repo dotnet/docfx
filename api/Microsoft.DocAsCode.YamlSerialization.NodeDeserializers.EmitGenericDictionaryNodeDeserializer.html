@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class EmitGenericDictionaryNodeDeserializer
    | DocFX website ">
-    <meta name="generator" content="docfx 2.3.1.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -76,8 +76,6 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericDictionaryNodeDeserializer.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/NodeDeserializers/EmitGenericDictionaryNodeDeserializer.cs/#L18" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericDictionaryNodeDeserializer" data-uid="Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer">Class EmitGenericDictionaryNodeDeserializer
               </h1>
               <div class="markdown level0 summary"></div>
@@ -146,74 +144,6 @@
                   <tr>
                     <td><span class="xref">YamlDotNet.Serialization.IObjectFactory</span></td>
                     <td><em>objectFactory</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h3 id="methods">Methods
-              </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericDictionaryNodeDeserializer_DeserializeHelper__2_YamlDotNet_Core_EventReader_System_Type_System_Func_YamlDotNet_Core_EventReader_System_Type_System_Object__System_Collections_Generic_IDictionary___0___1__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.DeserializeHelper%60%602(YamlDotNet.Core.EventReader%2CSystem.Type%2CSystem.Func%7BYamlDotNet.Core.EventReader%2CSystem.Type%2CSystem.Object%7D%2CSystem.Collections.Generic.IDictionary%7B%60%600%2C%60%601%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/NodeDeserializers/EmitGenericDictionaryNodeDeserializer.cs/#L86">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericDictionaryNodeDeserializer_DeserializeHelper__2_YamlDotNet_Core_EventReader_System_Type_System_Func_YamlDotNet_Core_EventReader_System_Type_System_Object__System_Collections_Generic_IDictionary___0___1__" data-uid="Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.DeserializeHelper``2(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object},System.Collections.Generic.IDictionary{``0,``1})">DeserializeHelper&lt;TKey, TValue&gt;(EventReader, Type, Func&lt;EventReader, Type, Object&gt;, IDictionary&lt;TKey, TValue&gt;)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[EditorBrowsable(EditorBrowsableState.Never)]
-public static void DeserializeHelper&lt;TKey, TValue&gt;(EventReader reader, Type expectedType, Func&lt;EventReader, Type, object&gt; nestedObjectDeserializer, IDictionary&lt;TKey, TValue&gt; result)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="xref">YamlDotNet.Core.EventReader</span></td>
-                    <td><em>reader</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
-                    <td><em>expectedType</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/bb534647(v=vs.110).aspx">Func</a>&lt;<span class="xref">YamlDotNet.Core.EventReader</span>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;</td>
-                    <td><em>nestedObjectDeserializer</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/s4ys34ea(v=vs.110).aspx">IDictionary</a>&lt;TKey, TValue&gt;</td>
-                    <td><em>result</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="typeParameters">Type Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><em>TKey</em></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td><em>TValue</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -291,9 +221,21 @@ public static void DeserializeHelper&lt;TKey, TValue&gt;(EventReader reader, Typ
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericDictionaryNodeDeserializer.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.YamlSerialization/NodeDeserializers/EmitGenericDictionaryNodeDeserializer.cs/#L18" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

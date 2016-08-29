@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class MarkdownLinkBaseInlineRule
    | DocFX website ">
-    <meta name="generator" content="docfx 2.3.0.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -76,8 +76,6 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownLinkBaseInlineRule.cs/#L6" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule">Class MarkdownLinkBaseInlineRule
               </h1>
               <div class="markdown level0 summary"></div>
@@ -154,17 +152,17 @@
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_GenerateToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String_System_String_System_String_System_Boolean_Microsoft_DocAsCode_MarkdownLite_SourceInfo_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser%2CSystem.String%2CSystem.String%2CSystem.String%2CSystem.Boolean%2CMicrosoft.DocAsCode.MarkdownLite.SourceInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_GenerateToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String_System_String_System_String_System_Boolean_Microsoft_DocAsCode_MarkdownLite_SourceInfo_Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser%2CSystem.String%2CSystem.String%2CSystem.String%2CSystem.Boolean%2CMicrosoft.DocAsCode.MarkdownLite.SourceInfo%2CMicrosoft.DocAsCode.MarkdownLite.MarkdownLinkType%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownLinkBaseInlineRule.cs/#L12">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_GenerateToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String_System_String_System_String_System_Boolean_Microsoft_DocAsCode_MarkdownLite_SourceInfo_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String,System.String,System.String,System.Boolean,Microsoft.DocAsCode.MarkdownLite.SourceInfo)">GenerateToken(IMarkdownParser, String, String, String, Boolean, SourceInfo)</h4>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_GenerateToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String_System_String_System_String_System_Boolean_Microsoft_DocAsCode_MarkdownLite_SourceInfo_Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_System_String_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String,System.String,System.String,System.Boolean,Microsoft.DocAsCode.MarkdownLite.SourceInfo,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType,System.String)">GenerateToken(IMarkdownParser, String, String, String, Boolean, SourceInfo, MarkdownLinkType, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo)</code></pre>
+                <pre><code class="lang-csharp hljs">protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo, MarkdownLinkType linkType, string refId)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -204,6 +202,16 @@
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.SourceInfo.html#Microsoft_DocAsCode_MarkdownLite_SourceInfo">SourceInfo</a></td>
                     <td><em>sourceInfo</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType">MarkdownLinkType</a></td>
+                    <td><em>linkType</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><em>refId</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -284,9 +292,21 @@
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/InlineRules/MarkdownLinkBaseInlineRule.cs/#L6" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

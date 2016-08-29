@@ -610,11 +610,31 @@ references:
   href: api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureNoteBlockToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_Microsoft_DocAsCode_MarkdownLite_SourceInfo_
   commentId: M:Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
   fullName: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.AzureNoteBlockToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.String, System.String, Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+- uid: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Content
+  name: Content
+  href: api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureNoteBlockToken_Content
+  commentId: P:Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Content
+  fullName: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Content
+- uid: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Context
+  name: Context
+  href: api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureNoteBlockToken_Context
+  commentId: P:Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Context
+  fullName: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Context
 - uid: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.NoteType
   name: NoteType
   href: api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureNoteBlockToken_NoteType
   commentId: P:Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.NoteType
   fullName: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.NoteType
+- uid: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Rule
+  name: Rule
+  href: api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureNoteBlockToken_Rule
+  commentId: P:Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Rule
+  fullName: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.Rule
+- uid: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.SourceInfo
+  name: SourceInfo
+  href: api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureNoteBlockToken_SourceInfo
+  commentId: P:Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.SourceInfo
+  fullName: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureNoteBlockToken.SourceInfo
 - uid: Microsoft.DocAsCode.AzureMarkdownRewriters.AzureParagraphBlockRule
   name: AzureParagraphBlockRule
   href: api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureParagraphBlockRule.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureParagraphBlockRule
@@ -1147,6 +1167,16 @@ references:
   href: api/Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.html#Microsoft_DocAsCode_Build_ConceptualDocuments_CountWord_BuildOrder
   commentId: P:Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.BuildOrder
   fullName: Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.BuildOrder
+- uid: Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  name: CanIncrementalBuild(FileAndType)
+  href: api/Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.html#Microsoft_DocAsCode_Build_ConceptualDocuments_CountWord_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_
+  commentId: M:Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  fullName: Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+- uid: Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.GetIncrementalContextHash
+  name: GetIncrementalContextHash()
+  href: api/Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.html#Microsoft_DocAsCode_Build_ConceptualDocuments_CountWord_GetIncrementalContextHash
+  commentId: M:Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.GetIncrementalContextHash
+  fullName: Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.GetIncrementalContextHash()
 - uid: Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.Name
   name: Name
   href: api/Microsoft.DocAsCode.Build.ConceptualDocuments.CountWord.html#Microsoft_DocAsCode_Build_ConceptualDocuments_CountWord_Name
@@ -1344,66 +1374,6 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.BasicXRefMapReader.html#Microsoft_DocAsCode_Build_Engine_BasicXRefMapReader_Map
   commentId: P:Microsoft.DocAsCode.Build.Engine.BasicXRefMapReader.Map
   fullName: Microsoft.DocAsCode.Build.Engine.BasicXRefMapReader.Map
-- uid: Microsoft.DocAsCode.Build.Engine.BuildInfo
-  name: BuildInfo
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_BuildInfo
-  commentId: T:Microsoft.DocAsCode.Build.Engine.BuildInfo
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildInfo
-- uid: Microsoft.DocAsCode.Build.Engine.BuildInfo.BuildStartTime
-  name: BuildStartTime
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_BuildInfo_BuildStartTime
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildInfo.BuildStartTime
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildInfo.BuildStartTime
-- uid: Microsoft.DocAsCode.Build.Engine.BuildInfo.ConfigHash
-  name: ConfigHash
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_BuildInfo_ConfigHash
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildInfo.ConfigHash
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildInfo.ConfigHash
-- uid: Microsoft.DocAsCode.Build.Engine.BuildInfo.DocfxVersion
-  name: DocfxVersion
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_BuildInfo_DocfxVersion
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildInfo.DocfxVersion
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildInfo.DocfxVersion
-- uid: Microsoft.DocAsCode.Build.Engine.BuildInfo.FileName
-  name: FileName
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_BuildInfo_FileName
-  commentId: F:Microsoft.DocAsCode.Build.Engine.BuildInfo.FileName
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildInfo.FileName
-- uid: Microsoft.DocAsCode.Build.Engine.BuildInfo.PluginHash
-  name: PluginHash
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_BuildInfo_PluginHash
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildInfo.PluginHash
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildInfo.PluginHash
-- uid: Microsoft.DocAsCode.Build.Engine.BuildInfo.TemplateHash
-  name: TemplateHash
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_BuildInfo_TemplateHash
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildInfo.TemplateHash
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildInfo.TemplateHash
-- uid: Microsoft.DocAsCode.Build.Engine.BuildInfo.Versions
-  name: Versions
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_BuildInfo_Versions
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildInfo.Versions
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildInfo.Versions
-- uid: Microsoft.DocAsCode.Build.Engine.BuildVersionInfo
-  name: BuildVersionInfo
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_BuildVersionInfo
-  commentId: T:Microsoft.DocAsCode.Build.Engine.BuildVersionInfo
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildVersionInfo
-- uid: Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.Attributes
-  name: Attributes
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_BuildVersionInfo_Attributes
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.Attributes
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.Attributes
-- uid: Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.Dependency
-  name: Dependency
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_BuildVersionInfo_Dependency
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.Dependency
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.Dependency
-- uid: Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.VersionName
-  name: VersionName
-  href: api/Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_BuildVersionInfo_VersionName
-  commentId: P:Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.VersionName
-  fullName: Microsoft.DocAsCode.Build.Engine.BuildVersionInfo.VersionName
 - uid: Microsoft.DocAsCode.Build.Engine.CompositeResourceCollectionWithOverridden
   name: CompositeResourceCollectionWithOverridden
   href: api/Microsoft.DocAsCode.Build.Engine.CompositeResourceCollectionWithOverridden.html#Microsoft_DocAsCode_Build_Engine_CompositeResourceCollectionWithOverridden
@@ -1471,48 +1441,6 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.CrossReferenceNotResolvedException.html#Microsoft_DocAsCode_Build_Engine_CrossReferenceNotResolvedException_UidRawText
   commentId: P:Microsoft.DocAsCode.Build.Engine.CrossReferenceNotResolvedException.UidRawText
   fullName: Microsoft.DocAsCode.Build.Engine.CrossReferenceNotResolvedException.UidRawText
-- uid: Microsoft.DocAsCode.Build.Engine.DependencyGraph
-  name: DependencyGraph
-  href: api/Microsoft.DocAsCode.Build.Engine.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_DependencyGraph
-  commentId: T:Microsoft.DocAsCode.Build.Engine.DependencyGraph
-  fullName: Microsoft.DocAsCode.Build.Engine.DependencyGraph
-- uid: Microsoft.DocAsCode.Build.Engine.DependencyGraph.#ctor
-  name: DependencyGraph()
-  href: api/Microsoft.DocAsCode.Build.Engine.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_DependencyGraph__ctor
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DependencyGraph.#ctor
-  fullName: Microsoft.DocAsCode.Build.Engine.DependencyGraph.DependencyGraph()
-- uid: Microsoft.DocAsCode.Build.Engine.DependencyGraph.GetAllDependency(System.String)
-  name: GetAllDependency(String)
-  href: api/Microsoft.DocAsCode.Build.Engine.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_DependencyGraph_GetAllDependency_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DependencyGraph.GetAllDependency(System.String)
-  fullName: Microsoft.DocAsCode.Build.Engine.DependencyGraph.GetAllDependency(System.String)
-- uid: Microsoft.DocAsCode.Build.Engine.DependencyGraph.HasDependency(System.String)
-  name: HasDependency(String)
-  href: api/Microsoft.DocAsCode.Build.Engine.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_DependencyGraph_HasDependency_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DependencyGraph.HasDependency(System.String)
-  fullName: Microsoft.DocAsCode.Build.Engine.DependencyGraph.HasDependency(System.String)
-- uid: Microsoft.DocAsCode.Build.Engine.DependencyGraph.Load(System.IO.TextReader)
-  name: Load(TextReader)
-  href: api/Microsoft.DocAsCode.Build.Engine.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_DependencyGraph_Load_System_IO_TextReader_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DependencyGraph.Load(System.IO.TextReader)
-  fullName: Microsoft.DocAsCode.Build.Engine.DependencyGraph.Load(System.IO.TextReader)
-- uid: Microsoft.DocAsCode.Build.Engine.DependencyGraph.ReportDependency(System.String,System.Collections.Generic.IEnumerable{System.String})
-  name: ReportDependency(String, IEnumerable<String>)
-  href: api/Microsoft.DocAsCode.Build.Engine.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_DependencyGraph_ReportDependency_System_String_System_Collections_Generic_IEnumerable_System_String__
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DependencyGraph.ReportDependency(System.String,System.Collections.Generic.IEnumerable{System.String})
-  name.vb: ReportDependency(String, IEnumerable(Of String))
-  fullName: Microsoft.DocAsCode.Build.Engine.DependencyGraph.ReportDependency(System.String, System.Collections.Generic.IEnumerable<System.String>)
-  fullName.vb: Microsoft.DocAsCode.Build.Engine.DependencyGraph.ReportDependency(System.String, System.Collections.Generic.IEnumerable(Of System.String))
-- uid: Microsoft.DocAsCode.Build.Engine.DependencyGraph.ReportDependency(System.String,System.String)
-  name: ReportDependency(String, String)
-  href: api/Microsoft.DocAsCode.Build.Engine.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_DependencyGraph_ReportDependency_System_String_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DependencyGraph.ReportDependency(System.String,System.String)
-  fullName: Microsoft.DocAsCode.Build.Engine.DependencyGraph.ReportDependency(System.String, System.String)
-- uid: Microsoft.DocAsCode.Build.Engine.DependencyGraph.Save(System.IO.TextWriter)
-  name: Save(TextWriter)
-  href: api/Microsoft.DocAsCode.Build.Engine.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_DependencyGraph_Save_System_IO_TextWriter_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DependencyGraph.Save(System.IO.TextWriter)
-  fullName: Microsoft.DocAsCode.Build.Engine.DependencyGraph.Save(System.IO.TextWriter)
 - uid: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider
   name: DfmServiceProvider
   href: api/Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.html#Microsoft_DocAsCode_Build_Engine_DfmServiceProvider
@@ -1650,13 +1578,13 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder
   commentId: T:Microsoft.DocAsCode.Build.Engine.DocumentBuilder
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder
-- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.#ctor(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Collections.Immutable.ImmutableArray{System.String},System.String)
-  name: DocumentBuilder(IEnumerable<Assembly>, ImmutableArray<String>, String)
-  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder__ctor_System_Collections_Generic_IEnumerable_System_Reflection_Assembly__System_Collections_Immutable_ImmutableArray_System_String__System_String_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.#ctor(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Collections.Immutable.ImmutableArray{System.String},System.String)
-  name.vb: DocumentBuilder(IEnumerable(Of Assembly), ImmutableArray(Of String), String)
-  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.DocumentBuilder(System.Collections.Generic.IEnumerable<System.Reflection.Assembly>, System.Collections.Immutable.ImmutableArray<System.String>, System.String)
-  fullName.vb: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.DocumentBuilder(System.Collections.Generic.IEnumerable(Of System.Reflection.Assembly), System.Collections.Immutable.ImmutableArray(Of System.String), System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.#ctor(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Collections.Immutable.ImmutableArray{System.String},System.String,System.String)
+  name: DocumentBuilder(IEnumerable<Assembly>, ImmutableArray<String>, String, String)
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder__ctor_System_Collections_Generic_IEnumerable_System_Reflection_Assembly__System_Collections_Immutable_ImmutableArray_System_String__System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.DocumentBuilder.#ctor(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Collections.Immutable.ImmutableArray{System.String},System.String,System.String)
+  name.vb: DocumentBuilder(IEnumerable(Of Assembly), ImmutableArray(Of String), String, String)
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.DocumentBuilder(System.Collections.Generic.IEnumerable<System.Reflection.Assembly>, System.Collections.Immutable.ImmutableArray<System.String>, System.String, System.String)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.DocumentBuilder(System.Collections.Generic.IEnumerable(Of System.Reflection.Assembly), System.Collections.Immutable.ImmutableArray(Of System.String), System.String, System.String)
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)
   name: Build(DocumentBuildParameters)
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuilder.html#Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_
@@ -1684,6 +1612,11 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_ApplyTemplateSettings
   commentId: P:Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.ApplyTemplateSettings
   fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.ApplyTemplateSettings
+- uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.Changes
+  name: Changes
+  href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_Changes
+  commentId: P:Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.Changes
+  fullName: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.Changes
 - uid: Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.ExternalReferencePackages
   name: ExternalReferencePackages
   href: api/Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters.html#Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_ExternalReferencePackages
@@ -1947,6 +1880,423 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.GfmServiceProvider.html#Microsoft_DocAsCode_Build_Engine_GfmServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_
   commentId: M:Microsoft.DocAsCode.Build.Engine.GfmServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
   fullName: Microsoft.DocAsCode.Build.Engine.GfmServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals
+  name: Microsoft.DocAsCode.Build.Engine.Incrementals
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.html#Microsoft_DocAsCode_Build_Engine_Incrementals
+  commentId: N:Microsoft.DocAsCode.Build.Engine.Incrementals
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo
+  name: BuildInfo
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.BuildStartTime
+  name: BuildStartTime
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_BuildStartTime
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.BuildStartTime
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.BuildStartTime
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.DocfxVersion
+  name: DocfxVersion
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_DocfxVersion
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.DocfxVersion
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.DocfxVersion
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.FileName
+  name: FileName
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_FileName
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.FileName
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.FileName
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.PluginHash
+  name: PluginHash
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_PluginHash
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.PluginHash
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.PluginHash
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.TemplateHash
+  name: TemplateHash
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_TemplateHash
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.TemplateHash
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.TemplateHash
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Versions
+  name: Versions
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo_Versions
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Versions
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.Versions
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem
+  name: BuildOutputItem
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildOutputItem
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.DestinationFile
+  name: DestinationFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildOutputItem_DestinationFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.DestinationFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.DestinationFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.Files
+  name: Files
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildOutputItem_Files
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.Files
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.Files
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.ManifestMetadata
+  name: ManifestMetadata
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildOutputItem_ManifestMetadata
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.ManifestMetadata
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.ManifestMetadata
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.SourceFile
+  name: SourceFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildOutputItem_SourceFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.SourceFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputItem.SourceFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs
+  name: BuildOutputs
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildOutputs
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs.Items
+  name: Items
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildOutputs_Items
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs.Items
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs.Items
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo
+  name: BuildVersionInfo
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Attributes
+  name: Attributes
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Attributes
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Attributes
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Attributes
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.AttributesFile
+  name: AttributesFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_AttributesFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.AttributesFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.AttributesFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.ConfigHash
+  name: ConfigHash
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_ConfigHash
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.ConfigHash
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.ConfigHash
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Dependency
+  name: Dependency
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Dependency
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Dependency
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Dependency
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.DependencyFile
+  name: DependencyFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_DependencyFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.DependencyFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.DependencyFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Manifest
+  name: Manifest
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Manifest
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Manifest
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Manifest
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.ManifestFile
+  name: ManifestFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_ManifestFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.ManifestFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.ManifestFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.OutputFile
+  name: OutputFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_OutputFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.OutputFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.OutputFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Processors
+  name: Processors
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Processors
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Processors
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Processors
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.VersionName
+  name: VersionName
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_VersionName
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.VersionName
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.VersionName
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMap
+  name: XRefSpecMap
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_XRefSpecMap
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMap
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMap
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMapFile
+  name: XRefSpecMapFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_XRefSpecMapFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMapFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMapFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem
+  name: ChangeItem
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeItem
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.FilePath
+  name: FilePath
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeItem_FilePath
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.FilePath
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.FilePath
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.Kind
+  name: Kind
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeItem_Kind
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.Kind
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem.Kind
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind
+  name: ChangeKind
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKind
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Created
+  name: Created
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKind_Created
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Created
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Created
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Deleted
+  name: Deleted
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKind_Deleted
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Deleted
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Deleted
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.None
+  name: None
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKind_None
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.None
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.None
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Updated
+  name: Updated
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKind_Updated
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Updated
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind.Updated
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency
+  name: ChangeKindWithDependency
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKindWithDependency
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Created
+  name: Created
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKindWithDependency_Created
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Created
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Created
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Deleted
+  name: Deleted
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKindWithDependency_Deleted
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Deleted
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Deleted
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.DependencyUpdated
+  name: DependencyUpdated
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKindWithDependency_DependencyUpdated
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.DependencyUpdated
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.DependencyUpdated
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.None
+  name: None
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKindWithDependency_None
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.None
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.None
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Updated
+  name: Updated
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKindWithDependency_Updated
+  commentId: F:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Updated
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKindWithDependency.Updated
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList
+  name: ChangeList
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeList
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.Add(System.String,Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind)
+  name: Add(String, ChangeKind)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeList_Add_System_String_Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeKind_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.Add(System.String,Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.Add(System.String, Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeKind)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetCreatedFiles
+  name: GetCreatedFiles()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeList_GetCreatedFiles
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetCreatedFiles
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetCreatedFiles()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetDeletedFiles
+  name: GetDeletedFiles()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeList_GetDeletedFiles
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetDeletedFiles
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetDeletedFiles()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetEnumerator
+  name: GetEnumerator()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeList_GetEnumerator
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetEnumerator
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetEnumerator()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetUpdatedFiles
+  name: GetUpdatedFiles()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeList_GetUpdatedFiles
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetUpdatedFiles
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.GetUpdatedFiles()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.Parse(System.String,System.String)
+  name: Parse(String, String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeList_Parse_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.Parse(System.String,System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.Parse(System.String, System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.System#Collections#Generic#IEnumerable{Microsoft#DocAsCode#Build#Engine#Incrementals#ChangeItem}#GetEnumerator
+  name: IEnumerable<ChangeItem>.GetEnumerator()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeList_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Build_Engine_Incrementals_ChangeItem__GetEnumerator
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.System#Collections#Generic#IEnumerable{Microsoft#DocAsCode#Build#Engine#Incrementals#ChangeItem}#GetEnumerator
+  name.vb: System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem>.GetEnumerator()
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeList.System.Collections.Generic.IEnumerable<Microsoft.DocAsCode.Build.Engine.Incrementals.ChangeItem>.GetEnumerator()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph
+  name: DependencyGraph
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.#ctor
+  name: DependencyGraph()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph__ctor
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.#ctor
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.DependencyGraph()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependency(System.String)
+  name: GetAllDependency(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_GetAllDependency_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependency(System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependency(System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetDirectDependency(System.String)
+  name: GetDirectDependency(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_GetDirectDependency_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetDirectDependency(System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetDirectDependency(System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.HasDependency(System.String)
+  name: HasDependency(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_HasDependency_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.HasDependency(System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.HasDependency(System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Keys
+  name: Keys
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_Keys
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Keys
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Keys
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Load(System.IO.TextReader)
+  name: Load(TextReader)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_Load_System_IO_TextReader_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Load(System.IO.TextReader)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Load(System.IO.TextReader)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.ReportDependency(System.String,System.Collections.Generic.IEnumerable{System.String})
+  name: ReportDependency(String, IEnumerable<String>)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_ReportDependency_System_String_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.ReportDependency(System.String,System.Collections.Generic.IEnumerable{System.String})
+  name.vb: ReportDependency(String, IEnumerable(Of String))
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.ReportDependency(System.String, System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.ReportDependency(System.String, System.Collections.Generic.IEnumerable(Of System.String))
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.ReportDependency(System.String,System.String)
+  name: ReportDependency(String, String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_ReportDependency_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.ReportDependency(System.String,System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.ReportDependency(System.String, System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Save(System.IO.TextWriter)
+  name: Save(TextWriter)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_Save_System_IO_TextWriter_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Save(System.IO.TextWriter)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.Save(System.IO.TextWriter)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem
+  name: FileAttributeItem
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_FileAttributeItem
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.File
+  name: File
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_FileAttributeItem_File
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.File
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.File
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.LastModifiedTime
+  name: LastModifiedTime
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_FileAttributeItem_LastModifiedTime
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.LastModifiedTime
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.LastModifiedTime
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.MD5
+  name: MD5
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_FileAttributeItem_MD5
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.MD5
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.MD5
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributes
+  name: FileAttributes
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributes.html#Microsoft_DocAsCode_Build_Engine_Incrementals_FileAttributes
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributes
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributes
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckAttribute
+  name: IncrementalCheckAttribute
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckAttribute.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalCheckAttribute
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckAttribute
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckAttribute
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckPropertiesResolver
+  name: IncrementalCheckPropertiesResolver
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckPropertiesResolver.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalCheckPropertiesResolver
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckPropertiesResolver
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckPropertiesResolver
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckPropertiesResolver.CreateProperty(System.Reflection.MemberInfo,Newtonsoft.Json.MemberSerialization)
+  name: CreateProperty(MemberInfo, MemberSerialization)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckPropertiesResolver.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalCheckPropertiesResolver_CreateProperty_System_Reflection_MemberInfo_Newtonsoft_Json_MemberSerialization_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckPropertiesResolver.CreateProperty(System.Reflection.MemberInfo,Newtonsoft.Json.MemberSerialization)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalCheckPropertiesResolver.CreateProperty(System.Reflection.MemberInfo, Newtonsoft.Json.MemberSerialization)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility
+  name: IncrementalUtility
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadDependency(System.String)
+  name: LoadDependency(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_LoadDependency_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadDependency(System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadDependency(System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile``1(System.String)
+  name: LoadIntermediateFile<T>(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_LoadIntermediateFile__1_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile``1(System.String)
+  name.vb: LoadIntermediateFile(Of T)(String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile<T>(System.String)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.LoadIntermediateFile(Of T)(System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveDependency(System.String,Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph)
+  name: SaveDependency(String, DependencyGraph)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_SaveDependency_System_String_Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveDependency(System.String,Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveDependency(System.String, Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile``1(System.String,``0)
+  name: SaveIntermediateFile<T>(String, T)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.html#Microsoft_DocAsCode_Build_Engine_Incrementals_IncrementalUtility_SaveIntermediateFile__1_System_String___0_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile``1(System.String,``0)
+  name.vb: SaveIntermediateFile(Of T)(String, T)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile<T>(System.String, T)
+  fullName.vb: Microsoft.DocAsCode.Build.Engine.Incrementals.IncrementalUtility.SaveIntermediateFile(Of T)(System.String, T)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo
+  name: ProcessorInfo
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorInfo
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.IncrementalContextHash
+  name: IncrementalContextHash
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorInfo_IncrementalContextHash
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.IncrementalContextHash
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.IncrementalContextHash
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.Name
+  name: Name
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorInfo_Name
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.Name
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.Name
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.Steps
+  name: Steps
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorInfo_Steps
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.Steps
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorInfo.Steps
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo
+  name: ProcessorStepInfo
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorStepInfo
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.Equals(System.Object)
+  name: Equals(Object)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorStepInfo_Equals_System_Object_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.Equals(System.Object)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.Equals(System.Object)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.GetHashCode
+  name: GetHashCode()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorStepInfo_GetHashCode
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.GetHashCode
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.GetHashCode()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.IncrementalContextHash
+  name: IncrementalContextHash
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorStepInfo_IncrementalContextHash
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.IncrementalContextHash
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.IncrementalContextHash
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.Name
+  name: Name
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorStepInfo_Name
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.Name
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.Name
 - uid: Microsoft.DocAsCode.Build.Engine.InvalidPreprocessorException
   name: InvalidPreprocessorException
   href: api/Microsoft.DocAsCode.Build.Engine.InvalidPreprocessorException.html#Microsoft_DocAsCode_Build_Engine_InvalidPreprocessorException
@@ -2032,6 +2382,21 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.JintProcessorHelper.html#Microsoft_DocAsCode_Build_Engine_JintProcessorHelper_ConvertStrongTypeToJsValue_System_Object_
   commentId: M:Microsoft.DocAsCode.Build.Engine.JintProcessorHelper.ConvertStrongTypeToJsValue(System.Object)
   fullName: Microsoft.DocAsCode.Build.Engine.JintProcessorHelper.ConvertStrongTypeToJsValue(System.Object)
+- uid: Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider
+  name: JsonTokenTreeServiceProvider
+  href: api/Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.html#Microsoft_DocAsCode_Build_Engine_JsonTokenTreeServiceProvider
+  commentId: T:Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider
+  fullName: Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider
+- uid: Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+  name: CreateMarkdownService(MarkdownServiceParameters)
+  href: api/Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.html#Microsoft_DocAsCode_Build_Engine_JsonTokenTreeServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+  fullName: Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+- uid: Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.TokenTreeValidator
+  name: TokenTreeValidator
+  href: api/Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.html#Microsoft_DocAsCode_Build_Engine_JsonTokenTreeServiceProvider_TokenTreeValidator
+  commentId: P:Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.TokenTreeValidator
+  fullName: Microsoft.DocAsCode.Build.Engine.JsonTokenTreeServiceProvider.TokenTreeValidator
 - uid: Microsoft.DocAsCode.Build.Engine.ResourceCollection
   name: ResourceCollection
   href: api/Microsoft.DocAsCode.Build.Engine.ResourceCollection.html#Microsoft_DocAsCode_Build_Engine_ResourceCollection
@@ -2333,6 +2698,11 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateManager.html#Microsoft_DocAsCode_Build_Engine_TemplateManager_GetTemplateProcessor_Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_System_Int32_
   commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateManager.GetTemplateProcessor(Microsoft.DocAsCode.Build.Engine.DocumentBuildContext,System.Int32)
   fullName: Microsoft.DocAsCode.Build.Engine.TemplateManager.GetTemplateProcessor(Microsoft.DocAsCode.Build.Engine.DocumentBuildContext, System.Int32)
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateManager.GetTemplatesHash
+  name: GetTemplatesHash()
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateManager.html#Microsoft_DocAsCode_Build_Engine_TemplateManager_GetTemplatesHash
+  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateManager.GetTemplatesHash
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateManager.GetTemplatesHash()
 - uid: Microsoft.DocAsCode.Build.Engine.TemplateManager.ProcessTheme(System.String,System.Boolean)
   name: ProcessTheme(String, Boolean)
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateManager.html#Microsoft_DocAsCode_Build_Engine_TemplateManager_ProcessTheme_System_String_System_Boolean_
@@ -3444,11 +3814,6 @@ references:
   href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_Metadata
   commentId: P:Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.Metadata
   fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.Metadata
-- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.MetadataJson
-  name: MetadataJson
-  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_MetadataJson
-  commentId: P:Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.MetadataJson
-  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.MetadataJson
 - uid: Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.Modifiers
   name: Modifiers
   href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput.html#Microsoft_DocAsCode_Build_ManagedReference_BuildOutputs_ApiReferenceBuildOutput_Modifiers
@@ -3696,11 +4061,21 @@ references:
   href: api/Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.html#Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_BuildSteps
   commentId: P:Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.BuildSteps
   fullName: Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.BuildSteps
+- uid: Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  name: CanIncrementalBuild(FileAndType)
+  href: api/Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.html#Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_
+  commentId: M:Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  fullName: Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
 - uid: Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Configs
   name: Configs
   href: api/Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.html#Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Configs
   commentId: P:Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Configs
   fullName: Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Configs
+- uid: Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.GetIncrementalContextHash
+  name: GetIncrementalContextHash()
+  href: api/Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.html#Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_GetIncrementalContextHash
+  commentId: M:Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.GetIncrementalContextHash
+  fullName: Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.GetIncrementalContextHash()
 - uid: Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)
   name: GetProcessingPriority(FileAndType)
   href: api/Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.html#Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_
@@ -3738,6 +4113,16 @@ references:
   href: api/Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.html#Microsoft_DocAsCode_Build_ResourceFiles_ValidateResourceMetadata_BuildOrder
   commentId: P:Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.BuildOrder
   fullName: Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.BuildOrder
+- uid: Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  name: CanIncrementalBuild(FileAndType)
+  href: api/Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.html#Microsoft_DocAsCode_Build_ResourceFiles_ValidateResourceMetadata_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_
+  commentId: M:Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  fullName: Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+- uid: Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.GetIncrementalContextHash
+  name: GetIncrementalContextHash()
+  href: api/Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.html#Microsoft_DocAsCode_Build_ResourceFiles_ValidateResourceMetadata_GetIncrementalContextHash
+  commentId: M:Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.GetIncrementalContextHash
+  fullName: Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.GetIncrementalContextHash()
 - uid: Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.Name
   name: Name
   href: api/Microsoft.DocAsCode.Build.ResourceFiles.ValidateResourceMetadata.html#Microsoft_DocAsCode_Build_ResourceFiles_ValidateResourceMetadata_Name
@@ -4141,6 +4526,16 @@ references:
   href: api/Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.html#Microsoft_DocAsCode_Build_TableOfContents_BuildTocDocument_BuildOrder
   commentId: P:Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.BuildOrder
   fullName: Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.BuildOrder
+- uid: Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  name: CanIncrementalBuild(FileAndType)
+  href: api/Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.html#Microsoft_DocAsCode_Build_TableOfContents_BuildTocDocument_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_
+  commentId: M:Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  fullName: Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+- uid: Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.GetIncrementalContextHash
+  name: GetIncrementalContextHash()
+  href: api/Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.html#Microsoft_DocAsCode_Build_TableOfContents_BuildTocDocument_GetIncrementalContextHash
+  commentId: M:Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.GetIncrementalContextHash
+  fullName: Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.GetIncrementalContextHash()
 - uid: Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.Name
   name: Name
   href: api/Microsoft.DocAsCode.Build.TableOfContents.BuildTocDocument.html#Microsoft_DocAsCode_Build_TableOfContents_BuildTocDocument_Name
@@ -4173,6 +4568,16 @@ references:
   href: api/Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_BuildSteps
   commentId: P:Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.BuildSteps
   fullName: Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.BuildSteps
+- uid: Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  name: CanIncrementalBuild(FileAndType)
+  href: api/Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_
+  commentId: M:Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+  fullName: Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)
+- uid: Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetIncrementalContextHash
+  name: GetIncrementalContextHash()
+  href: api/Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_GetIncrementalContextHash
+  commentId: M:Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetIncrementalContextHash
+  fullName: Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetIncrementalContextHash()
 - uid: Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)
   name: GetProcessingPriority(FileAndType)
   href: api/Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_
@@ -4210,6 +4615,11 @@ references:
   href: api/Microsoft.DocAsCode.BuildJsonConfig.html#Microsoft_DocAsCode_BuildJsonConfig_BaseDirectory
   commentId: P:Microsoft.DocAsCode.BuildJsonConfig.BaseDirectory
   fullName: Microsoft.DocAsCode.BuildJsonConfig.BaseDirectory
+- uid: Microsoft.DocAsCode.BuildJsonConfig.ChangesFile
+  name: ChangesFile
+  href: api/Microsoft.DocAsCode.BuildJsonConfig.html#Microsoft_DocAsCode_BuildJsonConfig_ChangesFile
+  commentId: P:Microsoft.DocAsCode.BuildJsonConfig.ChangesFile
+  fullName: Microsoft.DocAsCode.BuildJsonConfig.ChangesFile
 - uid: Microsoft.DocAsCode.BuildJsonConfig.Content
   name: Content
   href: api/Microsoft.DocAsCode.BuildJsonConfig.html#Microsoft_DocAsCode_BuildJsonConfig_Content
@@ -4415,11 +4825,6 @@ references:
   href: api/Microsoft.DocAsCode.Common.ConsoleLogListener.html#Microsoft_DocAsCode_Common_ConsoleLogListener_Flush
   commentId: M:Microsoft.DocAsCode.Common.ConsoleLogListener.Flush
   fullName: Microsoft.DocAsCode.Common.ConsoleLogListener.Flush()
-- uid: Microsoft.DocAsCode.Common.ConsoleLogListener.LogLevelThreshold
-  name: LogLevelThreshold
-  href: api/Microsoft.DocAsCode.Common.ConsoleLogListener.html#Microsoft_DocAsCode_Common_ConsoleLogListener_LogLevelThreshold
-  commentId: P:Microsoft.DocAsCode.Common.ConsoleLogListener.LogLevelThreshold
-  fullName: Microsoft.DocAsCode.Common.ConsoleLogListener.LogLevelThreshold
 - uid: Microsoft.DocAsCode.Common.ConsoleLogListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)
   name: WriteLine(ILogItem)
   href: api/Microsoft.DocAsCode.Common.ConsoleLogListener.html#Microsoft_DocAsCode_Common_ConsoleLogListener_WriteLine_Microsoft_DocAsCode_Common_ILogItem_
@@ -4460,6 +4865,116 @@ references:
   href: api/Microsoft.DocAsCode.Common.CrossAppDomainListener.html#Microsoft_DocAsCode_Common_CrossAppDomainListener_WriteLine_Microsoft_DocAsCode_Common_ILogItem_
   commentId: M:Microsoft.DocAsCode.Common.CrossAppDomainListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)
   fullName: Microsoft.DocAsCode.Common.CrossAppDomainListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener
+  name: HtmlLogListener
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener
+  commentId: T:Microsoft.DocAsCode.Common.HtmlLogListener
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.#ctor(System.IO.StreamWriter)
+  name: HtmlLogListener(StreamWriter)
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener__ctor_System_IO_StreamWriter_
+  commentId: M:Microsoft.DocAsCode.Common.HtmlLogListener.#ctor(System.IO.StreamWriter)
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.HtmlLogListener(System.IO.StreamWriter)
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.#ctor(System.String)
+  name: HtmlLogListener(String)
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener__ctor_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.HtmlLogListener.#ctor(System.String)
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.HtmlLogListener(System.String)
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.Dispose
+  name: Dispose()
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener_Dispose
+  commentId: M:Microsoft.DocAsCode.Common.HtmlLogListener.Dispose
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.Dispose()
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.Escape(System.String,System.Boolean)
+  name: Escape(String, Boolean)
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener_Escape_System_String_System_Boolean_
+  commentId: M:Microsoft.DocAsCode.Common.HtmlLogListener.Escape(System.String,System.Boolean)
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.Escape(System.String, System.Boolean)
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.Flush
+  name: Flush()
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener_Flush
+  commentId: M:Microsoft.DocAsCode.Common.HtmlLogListener.Flush
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.Flush()
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity
+  name: HtmlLogListener.MessageSeverity
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_HtmlLogListener_MessageSeverity
+  commentId: T:Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Diagnostic
+  name: Diagnostic
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_HtmlLogListener_MessageSeverity_Diagnostic
+  commentId: F:Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Diagnostic
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Diagnostic
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Error
+  name: Error
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_HtmlLogListener_MessageSeverity_Error
+  commentId: F:Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Error
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Error
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Info
+  name: Info
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_HtmlLogListener_MessageSeverity_Info
+  commentId: F:Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Info
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Info
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Verbose
+  name: Verbose
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_HtmlLogListener_MessageSeverity_Verbose
+  commentId: F:Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Verbose
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Verbose
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Warning
+  name: Warning
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_HtmlLogListener_MessageSeverity_Warning
+  commentId: F:Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Warning
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.MessageSeverity.Warning
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.ReplaceRegex(System.String,System.Text.RegularExpressions.Regex,System.String)
+  name: ReplaceRegex(String, Regex, String)
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener_ReplaceRegex_System_String_System_Text_RegularExpressions_Regex_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.HtmlLogListener.ReplaceRegex(System.String,System.Text.RegularExpressions.Regex,System.String)
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.ReplaceRegex(System.String, System.Text.RegularExpressions.Regex, System.String)
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem
+  name: HtmlLogListener.ReportItem
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.html#Microsoft_DocAsCode_Common_HtmlLogListener_ReportItem
+  commentId: T:Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.DateTime
+  name: DateTime
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.html#Microsoft_DocAsCode_Common_HtmlLogListener_ReportItem_DateTime
+  commentId: P:Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.DateTime
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.DateTime
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.File
+  name: File
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.html#Microsoft_DocAsCode_Common_HtmlLogListener_ReportItem_File
+  commentId: P:Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.File
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.File
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Line
+  name: Line
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.html#Microsoft_DocAsCode_Common_HtmlLogListener_ReportItem_Line
+  commentId: P:Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Line
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Line
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Message
+  name: Message
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.html#Microsoft_DocAsCode_Common_HtmlLogListener_ReportItem_Message
+  commentId: P:Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Message
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Message
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Severity
+  name: Severity
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.html#Microsoft_DocAsCode_Common_HtmlLogListener_ReportItem_Severity
+  commentId: P:Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Severity
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Severity
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Source
+  name: Source
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.html#Microsoft_DocAsCode_Common_HtmlLogListener_ReportItem_Source
+  commentId: P:Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Source
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.ReportItem.Source
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.WriteCommonHeader
+  name: WriteCommonHeader()
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener_WriteCommonHeader
+  commentId: M:Microsoft.DocAsCode.Common.HtmlLogListener.WriteCommonHeader
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.WriteCommonHeader()
+- uid: Microsoft.DocAsCode.Common.HtmlLogListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)
+  name: WriteLine(ILogItem)
+  href: api/Microsoft.DocAsCode.Common.HtmlLogListener.html#Microsoft_DocAsCode_Common_HtmlLogListener_WriteLine_Microsoft_DocAsCode_Common_ILogItem_
+  commentId: M:Microsoft.DocAsCode.Common.HtmlLogListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)
+  fullName: Microsoft.DocAsCode.Common.HtmlLogListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)
 - uid: Microsoft.DocAsCode.Common.ILoggerListener
   name: ILoggerListener
   href: api/Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener
@@ -4470,11 +4985,6 @@ references:
   href: api/Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener_Flush
   commentId: M:Microsoft.DocAsCode.Common.ILoggerListener.Flush
   fullName: Microsoft.DocAsCode.Common.ILoggerListener.Flush()
-- uid: Microsoft.DocAsCode.Common.ILoggerListener.LogLevelThreshold
-  name: LogLevelThreshold
-  href: api/Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener_LogLevelThreshold
-  commentId: P:Microsoft.DocAsCode.Common.ILoggerListener.LogLevelThreshold
-  fullName: Microsoft.DocAsCode.Common.ILoggerListener.LogLevelThreshold
 - uid: Microsoft.DocAsCode.Common.ILoggerListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)
   name: WriteLine(ILogItem)
   href: api/Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener_WriteLine_Microsoft_DocAsCode_Common_ILogItem_
@@ -4780,11 +5290,6 @@ references:
   href: api/Microsoft.DocAsCode.Common.ReplayLogListener.html#Microsoft_DocAsCode_Common_ReplayLogListener_Flush
   commentId: M:Microsoft.DocAsCode.Common.ReplayLogListener.Flush
   fullName: Microsoft.DocAsCode.Common.ReplayLogListener.Flush()
-- uid: Microsoft.DocAsCode.Common.ReplayLogListener.LogLevelThreshold
-  name: LogLevelThreshold
-  href: api/Microsoft.DocAsCode.Common.ReplayLogListener.html#Microsoft_DocAsCode_Common_ReplayLogListener_LogLevelThreshold
-  commentId: P:Microsoft.DocAsCode.Common.ReplayLogListener.LogLevelThreshold
-  fullName: Microsoft.DocAsCode.Common.ReplayLogListener.LogLevelThreshold
 - uid: Microsoft.DocAsCode.Common.ReplayLogListener.Replay
   name: Replay
   href: api/Microsoft.DocAsCode.Common.ReplayLogListener.html#Microsoft_DocAsCode_Common_ReplayLogListener_Replay
@@ -4820,16 +5325,16 @@ references:
   href: api/Microsoft.DocAsCode.Common.ReportLogListener.html#Microsoft_DocAsCode_Common_ReportLogListener_Flush
   commentId: M:Microsoft.DocAsCode.Common.ReportLogListener.Flush
   fullName: Microsoft.DocAsCode.Common.ReportLogListener.Flush()
-- uid: Microsoft.DocAsCode.Common.ReportLogListener.LogLevelThreshold
-  name: LogLevelThreshold
-  href: api/Microsoft.DocAsCode.Common.ReportLogListener.html#Microsoft_DocAsCode_Common_ReportLogListener_LogLevelThreshold
-  commentId: P:Microsoft.DocAsCode.Common.ReportLogListener.LogLevelThreshold
-  fullName: Microsoft.DocAsCode.Common.ReportLogListener.LogLevelThreshold
 - uid: Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity
   name: ReportLogListener.MessageSeverity
   href: api/Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_ReportLogListener_MessageSeverity
   commentId: T:Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity
   fullName: Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity
+- uid: Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity.Diagnostic
+  name: Diagnostic
+  href: api/Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_ReportLogListener_MessageSeverity_Diagnostic
+  commentId: F:Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity.Diagnostic
+  fullName: Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity.Diagnostic
 - uid: Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity.Error
   name: Error
   href: api/Microsoft.DocAsCode.Common.ReportLogListener.MessageSeverity.html#Microsoft_DocAsCode_Common_ReportLogListener_MessageSeverity_Error
@@ -5014,16 +5519,132 @@ references:
   href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter__ctor_System_IO_TextWriter_
   commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.#ctor(System.IO.TextWriter)
   fullName: Microsoft.DocAsCode.Common.XHtmlWriter.XHtmlWriter(System.IO.TextWriter)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.Flush
+  name: Flush()
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_Flush
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.Flush
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.Flush()
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.LookupPrefix(System.String)
+  name: LookupPrefix(String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_LookupPrefix_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.LookupPrefix(System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.LookupPrefix(System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteBase64(System.Byte[],System.Int32,System.Int32)
+  name: WriteBase64(Byte[], Int32, Int32)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteBase64_System_Byte___System_Int32_System_Int32_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteBase64(System.Byte[],System.Int32,System.Int32)
+  name.vb: WriteBase64(Byte(), Int32, Int32)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteBase64(System.Byte[], System.Int32, System.Int32)
+  fullName.vb: Microsoft.DocAsCode.Common.XHtmlWriter.WriteBase64(System.Byte(), System.Int32, System.Int32)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteCData(System.String)
+  name: WriteCData(String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteCData_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteCData(System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteCData(System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteCharEntity(System.Char)
+  name: WriteCharEntity(Char)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteCharEntity_System_Char_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteCharEntity(System.Char)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteCharEntity(System.Char)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteChars(System.Char[],System.Int32,System.Int32)
+  name: WriteChars(Char[], Int32, Int32)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteChars_System_Char___System_Int32_System_Int32_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteChars(System.Char[],System.Int32,System.Int32)
+  name.vb: WriteChars(Char(), Int32, Int32)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteChars(System.Char[], System.Int32, System.Int32)
+  fullName.vb: Microsoft.DocAsCode.Common.XHtmlWriter.WriteChars(System.Char(), System.Int32, System.Int32)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteComment(System.String)
+  name: WriteComment(String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteComment_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteComment(System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteComment(System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteDocType(System.String,System.String,System.String,System.String)
+  name: WriteDocType(String, String, String, String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteDocType_System_String_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteDocType(System.String,System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteDocType(System.String, System.String, System.String, System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndAttribute
+  name: WriteEndAttribute()
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteEndAttribute
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndAttribute
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndAttribute()
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndDocument
+  name: WriteEndDocument()
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteEndDocument
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndDocument
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndDocument()
 - uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndElement
   name: WriteEndElement()
   href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteEndElement
   commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndElement
   fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteEndElement()
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteEntityRef(System.String)
+  name: WriteEntityRef(String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteEntityRef_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteEntityRef(System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteEntityRef(System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteFullEndElement
+  name: WriteFullEndElement()
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteFullEndElement
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteFullEndElement
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteFullEndElement()
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteProcessingInstruction(System.String,System.String)
+  name: WriteProcessingInstruction(String, String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteProcessingInstruction_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteProcessingInstruction(System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteProcessingInstruction(System.String, System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteRaw(System.Char[],System.Int32,System.Int32)
+  name: WriteRaw(Char[], Int32, Int32)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteRaw_System_Char___System_Int32_System_Int32_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteRaw(System.Char[],System.Int32,System.Int32)
+  name.vb: WriteRaw(Char(), Int32, Int32)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteRaw(System.Char[], System.Int32, System.Int32)
+  fullName.vb: Microsoft.DocAsCode.Common.XHtmlWriter.WriteRaw(System.Char(), System.Int32, System.Int32)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteRaw(System.String)
+  name: WriteRaw(String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteRaw_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteRaw(System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteRaw(System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartAttribute(System.String,System.String,System.String)
+  name: WriteStartAttribute(String, String, String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteStartAttribute_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartAttribute(System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartAttribute(System.String, System.String, System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartDocument
+  name: WriteStartDocument()
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteStartDocument
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartDocument
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartDocument()
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartDocument(System.Boolean)
+  name: WriteStartDocument(Boolean)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteStartDocument_System_Boolean_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartDocument(System.Boolean)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartDocument(System.Boolean)
 - uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartElement(System.String,System.String,System.String)
   name: WriteStartElement(String, String, String)
   href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteStartElement_System_String_System_String_System_String_
   commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartElement(System.String,System.String,System.String)
   fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteStartElement(System.String, System.String, System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteState
+  name: WriteState
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteState
+  commentId: P:Microsoft.DocAsCode.Common.XHtmlWriter.WriteState
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteState
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteString(System.String)
+  name: WriteString(String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteString_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteString(System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteString(System.String)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteSurrogateCharEntity(System.Char,System.Char)
+  name: WriteSurrogateCharEntity(Char, Char)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteSurrogateCharEntity_System_Char_System_Char_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteSurrogateCharEntity(System.Char,System.Char)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteSurrogateCharEntity(System.Char, System.Char)
+- uid: Microsoft.DocAsCode.Common.XHtmlWriter.WriteWhitespace(System.String)
+  name: WriteWhitespace(String)
+  href: api/Microsoft.DocAsCode.Common.XHtmlWriter.html#Microsoft_DocAsCode_Common_XHtmlWriter_WriteWhitespace_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.XHtmlWriter.WriteWhitespace(System.String)
+  fullName: Microsoft.DocAsCode.Common.XHtmlWriter.WriteWhitespace(System.String)
 - uid: Microsoft.DocAsCode.Common.YamlMime
   name: YamlMime
   href: api/Microsoft.DocAsCode.Common.YamlMime.html#Microsoft_DocAsCode_Common_YamlMime
@@ -5355,11 +5976,6 @@ references:
   href: api/Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.html#Microsoft_DocAsCode_DataContracts_Common_ReferenceViewModel_Additional
   commentId: P:Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.Additional
   fullName: Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.Additional
-- uid: Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.AdditionalJson
-  name: AdditionalJson
-  href: api/Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.html#Microsoft_DocAsCode_DataContracts_Common_ReferenceViewModel_AdditionalJson
-  commentId: P:Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.AdditionalJson
-  fullName: Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.AdditionalJson
 - uid: Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.CommentId
   name: CommentId
   href: api/Microsoft.DocAsCode.DataContracts.Common.ReferenceViewModel.html#Microsoft_DocAsCode_DataContracts_Common_ReferenceViewModel_CommentId
@@ -5520,11 +6136,6 @@ references:
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Additional
   commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Additional
   fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Additional
-- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.AdditionalJson
-  name: AdditionalJson
-  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_AdditionalJson
-  commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.AdditionalJson
-  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.AdditionalJson
 - uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.AggregatedHref
   name: AggregatedHref
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_AggregatedHref
@@ -5777,11 +6388,6 @@ references:
   href: api/Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.html#Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_Exceptions
   commentId: P:Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.Exceptions
   fullName: Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.Exceptions
-- uid: Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.ExtensionData
-  name: ExtensionData
-  href: api/Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.html#Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_ExtensionData
-  commentId: P:Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.ExtensionData
-  fullName: Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.ExtensionData
 - uid: Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.ExtensionMethods
   name: ExtensionMethods
   href: api/Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel.html#Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_ExtensionMethods
@@ -7523,6 +8129,28 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.html#Microsoft_DocAsCode_Dfm_MarkdownValidators
   commentId: N:Microsoft.DocAsCode.Dfm.MarkdownValidators
   fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule
+  name: MarkdownMetadataValidationRule
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownMetadataValidationRule
+  commentId: T:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.ContractName
+  name: ContractName
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownMetadataValidationRule_ContractName
+  commentId: P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.ContractName
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.ContractName
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.Disable
+  name: Disable
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownMetadataValidationRule_Disable
+  commentId: P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.Disable
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.Disable
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.op_Explicit(System.String)~Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule
+  name: Explicit(String to MarkdownMetadataValidationRule)
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownMetadataValidationRule_op_Explicit_System_String__Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownMetadataValidationRule
+  commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.op_Explicit(System.String)~Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule
+  name.vb: Narrowing(String to MarkdownMetadataValidationRule)
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.Explicit(System.String to Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule)
+  fullName.vb: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule.Narrowing(System.String to Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule)
 - uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig
   name: MarkdownSytleConfig
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownSytleConfig
@@ -7533,6 +8161,11 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownSytleConfig_MarkdownStyleFileName
   commentId: F:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.MarkdownStyleFileName
   fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.MarkdownStyleFileName
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.MetadataRules
+  name: MetadataRules
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownSytleConfig_MetadataRules
+  commentId: P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.MetadataRules
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.MetadataRules
 - uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.Rules
   name: Rules
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleConfig.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownSytleConfig_Rules
@@ -7563,6 +8196,11 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownSytleDefinition_MarkdownStyleDefinitionFolderName
   commentId: F:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName
   fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.MetadataRules
+  name: MetadataRules
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownSytleDefinition_MetadataRules
+  commentId: P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.MetadataRules
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.MetadataRules
 - uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.Rules
   name: Rules
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownSytleDefinition.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownSytleDefinition_Rules
@@ -7677,6 +8315,20 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder__ctor_System_Composition_Hosting_CompositionHost_
   commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.#ctor(System.Composition.Hosting.CompositionHost)
   fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.MarkdownValidatorBuilder(System.Composition.Hosting.CompositionHost)
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddMetadataValidators(Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule[])
+  name: AddMetadataValidators(MarkdownMetadataValidationRule[])
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_AddMetadataValidators_Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownMetadataValidationRule___
+  commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddMetadataValidators(Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule[])
+  name.vb: AddMetadataValidators(MarkdownMetadataValidationRule())
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddMetadataValidators(Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule[])
+  fullName.vb: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddMetadataValidators(Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule())
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddMetadataValidators(System.String,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule})
+  name: AddMetadataValidators(String, Dictionary<String, MarkdownMetadataValidationRule>)
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_AddMetadataValidators_System_String_System_Collections_Generic_Dictionary_System_String_Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownMetadataValidationRule__
+  commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddMetadataValidators(System.String,System.Collections.Generic.Dictionary{System.String,Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule})
+  name.vb: AddMetadataValidators(String, Dictionary(Of String, MarkdownMetadataValidationRule))
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddMetadataValidators(System.String, System.Collections.Generic.Dictionary<System.String, Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule>)
+  fullName.vb: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddMetadataValidators(System.String, System.Collections.Generic.Dictionary(Of System.String, Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownMetadataValidationRule))
 - uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.AddSettings(Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidationSetting[])
   name: AddSettings(MarkdownValidationSetting[])
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_AddSettings_Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidationSetting___
@@ -7717,11 +8369,16 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_CompositionHost
   commentId: P:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.CompositionHost
   fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.CompositionHost
-- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.Create
-  name: Create()
-  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_Create
-  commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.Create
-  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.Create()
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.Create(System.Composition.Hosting.CompositionHost,System.String,System.String)
+  name: Create(CompositionHost, String, String)
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_Create_System_Composition_Hosting_CompositionHost_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.Create(System.Composition.Hosting.CompositionHost,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.Create(System.Composition.Hosting.CompositionHost, System.String, System.String)
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.CreateRewriter
+  name: CreateRewriter()
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_CreateRewriter
+  commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.CreateRewriter
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.CreateRewriter()
 - uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.DefaultValidatorName
   name: DefaultValidatorName
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_DefaultValidatorName
@@ -7732,6 +8389,11 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_EnsureDefaultValidator
   commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.EnsureDefaultValidator
   fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.EnsureDefaultValidator()
+- uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.GetEnabledMetadataRules
+  name: GetEnabledMetadataRules()
+  href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_GetEnabledMetadataRules
+  commentId: M:Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.GetEnabledMetadataRules
+  fullName: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.GetEnabledMetadataRules()
 - uid: Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.MarkdownValidatePhaseName
   name: MarkdownValidatePhaseName
   href: api/Microsoft.DocAsCode.Dfm.MarkdownValidators.MarkdownValidatorBuilder.html#Microsoft_DocAsCode_Dfm_MarkdownValidators_MarkdownValidatorBuilder_MarkdownValidatePhaseName
@@ -9188,6 +9850,131 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.InlineContent.html#Microsoft_DocAsCode_MarkdownLite_InlineContent_Tokens
   commentId: P:Microsoft.DocAsCode.MarkdownLite.InlineContent.Tokens
   fullName: Microsoft.DocAsCode.MarkdownLite.InlineContent.Tokens
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer
+  name: JsonTokenTreeRenderer
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer
+  commentId: T:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.GfmDelInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, GfmDelInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_GfmDelInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.GfmDelInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.GfmDelInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockquoteBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownBlockquoteBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockquoteBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockquoteBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockquoteBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownBrInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownBrInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownBrInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownBrInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownBrInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownCodeBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownCodeBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownCodeBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownCodeBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownCodeBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownCodeInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownCodeInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownCodeInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownCodeInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownCodeInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownEmInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownEmInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownEscapeInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownEscapeInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownEscapeInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownEscapeInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownEscapeInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownHeadingBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownHeadingBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownHrBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownHrBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownHrBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownHrBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownHrBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownHtmlBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownHtmlBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownIgnoreToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+  name: Render(IMarkdownRenderer, MarkdownIgnoreToken, IMarkdownContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownIgnoreToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownIgnoreToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownIgnoreToken, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownImageInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownLinkInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownListBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownListBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownListBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownListBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownListBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownListItemBlockToken)
+  name: Render(IMarkdownRenderer, MarkdownListItemBlockToken)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownListItemBlockToken_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownListItemBlockToken)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownListItemBlockToken)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownNewLineBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownNewLineBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownNewLineBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownNewLineBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownNewLineBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownNonParagraphBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownNonParagraphBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownNonParagraphBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownNonParagraphBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownNonParagraphBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownParagraphBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownParagraphBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownParagraphBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownParagraphBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownParagraphBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownRawToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+  name: Render(IMarkdownRenderer, MarkdownRawToken, IMarkdownContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownRawToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownRawToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownRawToken, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownStrongInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownStrongInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownStrongInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownStrongInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownStrongInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownTableBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownTableBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownTagInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownTagInlineToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownTagInlineToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownTagInlineToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownTagInlineToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownTextToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, MarkdownTextToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownTextToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownTextToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownTextToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownTextToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  name: Render(IMarkdownRenderer, MarkdownTextToken, MarkdownInlineContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.html#Microsoft_DocAsCode_MarkdownLite_JsonTokenTreeRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_MarkdownTextToken_Microsoft_DocAsCode_MarkdownLite_MarkdownInlineContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.MarkdownTextToken,Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.JsonTokenTreeRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.MarkdownLite.MarkdownTextToken, Microsoft.DocAsCode.MarkdownLite.MarkdownInlineContext)
 - uid: Microsoft.DocAsCode.MarkdownLite.LinkObj
   name: LinkObj
   href: api/Microsoft.DocAsCode.MarkdownLite.LinkObj.html#Microsoft_DocAsCode_MarkdownLite_LinkObj
@@ -9274,6 +10061,13 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.html#Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_Rules
   commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.Rules
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.Rules
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.SetRules(System.Collections.Immutable.ImmutableList{Microsoft.DocAsCode.MarkdownLite.IMarkdownRule})
+  name: SetRules(ImmutableList<IMarkdownRule>)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.html#Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_SetRules_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule__
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.SetRules(System.Collections.Immutable.ImmutableList{Microsoft.DocAsCode.MarkdownLite.IMarkdownRule})
+  name.vb: SetRules(ImmutableList(Of IMarkdownRule))
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.SetRules(System.Collections.Immutable.ImmutableList<Microsoft.DocAsCode.MarkdownLite.IMarkdownRule>)
+  fullName.vb: Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.SetRules(System.Collections.Immutable.ImmutableList(Of Microsoft.DocAsCode.MarkdownLite.IMarkdownRule))
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.Variables
   name: Variables
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.html#Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_Variables
@@ -9895,13 +10689,6 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHeadingBlockToken_Rewrite_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriteEngine_
   commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.Rewrite(Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine)
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.Rewrite(Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine)
-- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.RewriteId(System.Collections.Generic.Dictionary{System.String,System.Int32})
-  name: RewriteId(Dictionary<String, Int32>)
-  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHeadingBlockToken_RewriteId_System_Collections_Generic_Dictionary_System_String_System_Int32__
-  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.RewriteId(System.Collections.Generic.Dictionary{System.String,System.Int32})
-  name.vb: RewriteId(Dictionary(Of String, Int32))
-  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.RewriteId(System.Collections.Generic.Dictionary<System.String, System.Int32>)
-  fullName.vb: Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.RewriteId(System.Collections.Generic.Dictionary(Of System.String, System.Int32))
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.Rule
   name: Rule
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHeadingBlockToken_Rule
@@ -10047,11 +10834,11 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken
   commentId: T:Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken
-- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
-  name: MarkdownImageInlineToken(IMarkdownRule, IMarkdownContext, String, String, String, SourceInfo)
-  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_String_Microsoft_DocAsCode_MarkdownLite_SourceInfo_
-  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
-  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.MarkdownImageInlineToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.String, System.String, System.String, Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType,System.String)
+  name: MarkdownImageInlineToken(IMarkdownRule, IMarkdownContext, String, String, String, SourceInfo, MarkdownLinkType, String)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_String_Microsoft_DocAsCode_MarkdownLite_SourceInfo_Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_System_String_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType,System.String)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.MarkdownImageInlineToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.String, System.String, System.String, Microsoft.DocAsCode.MarkdownLite.SourceInfo, Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType, System.String)
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Context
   name: Context
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Context
@@ -10062,6 +10849,16 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Href
   commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Href
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Href
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.LinkType
+  name: LinkType
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_LinkType
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.LinkType
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.LinkType
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.RefId
+  name: RefId
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_RefId
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.RefId
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.RefId
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.Rule
   name: Rule
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownImageInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownImageInlineToken_Rule
@@ -10148,11 +10945,11 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule
   commentId: T:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule
-- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String,System.String,System.String,System.Boolean,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
-  name: GenerateToken(IMarkdownParser, String, String, String, Boolean, SourceInfo)
-  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_GenerateToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String_System_String_System_String_System_Boolean_Microsoft_DocAsCode_MarkdownLite_SourceInfo_
-  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String,System.String,System.String,System.Boolean,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
-  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, System.String, System.String, System.String, System.Boolean, Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String,System.String,System.String,System.Boolean,Microsoft.DocAsCode.MarkdownLite.SourceInfo,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType,System.String)
+  name: GenerateToken(IMarkdownParser, String, String, String, Boolean, SourceInfo, MarkdownLinkType, String)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_GenerateToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_System_String_System_String_System_String_System_Boolean_Microsoft_DocAsCode_MarkdownLite_SourceInfo_Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_System_String_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,System.String,System.String,System.String,System.Boolean,Microsoft.DocAsCode.MarkdownLite.SourceInfo,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType,System.String)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.GenerateToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, System.String, System.String, System.String, System.Boolean, Microsoft.DocAsCode.MarkdownLite.SourceInfo, Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType, System.String)
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.Name
   name: Name
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkBaseInlineRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkBaseInlineRule_Name
@@ -10188,13 +10985,13 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken
   commentId: T:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken
-- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.Collections.Immutable.ImmutableArray{Microsoft.DocAsCode.MarkdownLite.IMarkdownToken},Microsoft.DocAsCode.MarkdownLite.SourceInfo)
-  name: MarkdownLinkInlineToken(IMarkdownRule, IMarkdownContext, String, String, ImmutableArray<IMarkdownToken>, SourceInfo)
-  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_Collections_Immutable_ImmutableArray_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken__Microsoft_DocAsCode_MarkdownLite_SourceInfo_
-  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.Collections.Immutable.ImmutableArray{Microsoft.DocAsCode.MarkdownLite.IMarkdownToken},Microsoft.DocAsCode.MarkdownLite.SourceInfo)
-  name.vb: MarkdownLinkInlineToken(IMarkdownRule, IMarkdownContext, String, String, ImmutableArray(Of IMarkdownToken), SourceInfo)
-  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.MarkdownLinkInlineToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.String, System.String, System.Collections.Immutable.ImmutableArray<Microsoft.DocAsCode.MarkdownLite.IMarkdownToken>, Microsoft.DocAsCode.MarkdownLite.SourceInfo)
-  fullName.vb: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.MarkdownLinkInlineToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.String, System.String, System.Collections.Immutable.ImmutableArray(Of Microsoft.DocAsCode.MarkdownLite.IMarkdownToken), Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.Collections.Immutable.ImmutableArray{Microsoft.DocAsCode.MarkdownLite.IMarkdownToken},Microsoft.DocAsCode.MarkdownLite.SourceInfo,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType,System.String)
+  name: MarkdownLinkInlineToken(IMarkdownRule, IMarkdownContext, String, String, ImmutableArray<IMarkdownToken>, SourceInfo, MarkdownLinkType, String)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_Collections_Immutable_ImmutableArray_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken__Microsoft_DocAsCode_MarkdownLite_SourceInfo_Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_System_String_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.Collections.Immutable.ImmutableArray{Microsoft.DocAsCode.MarkdownLite.IMarkdownToken},Microsoft.DocAsCode.MarkdownLite.SourceInfo,Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType,System.String)
+  name.vb: MarkdownLinkInlineToken(IMarkdownRule, IMarkdownContext, String, String, ImmutableArray(Of IMarkdownToken), SourceInfo, MarkdownLinkType, String)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.MarkdownLinkInlineToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.String, System.String, System.Collections.Immutable.ImmutableArray<Microsoft.DocAsCode.MarkdownLite.IMarkdownToken>, Microsoft.DocAsCode.MarkdownLite.SourceInfo, Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType, System.String)
+  fullName.vb: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.MarkdownLinkInlineToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.String, System.String, System.Collections.Immutable.ImmutableArray(Of Microsoft.DocAsCode.MarkdownLite.IMarkdownToken), Microsoft.DocAsCode.MarkdownLite.SourceInfo, Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType, System.String)
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.Content
   name: Content
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken_Content
@@ -10215,6 +11012,16 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken_Href
   commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.Href
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.Href
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.LinkType
+  name: LinkType
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken_LinkType
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.LinkType
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.LinkType
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.RefId
+  name: RefId
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken_RefId
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.RefId
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.RefId
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.Rewrite(Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine)
   name: Rewrite(IMarkdownRewriteEngine)
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken_Rewrite_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriteEngine_
@@ -10235,6 +11042,36 @@ references:
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkInlineToken_Title
   commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.Title
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkInlineToken.Title
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType
+  name: MarkdownLinkType
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType
+  commentId: T:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.AutoLink
+  name: AutoLink
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_AutoLink
+  commentId: F:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.AutoLink
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.AutoLink
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.NormalLink
+  name: NormalLink
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_NormalLink
+  commentId: F:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.NormalLink
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.NormalLink
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.NumberLink
+  name: NumberLink
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_NumberLink
+  commentId: F:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.NumberLink
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.NumberLink
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.RefLink
+  name: RefLink
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_RefLink
+  commentId: F:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.RefLink
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.RefLink
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.UrlLink
+  name: UrlLink
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.html#Microsoft_DocAsCode_MarkdownLite_MarkdownLinkType_UrlLink
+  commentId: F:Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.UrlLink
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownLinkType.UrlLink
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownListBlockRule
   name: MarkdownListBlockRule
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownListBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownListBlockRule
@@ -11819,6 +12656,11 @@ references:
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterRule_ApiRules
   commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule.ApiRules
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule.ApiRules
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule.AttributeRules
+  name: AttributeRules
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterRule_AttributeRules
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule.AttributeRules
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule.AttributeRules
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRuleExcludeItem
   name: ConfigFilterRuleExcludeItem
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRuleExcludeItem.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterRuleExcludeItem
@@ -11889,6 +12731,11 @@ references:
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterVisitor
   commentId: T:Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor,Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule)
+  name: ConfigFilterVisitor(IFilterVisitor, ConfigFilterRule)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterVisitor__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterRule_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor,Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.ConfigFilterVisitor(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor, Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule)
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.#ctor(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor,System.String)
   name: ConfigFilterVisitor(IFilterVisitor, String)
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterVisitor__ctor_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_System_String_
@@ -11899,6 +12746,16 @@ references:
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterVisitor_CanVisitApiCore_Microsoft_CodeAnalysis_ISymbol_System_Boolean_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_
   commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.CanVisitApiCore(Microsoft.CodeAnalysis.ISymbol,System.Boolean,Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.CanVisitApiCore(Microsoft.CodeAnalysis.ISymbol, System.Boolean, Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.CanVisitAttributeCore(Microsoft.CodeAnalysis.ISymbol,System.Boolean,Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+  name: CanVisitAttributeCore(ISymbol, Boolean, IFilterVisitor)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterVisitor_CanVisitAttributeCore_Microsoft_CodeAnalysis_ISymbol_System_Boolean_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.CanVisitAttributeCore(Microsoft.CodeAnalysis.ISymbol,System.Boolean,Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.CanVisitAttributeCore(Microsoft.CodeAnalysis.ISymbol, System.Boolean, Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.LoadRules(System.String)
+  name: LoadRules(String)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.html#Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterVisitor_LoadRules_System_String_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.LoadRules(System.String)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterVisitor.LoadRules(System.String)
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.CSharpNameVisitorCreator
   name: CSharpNameVisitorCreator
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.CSharpNameVisitorCreator.html#Microsoft_DocAsCode_Metadata_ManagedReference_CSharpNameVisitorCreator
@@ -12264,6 +13121,11 @@ references:
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.html#Microsoft_DocAsCode_Metadata_ManagedReference_FilterVisitorExtensions_WithCache_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_
   commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.WithCache(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.WithCache(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor)
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.WithConfig(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor,Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule)
+  name: WithConfig(IFilterVisitor, ConfigFilterRule)
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.html#Microsoft_DocAsCode_Metadata_ManagedReference_FilterVisitorExtensions_WithConfig_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_Microsoft_DocAsCode_Metadata_ManagedReference_ConfigFilterRule_
+  commentId: M:Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.WithConfig(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor,Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule)
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.WithConfig(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor, Microsoft.DocAsCode.Metadata.ManagedReference.ConfigFilterRule)
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.WithConfig(Microsoft.DocAsCode.Metadata.ManagedReference.IFilterVisitor,System.String)
   name: WithConfig(IFilterVisitor, String)
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.FilterVisitorExtensions.html#Microsoft_DocAsCode_Metadata_ManagedReference_FilterVisitorExtensions_WithConfig_Microsoft_DocAsCode_Metadata_ManagedReference_IFilterVisitor_System_String_
@@ -14333,21 +15195,11 @@ references:
   href: api/Microsoft.DocAsCode.Plugins.ProcessingPriority.html#Microsoft_DocAsCode_Plugins_ProcessingPriority_High
   commentId: F:Microsoft.DocAsCode.Plugins.ProcessingPriority.High
   fullName: Microsoft.DocAsCode.Plugins.ProcessingPriority.High
-- uid: Microsoft.DocAsCode.Plugins.ProcessingPriority.Highest
-  name: Highest
-  href: api/Microsoft.DocAsCode.Plugins.ProcessingPriority.html#Microsoft_DocAsCode_Plugins_ProcessingPriority_Highest
-  commentId: F:Microsoft.DocAsCode.Plugins.ProcessingPriority.Highest
-  fullName: Microsoft.DocAsCode.Plugins.ProcessingPriority.Highest
 - uid: Microsoft.DocAsCode.Plugins.ProcessingPriority.Low
   name: Low
   href: api/Microsoft.DocAsCode.Plugins.ProcessingPriority.html#Microsoft_DocAsCode_Plugins_ProcessingPriority_Low
   commentId: F:Microsoft.DocAsCode.Plugins.ProcessingPriority.Low
   fullName: Microsoft.DocAsCode.Plugins.ProcessingPriority.Low
-- uid: Microsoft.DocAsCode.Plugins.ProcessingPriority.Lowest
-  name: Lowest
-  href: api/Microsoft.DocAsCode.Plugins.ProcessingPriority.html#Microsoft_DocAsCode_Plugins_ProcessingPriority_Lowest
-  commentId: F:Microsoft.DocAsCode.Plugins.ProcessingPriority.Lowest
-  fullName: Microsoft.DocAsCode.Plugins.ProcessingPriority.Lowest
 - uid: Microsoft.DocAsCode.Plugins.ProcessingPriority.Normal
   name: Normal
   href: api/Microsoft.DocAsCode.Plugins.ProcessingPriority.html#Microsoft_DocAsCode_Plugins_ProcessingPriority_Normal
@@ -15746,6 +16598,11 @@ references:
   href: api/Microsoft.DocAsCode.Utility.StringExtension.html#Microsoft_DocAsCode_Utility_StringExtension_ForwardSlashCombine_System_String_System_String_
   commentId: M:Microsoft.DocAsCode.Utility.StringExtension.ForwardSlashCombine(System.String,System.String)
   fullName: Microsoft.DocAsCode.Utility.StringExtension.ForwardSlashCombine(System.String, System.String)
+- uid: Microsoft.DocAsCode.Utility.StringExtension.GetMd5String(System.String)
+  name: GetMd5String(String)
+  href: api/Microsoft.DocAsCode.Utility.StringExtension.html#Microsoft_DocAsCode_Utility_StringExtension_GetMd5String_System_String_
+  commentId: M:Microsoft.DocAsCode.Utility.StringExtension.GetMd5String(System.String)
+  fullName: Microsoft.DocAsCode.Utility.StringExtension.GetMd5String(System.String)
 - uid: Microsoft.DocAsCode.Utility.StringExtension.GetNormalizedFullPathKey(System.Collections.Generic.IEnumerable{System.String})
   name: GetNormalizedFullPathKey(IEnumerable<String>)
   href: api/Microsoft.DocAsCode.Utility.StringExtension.html#Microsoft_DocAsCode_Utility_StringExtension_GetNormalizedFullPathKey_System_Collections_Generic_IEnumerable_System_String__
@@ -15888,13 +16745,6 @@ references:
   href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitArrayNodeDeserializer
   commentId: T:Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer
   fullName: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer
-- uid: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer.DeserializeHelper``1(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object})
-  name: DeserializeHelper<TItem>(EventReader, Type, Func<EventReader, Type, Object>)
-  href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitArrayNodeDeserializer_DeserializeHelper__1_YamlDotNet_Core_EventReader_System_Type_System_Func_YamlDotNet_Core_EventReader_System_Type_System_Object__
-  commentId: M:Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer.DeserializeHelper``1(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object})
-  name.vb: DeserializeHelper(Of TItem)(EventReader, Type, Func(Of EventReader, Type, Object))
-  fullName: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer.DeserializeHelper<TItem>(YamlDotNet.Core.EventReader, System.Type, System.Func<YamlDotNet.Core.EventReader, System.Type, System.Object>)
-  fullName.vb: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer.DeserializeHelper(Of TItem)(YamlDotNet.Core.EventReader, System.Type, System.Func(Of YamlDotNet.Core.EventReader, System.Type, System.Object))
 - uid: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer.YamlDotNet#Serialization#INodeDeserializer#Deserialize(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object},System.Object@)
   name: INodeDeserializer.Deserialize(EventReader, Type, Func<EventReader, Type, Object>, out Object)
   href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitArrayNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitArrayNodeDeserializer_YamlDotNet_Serialization_INodeDeserializer_Deserialize_YamlDotNet_Core_EventReader_System_Type_System_Func_YamlDotNet_Core_EventReader_System_Type_System_Object__System_Object__
@@ -15912,13 +16762,6 @@ references:
   href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericCollectionNodeDeserializer__ctor_YamlDotNet_Serialization_IObjectFactory_
   commentId: M:Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.#ctor(YamlDotNet.Serialization.IObjectFactory)
   fullName: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.EmitGenericCollectionNodeDeserializer(YamlDotNet.Serialization.IObjectFactory)
-- uid: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.DeserializeHelper``1(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object},System.Collections.Generic.ICollection{``0})
-  name: DeserializeHelper<TItem>(EventReader, Type, Func<EventReader, Type, Object>, ICollection<TItem>)
-  href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericCollectionNodeDeserializer_DeserializeHelper__1_YamlDotNet_Core_EventReader_System_Type_System_Func_YamlDotNet_Core_EventReader_System_Type_System_Object__System_Collections_Generic_ICollection___0__
-  commentId: M:Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.DeserializeHelper``1(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object},System.Collections.Generic.ICollection{``0})
-  name.vb: DeserializeHelper(Of TItem)(EventReader, Type, Func(Of EventReader, Type, Object), ICollection(Of TItem))
-  fullName: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.DeserializeHelper<TItem>(YamlDotNet.Core.EventReader, System.Type, System.Func<YamlDotNet.Core.EventReader, System.Type, System.Object>, System.Collections.Generic.ICollection<TItem>)
-  fullName.vb: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.DeserializeHelper(Of TItem)(YamlDotNet.Core.EventReader, System.Type, System.Func(Of YamlDotNet.Core.EventReader, System.Type, System.Object), System.Collections.Generic.ICollection(Of TItem))
 - uid: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.YamlDotNet#Serialization#INodeDeserializer#Deserialize(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object},System.Object@)
   name: INodeDeserializer.Deserialize(EventReader, Type, Func<EventReader, Type, Object>, out Object)
   href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericCollectionNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericCollectionNodeDeserializer_YamlDotNet_Serialization_INodeDeserializer_Deserialize_YamlDotNet_Core_EventReader_System_Type_System_Func_YamlDotNet_Core_EventReader_System_Type_System_Object__System_Object__
@@ -15936,13 +16779,6 @@ references:
   href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericDictionaryNodeDeserializer__ctor_YamlDotNet_Serialization_IObjectFactory_
   commentId: M:Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.#ctor(YamlDotNet.Serialization.IObjectFactory)
   fullName: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.EmitGenericDictionaryNodeDeserializer(YamlDotNet.Serialization.IObjectFactory)
-- uid: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.DeserializeHelper``2(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object},System.Collections.Generic.IDictionary{``0,``1})
-  name: DeserializeHelper<TKey, TValue>(EventReader, Type, Func<EventReader, Type, Object>, IDictionary<TKey, TValue>)
-  href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericDictionaryNodeDeserializer_DeserializeHelper__2_YamlDotNet_Core_EventReader_System_Type_System_Func_YamlDotNet_Core_EventReader_System_Type_System_Object__System_Collections_Generic_IDictionary___0___1__
-  commentId: M:Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.DeserializeHelper``2(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object},System.Collections.Generic.IDictionary{``0,``1})
-  name.vb: DeserializeHelper(Of TKey, TValue)(EventReader, Type, Func(Of EventReader, Type, Object), IDictionary(Of TKey, TValue))
-  fullName: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.DeserializeHelper<TKey, TValue>(YamlDotNet.Core.EventReader, System.Type, System.Func<YamlDotNet.Core.EventReader, System.Type, System.Object>, System.Collections.Generic.IDictionary<TKey, TValue>)
-  fullName.vb: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.DeserializeHelper(Of TKey, TValue)(YamlDotNet.Core.EventReader, System.Type, System.Func(Of YamlDotNet.Core.EventReader, System.Type, System.Object), System.Collections.Generic.IDictionary(Of TKey, TValue))
 - uid: Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.YamlDotNet#Serialization#INodeDeserializer#Deserialize(YamlDotNet.Core.EventReader,System.Type,System.Func{YamlDotNet.Core.EventReader,System.Type,System.Object},System.Object@)
   name: INodeDeserializer.Deserialize(EventReader, Type, Func<EventReader, Type, Object>, out Object)
   href: api/Microsoft.DocAsCode.YamlSerialization.NodeDeserializers.EmitGenericDictionaryNodeDeserializer.html#Microsoft_DocAsCode_YamlSerialization_NodeDeserializers_EmitGenericDictionaryNodeDeserializer_YamlDotNet_Serialization_INodeDeserializer_Deserialize_YamlDotNet_Core_EventReader_System_Type_System_Func_YamlDotNet_Core_EventReader_System_Type_System_Object__System_Object__
@@ -16052,13 +16888,6 @@ references:
   href: api/Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseDictionary_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_
   commentId: M:Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.TraverseDictionary(YamlDotNet.Serialization.IObjectDescriptor,YamlDotNet.Serialization.IObjectGraphVisitor,System.Int32)
   fullName: Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.TraverseDictionary(YamlDotNet.Serialization.IObjectDescriptor, YamlDotNet.Serialization.IObjectGraphVisitor, System.Int32)
-- uid: Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.TraverseGenericDictionaryHelper``2(Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy,System.Collections.Generic.IDictionary{``0,``1},YamlDotNet.Serialization.IObjectGraphVisitor,System.Int32,YamlDotNet.Serialization.INamingConvention)
-  name: TraverseGenericDictionaryHelper<TKey, TValue>(FullObjectGraphTraversalStrategy, IDictionary<TKey, TValue>, IObjectGraphVisitor, Int32, INamingConvention)
-  href: api/Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseGenericDictionaryHelper__2_Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_System_Collections_Generic_IDictionary___0___1__YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_YamlDotNet_Serialization_INamingConvention_
-  commentId: M:Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.TraverseGenericDictionaryHelper``2(Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy,System.Collections.Generic.IDictionary{``0,``1},YamlDotNet.Serialization.IObjectGraphVisitor,System.Int32,YamlDotNet.Serialization.INamingConvention)
-  name.vb: TraverseGenericDictionaryHelper(Of TKey, TValue)(FullObjectGraphTraversalStrategy, IDictionary(Of TKey, TValue), IObjectGraphVisitor, Int32, INamingConvention)
-  fullName: Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.TraverseGenericDictionaryHelper<TKey, TValue>(Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy, System.Collections.Generic.IDictionary<TKey, TValue>, YamlDotNet.Serialization.IObjectGraphVisitor, System.Int32, YamlDotNet.Serialization.INamingConvention)
-  fullName.vb: Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.TraverseGenericDictionaryHelper(Of TKey, TValue)(Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy, System.Collections.Generic.IDictionary(Of TKey, TValue), YamlDotNet.Serialization.IObjectGraphVisitor, System.Int32, YamlDotNet.Serialization.INamingConvention)
 - uid: Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.TraverseObject(YamlDotNet.Serialization.IObjectDescriptor,YamlDotNet.Serialization.IObjectGraphVisitor,System.Int32)
   name: TraverseObject(IObjectDescriptor, IObjectGraphVisitor, Int32)
   href: api/Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy.html#Microsoft_DocAsCode_YamlSerialization_ObjectGraphTraversalStrategies_FullObjectGraphTraversalStrategy_TraverseObject_YamlDotNet_Serialization_IObjectDescriptor_YamlDotNet_Serialization_IObjectGraphVisitor_System_Int32_

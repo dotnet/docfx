@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class FileMapping
    | DocFX website ">
-    <meta name="generator" content="docfx 2.3.1.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -76,22 +76,20 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L29" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_FileMapping" data-uid="Microsoft.DocAsCode.FileMapping">Class FileMapping
               </h1>
               <div class="markdown level0 summary"><p>FileMapping supports two forms:</p>
 <ol>
 <li>Array form
  This form supports multiple file mappings, and also allows additional properties per mapping.
- e.g. <pre><code> &quot;key&quot;: [
+ e.g. 
+ <code>&quot;key&quot;: [
    {&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
    {&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
    {&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
    {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
    {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
- ]
-</code></pre></li>
+ ]</code></li>
 <li>Compact form
  This form supports multiple file patterns in an array
  e.g. <code>projects: [&quot;file1&quot;, &quot;file2&quot;]</code></li>
@@ -315,9 +313,21 @@ public class FileMapping</code></pre>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_FileMapping.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.FileMapping%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L29" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

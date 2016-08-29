@@ -8,7 +8,7 @@
     <title>C# Coding Standards | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="C# Coding Standards | DocFX website ">
-    <meta name="generator" content="docfx 2.3.1.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,6 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="csharp_coding_standards">
-              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/guideline/csharp_coding_standards.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="c-coding-standards">C# Coding Standards</h1>
               
 <h2 id="introduction">Introduction</h2>
@@ -225,7 +224,7 @@ var ex = Assert.Throws&lt;InvalidOperationException&gt;(() =&gt; fruitBasket.Get
 
 // Assert
 Assert.Equal(&quot;Cannot load banana with negative identifier.&quot;, ex.Message);
-</code></pre><h4 id="use-xunit-net-s-plethora-of-built-in-assertions">Use xUnit.net&#39;s plethora of built-in assertions</h4>
+</code></pre><h4 id="use-xunitnets-plethora-of-built-in-assertions">Use xUnit.net&#39;s plethora of built-in assertions</h4>
 <p>xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This makes the tests much more readable and also allows the test runner to report the best possible errors (whether it&#39;s local or the CI machine). For example, these are bad:</p>
 <pre><code class="lang-cs">Assert.Equal(true, someBool);
 
@@ -255,9 +254,18 @@ Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/guideline/csharp_coding_standards.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

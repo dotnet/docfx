@@ -8,7 +8,7 @@
     <title>How-to: Add a customized post-processor | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Add a customized post-processor | DocFX website ">
-    <meta name="generator" content="docfx 2.3.1.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,6 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/howto_add_a_customized_post_processor.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="how-to-add-a-customized-post-processor">How-to: Add a customized post-processor</h1>
               
 <p>We provide the ability to process output files by adding a customized post-processor.
@@ -90,7 +89,7 @@ In this topic, we will show how to add a customized post-processor.</p>
 If you are building DocFX from source code, add this reference to the project,
 otherwise add the nuget package <code>Microsoft.DocAsCode.Plugins</code> with the same version as DocFX.</li>
 </ul>
-<h2 id="step1-create-a-new-class-myprocessor-cs-with-the-following-code">Step1: Create a new class (MyProcessor.cs) with the following code:</h2>
+<h2 id="step1-create-a-new-class-myprocessorcs-with-the-following-code">Step1: Create a new class (MyProcessor.cs) with the following code:</h2>
 <pre><code class="lang-csharp">[Export(nameof(MyProcessor), typeof(IPostProcessor))]
 public class MyProcessor : IPostProcessor
 {
@@ -119,7 +118,7 @@ public class MyProcessor : IPostProcessor
 <p>  <em>Hint</em>: DocFX can merge templates, so we can specify multiple template folders as <code>DocFX build -t {templateForRender},{templateForPlugins}</code>. Each of the template folders should have a subfolder named <code>Plugins</code> with exported assemblies.</p>
 </li>
 </ul>
-<h2 id="step5-add-your-post-processor-in-docfx-json">Step5: Add your post processor in <code>docfx.json</code></h2>
+<h2 id="step5-add-your-post-processor-in-docfxjson">Step5: Add your post processor in <code>docfx.json</code></h2>
 <p>In this step, we need to enable the processor by adding its name in <code>docfx.json</code>. Here is an example:</p>
 <pre><code class="lang-json">{
   &quot;build&quot;: {
@@ -137,9 +136,18 @@ In the above example, DocFX will run <code>OutputPDF</code> first, then <code>Be
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/howto_add_a_customized_post_processor.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

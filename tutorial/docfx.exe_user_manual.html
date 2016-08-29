@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.3.1.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,8 +72,7 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="user_manual">
-              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/docfx.exe_user_manual.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <h1 id="doc-as-code-docfx-exe-user-manual">Doc-as-code: <code>docfx.exe</code> User Manual</h1>
+              <h1 id="doc-as-code-docfxexe-user-manual">Doc-as-code: <code>docfx.exe</code> User Manual</h1>
               
 <h2 id="0-introduction">0. Introduction</h2>
 <p><code>docfx.exe</code> is used to generate documentation for programs. It has the ability to:</p>
@@ -92,12 +91,12 @@
 <h2 id="1-syntax">1. Syntax</h2>
 <pre><code>docfx &lt;command&gt; [&lt;args&gt;]
 </code></pre><h2 id="2-commands">2. Commands</h2>
-<h3 id="2-0-init-command-docfx-init">2.0 Init command <code>docfx init</code></h3>
+<h3 id="20-init-command-docfx-init">2.0 Init command <code>docfx init</code></h3>
 <p><code>docfx init</code> helps generate an <code>docfx.json</code> file.</p>
-<h3 id="2-1-help-command-docfx-help">2.1 Help command <code>docfx help</code></h3>
+<h3 id="21-help-command-docfx-help">2.1 Help command <code>docfx help</code></h3>
 <p><code>docfx help -a</code> list available subcommands.</p>
 <p><code>docfx help &lt;command&gt;</code> to read about a specific subcommand</p>
-<h3 id="2-2-extract-language-metadata-command-docfx-metadata">2.2 Extract language metadata command <code>docfx metadata</code></h3>
+<h3 id="22-extract-language-metadata-command-docfx-metadata">2.2 Extract language metadata command <code>docfx metadata</code></h3>
 <p><strong>Syntax</strong></p>
 <pre><code>docfx metadata [&lt;projects&gt;]
 </code></pre><p><strong>Layout</strong></p>
@@ -107,7 +106,7 @@
       |     |-- &lt;class&gt;.yml
       |-- toc.yml
       |-- index.yml
-</code></pre><h4 id="2-2-1-optional-projects-argument">2.2.1 Optional <code>&lt;projects&gt;</code> argument</h4>
+</code></pre><h4 id="221-optional-projects-argument">2.2.1 Optional <code>&lt;projects&gt;</code> argument</h4>
 <p><code>&lt;projects&gt;</code> specifies the projects to have metadata extracted. There are several approaches to extract language metadata.</p>
 <ol>
 <li>From a supported project file or project file list
@@ -128,7 +127,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </li>
 </ol>
 <p>The default output folder is <code>_site/</code> folder if it is not specified in <code>docfx.json</code> under current directory.</p>
-<h3 id="2-3-generate-documentation-command-docfx-build">2.3 Generate documentation command <code>docfx build</code></h3>
+<h3 id="23-generate-documentation-command-docfx-build">2.3 Generate documentation command <code>docfx build</code></h3>
 <p><strong>Syntax</strong></p>
 <pre><code>docfx build [-o:&lt;output_path&gt;] [-t:&lt;template folder&gt;]
 </code></pre><p><code>docfx build</code> generates documentation for current folder.</p>
@@ -170,9 +169,9 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 <pre><code class="lang-markdown">## [Home](articles/Home.md)
 ## [Roslyn Wiki](roslyn_wiki/)
 ## [Roslyn API](api_roslyn/)
-</code></pre><h4 id="2-3-1-optional-output-path-argument">2.3.1 Optional <code>&lt;output_path&gt;</code> argument</h4>
+</code></pre><h4 id="231-optional-outputpath-argument">2.3.1 Optional <code>&lt;output_path&gt;</code> argument</h4>
 <p>The default output folder is <code>_site/</code> folder</p>
-<h4 id="2-3-2-optional-template-folder-argument">2.3.2 Optional <code>&lt;template folder&gt;</code> argument</h4>
+<h4 id="232-optional-template-folder-argument">2.3.2 Optional <code>&lt;template folder&gt;</code> argument</h4>
 <p>If specified, use the template from template folder</p>
 <p><strong>Template Folder Structure</strong></p>
 <pre><code>|-- &lt;template folder&gt;
@@ -186,9 +185,9 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
       |     |-- yamlContent.html
       |-- favicon.ico
       |-- logo.ico
-</code></pre><h2 id="3-docfx-json-format">3. <code>docfx.json</code> Format</h2>
+</code></pre><h2 id="3-docfxjson-format">3. <code>docfx.json</code> Format</h2>
 <p>Top level <code>docfx.json</code> structure is key-value pair. <code>key</code> is the name of the subcommand, current supported subcommands are <code>metadata</code> and <code>build</code>. </p>
-<h3 id="3-1-properties-for-metadata">3.1 Properties for <code>metadata</code></h3>
+<h3 id="31-properties-for-metadata">3.1 Properties for <code>metadata</code></h3>
 <p><code>Metadata</code> section defines an array of source projects and their output folder. Each item has <code>src</code> and <code>dest</code> property. <code>src</code> defines the source projects to have metadata generated, which is in <code>File Mapping Format</code>. Detailed syntax is described in <strong>4. Supported <code>name-files</code> File Mapping Format</strong> below. <code>dest</code> defines the output folder of the generated metadata files.</p>
 <p><strong>Sample</strong></p>
 <pre><code class="lang-json">{
@@ -214,7 +213,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
     }
   ]
 }
-</code></pre><h3 id="3-2-properties-for-build">3.2 Properties for <code>build</code></h3>
+</code></pre><h3 id="32-properties-for-build">3.2 Properties for <code>build</code></h3>
 <table>
 <thead>
 <tr>
@@ -249,7 +248,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </tr>
 <tr>
 <td>globalMetadataFiles</td>
-<td>Specify a list of JSON file path containing globalMetadata settings, as similar to <code>{&quot;key&quot;:&quot;value&quot;}</code>. It will merge with the <code>globalMetadataFiles</code> from the config file and <code>globalMetadataFiles</code> from command line. If the same key for global metadata was set, the order to be overriden would be: <code>global metadata from docfx config file</code> &lt; <code>global metadata from global metadata files</code> &lt; <code>global metadata from command line</code> </td>
+<td>Specify a list of JSON file path containing globalMetadata settings, as similar to <code>{&quot;key&quot;:&quot;value&quot;}</code>. Please read <strong>Section3.2.3</strong> for detail.</td>
 </tr>
 <tr>
 <td><del>fileMetadataFile</del></td>
@@ -257,7 +256,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </tr>
 <tr>
 <td>fileMetadataFiles</td>
-<td>Specify a list of JSON file path containing fileMetadata settings, as similar to <code>{&quot;key&quot;:&quot;value&quot;}</code>. It will merge with the <code>fileMetadataFiles</code> from the config file and <code>fileMetadataFiles</code> from command line. If the same key for global metadata was set, the order to be override would be: <code>file metadata from docfx config file</code> &lt; <code>file metadata from file metadata files</code></td>
+<td>Specify a list of JSON file path containing fileMetadata settings, as similar to <code>{&quot;key&quot;:&quot;value&quot;}</code>. Please read <strong>Section3.2.3</strong> for detail.</td>
 </tr>
 <tr>
 <td>template</td>
@@ -313,7 +312,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </tr>
 </tbody>
 </table>
-<h4 id="3-2-1-template-s-and-theme-s">3.2.1 <code>Template</code>s and <code>Theme</code>s</h4>
+<h4 id="321-templates-and-themes">3.2.1 <code>Template</code>s and <code>Theme</code>s</h4>
 <p><em>Template</em>s are used to transform <em>YAML</em> files generated by <code>docfx</code> to human-readable <em>page</em>s. A <em>page</em> can be a markdown file, a html file or even a plain text file. Each <em>YAML</em> file will be transformed to ONE <em>page</em> and be exported to the output folder preserving its relative path to <code>src</code>. For example, if <em>page</em>s are in <em>HTML</em> format, a static website will be generated in the output folder.</p>
 <p><em>Theme</em> is to provide general styles for all the generated <em>page</em>s. Files inside a <em>theme</em> will be generally <strong>COPIED</strong> to the output folder. A typical usage is, after <em>YAML</em> files are transformed to <em>HTML</em> pages, well-designed <em>CSS</em> style files in a <em>Theme</em> can then overwrite the default styles defined in <em>template</em>, e.g. <em>main.css</em>.</p>
 <p>There are two ways to use custom templates and themes. </p>
@@ -375,7 +374,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
     &quot;template&quot;: &quot;default&quot;
   }
 }
-</code></pre><h4 id="3-2-2-reserved-metadata">3.2.2 Reserved Metadata</h4>
+</code></pre><h4 id="322-reserved-metadata">3.2.2 Reserved Metadata</h4>
 <p>After passing values through global metadata or file metadata, DocFX can use these metadata in templates to control the output html.
 Reserved metadatas:</p>
 <table>
@@ -434,9 +433,75 @@ Reserved metadatas:</p>
 </tr>
 </tbody>
 </table>
+<h4 id="323-separated-metadata-files-for-global-metadata-and-file-metadata">3.2.3 Separated metadata files for global metadata and file metadata</h4>
+<p>There&#39;re three ways to set metadata for a file in DocFX:</p>
+<ol>
+<li>using global metadata, it will set metadata for every file.</li>
+<li>using file metadata, it will set metadata for files that match pattern.</li>
+<li>using YAML header, it will set metadata for current file.</li>
+</ol>
+<p>In above ways, the later way will always overwrite the former way if the same key of metadata is set.</p>
+<p>Here we will show you how to set global metadata and file metadata using separated metadata files. Take global metadata for example, you can set <code>globalMetadataFiles</code> in <code>docfx.json</code> or <code>--globalMetadataFiles</code> in build command line. The usage of <code>fileMetadataFiles</code> is the same as <code>globalMetadataFiles</code>.</p>
+<p>There&#39;re some metadata file examples:</p>
+<ul>
+<li><p>globalMetadata file example </p>
+<pre><code class="lang-json">  {
+      &quot;_appTitle&quot;: &quot;DocFX website&quot;,
+      &quot;_enableSearch&quot;: &quot;true&quot;
+  }
+</code></pre></li>
+<li><p>fileMetadata file example</p>
+<pre><code class="lang-json">  {
+      &quot;priority&quot;: {
+          &quot;**.md&quot;: 2.5,
+          &quot;spec/**.md&quot;: 3
+      },
+      &quot;keywords&quot;: {
+          &quot;obj/docfx/**&quot;: [&quot;API&quot;, &quot;Reference&quot;],
+          &quot;spec/**.md&quot;: [&quot;Spec&quot;, &quot;Conceptual&quot;]
+      }
+  }
+</code></pre></li>
+</ul>
+<p>There&#39;re some examples about how to use separated metadata files.</p>
+<ul>
+<li><p>use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
+<pre><code class="lang-json">  ...
+  &quot;globalMetadataFiles&quot;: [&quot;global1.json&quot;, &quot;global2.json&quot;],
+  ...
+</code></pre></li>
+<li><p>use <code>--globalMetadataFiles</code> in build command line</p>
+<pre><code>  docfx build --globalMetadataFiles global1.json,global2.json
+</code></pre></li>
+<li><p>use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
+<pre><code class="lang-json">  ...
+  &quot;fileMetadataFiles&quot;: [&quot;file1.json&quot;, &quot;file2.json&quot;],
+  ...
+</code></pre></li>
+<li><p>use <code>--fileMetadataFiles</code> in build command line</p>
+<pre><code>  docfx build --fileMetadataFiles file1.json,file2.json
+</code></pre></li>
+</ul>
+<p>Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
+<ul>
+<li><p>If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
+<ol>
+<li>global metadata from docfx config file</li>
+<li>global metadata from global metadata files</li>
+<li>global metadata from command line</li>
+</ol>
+</li>
+<li><p>If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
+<ol>
+<li>file metadata from docfx config file</li>
+<li>file metadata from file metadata files</li>
+</ol>
+</li>
+</ul>
+<p>Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
 <h2 id="4-supported-file-mapping-format">4. Supported File Mapping Format</h2>
 <p>There are several ways to define file mapping.</p>
-<h3 id="4-1-array-format">4.1 Array Format</h3>
+<h3 id="41-array-format">4.1 Array Format</h3>
 <p>This form supports multiple file mappings, and also allows additional properties per mapping.
 Supported properties:</p>
 <table>
@@ -496,9 +561,9 @@ Supported properties:</p>
   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
 ]
-</code></pre><h3 id="4-2-compact-format">4.2 Compact Format</h3>
+</code></pre><h3 id="42-compact-format">4.2 Compact Format</h3>
 <pre><code class="lang-json">&quot;key&quot;: [&quot;file1&quot;, &quot;file2&quot;]
-</code></pre><h3 id="4-3-glob-pattern">4.3 Glob Pattern</h3>
+</code></pre><h3 id="43-glob-pattern">4.3 Glob Pattern</h3>
 <p><code>DocFX</code> uses <a href="https://github.com/vicancy/Glob">Glob</a> to support <em>glob</em> pattern in file path.
 It offers several options to determine how to parse the Glob pattern:</p>
 <ul>
@@ -514,7 +579,7 @@ It offers several options to determine how to parse the Glob pattern:</p>
 <li><code>{}</code> allows for a comma-separated list of <strong>OR</strong> expressions</li>
 </ol>
 <p><strong>SAMPLES</strong></p>
-<h2 id="5-q-a">5. Q &amp; A</h2>
+<h2 id="5-q--a">5. Q &amp; A</h2>
 <ol>
 <li>Do we support files outside current project folder(the folder when <code>docfx.json</code> exists)? 
 A: YES. DO specify <code>src</code> and files outside of current folder will be copied to output folder keeping the same relative path to <code>src</code>.</li>
@@ -528,9 +593,18 @@ A: NO.</li>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/docfx.exe_user_manual.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

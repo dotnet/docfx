@@ -8,7 +8,7 @@
     <title>Table-Of-Content (TOC) Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Table-Of-Content (TOC) Files | DocFX website ">
-    <meta name="generator" content="docfx 2.3.1.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,14 +72,13 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="intro_toc">
-              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/intro_toc.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="table-of-content-toc-files">Table-Of-Content (TOC) Files</h1>
               
 <h2 id="introduction">Introduction</h2>
 <p>DocFX supports processing Markdown files, which we call <em>Conceptual File</em>s, as well as structured data model in YAML or JSON format, which we call <em>Metadata File</em>s. Besides that, DocFX introduces a way to organize these files using <em>Table-Of-Content File</em>s, which we also call <em>TOC File</em>s, so that users can navigate through <em>Metadata File</em>s and <em>Conceptual File</em>s.</p>
 <p><em>TOC File</em>s must have file name <code>toc.md</code> or <code>toc.yml</code>, notice that file name is case-insensitive.</p>
 <h2 id="basic-format">Basic format</h2>
-<h3 id="markdown-format-toc-toc-md">Markdown format TOC <code>toc.md</code></h3>
+<h3 id="markdown-format-toc-tocmd">Markdown format TOC <code>toc.md</code></h3>
 <p><code>toc.md</code> leverages Markdown <a href="http://daringfireball.net/projects/markdown/syntax#header">Atx-style headers</a> which use 1-6 hash characters at the start of the line to represent the TOC levels 1-6. We call each line starting with hash characters a <em>TOC Item</em>. A <em>TOC Item</em> with higher level is considered as the child of the nearest upper <em>TOC Item</em> with less level. A sample <code>toc.md</code> is as below:</p>
 <pre><code class="lang-md"># [Header1](href)
 ## [Header1.1](href)
@@ -95,7 +94,7 @@
 <li>Relative path, for example, <code>../example.md</code>. This kind of link has several advanced usages and is described in detail <a href="#relative-path-in-detail">below</a>.</li>
 <li>URI with <code>xref</code> scheme, for example, <code>xref:System.String</code>, the value is the <code>uid</code> of the file to be <a href="../spec/docfx_flavored_markdown.html#cross-reference">cross-referenced</a>.</li>
 </ol>
-<h3 id="yaml-format-toc-toc-yml">YAML format TOC <code>toc.yml</code></h3>
+<h3 id="yaml-format-toc-tocyml">YAML format TOC <code>toc.yml</code></h3>
 <pre><code class="lang-yml">- name: Topic1
   href: Topic1.md
 - name: Topic2
@@ -104,7 +103,7 @@
     - name: Topic2_1
       href: Topic2_1.md
 </code></pre><p>Comparing to <code>toc.md</code>, <code>toc.yml</code> represents a structured data model and conforms to the <a href="http://www.yaml.org/spec/1.2/spec.html">YAML standard</a>. It supports advanced functionalities.</p>
-<h4 id="data-model-for-toc-yml">Data model for <code>toc.yml</code></h4>
+<h4 id="data-model-for-tocyml">Data model for <code>toc.yml</code></h4>
 <p>The data model for <code>toc.yml</code> is an <strong>array</strong> of <em>TOC Item Object</em>s.</p>
 <h5 id="toc-item-object"><em>TOC Item Object</em></h5>
 <p><em>TOC Item Object</em> represents the data model for each <em>TOC Item</em>.</p>
@@ -213,8 +212,8 @@
 <h3 id="link-to-a-folder">Link to a folder</h3>
 <p>If the <em>Toc Item</em> is linking to a folder, ending with <code>/</code> explicitly, the link value for the <em>Toc Item</em> is determined in the following steps:</p>
 <ol>
-<li>If ~~<code>homepage</code>~~ <code>topicHref</code> or ~~<code>homepageUid</code>~~ <code>topicUid</code> is set, the link value is resolved to the relative path to ~~<code>homepage</code>~~ <code>topicHref</code></li>
-<li><p>If ~~<code>homepage</code>~~ <code>topicHref</code> or ~~<code>homepageUid</code>~~ <code>topicUid</code> is not set, DocFX searches for <em>Toc File</em> under the folder, and get the first <a href="#link-to-local-file">relative link to local file</a> as the link value for current <em>Toc Item</em>. For example, if the <em>Toc Item</em> is <code>href: article/</code>, and the content of <code>article/toc.yml</code> is as follows:</p>
+<li>If <del><code>homepage</code></del> <code>topicHref</code> or <del><code>homepageUid</code></del> <code>topicUid</code> is set, the link value is resolved to the relative path to <del><code>homepage</code></del> <code>topicHref</code></li>
+<li><p>If <del><code>homepage</code></del> <code>topicHref</code> or <del><code>homepageUid</code></del> <code>topicUid</code> is not set, DocFX searches for <em>Toc File</em> under the folder, and get the first <a href="#link-to-local-file">relative link to local file</a> as the link value for current <em>Toc Item</em>. For example, if the <em>Toc Item</em> is <code>href: article/</code>, and the content of <code>article/toc.yml</code> is as follows:</p>
 <pre><code class="lang-yaml"> - name: Topic1
    href: topic1.md
 </code></pre><p> The link value for the <em>Toc Item</em> is resolved to <code>article/topic1.md</code>.</p>
@@ -231,9 +230,18 @@
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/intro_toc.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

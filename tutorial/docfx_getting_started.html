@@ -8,7 +8,7 @@
     <title>Getting Started with DocFX | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Getting Started with DocFX | DocFX website ">
-    <meta name="generator" content="docfx 2.3.1.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,7 +72,6 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/docfx_getting_started.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="getting-started-with-docfx">Getting Started with <em>DocFX</em></h1>
               
 <h2 id="1-what-is-docfx">1. What is <em>DocFX</em></h2>
@@ -135,6 +134,13 @@ For detailed description about DFM, please refer to <a href="../spec/docfx_flavo
 <p><em>Step6.</em> <code>docfx docfx_project\docfx.json --serve</code> to build your project and preview your site at <a href="http://localhost:8080">http://localhost:8080</a>.</p>
 <p>Please refer to <a href="docfx.exe_user_manual.html"><em>DocFX</em> User Manual</a> for detailed description of <code>docfx.json</code>.</p>
 <h2 id="5-build-from-source-code">5. Build from source code</h2>
+<h4 id="build-without-dnx">Build without DNX</h4>
+<p>There&#39;re two options:</p>
+<ol>
+<li>Run <code>build nondnx</code> under <em>DocFX</em> code repo</li>
+<li>Open <code>NonDNX.sln</code> under <em>DocFX</em> code repo in Visual Studio and build it.</li>
+</ol>
+<h4 id="build-with-dnx">Build with DNX</h4>
 <p>As a prerequisite, you need:</p>
 <ul>
 <li><a href="https://www.microsoft.com/en-us/download/details.aspx?id=48159">Microsoft Build Tools 2015</a></li>
@@ -160,7 +166,7 @@ For detailed description about DFM, please refer to <a href="../spec/docfx_flavo
 <blockquote><p>Tip:
   It is a good practice to separate files with different type into different folders.</p>
 </blockquote>
-<h2 id="7-q-a">7. Q&amp;A</h2>
+<h2 id="7-qa">7. Q&amp;A</h2>
 <ol>
 <li>Q: How do I quickly reference APIs from other APIs or conceptual files?
 A: Use <code>@uid</code> syntax.</li>
@@ -174,9 +180,18 @@ A: In the generated website, hit F12 to view source, and look at the title of an
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/docfx_getting_started.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

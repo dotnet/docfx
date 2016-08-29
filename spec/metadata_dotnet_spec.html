@@ -8,7 +8,7 @@
     <title>DocFx: Metadata Format for .NET Languages | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFx: Metadata Format for .NET Languages | DocFX website ">
-    <meta name="generator" content="docfx 2.3.1.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,12 +72,11 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/spec/metadata_dotnet_spec.md/#L1" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
               <h1 id="docfx-metadata-format-for-net-languages">DocFx: Metadata Format for .NET Languages</h1>
               
 <h2 id="0-introduction">0. Introduction</h2>
-<h3 id="0-1-goal-and-non-goals">0.1 Goal and Non-goals</h3>
-<h3 id="0-2-terminology">0.2 Terminology</h3>
+<h3 id="01-goal-and-non-goals">0.1 Goal and Non-goals</h3>
+<h3 id="02-terminology">0.2 Terminology</h3>
 <h2 id="1-items">1. Items</h2>
 <p>The following .NET elements are defined as <em>items</em> in metadata:</p>
 <ol>
@@ -87,12 +86,12 @@
 </ol>
 <p>Other elements such as parameters and generic parameters are not standalone <em>items</em>, they&#39;re part of other <em>items</em>.</p>
 <h2 id="2-identifiers">2. Identifiers</h2>
-<h3 id="2-1-unique-identifiers">2.1 Unique Identifiers</h3>
+<h3 id="21-unique-identifiers">2.1 Unique Identifiers</h3>
 <p>For any <em>item</em> in .NET languages, its <em>UID</em> is defined by concatenating its <em>parent</em>&#39;s <em>UID</em> and its own <em>ID</em> with a dot.
 The <em>ID</em> for each kind of item is defined in following sections. The basic principle here is to make <em>ID</em> format close to source code and easy for human reading.</p>
 <p><em>UID</em> is similar to the document comment id, which is started with type prefix, for example, <code>T:</code>, or <code>M:</code>, but <em>UID</em> do not.</p>
 <p>There <strong>MUST NOT</strong> be any whitespace between method name, parentheses, parameters, and commas.</p>
-<h3 id="2-2-spec-identifiers">2.2 Spec Identifiers</h3>
+<h3 id="22-spec-identifiers">2.2 Spec Identifiers</h3>
 <p>Spec identifier is another form of <em>UID</em>.
 It can spec a generic type with type arguments (for example, for parameters, return types or inheritances) and these <em>UID</em>s are unique in one yaml file. </p>
 <p>It is a simple modified Unique Identifiers, when it contains generic type arguments, it will use <code>{Name}</code> instead <code>`N</code>.
@@ -172,7 +171,7 @@ The <em>children</em> of types are members.</p>
   name.csharp: Action
   fullName.csharp: System.Action
 </code></pre></blockquote>
-<h4 id="4-1-id-for-nested-types">4.1 ID for Nested Types</h4>
+<h4 id="41-id-for-nested-types">4.1 ID for Nested Types</h4>
 <p>For nested types, <em>ID</em> is defined by concatenating the <em>ID</em> of all its containing types and the <em>ID</em> of itself, separated by a dot.</p>
 <p>The parent type of a nested type is its containing namespace, rather than its containing type.</p>
 <blockquote><p>Example 4.1 Nested type</p>
@@ -190,7 +189,7 @@ id: Environment.SpecialFolder
 name.csharp: Environment.SpecialFolder
 fullName.csharp: System.Environment.SpecialFolder
 </code></pre></blockquote>
-<h4 id="4-2-inheritance">4.2 Inheritance</h4>
+<h4 id="42-inheritance">4.2 Inheritance</h4>
 <p>Only class contains inheritance, and the inheritance is a list of spec id.</p>
 <blockquote><p>Example 4.2 Inheritance</p>
 <p>C#:</p>
@@ -207,7 +206,7 @@ inheritance:
 - System.Collections.ObjectModel.Collection{{TItem}}
 - System.Object
 </code></pre></blockquote>
-<h4 id="4-3-syntax">4.3 Syntax</h4>
+<h4 id="43-syntax">4.3 Syntax</h4>
 <p>The syntax part for type contains declaration, and descriptions of type parameters for different languages.
 For delegates, it also contains descriptions of parameters and a return type.</p>
 <h2 id="5-members">5. Members</h2>
@@ -216,7 +215,7 @@ They have the following properties: summary, remarks, exceptions, and syntax.
 The parents of members are types.
 Members never have children, and
 all parameter types or return types are spec id.</p>
-<h4 id="5-1-constructors">5.1 Constructors</h4>
+<h4 id="51-constructors">5.1 Constructors</h4>
 <p>The <em>ID</em> of a constructor is defined by <code>#ctor</code>, followed by the list of the <em>UIDs</em> of its parameter types:
 When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</strong> end with parentheses.</p>
 <p>The syntax part for constructors contains a special language declaration, and descriptions of parameters.</p>
@@ -240,7 +239,7 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
   name.csharp: String(Char[])
   fullName.csharp: System.String.String(System.Char[])
 </code></pre></blockquote>
-<h4 id="5-2-methods">5.2 Methods</h4>
+<h4 id="52-methods">5.2 Methods</h4>
 <p>The <em>ID</em> of a method is defined by its name, followed by the list of the <em>UIDs</em> of its parameter types:</p>
 <pre><code class="lang-yaml">method_name(param1,param2,...)
 </code></pre><p>When a method does not have parameter, its <em>ID</em> <strong>MUST</strong> end with parentheses.</p>
@@ -265,7 +264,7 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
   name.csharp: ToString(IFormatProvider)
   fullName.csharp: System.String.ToString(System.IFormatProvider)
 </code></pre></blockquote>
-<h4 id="5-2-1-explicit-interface-implementation">5.2.1 Explicit Interface Implementation</h4>
+<h4 id="521-explicit-interface-implementation">5.2.1 Explicit Interface Implementation</h4>
 <p>The <em>ID</em> of an explicit interface implementation (EII) member <strong>MUST</strong> be prefixed by the <em>UID</em> of the interface it implements and replace <code>.</code> to <code>#</code>.</p>
 <blockquote><p>Example 2.6 Explicit interface implementation (EII)</p>
 <p>C#:</p>
@@ -284,7 +283,7 @@ When a constructor does not have parameter, its <em>ID</em> <strong>MUST NOT</st
   name.csharp: IEnumerable.GetEnumerator()
   fullName.csharp: System.String.System.Collections.IEnumerable.GetEnumerator()
 </code></pre></blockquote>
-<h4 id="5-4-operator-overloads">5.4 Operator Overloads</h4>
+<h4 id="54-operator-overloads">5.4 Operator Overloads</h4>
 <p>The <em>IDs</em> of operator overloads are same with the metadata name (for example, <code>op_Equality</code>).
 The names of operator overloads are similar to MSDN, just remove <code>op_</code> from the metadata name of the method.
 For instance, the name of the equals (<code>==</code>) operator is <code>Equality</code>.</p>
@@ -314,7 +313,7 @@ For instance, the name of the equals (<code>==</code>) operator is <code>Equalit
   fullName.csharp: System.String.Equality(System.String,System.String)
 </code></pre></blockquote>
 <p>Please check <a href="https://msdn.microsoft.com/en-us/library/8edha89s.aspx">overloadable operators</a> for all overloadable operators.</p>
-<h4 id="5-5-field-property-or-event">5.5 Field, Property or Event</h4>
+<h4 id="55-field-property-or-event">5.5 Field, Property or Event</h4>
 <p>The <em>ID</em> of field, property or event is its name.
 The syntax part for field contains a special language declaration and descriptions of field type.
 For property, it contains a special language declaration, descriptions of parameters, and return type.
@@ -348,7 +347,7 @@ For event, it contains a special language declaration and descriptions of event 
   name.csharp: CancelKeyPress
   fullName.csharp: System.Console.CancelKeyPress
 </code></pre></blockquote>
-<h4 id="5-6-indexer">5.6 Indexer</h4>
+<h4 id="56-indexer">5.6 Indexer</h4>
 <p>Indexer operator&#39;s name is metadata name, by default, it is <code>Item</code>, with brackets and parameters.</p>
 <blockquote><p>Example 5.6 Indexer</p>
 <pre><code class="lang-csharp">namespace System.Collections
@@ -431,9 +430,18 @@ The <em>spec</em> in reference is very like a list of lightweight references, it
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/spec/metadata_dotnet_spec.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>

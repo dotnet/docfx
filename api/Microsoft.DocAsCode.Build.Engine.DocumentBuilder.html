@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class DocumentBuilder
    | DocFX website ">
-    <meta name="generator" content="docfx 2.3.0.0">
+    <meta name="generator" content="docfx 2.4.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -76,8 +76,6 @@
             <article class="content wrap" id="_content">
               
               
-              <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuilder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuilder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="btn btn-primary pull-right mobile-hide">Improve this Doc</a>
-              <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L20" class="btn btn-primary pull-right mobile-hide">View Source</a>
               <h1 id="Microsoft_DocAsCode_Build_Engine_DocumentBuilder" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuilder">Class DocumentBuilder
               </h1>
               <div class="markdown level0 summary"></div>
@@ -121,17 +119,17 @@
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuilder__ctor_System_Collections_Generic_IEnumerable_System_Reflection_Assembly__System_Collections_Immutable_ImmutableArray_System_String__System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuilder.%23ctor(System.Collections.Generic.IEnumerable%7BSystem.Reflection.Assembly%7D%2CSystem.Collections.Immutable.ImmutableArray%7BSystem.String%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuilder__ctor_System_Collections_Generic_IEnumerable_System_Reflection_Assembly__System_Collections_Immutable_ImmutableArray_System_String__System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuilder.%23ctor(System.Collections.Generic.IEnumerable%7BSystem.Reflection.Assembly%7D%2CSystem.Collections.Immutable.ImmutableArray%7BSystem.String%7D%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L39">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L42">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuilder__ctor_System_Collections_Generic_IEnumerable_System_Reflection_Assembly__System_Collections_Immutable_ImmutableArray_System_String__System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuilder.#ctor(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Collections.Immutable.ImmutableArray{System.String},System.String)">DocumentBuilder(IEnumerable&lt;Assembly&gt;, ImmutableArray&lt;String&gt;, String)</h4>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuilder__ctor_System_Collections_Generic_IEnumerable_System_Reflection_Assembly__System_Collections_Immutable_ImmutableArray_System_String__System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuilder.#ctor(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Collections.Immutable.ImmutableArray{System.String},System.String,System.String)">DocumentBuilder(IEnumerable&lt;Assembly&gt;, ImmutableArray&lt;String&gt;, String, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public DocumentBuilder(IEnumerable&lt;Assembly&gt; assemblies, ImmutableArray&lt;string&gt; postProcessorNames, string intermediateFolder = null)</code></pre>
+                <pre><code class="lang-csharp hljs">public DocumentBuilder(IEnumerable&lt;Assembly&gt; assemblies, ImmutableArray&lt;string&gt; postProcessorNames, string templateHash, string intermediateFolder = null)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -155,6 +153,11 @@
                   </tr>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><em>templateHash</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
                     <td><em>intermediateFolder</em></td>
                     <td></td>
                   </tr>
@@ -167,14 +170,14 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L62">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L67">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters)">Build(DocumentBuildParameters)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public Manifest Build(DocumentBuildParameters parameter)</code></pre>
+                <pre><code class="lang-csharp hljs">public void Build(DocumentBuildParameters parameter)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -193,27 +196,12 @@
                   </tr>
                 </tbody>
               </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.Manifest.html#Microsoft_DocAsCode_Plugins_Manifest">Manifest</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters__System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(System.Collections.Generic.IEnumerable%7BMicrosoft.DocAsCode.Build.Engine.DocumentBuildParameters%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L77">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L72">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Build_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Build_Engine_DocumentBuildParameters__System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Build(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.Build.Engine.DocumentBuildParameters},System.String)">Build(IEnumerable&lt;DocumentBuildParameters&gt;, String)</h4>
               <div class="markdown level1 summary"></div>
@@ -249,7 +237,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Dispose.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L291">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L312">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuilder_Dispose" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuilder.Dispose">Dispose()</h4>
               <div class="markdown level1 summary"></div>
@@ -268,9 +256,21 @@
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
-            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-            <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
-            </nav>
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuilder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuilder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuilder.cs/#L23" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
           </div>
         </div>
       </div>
