@@ -908,7 +908,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return false;
             }
-            if (!(processor is ISupportIncrementalBuild) ||
+            if (!(processor is ISupportIncrementalDocumentProcessor) ||
                 !processor.BuildSteps.All(step => step is ISupportIncrementalBuild))
             {
                 return false;
