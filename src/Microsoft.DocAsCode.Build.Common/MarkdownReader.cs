@@ -83,6 +83,8 @@ namespace Microsoft.DocAsCode.Build.Common
                     part.LinkToFiles = mr.LinkToFiles;
                     part.LinkToUids = mr.LinkToUids;
                     part.YamlHeader = mr.YamlHeader;
+                    part.FileLinkSources = mr.FileLinkSources;
+                    part.UidLinkSources = mr.UidLinkSources;
                 }
                 return parts;
             }

@@ -84,6 +84,10 @@ namespace Microsoft.DocAsCode.Plugins
 
         public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
 
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> UidLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> FileLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+
         public dynamic Properties { get; } = new ExpandoObject();
 
         public dynamic ManifestProperties { get; } = new ExpandoObject();

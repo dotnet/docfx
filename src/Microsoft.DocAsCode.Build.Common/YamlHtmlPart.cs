@@ -31,6 +31,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public ImmutableDictionary<string, object> YamlHeader { get; set; } = ImmutableDictionary<string, object>.Empty;
 
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> UidLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> FileLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+
         public MarkupResult ToMarkupResult()
         {
             return new MarkupResult
@@ -40,6 +44,8 @@ namespace Microsoft.DocAsCode.Build.Common
                 LinkToFiles = LinkToFiles,
                 LinkToUids = LinkToUids,
                 YamlHeader = YamlHeader,
+                FileLinkSources = FileLinkSources,
+                UidLinkSources = UidLinkSources,
             };
         }
 

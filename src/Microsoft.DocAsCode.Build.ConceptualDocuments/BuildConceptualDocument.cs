@@ -72,6 +72,8 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
             model.LinkToFiles = result.LinkToFiles.ToImmutableHashSet();
             model.LinkToUids = result.LinkToUids;
+            model.FileLinkSources = result.FileLinkSources;
+            model.UidLinkSources = result.UidLinkSources;
             model.Properties.XrefSpec = null;
             if (model.Uids.Length > 0)
             {

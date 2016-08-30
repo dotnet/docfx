@@ -159,6 +159,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 node.Remove();
             }
             var linkToFiles = new HashSet<string>();
+            var fileLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
             foreach (var pair in (from n in doc.DocumentNode.Descendants()
                                   where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
                                   from attr in n.Attributes
@@ -198,15 +199,39 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                     linkToFiles.Add(HttpUtility.UrlDecode(file));
+
+                    List<LinkSourceInfo> sources;
+                    if (!fileLinkSources.TryGetValue(file, out sources))
+                    {
+                        sources = new List<LinkSourceInfo>();
+                        fileLinkSources[file] = sources;
+                    }
+                    sources.Add(new LinkSourceInfo
+                    {
+                        Target = file,
+                        SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
+                        LineNumber = pair.Node.GetAttributeValue("sourceLineNumber", 0),
+                    });
                 }
             }
             result.LinkToFiles = linkToFiles.ToImmutableArray();
-            result.LinkToUids = (from n in doc.DocumentNode.Descendants()
-                                 where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                 from attr in n.Attributes
-                                 where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                                 where !string.IsNullOrWhiteSpace(attr.Value)
-                                 select attr.Value).ToImmutableHashSet();
+            result.FileLinkSources = fileLinkSources.ToImmutableDictionary(pair => pair.Key, pair => pair.Value.ToImmutableList());
+
+            result.UidLinkSources = (from n in doc.DocumentNode.Descendants()
+                                     where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                                     from attr in n.Attributes
+                                     where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
+                                     where !string.IsNullOrWhiteSpace(attr.Value)
+                                     select new LinkSourceInfo
+                                     {
+                                         Target = attr.Value,
+                                         SourceFile = n.GetAttributeValue("sourceFile", null),
+                                         LineNumber = n.GetAttributeValue("sourceLineNumber", 0),
+                                     } into lsi
+                                     group lsi by lsi.Target into g
+                                     select new KeyValuePair<string, ImmutableList<LinkSourceInfo>>(g.Key, g.ToImmutableList())).ToImmutableDictionary();
+            result.LinkToUids = result.UidLinkSources.Keys.ToImmutableHashSet();
+
             using (var sw = new StringWriter())
             {
                 doc.Save(sw);
@@ -244,6 +269,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 node.Remove();
             }
             var linkToFiles = new HashSet<string>();
+            var fileLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
             foreach (var pair in (from n in doc.DocumentNode.Descendants()
                                   where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
                                   from attr in n.Attributes
@@ -283,15 +309,39 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                     linkToFiles.Add(HttpUtility.UrlDecode(file));
+
+                    List<LinkSourceInfo> sources;
+                    if (!fileLinkSources.TryGetValue(file, out sources))
+                    {
+                        sources = new List<LinkSourceInfo>();
+                        fileLinkSources[file] = sources;
+                    }
+                    sources.Add(new LinkSourceInfo
+                    {
+                        Target = file,
+                        SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
+                        LineNumber = pair.Node.GetAttributeValue("sourceLineNumber", 0),
+                    });
                 }
             }
             result.LinkToFiles = linkToFiles.ToImmutableArray();
-            result.LinkToUids = (from n in doc.DocumentNode.Descendants()
-                                 where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                 from attr in n.Attributes
-                                 where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                                 where !string.IsNullOrWhiteSpace(attr.Value)
-                                 select attr.Value).ToImmutableHashSet();
+            result.FileLinkSources = fileLinkSources.ToImmutableDictionary(pair => pair.Key, pair => pair.Value.ToImmutableList());
+
+            result.UidLinkSources = (from n in doc.DocumentNode.Descendants()
+                                     where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                                     from attr in n.Attributes
+                                     where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
+                                     where !string.IsNullOrWhiteSpace(attr.Value)
+                                     select new LinkSourceInfo
+                                     {
+                                         Target = attr.Value,
+                                         SourceFile = n.GetAttributeValue("sourceFile", null),
+                                         LineNumber = n.GetAttributeValue("sourceLineNumber", 0),
+                                     } into lsi
+                                     group lsi by lsi.Target into g
+                                     select new KeyValuePair<string, ImmutableList<LinkSourceInfo>>(g.Key, g.ToImmutableList())).ToImmutableDictionary();
+            result.LinkToUids = result.UidLinkSources.Keys.ToImmutableHashSet();
+
             if (result.Dependency.Length > 0)
             {
                 result.Dependency =

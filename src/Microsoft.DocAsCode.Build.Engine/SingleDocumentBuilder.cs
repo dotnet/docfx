@@ -747,7 +747,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (!hostService.SourceFiles.ContainsKey(fileLink))
                 {
-                    var message = $"Invalid file link({fileLink})";
+                    var message = $"Invalid file link({fileLink}).";
+                    ImmutableList<LinkSourceInfo> list;
+                    if (result.FileLinkSources.TryGetValue(fileLink, out list))
+                    {
+                        var si = string.Join(", ", from fls in result.FileLinkSources[fileLink] select "in " + fls.SourceFile + " at " + fls.LineNumber.ToString());
+                        message += " Referenced by: " + si;
+                    }
                     Logger.LogWarning(message);
                 }
             });
