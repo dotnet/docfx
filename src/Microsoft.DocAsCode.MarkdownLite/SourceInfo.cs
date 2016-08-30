@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public SourceInfo Copy(string markdown, int lineOffset = 0)
         {
-            return new SourceInfo(markdown, File, LineNumber + lineOffset, GetValidLineCount(markdown) + lineOffset);
+            return new SourceInfo(markdown, File, LineNumber + lineOffset, GetValidLineCount(markdown));
         }
 
         private static int GetValidLineCount(string markdown)
