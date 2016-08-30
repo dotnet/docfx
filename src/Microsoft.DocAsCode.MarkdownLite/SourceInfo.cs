@@ -33,18 +33,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private static int GetValidLineCount(string markdown)
         {
-            var indexOfLastChar = markdown.Length - 1;
             var validLineCount = 0;
-
-            while (indexOfLastChar >= 0 && markdown[indexOfLastChar] == '\n')
-                indexOfLastChar--;
-
-            for (var i = indexOfLastChar - 1; i >= 0; i--)
+            var trimEndNewLine = markdown.Trim('\n');
+            for (var i = trimEndNewLine.Length - 1; i >= 0; i--)
             {
-                if (markdown[i] == '\n')
+                if (trimEndNewLine[i] == '\n')
                     validLineCount++;
             }
-
             return validLineCount;
         }
     }
