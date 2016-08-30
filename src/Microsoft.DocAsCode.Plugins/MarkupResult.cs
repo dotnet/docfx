@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.Plugins
         public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
         public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
         public ImmutableArray<string> Dependency { get; set; } = ImmutableArray<string>.Empty;
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> UidLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> FileLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
 
         public MarkupResult Clone()
         {

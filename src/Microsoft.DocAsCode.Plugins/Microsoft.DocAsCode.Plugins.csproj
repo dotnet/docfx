@@ -33,6 +33,7 @@
     <Compile Include="IMarkdownServiceProvider.cs" />
     <Compile Include="IMarkdownService.cs" />
     <Compile Include="IPostProcessor.cs" />
+    <Compile Include="LinkSourceInfo.cs" />
     <Compile Include="Manifest.cs" />
     <Compile Include="ManifestItem.cs" />
     <Compile Include="MarkdownServiceParameters.cs" />

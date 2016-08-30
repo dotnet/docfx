@@ -101,6 +101,37 @@ namespace Microsoft.DocAsCode.Build.RestApi
             var mr = host.Markup(markdown, model.FileAndType);
             model.LinkToFiles = model.LinkToFiles.Union(mr.LinkToFiles);
             model.LinkToUids = model.LinkToUids.Union(mr.LinkToUids);
+
+            var fls = model.FileLinkSources.ToDictionary(p => p.Key, p => p.Value);
+            foreach (var pair in mr.FileLinkSources)
+            {
+                ImmutableList<LinkSourceInfo> list;
+                if (fls.TryGetValue(pair.Key, out list))
+                {
+                    fls[pair.Key] = list.AddRange(pair.Value);
+                }
+                else
+                {
+                    fls[pair.Key] = pair.Value;
+                }
+            }
+            model.FileLinkSources = fls.ToImmutableDictionary();
+
+            var uls = model.UidLinkSources.ToDictionary(p => p.Key, p => p.Value);
+            foreach (var pair in mr.UidLinkSources)
+            {
+                ImmutableList<LinkSourceInfo> list;
+                if (uls.TryGetValue(pair.Key, out list))
+                {
+                    uls[pair.Key] = list.AddRange(pair.Value);
+                }
+                else
+                {
+                    uls[pair.Key] = pair.Value;
+                }
+            }
+            model.UidLinkSources = uls.ToImmutableDictionary();
+
             return mr.Html;
         }
     }
