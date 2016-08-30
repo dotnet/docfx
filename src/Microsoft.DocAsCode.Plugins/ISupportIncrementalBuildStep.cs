@@ -4,9 +4,9 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     /// <summary>
-    /// Declare a document processor or a step can support incremental build.
+    /// Declare a build step can support incremental build.
     /// </summary>
-    public interface ISupportIncrementalBuild
+    public interface ISupportIncrementalBuildStep : IDocumentBuildStep
     {
         /// <summary>
         /// Get the hash of incremental context, if it is different from latest one then full build.

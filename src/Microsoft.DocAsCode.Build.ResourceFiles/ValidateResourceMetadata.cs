@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ResourceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ValidateResourceMetadata : BaseDocumentBuildStep, ISupportIncrementalBuild
+    public class ValidateResourceMetadata : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         public override string Name => nameof(ValidateResourceMetadata);
 

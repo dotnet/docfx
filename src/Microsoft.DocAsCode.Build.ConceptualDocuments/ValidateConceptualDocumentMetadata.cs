@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ValidateConceptualDocumentMetadata : BaseDocumentBuildStep, ISupportIncrementalBuild
+    public class ValidateConceptualDocumentMetadata : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
 

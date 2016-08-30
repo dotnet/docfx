@@ -25,7 +25,8 @@
     <Compile Include="DocumentExceptionExtensions.cs" />
     <Compile Include="DocumentType.cs" />
     <Compile Include="EnvironmentContext.cs" />
-    <Compile Include="ISupportIncremental.cs" />
+    <Compile Include="ISupportIncrementalDocumentProcessor.cs" />
+    <Compile Include="ISupportIncrementalBuildStep.cs" />
     <Compile Include="FileAndType.cs" />
     <Compile Include="HomepageInfo.cs" />
     <Compile Include="IInputMetadataValidator.cs" />

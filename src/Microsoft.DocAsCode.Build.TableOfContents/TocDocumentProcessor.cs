@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
-    public class TocDocumentProcessor : DisposableDocumentProcessor, ISupportIncrementalBuild
+    public class TocDocumentProcessor : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
     {
         public override string Name => nameof(TocDocumentProcessor);
 
@@ -206,16 +206,21 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo(((RelativePath)relativeToPath).GetPathFromWorkingFolder());
         }
 
-        #region ISupportIncrementalBuild Members
+        #region ISupportIncrementalDocumentProcessor Members
 
         public string GetIncrementalContextHash()
         {
             return null;
         }
 
-        public bool CanIncrementalBuild(FileAndType fileAndType)
+        public void SaveIntermediateModel(FileModel model, Stream stream)
         {
-            return true;
+            throw new NotImplementedException();
+        }
+
+        public FileModel LoadIntermediateModel(Stream stream)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
