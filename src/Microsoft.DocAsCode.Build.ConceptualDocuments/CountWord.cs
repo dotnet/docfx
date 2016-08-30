@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class CountWord : BaseDocumentBuildStep, ISupportIncrementalBuild
+    public class CountWord : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         public override string Name => nameof(CountWord);
 

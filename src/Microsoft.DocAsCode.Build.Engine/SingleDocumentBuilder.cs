@@ -547,8 +547,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         if (ck == ChangeKindWithDependency.None)
                         {
                             Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Check incremental...");
-                            if (((ISupportIncrementalBuild)processor).CanIncrementalBuild(file) &&
-                                processor.BuildSteps.Cast<ISupportIncrementalBuild>().All(step => step.CanIncrementalBuild(file)))
+                            if (processor.BuildSteps.Cast<ISupportIncrementalBuildStep>().All(step => step.CanIncrementalBuild(file)))
                             {
                                 Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Skip build by incremental.");
 
@@ -909,7 +908,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return false;
             }
             if (!(processor is ISupportIncrementalDocumentProcessor) ||
-                !processor.BuildSteps.All(step => step is ISupportIncrementalBuild))
+                !processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
             {
                 return false;
             }
@@ -936,14 +935,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             var cpi = new ProcessorInfo
             {
                 Name = processor.Name,
-                IncrementalContextHash = ((ISupportIncrementalBuild)processor).GetIncrementalContextHash(),
+                IncrementalContextHash = ((ISupportIncrementalDocumentProcessor)processor).GetIncrementalContextHash(),
             };
             foreach (var step in processor.BuildSteps)
             {
                 cpi.Steps.Add(new ProcessorStepInfo
                 {
                     Name = step.Name,
-                    IncrementalContextHash = ((ISupportIncrementalBuild)step).GetIncrementalContextHash(),
+                    IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
                 });
             }
             var cvi = CurrentBuildInfo.Versions.Find(v => v.VersionName == versionName);

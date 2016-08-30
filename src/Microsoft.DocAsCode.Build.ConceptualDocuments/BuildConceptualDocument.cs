@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Utility;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuild
+    public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";

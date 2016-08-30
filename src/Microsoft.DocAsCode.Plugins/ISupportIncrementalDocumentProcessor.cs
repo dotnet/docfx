@@ -6,10 +6,15 @@ namespace Microsoft.DocAsCode.Plugins
     using System.IO;
 
     /// <summary>
-    /// Declare a document processor or a step can support incremental build.
+    /// Declare a document processor can support incremental build.
     /// </summary>
-    public interface ISupportIncrementalDocumentProcessor : IDocumentProcessor, ISupportIncrementalBuild
+    public interface ISupportIncrementalDocumentProcessor : IDocumentProcessor
     {
+        /// <summary>
+        /// Get the hash of incremental context, if it is different from latest one then full build.
+        /// </summary>
+        /// <returns>the hash.</returns>
+        string GetIncrementalContextHash();
         /// <summary>
         /// Save intermediate model to stream.
         /// </summary>
