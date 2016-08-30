@@ -123,6 +123,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
                 LinkToFiles = model.LinkToFiles.ToImmutableArray(),
                 LinkToUids = model.LinkToUids,
+                FileLinkSources = model.FileLinkSources,
+                UidLinkSources = model.UidLinkSources,
             };
         }
 

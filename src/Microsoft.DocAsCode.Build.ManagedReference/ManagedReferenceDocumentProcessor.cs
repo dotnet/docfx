@@ -122,6 +122,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
                 LinkToFiles = model.LinkToFiles.ToImmutableArray(),
                 LinkToUids = model.LinkToUids,
+                FileLinkSources = model.FileLinkSources,
+                UidLinkSources = model.UidLinkSources,
                 XRefSpecs = (from item in vm.Items
                              select GetXRefInfo(item, model.Key)).ToImmutableArray(),
                 ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
