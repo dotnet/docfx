@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Load intermediate model from stream.
         /// </summary>
-        /// <param name="stream">The stream contain saved model.</param>
+        /// <param name="stream">The stream containing saved model.</param>
         /// <returns>The file model.</returns>
         FileModel LoadIntermediateModel(Stream stream);
     }
