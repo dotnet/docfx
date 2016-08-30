@@ -33,6 +33,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             _index = 1;
         }
 
+        /// <summary>
+        /// Append string to string buffer. (Create new instance if self is <see cref="Empty"/>, otherwise, modify self).
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <returns>The string buffer.</returns>
         public StringBuffer Append(string str)
         {
             if (string.IsNullOrEmpty(str))
@@ -44,6 +49,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return result;
         }
 
+        /// <summary>
+        /// Concat another string buffer. (Create new instance if self is <see cref="Empty"/>, otherwise, modify self).
+        /// </summary>
+        /// <param name="another">The string buffer.</param>
+        /// <returns>The string buffer.</returns>
         public StringBuffer Concat(StringBuffer another)
         {
             if (another == Empty || another == null)
@@ -218,6 +228,64 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
             }
             return true;
+        }
+
+        public StringBuffer Substring(int startIndex, int maxCount)
+        {
+            if (startIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+            if (maxCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxCount));
+            }
+            if (maxCount == 0)
+            {
+                return Empty;
+            }
+            var result = new StringBuffer(_buffer.Length);
+            int skipCount = startIndex;
+            int copyCount = maxCount;
+            for (int i = 0; i < _index; i++)
+            {
+                if (skipCount > 0)
+                {
+                    skipCount -= _buffer[i].Length;
+                    if (skipCount < 0)
+                    {
+                        result._index = 1;
+                        if (_buffer[i].Length + skipCount > copyCount)
+                        {
+                            result._buffer[0] = _buffer[i].Substring(-skipCount, copyCount);
+                            return result;
+                        }
+                        else
+                        {
+                            result._buffer[0] = _buffer[i].Substring(-skipCount);
+                            copyCount -= result._buffer[0].Length;
+                        }
+                    }
+                }
+                else
+                {
+                    copyCount -= _buffer[i].Length;
+                    if (copyCount > 0)
+                    {
+                        result._buffer[result._index++] = _buffer[i];
+                    }
+                    else
+                    {
+                        result._buffer[result._index++] = copyCount == 0 ? _buffer[i] : _buffer[i].Remove(-copyCount);
+                        return result;
+                    }
+                }
+            }
+            if (skipCount > 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+            return result;
         }
 
         public override string ToString()
