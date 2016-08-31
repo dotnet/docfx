@@ -198,27 +198,27 @@ namespace Microsoft.DocAsCode.Build.Engine
             var version = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
             if (version == null)
             {
-                Logger.LogVerbose($"cannot build incrementally because last build didn't contain version {versionName}.");
+                Logger.LogVerbose($"Cannot build incrementally because last build didn't contain version {versionName}.");
                 return false;
             }
             if (configHash != version.ConfigHash)
             {
-                Logger.LogVerbose($"cannot build incrementally because config changed.");
+                Logger.LogVerbose("Cannot build incrementally because config changed.");
                 return false;
             }
             if (CurrentBuildInfo.DocfxVersion != LastBuildInfo.DocfxVersion)
             {
-                Logger.LogVerbose($"cannot build incrementally because docfx version changed.");
+                Logger.LogVerbose("Cannot build incrementally because docfx version changed.");
                 return false;
             }
             if (CurrentBuildInfo.PluginHash != LastBuildInfo.PluginHash)
             {
-                Logger.LogVerbose($"cannot build incrementally because plugin changed.");
+                Logger.LogVerbose("Cannot build incrementally because plugin changed.");
                 return false;
             }
             if (CurrentBuildInfo.TemplateHash != LastBuildInfo.TemplateHash)
             {
-                Logger.LogVerbose($"cannot build incrementally because template changed.");
+                Logger.LogVerbose("Cannot build incrementally because template changed.");
                 return false;
             }
             return true;
@@ -935,12 +935,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (!(processor is ISupportIncrementalDocumentProcessor))
             {
-                Logger.LogVerbose($"processor {processor.Name} cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.");
+                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.");
                 return false;
             }
             if (!processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
             {
-                Logger.LogVerbose($"processor {processor.Name} cannot suppport incremental build because the following steps don't implement ISupportIncrementalBuildStep interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.");
+                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.");
                 return false;
             }
 
@@ -952,17 +952,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                 ?.Find(p => p.Name == processor.Name);
             if (lpi == null)
             {
-                Logger.LogVerbose($"processor {processor.Name} cannot support incremental build because last build doesn't contain version {versionName}.");
+                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because last build doesn't contain version {versionName}.");
                 return false;
             }
             if (cpi.IncrementalContextHash != lpi.IncrementalContextHash)
             {
-                Logger.LogVerbose($"processor {processor.Name} cannot support incremental build because incremental context hash changed.");
+                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because incremental context hash changed.");
                 return false;
             }
             if (!new HashSet<ProcessorStepInfo>(cpi.Steps).SetEquals(lpi.Steps))
             {
-                Logger.LogVerbose($"processor {processor.Name} cannot support incremental build because Steps changed.");
+                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because steps changed.");
                 return false;
             }
             return true;
