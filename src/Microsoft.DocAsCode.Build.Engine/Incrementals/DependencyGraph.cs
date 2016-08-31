@@ -11,42 +11,64 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     public class DependencyGraph
     {
-        private readonly Dictionary<string, SortedSet<string>> _dictionary;
+        private readonly Dictionary<string, Dependency> _dictionary;
 
         public DependencyGraph()
-            : this(new Dictionary<string, SortedSet<string>>())
+            : this(new Dictionary<string, Dependency>())
         {
         }
 
-        private DependencyGraph(Dictionary<string, SortedSet<string>> dictionary)
+        private DependencyGraph(Dictionary<string, Dependency> dictionary)
         {
             _dictionary = dictionary;
         }
 
-        public void ReportDependency(string key, string value)
+        public void ReportFileDependency(string key, string value)
         {
-            SortedSet<string> set;
-            if (_dictionary.TryGetValue(key, out set))
+            Dependency d;
+            if (!_dictionary.TryGetValue(key, out d))
             {
-                set.Add(value);
+                d = new Dependency();
+                _dictionary[key] = d;
             }
-            else
-            {
-                _dictionary[key] = new SortedSet<string>() { value };
-            }
+
+            d.Files.Add(value);
         }
 
-        public void ReportDependency(string key, IEnumerable<string> values)
+        public void ReportFileDependency(string key, IEnumerable<string> values)
         {
-            SortedSet<string> set;
-            if (_dictionary.TryGetValue(key, out set))
+            Dependency d;
+            if (!_dictionary.TryGetValue(key, out d))
             {
-                set.UnionWith(values);
+                d = new Dependency();
+                _dictionary[key] = d;
             }
-            else
+
+            d.Files.UnionWith(values);
+        }
+
+        public void ReportUidDependency(string key, string value)
+        {
+            Dependency d;
+            if (!_dictionary.TryGetValue(key, out d))
             {
-                _dictionary[key] = new SortedSet<string>(values);
+                d = new Dependency();
+                _dictionary[key] = d;
             }
+
+            d.Uids.Add(value);
+        }
+
+        public void ReportUidDependency(string key, IEnumerable<string> values)
+        {
+            Dependency d;
+            if (!_dictionary.TryGetValue(key, out d))
+            {
+                d = new Dependency();
+                _dictionary[key] = d;
+            }
+
+            d.Uids.UnionWith(values);
         }
 
         public bool HasDependency(string key)
@@ -59,14 +81,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             get { return _dictionary.Keys; }
         }
 
-        public SortedSet<string> GetDirectDependency(string key)
+        public SortedSet<string> GetUidDependency(string key)
         {
-            SortedSet<string> set;
-            _dictionary.TryGetValue(key, out set);
-            return set;
+            Dependency d;
+            _dictionary.TryGetValue(key, out d);
+            return d?.Uids;
         }
 
-        public SortedSet<string> GetAllDependency(string key)
+        public SortedSet<string> GetDirectFileDependency(string key)
+        {
+            Dependency d;
+            _dictionary.TryGetValue(key, out d);
+            return d?.Files;
+        }
+
+        public SortedSet<string> GetAllFileDependency(string key)
         {
             var result = new SortedSet<string>();
             var queue = new Queue<string>();
@@ -75,10 +104,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
-                SortedSet<string> set;
-                if (_dictionary.TryGetValue(current, out set))
+                Dependency d;
+                if (_dictionary.TryGetValue(current, out d))
                 {
-                    foreach (var item in set)
+                    foreach (var item in d.Files)
                     {
                         if (result.Add(item))
                         {
@@ -98,8 +127,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public static DependencyGraph Load(TextReader reader)
         {
             return new DependencyGraph(
-                JsonUtility.Deserialize<Dictionary<string, SortedSet<string>>>(
+                JsonUtility.Deserialize<Dictionary<string, Dependency>>(
                     reader));
         }
+    }
+
+    public class Dependency
+    {
+        // files that one file depends on
+        public SortedSet<string> Files { get; set; } = new SortedSet<string>();
+
+        // uids that one file depends on
+        public SortedSet<string> Uids { get; set; } = new SortedSet<string>();
     }
 }
