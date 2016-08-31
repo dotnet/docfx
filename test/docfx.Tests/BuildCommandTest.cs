@@ -169,11 +169,11 @@ namespace Microsoft.DocAsCode.Tests
                 new string[]
                 {
                     "",
-                    $"<h1 id=\"hello-test1\" sourcefile=\"{_inputFolder}/test1.md\" sourcelinenumber=\"7\">Hello Test1</h1>",
-                    $"<p sourcefile=\"{_inputFolder}/test1.md\" sourcelinenumber=\"8\">Test XRef: <a class=\"xref\" href=\"test2.html#xref2\">Hello World</a>",
+                    $"<h1 id=\"hello-test1\" sourcefile=\"{_inputFolder}/test1.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">Hello Test1</h1>",
+                    $"<p sourcefile=\"{_inputFolder}/test1.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"10\">Test XRef: <a class=\"xref\" href=\"test2.html#xref2\">Hello World</a>",
                     "Test XRef: @unknown_xref",
-                    $"Test link: <a href=\"test2.html\" sourcefile=\"{_inputFolder}/test1.md\" sourcelinenumber=\"10\">link text</a></p>",
-                    $"<p sourcefile=\"{_inputFolder}/test1.md\" sourcelinenumber=\"11\"><p>",
+                    $"Test link: <a href=\"test2.html\" sourcefile=\"{_inputFolder}/test1.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">link text</a></p>",
+                    $"<p sourcefile=\"{_inputFolder}/test1.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"12\"><p>",
                     "test</p>",
                     "",
                 },
@@ -185,11 +185,11 @@ namespace Microsoft.DocAsCode.Tests
                 new string[]
                 {
                     "",
-                    $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test2.md\" sourcelinenumber=\"7\">Hello World</h1>",
-                    $"<p sourcefile=\"{_inputFolder}/test2.md\" sourcelinenumber=\"8\">Test XRef: <a class=\"xref\" href=\"test1.html#xref1\">Hello Test1</a>",
+                    $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test2.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">Hello World</h1>",
+                    $"<p sourcefile=\"{_inputFolder}/test2.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"10\">Test XRef: <a class=\"xref\" href=\"test1.html#xref1\">Hello Test1</a>",
                     "Test XRef auto link: <a class=\"xref\" href=\"test1.html#xref1\">Hello Test1</a>",
-                    $"Test link: <a href=\"test1.html\" sourcefile=\"{_inputFolder}/test2.md\" sourcelinenumber=\"10\">link text</a></p>",
-                    $"<p sourcefile=\"{_inputFolder}/test2.md\" sourcelinenumber=\"11\"><p>",
+                    $"Test link: <a href=\"test1.html\" sourcefile=\"{_inputFolder}/test2.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">link text</a></p>",
+                    $"<p sourcefile=\"{_inputFolder}/test2.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"12\"><p>",
                     "test</p>",
                     ""
                 },

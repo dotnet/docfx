@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             // Verify $ref in path
             var item0 = model.Children[0];
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/get contacts", item0.Uid);
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcelinenumber=\"1\">You can get a collection of contacts from your tenant.</p>\n", item0.Summary);
+            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">You can get a collection of contacts from your tenant.</p>\n", item0.Summary);
             Assert.Equal(1, item0.Parameters.Count);
             Assert.Equal("1.6", item0.Parameters[0].Metadata["default"]);
             Assert.Equal(1, item0.Responses.Count);
@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal(3, model.Tags.Count);
             var tag0 = model.Tags[0];
             Assert.Equal("contact", tag0.Name);
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcelinenumber=\"1\">Everything about the <strong>contacts</strong></p>\n", tag0.Description);
+            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about the <strong>contacts</strong></p>\n", tag0.Description);
             Assert.Equal("contact-bookmark", tag0.HtmlId);
             Assert.Equal(1, tag0.Metadata.Count);
             var externalDocs = (JObject)tag0.Metadata["externalDocs"];
@@ -135,11 +135,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 var tag1 = model.Tags[0];
-                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.tags.md\" sourcelinenumber=\"6\">Overwrite <em>description</em> content</p>\n", tag1.Description);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.tags.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite <em>description</em> content</p>\n", tag1.Description);
                 Assert.Null(tag1.Conceptual);
                 var tag2 = model.Tags[1];
-                Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcelinenumber=\"1\">Access to Petstore orders</p>\n", tag2.Description);
-                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.tags.md\" sourcelinenumber=\"12\">Overwrite <strong>conceptual</strong> content</p>\n", tag2.Conceptual);
+                Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Access to Petstore orders</p>\n", tag2.Description);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.tags.md\" sourcestartlinenumber=\"12\" sourceendlinenumber=\"12\">Overwrite <strong>conceptual</strong> content</p>\n", tag2.Conceptual);
             }
         }
 
@@ -154,8 +154,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
-                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.default.md\" sourcelinenumber=\"1\">Overwrite summary</p>\n", model.Summary);
-                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.default.md\" sourcelinenumber=\"6\">Overwrite content</p>\n", model.Conceptual);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.default.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overwrite summary</p>\n", model.Summary);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.default.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Conceptual);
             }
         }
 
@@ -168,7 +168,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
-            Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcelinenumber=\"6\">Overwrite content</p>\n", model.Summary);
+            Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Summary);
             Assert.Null(model.Conceptual);
         }
 
@@ -182,7 +182,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
-                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.not.predefined.md\" sourcelinenumber=\"6\">Overwrite content</p>\n", model.Metadata["not_defined_property"]);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.not.predefined.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Metadata["not_defined_property"]);
                 Assert.Null(model.Conceptual);
             }
         }
@@ -221,9 +221,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 Assert.Equal("graph_windows_net_myorganization_Contacts_1_0", model.HtmlId);
-                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcelinenumber=\"6\">Overwrite content1</p>\n", model.Conceptual);
-                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcelinenumber=\"13\">Overwrite &quot;content2&quot;</p>\n", model.Summary);
-                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcelinenumber=\"20\">Overwrite &#39;content3&#39;</p>\n", model.Metadata["not_defined_property"]);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content1</p>\n", model.Conceptual);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">Overwrite &quot;content2&quot;</p>\n", model.Summary);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcestartlinenumber=\"20\" sourceendlinenumber=\"20\">Overwrite &#39;content3&#39;</p>\n", model.Metadata["not_defined_property"]);
             }
         }
 

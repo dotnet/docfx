@@ -41,7 +41,7 @@ This is unit test!";
             Assert.Equal(1, results.Count);
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcelinenumber=\"6\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">This is unit test!</p>\n", results[0].Conceptual);
             File.Delete(fileName);
 
             // Test conceptual content between two yamlheader
@@ -64,7 +64,7 @@ uid: Test2
             Assert.Equal("Test1", results[0].Uid);
             Assert.Equal("Test2", results[1].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcelinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
             Assert.Equal(string.Empty, results[1].Conceptual);
             File.Delete(fileName);
 
@@ -86,7 +86,7 @@ uid: Test2
             Assert.Equal(1, results.Count);
             Assert.Equal("Test1", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<h2 id=\"this-is-unit-test\" sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcelinenumber=\"5\">This is unit test!</h2>\n<h2 id=\"uid-test2\" sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcelinenumber=\"7\">uid: Test2</h2>\n", results[0].Conceptual);
+            Assert.Equal("<h2 id=\"this-is-unit-test\" sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"6\">This is unit test!</h2>\n<h2 id=\"uid-test2\" sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"8\">uid: Test2</h2>\n", results[0].Conceptual);
             File.Delete(fileName);
 
             // Test conceptual content with extra empty line between two yamlheader
@@ -112,7 +112,7 @@ uid: Test2
             Assert.Equal("Test1", results[0].Uid);
             Assert.Equal("Test2", results[1].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcelinenumber=\"7\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">This is unit test!</p>\n", results[0].Conceptual);
             Assert.Equal(string.Empty, results[1].Conceptual);
             File.Delete(fileName);
 
@@ -125,7 +125,7 @@ uid: Test2
             Assert.Equal(1, results.Count);
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcelinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
             File.Delete(fileName);
         }
     }
