@@ -208,7 +208,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (CurrentBuildInfo.DocfxVersion != LastBuildInfo.DocfxVersion)
             {
-                Logger.LogVerbose("Cannot build incrementally because docfx version changed.");
+                Logger.LogVerbose($"Cannot build incrementally because docfx version changed from {LastBuildInfo.DocfxVersion} to {CurrentBuildInfo.DocfxVersion}.");
                 return false;
             }
             if (CurrentBuildInfo.PluginHash != LastBuildInfo.PluginHash)
