@@ -318,7 +318,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (_intermediateFolder != null)
             {
-                // to-do: add check for build status. if failed, not overwrite buildinfo
                 JsonUtility.Serialize(
                     Path.Combine(_intermediateFolder, BuildInfo.FileName),
                     _currentBuildInfo);

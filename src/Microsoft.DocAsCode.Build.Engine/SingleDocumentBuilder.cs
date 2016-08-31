@@ -83,14 +83,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         VersionName = parameters.VersionName,
                         ConfigHash = configHash,
+                        Status = BuildStatus.Failed,
                         AttributesFile = Path.Combine(IntermediateFolder, "attributes"),
                         DependencyFile = Path.Combine(IntermediateFolder, "dependency"),
                         ManifestFile = Path.Combine(IntermediateFolder, "manifest"),
                         XRefSpecMapFile = Path.Combine(IntermediateFolder, "xrefspecmap"),
+                        WarningLogsFile = Path.Combine(IntermediateFolder, "warninglog"),
                         Attributes = fileAttributes,
                         Dependency = context.DependencyGraph,
                         Manifest = context.ManifestItems,
                         XRefSpecMap = context.XRefSpecMap,
+                        WarningLogs = context.WarningLogs,
                     });
                     _canIncremental = GetCanIncremental(configHash, parameters.VersionName);
                     if (_canIncremental)
@@ -104,6 +107,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 // Start building document...
                 List<HostService> hostServices = null;
+                Logger.RegisterListener(new WarningLogListener(context.WarningLogs));
                 try
                 {
                     using (var processor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
@@ -123,6 +127,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                         foreach (var hostService in hostServices)
                         {
                             manifest.AddRange(BuildCore(hostService, context));
+                        }
+
+                        if (ShouldTraceIncrementalInfo)
+                        {
+                            using (new LoggerPhaseScope("UpdateUidFileDependency", true))
+                            {
+                                UpdateUidFileDependency(context, hostServices);
+                            }
                         }
 
                         // Use manifest from now on
@@ -166,13 +178,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             context.ManifestItems.Add(m);
                         }
-                        return new Manifest
+                        var result = new Manifest
                         {
                             Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
                             SourceBasePath = EnvironmentContext.BaseDirectory?.ToNormalizedPath()
                         };
+                        if (ShouldTraceIncrementalInfo)
+                        {
+                            CurrentBuildInfo.Versions.Single(v => v.VersionName == parameters.VersionName).Status = BuildStatus.Succeeded;
+                        }
+                        return result;
                     }
                 }
                 finally
@@ -183,6 +200,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Cleanup(item);
                             item.Dispose();
+                        }
+                    }
+                    var lastWarningLogs = LastBuildInfo?.Versions?.SingleOrDefault(v => v.VersionName == parameters.VersionName)?.WarningLogs;
+                    if (lastWarningLogs != null)
+                    {
+                        foreach (var log in lastWarningLogs)
+                        {
+                            Logger.LogWarning(log.Message, log.Phase, log.File, log.Line);
+                        }
+                    }
+                    if (ShouldTraceIncrementalInfo)
+                    {
+                        var current = CurrentBuildInfo.Versions.Single(v => v.VersionName == parameters.VersionName);
+                        if (current.Status == BuildStatus.Succeeded && context.WarningLogs.Count > 0)
+                        {
+                            current.Status = BuildStatus.SucceededWithWarning;
                         }
                     }
                 }
@@ -196,7 +229,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return false;
             }
             var version = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
-            if (version == null || configHash != version.ConfigHash)
+            if (version == null || configHash != version.ConfigHash || version.Status == BuildStatus.Failed)
             {
                 return false;
             }

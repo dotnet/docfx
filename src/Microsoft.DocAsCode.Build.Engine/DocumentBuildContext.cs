@@ -70,6 +70,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         internal ConcurrentBag<ManifestItem> ManifestItems { get; } = new ConcurrentBag<ManifestItem>();
 
+        internal ConcurrentBag<WarningLog> WarningLogs { get; } = new ConcurrentBag<WarningLog>();
+
         private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
         private List<XRefMap> XRefMaps { get; set; }

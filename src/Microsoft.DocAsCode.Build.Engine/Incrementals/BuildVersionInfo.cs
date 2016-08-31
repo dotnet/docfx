@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.Runtime.Serialization;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Newtonsoft.Json;
 
@@ -25,6 +26,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// Include global metadata, file metadata.
         /// </summary>
         public string ConfigHash { get; set; }
+        /// <summary>
+        /// Build status
+        /// </summary>
+        public BuildStatus Status { get; set; }
         /// <summary>
         /// The file link for dependency (type is <see cref="DependencyGraph.Load(System.IO.TextReader)"/>).
         /// </summary>
@@ -46,6 +51,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The file link for the XRefMap file(type is <see cref="XRefMap"/>).
         /// </summary>
         public string XRefSpecMapFile { get; set; }
+        /// <summary>
+        /// The file link for the WarningLogs.(type is <see cref="T:Microsoft.DocAsCode.Common.ILogItem"/>).
+        /// </summary>
+        public string WarningLogsFile { get; set; }
 
         #region Deserialized content
         /// <summary>
@@ -68,6 +77,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         [JsonIgnore]
         public IDictionary<string, XRefSpec> XRefSpecMap { get; set; }
+        /// <summary>
+        /// deserialized warning logs
+        /// </summary>
+        [JsonIgnore]
+        public IEnumerable<WarningLog> WarningLogs { get; set; }
         #endregion
 
         [OnSerializing]
@@ -77,6 +91,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             IncrementalUtility.SaveIntermediateFile(AttributesFile, Attributes);
             IncrementalUtility.SaveIntermediateFile(ManifestFile, Manifest);
             IncrementalUtility.SaveIntermediateFile(XRefSpecMapFile, XRefSpecMap);
+            IncrementalUtility.SaveIntermediateFile(WarningLogsFile, WarningLogs);
         }
 
         [OnDeserialized]
@@ -86,6 +101,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(AttributesFile);
             Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(ManifestFile);
             XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(XRefSpecMapFile);
+            WarningLogs = IncrementalUtility.LoadIntermediateFile<IEnumerable<WarningLog>>(WarningLogsFile);
         }
     }
 }

@@ -39,6 +39,7 @@
     <Compile Include="Loggers\ReplayLogListener.cs" />
     <Compile Include="Loggers\HtmlLogListener.cs" />
     <Compile Include="Loggers\ReportLogListener.cs" />
+    <Compile Include="Loggers\WarningLogListener.cs" />
     <Compile Include="XHtmlWriter.cs" />
     <Compile Include="YamlMime.cs" />
     <Compile Include="YamlUtility.cs" />
