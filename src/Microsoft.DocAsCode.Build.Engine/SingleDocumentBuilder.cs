@@ -196,14 +196,32 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return false;
             }
             var version = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
-            if (version == null || configHash != version.ConfigHash)
+            if (version == null)
             {
+                Logger.LogVerbose($"Cannot build incrementally because last build didn't contain version {versionName}.");
                 return false;
             }
-
-            return CurrentBuildInfo.DocfxVersion == LastBuildInfo.DocfxVersion &&
-                CurrentBuildInfo.PluginHash == LastBuildInfo.PluginHash &&
-                CurrentBuildInfo.TemplateHash == LastBuildInfo.TemplateHash;
+            if (configHash != version.ConfigHash)
+            {
+                Logger.LogVerbose("Cannot build incrementally because config changed.");
+                return false;
+            }
+            if (CurrentBuildInfo.DocfxVersion != LastBuildInfo.DocfxVersion)
+            {
+                Logger.LogVerbose($"Cannot build incrementally because docfx version changed from {LastBuildInfo.DocfxVersion} to {CurrentBuildInfo.DocfxVersion}.");
+                return false;
+            }
+            if (CurrentBuildInfo.PluginHash != LastBuildInfo.PluginHash)
+            {
+                Logger.LogVerbose("Cannot build incrementally because plugin changed.");
+                return false;
+            }
+            if (CurrentBuildInfo.TemplateHash != LastBuildInfo.TemplateHash)
+            {
+                Logger.LogVerbose("Cannot build incrementally because template changed.");
+                return false;
+            }
+            return true;
         }
 
         private void ExpandDependency(DocumentBuildParameters parameter, DocumentBuildContext context)
@@ -540,6 +558,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
                     if (context.ChangeDict.TryGetValue(fileKey, out ck))
                     {
+                        Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}, ChangeType {ck}.");
                         if (ck == ChangeKindWithDependency.Deleted)
                         {
                             return null;
@@ -896,7 +915,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                        pair.item == null
                             ? new FileModel[0]
                             : from file in pair.item
-                              select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, pair.canProcessorIncremental, lastXRefSpecMap, lastManifest, lastDependencyGraph, context) into model
+                              let canIncremental = _canIncremental ? pair.canProcessorIncremental : _canIncremental
+                              select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, canIncremental, lastXRefSpecMap, lastManifest, lastDependencyGraph, context) into model
                               where model != null
                               select model)
                    {
@@ -913,9 +933,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return false;
             }
-            if (!(processor is ISupportIncrementalDocumentProcessor) ||
-                !processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
+            if (!(processor is ISupportIncrementalDocumentProcessor))
             {
+                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.");
+                return false;
+            }
+            if (!processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
+            {
+                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.");
                 return false;
             }
 
@@ -927,13 +952,20 @@ namespace Microsoft.DocAsCode.Build.Engine
                 ?.Find(p => p.Name == processor.Name);
             if (lpi == null)
             {
+                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because last build doesn't contain version {versionName}.");
                 return false;
             }
             if (cpi.IncrementalContextHash != lpi.IncrementalContextHash)
             {
+                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because incremental context hash changed.");
                 return false;
             }
-            return new HashSet<ProcessorStepInfo>(cpi.Steps).SetEquals(lpi.Steps);
+            if (!new HashSet<ProcessorStepInfo>(cpi.Steps).SetEquals(lpi.Steps))
+            {
+                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because steps changed.");
+                return false;
+            }
+            return true;
         }
 
         private ProcessorInfo GetProcessorInfo(IDocumentProcessor processor, string versionName)
