@@ -3,14 +3,13 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
-    using Microsoft.DocAsCode.Build.Common;
-
     using HtmlAgilityPack;
-    using Xunit;
-    using System.IO;
-    using Plugins;
+    using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Plugins;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
+    using Xunit;
 
     public class ExtractSearchIndexFromHtmlTest
     {
