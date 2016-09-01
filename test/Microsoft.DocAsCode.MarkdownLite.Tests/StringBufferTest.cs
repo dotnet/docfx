@@ -98,5 +98,28 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             Assert.Equal(expected, sb.EndsWith(character));
         }
 
+        [Theory]
+        [Trait("Related", "Markdown")]
+        [InlineData(new string[0], "", 0, 1)]
+        [InlineData(new string[] { "abc" }, "", 1, 0)]
+        [InlineData(new string[] { "a", "bc" }, "ab", 0, 2)]
+        [InlineData(new string[] { "ab", "c" }, "bc", 1, 2)]
+        [InlineData(new string[] { "a", "b", "c" }, "abc", 0, 100)]
+        [InlineData(new string[] { "a", "b", "c" }, "ab", 0, 2)]
+        [InlineData(new string[] { "a", "b", "c" }, "bc", 1, 2)]
+        [InlineData(new string[] { "a", "b", "c" }, "b", 1, 1)]
+        [InlineData(new string[] { "ab", "c", "de" }, "bcd", 1, 3)]
+        [InlineData(new string[] { "ab", "c", "de" }, "bcde", 1, 100)]
+        [InlineData(new string[] { "abc", "d", "efg" }, "cde", 2, 3)]
+        public void TestStringBuffer_Substring(string[] inputs, string expected, int startIndex, int maxCount)
+        {
+            var sb = StringBuffer.Empty;
+            foreach (var input in inputs)
+            {
+                sb += input;
+            }
+            Assert.Equal(expected, sb.Substring(startIndex, maxCount).ToString());
+        }
+
     }
 }
