@@ -1,20 +1,34 @@
 {
   "version": "1.0.0",
-  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
-  "projectUrl": "https://github.com/dotnet/docfx",
-  "authors": ["Microsoft"],
-  "owners": ["Microsoft"],
-  "dependencies": {
+  "packOptions": {
+    "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+    "projectUrl": "https://github.com/dotnet/docfx",
+    "authors": [
+      "Microsoft"
+    ],
+    "owners": [
+      "Microsoft"
+    ]
   },
-  "frameworks": {
-    "net45": {
-      "frameworkAssemblies": {
-        "System": ""
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
       }
     },
-    "dnx451": {
+    "Release": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ],
+        "optimize": true
+      }
+    }
+  },
+  "frameworks": {
+    "net452": {
       "frameworkAssemblies": {
-        "System": ""
+        "System.Runtime": {
+          "type": "build"
+        }
       }
     }
   }

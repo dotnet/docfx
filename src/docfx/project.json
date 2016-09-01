@@ -1,13 +1,16 @@
 {
   "version": "1.0.0",
-  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
-  "projectUrl": "https://github.com/dotnet/docfx",
-  "authors": ["Microsoft"],
-  "owners": ["Microsoft"],
+  "packOptions": {
+    "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+    "projectUrl": "https://github.com/dotnet/docfx",
+    "authors": [
+      "Microsoft"
+    ],
+    "owners": [
+      "Microsoft"
+    ]
+  },
   "dependencies": {
-    "CommandLineParser": "1.9.71",
-    "Newtonsoft.Json": "7.0.1",
-    "Microsoft.CodeAnalysis.Workspaces.Dnx": "1.1.1",
     "Microsoft.DocAsCode.Build.Common": "1.0.0",
     "Microsoft.DocAsCode.Build.ConceptualDocuments": "1.0.0",
     "Microsoft.DocAsCode.Build.Engine": "1.0.0",
@@ -21,12 +24,8 @@
     "Microsoft.DocAsCode.Utility": "1.0.0",
     "Microsoft.DocAsCode.Metadata.ManagedReference": "1.0.0",
     "Microsoft.DocAsCode.Glob": "1.0.0",
-    "Microsoft.CodeAnalysis.Common": "1.1.1",
-    "Microsoft.CodeAnalysis.VisualBasic": "1.1.1",
-    "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "1.1.1",
-    "Microsoft.CodeAnalysis.CSharp": "1.1.1",
-    "Microsoft.CodeAnalysis.CSharp.Workspaces": "1.1.1",
-    "Microsoft.CodeAnalysis.Workspaces.Common": "1.1.1",
+    "CommandLineParser": "1.9.71",
+    "Newtonsoft.Json": "9.0.1",
     "Owin": "1.0.0",
     "Microsoft.Owin": "3.0.1",
     "Microsoft.Owin.FileSystems": "3.0.1",
@@ -35,19 +34,29 @@
     "Microsoft.Owin.SelfHost": "3.0.1",
     "Microsoft.Owin.StaticFiles": "3.0.1"
   },
-  "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": ""
-
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
+      }
+    },
+    "Release": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ],
+        "optimize": true
       }
     }
   },
-  "commands": {
-    "docfx": "docfx"
+  "frameworks": {
+    "net452": {}
   },
-  "namedResource": {
-    "langwordMapping.yml": "langwordMapping.yml"
-  },
-  "resource": [ "Template/**.zip" ]
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "embed": {
+      "include": [ "Template/**.zip" ],
+      "mappings": {
+        "langwordMapping.yml": "langwordMapping.yml"
+      }
+    }
+  }
 }

@@ -1,56 +1,32 @@
 {
   "version": "1.0.0",
-  "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
-  "projectUrl": "https://github.com/dotnet/docfx",
-  "authors": ["Microsoft"],
-  "owners": ["Microsoft"],
-  "frameworks": {
-    "net45": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.1.37"
-      },
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System": "",
-        "System.Net": "",
-        "System.Runtime": {
-          "type": "build",
-          "version": ""
-        }
+  "packOptions": {
+    "licenseUrl": "https://github.com/dotnet/docfx/blob/dev/LICENSE",
+    "projectUrl": "https://github.com/dotnet/docfx",
+    "authors": [
+      "Microsoft"
+    ],
+    "owners": [
+      "Microsoft"
+    ]
+  },
+  "dependencies": {
+    "System.Collections.Immutable": "1.2.0"
+  },
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
       }
     },
-    "dnx451": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.1.37"
-      },
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System.Core": "",
-        "System": "",
-        "System.Net": "",
-        "System.Runtime": ""
-      }
-    },
-    "netcore45": {
-      "dependencies": {
-        "System.Collections.Immutable": "1.1.37"
-      },
-      "frameworkAssemblies": {
-        "Microsoft.CSharp": "",
-        "System": "",
-        "System.Core": "",
-        "System.Collections": "",
-        "System.Dynamic.Runtime": "",
-        "System.Linq": "",
-        "System.Net": "",
-        "System.Runtime": "",
-        "System.Runtime.Extensions": "",
-        "System.Text.RegularExpressions": ""
-      },
-      "compilationOptions": {
-        "define": ["NetCore"]
+    "Release": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ],
+        "optimize": true
       }
     }
+  },
+  "frameworks": {
+    "net452": {}
   }
 }

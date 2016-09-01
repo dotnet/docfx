@@ -19,15 +19,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Utility;
-#if DNX451
-    using Microsoft.CodeAnalysis.Workspaces.Dnx;
+#if NETCore
+    using Microsoft.DotNet.ProjectModel.Workspaces;
 #endif
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
         private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
         private static string[] SupportedSolutionExtensions = { ".sln" };
-#if DNX451
+#if NETCore
         private static string[] SupportedProjectName = { "project.json" };
 #else
         private static string[] SupportedProjectName = { };
@@ -825,7 +825,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             try
             {
                 string name = Path.GetFileName(path);
-#if DNX451
+#if NETCore
                 if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase))
                 {
                     var workspace = new ProjectJsonWorkspace(path);
