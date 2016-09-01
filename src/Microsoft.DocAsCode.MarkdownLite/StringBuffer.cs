@@ -95,6 +95,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     Array.Copy(_buffer, 1, temp, 0, _index - 1);
                     _buffer[1] = string.Concat(temp);
                     Array.Clear(_buffer, 2, _buffer.Length - 2);
+                    _index = 2;
                 }
                 else
                 {
