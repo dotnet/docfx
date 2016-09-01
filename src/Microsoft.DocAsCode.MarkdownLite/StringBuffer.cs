@@ -251,32 +251,32 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 if (skipCount > 0)
                 {
-                    skipCount -= _buffer[i].Length;
-                    if (skipCount < 0)
+                    if (skipCount < _buffer[i].Length)
                     {
                         result._index = 1;
-                        if (_buffer[i].Length + skipCount > copyCount)
+                        if (_buffer[i].Length - skipCount > copyCount)
                         {
-                            result._buffer[0] = _buffer[i].Substring(-skipCount, copyCount);
+                            result._buffer[0] = _buffer[i].Substring(skipCount, copyCount);
                             return result;
                         }
                         else
                         {
-                            result._buffer[0] = _buffer[i].Substring(-skipCount);
+                            result._buffer[0] = _buffer[i].Substring(skipCount);
                             copyCount -= result._buffer[0].Length;
                         }
                     }
+                    skipCount -= _buffer[i].Length;
                 }
                 else
                 {
-                    copyCount -= _buffer[i].Length;
-                    if (copyCount > 0)
+                    if (copyCount > _buffer[i].Length)
                     {
                         result._buffer[result._index++] = _buffer[i];
+                        copyCount -= _buffer[i].Length;
                     }
                     else
                     {
-                        result._buffer[result._index++] = copyCount == 0 ? _buffer[i] : _buffer[i].Remove(-copyCount);
+                        result._buffer[result._index++] = copyCount == _buffer[i].Length ? _buffer[i] : _buffer[i].Remove(copyCount);
                         return result;
                     }
                 }

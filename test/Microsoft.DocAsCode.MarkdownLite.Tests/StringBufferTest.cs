@@ -110,6 +110,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         [InlineData(new string[] { "a", "b", "c" }, "b", 1, 1)]
         [InlineData(new string[] { "ab", "c", "de" }, "bcd", 1, 3)]
         [InlineData(new string[] { "ab", "c", "de" }, "bcde", 1, 100)]
+        [InlineData(new string[] { "abc", "d", "efg" }, "cde", 2, 3)]
         public void TestStringBuffer_Substring(string[] inputs, string expected, int startIndex, int maxCount)
         {
             var sb = StringBuffer.Empty;
