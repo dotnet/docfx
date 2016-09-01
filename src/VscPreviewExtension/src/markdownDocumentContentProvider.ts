@@ -6,12 +6,10 @@ import * as path from "path";
 export class MarkdownDocumentContentProvider implements TextDocumentContentProvider {
     private _context: ExtensionContext;
     private _onDidChange = new EventEmitter<Uri>();
-    private _waiting: boolean;
     private _htmlContent: string;
 
     constructor(context: ExtensionContext) {
         this._context = context;
-        this._waiting = false;
     }
 
     private getMediaPath(mediaFile): string {
