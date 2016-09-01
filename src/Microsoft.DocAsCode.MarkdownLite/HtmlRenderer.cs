@@ -365,7 +365,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             if (renderer.Options.ShouldExportSourceInfo)
             {
-                result = result + " sourceFile=\"" + StringHelper.HtmlEncode(token.SourceInfo.File) + "\" sourceLineNumber=\"" + token.SourceInfo.LineNumber.ToString() + "\"";
+                result = result + " sourceFile=\"" + StringHelper.HtmlEncode(token.SourceInfo.File) + "\" sourceStartLineNumber=\"" + token.SourceInfo.LineNumber.ToString() + "\" sourceEndLineNumber=\"" + (token.SourceInfo.LineNumber + token.SourceInfo.ValidLineCount - 1).ToString() + "\"";
             }
             return result;
         }
