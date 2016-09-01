@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             public static class Tables
             {
-                public static readonly Regex NpTable = new Regex(@"^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*", RegexOptionCompiled);
+                public static readonly Regex NpTable = new Regex(@"^ *\|?(.+)\n *\|? *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*", RegexOptionCompiled);
                 public static readonly Regex Table = new Regex(@"^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*", RegexOptionCompiled);
             }
         }
@@ -136,8 +136,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex LeadingWhiteSpaces = new Regex(@"^ {4}", RegexOptions.Multiline | RegexOptionCompiled);
             public static readonly Regex TailingEmptyLines = new Regex(@"\n+$", RegexOptionCompiled);
 
-            public static readonly Regex UselessTableHeader = new Regex(@"^ *| *\| *$", RegexOptionCompiled);
-            public static readonly Regex UselessTableAlign = new Regex(@"^ *|\| *$", RegexOptionCompiled);
+            public static readonly Regex UselessTableHeader = new Regex(@"^ *| *\|? *$", RegexOptionCompiled);
+            public static readonly Regex UselessTableAlign = new Regex(@"^ *|\|? *$", RegexOptionCompiled);
+            public static readonly Regex UselessTableRow = new Regex(@"^ *\| *| *\|? *$", RegexOptionCompiled);
             public static readonly Regex UselessGfmTableCell = new Regex(@"(?: *\| *)?\n$", RegexOptionCompiled);
             public static readonly Regex EmptyGfmTableCell = new Regex(@"^ *\| *| *\| *$", RegexOptionCompiled);
             public static readonly Regex TableSplitter = new Regex(@" *\| *", RegexOptionCompiled);

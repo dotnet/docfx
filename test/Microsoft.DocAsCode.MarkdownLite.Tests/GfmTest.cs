@@ -26,32 +26,25 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 <thead>
 <tr>
 <th></th>
-<th></th>
 <th>Header1</th>
 <th>Header2</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td></td>
 <td>Single backticks</td>
 <td><code>&#39;Isn&#39;t this fun?&#39;</code></td>
 <td>&#39;Isn&#39;t this fun?&#39;</td>
-<td></td>
 </tr>
 <tr>
-<td></td>
 <td>Quotes</td>
 <td><code>&quot;Isn&#39;t this fun?&quot;</code></td>
 <td>&quot;Isn&#39;t this fun?&quot;</td>
-<td></td>
 </tr>
 <tr>
-<td></td>
 <td>Dashes</td>
 <td><code>-- is en-dash, --- is em-dash</code></td>
 <td>-- is en-dash, --- is em-dash</td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -215,18 +208,15 @@ c
 <thead>
 <tr>
 <th></th>
-<th></th>
 <th>Header1</th>
 <th>Header2</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td></td>
 <td>Row1</td>
 <td>Cell11</td>
 <td>Cell12</td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -245,18 +235,15 @@ c
 <thead>
 <tr>
 <th></th>
-<th></th>
 <th>Header1</th>
 <th>Header2</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td></td>
 <td>Row1</td>
 <td>Cell11</td>
 <td>Cell12</td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -573,6 +560,48 @@ aaa",
 <td style=""text-align:left""></td>
 <td style=""text-align:left""></td>
 <td style=""text-align:left""></td>
+</tr>
+</tbody>
+</table>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestTable_WithEmptyCell2()
+        {
+            // 1. Prepare data
+            var source = @"  A |  B | C 
+|:-------|-------|-------| 
+| A1 | B1
+| A2 | |  C2 | D2 | E2
+| A3 | B3 |
+";
+
+            var expected = @"<table>
+<thead>
+<tr>
+<th style=""text-align:left"">A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=""text-align:left"">A1</td>
+<td>B1</td>
+<td></td>
+</tr>
+<tr>
+<td style=""text-align:left"">A2</td>
+<td></td>
+<td>C2</td>
+</tr>
+<tr>
+<td style=""text-align:left"">A3</td>
+<td>B3</td>
+<td></td>
 </tr>
 </tbody>
 </table>
