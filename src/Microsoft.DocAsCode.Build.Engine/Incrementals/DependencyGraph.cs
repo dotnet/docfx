@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private readonly List<DependencyItem> _dependencyItems;
         private readonly Dictionary<string, List<int>> _indexOnFrom = new Dictionary<string, List<int>>();
         private readonly Dictionary<string, List<int>> _indexOnReportedBy = new Dictionary<string, List<int>>();
-        private readonly Dictionary<string, List<int>> _indexOnType = new Dictionary<string, List<int>>();
+        private static readonly Dictionary<string, DependencyType> _types = new Dictionary<string, DependencyType>();
 
         public DependencyGraph()
             : this(new List<DependencyItem>())
@@ -27,6 +27,39 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             RebuildIndex();
         }
 
+        static DependencyGraph()
+        {
+            // Register default dependency types
+            RegisterDependencyType(new DependencyType
+            {
+                Name = DependencyTypeName.Include,
+                IsTransitive = true,
+                TriggerBuild = true,
+            });
+            RegisterDependencyType(new DependencyType
+            {
+                Name = DependencyTypeName.Uid,
+                IsTransitive = false,
+                TriggerBuild = false,
+            });
+        }
+
+        public static IReadOnlyDictionary<string, DependencyType> DependencyTypes
+        {
+            get { return _types; }
+        }
+
+        public static void RegisterDependencyType(DependencyType dt)
+        {
+            DependencyType stored;
+            if (_types.TryGetValue(dt.Name, out stored))
+            {
+                Logger.LogWarning($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
+                return;
+            }
+            _types[dt.Name] = dt;
+        }
+
         public void ReportDependency(DependencyItem dependency)
         {
             ReportDependency(new List<DependencyItem> { dependency });
@@ -36,13 +69,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             foreach (var dependency in dependencies)
             {
-                if (CheckDependencyConsistency(dependency))
+                if (IsValidDependency(dependency))
                 {
                     int index = _dependencyItems.Count;
                     _dependencyItems.Add(dependency);
                     CreateOrUpdate(_indexOnFrom, dependency.From, index);
                     CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, index);
-                    CreateOrUpdate(_indexOnType, dependency.Type, index);
                 }
             }
         }
@@ -57,24 +89,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return _indexOnFrom.ContainsKey(from);
         }
 
-        public bool HasDependencyWithType(string type)
-        {
-            return _indexOnType.ContainsKey(type);
-        }
-
         public IEnumerable<string> FromNodes
         {
             get
             {
                 return _indexOnFrom.Keys;
-            }
-        }
-
-        public IEnumerable<string> Types
-        {
-            get
-            {
-                return _indexOnType.Keys;
             }
         }
 
@@ -112,19 +131,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        public IEnumerable<DependencyItem> GetDependencyWithType(string type)
-        {
-            List<int> indice;
-            if (!_indexOnType.TryGetValue(type, out indice))
-            {
-                yield break;
-            }
-            foreach (int i in indice)
-            {
-                yield return _dependencyItems[i];
-            }
-        }
-
         public SortedSet<DependencyItem> GetAllDependencyFrom(string from)
         {
             var result = new SortedSet<DependencyItem>();
@@ -136,7 +142,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var current = queue.Dequeue();
                 foreach (var item in GetDependencyFrom(current))
                 {
-                    if (result.Add(item) && item.IsTransitive)
+                    if (result.Add(item) && _types[item.Type].IsTransitive)
                     {
                         queue.Enqueue(item.From);
                     }
@@ -163,7 +169,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var item = _dependencyItems[i];
                 CreateOrUpdate(_indexOnFrom, item.From, i);
                 CreateOrUpdate(_indexOnReportedBy, item.ReportedBy, i);
-                CreateOrUpdate(_indexOnType, item.Type, i);
             }
         }
 
@@ -178,17 +183,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             items.Add(value);
         }
 
-        private bool CheckDependencyConsistency(DependencyItem dependency)
+        private bool IsValidDependency(DependencyItem dependency)
         {
-            List<int> items;
-            if (_indexOnType.TryGetValue(dependency.Type, out items) && items.Count > 0)
+            DependencyType dt;
+            if (!_types.TryGetValue(dependency.Type, out dt))
             {
-                bool isTransitive = _dependencyItems[items[0]].IsTransitive;
-                if (dependency.IsTransitive != isTransitive)
-                {
-                    Logger.LogWarning($"Below dependency doesn't match dependecies already reported and isn't reported: {JsonUtility.Serialize(dependency)}.");
-                    return false;
-                }
+                Logger.LogWarning($"dependency type {dependency.Type} isn't registered yet.");
+                return false;
             }
             return true;
         }

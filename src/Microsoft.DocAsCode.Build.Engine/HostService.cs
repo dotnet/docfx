@@ -376,8 +376,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 From = node,
                                 To = d,
                                 ReportedBy = node,
-                                IsTransitive = true,
-                                Type = "file",
+                                Type = DependencyTypeName.Include,
                             };
                 DependencyGraph.ReportDependency(items);
             }

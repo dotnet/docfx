@@ -216,7 +216,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var from in dependencyGraph.FromNodes)
                 {
-                    if (dependencyGraph.GetAllDependencyFrom(from).Any(d => d.Type == "file" && changeItems.ContainsKey(d.To) && changeItems[d.To] != ChangeKindWithDependency.None))
+                    if (dependencyGraph.GetAllDependencyFrom(from).Any(d => DependencyGraph.DependencyTypes[d.Type].TriggerBuild && changeItems.ContainsKey(d.To) && changeItems[d.To] != ChangeKindWithDependency.None))
                     {
                         if (!changeItems.ContainsKey(from))
                         {
@@ -303,8 +303,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                       From = fromNode,
                                       To = f,
                                       ReportedBy = fromNode,
-                                      Type = "uid",
-                                      IsTransitive = false,
+                                      Type = DependencyTypeName.Uid,
                                   };
                         context.DependencyGraph.ReportDependency(dps);
                     }

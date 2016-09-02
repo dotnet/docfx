@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public string Type { get; set; }
 
-        public bool IsTransitive { get; set; }
-
         public bool Equals(DependencyItem dp)
         {
             if (dp == null)
@@ -30,8 +28,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return this.From == dp.From &&
                 this.To == dp.To &&
                 this.ReportedBy == dp.ReportedBy &&
-                this.Type == dp.Type &&
-                this.IsTransitive == dp.IsTransitive;
+                this.Type == dp.Type;
         }
 
         public override bool Equals(object obj)
@@ -41,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public override string ToString()
         {
-            return $"From: {From}, To: {To}, ReportedBy: {ReportedBy}, Type: {Type}, IsTransitive: {IsTransitive}.";
+            return $"From: {From}, To: {To}, ReportedBy: {ReportedBy}, Type: {Type}.";
         }
 
         public override int GetHashCode()
