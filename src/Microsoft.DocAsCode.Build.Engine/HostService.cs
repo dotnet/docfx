@@ -360,6 +360,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
+        // to-do: update signature so reporter could pass in more info
         public void ReportDependency(FileModel currentFileModel, ImmutableArray<string> dependency)
         {
             if (currentFileModel == null)
@@ -368,7 +369,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             lock (DependencyGraph)
             {
-                DependencyGraph.ReportDependency(((RelativePath)currentFileModel.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(), dependency);
+                string node = ((RelativePath)currentFileModel.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+                var items = from d in dependency
+                            select new DependencyItem
+                            {
+                                From = node,
+                                To = d,
+                                ReportedBy = node,
+                                IsTransitive = true,
+                                Type = "file",
+                            };
+                DependencyGraph.ReportDependency(items);
             }
         }
 
