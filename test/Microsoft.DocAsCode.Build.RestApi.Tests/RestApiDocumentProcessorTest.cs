@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             _inputFolder = GetRandomFolder();
             _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
-            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts.json" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
+            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts.json" }, "TestData/", null);
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
             _applyTemplateSettings.RawModelExportSettings.Export = true;
         }

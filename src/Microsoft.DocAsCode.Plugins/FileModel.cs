@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != BaseDir)
                 {
-                    FileAndType = new FileAndType(value, File, Type, PathRewriter);
+                    FileAndType = FileAndType.ChangeBaseDir(value);
                     OnFileOrBaseDirChanged();
                 }
             }
@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 if (value != File)
                 {
-                    FileAndType = new FileAndType(BaseDir, value, Type, PathRewriter);
+                    FileAndType = FileAndType.ChangeFile(value);
                     OnFileOrBaseDirChanged();
                 }
             }
@@ -77,8 +77,6 @@ namespace Microsoft.DocAsCode.Plugins
         public DocumentType Type => FileAndType.Type;
 
         public string Key { get; }
-
-        public Func<string, string> PathRewriter => FileAndType.PathRewriter;
 
         public ImmutableHashSet<string> LinkToFiles { get; set; } = ImmutableHashSet<string>.Empty;
 

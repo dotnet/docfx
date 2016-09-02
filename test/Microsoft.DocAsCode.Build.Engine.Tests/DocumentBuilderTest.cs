@@ -122,7 +122,7 @@ tagRules : [
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
-            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
@@ -363,7 +363,7 @@ settings : [
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
-            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, p => (((RelativePath)p) - (RelativePath)"TestData/").ToString());
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 

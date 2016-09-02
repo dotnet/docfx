@@ -367,7 +367,8 @@ namespace Microsoft.DocAsCode.SubCommands
                     fileCollection.Add(
                         type,
                         item.Files,
-                        s => RewritePath(baseDirectory, s, item));
+                        item.SourceFolder,
+                        item.DestinationFolder);
                 }
             }
         }
