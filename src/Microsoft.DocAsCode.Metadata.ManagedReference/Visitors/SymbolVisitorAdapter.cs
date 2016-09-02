@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Exceptions;
 
     public class SymbolVisitorAdapter
         : SymbolVisitor<MetadataItem>
@@ -430,7 +431,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             IReadOnlyList<string> typeGenericParameters = null,
             IReadOnlyList<string> methodGenericParameters = null)
         {
-            return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
+            try
+            {
+                return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
+            }
+            catch (Exception ex)
+            {
+                throw new DocfxException($"Unable to generate spec reference for {VisitorHelper.GetCommentId(symbol)}", ex);
+            }
         }
 
         #endregion
