@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var result = new MarkupResult
                 {
                     // TODO: rename
-                    Html = $"{{\"name\":\"markdown\",\"children\":[{json}]}}",
+                    Html = $"{{\"name\":\"0>0>markdown\",\"children\":[{json}]}}",
                 };
                 if (dependency.Count > 0)
                 {
