@@ -65,7 +65,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     try
                     {
-                        html.Load(filePath);
+                        html.Load(filePath, Encoding.UTF8);
                     }
                     catch (Exception ex)
                     {
