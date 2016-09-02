@@ -3,25 +3,25 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
-    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
 
     public class DependencyGraph
     {
-        private readonly List<DependencyItem> _dependencyItems;
-        private readonly Dictionary<string, List<int>> _indexOnFrom = new Dictionary<string, List<int>>();
-        private readonly Dictionary<string, List<int>> _indexOnReportedBy = new Dictionary<string, List<int>>();
+        private readonly HashSet<DependencyItem> _dependencyItems;
+        private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnFrom = new Dictionary<string, HashSet<DependencyItem>>();
+        private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnReportedBy = new Dictionary<string, HashSet<DependencyItem>>();
         private static readonly Dictionary<string, DependencyType> _types = new Dictionary<string, DependencyType>();
 
         public DependencyGraph()
-            : this(new List<DependencyItem>())
+            : this(new HashSet<DependencyItem>())
         {
         }
 
-        private DependencyGraph(List<DependencyItem> dependencies)
+        private DependencyGraph(HashSet<DependencyItem> dependencies)
         {
             _dependencyItems = dependencies;
             RebuildIndex();
@@ -71,10 +71,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 if (IsValidDependency(dependency))
                 {
-                    int index = _dependencyItems.Count;
-                    _dependencyItems.Add(dependency);
-                    CreateOrUpdate(_indexOnFrom, dependency.From, index);
-                    CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, index);
+                    if (_dependencyItems.Add(dependency))
+                    {
+                        CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
+                        CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
+                    }
                 }
             }
         }
@@ -105,46 +106,40 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        public IEnumerable<DependencyItem> GetDependencyReportedBy(string reportedBy)
+        public HashSet<DependencyItem> GetDependencyReportedBy(string reportedBy)
         {
-            List<int> indice;
+            HashSet<DependencyItem> indice;
             if (!_indexOnReportedBy.TryGetValue(reportedBy, out indice))
             {
-                yield break;
+                return new HashSet<DependencyItem>();
             }
-            foreach (int i in indice)
-            {
-                yield return _dependencyItems[i];
-            }
+            return indice;
         }
 
-        public IEnumerable<DependencyItem> GetDependencyFrom(string from)
+        public HashSet<DependencyItem> GetDependencyFrom(string from)
         {
-            List<int> indice;
+            HashSet<DependencyItem> indice;
             if (!_indexOnFrom.TryGetValue(from, out indice))
             {
-                yield break;
+                return new HashSet<DependencyItem>();
             }
-            foreach (int i in indice)
-            {
-                yield return _dependencyItems[i];
-            }
+            return indice;
         }
 
-        public SortedSet<DependencyItem> GetAllDependencyFrom(string from)
+        public HashSet<DependencyItem> GetAllDependencyFrom(string from)
         {
-            var result = new SortedSet<DependencyItem>();
-            var queue = new Queue<string>();
-            queue.Enqueue(from);
+            var dp = GetDependencyFrom(from);
+            var result = new HashSet<DependencyItem>(dp);
+            var queue = new Queue<DependencyItem>(dp);
 
             while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
-                foreach (var item in GetDependencyFrom(current))
+                foreach (var item in GetDependencyFrom(current.To))
                 {
-                    if (result.Add(item) && _types[item.Type].IsTransitive)
+                    if (current.Type == item.Type && _types[item.Type].IsTransitive && result.Add(item))
                     {
-                        queue.Enqueue(item.From);
+                        queue.Enqueue(item);
                     }
                 }
             }
@@ -158,26 +153,25 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public static DependencyGraph Load(TextReader reader)
         {
-            var dependencies = JsonUtility.Deserialize<List<DependencyItem>>(reader);
+            var dependencies = JsonUtility.Deserialize<HashSet<DependencyItem>>(reader);
             return new DependencyGraph(dependencies);
         }
 
         private void RebuildIndex()
         {
-            for (var i = 0; i < _dependencyItems.Count; i++)
+            foreach (var item in _dependencyItems)
             {
-                var item = _dependencyItems[i];
-                CreateOrUpdate(_indexOnFrom, item.From, i);
-                CreateOrUpdate(_indexOnReportedBy, item.ReportedBy, i);
+                CreateOrUpdate(_indexOnFrom, item.From, item);
+                CreateOrUpdate(_indexOnReportedBy, item.ReportedBy, item);
             }
         }
 
-        private static void CreateOrUpdate(Dictionary<string, List<int>> dict, string key, int value)
+        private static void CreateOrUpdate(Dictionary<string, HashSet<DependencyItem>> dict, string key, DependencyItem value)
         {
-            List<int> items;
+            HashSet<DependencyItem> items;
             if (!dict.TryGetValue(key, out items))
             {
-                items = new List<int>();
+                items = new HashSet<DependencyItem>();
                 dict[key] = items;
             }
             items.Add(value);

@@ -298,13 +298,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         string fromNode = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
                         var dps = from f in GetFilesFromUids(context, m.LinkToUids)
-                                  select new DependencyItem
-                                  {
-                                      From = fromNode,
-                                      To = f,
-                                      ReportedBy = fromNode,
-                                      Type = DependencyTypeName.Uid,
-                                  };
+                                  select new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
                         context.DependencyGraph.ReportDependency(dps);
                     }
                 }

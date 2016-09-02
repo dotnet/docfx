@@ -371,13 +371,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 string node = ((RelativePath)currentFileModel.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
                 var items = from d in dependency
-                            select new DependencyItem
-                            {
-                                From = node,
-                                To = d,
-                                ReportedBy = node,
-                                Type = DependencyTypeName.Include,
-                            };
+                            select new DependencyItem(node, d, node, DependencyTypeName.Include);
                 DependencyGraph.ReportDependency(items);
             }
         }

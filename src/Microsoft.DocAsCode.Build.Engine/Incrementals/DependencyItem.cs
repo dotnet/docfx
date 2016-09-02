@@ -4,16 +4,30 @@
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
+    using Newtonsoft.Json;
 
-    public class DependencyItem : IEquatable<DependencyItem>
+    public sealed class DependencyItem : IEquatable<DependencyItem>
     {
-        public string From { get; set; }
+        [JsonProperty("from")]
+        public string From { get; }
 
-        public string To { get; set; }
+        [JsonProperty("to")]
+        public string To { get; }
 
-        public string ReportedBy { get; set; }
+        [JsonProperty("reportedBy")]
+        public string ReportedBy { get; }
 
-        public string Type { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; }
+
+        [JsonConstructor]
+        public DependencyItem(string from, string to, string reportedBy, string type)
+        {
+            From = from;
+            To = to;
+            ReportedBy = reportedBy;
+            Type = type;
+        }
 
         public bool Equals(DependencyItem dp)
         {
