@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, $"Blockquote", childContent);
+            return Insert(token, "Blockquote", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListBlockToken token, MarkdownBlockContext context)
@@ -241,21 +241,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             // TODO: separate the name to extra properties
             int startLineNumber = token.SourceInfo.LineNumber;
             int endLineNumber = (token.SourceInfo.ValidLineCount > 0) ? (startLineNumber + token.SourceInfo.ValidLineCount - 1) : startLineNumber;
-            StringBuffer result = $"{{\"name\":\"{startLineNumber}>{endLineNumber}>{name}\"";
-            if (tokenContent != null)
-            {
-                // If tokenContent is not empty ,should remove the last character(',')
-                if (tokenContent.GetLength() > 0 && tokenContent.EndsWith(','))
-                {
-                    // TODO: add a method 'remove' of StringBuffer
-                    string contentTemp = tokenContent;
-                    tokenContent = contentTemp.Remove(contentTemp.Length - 1);
-                }
-                result += $",\"children\":[{tokenContent}]";
-            }
-            result += "},";
-
-            return result;
+            return Insert(startLineNumber, endLineNumber, name, tokenContent);
         }
 
         protected StringBuffer Insert(int startLineNumber, int endLineNumber, StringBuffer name, StringBuffer tokenContent = null)
@@ -264,7 +250,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (tokenContent != null)
             {
                 // If tokenContent is not empty ,should remove the last character(',')
-                if (tokenContent != StringBuffer.Empty && tokenContent.EndsWith(','))
+                if (tokenContent.EndsWith(','))
                 {
                     // TODO: add a method 'remove' of StringBuffer
                     string contentTemp = tokenContent;
