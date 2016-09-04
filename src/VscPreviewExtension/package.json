@@ -1,7 +1,7 @@
 {
   "name": "DfmPreview",
   "displayName": "DfmPreview",
-  "description": "Preview the DocFX Flavored Markdown and tokenTree in Visual Studio Code",
+  "description": "Preview the DocFX Flavored Markdown and token tree in Visual Studio Code",
   "version": "0.0.15",
   "publisher": "928pjy",
   "engines": {
