@@ -26,11 +26,14 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                         case "exit":
                             return;
                         case "dfmmarkup":
-                            ReceiveContent();
+                            DfmMarkupReceiveContent();
+                            break;
+                        case "jsonmarkup":
+                            JsonMarkupReceiveContent();
                             break;
                         default:
                             Console.WriteLine("Undefined Command");
-                            return;
+                            continue;
                     }
                 }
                 catch (Exception e)
@@ -40,7 +43,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             }
         }
 
-        private static void ReceiveContent()
+        private static void DfmMarkupReceiveContent()
         {
             string basedir = Console.ReadLine();
 
@@ -63,11 +66,36 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             Console.Write('\a');
         }
 
+        private static void JsonMarkupReceiveContent()
+        {
+            // a simple protocol(get String According to the numOfRow and connect them)
+            string numStr = Console.ReadLine();
+            int numOfRow = Convert.ToInt32(numStr);
+            StringBuilder markdownContent = new StringBuilder();
+            for (int i = 0; i < numOfRow; i++)
+            {
+                markdownContent.AppendLine(Console.ReadLine());
+            }
+
+            var result = JsonMarkup(markdownContent.ToString());
+
+            // append with customized endCode
+            Console.Write(result);
+            Console.Write('\a');
+        }
+
         private static string DfmMarkup(string basedir, string filename, string markdownContent)
         {
             DfmServiceProvider dfmServiceProvider = new DfmServiceProvider();
-            IMarkdownService dfmService = dfmServiceProvider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = basedir });
+            IMarkdownService dfmService = dfmServiceProvider.CreateMarkdownService(new MarkdownServiceParameters {BasePath = basedir});
             return dfmService.Markup(markdownContent, filename).Html;
+        }
+
+        private static string JsonMarkup(string markdownContent)
+        {
+            DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
+            IMarkdownService dfmMarkdownService = dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
+            return dfmMarkdownService.Markup(markdownContent, null).Html;
         }
     }
 }

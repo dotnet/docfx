@@ -6,18 +6,17 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.Text;
 
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export("jsonTokenTree", typeof(IMarkdownServiceProvider))]
-    public class JsonTokenTreeServiceProvider : IMarkdownServiceProvider
+    [Export("dfmJsonTokenTree", typeof(IMarkdownServiceProvider))]
+    public class DfmJsonTokenTreeServiceProvider : IMarkdownServiceProvider
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
-            return new JsonTokenTreeService(
+            return new DfmJsonTokenTreeService(
                 parameters.BasePath,
                 parameters.Tokens,
                 MarkdownTokenTreeValidatorFactory.Combine(TokenTreeValidator));
@@ -26,13 +25,13 @@ namespace Microsoft.DocAsCode.Build.Engine
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
 
-        private sealed class JsonTokenTreeService : IMarkdownService
+        private sealed class DfmJsonTokenTreeService : IMarkdownService
         {
             private readonly DfmEngineBuilder _builder;
 
             private readonly ImmutableDictionary<string, string> _tokens;
 
-            public JsonTokenTreeService(string baseDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
+            public DfmJsonTokenTreeService(string baseDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
             {
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir);
                 _builder.TokenTreeValidator = tokenTreeValidator;
@@ -42,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             public MarkupResult Markup(string src, string path)
             {
                 var dependency = new HashSet<string>();
-                var json = _builder.CreateDfmEngine(new JsonTokenTreeRenderer()).Markup(src, path, dependency);
+                var json = _builder.CreateDfmEngine(new DfmJsonTokenTreeRender()).Markup(src, path, dependency);
                 if (json.Length != 0 && json.EndsWith(","))
                 {
                     json = json.Remove(json.Length - 1);
