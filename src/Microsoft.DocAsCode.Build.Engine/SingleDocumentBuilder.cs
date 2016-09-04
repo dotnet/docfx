@@ -232,17 +232,17 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             if (dependencyGraph != null)
             {
-                foreach (var key in dependencyGraph.Keys)
+                foreach (var from in dependencyGraph.FromNodes)
                 {
-                    if (dependencyGraph.GetAllDependency(key).Any(d => changeItems.ContainsKey(d) && changeItems[d] != ChangeKindWithDependency.None))
+                    if (dependencyGraph.GetAllDependencyFrom(from).Any(d => DependencyGraph.DependencyTypes[d.Type].TriggerBuild && changeItems.ContainsKey(d.To) && changeItems[d.To] != ChangeKindWithDependency.None))
                     {
-                        if (!changeItems.ContainsKey(key))
+                        if (!changeItems.ContainsKey(from))
                         {
-                            changeItems[key] = ChangeKindWithDependency.DependencyUpdated;
+                            changeItems[from] = ChangeKindWithDependency.DependencyUpdated;
                         }
                         else
                         {
-                            changeItems[key] |= ChangeKindWithDependency.DependencyUpdated;
+                            changeItems[from] |= ChangeKindWithDependency.DependencyUpdated;
                         }
                     }
                 }
@@ -302,7 +302,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void UpdateUidFileDependency(DocumentBuildContext context, List<HostService> hostServices)
+        private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)
         {
             foreach (var hostService in hostServices)
             {
@@ -314,15 +314,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     if (m.LinkToUids.Count != 0)
                     {
-                        context.DependencyGraph.ReportDependency(
-                            ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(),
-                            GetFilesFromUids(context, m.LinkToUids));
-                    }
-                    if (m.LinkToFiles.Count != 0)
-                    {
-                        context.DependencyGraph.ReportDependency(
-                            ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString(),
-                            m.LinkToFiles);
+                        string fromNode = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+                        var dps = from f in GetFilesFromUids(context, m.LinkToUids)
+                                  select new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
+                        context.DependencyGraph.ReportDependency(dps);
                     }
                 }
             }
@@ -591,10 +586,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 }
 
                                 // restore dependency graph
-                                if (dg.HasDependency(fileKey))
+                                if (dg.HasDependencyReportedBy(fileKey))
                                 {
-                                    context.DependencyGraph.ReportDependency(fileKey, dg.GetDirectDependency(fileKey));
+                                    foreach (var l in dg.GetDependencyReportedBy(fileKey))
+                                    {
+                                        context.DependencyGraph.ReportDependency(l);
+                                    }
                                 }
+
                                 return null;
                             }
                             Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Incremental not available.");
