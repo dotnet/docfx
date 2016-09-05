@@ -450,51 +450,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static void UpdateHostServices(IEnumerable<HostService> hostServices, DocumentBuildContext context, string folder)
+        private static void UpdateHostServices(IEnumerable<HostService> hostServices, DocumentBuildContext context, string cacheFolder)
         {
             UpdateUidDependency(hostServices, context);
             var newChanges = ExpandDependency(context.DependencyGraph, context, d => true);
-            foreach (var c in newChanges)
+            foreach (var hostService in hostServices)
             {
-                var hostService = hostServices.Single(h => h.ModelLoadInfo.Any(f => ((RelativePath)f.Key.File).GetPathFromWorkingFolder().ToString() == c));
-                var model = LoadIntermediateModel(hostService, Path.Combine(folder, Path.GetFileName(c)));
-                if (model != null)
-                {
-                    hostService.Reload(hostService.Models.Concat(new List<FileModel> { model }));
-                    hostService.ModelLoadInfo[model.FileAndType] = LoadPhase.PostBuild;
-                }
-            }
-        }
-
-        private static void SaveIntermediateModel(HostService hostService, string folder)
-        {
-            var processor = hostService.Processor as ISupportIncrementalDocumentProcessor;
-            if (processor == null)
-            {
-                return;
-            }
-            foreach (var f in hostService.Models)
-            {
-                string fileName = Path.Combine(folder, Path.GetFileName(f.File));
-                using (var stream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
-                {
-                    // processor.SaveIntermediateModel(f, stream);
-                    // copy files according to lastbuildinfo
-                    // update currentbuildinfo
-                }
-            }
-        }
-
-        private static FileModel LoadIntermediateModel(HostService hostService, string fileName)
-        {
-            var processor = hostService.Processor as ISupportIncrementalDocumentProcessor;
-            if (processor == null)
-            {
-                return null;
-            }
-            using (var stream = new FileStream(fileName, FileMode.Open))
-            {
-                return processor.LoadIntermediateModel(stream);
+                hostService.ReloadModelsPerIncrementalChanges(newChanges, cacheFolder, LoadPhase.PostBuild);
             }
         }
 
@@ -1019,14 +981,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 if (pair.item != null)
                 {
-                    foreach (var f in pair.item)
-                    {
-                        hostService.ModelLoadInfo[f.file] = LoadPhase.None;
-                    }
-                    foreach (var m in hostService.Models)
-                    {
-                        hostService.ModelLoadInfo[m.FileAndType] = LoadPhase.PreBuild;
-                    }
+                    var allFiles = pair.item.Select(f => f.file);
+                    var loadedFiles = hostService.Models.Select(m => m.FileAndType);
+                    hostService.ReportModelLoadInfo(allFiles.Except(loadedFiles), LoadPhase.None);
+                    hostService.ReportModelLoadInfo(loadedFiles, LoadPhase.PreBuild);
                 }
                 yield return hostService;
             }
