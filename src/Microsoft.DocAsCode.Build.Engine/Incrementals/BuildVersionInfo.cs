@@ -3,8 +3,8 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.IO;
     using System.Runtime.Serialization;
 
     using Microsoft.DocAsCode.Plugins;
@@ -73,19 +73,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         [OnSerializing]
         private void OnSerializingMethod(StreamingContext context)
         {
-            IncrementalUtility.SaveDependency(DependencyFile, Dependency);
-            IncrementalUtility.SaveIntermediateFile(AttributesFile, Attributes);
-            IncrementalUtility.SaveIntermediateFile(ManifestFile, Manifest);
-            IncrementalUtility.SaveIntermediateFile(XRefSpecMapFile, XRefSpecMap);
+            IncrementalUtility.SaveDependency(Path.Combine(context.Context.ToString(), DependencyFile), Dependency);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(context.Context.ToString(), AttributesFile), Attributes);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(context.Context.ToString(), ManifestFile), Manifest);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(context.Context.ToString(), XRefSpecMapFile), XRefSpecMap);
         }
 
         [OnDeserialized]
         private void OnDeserializedMethod(StreamingContext context)
         {
-            Dependency = IncrementalUtility.LoadDependency(DependencyFile);
-            Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(AttributesFile);
-            Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(ManifestFile);
-            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(XRefSpecMapFile);
+            Dependency = IncrementalUtility.LoadDependency(Path.Combine(context.Context.ToString(), DependencyFile));
+            Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(context.Context.ToString(), AttributesFile));
+            Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(context.Context.ToString(), ManifestFile));
+            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(Path.Combine(context.Context.ToString(), XRefSpecMapFile));
         }
     }
 }
