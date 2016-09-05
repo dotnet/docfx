@@ -151,9 +151,9 @@ SET ERRORLEVEL=%BuildErrorLevel%
 GOTO Exit
 
 :Build
+dotnet build src\docfx -c %Configuration% -o target\%Configuration%\docfx.cli -f net452
 %BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=d;LogFile="%BuildLog%"; %BuildPostfix%
 SET BuildErrorLevel=%ERRORLEVEL%
-dotnet build src\docfx -c %Configuration% -o target\%Configuration%\docfx.cli -f net452
 EXIT /B %ERRORLEVEL%
 
 :GenerateArtifacts
