@@ -44,6 +44,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public DependencyGraph DependencyGraph { get; set; }
 
+        public Dictionary<FileAndType, LoadPhase> ModelLoadInfo { get; } = new Dictionary<FileAndType, LoadPhase>();
+
         #endregion
 
         #region Constructors
@@ -548,5 +550,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         #endregion
+    }
+
+    internal enum LoadPhase
+    {
+        None,
+        PreBuild,
+        PostBuild
     }
 }
