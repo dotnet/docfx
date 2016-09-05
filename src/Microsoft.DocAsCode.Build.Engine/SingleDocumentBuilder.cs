@@ -96,7 +96,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (_canIncremental)
                     {
                         LoadChanges(parameters, context, fileAttributes);
-                        ExpandDependency(parameters, context);
+                        var dependencyGraph = LastBuildInfo.Versions.Single(v => v.VersionName == parameters.VersionName).Dependency;
+                        ExpandDependency(dependencyGraph, context, d => DependencyGraph.DependencyTypes[d.Type].TriggerBuild);
                     }
                 }
 
@@ -119,11 +120,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             hostServices = GetInnerContexts(parameters, Processors, processor, markdownService, context).ToList();
                         }
 
-                        var manifest = new List<ManifestItemWithContext>();
-                        foreach (var hostService in hostServices)
-                        {
-                            manifest.AddRange(BuildCore(hostService, context));
-                        }
+                        var manifest = new List<ManifestItemWithContext>(BuildCore(hostServices, context));
 
                         // Use manifest from now on
                         using (new LoggerPhaseScope("UpdateContext", true))
@@ -224,24 +221,27 @@ namespace Microsoft.DocAsCode.Build.Engine
             return true;
         }
 
-        private void ExpandDependency(DocumentBuildParameters parameter, DocumentBuildContext context)
+        private static IEnumerable<string> ExpandDependency(DependencyGraph dependencyGraph, DocumentBuildContext context, Func<DependencyItem, bool> triggerBuild)
         {
-            string versionName = parameter.VersionName;
-            var dependencyGraph = LastBuildInfo.Versions.Single(v => v.VersionName == versionName).Dependency;
             var changeItems = context.ChangeDict;
 
             if (dependencyGraph != null)
             {
                 foreach (var from in dependencyGraph.FromNodes)
                 {
-                    if (dependencyGraph.GetAllDependencyFrom(from).Any(d => DependencyGraph.DependencyTypes[d.Type].TriggerBuild && changeItems.ContainsKey(d.To) && changeItems[d.To] != ChangeKindWithDependency.None))
+                    if (dependencyGraph.GetAllDependencyFrom(from).Any(d => triggerBuild(d) && changeItems.ContainsKey(d.To) && changeItems[d.To] != ChangeKindWithDependency.None))
                     {
                         if (!changeItems.ContainsKey(from))
                         {
                             changeItems[from] = ChangeKindWithDependency.DependencyUpdated;
+                            yield return from;
                         }
                         else
                         {
+                            if (changeItems[from] == ChangeKindWithDependency.None)
+                            {
+                                yield return from;
+                            }
                             changeItems[from] |= ChangeKindWithDependency.DependencyUpdated;
                         }
                     }
@@ -302,7 +302,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void UpdateUidDependency(DocumentBuildContext context, List<HostService> hostServices)
+        private static void UpdateUidDependency(IEnumerable<HostService> hostServices, DocumentBuildContext context)
         {
             foreach (var hostService in hostServices)
             {
@@ -357,7 +357,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 MarkdownService = markdownService,
                 DependencyGraph = new DependencyGraph(),
             };
-            BuildCore(hostService, parameters.MaxParallelism);
+            BuildCore(new List<HostService> { hostService }, parameters.MaxParallelism, false, null, null);
             return hostService.Models;
         }
 
@@ -366,18 +366,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             hostService.Models.RunAll(m => m.Dispose());
         }
 
-        private IEnumerable<ManifestItemWithContext> BuildCore(HostService hostService, DocumentBuildContext context)
+        private IEnumerable<ManifestItemWithContext> BuildCore(IEnumerable<HostService> hostServices, DocumentBuildContext context)
         {
-            hostService.SourceFiles = context.AllSourceFiles;
-            hostService.DependencyGraph = context.DependencyGraph;
-            BuildCore(hostService, context.MaxParallelism);
-            return ExportManifest(hostService, context);
-        }
-
-        private static void BuildCore(HostService hostService, int maxParallelism)
-        {
-            using (new LoggerPhaseScope(hostService.Processor.Name, true))
+            //preparation
+            foreach (var hostService in hostServices)
             {
+                hostService.SourceFiles = context.AllSourceFiles;
+                hostService.DependencyGraph = context.DependencyGraph;
                 foreach (var m in hostService.Models)
                 {
                     if (m.LocalPathFromRepoRoot == null)
@@ -389,23 +384,79 @@ namespace Microsoft.DocAsCode.Build.Engine
                         m.LocalPathFromRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
                     }
                 }
-                var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
-                Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
-                using (new LoggerPhaseScope("Prebuild", true))
+            }
+
+            // to-do: pass in update action according to _canIncremental
+            Action updateHostServiceAction = null;
+            BuildCore(hostServices, context.MaxParallelism, ShouldTraceIncrementalInfo, IntermediateFolder, updateHostServiceAction);
+
+            // export manifest
+            return from h in hostServices
+                   from m in ExportManifest(h, context)
+                   select m;
+        }
+
+        private static void BuildCore(IEnumerable<HostService> hostServices, int maxParallelism, bool shouldTraceIncrementalInfo, string intermediateFolder, Action updateHostServices)
+        {
+            // prebuild and build
+            foreach (var hostService in hostServices)
+            {
+                using (new LoggerPhaseScope(hostService.Processor.Name, true))
                 {
-                    Prebuild(hostService);
+                    var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
+                    Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
+                    using (new LoggerPhaseScope("Prebuild", true))
+                    {
+                        Prebuild(hostService);
+                    }
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
+                    using (new LoggerPhaseScope("Build", true))
+                    {
+                        BuildArticle(hostService, maxParallelism);
+                    }
+
+                    // save models
+                    if (shouldTraceIncrementalInfo && intermediateFolder != null)
+                    {
+                        // to-do: save models and update currentbuildinfo
+                    }
                 }
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
-                using (new LoggerPhaseScope("Build", true))
+            }
+
+            // update hostservice according to changes introduced from dependencygraph
+            if (updateHostServices != null)
+            {
+                updateHostServices();
+            }
+
+            // postbuild
+            foreach (var hostService in hostServices)
+            {
+                using (new LoggerPhaseScope(hostService.Processor.Name, true))
                 {
-                    BuildArticle(hostService, maxParallelism);
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
+                    using (new LoggerPhaseScope("Postbuild", true))
+                    {
+                        Postbuild(hostService);
+                    }
+
+                    // save models
+                    if (shouldTraceIncrementalInfo && intermediateFolder != null)
+                    {
+                        //to-do: save models and update currentbuildinfo
+                    }
                 }
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
-                using (new LoggerPhaseScope("Postbuild", true))
-                {
-                    Postbuild(hostService);
-                }
+            }
+        }
+
+        private static void UpdateHostServices(IEnumerable<HostService> hostServices, DocumentBuildContext context, string cacheFolder)
+        {
+            UpdateUidDependency(hostServices, context);
+            var newChanges = ExpandDependency(context.DependencyGraph, context, d => true);
+            foreach (var hostService in hostServices)
+            {
+                hostService.ReloadModelsPerIncrementalChanges(newChanges, cacheFolder, LoadPhase.PostBuild);
             }
         }
 
@@ -910,8 +961,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             var lastManifest = lbvi?.Manifest;
             var lastDependencyGraph = lbvi?.Dependency;
 
-            return from pair in pairs.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
-                   select new HostService(
+            foreach (var pair in pairs.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
+            {
+                var hostService = new HostService(
                        parameters.Files.DefaultBaseDir,
                        pair.item == null
                             ? new FileModel[0]
@@ -920,12 +972,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                               select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, canIncremental, lastXRefSpecMap, lastManifest, lastDependencyGraph, context) into model
                               where model != null
                               select model)
-                   {
-                       MarkdownService = markdownService,
-                       Processor = pair.processor,
-                       Template = templateProcessor,
-                       Validators = MetadataValidators.ToImmutableList(),
-                   };
+                {
+                    MarkdownService = markdownService,
+                    Processor = pair.processor,
+                    Template = templateProcessor,
+                    Validators = MetadataValidators.ToImmutableList(),
+                };
+
+                if (pair.item != null)
+                {
+                    var allFiles = pair.item.Select(f => f.file);
+                    var loadedFiles = hostService.Models.Select(m => m.FileAndType);
+                    hostService.ReportModelLoadInfo(allFiles.Except(loadedFiles), LoadPhase.None);
+                    hostService.ReportModelLoadInfo(loadedFiles, LoadPhase.PreBuild);
+                }
+                yield return hostService;
+            }
         }
 
         private bool CanProcessorIncremental(IDocumentProcessor processor, string versionName)

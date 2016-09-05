@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
         private readonly LruList<ModelWithCache> _lru = Environment.Is64BitProcess ? null : LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
+        private readonly Dictionary<FileAndType, LoadPhase> _modelLoadInfo = new Dictionary<FileAndType, LoadPhase>();
         #endregion
 
         #region Properties
@@ -437,6 +438,74 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        #region Model Load Info
+
+        public void ReportModelLoadInfo(FileAndType file, LoadPhase phase)
+        {
+            _modelLoadInfo[file] = phase;
+        }
+
+        public void ReportModelLoadInfo(IEnumerable<FileAndType> files, LoadPhase phase)
+        {
+            foreach (var f in files)
+            {
+                ReportModelLoadInfo(f, phase);
+            }
+        }
+
+        public void ReloadModelsPerIncrementalChanges(IEnumerable<string> changes, string cacheFolder, LoadPhase phase)
+        {
+            if (changes == null)
+            {
+                return;
+            }
+            var toLoadList = (from f in _modelLoadInfo.Keys
+                              let k = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
+                              where changes.Contains(k)
+                              select LoadIntermediateModel(Path.Combine(cacheFolder, Path.GetFileName(k))) into m
+                              where m != null
+                              select m).ToList();
+            if (toLoadList.Count > 0)
+            {
+                Reload(Models.Concat(toLoadList));
+                ReportModelLoadInfo(toLoadList.Select(t => t.FileAndType), phase);
+            }
+        }
+
+        public void SaveIntermediateModel(string cacheFolder)
+        {
+            var processor = Processor as ISupportIncrementalDocumentProcessor;
+            if (processor == null)
+            {
+                return;
+            }
+            foreach (var f in Models)
+            {
+                string fileName = Path.Combine(cacheFolder, Path.GetFileName(f.File));
+                using (var stream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    // processor.SaveIntermediateModel(f, stream);
+                    // copy files according to lastbuildinfo
+                    // update currentbuildinfo
+                }
+            }
+        }
+
+        public FileModel LoadIntermediateModel(string fileName)
+        {
+            var processor = Processor as ISupportIncrementalDocumentProcessor;
+            if (processor == null)
+            {
+                return null;
+            }
+            using (var stream = new FileStream(fileName, FileMode.Open))
+            {
+                return processor.LoadIntermediateModel(stream);
+            }
+        }
+
+        #endregion
+
         #region Private Methods
 
         private void LoadCore(IEnumerable<FileModel> models)
@@ -548,5 +617,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         #endregion
+    }
+
+    internal enum LoadPhase
+    {
+        None,
+        PreBuild,
+        PostBuild
     }
 }
