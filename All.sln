@@ -256,6 +256,13 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.DataCon
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.AzureMarkdownRewriters", "src\Microsoft.DocAsCode.AzureMarkdownRewriters\Microsoft.DocAsCode.AzureMarkdownRewriters.xproj", "{727F15D4-87B3-4442-BAA2-585406207576}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docfx.console", "docfx.console", "{38425BDC-22D0-4A65-94CB-CE25AD7086C5}"
+	ProjectSection(SolutionItems) = preProject
+		src\nuspec\docfx.console\docfx.console.nuspec = src\nuspec\docfx.console\docfx.console.nuspec
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx.console", "src\nuspec\docfx.console\docfx.console.csproj", "{731D4660-F007-48C2-B76F-41B184891FE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -752,6 +759,14 @@ Global
 		{727F15D4-87B3-4442-BAA2-585406207576}.Release|Any CPU.Build.0 = Release|Any CPU
 		{727F15D4-87B3-4442-BAA2-585406207576}.Release|x86.ActiveCfg = Release|Any CPU
 		{727F15D4-87B3-4442-BAA2-585406207576}.Release|x86.Build.0 = Release|Any CPU
+		{731D4660-F007-48C2-B76F-41B184891FE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{731D4660-F007-48C2-B76F-41B184891FE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{731D4660-F007-48C2-B76F-41B184891FE4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{731D4660-F007-48C2-B76F-41B184891FE4}.Debug|x86.Build.0 = Debug|Any CPU
+		{731D4660-F007-48C2-B76F-41B184891FE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{731D4660-F007-48C2-B76F-41B184891FE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{731D4660-F007-48C2-B76F-41B184891FE4}.Release|x86.ActiveCfg = Release|Any CPU
+		{731D4660-F007-48C2-B76F-41B184891FE4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -863,5 +878,7 @@ Global
 		{2E5C8660-A883-4D32-BF67-CF5907AB1F1F} = {6B3AA2D5-235F-4926-8AA1-2B3430BAC71F}
 		{05D9D594-E6F6-4887-8ECD-0FFFF7C92E68} = {3CECA58B-4CBC-4025-A863-A7F1103F62A6}
 		{727F15D4-87B3-4442-BAA2-585406207576} = {5B3F78D3-7B2D-43DF-869B-9E50EEDF946C}
+		{38425BDC-22D0-4A65-94CB-CE25AD7086C5} = {BBF2F680-8DEF-4CE4-B68D-D8FB21531FCE}
+		{731D4660-F007-48C2-B76F-41B184891FE4} = {38425BDC-22D0-4A65-94CB-CE25AD7086C5}
 	EndGlobalSection
 EndGlobal
