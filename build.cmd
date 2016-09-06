@@ -151,7 +151,10 @@ SET ERRORLEVEL=%BuildErrorLevel%
 GOTO Exit
 
 :Build
-dotnet build src\docfx -c %Configuration% -o target\%Configuration%\docfx.cli -f net452
+REM remove for dotnet cli bug https://github.com/dotnet/cli/issues/2871
+REM dotnet build src\docfx -c %Configuration% -o target\%Configuration%\docfx.cli -f net452
+dotnet build src\docfx -c %Configuration% -f net452
+XCOPY /ey src\docfx\bin\%Configuration%\net452\win7-x64\** target\%Configuration%\docfx.cli\
 %BuildPrefix% msbuild "%BuildProj%" /p:Configuration=%Configuration% /nologo /maxcpucount:1 /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=d;LogFile="%BuildLog%"; %BuildPostfix%
 SET BuildErrorLevel=%ERRORLEVEL%
 EXIT /B %ERRORLEVEL%
