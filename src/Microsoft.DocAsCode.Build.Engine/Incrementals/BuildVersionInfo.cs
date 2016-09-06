@@ -3,8 +3,8 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.IO;
     using System.Runtime.Serialization;
 
     using Microsoft.DocAsCode.Plugins;
@@ -70,22 +70,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public IDictionary<string, XRefSpec> XRefSpecMap { get; set; }
         #endregion
 
-        [OnSerializing]
-        private void OnSerializingMethod(StreamingContext context)
+        internal void Load(string baseDir)
         {
-            IncrementalUtility.SaveDependency(DependencyFile, Dependency);
-            IncrementalUtility.SaveIntermediateFile(AttributesFile, Attributes);
-            IncrementalUtility.SaveIntermediateFile(ManifestFile, Manifest);
-            IncrementalUtility.SaveIntermediateFile(XRefSpecMapFile, XRefSpecMap);
+            Dependency = IncrementalUtility.LoadDependency(Path.Combine(baseDir, DependencyFile));
+            Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
+            Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
+            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(Path.Combine(baseDir, XRefSpecMapFile));
         }
 
-        [OnDeserialized]
-        private void OnDeserializedMethod(StreamingContext context)
+        internal void Save(string baseDir)
         {
-            Dependency = IncrementalUtility.LoadDependency(DependencyFile);
-            Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(AttributesFile);
-            Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(ManifestFile);
-            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(XRefSpecMapFile);
+            IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);
         }
     }
 }

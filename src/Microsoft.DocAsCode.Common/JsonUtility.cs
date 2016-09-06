@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Common
         {
             using (StringWriter writer = new StringWriter())
             {
-                Serialize(writer, graph, formatting);
+                Serialize(writer, graph, formatting, serializer);
                 return writer.ToString();
             }
         }
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Common
 
             using (StreamWriter writer = new StreamWriter(path))
             {
-                Serialize(writer, graph, formatting);
+                Serialize(writer, graph, formatting, serializer);
             }
         }
 #endif

@@ -215,7 +215,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 try
                 {
-                    return JsonUtility.Deserialize<BuildInfo>(Path.Combine(_intermediateFolder, BuildInfo.FileName));
+                    return BuildInfo.Load(Path.Combine(_intermediateFolder, BuildInfo.FileName));
                 }
                 catch (Exception)
                 {
@@ -319,7 +319,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (_intermediateFolder != null)
             {
                 // to-do: add check for build status. if failed, not overwrite buildinfo
-                JsonUtility.Serialize(
+                BuildInfo.Save(
                     Path.Combine(_intermediateFolder, BuildInfo.FileName),
                     _currentBuildInfo);
             }
