@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 try
                 {
                     string command = Console.ReadLine();
-                    switch (command.ToLower())
+                    switch (command.ToLower().Trim())
                     {
                         case "exit":
                             return;
@@ -61,9 +61,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
             var result = DfmMarkup(basedir, filename, markdownContent.ToString());
 
-            // append with customized endCode
-            Console.Write(result);
-            Console.Write('\a');
+            SendWithEndCode(result);
         }
 
         private static void JsonMarkupReceiveContent()
@@ -79,13 +77,12 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
             var result = JsonMarkup(markdownContent.ToString());
 
-            // append with customized endCode
-            Console.Write(result);
-            Console.Write('\a');
+            SendWithEndCode(result);
         }
 
         private static string DfmMarkup(string basedir, string filename, string markdownContent)
         {
+            // TODO: different editor use different child process so there is no need to create dfm service each time
             DfmServiceProvider dfmServiceProvider = new DfmServiceProvider();
             IMarkdownService dfmService = dfmServiceProvider.CreateMarkdownService(new MarkdownServiceParameters {BasePath = basedir});
             return dfmService.Markup(markdownContent, filename).Html;
@@ -96,6 +93,13 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
             IMarkdownService dfmMarkdownService = dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
             return dfmMarkdownService.Markup(markdownContent, null).Html;
+        }
+
+        private static void SendWithEndCode(string result)
+        {
+            // append with customized endCode
+            Console.Write(result);
+            Console.Write('\a');
         }
     }
 }

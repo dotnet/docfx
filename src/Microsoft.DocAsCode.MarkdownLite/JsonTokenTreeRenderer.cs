@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System;
-
     public class JsonTokenTreeRenderer
     {
         #region Block
@@ -16,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeBlockToken token, MarkdownBlockContext context)
         {
-            if (!String.IsNullOrEmpty(token.Lang))
+            if (!string.IsNullOrEmpty(token.Lang))
             {
                 return Insert(token, $"Code({token.Lang})>{Escape(token.Code)}");
             }

@@ -38,35 +38,39 @@ namespace Microsoft.DocAsCode.Dfm
             var splitTokens = DfmBlockquoteHelper.SplitBlockquoteTokens(token.Tokens);
             foreach (var splitToken in splitTokens)
             {
-                if (splitToken.Token is DfmSectionBlockToken)
+                var sectionToken = splitToken.Token as DfmSectionBlockToken;
+                if (sectionToken != null)
                 {
-                    content += Insert(splitToken.Token, "SectionBlock");
+                    content += Insert(sectionToken, "SectionBlock");
                     foreach (var item in splitToken.InnerTokens)
                     {
                         content += renderer.Render(item);
                     }
+                    continue;
                 }
-                else if (splitToken.Token is DfmNoteBlockToken)
+
+                var noteToken = splitToken.Token as DfmNoteBlockToken;
+                if (noteToken != null)
                 {
-                    var noteToken = (DfmNoteBlockToken) splitToken.Token;
                     var type = noteToken.NoteType.ToUpper();
-                    content += Insert(splitToken.Token, type);
+                    content += Insert(noteToken, type);
                     foreach (var item in splitToken.InnerTokens)
                     {
                         content += renderer.Render(item);
                     }
+                    continue;
                 }
-                else if (splitToken.Token is DfmVideoBlockToken)
+
+                var videoToken = splitToken.Token as DfmVideoBlockToken;
+                if (videoToken != null)
                 {
-                    var videoToken = splitToken.Token as DfmVideoBlockToken;
-                    content += Insert(splitToken.Token, $"VideoBlock>{videoToken.Link}");
+                    content += Insert(videoToken, $"VideoBlock>{videoToken.Link}");
+                    continue;
                 }
-                else
+
+                foreach (var item in splitToken.InnerTokens)
                 {
-                    foreach (var item in splitToken.InnerTokens)
-                    {
-                        content += renderer.Render(item);
-                    }
+                    content += renderer.Render(item);
                 }
             }
             return Insert(token, "BlockquoteBlock", content);
