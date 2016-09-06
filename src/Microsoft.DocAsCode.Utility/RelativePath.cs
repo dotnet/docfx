@@ -205,11 +205,6 @@ namespace Microsoft.DocAsCode.Utility
             return (from + this) - to;
         }
 
-        public RelativePath Move(RelativePath from, RelativePath to)
-        {
-            return to + (this - from);
-        }
-
         public string FileName => _parts[_parts.Length - 1];
 
         public bool IsFromWorkingFolder()

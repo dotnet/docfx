@@ -398,20 +398,6 @@ namespace Microsoft.DocAsCode.SubCommands
             return dict.ToImmutableDictionary();
         }
 
-        private static string RewritePath(string baseDirectory, string sourcePath, FileMappingItem item)
-        {
-            return ConvertToDestinationPath(
-                Path.Combine(baseDirectory, sourcePath),
-                item.SourceFolder,
-                item.DestinationFolder);
-        }
-
-        private static string ConvertToDestinationPath(string path, string src, string dest)
-        {
-            var relativePath = PathUtility.MakeRelativePath(src, path);
-            return Path.Combine(dest ?? string.Empty, relativePath);
-        }
-
         private class FileMappingParameters : Dictionary<FileMappingType, FileMapping>
         {
             public FileMapping GetFileMapping(FileMappingType type)
