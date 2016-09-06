@@ -70,22 +70,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public IDictionary<string, XRefSpec> XRefSpecMap { get; set; }
         #endregion
 
-        [OnSerializing]
-        private void OnSerializingMethod(StreamingContext context)
+        internal void Load(string baseDir)
         {
-            IncrementalUtility.SaveDependency(Path.Combine(context.Context.ToString(), DependencyFile), Dependency);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(context.Context.ToString(), AttributesFile), Attributes);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(context.Context.ToString(), ManifestFile), Manifest);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(context.Context.ToString(), XRefSpecMapFile), XRefSpecMap);
+            Dependency = IncrementalUtility.LoadDependency(Path.Combine(baseDir, DependencyFile));
+            Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
+            Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
+            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(Path.Combine(baseDir, XRefSpecMapFile));
         }
 
-        [OnDeserialized]
-        private void OnDeserializedMethod(StreamingContext context)
+        internal void Save(string baseDir)
         {
-            Dependency = IncrementalUtility.LoadDependency(Path.Combine(context.Context.ToString(), DependencyFile));
-            Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(context.Context.ToString(), AttributesFile));
-            Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(context.Context.ToString(), ManifestFile));
-            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(Path.Combine(context.Context.ToString(), XRefSpecMapFile));
+            IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);
         }
     }
 }

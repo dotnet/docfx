@@ -5,6 +5,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+
+    using Microsoft.DocAsCode.Common;
 
     public class BuildInfo
     {
@@ -30,5 +33,26 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The file info for each version.
         /// </summary>
         public List<BuildVersionInfo> Versions { get; } = new List<BuildVersionInfo>();
+
+        public static BuildInfo Load(string jsonFilePath)
+        {
+            var buildInfo = JsonUtility.Deserialize<BuildInfo>(jsonFilePath);
+            var baseDir = Path.GetDirectoryName(jsonFilePath);
+            foreach (var version in buildInfo.Versions)
+            {
+                version.Load(baseDir);
+            }
+            return buildInfo;
+        }
+
+        public static void Save(string jsonFilePath, BuildInfo buildInfo)
+        {
+            var baseDir = Path.GetDirectoryName(jsonFilePath);
+            foreach (var version in buildInfo.Versions)
+            {
+                version.Save(baseDir);
+            }
+            JsonUtility.Serialize(jsonFilePath, buildInfo);
+        }
     }
 }
