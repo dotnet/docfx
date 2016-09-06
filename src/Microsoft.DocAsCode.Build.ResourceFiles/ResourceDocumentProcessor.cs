@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
     using Microsoft.DocAsCode.Utility;
 
     [Export(typeof(IDocumentProcessor))]
-    public class ResourceDocumentProcessor : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
+    public class ResourceDocumentProcessor : DisposableDocumentProcessor
     {
         [ImportMany]
         public IEnumerable<IResourceFileConfig> Configs { get; set; }
@@ -111,24 +111,5 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
 
             return result;
         }
-
-        #region ISupportIncrementalDocumentProcessor Members
-
-        public string GetIncrementalContextHash()
-        {
-            return null;
-        }
-
-        public void SaveIntermediateModel(FileModel model, Stream stream)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FileModel LoadIntermediateModel(Stream stream)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }
