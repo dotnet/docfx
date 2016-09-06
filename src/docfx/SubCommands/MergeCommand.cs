@@ -185,15 +185,9 @@ namespace Microsoft.DocAsCode.SubCommands
             var result = new FileCollection(baseDirectory);
             foreach (var mapping in files.Items)
             {
-                result.Add(type, mapping.Files, s => ConvertToDestinationPath(Path.Combine(baseDirectory, s), mapping.SourceFolder, mapping.DestinationFolder));
+                result.Add(type, mapping.Files, mapping.SourceFolder, mapping.DestinationFolder);
             }
             return result;
-        }
-
-        private static string ConvertToDestinationPath(string path, string src, string dest)
-        {
-            var relativePath = PathUtility.MakeRelativePath(src, path);
-            return Path.Combine(dest ?? string.Empty, relativePath);
         }
     }
 }

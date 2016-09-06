@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             if (!string.IsNullOrEmpty(item.TocHref) && (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
             {
                 var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
-                var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
+                var tocFile = file.ChangeFile(tocFilePath);
                 if (!_collection.TryGetValue(tocFile, out tocFileModel))
                 {
                     var message = $"Unable to find {item.TocHref}. Make sure the file is included in config file docfx.json!";
@@ -154,14 +154,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             var relativeFolder = (RelativePath)file.File + (RelativePath)item.Href;
                             var tocFilePath = relativeFolder + (RelativePath)Constants.YamlTocFileName;
 
-                            var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
+                            var tocFile = file.ChangeFile(tocFilePath);
 
                             // First, try finding toc.yml under the relative folder
                             // Second, try finding toc.md under the relative folder
                             if (!_collection.TryGetValue(tocFile, out tocFileModel))
                             {
                                 tocFilePath = relativeFolder + (RelativePath)Constants.MarkdownTocFileName;
-                                tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
+                                tocFile = file.ChangeFile(tocFilePath);
                                 if (!_collection.TryGetValue(tocFile, out tocFileModel))
                                 {
                                     var message =
@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.YamlTocFile:
                     {
                         var tocFilePath = (RelativePath)file.File + (RelativePath)item.Href;
-                        var tocFile = new FileAndType(file.BaseDir, tocFilePath, file.Type, file.PathRewriter);
+                        var tocFile = file.ChangeFile(tocFilePath);
                         TocItemInfo referencedTocFileModel;
                         TocItemViewModel referencedToc;
                         stack.Push(file);

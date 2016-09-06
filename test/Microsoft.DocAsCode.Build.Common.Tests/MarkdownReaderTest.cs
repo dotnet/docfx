@@ -35,7 +35,7 @@ This is unit test!";
                 MarkdownService = new DfmServiceProvider().CreateMarkdownService(new MarkdownServiceParameters {BasePath = string.Empty})
             };
 
-            var ft = new FileAndType(baseDir, fileName, DocumentType.Overwrite, null);
+            var ft = new FileAndType(baseDir, fileName, DocumentType.Overwrite);
             var results = MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
             Assert.NotNull(results);
             Assert.Equal(1, results.Count);
