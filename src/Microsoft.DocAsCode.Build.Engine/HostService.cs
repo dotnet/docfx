@@ -459,10 +459,30 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return;
             }
+            ReloadUnloadedModelsPerCondition(
+                cacheFolder,
+                phase,
+                f =>
+                {
+                    var key = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString();
+                    return changes.Contains(key);
+                });
+        }
+
+        public void ReloadUnloadedModels(string cacheFolder, LoadPhase phase)
+        {
+            ReloadUnloadedModelsPerCondition(cacheFolder, phase, f => _modelLoadInfo[f] == LoadPhase.None);
+        }
+
+        private void ReloadUnloadedModelsPerCondition(string cacheFolder, LoadPhase phase, Func<FileAndType, bool> condition)
+        {
+            if (cacheFolder == null)
+            {
+                return;
+            }
             var toLoadList = (from f in _modelLoadInfo.Keys
-                              let k = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
-                              where changes.Contains(k)
-                              select LoadIntermediateModel(Path.Combine(cacheFolder, Path.GetFileName(k))) into m
+                              where condition(f)
+                              select LoadIntermediateModel(Path.Combine(cacheFolder, Path.GetFileName(f.File))) into m
                               where m != null
                               select m).ToList();
             if (toLoadList.Count > 0)
@@ -472,22 +492,33 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void SaveIntermediateModel(string cacheFolder)
+        public void SaveIntermediateModel(string intermediateFolder, ModelManifest lmm, ModelManifest cmm)
         {
             var processor = Processor as ISupportIncrementalDocumentProcessor;
             if (processor == null)
             {
                 return;
             }
-            foreach (var f in Models)
+
+            foreach (var pair in _modelLoadInfo)
             {
-                string fileName = Path.Combine(cacheFolder, Path.GetFileName(f.File));
-                using (var stream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+                var fileName = Path.GetFileName(pair.Key.File);
+                if (pair.Value == LoadPhase.None)
                 {
-                    // processor.SaveIntermediateModel(f, stream);
-                    // copy files according to lastbuildinfo
-                    // update currentbuildinfo
+                    if (lmm == null)
+                    {
+                        throw new InvalidDataException($"Full build hasn't loaded model {pair.Key.FullPath}");
+                    }
+                    File.Copy(Path.Combine(intermediateFolder, lmm.BaseDir, fileName), Path.Combine(intermediateFolder, cmm.BaseDir, fileName));
                 }
+                else
+                {
+                    using (var stream = new FileStream(Path.Combine(intermediateFolder, cmm.BaseDir, fileName), FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        // processor.SaveIntermediateModel(f, stream);
+                    }
+                }
+                cmm.Models.Add(fileName);
             }
         }
 
@@ -500,7 +531,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             using (var stream = new FileStream(fileName, FileMode.Open))
             {
-                return processor.LoadIntermediateModel(stream);
+                // return processor.LoadIntermediateModel(stream);
+                return null;
             }
         }
 
@@ -623,6 +655,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         None,
         PreBuild,
-        PostBuild
+        PostBuild,
+        PostPostBuild,
     }
 }

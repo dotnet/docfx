@@ -46,6 +46,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The file link for the XRefMap file(type is <see cref="XRefMap"/>).
         /// </summary>
         public string XRefSpecMapFile { get; set; }
+        /// <summary>
+        /// The file link for the BuildModel manifest file(type is <see cref="ModelManifest"/>).
+        /// </summary>
+        public string BuildModelManifestFile { get; set; }
+        /// <summary>
+        /// The file link for the PostBuildModel manifest file(type is <see cref="ModelManifest"/>).
+        /// </summary>
+        public string PostBuildModelManifestFile { get; set; }
 
         #region Deserialized content
         /// <summary>
@@ -68,6 +76,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         [JsonIgnore]
         public IDictionary<string, XRefSpec> XRefSpecMap { get; set; }
+        /// <summary>
+        /// deserialized build model manifest
+        /// </summary>
+        [JsonIgnore]
+        public ModelManifest BuildModelManifest { get; set; }
+        /// <summary>
+        /// deserialized postbuild model manifest
+        /// </summary>
+        [JsonIgnore]
+        public ModelManifest PostBuildModelManifest { get; set; }
         #endregion
 
         internal void Load(string baseDir)
@@ -76,6 +94,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
             Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
             XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(Path.Combine(baseDir, XRefSpecMapFile));
+            BuildModelManifest = IncrementalUtility.LoadIntermediateFile<ModelManifest>(Path.Combine(baseDir, BuildModelManifestFile));
+            PostBuildModelManifest = IncrementalUtility.LoadIntermediateFile<ModelManifest>(Path.Combine(baseDir, PostBuildModelManifestFile));
         }
 
         internal void Save(string baseDir)
@@ -84,6 +104,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, BuildModelManifestFile), BuildModelManifest);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostBuildModelManifestFile), PostBuildModelManifest);
         }
     }
 }
