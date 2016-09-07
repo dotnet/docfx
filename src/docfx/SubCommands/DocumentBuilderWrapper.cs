@@ -368,7 +368,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         type,
                         item.Files,
                         item.SourceFolder,
-                        item.DestinationFolder);
+                        item.DestinationFolder,
+                        baseDirectory);
                 }
             }
         }
