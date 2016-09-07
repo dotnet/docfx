@@ -87,10 +87,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                         DependencyFile = "dependency",
                         ManifestFile = "manifest",
                         XRefSpecMapFile = "xrefspecmap",
+                        BuildModelManifestFile = "buildmodelmanifest",
+                        PostBuildModelManifestFile = "postbuildmodelmanifest",
                         Attributes = fileAttributes,
                         Dependency = context.DependencyGraph,
                         Manifest = context.ManifestItems,
                         XRefSpecMap = context.XRefSpecMap,
+                        BuildModelManifest = new ModelManifest { BaseDir = CreateRandomDir(IntermediateFolder) },
+                        PostBuildModelManifest = new ModelManifest { BaseDir = CreateRandomDir(IntermediateFolder) },
                     });
                     _canIncremental = GetCanIncremental(configHash, parameters.VersionName);
                     if (_canIncremental)
@@ -120,7 +124,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             hostServices = GetInnerContexts(parameters, Processors, processor, markdownService, context).ToList();
                         }
 
-                        var manifest = new List<ManifestItemWithContext>(BuildCore(hostServices, context));
+                        var manifest = new List<ManifestItemWithContext>(BuildCore(hostServices, context, parameters.VersionName));
 
                         // Use manifest from now on
                         using (new LoggerPhaseScope("UpdateContext", true))
@@ -184,6 +188,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
+        }
+
+        private static string CreateRandomDir(string baseDir)
+        {
+            string folderName;
+            do
+            {
+                folderName = Path.GetRandomFileName();
+            } while (Directory.Exists(Path.Combine(baseDir, folderName)));
+            Directory.CreateDirectory(Path.Combine(baseDir, folderName));
+            return folderName;
         }
 
         private bool GetCanIncremental(string configHash, string versionName)
@@ -357,7 +372,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 MarkdownService = markdownService,
                 DependencyGraph = new DependencyGraph(),
             };
-            BuildCore(new List<HostService> { hostService }, parameters.MaxParallelism, false, null, null);
+            BuildCore(new List<HostService> { hostService }, parameters.MaxParallelism, null, null, null, null);
             return hostService.Models;
         }
 
@@ -366,7 +381,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             hostService.Models.RunAll(m => m.Dispose());
         }
 
-        private IEnumerable<ManifestItemWithContext> BuildCore(IEnumerable<HostService> hostServices, DocumentBuildContext context)
+        private IEnumerable<ManifestItemWithContext> BuildCore(IEnumerable<HostService> hostServices, DocumentBuildContext context, string versionName)
         {
             //preparation
             foreach (var hostService in hostServices)
@@ -386,9 +401,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            // to-do: pass in update action according to _canIncremental
-            Action updateHostServiceAction = null;
-            BuildCore(hostServices, context.MaxParallelism, ShouldTraceIncrementalInfo, IntermediateFolder, updateHostServiceAction);
+            Action<HostService> buildSaver = null;
+            Action<HostService> postBuildSaver = null;
+            Action loader = null;
+            Action postLoader = null;
+            if (ShouldTraceIncrementalInfo)
+            {
+                var lbv = LastBuildInfo?.Versions?.SingleOrDefault(v => v.VersionName == versionName);
+                var cbv = CurrentBuildInfo.Versions.Single(v => v.VersionName == versionName);
+                buildSaver = h => h.SaveIntermediateModel(IntermediateFolder, lbv?.BuildModelManifest, cbv.BuildModelManifest);
+                postBuildSaver = h => h.SaveIntermediateModel(IntermediateFolder, lbv?.PostBuildModelManifest, cbv.PostBuildModelManifest);
+                loader = () => UpdateHostServices(hostServices, context, lbv != null ? Path.Combine(IntermediateFolder, lbv.BuildModelManifest.BaseDir) : null, _canIncremental);
+                postLoader = () => UpdateHostServices(hostServices, lbv != null ? Path.Combine(IntermediateFolder, lbv.PostBuildModelManifest.BaseDir) : null, _canIncremental);
+            }
+
+            BuildCore(hostServices, context.MaxParallelism, buildSaver, postBuildSaver, loader, postLoader);
 
             // export manifest
             return from h in hostServices
@@ -396,7 +423,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                    select m;
         }
 
-        private static void BuildCore(IEnumerable<HostService> hostServices, int maxParallelism, bool shouldTraceIncrementalInfo, string intermediateFolder, Action updateHostServices)
+        private static void BuildCore(IEnumerable<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action<HostService> postBuildSaver, Action loader, Action postLoader)
         {
             // prebuild and build
             foreach (var hostService in hostServices)
@@ -417,17 +444,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     // save models
-                    if (shouldTraceIncrementalInfo && intermediateFolder != null)
+                    if (buildSaver != null)
                     {
-                        // to-do: save models and update currentbuildinfo
+                        buildSaver(hostService);
                     }
                 }
             }
 
-            // update hostservice according to changes introduced from dependencygraph
-            if (updateHostServices != null)
+            // load models according to changes introduced from dependencygraph
+            if (loader != null)
             {
-                updateHostServices();
+                loader();
             }
 
             // postbuild
@@ -442,21 +469,41 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     // save models
-                    if (shouldTraceIncrementalInfo && intermediateFolder != null)
+                    if (postBuildSaver != null)
                     {
-                        //to-do: save models and update currentbuildinfo
+                        postBuildSaver(hostService);
                     }
+                }
+            }
+
+            // load nonloaded models
+            if (postLoader != null)
+            {
+                postLoader();
+            }
+        }
+
+        private static void UpdateHostServices(IEnumerable<HostService> hostServices, DocumentBuildContext context, string cacheFolder, bool canIncremental)
+        {
+            UpdateUidDependency(hostServices, context);
+            if (canIncremental && cacheFolder != null)
+            {
+                var newChanges = ExpandDependency(context.DependencyGraph, context, d => true);
+                foreach (var hostService in hostServices)
+                {
+                    hostService.ReloadModelsPerIncrementalChanges(newChanges, cacheFolder, LoadPhase.PostBuild);
                 }
             }
         }
 
-        private static void UpdateHostServices(IEnumerable<HostService> hostServices, DocumentBuildContext context, string cacheFolder)
+        private static void UpdateHostServices(IEnumerable<HostService> hostServices, string cacheFolder, bool canIncremental)
         {
-            UpdateUidDependency(hostServices, context);
-            var newChanges = ExpandDependency(context.DependencyGraph, context, d => true);
-            foreach (var hostService in hostServices)
+            if (canIncremental && cacheFolder != null)
             {
-                hostService.ReloadModelsPerIncrementalChanges(newChanges, cacheFolder, LoadPhase.PostBuild);
+                foreach (var hostService in hostServices)
+                {
+                    hostService.ReloadUnloadedModels(cacheFolder, LoadPhase.PostPostBuild);
+                }
             }
         }
 
@@ -616,6 +663,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Skip build by incremental.");
 
+                                // to-do: remove filemap/xrefmap/manifestitem restore after processor.LoadIntermediateModel is implemented
                                 // restore filemap
                                 context.FileMap[fileKey] = ((RelativePath)file.File).GetPathFromWorkingFolder();
 

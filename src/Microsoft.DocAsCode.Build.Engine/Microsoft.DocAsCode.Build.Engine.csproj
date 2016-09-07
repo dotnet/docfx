@@ -10,6 +10,7 @@
     <Compile Include="DocumentBuilder.cs" />
     <Compile Include="HashStreamHelper.cs" />
     <Compile Include="Incrementals\BuildInfo.cs" />
+    <Compile Include="Incrementals\ModelManifest.cs" />
     <Compile Include="Incrementals\BuildOutputItem.cs" />
     <Compile Include="Incrementals\BuildOutputs.cs" />
     <Compile Include="Incrementals\BuildVersionInfo.cs" />

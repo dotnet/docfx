@@ -322,6 +322,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                 BuildInfo.Save(
                     Path.Combine(_intermediateFolder, BuildInfo.FileName),
                     _currentBuildInfo);
+                if (_lastBuildInfo != null)
+                {
+                    foreach (var v in _lastBuildInfo.Versions)
+                    {
+                        Directory.Delete(Path.Combine(_intermediateFolder, v.BuildModelManifest.BaseDir), true);
+                        Directory.Delete(Path.Combine(_intermediateFolder, v.PostBuildModelManifest.BaseDir), true);
+                    }
+                }
             }
         }
 
