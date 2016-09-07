@@ -268,11 +268,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             return (from f in parameters.Files.EnumerateFiles()
                     let fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
+                    group f by fileKey into g
                     select new FileAttributeItem
                     {
-                        File = fileKey,
-                        LastModifiedTime = File.GetLastWriteTimeUtc(f.FullPath),
-                        MD5 = File.ReadAllText(f.FullPath).GetMd5String(),
+                        File = g.Key,
+                        LastModifiedTime = File.GetLastWriteTimeUtc(g.First().FullPath),
+                        MD5 = File.ReadAllText(g.First().FullPath).GetMd5String(),
                     }).ToDictionary(a => a.File);
         }
 
