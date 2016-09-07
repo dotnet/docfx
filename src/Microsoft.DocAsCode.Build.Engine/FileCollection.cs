@@ -36,32 +36,17 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string DefaultBaseDir { get; set; }
 
-        public void Add(DocumentType type, IEnumerable<string> files, string sourceDir = null, string destinationDir = null)
+        public void Add(DocumentType type, IEnumerable<string> files, string sourceDir = null, string destinationDir = null, string pathRewriteBaseDir = null)
         {
-            Add(type, null, files, sourceDir, destinationDir);
+            _files.AddRange(from f in files
+                            select new FileAndType(DefaultBaseDir, ToRelative(f, DefaultBaseDir), type, sourceDir, destinationDir, pathRewriteBaseDir));
         }
 
-        public void Add(DocumentType type, string baseDir, IEnumerable<string> files, string sourceDir = null, string destinationDir = null)
+        public void Add(DocumentType type, string baseDir, IEnumerable<string> files, string sourceDir = null, string destinationDir = null, string pathRewriteBaseDir = null)
         {
-            var rootedBaseDir = Path.Combine(DefaultBaseDir, baseDir ?? string.Empty);
-            if (sourceDir != null && Path.IsPathRooted(sourceDir))
-            {
-                sourceDir = PathUtility.MakeRelativePath(rootedBaseDir, sourceDir);
-            }
-            if (destinationDir != null && Path.IsPathRooted(destinationDir))
-            {
-                destinationDir = PathUtility.MakeRelativePath(rootedBaseDir, destinationDir);
-            }
-            if (!string.IsNullOrEmpty(sourceDir) && !sourceDir.EndsWith("/"))
-            {
-                sourceDir += "/";
-            }
-            if (!string.IsNullOrEmpty(destinationDir) && !destinationDir.EndsWith("/"))
-            {
-                destinationDir += "/";
-            }
+            var rootedBaseDir = Path.Combine(Directory.GetCurrentDirectory(), baseDir ?? string.Empty);
             _files.AddRange(from f in files
-                            select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type, sourceDir, destinationDir));
+                            select new FileAndType(rootedBaseDir, ToRelative(f, rootedBaseDir), type, sourceDir, destinationDir, pathRewriteBaseDir));
         }
 
         public void RemoveAll(Predicate<FileAndType> match)

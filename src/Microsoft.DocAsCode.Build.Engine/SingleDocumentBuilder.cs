@@ -761,10 +761,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Saving...");
                             m.BaseDir = context.BuildOutputFolder;
-                            if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
-                            {
-                                m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
-                            }
+                            m.File = Path.Combine(m.FileAndType.DestinationDir ?? string.Empty, PathUtility.MakeRelativePath(m.FileAndType.SourceDir, Path.Combine(m.FileAndType.PathReWriteBaseDir, m.File)));
                             var result = hostService.Processor.Save(m);
                             if (result != null)
                             {
