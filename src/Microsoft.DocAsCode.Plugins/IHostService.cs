@@ -20,7 +20,9 @@ namespace Microsoft.DocAsCode.Plugins
         ImmutableList<FileModel> GetModels(DocumentType? type = null);
         ImmutableList<FileModel> LookupByUid(string uid);
 
-        void ReportDependency(FileModel currentFileModel, ImmutableArray<string> dependency);
+        void ReportDependency(string from, string to, string reportedBy, string type);
+
+        void RegisterDependencyType(string name, bool isTransitive, bool triggerBuild);
 
         /// <summary>
         /// Get current <see cref="IDocumentProcessor"/>.

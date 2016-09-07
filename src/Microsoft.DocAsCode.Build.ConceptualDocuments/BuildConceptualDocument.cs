@@ -6,11 +6,11 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.IO;
 
     using HtmlAgilityPack;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
@@ -80,11 +80,15 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 model.Properties.XrefSpec = new XRefSpec
                 {
                     Uid = model.Uids[0].Name,
-                    Name = TitleThumbnail(content[Constants.PropertyName.Title] as string?? model.Uids[0].Name, TitleThumbnailMaxLength),
+                    Name = TitleThumbnail(content[Constants.PropertyName.Title] as string ?? model.Uids[0].Name, TitleThumbnailMaxLength),
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
-            host.ReportDependency(model, result.Dependency);
+            string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+            foreach (var d in result.Dependency)
+            {
+                host.ReportDependency(fromNode, d, fromNode, DependencyTypeName.Include);
+            }
         }
 
         #region ISupportIncrementalBuild Members

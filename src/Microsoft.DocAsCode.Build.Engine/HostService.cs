@@ -361,20 +361,38 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
-        // to-do: update signature so reporter could pass in more info
-        public void ReportDependency(FileModel currentFileModel, ImmutableArray<string> dependency)
+        public void ReportDependency(string from, string to, string reportedBy, string type)
         {
-            if (currentFileModel == null)
+            if (from == null)
             {
-                throw new ArgumentNullException(nameof(currentFileModel));
+                throw new ArgumentNullException(nameof(from));
+            }
+            if (to == null)
+            {
+                throw new ArgumentNullException(nameof(to));
+            }
+            if (reportedBy == null)
+            {
+                throw new ArgumentNullException(nameof(reportedBy));
+            }
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
             }
             lock (DependencyGraph)
             {
-                string node = ((RelativePath)currentFileModel.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
-                var items = from d in dependency
-                            select new DependencyItem(node, d, node, DependencyTypeName.Include);
-                DependencyGraph.ReportDependency(items);
+                DependencyGraph.ReportDependency(new DependencyItem(from, to, reportedBy, type));
             }
+        }
+
+        public static void RegisterDependencyType(string name, bool isTransitive, bool triggerBuild)
+        {
+            DependencyGraph.RegisterDependencyType(new DependencyType { Name = name, IsTransitive = isTransitive, TriggerBuild = triggerBuild });
+        }
+
+        void IHostService.RegisterDependencyType(string name, bool isTransitive, bool triggerBuild)
+        {
+            HostService.RegisterDependencyType(name, isTransitive, triggerBuild);
         }
 
         public bool HasMetadataValidation => Validators.Count > 0;

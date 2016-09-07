@@ -17,7 +17,8 @@
     "Microsoft.DocAsCode.MarkdownLite": "1.0.0",
     "Microsoft.DocAsCode.Build.Common": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
-    "Microsoft.DocAsCode.Plugins": "1.0.0"
+    "Microsoft.DocAsCode.Plugins": "1.0.0",
+    "Microsoft.DocAsCode.Build.Engine": "1.0.0"
   },
   "configurations": {
     "Debug": {
