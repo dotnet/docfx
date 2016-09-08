@@ -18,25 +18,24 @@
     "onCommand:DFM.showTokenTreeToSide"
   ],
   "main": "./out/src/extension",
-  "icon": "img/dfm.png",
   "license": "MIT",
   "contributes": {
     "commands": [
       {
         "command": "DFM.showPreview",
-        "title": "Toggle Dfm Preview"
+        "title": "Toggle DFM preview"
       },
       {
         "command": "DFM.showPreviewToSide",
-        "title": "Open Dfm Preview to the side"
+        "title": "Open DFM preview to the side"
       },
       {
         "command": "DFM.showSource",
-        "title": "Show Dfm Source"
+        "title": "Show DFM source"
       },
       {
         "command": "DFM.showTokenTreeToSide",
-        "title": "Open Dfm TokenTree to the side"
+        "title": "Open DFM token tree to the side"
       }
     ],
     "keybindings": [
