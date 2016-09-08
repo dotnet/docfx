@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Plugins
     public sealed class FileAndType
         : IEquatable<FileAndType>
     {
-        public FileAndType(string baseDir, string file, DocumentType type, string sourceDir = null, string destinationDir = null, string pathRewriteBaseDir = null)
+        public FileAndType(string baseDir, string file, DocumentType type, string sourceDir = null, string destinationDir = null)
         {
             if (baseDir == null)
             {
@@ -31,6 +31,14 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 throw new ArgumentException("File cannot be rooted.", nameof(file));
             }
+            if (!string.IsNullOrEmpty(sourceDir) && Path.IsPathRooted(sourceDir))
+            {
+                throw new ArgumentException("File cannot be rooted.", nameof(sourceDir));
+            }
+            if (!string.IsNullOrEmpty(destinationDir) && Path.IsPathRooted(destinationDir))
+            {
+                throw new ArgumentException("File cannot be rooted.", nameof(destinationDir));
+            }
 
             BaseDir = baseDir.Replace('\\', '/');
             File = file.Replace('\\', '/');
@@ -38,7 +46,6 @@ namespace Microsoft.DocAsCode.Plugins
             FullPath = Path.Combine(BaseDir, File).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             SourceDir = sourceDir?.Replace('\\', '/') ?? string.Empty;
             DestinationDir = destinationDir?.Replace('\\', '/') ?? string.Empty;
-            PathReWriteBaseDir = pathRewriteBaseDir?.Replace('\\', '/') ?? string.Empty;
             StringComparer = GetStringComparer();
         }
 
@@ -56,21 +63,19 @@ namespace Microsoft.DocAsCode.Plugins
 
         public string DestinationDir { get; set; }
 
-        public string PathReWriteBaseDir { get; set; }
-
         public FileAndType ChangeBaseDir(string baseDir)
         {
-            return new FileAndType(baseDir, File, Type, SourceDir, DestinationDir, PathReWriteBaseDir);
+            return new FileAndType(baseDir, File, Type, SourceDir, DestinationDir);
         }
 
         public FileAndType ChangeFile(string file)
         {
-            return new FileAndType(BaseDir, file, Type, SourceDir, DestinationDir, PathReWriteBaseDir);
+            return new FileAndType(BaseDir, file, Type, SourceDir, DestinationDir);
         }
 
         public FileAndType ChangeType(DocumentType type)
         {
-            return new FileAndType(BaseDir, File, type, SourceDir, DestinationDir, PathReWriteBaseDir);
+            return new FileAndType(BaseDir, File, type, SourceDir, DestinationDir);
         }
 
         public bool Equals(FileAndType other)
@@ -81,7 +86,9 @@ namespace Microsoft.DocAsCode.Plugins
             }
             return StringComparer.Equals(File, other.File) &&
                 Type == other.Type &&
-                StringComparer.Equals(BaseDir, other.BaseDir);
+                StringComparer.Equals(BaseDir, other.BaseDir) &&
+                StringComparer.Equals(SourceDir, other.SourceDir) &&
+                StringComparer.Equals(DestinationDir, other.DestinationDir);
         }
 
         public override bool Equals(object obj)

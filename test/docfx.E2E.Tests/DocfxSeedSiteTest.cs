@@ -208,7 +208,6 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
             // go to reference
             _driver.FindElement(By.LinkText("REST API")).Click();
-            System.Threading.Thread.Sleep(1000);
 
             // check link to file in overwrite
             var results = _driver.FindElements(By.XPath("//div[@class='markdown level0 api-footer']/ul/li/a"));
