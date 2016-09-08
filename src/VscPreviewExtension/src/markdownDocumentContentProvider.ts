@@ -4,7 +4,7 @@ import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter,
 import * as path from "path";
 
 export class MarkdownDocumentContentProvider implements TextDocumentContentProvider {
-    // TODO: extra the common pattern form this with TokenTreeContentProvider
+    // TODO: extract the common pattern form this class with TokenTreeContentProvider
     private _context: ExtensionContext;
     private _onDidChange = new EventEmitter<Uri>();
     private _htmlContent: string;
@@ -33,7 +33,7 @@ export class MarkdownDocumentContentProvider implements TextDocumentContentProvi
             const body = this._htmlContent || "";
 
             const tail = [
-                `<script type="text/javascript" src="${this.getMediaPath("docfx.vendor.js")}"></script>`,
+                `<script type="text/javascript" src="${this.getMediaPath("highlight.pack.js")}"></script>`,
                 `<script>hljs.initHighlightingOnLoad();</script>`,
                 "</body>",
                 "</html>"

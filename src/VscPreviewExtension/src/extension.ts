@@ -86,11 +86,14 @@ export function activate(context: ExtensionContext) {
 }
 
 function mapToSelection(startLineNumber, endLineNumber) {
-    if (startLineNumber <= endLineNumber && startLineNumber >= 1) {
-        return commands.executeCommand("workbench.action.navigateBack").then(() => {
-            window.activeTextEditor.selection = new Selection(startLineNumber - 1, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
-        });
+    if (startLineNumber < 1 || startLineNumber > endLineNumber) {
+        window.showErrorMessage("Selection Range Error");
+        return;
     }
+    // Go back to the Source file editor
+    return commands.executeCommand("workbench.action.navigateBack").then(() => {
+        window.activeTextEditor.selection = new Selection(startLineNumber - 1, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
+    });
 }
 
 // Check the file type

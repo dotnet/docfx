@@ -6,7 +6,7 @@ import { MarkdownDocumentContentProvider } from "./markdownDocumentContentProvid
 
 // Create a child process(DfmRender) by "_spawn" to render a html
 export class PreviewCore {
-    // TODO: extra the common pattern form this with TokenTreeCore
+    // TODO: extract the common pattern form this class with TokenTreeCore
     public isFirstTime: boolean;
     public provider: MarkdownDocumentContentProvider;
 

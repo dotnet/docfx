@@ -6,7 +6,7 @@ import { TokenTreeContentProvider } from "./tokenTreeContentProvider";
 
 // Create a child process(DfmRender) by "_spawn" to render a html
 export class TokenTreeCore {
-    // TODO: extra the common pattern form this with PreviewCore
+    // TODO: extract the common pattern form this class with PreviewCore
     public provider: TokenTreeContentProvider;
 
     private _spawn: childProcess.ChildProcess;
