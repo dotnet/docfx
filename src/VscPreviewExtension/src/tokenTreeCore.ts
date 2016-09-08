@@ -6,6 +6,7 @@ import { TokenTreeContentProvider } from "./tokenTreeContentProvider";
 
 // Create a child process(DfmRender) by "_spawn" to render a html
 export class TokenTreeCore {
+    // TODO: extra the common pattern form this with PreviewCore
     public provider: TokenTreeContentProvider;
 
     private _spawn: childProcess.ChildProcess;
@@ -15,7 +16,7 @@ export class TokenTreeCore {
     private _documentUri: Uri;
     private ENDCODE = 7; // '\a'
 
-    constructor(context: ExtensionContext , port) {
+    constructor(context: ExtensionContext, port) {
         // TODO: make path configurable
         let extpath = context.asAbsolutePath("./DfmParse/TokenTree.exe");
         this._spawn = childProcess.spawn(extpath);
@@ -24,7 +25,7 @@ export class TokenTreeCore {
             return;
         }
         this._waiting = false;
-        this.provider = new TokenTreeContentProvider(context , port);
+        this.provider = new TokenTreeContentProvider(context, port);
         let that = this;
 
         this._spawn.stdout.on("data", function (data) {
