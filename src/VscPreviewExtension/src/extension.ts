@@ -69,8 +69,6 @@ export function activate(context: ExtensionContext) {
         let requestInfo = req.url.split("/");
         if (requestInfo[1] === "lineNumber") {
             mapToSelection(parseInt(requestInfo[2]), parseInt(requestInfo[3]));
-            res.writeHead(200, { "Content-Type": "text/plain" });
-            res.end("success");
         } else {
             res.writeHead(200, { "Content-Type": "text/plain" });
             res.write(startLine + " " + endLine);

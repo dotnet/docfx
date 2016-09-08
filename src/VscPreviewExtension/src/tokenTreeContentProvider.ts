@@ -4,7 +4,7 @@ import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter,
 import * as path from "path";
 
 export class TokenTreeContentProvider implements TextDocumentContentProvider {
-    // TODO: extract the common pattern form this class with MarkdownDocumentContentProvider
+    // TODO: extract the common pattern from this class with MarkdownDocumentContentProvider
     private _context: ExtensionContext;
     private _onDidChange = new EventEmitter<Uri>();
     private _jsonContent = "";
