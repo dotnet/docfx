@@ -185,7 +185,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var result = new FileCollection(baseDirectory);
             foreach (var mapping in files.Items)
             {
-                result.Add(type, mapping.Files, mapping.SourceFolder, mapping.DestinationFolder, baseDirectory);
+                result.Add(type, mapping.Files, mapping.SourceFolder, mapping.DestinationFolder);
             }
             return result;
         }

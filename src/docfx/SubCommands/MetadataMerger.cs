@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     }));
             foreach (var m in models)
             {
-                m.File = Path.Combine(m.FileAndType.DestinationDir ?? string.Empty, PathUtility.MakeRelativePath(m.FileAndType.SourceDir, Path.Combine(m.FileAndType.PathReWriteBaseDir, m.File)));
+                m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
                 Console.WriteLine($"File:{m.OriginalFileAndType.File} from:{m.FileAndType.SourceDir} to:{m.FileAndType.DestinationDir} => {m.File}");
             }
             foreach (var m in models)
@@ -97,7 +97,7 @@ namespace Microsoft.DocAsCode.SubCommands
             YamlUtility.Serialize(
                 Path.Combine(
                     outputBase,
-                    Path.Combine(tocFiles[0].DestinationDir ?? string.Empty, PathUtility.MakeRelativePath(tocFiles[0].SourceDir, Path.Combine(tocFiles[0].PathReWriteBaseDir, tocFiles[0].File)))),
+                    (RelativePath)tocFiles[0].DestinationDir + (((RelativePath)tocFiles[0].File) - (RelativePath)tocFiles[0].SourceDir)),
                 vm,
                 YamlMime.TableOfContent);
         }
