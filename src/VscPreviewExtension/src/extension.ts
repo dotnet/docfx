@@ -68,7 +68,8 @@ export function activate(context: ExtensionContext) {
     server.on("request", function (req, res) {
         let requestInfo = req.url.split("/");
         if (requestInfo[1] === "lineNumber") {
-            mapToSelection(parseInt(requestInfo[2]), parseInt(requestInfo[3]));
+            if (!mapToSelection(parseInt(requestInfo[2]), parseInt(requestInfo[3])))
+                window.showErrorMessage("Selection Range Error");
         } else {
             res.writeHead(200, { "Content-Type": "text/plain" });
             res.write(startLine + " " + endLine);
@@ -84,14 +85,13 @@ export function activate(context: ExtensionContext) {
 }
 
 function mapToSelection(startLineNumber, endLineNumber) {
-    if (startLineNumber < 1 || startLineNumber > endLineNumber) {
-        window.showErrorMessage("Selection Range Error");
-        return;
-    }
+    if (startLineNumber < 1 || startLineNumber > endLineNumber)
+        return false;
     // Go back to the Source file editor
-    return commands.executeCommand("workbench.action.navigateBack").then(() => {
+    commands.executeCommand("workbench.action.navigateBack").then(() => {
         window.activeTextEditor.selection = new Selection(startLineNumber - 1, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
     });
+    return true;
 }
 
 // Check the file type
