@@ -89,11 +89,9 @@ namespace Microsoft.DocAsCode.E2E.Tests
         public void TestReferencePage()
         {
             _driver.Navigate().GoToUrl(_urlHomepage);
-            System.Threading.Thread.Sleep(1000);
 
             // go to reference
             _driver.FindElement(By.LinkText("API Documentation")).Click();
-            System.Threading.Thread.Sleep(1000);
 
             _driver.FindElements(By.XPath("//h4/a"))[0].Click();
 
@@ -207,11 +205,9 @@ namespace Microsoft.DocAsCode.E2E.Tests
         public void TestRestApiPage()
         {
             _driver.Navigate().GoToUrl(_urlHomepage);
-            System.Threading.Thread.Sleep(1000);
 
             // go to reference
             _driver.FindElement(By.LinkText("REST API")).Click();
-            System.Threading.Thread.Sleep(1000);
 
             // check link to file in overwrite
             var results = _driver.FindElements(By.XPath("//div[@class='markdown level0 api-footer']/ul/li/a"));

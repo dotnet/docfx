@@ -352,13 +352,13 @@ namespace Microsoft.DocAsCode.SubCommands
             FileMapping resources)
         {
             var fileCollection = new FileCollection(baseDirectory);
-            AddFileMapping(fileCollection, baseDirectory, DocumentType.Article, articles);
-            AddFileMapping(fileCollection, baseDirectory, DocumentType.Overwrite, overwrites);
-            AddFileMapping(fileCollection, baseDirectory, DocumentType.Resource, resources);
+            AddFileMapping(fileCollection, DocumentType.Article, articles);
+            AddFileMapping(fileCollection, DocumentType.Overwrite, overwrites);
+            AddFileMapping(fileCollection, DocumentType.Resource, resources);
             return fileCollection;
         }
 
-        private static void AddFileMapping(FileCollection fileCollection, string baseDirectory, DocumentType type, FileMapping mapping)
+        private static void AddFileMapping(FileCollection fileCollection, DocumentType type, FileMapping mapping)
         {
             if (mapping != null)
             {
