@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using HtmlAgilityPack;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
@@ -22,6 +21,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
         private const int TitleThumbnailMaxLength = 30;
+        private const string Include = "include";
 
         public override string Name => nameof(BuildConceptualDocument);
 
@@ -84,10 +84,10 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
-            string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+
             foreach (var d in result.Dependency)
             {
-                host.ReportDependency(fromNode, d, fromNode, DependencyTypeName.Include);
+                host.ReportDependencyTo(model, d, Include);
             }
         }
 
@@ -101,6 +101,11 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
         public string GetIncrementalContextHash()
         {
             return null;
+        }
+
+        public void RegisterDependencyTypes(IHostService hostService)
+        {
+            hostService.RegisterDependencyType(Include, true, true);
         }
 
         #endregion

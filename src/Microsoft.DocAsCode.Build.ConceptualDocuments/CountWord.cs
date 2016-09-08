@@ -43,6 +43,10 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
         {
             return true;
         }
+
+        public void RegisterDependencyTypes(IHostService hostService)
+        {
+        }
     }
 
     internal static class WordCounter

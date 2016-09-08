@@ -19,5 +19,10 @@ namespace Microsoft.DocAsCode.Plugins
         /// <param name="fileAndType">the file and type information</param>
         /// <returns>Can use incremental build for this file.</returns>
         bool CanIncrementalBuild(FileAndType fileAndType);
+        /// <summary>
+        /// Register dependency type
+        /// </summary>
+        /// <param name="hostService">hostService</param>
+        void RegisterDependencyTypes(IHostService hostService);
     }
 }

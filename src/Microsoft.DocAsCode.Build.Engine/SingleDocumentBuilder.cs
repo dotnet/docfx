@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         LoadChanges(parameters, context, fileAttributes);
                         var dependencyGraph = LastBuildInfo.Versions.Single(v => v.VersionName == parameters.VersionName).Dependency;
-                        ExpandDependency(dependencyGraph, context, d => DependencyGraph.DependencyTypes[d.Type].TriggerBuild);
+                        ExpandDependency(dependencyGraph, context, d => dependencyGraph.DependencyTypes[d.Type].TriggerBuild);
                     }
                 }
 
@@ -425,6 +425,21 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void BuildCore(IEnumerable<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action<HostService> postBuildSaver, Action loader, Action postLoader)
         {
+            // register dependency types
+            foreach (var hostService in hostServices)
+            {
+                using (new LoggerPhaseScope("RegisterDependencyType", true))
+                {
+                    foreach (var step in hostService.Processor.BuildSteps)
+                    {
+                        if (step is ISupportIncrementalBuildStep)
+                        {
+                            (step as ISupportIncrementalBuildStep).RegisterDependencyTypes(hostService);
+                        }
+                    }
+                }
+            }
+
             // prebuild and build
             foreach (var hostService in hostServices)
             {
@@ -647,6 +662,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 if (canProcessorIncremental)
                 {
+                    // reregister dependency types from last dependency graph
+                    if (dg != null)
+                    {
+                        context.DependencyGraph.RegisterDependencyType(dg.DependencyTypes.Values);
+                    }
                     ChangeKindWithDependency ck;
                     string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
                     if (context.ChangeDict.TryGetValue(fileKey, out ck))

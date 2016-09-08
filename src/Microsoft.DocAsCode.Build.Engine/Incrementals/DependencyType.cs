@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     public static class DependencyTypeName
     {
-        public const string Include = "include";
         public const string Uid = "uid";
     }
 }

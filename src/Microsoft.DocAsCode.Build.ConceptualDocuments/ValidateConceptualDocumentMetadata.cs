@@ -47,6 +47,10 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             return null;
         }
 
+        public void RegisterDependencyTypes(IHostService hostService)
+        {
+        }
+
         #endregion
     }
 }

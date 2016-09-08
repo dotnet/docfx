@@ -385,14 +385,53 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public static void RegisterDependencyType(string name, bool isTransitive, bool triggerBuild)
+        public void ReportDependencyTo(FileModel currentFileModel, string to, string type)
         {
-            DependencyGraph.RegisterDependencyType(new DependencyType { Name = name, IsTransitive = isTransitive, TriggerBuild = triggerBuild });
+            if (currentFileModel == null)
+            {
+                throw new ArgumentNullException(nameof(currentFileModel));
+            }
+            if (to == null)
+            {
+                throw new ArgumentNullException(nameof(to));
+            }
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            lock (DependencyGraph)
+            {
+                string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
+                string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)to));
+                DependencyGraph.ReportDependency(new DependencyItem(fromKey, toKey, fromKey, type));
+            }
         }
 
-        void IHostService.RegisterDependencyType(string name, bool isTransitive, bool triggerBuild)
+        public void ReportDependencyFrom(FileModel currentFileModel, string from, string type)
         {
-            HostService.RegisterDependencyType(name, isTransitive, triggerBuild);
+            if (from == null)
+            {
+                throw new ArgumentNullException(nameof(from));
+            }
+            if (currentFileModel == null)
+            {
+                throw new ArgumentNullException(nameof(currentFileModel));
+            }
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            lock (DependencyGraph)
+            {
+                string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)from));
+                string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
+                DependencyGraph.ReportDependency(new DependencyItem(fromKey, toKey, toKey, type));
+            }
+        }
+
+        public void RegisterDependencyType(string name, bool isTransitive, bool triggerBuild)
+        {
+            DependencyGraph.RegisterDependencyType(new DependencyType { Name = name, IsTransitive = isTransitive, TriggerBuild = triggerBuild });
         }
 
         public bool HasMetadataValidation => Validators.Count > 0;
