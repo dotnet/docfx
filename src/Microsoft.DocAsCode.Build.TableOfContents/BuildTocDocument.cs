@@ -29,12 +29,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var tocModelCache = new Dictionary<FileAndType, TocItemInfo>();
+            var tocModelCache = new Dictionary<string, TocItemInfo>();
             foreach (var model in models)
             {
-                if (!tocModelCache.ContainsKey(model.OriginalFileAndType))
+                if (!tocModelCache.ContainsKey(model.OriginalFileAndType.FullPath))
                 {
-                    tocModelCache[model.OriginalFileAndType] = new TocItemInfo(model.OriginalFileAndType, (TocItemViewModel)model.Content);
+                    tocModelCache[model.OriginalFileAndType.FullPath] = new TocItemInfo(model.OriginalFileAndType, (TocItemViewModel)model.Content);
                 }
             }
             var tocResolver = new TocResolver(host, tocModelCache);
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             foreach (var model in models)
             {
-                var wrapper = tocModelCache[model.OriginalFileAndType];
+                var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
 
                 // If the TOC file is referenced by other TOC, remove it from the collection
                 if (!wrapper.IsReferenceToc)

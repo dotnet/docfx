@@ -46,11 +46,25 @@ namespace Microsoft.DocAsCode.Build.Engine
             var rootedBaseDir = Path.Combine(DefaultBaseDir, baseDir ?? string.Empty);
             if (sourceDir != null && Path.IsPathRooted(sourceDir))
             {
-                sourceDir = PathUtility.MakeRelativePath(rootedBaseDir, sourceDir);
+                if (sourceDir.StartsWith(rootedBaseDir))
+                {
+                    sourceDir = sourceDir.Substring(rootedBaseDir.Length).TrimStart('/', '\\');
+                }
+                else
+                {
+                    throw new ArgumentException("SourceDir must start with BaseDir, or relative path.", nameof(sourceDir));
+                }
             }
             if (destinationDir != null && Path.IsPathRooted(destinationDir))
             {
-                destinationDir = PathUtility.MakeRelativePath(rootedBaseDir, destinationDir);
+                if (destinationDir.StartsWith(rootedBaseDir))
+                {
+                    destinationDir = sourceDir.Substring(rootedBaseDir.Length).TrimStart('/', '\\');
+                }
+                else
+                {
+                    throw new ArgumentException("DestinationDir must start with BaseDir, or relative path.", nameof(destinationDir));
+                }
             }
             if (!string.IsNullOrEmpty(sourceDir) && !sourceDir.EndsWith("/"))
             {

@@ -14,15 +14,16 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     internal sealed class TocResolver
     {
         private readonly IHostService _host;
-        private readonly Dictionary<FileAndType, TocItemInfo> _collection;
+        private readonly Dictionary<string, TocItemInfo> _collection;
         private readonly Dictionary<FileAndType, TocItemInfo> _notInProjectTocCache = new Dictionary<FileAndType, TocItemInfo>();
-        public TocResolver(IHostService host, Dictionary<FileAndType, TocItemInfo> collection)
+
+        public TocResolver(IHostService host, Dictionary<string, TocItemInfo> collection)
         {
             _host = host;
             _collection = collection;
         }
 
-        public TocItemInfo Resolve(FileAndType file)
+        public TocItemInfo Resolve(string file)
         {
             return ResolveItem(_collection[file], new Stack<FileAndType>());
         }
@@ -87,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
                 var tocFile = file.ChangeFile(tocFilePath);
-                if (!_collection.TryGetValue(tocFile, out tocFileModel))
+                if (!_collection.TryGetValue(tocFile.FullPath, out tocFileModel))
                 {
                     var message = $"Unable to find {item.TocHref}. Make sure the file is included in config file docfx.json!";
                     Logger.LogWarning(message);
@@ -158,11 +159,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
                             // First, try finding toc.yml under the relative folder
                             // Second, try finding toc.md under the relative folder
-                            if (!_collection.TryGetValue(tocFile, out tocFileModel))
+                            if (!_collection.TryGetValue(tocFile.FullPath, out tocFileModel))
                             {
                                 tocFilePath = relativeFolder + (RelativePath)Constants.MarkdownTocFileName;
                                 tocFile = file.ChangeFile(tocFilePath);
-                                if (!_collection.TryGetValue(tocFile, out tocFileModel))
+                                if (!_collection.TryGetValue(tocFile.FullPath, out tocFileModel))
                                 {
                                     var message =
                                         $"Unable to find either {Constants.YamlTocFileName} or {Constants.MarkdownTocFileName} inside {item.Href}. Make sure the file is included in config file docfx.json!";
@@ -205,7 +206,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         TocItemInfo referencedTocFileModel;
                         TocItemViewModel referencedToc;
                         stack.Push(file);
-                        if (_collection.TryGetValue(tocFile, out referencedTocFileModel) || _notInProjectTocCache.TryGetValue(tocFile, out referencedTocFileModel))
+                        if (_collection.TryGetValue(tocFile.FullPath, out referencedTocFileModel) || _notInProjectTocCache.TryGetValue(tocFile, out referencedTocFileModel))
                         {
                             referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
                             referencedTocFileModel.IsReferenceToc = true;
