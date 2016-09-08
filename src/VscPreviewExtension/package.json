@@ -1,34 +1,41 @@
 {
   "name": "DfmPreview",
   "displayName": "DfmPreview",
-  "description": "Preview the DocFX Flavored Markdown in Visual Studio Code",
-  "version": "0.0.9",
+  "description": "Preview the DocFX Flavored Markdown and token tree in Visual Studio Code",
+  "version": "0.0.15",
   "publisher": "928pjy",
   "engines": {
     "vscode": "^1.3.0"
   },
   "categories": [
+    "Languages",
     "Other"
   ],
   "activationEvents": [
     "onCommand:DFM.showPreview",
     "onCommand:DFM.showPreviewToSide",
-    "oncommand:DFM.showSource"
+    "oncommand:DFM.showSource",
+    "onCommand:DFM.showTokenTreeToSide"
   ],
   "main": "./out/src/extension",
+  "license": "MIT",
   "contributes": {
     "commands": [
       {
         "command": "DFM.showPreview",
-        "title": "Toggle Dfm Preview"
+        "title": "Toggle DFM preview"
       },
       {
         "command": "DFM.showPreviewToSide",
-        "title": "Open Dfm Preview to the side"
+        "title": "Open DFM preview to the side"
       },
       {
         "command": "DFM.showSource",
-        "title": "Show Dfm Source"
+        "title": "Show DFM source"
+      },
+      {
+        "command": "DFM.showTokenTreeToSide",
+        "title": "Open DFM token tree to the side"
       }
     ],
     "keybindings": [
@@ -40,6 +47,11 @@
       {
         "command": "DFM.showPreviewToSide",
         "key": "ctrl+k q",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "DFM.showTokenTreeToSide",
+        "key": "ctrl+shift+t",
         "when": "editorTextFocus"
       }
     ]

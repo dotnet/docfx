@@ -4,14 +4,13 @@ import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter,
 import * as path from "path";
 
 export class MarkdownDocumentContentProvider implements TextDocumentContentProvider {
+    // TODO: extract the common pattern from this class with TokenTreeContentProvider
     private _context: ExtensionContext;
     private _onDidChange = new EventEmitter<Uri>();
-    private _waiting: boolean;
     private _htmlContent: string;
 
     constructor(context: ExtensionContext) {
         this._context = context;
-        this._waiting = false;
     }
 
     private getMediaPath(mediaFile): string {
@@ -34,7 +33,7 @@ export class MarkdownDocumentContentProvider implements TextDocumentContentProvi
             const body = this._htmlContent || "";
 
             const tail = [
-                `<script type="text/javascript" src="${this.getMediaPath("docfx.vendor.js")}"></script>`,
+                `<script type="text/javascript" src="${this.getMediaPath("highlight.pack.js")}"></script>`,
                 `<script>hljs.initHighlightingOnLoad();</script>`,
                 "</body>",
                 "</html>"
