@@ -428,15 +428,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             // register dependency types
             foreach (var hostService in hostServices)
             {
-                using (new LoggerPhaseScope("RegisterDependencyType", true))
+                using (new LoggerPhaseScope(hostService.Processor.Name, true))
                 {
-                    foreach (var step in hostService.Processor.BuildSteps)
-                    {
-                        if (step is ISupportIncrementalBuildStep)
-                        {
-                            (step as ISupportIncrementalBuildStep).RegisterDependencyTypes(hostService);
-                        }
-                    }
+                    RegisterDependencyType(hostService);
                 }
             }
 
@@ -665,7 +659,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // reregister dependency types from last dependency graph
                     if (dg != null)
                     {
-                        context.DependencyGraph.RegisterDependencyType(dg.DependencyTypes.Values);
+                        using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", true))
+                        {
+                            context.DependencyGraph.RegisterDependencyType(dg.DependencyTypes.Values);
+                        }
                     }
                     ChangeKindWithDependency ck;
                     string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
@@ -707,9 +704,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 // restore dependency graph
                                 if (dg.HasDependencyReportedBy(fileKey))
                                 {
-                                    foreach (var l in dg.GetDependencyReportedBy(fileKey))
+                                    using (new LoggerPhaseScope("ReportDependencyFromLastBuild", true))
                                     {
-                                        context.DependencyGraph.ReportDependency(l);
+                                        foreach (var l in dg.GetDependencyReportedBy(fileKey))
+                                        {
+                                            context.DependencyGraph.ReportDependency(l);
+                                        }
                                     }
                                 }
 
@@ -758,6 +758,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             return result.ToImmutableDictionary();
+        }
+
+        private static void RegisterDependencyType(HostService hostService)
+        {
+            RunBuildSteps(
+                hostService.Processor.BuildSteps,
+                buildStep =>
+                {
+                    if (buildStep is ISupportIncrementalBuildStep)
+                    {
+                        Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Registering DependencyType...");
+                        using (new LoggerPhaseScope(buildStep.Name, true))
+                        {
+                            (buildStep as ISupportIncrementalBuildStep).RegisterDependencyTypes(hostService);
+                        }
+                    }
+                });
         }
 
         private static void Prebuild(HostService hostService)

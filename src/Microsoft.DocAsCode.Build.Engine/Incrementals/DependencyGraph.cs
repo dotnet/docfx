@@ -53,12 +53,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             foreach (var dt in dts)
             {
                 DependencyType stored;
-                if (_types.TryGetValue(dt.Name, out stored) && (stored.TriggerBuild != dt.TriggerBuild || stored.IsTransitive != dt.IsTransitive))
+                if (_types.TryGetValue(dt.Name, out stored))
                 {
-                    Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
-                    throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
+                    if (stored.TriggerBuild != dt.TriggerBuild || stored.IsTransitive != dt.IsTransitive)
+                    {
+                        Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
+                        throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
+                    }
+                    continue;
                 }
                 _types[dt.Name] = dt;
+                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, TriggerBuild: {dt.TriggerBuild}.");
             }
         }
 
@@ -81,6 +86,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     {
                         CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
                         CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
+                        Logger.LogVerbose($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
                     }
                 }
             }

@@ -21,15 +21,6 @@ namespace Microsoft.DocAsCode.Plugins
         ImmutableList<FileModel> LookupByUid(string uid);
 
         /// <summary>
-        /// report dependency
-        /// </summary>
-        /// <param name="from">'from' node's file path from working directory</param>
-        /// <param name="to">'to' node's file path from working directory</param>
-        /// <param name="reportedBy">'reportedby' node's file path from working directory</param>
-        /// <param name="type">dependency type</param>
-        void ReportDependency(string from, string to, string reportedBy, string type);
-
-        /// <summary>
         /// report dependency to
         /// </summary>
         /// <param name="currentFileModel">filemodel of 'from' node</param>
@@ -45,6 +36,12 @@ namespace Microsoft.DocAsCode.Plugins
         /// <param name="type">dependency type</param>
         void ReportDependencyFrom(FileModel currentFileModel, string from, string type);
 
+        /// <summary>
+        /// register dependency type
+        /// </summary>
+        /// <param name="name">dependency type name</param>
+        /// <param name="isTransitive">whether the dependency is transitive</param>
+        /// <param name="triggerBuild">whether the dependency could trigger build</param>
         void RegisterDependencyType(string name, bool isTransitive, bool triggerBuild);
 
         /// <summary>
