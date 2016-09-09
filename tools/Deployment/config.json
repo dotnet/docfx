@@ -20,7 +20,6 @@
       "master": "https://www.myget.org/F/docfx/api/v2/package"
     }
   },
-  "dotnet": "dotnet",
   "msbuild": "C:/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe",
   "git": {
     "name": "DocFX CI",

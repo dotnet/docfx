@@ -18,7 +18,6 @@ nconf.add('configuration', {type: 'file', file: path.join(__dirname, 'config.jso
 let config = {};
 config.docfx = nconf.get('docfx');
 config.myget = nconf.get('myget');
-config.dotnet = nconf.get('dotnet');
 config.msbuild = nconf.get('msbuild');
 config.git = nconf.get('git');
 config.choco = nconf.get('choco');
@@ -462,9 +461,10 @@ let uploadMasterMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.
 
 let e2eTestStep = function() {
   let stepsOrder = [
+    execPromiseFn("choco", ["install", "firefox", "--version=46.0.1", "-y"]),
     execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docfxSeedHome),
-    execPromiseFn(config.dotnet, ["restore"], config.docfx.e2eTestsHome),
-    execPromiseFn(config.dotnet, ["test"], config.docfx.e2eTestsHome)
+    execPromiseFn("dotnet", ["restore"], config.docfx.e2eTestsHome),
+    execPromiseFn("dotnet", ["test"], config.docfx.e2eTestsHome)
   ];
   return serialPromiseFlow(stepsOrder);
 }
