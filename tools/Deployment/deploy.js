@@ -456,14 +456,21 @@ let runSteps = function(promiseArray) {
 
 let clearReleaseStep = removePromiseFn(config.docfx.releaseFolder);
 let docfxBuildStep = execPromiseFn("build.cmd", ["Release", "PROD"], config.docfx.home);
-let buildDocfxSeedStep = execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docfxSeedHome);
-let e2eTestStep = execPromiseFn(config.dotnet, ["test"], config.docfx.e2eTestsHome);
 let genereateDocsStep = execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder);
 let uploadDevMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev);
 let uploadMasterMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master);
 
+let e2eTestStep = function() {
+  let stepsOrder = [
+    execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docfxSeedHome),
+    execPromiseFn(config.dotnet, ["restore"], config.docfx.e2eTestsHome),
+    execPromiseFn(config.dotnet, ["test"], config.docfx.e2eTestsHome)
+  ];
+  return serialPromiseFlow(stepsOrder);
+}
+
 let updateGhPageStep = function() {
-  let stepsOrder= [
+  let stepsOrder = [
     git.clone(config.docfx.repoUrl, "gh-pages", "docfxsite"),
     copyPromiseFn(config.docfx.siteFolder, "tmp"),
     copyPromiseFn("docfxsite/.git", "tmp/.git"),
@@ -518,11 +525,9 @@ switch (branchValue.toLowerCase()) {
       clearReleaseStep,
       // step2: run build.cmd
       docfxBuildStep,
-      // step3: build docfx-seed for E2E Test
-      buildDocfxSeedStep,
-      // step4: run e2e test
+      // step3: run e2e test
       e2eTestStep,
-      // step5: run docfx.exe to generate documentation
+      // step4: run docfx.exe to generate documentation
       genereateDocsStep
     ]);
     break;
@@ -532,13 +537,11 @@ switch (branchValue.toLowerCase()) {
       clearReleaseStep,
       // step2: run build.cmd
       docfxBuildStep,
-      // step3: build docfx-seed for E2E Test
-      buildDocfxSeedStep,
-      // step4: run e2e test
+      // step3: run e2e test
       e2eTestStep,
-      // step5: run docfx.exe to generate documentation
+      // step4: run docfx.exe to generate documentation
       genereateDocsStep,
-      // step6: upload release to myget.org
+      // step5: upload release to myget.org
       uploadDevMygetStep
     ]);
     break;
@@ -548,19 +551,17 @@ switch (branchValue.toLowerCase()) {
       clearReleaseStep,
       // step2: run build.cmd
       docfxBuildStep,
-      // step3: build docfx-seed for E2E Test
-      buildDocfxSeedStep,
-      // step4: run e2e test
+      // step3: run e2e test
       e2eTestStep,
-      // step5: run docfx.exe to generate documentation
+      // step4: run docfx.exe to generate documentation
       genereateDocsStep,
-      // step6: update gh-pages
+      // step5: update gh-pages
       updateGhPageStep,
-      // step7: zip and upload release
+      // step6: zip and upload release
       updateGithubReleaseStep,
-      // step8: upload to chocolatey.org
+      // step7: upload to chocolatey.org
       updateChocoReleaseStep,
-      // step9: upload release to myget.org
+      // step8: upload release to myget.org
       uploadMasterMygetStep
     ]);
     break;
