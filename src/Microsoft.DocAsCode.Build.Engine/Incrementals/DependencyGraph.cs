@@ -60,6 +60,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
                         throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
                     }
+                    Logger.LogVerbose($"Same Dependency type with name {dt.Name} has already been registered, ignored.");
                     continue;
                 }
                 _types[dt.Name] = dt;
@@ -86,7 +87,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     {
                         CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
                         CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
-                        Logger.LogVerbose($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
+                        Logger.LogDiagnostic($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
                     }
                 }
             }

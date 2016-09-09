@@ -102,9 +102,17 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             return null;
         }
 
-        public void RegisterDependencyTypes(IHostService hostService)
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
         {
-            hostService.RegisterDependencyType(DependencyTypeName.Include, true, true);
+            return new []
+            {
+                new DependencyType
+                {
+                    Name = DependencyTypeName.Include,
+                    IsTransitive = true,
+                    TriggerBuild = true,
+                }
+            };
         }
 
         #endregion

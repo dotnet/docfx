@@ -44,8 +44,9 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
             return null;
         }
 
-        public void RegisterDependencyTypes(IHostService hostService)
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
         {
+            return null;
         }
 
         #endregion

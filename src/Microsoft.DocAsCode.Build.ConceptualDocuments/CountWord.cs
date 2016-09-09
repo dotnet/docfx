@@ -44,8 +44,9 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             return true;
         }
 
-        public void RegisterDependencyTypes(IHostService hostService)
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
         {
+            return null;
         }
     }
 

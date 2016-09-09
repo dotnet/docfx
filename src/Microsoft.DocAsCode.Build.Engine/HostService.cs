@@ -405,11 +405,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void RegisterDependencyType(string name, bool isTransitive, bool triggerBuild)
-        {
-            DependencyGraph.RegisterDependencyType(new DependencyType { Name = name, IsTransitive = isTransitive, TriggerBuild = triggerBuild });
-        }
-
         public bool HasMetadataValidation => Validators.Count > 0;
 
         public void ValidateInputMetadata(string sourceFile, ImmutableDictionary<string, object> metadata)

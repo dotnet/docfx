@@ -37,14 +37,6 @@ namespace Microsoft.DocAsCode.Plugins
         void ReportDependencyFrom(FileModel currentFileModel, string from, string type);
 
         /// <summary>
-        /// register dependency type
-        /// </summary>
-        /// <param name="name">dependency type name</param>
-        /// <param name="isTransitive">whether the dependency is transitive</param>
-        /// <param name="triggerBuild">whether the dependency could trigger build</param>
-        void RegisterDependencyType(string name, bool isTransitive, bool triggerBuild);
-
-        /// <summary>
         /// Get current <see cref="IDocumentProcessor"/>.
         /// </summary>
         IDocumentProcessor Processor { get; }

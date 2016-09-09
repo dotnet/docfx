@@ -20,7 +20,6 @@
     <Compile Include="Incrementals\ChangeList.cs" />
     <Compile Include="Incrementals\DependencyGraph.cs" />
     <Compile Include="Incrementals\DependencyItem.cs" />
-    <Compile Include="Incrementals\DependencyType.cs" />
     <Compile Include="Incrementals\FileAttributeItem.cs" />
     <Compile Include="Incrementals\FileAttributes.cs" />
     <Compile Include="Incrementals\IncrementalCheckAttribute.cs" />

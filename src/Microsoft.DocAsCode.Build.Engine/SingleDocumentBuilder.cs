@@ -399,6 +399,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         m.LocalPathFromRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
                     }
                 }
+                using (new LoggerPhaseScope(hostService.Processor.Name, true))
+                {
+                    RegisterDependencyType(hostService, context);
+                }
             }
 
             Action<HostService> buildSaver = null;
@@ -425,15 +429,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void BuildCore(IEnumerable<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action<HostService> postBuildSaver, Action loader, Action postLoader)
         {
-            // register dependency types
-            foreach (var hostService in hostServices)
-            {
-                using (new LoggerPhaseScope(hostService.Processor.Name, true))
-                {
-                    RegisterDependencyType(hostService);
-                }
-            }
-
             // prebuild and build
             foreach (var hostService in hostServices)
             {
@@ -760,7 +755,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result.ToImmutableDictionary();
         }
 
-        private static void RegisterDependencyType(HostService hostService)
+        private static void RegisterDependencyType(HostService hostService, DocumentBuildContext context)
         {
             RunBuildSteps(
                 hostService.Processor.BuildSteps,
@@ -771,7 +766,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Registering DependencyType...");
                         using (new LoggerPhaseScope(buildStep.Name, true))
                         {
-                            (buildStep as ISupportIncrementalBuildStep).RegisterDependencyTypes(hostService);
+                            var types = (buildStep as ISupportIncrementalBuildStep).GetDependencyTypesToRegister();
+                            if (types == null)
+                            {
+                                return;
+                            }
+                            context.DependencyGraph.RegisterDependencyType(types);
                         }
                     }
                 });

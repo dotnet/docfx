@@ -21,6 +21,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DependencyType.cs" />
     <Compile Include="DependencyTypeName.cs" />
     <Compile Include="DocumentException.cs" />
     <Compile Include="DocumentExceptionExtensions.cs" />
