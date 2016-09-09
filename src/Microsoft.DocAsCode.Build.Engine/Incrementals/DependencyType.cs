@@ -11,9 +11,4 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public bool TriggerBuild { get; set; }
     }
-
-    public static class DependencyTypeName
-    {
-        public const string Uid = "uid";
-    }
 }

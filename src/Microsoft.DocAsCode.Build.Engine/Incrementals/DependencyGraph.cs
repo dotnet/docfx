@@ -6,8 +6,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     public sealed class DependencyGraph
     {
@@ -15,13 +17,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private readonly Dictionary<string, DependencyType> _types;
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnFrom = new Dictionary<string, HashSet<DependencyItem>>();
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnReportedBy = new Dictionary<string, HashSet<DependencyItem>>();
-        private static readonly Dictionary<string, DependencyType> _defaultTypes = new Dictionary<string, DependencyType>
+        private static IReadOnlyDictionary<string, DependencyType> _defaultTypes = new Dictionary<string, DependencyType>
         {
             { DependencyTypeName.Uid, new DependencyType { Name = DependencyTypeName.Uid, IsTransitive = false, TriggerBuild = false } },
         };
 
         internal DependencyGraph()
-            : this(new HashSet<DependencyItem>(), _defaultTypes)
+            : this(new HashSet<DependencyItem>(), _defaultTypes.ToDictionary(p => p.Key, p => p.Value))
         {
         }
 

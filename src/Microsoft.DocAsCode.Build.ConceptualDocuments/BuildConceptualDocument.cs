@@ -21,7 +21,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
         private const int TitleThumbnailMaxLength = 30;
-        private const string Include = "include";
 
         public override string Name => nameof(BuildConceptualDocument);
 
@@ -87,7 +86,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
             foreach (var d in result.Dependency)
             {
-                host.ReportDependencyTo(model, d, Include);
+                host.ReportDependencyTo(model, d, DependencyTypeName.Include);
             }
         }
 
@@ -105,7 +104,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
         public void RegisterDependencyTypes(IHostService hostService)
         {
-            hostService.RegisterDependencyType(Include, true, true);
+            hostService.RegisterDependencyType(DependencyTypeName.Include, true, true);
         }
 
         #endregion
