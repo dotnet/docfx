@@ -112,6 +112,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return null;
         }
 
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
+        {
+            return null;
+        }
+
         #endregion
     }
 }

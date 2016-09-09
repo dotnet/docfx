@@ -43,6 +43,11 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
         {
             return true;
         }
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
+        {
+            return null;
+        }
     }
 
     internal static class WordCounter

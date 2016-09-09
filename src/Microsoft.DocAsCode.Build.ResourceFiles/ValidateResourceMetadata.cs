@@ -44,6 +44,11 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
             return null;
         }
 
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
+        {
+            return null;
+        }
+
         #endregion
     }
 }

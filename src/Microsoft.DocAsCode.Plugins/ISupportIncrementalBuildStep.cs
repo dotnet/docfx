@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Declare a build step can support incremental build.
     /// </summary>
@@ -19,5 +21,10 @@ namespace Microsoft.DocAsCode.Plugins
         /// <param name="fileAndType">the file and type information</param>
         /// <returns>Can use incremental build for this file.</returns>
         bool CanIncrementalBuild(FileAndType fileAndType);
+        /// <summary>
+        /// Get dependency types to register
+        /// </summary>
+        /// <returns>dependency types to register</returns>
+        IEnumerable<DependencyType> GetDependencyTypesToRegister();
     }
 }

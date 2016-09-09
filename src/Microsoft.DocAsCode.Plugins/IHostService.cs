@@ -20,7 +20,21 @@ namespace Microsoft.DocAsCode.Plugins
         ImmutableList<FileModel> GetModels(DocumentType? type = null);
         ImmutableList<FileModel> LookupByUid(string uid);
 
-        void ReportDependency(FileModel currentFileModel, ImmutableArray<string> dependency);
+        /// <summary>
+        /// report dependency to
+        /// </summary>
+        /// <param name="currentFileModel">filemodel of 'from' node</param>
+        /// <param name="to">'to' node's file path from working directory or file path relative to 'from' filemodel</param>
+        /// <param name="type">dependency type</param>
+        void ReportDependencyTo(FileModel currentFileModel, string to, string type);
+
+        /// <summary>
+        /// report dependency from
+        /// </summary>
+        /// <param name="currentFileModel">filemodel of 'to' node</param>
+        /// <param name="from">'from' node's file path from working directory or file path relative to 'to' filemodel</param>
+        /// <param name="type">dependency type</param>
+        void ReportDependencyFrom(FileModel currentFileModel, string from, string type);
 
         /// <summary>
         /// Get current <see cref="IDocumentProcessor"/>.

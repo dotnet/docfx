@@ -3,61 +3,69 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
-    public class DependencyGraph
+    public sealed class DependencyGraph
     {
         private readonly HashSet<DependencyItem> _dependencyItems;
+        private readonly Dictionary<string, DependencyType> _types;
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnFrom = new Dictionary<string, HashSet<DependencyItem>>();
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnReportedBy = new Dictionary<string, HashSet<DependencyItem>>();
-        private static readonly Dictionary<string, DependencyType> _types = new Dictionary<string, DependencyType>();
+        private static IReadOnlyDictionary<string, DependencyType> _defaultTypes = new Dictionary<string, DependencyType>
+        {
+            { DependencyTypeName.Uid, new DependencyType { Name = DependencyTypeName.Uid, IsTransitive = false, TriggerBuild = false } },
+        };
 
-        public DependencyGraph()
-            : this(new HashSet<DependencyItem>())
+        internal DependencyGraph()
+            : this(new HashSet<DependencyItem>(), _defaultTypes.ToDictionary(p => p.Key, p => p.Value))
         {
         }
 
-        private DependencyGraph(HashSet<DependencyItem> dependencies)
+        private DependencyGraph(HashSet<DependencyItem> dependencies, Dictionary<string, DependencyType> types)
         {
             _dependencyItems = dependencies;
+            _types = types;
             RebuildIndex();
         }
 
-        static DependencyGraph()
-        {
-            // Register default dependency types
-            RegisterDependencyType(new DependencyType
-            {
-                Name = DependencyTypeName.Include,
-                IsTransitive = true,
-                TriggerBuild = true,
-            });
-            RegisterDependencyType(new DependencyType
-            {
-                Name = DependencyTypeName.Uid,
-                IsTransitive = false,
-                TriggerBuild = false,
-            });
-        }
-
-        public static IReadOnlyDictionary<string, DependencyType> DependencyTypes
+        public IReadOnlyDictionary<string, DependencyType> DependencyTypes
         {
             get { return _types; }
         }
 
-        public static void RegisterDependencyType(DependencyType dt)
+        public void RegisterDependencyType(DependencyType dt)
         {
-            DependencyType stored;
-            if (_types.TryGetValue(dt.Name, out stored))
+            RegisterDependencyType(new List<DependencyType> { dt });
+        }
+
+        public void RegisterDependencyType(IEnumerable<DependencyType> dts)
+        {
+            if (dts == null)
             {
-                Logger.LogWarning($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
-                return;
+                throw new ArgumentNullException(nameof(dts));
             }
-            _types[dt.Name] = dt;
+            foreach (var dt in dts)
+            {
+                DependencyType stored;
+                if (_types.TryGetValue(dt.Name, out stored))
+                {
+                    if (stored.TriggerBuild != dt.TriggerBuild || stored.IsTransitive != dt.IsTransitive)
+                    {
+                        Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
+                        throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
+                    }
+                    Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
+                    continue;
+                }
+                _types[dt.Name] = dt;
+                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, TriggerBuild: {dt.TriggerBuild}.");
+            }
         }
 
         public void ReportDependency(DependencyItem dependency)
@@ -67,6 +75,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void ReportDependency(IEnumerable<DependencyItem> dependencies)
         {
+            if (dependencies == null)
+            {
+                throw new ArgumentNullException(nameof(dependencies));
+            }
             foreach (var dependency in dependencies)
             {
                 if (IsValidDependency(dependency))
@@ -75,6 +87,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     {
                         CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
                         CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
+                        Logger.LogDiagnostic($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
                     }
                 }
             }
@@ -148,13 +161,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void Save(TextWriter writer)
         {
-            JsonUtility.Serialize(writer, _dependencyItems);
+            JsonUtility.Serialize(writer, Tuple.Create(_dependencyItems, _types));
         }
 
         public static DependencyGraph Load(TextReader reader)
         {
-            var dependencies = JsonUtility.Deserialize<HashSet<DependencyItem>>(reader);
-            return new DependencyGraph(dependencies);
+            var dependencies = JsonUtility.Deserialize<Tuple<HashSet<DependencyItem>, Dictionary<string, DependencyType>>>(reader);
+            return new DependencyGraph(dependencies.Item1, dependencies.Item2);
         }
 
         private void RebuildIndex()

@@ -361,19 +361,47 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
-        // to-do: update signature so reporter could pass in more info
-        public void ReportDependency(FileModel currentFileModel, ImmutableArray<string> dependency)
+        public void ReportDependencyTo(FileModel currentFileModel, string to, string type)
         {
             if (currentFileModel == null)
             {
                 throw new ArgumentNullException(nameof(currentFileModel));
             }
+            if (string.IsNullOrEmpty(to))
+            {
+                throw new ArgumentNullException(nameof(to));
+            }
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
             lock (DependencyGraph)
             {
-                string node = ((RelativePath)currentFileModel.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
-                var items = from d in dependency
-                            select new DependencyItem(node, d, node, DependencyTypeName.Include);
-                DependencyGraph.ReportDependency(items);
+                string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
+                string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)to));
+                ReportDependencyCore(fromKey, toKey, fromKey, type);
+            }
+        }
+
+        public void ReportDependencyFrom(FileModel currentFileModel, string from, string type)
+        {
+            if (currentFileModel == null)
+            {
+                throw new ArgumentNullException(nameof(currentFileModel));
+            }
+            if (string.IsNullOrEmpty(from))
+            {
+                throw new ArgumentNullException(nameof(from));
+            }
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            lock (DependencyGraph)
+            {
+                string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)from));
+                string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
+                ReportDependencyCore(fromKey, toKey, toKey, type);
             }
         }
 
@@ -646,6 +674,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.File);
             }
+        }
+
+        private void ReportDependencyCore(string from, string to, string reportedBy, string type)
+        {
+            DependencyGraph.ReportDependency(new DependencyItem(from, to, reportedBy, type));
         }
 
         #endregion

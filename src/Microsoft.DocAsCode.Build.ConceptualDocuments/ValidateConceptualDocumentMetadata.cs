@@ -47,6 +47,11 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             return null;
         }
 
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
+        {
+            return null;
+        }
+
         #endregion
     }
 }

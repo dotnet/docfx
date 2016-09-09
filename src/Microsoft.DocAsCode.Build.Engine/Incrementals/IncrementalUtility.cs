@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Utility;
 
     public static class IncrementalUtility
     {
@@ -56,6 +58,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 JsonUtility.Serialize(writer, content);
             }
+        }
+
+        public static string GetDependencyKey(FileAndType file)
+        {
+            if (file == null)
+            {
+                return null;
+            }
+            return ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
         }
     }
 }
