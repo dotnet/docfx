@@ -16,6 +16,8 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     {
         static void Main(string[] args)
         {
+            DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
+            IMarkdownService dfmMarkdownService = dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
             while (true)
             {
                 try
@@ -29,16 +31,16 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                             DfmMarkupReceiveContent();
                             break;
                         case "jsonmarkup":
-                            JsonMarkupReceiveContent();
+                            JsonMarkupReceiveContent(dfmMarkdownService);
                             break;
                         default:
-                            Console.WriteLine("Undefined Command");
+                            SendWithEndCode("Undefined Command");
                             continue;
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"error:{e.Message}");
+                    SendWithEndCode($"error:{e.Message}");
                 }
             }
         }
@@ -46,36 +48,18 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         private static void DfmMarkupReceiveContent()
         {
             string basedir = Console.ReadLine();
-
-            // filename -> the relative path of the current file
+            // filename is the relative path of the current file
             string filename = Console.ReadLine();
-
-            // a simple protocol(get String According to the numOfRow and connect them)
-            string numStr = Console.ReadLine();
-            int numOfRow = Convert.ToInt32(numStr);
-            StringBuilder markdownContent = new StringBuilder();
-            for (int i = 0; i < numOfRow; i++)
-            {
-                markdownContent.AppendLine(Console.ReadLine());
-            }
-
+            string markdownContent = GetMarkdownContent();
             var result = DfmMarkup(basedir, filename, markdownContent.ToString());
 
             SendWithEndCode(result);
         }
 
-        private static void JsonMarkupReceiveContent()
+        private static void JsonMarkupReceiveContent(IMarkdownService dfmMarkdownService)
         {
-            // a simple protocol(get String According to the numOfRow and connect them)
-            string numStr = Console.ReadLine();
-            int numOfRow = Convert.ToInt32(numStr);
-            StringBuilder markdownContent = new StringBuilder();
-            for (int i = 0; i < numOfRow; i++)
-            {
-                markdownContent.AppendLine(Console.ReadLine());
-            }
-
-            var result = JsonMarkup(markdownContent.ToString());
+            string markdownContent = GetMarkdownContent();
+            var result = JsonMarkup(dfmMarkdownService, markdownContent.ToString());
 
             SendWithEndCode(result);
         }
@@ -88,11 +72,22 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             return dfmService.Markup(markdownContent, filename).Html;
         }
 
-        private static string JsonMarkup(string markdownContent)
+        private static string JsonMarkup(IMarkdownService dfmMarkdownService, string markdownContent)
         {
-            DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
-            IMarkdownService dfmMarkdownService = dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
             return dfmMarkdownService.Markup(markdownContent, null).Html;
+        }
+
+        private static string GetMarkdownContent()
+        {
+            // a simple protocol(get String According to the numOfRow and connect them)
+            string numStr = Console.ReadLine();
+            int numOfRow = Convert.ToInt32(numStr);
+            StringBuilder markdownContent = new StringBuilder();
+            for (int i = 0; i < numOfRow; i++)
+            {
+                markdownContent.AppendLine(Console.ReadLine());
+            }
+            return markdownContent.ToString();
         }
 
         private static void SendWithEndCode(string result)

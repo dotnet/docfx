@@ -14,22 +14,22 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, $"Xref>{Escape(token.Href)}", childContent);
+            return Insert(token, $"{ExposeTokenNameInDfm(token)}>{Escape(token.Href)}", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmIncludeBlockToken token, MarkdownBlockContext context)
         {
-            return Insert(token, "IncludeBlock");
+            return Insert(token, ExposeTokenNameInDfm(token));
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmIncludeInlineToken token, MarkdownInlineContext context)
         {
-            return Insert(token, "IncludeInline");
+            return Insert(token, ExposeTokenNameInDfm(token));
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmYamlHeaderBlockToken token, MarkdownBlockContext context)
         {
-            return Insert(token, $"YamlHeader>{Escape(token.Content)}");
+            return Insert(token, $"{ExposeTokenNameInDfm(token)}>{Escape(token.Content)}");
         }
 
         public override StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Dfm
                 var sectionToken = splitToken.Token as DfmSectionBlockToken;
                 if (sectionToken != null)
                 {
-                    content += Insert(sectionToken, "SectionBlock");
+                    content += Insert(sectionToken, ExposeTokenNameInDfm(sectionToken));
                     foreach (var item in splitToken.InnerTokens)
                     {
                         content += renderer.Render(item);
@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.Dfm
                 var videoToken = splitToken.Token as DfmVideoBlockToken;
                 if (videoToken != null)
                 {
-                    content += Insert(videoToken, $"VideoBlock>{videoToken.Link}");
+                    content += Insert(videoToken, $"{ExposeTokenNameInDfm(videoToken)}>{videoToken.Link}");
                     continue;
                 }
 
@@ -73,22 +73,30 @@ namespace Microsoft.DocAsCode.Dfm
                     content += renderer.Render(item);
                 }
             }
-            return Insert(token, "BlockquoteBlock", content);
+            return Insert(token, ExposeTokenNameInDfm(token), content);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesBlockToken token, MarkdownBlockContext context)
         {
-            return Insert(token, "FencesBlock");
+            return Insert(token, ExposeTokenNameInDfm(token));
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmNoteBlockToken token, MarkdownBlockContext context)
         {
-            return Insert(token, $"NoteBlock>{Escape(token.Content)}");
+            return Insert(token, $"{ExposeTokenNameInDfm(token)}>{Escape(token.Content)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmVideoBlockToken token, MarkdownBlockContext context)
         {
-            return Insert(token, "VideBlockToken");
+            return Insert(token, ExposeTokenNameInDfm(token));
+        }
+
+        private string ExposeTokenNameInDfm(IMarkdownToken token)
+        {
+            var tokenName = ExposeTokenName(token);
+            if(tokenName.StartsWith("Dfm"))
+                tokenName = tokenName.Substring("Dfm".Length, tokenName.Length - "Dfm".Length);
+            return tokenName;
         }
     }
 }
