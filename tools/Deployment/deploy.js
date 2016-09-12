@@ -455,13 +455,22 @@ let runSteps = function(promiseArray) {
 
 let clearReleaseStep = removePromiseFn(config.docfx.releaseFolder);
 let docfxBuildStep = execPromiseFn("build.cmd", ["Release", "PROD"], config.docfx.home);
-let e2eTestStep = execPromiseFn(config.msbuild, [config.docfx.e2eproj, "/p:Configuration=Release", "/t:Build"]);
 let genereateDocsStep = execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder);
 let uploadDevMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev);
 let uploadMasterMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master);
 
+let e2eTestStep = function() {
+  let stepsOrder = [
+    execPromiseFn("choco", ["install", "firefox", "--version=46.0.1", "-y"]),
+    execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docfxSeedHome),
+    execPromiseFn("dotnet", ["restore"], config.docfx.e2eTestsHome),
+    execPromiseFn("dotnet", ["test"], config.docfx.e2eTestsHome)
+  ];
+  return serialPromiseFlow(stepsOrder);
+}
+
 let updateGhPageStep = function() {
-  let stepsOrder= [
+  let stepsOrder = [
     git.clone(config.docfx.repoUrl, "gh-pages", "docfxsite"),
     copyPromiseFn(config.docfx.siteFolder, "tmp"),
     copyPromiseFn("docfxsite/.git", "tmp/.git"),
