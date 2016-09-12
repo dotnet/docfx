@@ -373,7 +373,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 MarkdownService = markdownService,
                 DependencyGraph = new DependencyGraph(),
             };
-            BuildCore(new List<HostService> { hostService }, parameters.MaxParallelism, null, null, null, null);
+            BuildCore(new List<HostService> { hostService }, parameters.MaxParallelism, null, null);
             return hostService.Models;
         }
 
@@ -407,20 +407,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             Action<HostService> buildSaver = null;
-            Action<HostService> postBuildSaver = null;
             Action loader = null;
-            Action postLoader = null;
             if (ShouldTraceIncrementalInfo)
             {
                 var lbv = LastBuildInfo?.Versions?.SingleOrDefault(v => v.VersionName == versionName);
                 var cbv = CurrentBuildInfo.Versions.Single(v => v.VersionName == versionName);
                 buildSaver = h => h.SaveIntermediateModel(IntermediateFolder, lbv?.BuildModelManifest, cbv.BuildModelManifest);
-                postBuildSaver = h => h.SaveIntermediateModel(IntermediateFolder, lbv?.PostBuildModelManifest, cbv.PostBuildModelManifest);
-                loader = () => UpdateHostServices(hostServices, context, lbv != null ? Path.Combine(IntermediateFolder, lbv.BuildModelManifest.BaseDir) : null, _canIncremental);
-                postLoader = () => UpdateHostServices(hostServices, lbv != null ? Path.Combine(IntermediateFolder, lbv.PostBuildModelManifest.BaseDir) : null, _canIncremental);
+                loader = () => UpdateHostServices(hostServices, lbv != null ? Path.Combine(IntermediateFolder, lbv.BuildModelManifest.BaseDir) : null, _canIncremental);
             }
 
-            BuildCore(hostServices, context.MaxParallelism, buildSaver, postBuildSaver, loader, postLoader);
+            BuildCore(hostServices, context.MaxParallelism, buildSaver, loader);
 
             // export manifest
             return from h in hostServices
@@ -428,7 +424,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                    select m;
         }
 
-        private static void BuildCore(IEnumerable<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action<HostService> postBuildSaver, Action loader, Action postLoader)
+        private static void BuildCore(IEnumerable<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action loader)
         {
             // prebuild and build
             foreach (var hostService in hostServices)
@@ -456,7 +452,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            // load models according to changes introduced from dependencygraph
+            // load all unloaded models(to-do: load models according to changes)
             if (loader != null)
             {
                 loader();
@@ -472,19 +468,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         Postbuild(hostService);
                     }
-
-                    // save models
-                    if (postBuildSaver != null)
-                    {
-                        postBuildSaver(hostService);
-                    }
                 }
-            }
-
-            // load nonloaded models
-            if (postLoader != null)
-            {
-                postLoader();
             }
         }
 
@@ -507,7 +491,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var hostService in hostServices)
                 {
-                    hostService.ReloadUnloadedModels(cacheFolder, LoadPhase.PostPostBuild);
+                    hostService.ReloadUnloadedModels(cacheFolder, LoadPhase.PostBuild);
                 }
             }
         }
