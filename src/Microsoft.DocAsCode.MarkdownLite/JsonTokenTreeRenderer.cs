@@ -9,18 +9,18 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNewLineBlockToken token, MarkdownBlockContext context)
         {
-            return Insert(token, "Newline");
+            return Insert(token, ExposeTokenName(token));
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeBlockToken token, MarkdownBlockContext context)
         {
-            if (token.Lang != null)
+            if (!string.IsNullOrEmpty(token.Lang))
             {
-                return Insert(token, $"Code({token.Lang})>{Escape(token.Code)}");
+                return Insert(token, $"{ExposeTokenName(token)}({token.Lang})>{Escape(token.Code)}");
             }
             else
             {
-                return Insert(token, $"Code>{Escape(token.Code)}");
+                return Insert(token, $"{ExposeTokenName(token)}>{Escape(token.Code)}");
             }
         }
 
@@ -32,12 +32,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, $"Heading{level}", childContent);
+            return Insert(token, $"{ExposeTokenName(token)}{level}", childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHrBlockToken token, MarkdownBlockContext context)
         {
-            return Insert(token, "Hr");
+            return Insert(token, ExposeTokenName(token));
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "Blockquote", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownListBlockToken token, MarkdownBlockContext context)
@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "li", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "Html", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownParagraphBlockToken token, MarkdownBlockContext context)
@@ -88,12 +88,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "Paragraph", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownBlockContext context)
         {
-            return Insert(token, $"Text{Escape(token.Content)}");
+            return Insert(token, $"{ExposeTokenName(token)}>{Escape(token.Content)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTableBlockToken token, MarkdownBlockContext context)
@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 bodyContent += Insert(row[0], "Row", rowContent);
             }
             content += Insert(token.Cells[0][0].SourceInfo.LineNumber, token.Cells[token.Cells.Length - 1][0].SourceInfo.LineNumber, "Body", bodyContent);
-            return Insert(token, "Table", content);
+            return Insert(token, ExposeTokenName(token), content);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownNonParagraphBlockToken token, MarkdownBlockContext context)
@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "NonParagraph", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         #endregion
@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEscapeInlineToken token, MarkdownInlineContext context)
         {
-            return Insert(token, $"Escape>{Escape(token.Content)}");
+            return Insert(token, $"{ExposeTokenName(token)}>{Escape(token.Content)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownLinkInlineToken token, MarkdownInlineContext context)
@@ -160,12 +160,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "Link", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownImageInlineToken token, MarkdownInlineContext context)
         {
-            return Insert(token, $"Image>{Escape(token.Href)}");
+            return Insert(token, $"{ExposeTokenName(token)}>{Escape(token.Href)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownStrongInlineToken token, MarkdownInlineContext context)
@@ -175,7 +175,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "Strong", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownEmInlineToken token, MarkdownInlineContext context)
@@ -185,12 +185,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "Em", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeInlineToken token, MarkdownInlineContext context)
         {
-            return Insert(token, $"InLineCode>{Escape(token.Content)}");
+            return Insert(token, $"{ExposeTokenName(token)}>{Escape(token.Content)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, GfmDelInlineToken token, MarkdownInlineContext context)
@@ -200,22 +200,22 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 childContent += renderer.Render(item);
             }
-            return Insert(token, "Del", childContent);
+            return Insert(token, ExposeTokenName(token), childContent);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTagInlineToken token, MarkdownInlineContext context)
         {
-            return Insert(token, "Tag");
+            return Insert(token, ExposeTokenName(token));
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownBrInlineToken token, MarkdownInlineContext context)
         {
-            return Insert(token, "Br");
+            return Insert(token, ExposeTokenName(token));
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownTextToken token, MarkdownInlineContext context)
         {
-            return Insert(token, $"InLineText>{Escape(token.Content)}");
+            return Insert(token, $"{ExposeTokenName(token)}>{Escape(token.Content)}");
         }
 
         #endregion
@@ -224,17 +224,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownIgnoreToken token, IMarkdownContext context)
         {
-            return Insert(token, $"Ignore>{Escape(token.SourceInfo.Markdown)}");
+            return Insert(token, $"{ExposeTokenName(token)}>{Escape(token.SourceInfo.Markdown)}");
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownRawToken token, IMarkdownContext context)
         {
-            return Insert(token, $"Raw(From{token.Rule.Name})>{Escape(token.SourceInfo.Markdown)}");
+            return Insert(token, $"{ExposeTokenName(token)}(From{token.Rule.Name})>{Escape(token.SourceInfo.Markdown)}");
         }
 
         #endregion
 
-        #region Private
+        #region Protected
 
         protected StringBuffer Insert(IMarkdownToken token, StringBuffer name, StringBuffer tokenContent = null)
         {
@@ -272,6 +272,35 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 .Replace("<", "&lt;")
                 .Replace(">", "&gt;")
                 .Replace("'", "&#39;");
+        }
+
+        protected string ExposeTokenName(IMarkdownToken token)
+        {
+            var tokenName = token.GetType().Name;
+            tokenName = TrimStringStart(tokenName, "Markdown");
+            tokenName = TrimStringStart(tokenName, "Gfm");
+            tokenName = TrimStringEnd(tokenName, "Token");
+            tokenName = TrimStringEnd(tokenName, "Block");
+            tokenName = TrimStringEnd(tokenName, "Inline");
+            return tokenName;
+        }
+
+        protected string TrimStringStart(string source, string target)
+        {
+            if (source.StartsWith(target))
+            {
+                return source.Substring(target.Length, source.Length - target.Length);
+            }
+            return source;
+        }
+
+        protected string TrimStringEnd(string source, string target)
+        {
+            if (source.EndsWith(target))
+            {
+                return source.Substring(0, source.Length - target.Length);
+            }
+            return source;
         }
 
         #endregion

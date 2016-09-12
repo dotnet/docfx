@@ -58,6 +58,7 @@
     <Compile Include="DfmFencesBlockPathQueryOptions\TagNameBlockPathQueryOption.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\LineRangeBlockPathQueryOption.cs" />
     <Compile Include="DfmFencesBlockPathQueryOptions\IDfmFencesBlockPathQueryOption.cs" />
+    <Compile Include="DfmJsonTokenTreeRender.cs" />
     <Compile Include="DfmMarkdownRenderer.cs" />
     <Compile Include="CodeSnippetExtractor\ICodeSnippetExtractor.cs" />
     <Compile Include="MarkdownValidators\MarkdownSytleDefinition.cs" />
