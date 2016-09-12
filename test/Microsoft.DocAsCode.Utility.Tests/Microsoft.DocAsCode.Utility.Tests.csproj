@@ -37,6 +37,7 @@
     <Compile Include="ReflectionEntityMergerTest.cs" />
     <Compile Include="ConvertToObjectHelperTest.cs" />
     <Compile Include="RelativePathTest.cs" />
+    <Compile Include="StreamSegmentSerializationTest.cs" />
     <Compile Include="StreamTest.cs" />
   </ItemGroup>
   <ItemGroup>
