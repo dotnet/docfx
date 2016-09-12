@@ -4,9 +4,10 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.ComponentModel;
     using System.Dynamic;
-    using System.IO;
     using System.Runtime.Serialization;
 
     public sealed class FileModel : IDisposable
@@ -77,6 +78,9 @@ namespace Microsoft.DocAsCode.Plugins
         public DocumentType Type => FileAndType.Type;
 
         public string Key { get; }
+
+        [Obsolete]
+        public Func<string, string> PathRewriter => FileAndType.PathRewriter;
 
         public ImmutableHashSet<string> LinkToFiles { get; set; } = ImmutableHashSet<string>.Empty;
 
