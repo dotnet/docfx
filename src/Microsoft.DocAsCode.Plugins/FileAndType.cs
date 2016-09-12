@@ -4,12 +4,14 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
+
+    using Newtonsoft.Json;
 
     public sealed class FileAndType
         : IEquatable<FileAndType>
     {
+        [JsonConstructor]
         public FileAndType(string baseDir, string file, DocumentType type, string sourceDir = null, string destinationDir = null)
         {
             if (baseDir == null)
@@ -57,18 +59,25 @@ namespace Microsoft.DocAsCode.Plugins
             PathRewriter = pathRewriter;
         }
 
+        [JsonIgnore]
         public StringComparer StringComparer { get; }
 
+        [JsonProperty("baseDir")]
         public string BaseDir { get; }
 
+        [JsonProperty("file")]
         public string File { get; }
 
+        [JsonIgnore]
         public string FullPath { get; }
 
+        [JsonProperty("type")]
         public DocumentType Type { get; }
 
+        [JsonProperty("sourceDir")]
         public string SourceDir { get; set; }
 
+        [JsonProperty("destinationDir")]
         public string DestinationDir { get; set; }
 
         [Obsolete]
