@@ -72,6 +72,10 @@
     <Compile Include="ResourcePools\ResourcePool.cs" />
     <Compile Include="ResourcePools\ResourcePoolAsyncManager.cs" />
     <Compile Include="ResourcePools\ResourcePoolManager.cs" />
+    <Compile Include="StreamSegmentSerialization\StreamSegmentType.cs" />
+    <Compile Include="StreamSegmentSerialization\StreamDeserializer.cs" />
+    <Compile Include="StreamSegmentSerialization\StreamSegment.cs" />
+    <Compile Include="StreamSegmentSerialization\StreamSerializer.cs" />
     <Compile Include="StringExtension.cs" />
     <Compile Include="TaskHelper.cs" />
     <Compile Include="GitUtility.cs" />
