@@ -11,6 +11,7 @@
     <Compile Include="BaseDocumentBuildStep.cs" />
     <Compile Include="DisposableDocumentProcessor.cs" />
     <Compile Include="ExtractSearchIndex.cs" />
+    <Compile Include="FileModelPropertySerialization.cs" />
     <Compile Include="MarkdownReader.cs" />
     <Compile Include="OverwriteDocumentModel.cs" />
     <Compile Include="OverwriteDocumentReader.cs" />

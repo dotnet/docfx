@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.Utility.StreamSegmentSerialization
             return WriteArray(value);
         }
 
-        public StreamSegment Write(IReadOnlyDictionary<string, object> value)
+        public StreamSegment Write(IReadOnlyCollection<KeyValuePair<string, object>> value)
         {
             if (value == null)
             {
@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.Utility.StreamSegmentSerialization
                 StreamSegmentType.Array);
         }
 
-        private StreamSegment WriteDictionary(IReadOnlyDictionary<string, object> value)
+        private StreamSegment WriteDictionary(IReadOnlyCollection<KeyValuePair<string, object>> value)
         {
             var startOffset = (int)UnderlyingStream.Position;
             var length = 4 + 4 + 1 + value.Count * 2 * 4;
