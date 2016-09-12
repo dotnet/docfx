@@ -37,13 +37,13 @@ The path of the configuration file is specified in the following two ways. Optio
    }
    ```
    
-DocFX has a [default filter configuration](#default-filter-configuration). If the user doesn't specify the filter configuration file path, default filter configuration would be used. Otherwise, user provided filter configuration would merge with the default one. If there is a conflict, user specified would overwrite the default one.
+DocFX has a [default filter configuration](#3-default-filter-configuration). If the user doesn't specify the filter configuration file path, default filter configuration would be used. Otherwise, user provided filter configuration would merge with the default one. If there is a conflict, user specified would overwrite the default one.
 
 
 The format of the filter configuration file
 -------------------------------------------
 
-### 1. <a name="api"></a>API Filter Rules
+### 1. API Filter Rules
 
 To filter out APIs, you could specify `apiRules` with a list of `exclude` or `include` rules.
 
@@ -55,7 +55,7 @@ To filter out APIs, you could specify `apiRules` with a list of `exclude` or `in
 > If no rule is matched the API would be included by default.
 
 
-### 1) `exclude` or `include` APIs by matching their uid with the Regex `uidRegex`.  
+#### 1) `exclude` or `include` APIs by matching their uid with the Regex `uidRegex`.  
   
 The below sample excludes all APIs whose uid start with 'Microsoft.DevDiv' except those that start with 'Microsoft.DevDiv.SpecialCase'.
  
@@ -66,7 +66,7 @@ The below sample excludes all APIs whose uid start with 'Microsoft.DevDiv' excep
       uidRegex: ^Microsoft\.DevDiv
 ```
 
-### 2) `exclude` or `include` APIs by matching its `type`, this is often combined with `uidRegex`.  
+#### 2) `exclude` or `include` APIs by matching its `type`, this is often combined with `uidRegex`.  
   
 Supported `type`:
  * `Namespace`
@@ -100,7 +100,7 @@ The below sample would exclude all APIs whose uid starts with 'Microsoft.DevDiv'
       type: Type
 ```
   
-### 3) `exclude` or `include` APIs by containing matched attributes.
+#### 3) `exclude` or `include` APIs by containing matched attributes.
   
 You can specify an attribute by its `uid`, `ctorArguments` and `ctorNamedArguments`.
   
@@ -144,9 +144,9 @@ apiRules:
 
 To filter out Attributes, you could specify `attributeRules` with a list of `exclude` or `include` rules.
 
-The rules are similar to API filter. Please refer to [API Filter Rules](#api) section.
+The rules are similar to API filter. Please refer to [API Filter Rules](#1-api-filter-rules) section.
 
-### 3. <a name="default-filter-configuration"></a>Default Filter Configuration
+### 3. Default Filter Configuration
 
 ```yaml
 apiRules:
