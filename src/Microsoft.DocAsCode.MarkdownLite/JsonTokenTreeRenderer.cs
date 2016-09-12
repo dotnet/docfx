@@ -277,17 +277,30 @@ namespace Microsoft.DocAsCode.MarkdownLite
         protected string ExposeTokenName(IMarkdownToken token)
         {
             var tokenName = token.GetType().Name;
-            if (tokenName.StartsWith("Markdown"))
-                tokenName = tokenName.Substring("Markdown".Length, tokenName.Length - "Markdown".Length);
-            if (tokenName.StartsWith("Gfm"))
-                tokenName = tokenName.Substring("Gfm".Length, tokenName.Length - "Gfm".Length);
-            if (tokenName.EndsWith("Token"))
-                tokenName = tokenName.Substring(0, tokenName.Length - "Token".Length);
-            if (tokenName.EndsWith("Block"))
-                tokenName = tokenName.Substring(0, tokenName.Length - "Block".Length);
-            if (tokenName.EndsWith("Inline"))
-                tokenName = tokenName.Substring(0, tokenName.Length - "Inline".Length);
+            tokenName = TrimStringStart(tokenName, "Markdown");
+            tokenName = TrimStringStart(tokenName, "Gfm");
+            tokenName = TrimStringEnd(tokenName, "Token");
+            tokenName = TrimStringEnd(tokenName, "Block");
+            tokenName = TrimStringEnd(tokenName, "Inline");
             return tokenName;
+        }
+
+        protected string TrimStringStart(string source, string target)
+        {
+            if (source.StartsWith(target))
+            {
+                return source.Substring(target.Length, source.Length - target.Length);
+            }
+            return source;
+        }
+
+        protected string TrimStringEnd(string source, string target)
+        {
+            if (source.EndsWith(target))
+            {
+                return source.Substring(0, source.Length - target.Length);
+            }
+            return source;
         }
 
         #endregion

@@ -69,7 +69,7 @@
     </Compile>
     <Compile Include="DocfxFlavoredMarkdownTest.cs" />
     <Compile Include="HtmlMarkdownTokenValidatorProvider.cs" />
-    <Compile Include="TestDfmJsonTokenTreeRender.cs" />
+    <Compile Include="DfmJsonTokenTreeRenderTest.cs" />
     <Compile Include="TestLoggerListener.cs" />
   </ItemGroup>
   <ItemGroup>

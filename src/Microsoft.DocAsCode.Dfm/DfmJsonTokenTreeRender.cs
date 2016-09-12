@@ -94,8 +94,7 @@ namespace Microsoft.DocAsCode.Dfm
         private string ExposeTokenNameInDfm(IMarkdownToken token)
         {
             var tokenName = ExposeTokenName(token);
-            if(tokenName.StartsWith("Dfm"))
-                tokenName = tokenName.Substring("Dfm".Length, tokenName.Length - "Dfm".Length);
+            tokenName = TrimStringStart(tokenName, "Dfm");
             return tokenName;
         }
     }
