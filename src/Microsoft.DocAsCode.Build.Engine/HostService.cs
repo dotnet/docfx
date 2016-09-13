@@ -541,9 +541,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 else
                 {
-                    using (var stream = new FileStream(Path.Combine(intermediateFolder, cmm.BaseDir, fileName), FileMode.OpenOrCreate, FileAccess.Write))
+                    var key = RelativePath.NormalizedWorkingFolder + pair.Key.File;
+                    var model = Models.Find(m => m.Key == key);
+                    using (var stream = new FileStream(Path.Combine(intermediateFolder, cmm.BaseDir, fileName), FileMode.Create, FileAccess.Write))
                     {
-                        // processor.SaveIntermediateModel(f, stream);
+                        processor.SaveIntermediateModel(model, stream);
                     }
                 }
                 cmm.Models.Add(fileName);
@@ -559,8 +561,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             using (var stream = new FileStream(fileName, FileMode.Open))
             {
-                // return processor.LoadIntermediateModel(stream);
-                return null;
+                return processor.LoadIntermediateModel(stream);
             }
         }
 

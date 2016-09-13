@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Linq;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
+    using System.Text;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
@@ -18,9 +19,27 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using Newtonsoft.Json;
+
     [Export(typeof(IDocumentProcessor))]
-    public class ManagedReferenceDocumentProcessor : DisposableDocumentProcessor
+    public class ManagedReferenceDocumentProcessor
+        : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
     {
+        #region Fields
+        private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
+        #endregion
+
+        #region Constructors
+
+        public ManagedReferenceDocumentProcessor()
+        {
+            _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
+        }
+
+        #endregion
+
+        #region IDocumentProcessor Members
+
         [ImportMany(nameof(ManagedReferenceDocumentProcessor))]
         public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
 
@@ -130,6 +149,39 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             };
         }
 
+        #endregion
+
+        #region ISupportIncrementalDocumentProcessor Members
+
+        public virtual string GetIncrementalContextHash()
+        {
+            return null;
+        }
+
+        public virtual void SaveIntermediateModel(FileModel model, Stream stream)
+        {
+            FileModelPropertySerialization.Serialize(
+                model,
+                stream,
+                SerializeModel,
+                SerializeProperties,
+                null);
+        }
+
+        public virtual FileModel LoadIntermediateModel(Stream stream)
+        {
+            return FileModelPropertySerialization.Deserialize(
+                stream,
+                Environment.Is64BitProcess ? null : new BinaryFormatter(),
+                DeserializeModel,
+                DeserializeProperties,
+                null);
+        }
+
+        #endregion
+
+        #region Protected/Private Methods
+
         protected virtual void UpdateModelContent(FileModel model)
         {
             model.Content = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
@@ -194,5 +246,59 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             return result;
         }
+
+        protected virtual void SerializeModel(object model, Stream stream)
+        {
+            using (var sw = new StreamWriter(stream, Encoding.UTF8, 0x100, true))
+            using (var lease = _serializerPool.Rent())
+            {
+                lease.Resource.Serialize(sw, model);
+            }
+        }
+
+        protected virtual object DeserializeModel(Stream stream)
+        {
+            using (var sr = new StreamReader(stream, Encoding.UTF8, false, 0x100, true))
+            using (var jr = new JsonTextReader(sr))
+            using (var lease = _serializerPool.Rent())
+            {
+                return lease.Resource.Deserialize(jr);
+            }
+        }
+
+        protected virtual void SerializeProperties(IDictionary<string, object> properties, Stream stream)
+        {
+            using (var sw = new StreamWriter(stream, Encoding.UTF8, 0x100, true))
+            using (var lease = _serializerPool.Rent())
+            {
+                lease.Resource.Serialize(sw, properties);
+            }
+        }
+
+        protected virtual IDictionary<string, object> DeserializeProperties(Stream stream)
+        {
+            using (var sr = new StreamReader(stream, Encoding.UTF8, false, 0x100, true))
+            using (var jr = new JsonTextReader(sr))
+            using (var lease = _serializerPool.Rent())
+            {
+                return (IDictionary<string, object>)lease.Resource.Deserialize<object>(jr);
+            }
+        }
+
+        protected virtual JsonSerializer GetSerializer()
+        {
+            return new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                Converters =
+                {
+                    new Newtonsoft.Json.Converters.StringEnumConverter(),
+                },
+                TypeNameHandling = TypeNameHandling.All,
+            };
+        }
+
+        #endregion
     }
 }
