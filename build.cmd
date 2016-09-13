@@ -123,7 +123,8 @@ XCOPY /ey target\%Configuration%\docfx\*.exe src\nuspec\docfx.console\tools\
 XCOPY /ey target\%Configuration%\docfx\*.exe.config src\nuspec\docfx.console\tools\
 SET versionFile=TEMP/version.txt
 IF EXIST %versionFile% (
-    SET /p version=<TEMP/version.txt
+    SET /p versions=<%versionFile%
+    SET version=!versions:~1!
 ) ELSE (
     SET version=1.0.0
 )

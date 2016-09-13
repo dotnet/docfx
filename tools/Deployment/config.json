@@ -7,7 +7,7 @@
     "docFolder": "docfx/Documentation",
     "repoUrl": "git@github.com-ci:dotnet/docfx.git",
     "siteFolder": "docfx/Documentation/_site",
-    "exe": "docfx/target/Release/docfx.cli/docfx.exe",
+    "exe": "docfx/target/Release/docfx/docfx.exe",
     "zipSrcFolder": "docfx/target/Release/docfx",
     "zipDestFolder": "docfx/Documentation/_site/tutorial/artifacts/docfx.zip",
     "releaseUrl": "https://api.github.com/repos/dotnet/docfx/releases",
