@@ -45,11 +45,10 @@ IF NOT [!ERRORLEVEL!]==[0] (
     GOTO Exit
 )
 :: Check if nuget.exe exists globally
-WHERE nuget >NUL
-IF NOT [!ERRORLEVEL!]==[0] (
-    ECHO ERROR: nuget is not successfully configured.
-    ECHO ERROR: Please follow https://www.nuget.org/ to install nuget.exe and add it to the path.
-    GOTO Exit
+SET CachedNuget=%LocalAppData%\NuGet\NuGet.exe
+IF NOT EXIST "%CachedNuget%" (
+    ECHO Downloading NuGet.exe...
+    powershell -NoProfile -ExecutionPolicy UnRestricted -Command "$ProgressPreference = 'SilentlyContinue'; [Net.WebRequest]::DefaultWebProxy.Credentials = [Net.CredentialCache]::DefaultCredentials; Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile '%CachedNuget%'"
 )
 
 :: Set environment variable
@@ -128,7 +127,7 @@ IF EXIST %versionFile% (
 ) ELSE (
     SET version=1.0.0
 )
-nuget pack src\nuspec\docfx.console\docfx.console.nuspec -Version %version% -OutputDirectory artifacts\%Configuration%
+%CachedNuget% pack src\nuspec\docfx.console\docfx.console.nuspec -Version %version% -OutputDirectory artifacts\%Configuration%
 
 :Exit
 POPD
