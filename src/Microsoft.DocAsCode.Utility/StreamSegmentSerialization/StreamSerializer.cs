@@ -103,17 +103,17 @@ namespace Microsoft.DocAsCode.Utility.StreamSegmentSerialization
             {
                 return Write((int)value);
             }
-            var list = value as IReadOnlyList<object>;
+            var list = value as IReadOnlyCollection<object>;
             if (list != null)
             {
                 return WriteArray(list);
             }
-            var dict = value as IReadOnlyDictionary<string, object>;
+            var dict = value as IReadOnlyCollection<KeyValuePair<string, object>>;
             if (dict != null)
             {
                 return WriteDictionary(dict);
             }
-            throw new NotSupportedException();
+            throw new NotSupportedException(value.GetType().FullName);
         }
 
         private StreamSegment WriteString(string value)
@@ -149,7 +149,7 @@ namespace Microsoft.DocAsCode.Utility.StreamSegmentSerialization
             return new StreamSegment(UnderlyingStream, startOffset, next - startOffset, next, StreamSegmentType.Binary);
         }
 
-        private StreamSegment WriteArray(IReadOnlyList<object> value)
+        private StreamSegment WriteArray(IReadOnlyCollection<object> value)
         {
             var startOffset = (int)UnderlyingStream.Position;
             var length = 4 + 4 + 1 + value.Count * 4;

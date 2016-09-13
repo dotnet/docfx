@@ -17,9 +17,9 @@ namespace Microsoft.DocAsCode.Plugins
         public int? Column { get; }
 
         [JsonConstructor]
-        public UidDefinition(string uid, string file, int? line = null, int? column = null)
+        public UidDefinition(string name, string file, int? line = null, int? column = null)
         {
-            Name = uid;
+            Name = name;
             File = file;
             Line = line;
             Column = column;

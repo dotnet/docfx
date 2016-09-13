@@ -9,11 +9,11 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Serialization;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility.StreamSegmentSerialization;
-    using System.Runtime.Serialization;
 
     public static class FileModelPropertySerialization
     {
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.Common
             }
             else
             {
-                ss.Write(s => propertySerializer(model.Properties, s));
+                ss.Write(s => propertySerializer(new Dictionary<string, object>((IDictionary<string, object>)model.Properties), s));
             }
 
             if (otherSerializer == null)
@@ -55,9 +55,9 @@ namespace Microsoft.DocAsCode.Build.Common
             var content = contentDeserializer(sd.ReadBinaryAsStream(contentSegment));
 
             var result = new FileModel(
-                JsonUtility.Deserialize<FileAndType>((string)basicProperties[nameof(FileModel.FileAndType)]),
+                JsonUtility.Deserialize<FileAndType>(new StringReader((string)basicProperties[nameof(FileModel.FileAndType)])),
                 content,
-                JsonUtility.Deserialize<FileAndType>((string)basicProperties[nameof(FileModel.OriginalFileAndType)]),
+                JsonUtility.Deserialize<FileAndType>(new StringReader((string)basicProperties[nameof(FileModel.OriginalFileAndType)])),
                 formatter);
 
             // Deserialize basic properties.
@@ -67,19 +67,22 @@ namespace Microsoft.DocAsCode.Build.Common
             result.LinkToUids = ((object[])basicProperties[nameof(FileModel.LinkToUids)]).OfType<string>().ToImmutableHashSet();
             result.FileLinkSources =
                 JsonUtility.Deserialize<Dictionary<string, List<LinkSourceInfo>>>(
-                    (string)basicProperties[nameof(FileModel.FileLinkSources)])
+                    new StringReader((string)basicProperties[nameof(FileModel.FileLinkSources)]))
                 .ToImmutableDictionary(
                     pair => pair.Key,
                     pair => pair.Value.ToImmutableList());
             result.UidLinkSources =
                 JsonUtility.Deserialize<Dictionary<string, List<LinkSourceInfo>>>(
-                    (string)basicProperties[nameof(FileModel.UidLinkSources)])
+                    new StringReader((string)basicProperties[nameof(FileModel.UidLinkSources)]))
                 .ToImmutableDictionary(
                     pair => pair.Key,
                     pair => pair.Value.ToImmutableList());
-            result.Uids = JsonUtility.Deserialize<List<UidDefinition>>((string)basicProperties[nameof(FileModel.Uids)]).ToImmutableArray();
+            result.Uids = JsonUtility.Deserialize<List<UidDefinition>>(
+                new StringReader((string)basicProperties[nameof(FileModel.Uids)])).ToImmutableArray();
 
-            foreach (var pair in (Dictionary<string, object>)basicProperties[nameof(FileModel.ManifestProperties)])
+            foreach (var pair in
+                JsonUtility.Deserialize<Dictionary<string, List<LinkSourceInfo>>>(
+                    new StringReader((string)basicProperties[nameof(FileModel.ManifestProperties)])))
             {
                 result.ManifestProperties[pair.Key] = pair.Value;
             }
@@ -91,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 var dictionary = propertyDeserializer(sd.ReadBinaryAsStream(propertySegment));
                 foreach (var pair in dictionary)
                 {
-                    result.Properties[pair.Key] = pair.Value;
+                    ((IDictionary<string, object>)result.Properties)[pair.Key] = pair.Value;
                 }
             }
 
