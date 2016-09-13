@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>docfx.console</id>
-    <version>$version$</version>
+    <version>1.0.0</version>
     <title>docfx.console</title>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
@@ -15,8 +15,9 @@
     <tags>Documentation API Metadata docascode docfx</tags>
   </metadata>
   <files>
-    <file src="$docfxCliOutput$**/*.dll" target="tools"/>
-    <file src="$docfxCliOutput$**/*.exe" target="tools"/>
-    <file src="$docfxCliOutput$**/*.config" target="tools"/>
+    <file src="build/**" target=""/>
+    <file src="content/**" target=""/>
+    <file src="lib/**" target=""/>
+    <file src="tools/**" target=""/>
   </files>
 </package>

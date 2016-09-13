@@ -1,0 +1,54 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <BuildDocToolPath>$(MSBuildThisFileDirectory)..\tools\docfx.exe</BuildDocToolPath>
+    <DocfxConfigFile Condition=" '$(DocfxConfigFile)' == '' ">$(MSBuildProjectDirectory)/docfx.json</DocfxConfigFile>
+    <PreviewPort Condition=" '$(PreviewPort)' == '' ">8002</PreviewPort>
+    <IsServing Condition="'$(IsServing)'==''">False</IsServing>
+    <PreviewOutputFolder Condition=" '$(PreviewOutputFolder)' == '' ">$(OutputFolder)/_site</PreviewOutputFolder>
+    <LogFile Condition=" '$(LogFile)' == '' ">log.txt</LogFile>
+    <LogLevel Condition=" '$(LogLevel)' == '' ">Verbose</LogLevel>
+
+    <!-- Website project's output directory is current folder, disable it as a temp workaround until a better way is found-->
+    <CopyToOutput>False</CopyToOutput>
+    <RebuildDoc Condition=" '$(RebuildDoc)' == '' ">False</RebuildDoc>
+  </PropertyGroup>
+  <Target Name="DocRebuild">
+    <CallTarget Targets="DocClean"/>
+    <CallTarget Targets="DocBuild"/>
+  </Target>
+  <Target Name="DocBuild" AfterTargets="Build">
+    <CallTarget Targets="DocValidation"/>
+    <CallTarget Targets="DocGenerateMetadata"/>
+  </Target>
+  <Target Name="DocValidation">
+    <Error Condition="!Exists($(BuildDocToolPath))" Text="docfx.exe is not found! Please check docfx.exe exists in tools folder of the package!"/>
+  </Target>
+  <Target Name="DocClean" DependsOnTargets="DocSetRebuildXDocParameter" AfterTargets="Clean">
+  </Target>
+  <Target Name="DocSetRebuildXDocParameter">
+    <PropertyGroup>
+      <RebuildDoc>True</RebuildDoc>
+    </PropertyGroup>
+  </Target>
+  <Target Name="DocServe">
+    <Exec Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; serve &quot;$(PreviewOutputFolder)&quot;" />
+  </Target>
+  <Target Name="DocPreview">
+    <Exec Condition="$(IsServing)" Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; --serve -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;&quot;" />
+    <Exec Condition="!$(IsServing)" Command="&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" />
+  </Target>
+
+  <!-- ************************************************************************* -->
+  <!-- *************************** GenerateMetadata Phase ********************** -->
+  <!-- ************************************************************************* -->
+  <Target Name="DocGenerateMetadata" >
+    <PropertyGroup>
+      <DocGenerateCommand>&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(OutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;</DocGenerateCommand>
+      <DocGenerateCommand Condition="$(RebuildDoc)">$(DocGenerateCommand) -f</DocGenerateCommand>
+      <DocGenerateCommand Condition="'$(DocTemplate)' != ''">$(DocGenerateCommand) --template &quot;$(DocTemplate)&quot; </DocGenerateCommand>
+      <DocGenerateCommand Condition="'$(DocParameters)' != ''">$(DocGenerateCommand) $(DocParameters)</DocGenerateCommand>
+    </PropertyGroup>
+    <Message Text="Executing $(DocGenerateCommand)" />
+    <Exec Command="$(DocGenerateCommand)"></Exec>
+  </Target>
+</Project>
