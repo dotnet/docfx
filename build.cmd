@@ -133,6 +133,7 @@ IF NOT [!ERRORLEVEL!]==[0] (
 POPD
 
 :AfterBuild
+CALL :RunAllTest
 CALL :GenerateArtifacts
 
 :: Pull the build summary from the log file
@@ -165,6 +166,16 @@ FOR /f %%g IN ('DIR /b "src"') DO (
     CMD /C dotnet pack src\%%g -c Release -o artifacts\Release
 )
 
+:RunAllTest
+ECHO run all test
+FOR /f %%g IN ('DIR /b "test"') DO (
+    IF NOT %%g==Shared (
+        IF NOT %%g==docfx.E2E.Tests (
+            CMD /C dotnet test test\%%g
+        )
+    )
+)
+
 :RestorePackage
 
 :RestoreNormalPackage
@@ -187,7 +198,7 @@ IF NOT [!ERRORLEVEL!]==[0] (
 )
 
 :RestoreDnuPackage
-FOR /D %%x IN ("src") DO (
+FOR /D %%x IN ("src", "test") DO (
     PUSHD %%x
     CMD /C dotnet restore
     POPD

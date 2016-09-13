@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "dependencies": {
+    "xunit": "2.2.0-beta2-build3300"
+  },
+  "frameworks": {
+    "net452": {}
+  }
+}

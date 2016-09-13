@@ -3,5 +3,5 @@ image: Visual Studio 2015
 init:
   - git config --global core.autocrlf true
 build_script:
-  - build.cmd nondnx
+  - build.cmd
 test: off
