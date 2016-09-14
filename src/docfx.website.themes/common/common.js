@@ -131,19 +131,17 @@ function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
     return gitUrlPatternItems[patternName].generateUrl(repo, branch, remote.path, startLine);
 }
 
-function getPatternName(repo, gitUrlPattern)
-{
-    var patternName = '';
+function getPatternName(repo, gitUrlPattern) {
     if (gitUrlPattern && gitUrlPattern.toLowerCase() in gitUrlPatternItems) {
-        patternName = gitUrlPattern.toLowerCase();
+        return gitUrlPattern.toLowerCase();
     } else {
         for (var p in gitUrlPatternItems) {
             if (gitUrlPatternItems[p].testRegex.test(repo)) {
-                patternName = p;
+                return p;
             }
         }
     }
-    return patternName;
+    return '';
 }
 
 function getOverrideFolder(path) {
