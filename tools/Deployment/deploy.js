@@ -454,7 +454,7 @@ let runSteps = function(promiseArray) {
 }
 
 let clearReleaseStep = removePromiseFn(config.docfx.releaseFolder);
-let docfxBuildStep = execPromiseFn("build.cmd", ["Release", "PROD"], config.docfx.home);
+let docfxBuildStep = execPromiseFn("build.cmd", ["-prod"], config.docfx.home);
 let genereateDocsStep = execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder);
 let uploadDevMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev);
 let uploadMasterMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master);
