@@ -27,7 +27,7 @@ if ((Get-Command "dotnet" -ErrorAction SilentlyContinue) -eq $null)
 }
 
 # Check if nuget.exe exists
-$nuget = "$env:APPDATA\Nuget\Nuget.exe"
+$nuget = "$env:LOCALAPPDATA\Nuget\Nuget.exe"
 if (-not(Test-Path $nuget))
 {
     Write-Host "Downloading NuGet.exe..."
@@ -110,7 +110,7 @@ Copy-Item -Path "target\$configuration\docfx\*.dll" -Destination "src\nuspec\doc
 Copy-Item -Path "target\$configuration\docfx\*.exe" -Destination "src\nuspec\docfx.console\tools\"
 Copy-Item -Path "target\$configuration\docfx\*.exe.config" -Destination "src\nuspec\docfx.console\tools\"
 
-$version = 1.0.0
+$version = "1.0.0"
 if (Test-Path "TEMP/version.txt")
 {
     $version = cat "TEMP/version.txt"
@@ -119,5 +119,5 @@ if (Test-Path "TEMP/version.txt")
 & $nuget pack "src\nuspec\docfx.console\docfx.console.nuspec" -Version $version -OutputDirectory artifacts\$configuration
 if ($lastexitcode -ne 0) { Write-Error "nuget pack docfx.console error, exit code: $lastexitcode"; Pop-Location; Pop-Location }
 
-Write-Host "Complete."
+Write-Host "Build completed."
 Pop-Location
