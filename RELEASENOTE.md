@@ -1,5 +1,8 @@
 Version Notes (Current Version: v2.6)
 =======================================
+v2.6(Pre-Release)
+-----------
+
 v2.5
 -----------
 1.  Add source file and line number for warning invalid file/uid link.
