@@ -4,17 +4,17 @@ exports.transform = function (model) {
     var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
     model._jsonPath = _fileNameWithoutExt + ".swagger.json";
     model.title = model.title || model.name;
-    model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute);
-    model.sourceurl = model.sourceurl || common.getViewSourceHref(model);
+    model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
+    model.sourceurl = model.sourceurl || common.getViewSourceHref(model, null, model._gitUrlPattern);
     if (model.children) {
         for (var i = 0; i < model.children.length; i++) {
             var child = model.children[i];
-            child.docurl = child.docurl || common.getImproveTheDocHref(child, model._gitContribute);
+            child.docurl = child.docurl || common.getImproveTheDocHref(child, model._gitContribute, model._gitUrlPattern);
             if (child.operation) {
                 child.operation = child.operation.toUpperCase();
             }
             child.path = appendQueryParamsToPath(child.path, child.parameters);
-            child.sourceurl = child.sourceurl || common.getViewSourceHref(child);
+            child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null, model._gitUrlPattern);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
 

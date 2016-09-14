@@ -9,13 +9,13 @@ exports.getViewSourceHref = getViewSourceHref;
 exports.getImproveTheDocHref = getImproveTheDocHref;
 exports.processSeeAlso = processSeeAlso;
 
-exports.isAbsolutePath = function (path) {
-    return /^(\w+:)?\/\//g.test(path);
-}
+exports.isAbsolutePath = isAbsolutePath;
+exports.isRelativePath = isRelativePath;
 
-exports.isRelativePath = function (path) {
-    if (!path) return false;
-    return !exports.isAbsolutePath(path);
+function getFileNameWithoutExtension(path) {
+    if (!path || path[path.length - 1] === '/' || path[path.length - 1] === '\\') return '';
+    var fileName = path.split('\\').pop().split('/').pop();
+    return fileName.slice(0, fileName.lastIndexOf('.'));
 }
 
 function getDirectoryName(path) {
@@ -24,83 +24,124 @@ function getDirectoryName(path) {
     return path.slice(0, index + 1);
 }
 
-function getFileNameWithoutExtension(path) {
-    if (!path || path[path.length - 1] === '/' || path[path.length - 1] === '\\') return '';
-    var fileName = path.split('\\').pop().split('/').pop();
-    return fileName.slice(0, fileName.lastIndexOf('.'));
-}
-
 function getHtmlId(input) {
     return input.replace(/\W/g, '_');
 }
 
-function getViewSourceHref(item, gitContribute) {
+function getViewSourceHref(item, gitContribute, gitUrlPattern) {
     /* jshint validthis: true */
     if (!item || !item.source || !item.source.remote) return '';
-    return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1, gitContribute);
+    return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1, gitContribute, gitUrlPattern);
 }
 
-function getImproveTheDocHref(item, gitContribute) {
+function getImproveTheDocHref(item, gitContribute, gitUrlPattern) {
     if (!item) return '';
     if (!item.documentation || !item.documentation.remote) {
-        return getNewFileUrl(item.uid, gitContribute);
+        return getNewFileUrl(item.uid, gitContribute, gitUrlPattern);
     } else {
-        return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1, gitContribute);
+        return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1, gitContribute, gitUrlPattern);
     }
 }
 
-function getNewFileUrl(uid, gitContribute) {
+function processSeeAlso(item) {
+    if (item.seealso) {
+        for (var key in item.seealso) {
+            addIsCref(item.seealso[key]);
+        }
+    }
+    item.seealso = item.seealso || null;
+}
+
+function isAbsolutePath(path) {
+    return /^(\w+:)?\/\//g.test(path);
+}
+
+function isRelativePath(path) {
+    if (!path) return false;
+    return !exports.isAbsolutePath(path);
+}
+
+var gitUrlPatternItems = {
+    'github': {
+        'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?github\.com(\/|:).*/i,
+        'generateUrl': function(repo, branch, path, startLine) {
+            var url = normalizeGitUrlToHttps(repo);
+            url += '/blob' + '/' + branch + '/' + path;
+            if (startLine && startLine > 0) {
+                url += '/#L' + startLine;
+            }
+            return url;
+        },
+        'generateNewFileUrl': function(repo, branch, path, uid) {
+            var url = normalizeGitUrlToHttps(repo);
+            url += '/new';
+            url += '/' + branch;
+            url += '/' + getOverrideFolder(path);
+            url += '/new?filename=' + getHtmlId(uid) + '.md';
+            url += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
+            return url;
+        }
+    },
+    'vso': {
+        'testRegex': /^https:\/\/.*\.visualstudio\.com\/.*/i,
+        'generateUrl': function(repo, branch, path, startLine) {
+            var url =  repo + '?path=' + path + '&version=GB' + branch;
+            if (startLine && startLine > 0) {
+                url += '&line=' + startLine;
+            }
+            return url;
+        },
+        'generateNewFileUrl': function(repo, branch, path, uid) {
+            return '';
+        }
+    }
+}
+
+function normalizeGitUrlToHttps(repo) {
+    var pos = repo.indexOf('@');
+    if (pos == -1) return repo;
+    return 'https://' + repo.substr(pos + 1).replace(/:/g, '/');
+}
+
+function getNewFileUrl(uid, gitContribute, gitUrlPattern) {
     // do not support VSO for now
-    if (gitContribute && gitContribute.repo) {
-        var repo = gitContribute.repo;
-        if (repo.substr(-4) === '.git') {
-            repo = repo.substr(0, repo.length - 4);
-        }
-        var path = getGithubUrlPrefix(repo);
-        if (path != '') {
-            path += '/new';
-            path += '/' + gitContribute.branch;
-            path += '/' + getOverrideFolder(gitContribute.path);
-            path += '/new?filename=' + getHtmlId(uid) + '.md';
-            path += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
-        }
-        return path;
-    } else {
-        return '';
+    if (!gitContribute || !gitContribute.repo) return '';
+    var repo = gitContribute.repo;
+    if (repo.substr(-4) === '.git') {
+        repo = repo.substr(0, repo.length - 4);
     }
+
+    var patternName = getPatternName(repo, gitUrlPattern);
+    if (!patternName) return patternName;
+    return gitUrlPatternItems[patternName].generateNewFileUrl(repo, gitContribute.branch, gitContribute.path, uid);
 }
 
-function getRemoteUrl(remote, startLine, gitContribute) {
-    if (remote && remote.repo) {
-        var repo = remote.repo;
-        if (gitContribute && gitContribute.repo) repo = gitContribute.repo;
-        var branch = remote.branch;
-        if (gitContribute && gitContribute.branch) branch = gitContribute.branch;
-        if (repo.substr(-4) === '.git') {
-            repo = repo.substr(0, repo.length - 4);
-        }
-        var linenum = startLine ? startLine : 0;
-        if (/https:\/\/.*\.visualstudio\.com\/.*/gi.test(repo)) {
-            // TODO: line not working for vso
-            return repo + '#path=/' + remote.path;
-        }
-        var path = getGithubUrlPrefix(repo);
-        if (path != '') {
-            path += '/blob' + '/' + branch + '/' + remote.path;
-            if (linenum > 0) path += '/#L' + linenum;
-        }
-        return path;
-    } else {
-        return '';
+function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
+    if (!remote || !remote.repo) return '';
+    var repo = remote.repo;
+    if (gitContribute && gitContribute.repo) repo = gitContribute.repo;
+    var branch = remote.branch;
+    if (gitContribute && gitContribute.branch) branch = gitContribute.branch;
+    if (repo.substr(-4) === '.git') {
+        repo = repo.substr(0, repo.length - 4);
     }
+
+    var patternName = getPatternName(repo, gitUrlPattern);
+    if (!patternName) return '';
+    return gitUrlPatternItems[patternName].generateUrl(repo, branch, remote.path, startLine);
 }
 
-function getGithubUrlPrefix(repo) {
-    var regex = /^(?:https?:\/\/)?(?:\S+\@)?(?:\S+\.)?(github\.com(?:\/|:).*)/gi;
-    if (!regex.test(repo)) return '';
-    return repo.replace(regex, function (match, p1, offset, string) {
-        return 'https://' + p1.replace(':', '/');
-    })
+function getPatternName(repo, gitUrlPattern) {
+    if (gitUrlPattern && gitUrlPattern.toLowerCase() in gitUrlPatternItems) {
+        return gitUrlPattern.toLowerCase();
+    } else {
+        for (var p in gitUrlPatternItems) {
+            if (gitUrlPatternItems[p].testRegex.test(repo)) {
+                return p;
+            }
+        }
+    }
+    return '';
 }
 
 function getOverrideFolder(path) {
@@ -121,16 +162,6 @@ function getOverrideTemplate(uid) {
     content += "*Please type below more information about this API:*\n";
     content += "\n";
     return content;
-}
-
-function processSeeAlso(item) {
-
-    if (item.seealso) {
-        for (var key in item.seealso) {
-            addIsCref(item.seealso[key]);
-        }
-    }
-    item.seealso = item.seealso || null;
 }
 
 function addIsCref(seealso) {

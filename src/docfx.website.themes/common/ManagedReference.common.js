@@ -22,9 +22,9 @@ exports.transform = function (model)  {
   if (!model) return null;
 
   langs = model.langs;
-  handleItem(model, model._gitContribute);
+  handleItem(model, model._gitContribute, model._gitUrlPattern);
   if (model.children) {
-      model.children.forEach(function (item) { handleItem(item, model._gitContribute); });
+      model.children.forEach(function (item) { handleItem(item, model._gitContribute, model._gitUrlPattern); });
   }
 
   if (model.type) {
@@ -103,10 +103,10 @@ function handleNamespace(model) {
     }
 }
 
-function handleItem(vm, gitContribute) {
+function handleItem(vm, gitContribute, gitUrlPattern) {
   // get contribution information
-  vm.docurl = common.getImproveTheDocHref(vm, gitContribute);
-  vm.sourceurl = common.getViewSourceHref(vm);
+  vm.docurl = common.getImproveTheDocHref(vm, gitContribute, gitUrlPattern);
+  vm.sourceurl = common.getViewSourceHref(vm, null, gitUrlPattern);
 
   // set to null incase mustache looks up
   vm.summary = vm.summary || null;
