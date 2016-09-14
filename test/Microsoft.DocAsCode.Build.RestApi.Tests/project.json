@@ -1,6 +1,6 @@
 {
-    "version": "1.0.0",
-    "testRunner": "xunit",
+  "version": "1.0.0",
+  "testRunner": "xunit",
   "dependencies": {
     "Microsoft.DocAsCode.Build.Common": "1.0.0",
     "Microsoft.DocAsCode.Build.RestApi": "1.0.0",
@@ -21,27 +21,29 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "System.Collections.Immutable": "1.2.0",
     "Microsoft.Composition": "1.0.27",
-    "Shared": "1.0.0"
   },
-    "buildOptions": {
-        "copyToOutput": [
-            "TestData/overwrite/rest.overwrite.tags.md",
-            "TestData/overwrite/rest.overwrite.unmergable.md",
-            "TestData/overwrite/rest.overwrite.multi.uid.md",
-            "TestData/overwrite/rest.overwrite.not.predefined.md",
-            "TestData/overwrite/rest.overwrite.simple.md",
-            "TestData/overwrite/rest.overwrite.default.md",
-            "TestData/overwrite/rest.overwrite.invalid.md",
-            "TestData/contacts-operations.md",
-            "TestData/contacts.json",
-            "TestData/swagger/loopref_swagger2.json",
-            "TestData/swagger/ref_swagger2.json",
-            "TestData/swagger/pathParameters_swagger2.json",
-            "TestData/swagger/tag_swagger2.json",
-            "TestData/swagger/simple_swagger2.json"
-        ]
+  "buildOptions": {
+    "compile": {
+      "includeFiles": "../Shared/TestBase.cs"
     },
-    "frameworks": {
-        "net452": {}
-    }
+    "copyToOutput": [
+      "TestData/overwrite/rest.overwrite.tags.md",
+      "TestData/overwrite/rest.overwrite.unmergable.md",
+      "TestData/overwrite/rest.overwrite.multi.uid.md",
+      "TestData/overwrite/rest.overwrite.not.predefined.md",
+      "TestData/overwrite/rest.overwrite.simple.md",
+      "TestData/overwrite/rest.overwrite.default.md",
+      "TestData/overwrite/rest.overwrite.invalid.md",
+      "TestData/contacts-operations.md",
+      "TestData/contacts.json",
+      "TestData/swagger/loopref_swagger2.json",
+      "TestData/swagger/ref_swagger2.json",
+      "TestData/swagger/pathParameters_swagger2.json",
+      "TestData/swagger/tag_swagger2.json",
+      "TestData/swagger/simple_swagger2.json"
+    ]
+  },
+  "frameworks": {
+    "net452": {}
+  }
 }

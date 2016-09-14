@@ -20,8 +20,12 @@
     "xunit": "2.2.0-beta2-build3300",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "System.Collections.Immutable": "1.2.0",
-    "Microsoft.Composition": "1.0.27",
-    "Shared": "1.0.0"
+    "Microsoft.Composition": "1.0.27"
+  },
+  "buildOptions": {
+    "compile": {
+      "includeFiles": "../Shared/TestBase.cs"
+    }
   },
   "frameworks": {
     "net452": {}
