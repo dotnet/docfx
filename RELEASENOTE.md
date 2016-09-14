@@ -2,6 +2,7 @@ Version Notes (Current Version: v2.6)
 =======================================
 v2.6(Pre-Release)
 -----------
+1.  Support attribute filter to filter out attributes.
 
 v2.5
 -----------
