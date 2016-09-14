@@ -481,14 +481,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void ReloadModelsPerIncrementalChanges(IEnumerable<string> changes, string cacheFolder, LoadPhase phase)
+        public void ReloadModelsPerIncrementalChanges(IEnumerable<string> changes, string intermediateFolder, ModelManifest lmm, LoadPhase phase)
         {
             if (changes == null)
             {
                 return;
             }
             ReloadUnloadedModelsPerCondition(
-                cacheFolder,
+                intermediateFolder,
+                lmm,
                 phase,
                 f =>
                 {
@@ -497,20 +498,20 @@ namespace Microsoft.DocAsCode.Build.Engine
                 });
         }
 
-        public void ReloadUnloadedModels(string cacheFolder, LoadPhase phase)
+        public void ReloadUnloadedModels(string intermediateFolder, ModelManifest lmm, LoadPhase phase)
         {
-            ReloadUnloadedModelsPerCondition(cacheFolder, phase, f => _modelLoadInfo[f] == LoadPhase.None);
+            ReloadUnloadedModelsPerCondition(intermediateFolder, lmm, phase, f => _modelLoadInfo[f] == LoadPhase.None);
         }
 
-        private void ReloadUnloadedModelsPerCondition(string cacheFolder, LoadPhase phase, Func<FileAndType, bool> condition)
+        private void ReloadUnloadedModelsPerCondition(string intermediateFolder, ModelManifest lmm, LoadPhase phase, Func<FileAndType, bool> condition)
         {
-            if (cacheFolder == null)
+            if (intermediateFolder == null)
             {
                 return;
             }
             var toLoadList = (from f in _modelLoadInfo.Keys
                               where condition(f)
-                              select LoadIntermediateModel(Path.Combine(cacheFolder, Path.GetFileName(f.File))) into m
+                              select LoadIntermediateModel(intermediateFolder, lmm, f.File) into m
                               where m != null
                               select m).ToList();
             if (toLoadList.Count > 0)
@@ -523,21 +524,30 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void SaveIntermediateModel(string intermediateFolder, ModelManifest lmm, ModelManifest cmm)
         {
             var processor = Processor as ISupportIncrementalDocumentProcessor;
-            if (processor == null)
+            if (processor == null || intermediateFolder == null)
             {
                 return;
             }
 
             foreach (var pair in _modelLoadInfo)
             {
-                var fileName = Path.GetFileName(pair.Key.File);
+                string fileName;
+                do
+                {
+                    fileName = Path.GetRandomFileName();
+                } while (File.Exists(Path.Combine(intermediateFolder, cmm.BaseDir, fileName)));
                 if (pair.Value == LoadPhase.None)
                 {
                     if (lmm == null)
                     {
                         throw new InvalidDataException($"Full build hasn't loaded model {pair.Key.FullPath}");
                     }
-                    File.Copy(Path.Combine(intermediateFolder, lmm.BaseDir, fileName), Path.Combine(intermediateFolder, cmm.BaseDir, fileName));
+                    string lfn;
+                    if (!lmm.Models.TryGetValue(pair.Key.File, out lfn))
+                    {
+                        throw new InvalidDataException($"Last build hasn't loaded model {pair.Key.FullPath}");
+                    }
+                    File.Copy(Path.Combine(intermediateFolder, lmm.BaseDir, lfn), Path.Combine(intermediateFolder, cmm.BaseDir, fileName));
                 }
                 else
                 {
@@ -548,18 +558,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                         processor.SaveIntermediateModel(model, stream);
                     }
                 }
-                cmm.Models.Add(fileName);
+                cmm.Models.Add(pair.Key.File, fileName);
             }
         }
 
-        public FileModel LoadIntermediateModel(string fileName)
+        public FileModel LoadIntermediateModel(string intermediateFolder, ModelManifest lmm, string fileName)
         {
             var processor = Processor as ISupportIncrementalDocumentProcessor;
             if (processor == null)
             {
                 return null;
             }
-            using (var stream = new FileStream(fileName, FileMode.Open))
+            string lfn;
+            if (!lmm.Models.TryGetValue(fileName, out lfn))
+            {
+                throw new InvalidDataException($"Last build hasn't loaded model {fileName}");
+            }
+            using (var stream = new FileStream(Path.Combine(intermediateFolder, lmm.BaseDir, lfn), FileMode.Open))
             {
                 return processor.LoadIntermediateModel(stream);
             }

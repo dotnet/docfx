@@ -9,6 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     {
         public string BaseDir { get; set; }
 
-        public List<string> Models { get; } = new List<string>();
+        public Dictionary<string, string> Models { get; } = new Dictionary<string, string>();
     }
 }

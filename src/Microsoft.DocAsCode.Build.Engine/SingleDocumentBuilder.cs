@@ -413,7 +413,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var lbv = LastBuildInfo?.Versions?.SingleOrDefault(v => v.VersionName == versionName);
                 var cbv = CurrentBuildInfo.Versions.Single(v => v.VersionName == versionName);
                 buildSaver = h => h.SaveIntermediateModel(IntermediateFolder, lbv?.BuildModelManifest, cbv.BuildModelManifest);
-                loader = () => UpdateHostServices(hostServices, lbv != null ? Path.Combine(IntermediateFolder, lbv.BuildModelManifest.BaseDir) : null, _canIncremental);
+                loader = () => UpdateHostServices(hostServices, IntermediateFolder, lbv?.BuildModelManifest, _canIncremental);
             }
 
             BuildCore(hostServices, context.MaxParallelism, buildSaver, loader);
@@ -472,26 +472,26 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static void UpdateHostServices(IEnumerable<HostService> hostServices, DocumentBuildContext context, string cacheFolder, bool canIncremental)
+        private static void UpdateHostServices(IEnumerable<HostService> hostServices, DocumentBuildContext context, string intermediateFolder, ModelManifest lmm, bool canIncremental)
         {
             UpdateUidDependency(hostServices, context);
-            if (canIncremental && cacheFolder != null)
+            if (canIncremental && intermediateFolder != null && lmm != null)
             {
                 var newChanges = ExpandDependency(context.DependencyGraph, context, d => true);
                 foreach (var hostService in hostServices)
                 {
-                    hostService.ReloadModelsPerIncrementalChanges(newChanges, cacheFolder, LoadPhase.PostBuild);
+                    hostService.ReloadModelsPerIncrementalChanges(newChanges, intermediateFolder, lmm, LoadPhase.PostBuild);
                 }
             }
         }
 
-        private static void UpdateHostServices(IEnumerable<HostService> hostServices, string cacheFolder, bool canIncremental)
+        private static void UpdateHostServices(IEnumerable<HostService> hostServices, string intermediateFolder, ModelManifest lmm, bool canIncremental)
         {
-            if (canIncremental && cacheFolder != null)
+            if (canIncremental && intermediateFolder != null && lmm != null)
             {
                 foreach (var hostService in hostServices)
                 {
-                    hostService.ReloadUnloadedModels(cacheFolder, LoadPhase.PostBuild);
+                    hostService.ReloadUnloadedModels(intermediateFolder, lmm, LoadPhase.PostBuild);
                 }
             }
         }
