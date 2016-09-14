@@ -91,8 +91,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                         PostBuildModelManifestFile = "postbuildmodelmanifest",
                         Attributes = fileAttributes,
                         Dependency = context.DependencyGraph,
-                        Manifest = context.ManifestItems,
-                        XRefSpecMap = context.XRefSpecMap,
+                        //Manifest = context.ManifestItems,
+                        //XRefSpecMap = context.XRefSpecMap,
                         BuildModelManifest = new ModelManifest { BaseDir = CreateRandomDir(IntermediateFolder) },
                         PostBuildModelManifest = new ModelManifest { BaseDir = CreateRandomDir(IntermediateFolder) },
                     });

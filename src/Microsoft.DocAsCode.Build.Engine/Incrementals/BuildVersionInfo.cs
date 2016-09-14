@@ -92,8 +92,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             Dependency = IncrementalUtility.LoadDependency(Path.Combine(baseDir, DependencyFile));
             Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
-            Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
-            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(Path.Combine(baseDir, XRefSpecMapFile));
+            //Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
+            //XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(Path.Combine(baseDir, XRefSpecMapFile));
             BuildModelManifest = IncrementalUtility.LoadIntermediateFile<ModelManifest>(Path.Combine(baseDir, BuildModelManifestFile));
             PostBuildModelManifest = IncrementalUtility.LoadIntermediateFile<ModelManifest>(Path.Combine(baseDir, PostBuildModelManifestFile));
         }
@@ -102,8 +102,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);
+            //IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
+            //IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, BuildModelManifestFile), BuildModelManifest);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostBuildModelManifestFile), PostBuildModelManifest);
         }
