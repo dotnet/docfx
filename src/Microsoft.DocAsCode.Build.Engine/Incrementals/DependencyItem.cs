@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
+
     using Newtonsoft.Json;
 
     public sealed class DependencyItem : IEquatable<DependencyItem>
@@ -39,15 +40,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return true;
             }
-            return this.From == dp.From &&
-                this.To == dp.To &&
-                this.ReportedBy == dp.ReportedBy &&
-                this.Type == dp.Type;
+            return From == dp.From &&
+                To == dp.To &&
+                ReportedBy == dp.ReportedBy &&
+                Type == dp.Type;
         }
 
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as DependencyItem);
+            return Equals(obj as DependencyItem);
         }
 
         public override string ToString()
@@ -57,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public override int GetHashCode()
         {
-            return ToString().GetHashCode();
+            return From.GetHashCode() ^ (To.GetHashCode() >> 1) ^ (ReportedBy.GetHashCode() << 1) ^ (Type.GetHashCode() >> 2);
         }
     }
 }
