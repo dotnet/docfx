@@ -674,13 +674,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                                     }
                                 }
 
-                                // restore manifestitem
-                                ManifestItem item = manifestItems?.SingleOrDefault(i => i.SourceRelativePath == file.File);
-                                if (item != null)
-                                {
-                                    context.ManifestItems.Add(item);
-                                }
-
                                 // restore dependency graph
                                 if (dg.HasDependencyReportedBy(fileKey))
                                 {

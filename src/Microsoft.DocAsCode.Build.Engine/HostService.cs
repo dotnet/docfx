@@ -565,7 +565,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public FileModel LoadIntermediateModel(string intermediateFolder, ModelManifest lmm, string fileName)
         {
             var processor = Processor as ISupportIncrementalDocumentProcessor;
-            if (processor == null)
+            if (processor == null || intermediateFolder == null || lmm == null)
             {
                 return null;
             }
