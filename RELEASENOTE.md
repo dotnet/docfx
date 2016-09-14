@@ -1,6 +1,6 @@
 Version Notes (Current Version: v2.5)
 =======================================
-v2.5(Pre-Release)
+v2.5
 -----------
 1.  Add source file and line number for warning invalid file/uid link.
 2.  Fix bugs in markdown table.
