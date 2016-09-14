@@ -1,7 +1,7 @@
 How-to: Filter Out Unwanted APIs or Attributes 
 ================================
 
-A filter configuration file is in [YAML](http://www.yaml.org/spec/1.2/spec.html) format. You may filter out unwanted APIs or Attributes by providing a filter configuration file and specifying its path.
+A filter configuration file is in [YAML](http://www.yaml.org/spec/1.2/spec.html) format. You may filter out unwanted APIs or attributes by providing a filter configuration file and specifying its path.
 
 Specifying the filter configuration file path
 -----------------------------------------
@@ -57,7 +57,7 @@ To filter out APIs, you could specify `apiRules` with a list of `exclude` or `in
 
 #### 1) `exclude` or `include` APIs by matching their uid with the Regex `uidRegex`.  
   
-The below sample excludes all APIs whose uid start with 'Microsoft.DevDiv' except those that start with 'Microsoft.DevDiv.SpecialCase'.
+The sample below excludes all APIs whose uids start with 'Microsoft.DevDiv' except those that start with 'Microsoft.DevDiv.SpecialCase'.
  
 ```
   - include:
@@ -106,10 +106,10 @@ You can specify an attribute by its `uid`, `ctorArguments` and `ctorNamedArgumen
   
 > *Note*
 
-> `ctorArguments` requires a full match of the attribute's constructor arguments, while `ctorNamedArguments` support a partial match.
+> `ctorArguments` requires a full match of the attribute's constructor arguments, while `ctorNamedArguments` supports a partial match.
 > Namely, `ctorArguments` should contain all the arguments while `ctorNamedArguments` could contain a subset of the named arguments. 
   
-The below sample excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.
+The sample below excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.
   
 ```
   - exclude:
@@ -118,7 +118,20 @@ The below sample excludes all APIs which have EditorBrowsableAttribute and its c
         ctorArguments:
         - System.ComponentModel.EditorBrowsableState.Never
 ```
-  
+
+The sample below excludes all APIs which have AttributeUsageAttribute and its constructor argument is AttributeTargets.Class
+ and its constructor has named argument [Inherited] = true
+
+```
+  - exclude:
+    hasAttribute:
+      uid: System.AttributeUsageAttribute
+      ctorArguments:
+      - System.AttributeTargets.Class
+      ctorNamedArguments:
+        Inherited: "true"
+```
+
 A complete **Sample** of the filter configuration file for filtering out APIs follows:
 
 ```yaml
@@ -180,6 +193,18 @@ attributeRules:
 - exclude:
     uidRegex: ^System\.Diagnostics\.CodeAnalysis$
     type: Namespace
+- include:
+    uidRegex: ^System\.Diagnostics\.(ConditionalAttribute|EventLogPermissionAttribute|PerformanceCounterPermissionAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.Diagnostics\.[^.]+$'
+    type: Type
+- include:
+    uidRegex: ^System\.ComponentModel\.(BindableAttribute|BrowsableAttribute|ComplexBindingPropertiesAttribute|DataObjectAttribute|DefaultBindingPropertyAttribute|ListBindableAttribute|LookupBindingPropertiesAttribute|SettingsBindableAttribute|TypeConverterAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.ComponentModel\.[^.]+$'
+    type: Type
 - exclude:
     uidRegex: ^System\.Reflection\.DefaultMemberAttribute$
     type: Type
@@ -187,66 +212,33 @@ attributeRules:
     uidRegex: ^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$
     type: Type
 - include:
-    uidRegex: ^System\.ComponentModel\.(BindableAttribute|BrowsableAttribute|ComplexBindingPropertiesAttribute|DataObjectAttribute|DefaultBindingPropertyAttribute|ListBindableAttribute|LookupBindingPropertiesAttribute|SettingsBindableAttribute|TypeConverterAttribute)$
-    type: Type
-- include:
-    uidRegex: ^System\.ComponentModel\..+$
-    type: Namespace
-- exclude:
-    uidRegex: ^System\.ComponentModel\..+$
-    type: Type
-- include:
-    uidRegex: ^System\.Diagnostics\.(ConditionalAttribute|EventLogPermissionAttribute|PerformanceCounterPermissionAttribute)$
-    type: Type
-- include:
-    uidRegex: ^System\.Diagnostics\..+$
-    type: Namespace
-- exclude:
-    uidRegex: ^System\.Diagnostics\..+$
-    type: Type
-- include:
     uidRegex: ^System\.Runtime\.CompilerServices\.ExtensionAttribute$
     type: Type
-- include:
-    uidRegex: ^System\.Runtime\.CompilerServices\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Runtime\.CompilerServices\..+$
+    uidRegex: '^System\.Runtime\.CompilerServices\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Runtime\.InteropServices\.(ComVisibleAttribute|GuidAttribute|ClassInterfaceAttribute|InterfaceTypeAttribute)$
     type: Type
-- include:
-    uidRegex: ^System\.Runtime\.InteropServices\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Runtime\.InteropServices\..+$
+    uidRegex: '^System\.Runtime\.InteropServices\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Security\.(SecurityCriticalAttribute|SecurityTreatAsSafeAttribute|AllowPartiallyTrustedCallersAttribute)$
     type: Type
-- include:
-    uidRegex: ^System\.Security\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Security\..+$
+    uidRegex: '^System\.Security\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Web\.UI\.(ControlValuePropertyAttribute|PersistenceModeAttribute|ValidationPropertyAttribute|WebResourceAttribute|TemplateContainerAttribute|ThemeableAttribute|TemplateInstanceAttribute)$
     type: Type
-- include:
-    uidRegex: ^System\.Web\.UI\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Web\.UI\..+$
+    uidRegex: '^System\.Web\.UI\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Windows\.Markup\.(ConstructorArgumentAttribute|DesignerSerializationOptionsAttribute|ValueSerializerAttribute|XmlnsCompatibleWithAttribute|XmlnsDefinitionAttribute|XmlnsPrefixAttribute)$
     type: Type
-- include:
-    uidRegex: ^System\.Windows\.Markup\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Windows\.Markup\..+$
+    uidRegex: '^System\.Windows\.Markup\.[^.]+$'
     type: Type
 ```
