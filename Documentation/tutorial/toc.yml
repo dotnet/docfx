@@ -5,7 +5,7 @@
   - name: DocFX User Manual
     href: docfx.exe_user_manual.md
   - name: "HowTo: Filter Out Unwanted APIs"
-    href: howto_filter_out_unwanted_apis.md
+    href: howto_filter_out_unwanted_apis_attributes.md
   - name: Walkthrough Topics
     href: walkthrough/toc.md
     homepage: walkthrough/walkthrough_overview.md

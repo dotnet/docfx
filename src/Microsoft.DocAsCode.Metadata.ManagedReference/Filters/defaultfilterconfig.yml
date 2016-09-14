@@ -29,6 +29,18 @@ attributeRules:
 - exclude:
     uidRegex: ^System\.Diagnostics\.CodeAnalysis$
     type: Namespace
+- include:
+    uidRegex: ^System\.Diagnostics\.(ConditionalAttribute|EventLogPermissionAttribute|PerformanceCounterPermissionAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.Diagnostics\.[^.]+$'
+    type: Type
+- include:
+    uidRegex: ^System\.ComponentModel\.(BindableAttribute|BrowsableAttribute|ComplexBindingPropertiesAttribute|DataObjectAttribute|DefaultBindingPropertyAttribute|ListBindableAttribute|LookupBindingPropertiesAttribute|SettingsBindableAttribute|TypeConverterAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.ComponentModel\.[^.]+$'
+    type: Type
 - exclude:
     uidRegex: ^System\.Reflection\.DefaultMemberAttribute$
     type: Type
@@ -36,65 +48,32 @@ attributeRules:
     uidRegex: ^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$
     type: Type
 - include:
-    uidRegex: ^System\.ComponentModel\.(BindableAttribute|BrowsableAttribute|ComplexBindingPropertiesAttribute|DataObjectAttribute|DefaultBindingPropertyAttribute|ListBindableAttribute|LookupBindingPropertiesAttribute|SettingsBindableAttribute|TypeConverterAttribute)$
-    type: Type
-- include:
-    uidRegex: ^System\.ComponentModel\..+$
-    type: Namespace
-- exclude:
-    uidRegex: ^System\.ComponentModel\..+$
-    type: Type
-- include:
-    uidRegex: ^System\.Diagnostics\.(ConditionalAttribute|EventLogPermissionAttribute|PerformanceCounterPermissionAttribute)$
-    type: Type
-- include:
-    uidRegex: ^System\.Diagnostics\..+$
-    type: Namespace
-- exclude:
-    uidRegex: ^System\.Diagnostics\..+$
-    type: Type
-- include:
     uidRegex: ^System\.Runtime\.CompilerServices\.ExtensionAttribute$
     type: Type
-- include:
-    uidRegex: ^System\.Runtime\.CompilerServices\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Runtime\.CompilerServices\..+$
+    uidRegex: '^System\.Runtime\.CompilerServices\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Runtime\.InteropServices\.(ComVisibleAttribute|GuidAttribute|ClassInterfaceAttribute|InterfaceTypeAttribute)$
     type: Type
-- include:
-    uidRegex: ^System\.Runtime\.InteropServices\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Runtime\.InteropServices\..+$
+    uidRegex: '^System\.Runtime\.InteropServices\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Security\.(SecurityCriticalAttribute|SecurityTreatAsSafeAttribute|AllowPartiallyTrustedCallersAttribute)$
     type: Type
-- include:
-    uidRegex: ^System\.Security\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Security\..+$
+    uidRegex: '^System\.Security\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Web\.UI\.(ControlValuePropertyAttribute|PersistenceModeAttribute|ValidationPropertyAttribute|WebResourceAttribute|TemplateContainerAttribute|ThemeableAttribute|TemplateInstanceAttribute)$
     type: Type
-- include:
-    uidRegex: ^System\.Web\.UI\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Web\.UI\..+$
+    uidRegex: '^System\.Web\.UI\.[^.]+$'
     type: Type
 - include:
     uidRegex: ^System\.Windows\.Markup\.(ConstructorArgumentAttribute|DesignerSerializationOptionsAttribute|ValueSerializerAttribute|XmlnsCompatibleWithAttribute|XmlnsDefinitionAttribute|XmlnsPrefixAttribute)$
     type: Type
-- include:
-    uidRegex: ^System\.Windows\.Markup\..+$
-    type: Namespace
 - exclude:
-    uidRegex: ^System\.Windows\.Markup\..+$
+    uidRegex: '^System\.Windows\.Markup\.[^.]+$'
     type: Type
